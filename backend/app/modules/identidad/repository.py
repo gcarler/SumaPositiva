@@ -34,18 +34,12 @@ class IdentidadRepository:
             .where(func.lower(Usuario.correo) == correo.strip().lower())
         )
 
-    async def obtener_usuario_por_id(
-        self, usuario_id: uuid.UUID, *, bloquear=False
-    ) -> Usuario | None:
+    async def obtener_usuario_por_id(self, usuario_id: uuid.UUID, *, bloquear=False) -> Usuario | None:
         consulta = (
-            select(Usuario)
-            .options(joinedload(Usuario.rol), joinedload(Usuario.mfa))
-            .where(Usuario.id == usuario_id)
+            select(Usuario).options(joinedload(Usuario.rol), joinedload(Usuario.mfa)).where(Usuario.id == usuario_id)
         )
         if bloquear:
-            consulta = consulta.with_for_update(of=Usuario).execution_options(
-                populate_existing=True
-            )
+            consulta = consulta.with_for_update(of=Usuario).execution_options(populate_existing=True)
         return await self.session.scalar(consulta)
 
     async def crear_usuario(
@@ -66,7 +60,7 @@ class IdentidadRepository:
         await self.session.flush()
         return await self.obtener_usuario_por_id(usuario.id)
 
-    async def crear_usuario_oauth(
+    async def crear_usuario_externo(
         self,
         correo: str,
         nombres: str,
@@ -74,6 +68,7 @@ class IdentidadRepository:
         rol_id: uuid.UUID,
         nivel_identidad: str,
         hash_contrasena: str,
+        correo_verificado: bool,
         metadatos: dict | None = None,
     ) -> Usuario:
         usuario = Usuario(
@@ -83,7 +78,7 @@ class IdentidadRepository:
             nombres=nombres,
             apellidos=apellidos,
             nivel_identidad=nivel_identidad,
-            correo_verificado_en=datetime.now(UTC),
+            correo_verificado_en=datetime.now(UTC) if correo_verificado else None,
             metadatos=metadatos or {},
         )
         self.session.add(usuario)
@@ -95,16 +90,12 @@ class IdentidadRepository:
 
     async def registrar_evento(self, accion, actor_id=None, objetivo_id=None, detalle=None) -> None:
         self.session.add(
-            EventoIdentidad(
-                accion=accion, actor_id=actor_id, objetivo_id=objetivo_id, detalle=detalle or {}
-            )
+            EventoIdentidad(accion=accion, actor_id=actor_id, objetivo_id=objetivo_id, detalle=detalle or {})
         )
         await self.session.flush()
 
     async def crear_sesion(self, usuario_id, expira_en, huella_hash) -> SesionUsuario:
-        sesion = SesionUsuario(
-            id=uuid.uuid4(), usuario_id=usuario_id, creada_en=datetime.now(UTC), expira_en=expira_en
-        )
+        sesion = SesionUsuario(id=uuid.uuid4(), usuario_id=usuario_id, creada_en=datetime.now(UTC), expira_en=expira_en)
         self.session.add(
             SesionAnonima(
                 id=sesion.id,
@@ -120,6 +111,27 @@ class IdentidadRepository:
 
     async def obtener_sesion(self, sesion_id) -> SesionUsuario | None:
         return await self.session.get(SesionUsuario, sesion_id)
+
+    async def obtener_sesion_civica(self, sesion_id) -> SesionAnonima | None:
+        return await self.session.get(SesionAnonima, sesion_id)
+
+    async def acreditar_mfa_sesion(self, usuario_id, sesion_id, acreditacion: str) -> bool:
+        registro = await self.obtener_sesion(sesion_id)
+        civica = await self.obtener_sesion_civica(sesion_id)
+        ahora = datetime.now(UTC)
+        if (
+            not registro
+            or registro.usuario_id != usuario_id
+            or registro.revocada_en
+            or registro.expira_en <= ahora
+            or not civica
+            or not civica.activa
+            or civica.expira_en <= ahora
+        ):
+            return False
+        civica.metadatos = {**civica.metadatos, "mfa_acreditacion": acreditacion}
+        await self.session.flush()
+        return True
 
     async def revocar_sesiones(self, usuario_id, sesion_id=None) -> None:
         consulta = update(SesionUsuario).where(
@@ -155,9 +167,7 @@ class IdentidadRepository:
         await self.session.flush()
 
     async def obtener_token(self, hash_token, proposito, *, bloquear=False) -> TokenAccion | None:
-        consulta = select(TokenAccion).where(
-            TokenAccion.hash_token == hash_token, TokenAccion.proposito == proposito
-        )
+        consulta = select(TokenAccion).where(TokenAccion.hash_token == hash_token, TokenAccion.proposito == proposito)
         if bloquear:
             consulta = consulta.with_for_update().execution_options(populate_existing=True)
         return await self.session.scalar(consulta)
@@ -177,15 +187,11 @@ class IdentidadRepository:
         consulta = select(Usuario).options(joinedload(Usuario.rol), joinedload(Usuario.mfa))
         if busqueda:
             # contains autoescape evita interpretar %/_ como comodines introducidos por el usuario.
-            consulta = consulta.where(
-                func.lower(Usuario.correo).contains(busqueda.lower(), autoescape=True)
-            )
+            consulta = consulta.where(func.lower(Usuario.correo).contains(busqueda.lower(), autoescape=True))
         total = await self.session.scalar(select(func.count()).select_from(consulta.subquery()))
         usuarios = (
             await self.session.scalars(
-                consulta.order_by(Usuario.creado_en.desc(), Usuario.id)
-                .limit(limite)
-                .offset(desplazamiento)
+                consulta.order_by(Usuario.creado_en.desc(), Usuario.id).limit(limite).offset(desplazamiento)
             )
         ).all()
         return total, usuarios
@@ -204,9 +210,7 @@ class IdentidadRepository:
         await self.session.flush()
 
     async def usuarios_de_rol(self, rol_id) -> int:
-        return await self.session.scalar(
-            select(func.count()).select_from(Usuario).where(Usuario.rol_id == rol_id)
-        )
+        return await self.session.scalar(select(func.count()).select_from(Usuario).where(Usuario.rol_id == rol_id))
 
     async def serializar_administracion(self) -> None:
         # Lock transaccional común: evita eliminar/desactivar simultáneamente al último admin.
@@ -240,12 +244,8 @@ class IdentidadRepository:
         consulta = consulta.on_conflict_do_update(
             index_elements=[LimiteAcceso.clave],
             set_={
-                "intentos": case(
-                    (LimiteAcceso.expira_en <= ahora, 1), else_=LimiteAcceso.intentos + 1
-                ),
-                "expira_en": case(
-                    (LimiteAcceso.expira_en <= ahora, expira), else_=LimiteAcceso.expira_en
-                ),
+                "intentos": case((LimiteAcceso.expira_en <= ahora, 1), else_=LimiteAcceso.intentos + 1),
+                "expira_en": case((LimiteAcceso.expira_en <= ahora, expira), else_=LimiteAcceso.expira_en),
             },
         ).returning(LimiteAcceso.intentos)
         # Retención acotada: eliminar contadores vencidos hace más de una ventana.
@@ -254,12 +254,10 @@ class IdentidadRepository:
         )
         return await self.session.scalar(consulta)
 
-    async def obtener_mfa_usuario(
-        self, usuario_id: uuid.UUID, *, bloquear=False
-    ) -> UsuarioMfa | None:
+    async def obtener_mfa_usuario(self, usuario_id: uuid.UUID, *, bloquear=False) -> UsuarioMfa | None:
         consulta = select(UsuarioMfa).where(UsuarioMfa.usuario_id == usuario_id)
         if bloquear:
-            consulta = consulta.with_for_update(of=UsuarioMfa)
+            consulta = consulta.with_for_update(of=UsuarioMfa).execution_options(populate_existing=True)
         return await self.session.scalar(consulta)
 
     async def guardar_mfa_usuario(
@@ -300,9 +298,7 @@ class IdentidadRepository:
             return True
         return False
 
-    async def listar_ambitos_usuario(
-        self, usuario_id: uuid.UUID
-    ) -> list[AmbitoTerritorialUsuario]:
+    async def listar_ambitos_usuario(self, usuario_id: uuid.UUID) -> list[AmbitoTerritorialUsuario]:
         stmt = (
             select(AmbitoTerritorialUsuario)
             .where(
@@ -342,9 +338,7 @@ class IdentidadRepository:
         await self.session.flush()
         return nuevo
 
-    async def revocar_ambito_usuario(
-        self, usuario_id: uuid.UUID, ambito_id: uuid.UUID
-    ) -> bool:
+    async def revocar_ambito_usuario(self, usuario_id: uuid.UUID, ambito_id: uuid.UUID) -> bool:
         stmt = select(AmbitoTerritorialUsuario).where(
             AmbitoTerritorialUsuario.id == ambito_id,
             AmbitoTerritorialUsuario.usuario_id == usuario_id,
@@ -357,5 +351,3 @@ class IdentidadRepository:
             await self.session.flush()
             return True
         return False
-
-

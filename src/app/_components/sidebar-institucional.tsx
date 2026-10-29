@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSesionStore, esInstitucional, tienePermiso } from "@/features/sesion/state/session-store";
@@ -44,6 +44,10 @@ const ROL_LABELS: Record<string, string> = {
 };
 
 type ModoSidebar = "expandido" | "iconos" | "oculto";
+
+const ANCHO_MINIMO = 220;
+const ANCHO_MAXIMO = 480;
+const PASO_TECLADO = 16;
 
 export interface SubModuloItem {
   id: string;
@@ -309,16 +313,35 @@ export function SidebarInstitucional() {
 
   // Estados de control del Sidebar
   const [modo, setModo] = useState<ModoSidebar>("expandido");
-  const modoVisible: ModoSidebar = esMovil ? "oculto" : modo;
   const [ancho, setAncho] = useState<number>(280);
   const [submodulosAbiertos, setSubmodulosAbiertos] = useState<Record<string, boolean>>({
     mesas_trabajo: true,
     asistencia: false,
     forms: false,
   });
+  // Navegación equivalente en móvil: el botón flotante abre el mismo árbol
+  // de módulos como cajón lateral (patrón de nav de plataforma), no un panel ajeno.
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const cleanupArrastre = useRef<() => void>(() => {});
+
+  // Restaurar cursor/selección y remover listeners si se desmonta durante el arrastre.
+  useEffect(() => {
+    const limpiar = cleanupArrastre.current;
+    return () => limpiar();
+  }, []);
+
+  // Cierre del cajón móvil con Escape.
+  useEffect(() => {
+    if (!menuMovilAbierto) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuMovilAbierto(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuMovilAbierto]);
 
   // Redimensionamiento con mouse (Drag-to-Resize)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -329,22 +352,31 @@ export function SidebarInstitucional() {
 
     const onMouseMove = (moveEvent: MouseEvent) => {
       if (!isResizingRef.current) return;
-      const nuevoAncho = Math.min(Math.max(moveEvent.clientX, 220), 480);
+      const nuevoAncho = Math.min(Math.max(moveEvent.clientX, ANCHO_MINIMO), ANCHO_MAXIMO);
       setAncho(nuevoAncho);
-      if (modo !== "expandido") setModo("expandido");
+    };
+
+    const detenerArrastre = () => {
+      isResizingRef.current = false;
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      cleanupArrastre.current = () => {};
     };
 
     const onMouseUp = () => {
-      isResizingRef.current = false;
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
+      detenerArrastre();
     };
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
-  }, [modo]);
+    cleanupArrastre.current = detenerArrastre;
+  }, []);
+
+  const ajustarAnchoConTeclado = useCallback((delta: number) => {
+    setAncho((prev) => Math.min(Math.max(prev + delta, ANCHO_MINIMO), ANCHO_MAXIMO));
+  }, []);
 
   const toggleSubmodulo = (moduloId: string) => {
     setSubmodulosAbiertos((prev) => ({
@@ -376,8 +408,9 @@ export function SidebarInstitucional() {
     openPanel,
   });
 
-  // Si está completamente oculto, renderizar el botón chevron flotante en la esquina inferior izquierda
-  if (modoVisible === "oculto") {
+  // Botón flotante cuando el menú está oculto (o cerrado el cajón móvil).
+  const mostrarFlotante = esMovil ? !menuMovilAbierto : modo === "oculto";
+  if (mostrarFlotante) {
     return (
       <TooltipProvider>
         <div className="fixed bottom-4 left-4 z-50">
@@ -386,15 +419,18 @@ export function SidebarInstitucional() {
               <Button
                 variant="default"
                 size="icon"
-                onClick={() => esMovil ? openPanel("sesion", {}) : setModo("expandido")}
+                onClick={() => {
+                  setModo("expandido");
+                  if (esMovil) setMenuMovilAbierto(true);
+                }}
                 className="h-10 w-10 rounded-full shadow-lg border border-[var(--border)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-transform hover:scale-105"
-                aria-label={esMovil ? "Abrir cuenta y administración" : "Abrir menú institucional"}
+                aria-label="Abrir menú institucional"
               >
                 <ChevronRight className="h-5 w-5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right">
-              <p className="text-xs font-medium">Cuenta y menú institucional</p>
+              <p className="text-xs font-medium">Menú institucional</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -402,15 +438,26 @@ export function SidebarInstitucional() {
     );
   }
 
-  // Ancho efectivo según el modo
+  // Ancho efectivo según el modo; el cajón móvil usa su ancho propio.
   const anchoEfectivo = modo === "iconos" ? 56 : ancho;
+  const cajonMovil = esMovil && menuMovilAbierto;
+  const anchoFinal = cajonMovil ? 280 : anchoEfectivo;
 
   return (
-    <TooltipProvider>
+    <>
+      {cajonMovil && (
+        <div
+          className="fixed inset-0 z-40 bg-[var(--overlay)]"
+          aria-hidden="true"
+          onClick={() => setMenuMovilAbierto(false)}
+        />
+      )}
+      <TooltipProvider>
       <aside
         ref={sidebarRef}
-        style={{ width: `${anchoEfectivo}px` }}
-        className="relative z-30 flex h-screen flex-col border-r border-[var(--border)] bg-[var(--background)] transition-[width] duration-150 ease-out select-none shrink-0"
+        style={{ width: `${anchoFinal}px` }}
+        aria-label={cajonMovil ? "Navegación institucional" : undefined}
+        className={`${cajonMovil ? "fixed inset-y-0 left-0 z-50 shadow-xl ml-2 rounded-xl border" : "relative z-30"} flex h-screen flex-col border-r border-[var(--border)] bg-[var(--background)] transition-[width] duration-150 ease-out select-none shrink-0`}
       >
         {/* Cabecera del Sidebar */}
         <div className="flex h-14 items-center justify-between border-b border-[var(--border)] px-3">
@@ -428,7 +475,24 @@ export function SidebarInstitucional() {
 
           {/* Botones de control de modo */}
           <div className="flex items-center gap-1">
-            {modo === "expandido" ? (
+            {cajonMovil ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMenuMovilAbierto(false)}
+                    aria-label="Cerrar menú institucional"
+                    className="h-7 w-7 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  >
+                    <ChevronsLeft className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p className="text-xs">Cerrar menú</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : modo === "expandido" ? (
               <>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -447,22 +511,24 @@ export function SidebarInstitucional() {
                   </TooltipContent>
                 </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setModo("oculto")}
-                      aria-label="Ocultar menú institucional"
-                      className="h-7 w-7 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                    >
-                      <EyeOff className="h-3.5 w-3.5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p className="text-xs">Ocultar completamente</p>
-                  </TooltipContent>
-                </Tooltip>
+                {!esMovil && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setModo("oculto")}
+                        aria-label="Ocultar menú institucional"
+                        className="h-7 w-7 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      >
+                        <EyeOff className="h-3.5 w-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p className="text-xs">Ocultar completamente</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </>
             ) : (
               <Tooltip>
@@ -492,7 +558,9 @@ export function SidebarInstitucional() {
             const isOpen = submodulosAbiertos[modulo.id] || false;
             const ModuloIcon = modulo.icon;
 
-            // Modo Solo Iconos
+            // Modo Solo Iconos — los módulos con submódulos restauran el
+            // acordeón expandido con ese módulo abierto: cero opciones
+            // visibles no operables en tooltips.
             if (modo === "iconos") {
               return (
                 <Tooltip key={modulo.id}>
@@ -500,22 +568,22 @@ export function SidebarInstitucional() {
                     <Button
                       variant="unstyled"
                       type="button"
-                      aria-label={modulo.label}
-                      onClick={modulo.onClick || (() => toggleSubmodulo(modulo.id))}
+                      aria-label={hasSub ? `${modulo.label} — expandir y ver submódulos` : modulo.label}
+                      onClick={
+                        hasSub
+                          ? () => {
+                              setSubmodulosAbiertos((prev) => ({ ...prev, [modulo.id]: true }));
+                              setModo("expandido");
+                            }
+                          : modulo.onClick
+                      }
                       className="flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors mx-auto"
                     >
                       <ModuloIcon className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right" className="space-y-1">
+                  <TooltipContent side="right">
                     <p className="text-xs font-semibold">{modulo.label}</p>
-                    {hasSub && (
-                      <div className="text-[10px] text-[var(--text-tertiary)] pt-1 border-t border-[var(--border)]">
-                        {modulo.submodulos?.map((s) => (
-                          <div key={s.id} className="py-0.5">• {s.label}</div>
-                        ))}
-                      </div>
-                    )}
                   </TooltipContent>
                 </Tooltip>
               );
@@ -528,6 +596,8 @@ export function SidebarInstitucional() {
                   variant="unstyled"
                   type="button"
                   onClick={hasSub ? () => toggleSubmodulo(modulo.id) : modulo.onClick}
+                  aria-expanded={hasSub ? isOpen : undefined}
+                  aria-controls={hasSub ? `submodulos-${modulo.id}` : undefined}
                   className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors text-left"
                 >
                   <div className="flex items-center gap-2.5 truncate">
@@ -542,7 +612,7 @@ export function SidebarInstitucional() {
                 </Button>
 
                 {hasSub && isOpen && (
-                  <div className="ml-5 pl-2.5 border-l border-[var(--border)] space-y-0.5 pt-0.5">
+                  <div id={`submodulos-${modulo.id}`} className="ml-5 pl-2.5 border-l border-[var(--border)] space-y-0.5 pt-0.5">
                     {modulo.submodulos?.map((sub) => {
                       const SubIcon = sub.icon;
                       return (
@@ -618,15 +688,38 @@ export function SidebarInstitucional() {
           )}
         </div>
 
-        {/* Borde Resizable (Drag to Resize) */}
-        {modo === "expandido" && (
+        {/* Borde Resizable (Drag o teclado) */}
+        {modo === "expandido" && !cajonMovil && (
           <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Cambiar ancho del menú institucional"
+            aria-valuemin={ANCHO_MINIMO}
+            aria-valuemax={ANCHO_MAXIMO}
+            aria-valuenow={ancho}
+            tabIndex={0}
             onMouseDown={handleMouseDown}
-            className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize hover:bg-[var(--ember)] transition-colors z-40"
-            title="Arrastra para cambiar el ancho del menú"
+            onKeyDown={(e) => {
+              if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                ajustarAnchoConTeclado(-PASO_TECLADO);
+              } else if (e.key === "ArrowRight") {
+                e.preventDefault();
+                ajustarAnchoConTeclado(PASO_TECLADO);
+              } else if (e.key === "Home") {
+                e.preventDefault();
+                setAncho(ANCHO_MINIMO);
+              } else if (e.key === "End") {
+                e.preventDefault();
+                setAncho(ANCHO_MAXIMO);
+              }
+            }}
+            className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize hover:bg-[var(--ember)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ember)] transition-colors z-40"
+            title="Arrastra o usa flechas para cambiar el ancho del menú"
           />
         )}
       </aside>
-    </TooltipProvider>
+      </TooltipProvider>
+    </>
   );
 }

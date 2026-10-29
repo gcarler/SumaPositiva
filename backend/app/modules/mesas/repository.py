@@ -99,9 +99,7 @@ class MesaRepository:
         await self.session.refresh(participante)
         return participante
 
-    async def obtener_participante(
-        self, mesa_id: uuid.UUID, sujeto_id: str
-    ) -> ParticipanteMesa | None:
+    async def obtener_participante(self, mesa_id: uuid.UUID, sujeto_id: str) -> ParticipanteMesa | None:
         stmt = select(ParticipanteMesa).where(
             ParticipanteMesa.mesa_id == mesa_id,
             ParticipanteMesa.sujeto_id == sujeto_id,
@@ -191,4 +189,3 @@ class MesaRepository:
         await self.session.flush()
         await self.session.refresh(agenda)
         return agenda
-

@@ -1,0 +1,136 @@
+{
+  "esquema": "polis.evidencia_opencode_catalogo_identidad.v1",
+  "tarea": "OP-ID-QA-01",
+  "fecha_utc": "2026-10-26T00:00:00Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "auditoria_local_completada_sin_discrepancias",
+  "alcance": "Solo lectura de archivos indexados en 128; sin red/SQL/pruebas/aplicacion/datos. 72 congelado.",
+  "archivos_leidos": [
+    "bridge/135_tarea_opencode_auditoria_catalogo_identidad.md",
+    "bridge/128_entrega_freebuff_identidad_territorial.md",
+    "bridge/128_catalogo_identidad_territorial/manifiesto_entrega_128.json",
+    "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+    "bridge/128_catalogo_identidad_territorial/atributos_crudos_verificacion.json",
+    "bridge/130_cotejo_catalogo_identidad.json"
+  ],
+  "integridad_hash": {
+    "archivos_indexados": 20,
+    "coincidentes": 20,
+    "discrepancias": 0,
+    "catalogo_sha256_coincide_manifiesto": true,
+    "cotejo_catalogo_sha256_coincide": true
+  },
+  "conteos": {
+    "departamentos": 33,
+    "municipios": 1122,
+    "codigos_unicos_municipios": true,
+    "codigos_unicos_departamentos": true,
+    "concat_unico_5dig": true,
+    "concat_igual_dpto_mpio": 1122,
+    "padre_departamento_existe": 1122
+  },
+  "fidelidad_campo_a_campo": {
+    "municipios_cotejados": 1122,
+    "departamentos_cotejados": 33,
+    "discrepancias": 0,
+    "campos": [
+      "concat/MPIO_CDPMP",
+      "dpto/DPTO_CCDGO",
+      "mpio/MPIO_CCDGO",
+      "nombre/MPIO_CNMBRE|DPTO_CNMBRE",
+      "tipo/MPIO_TIPO",
+      "anio_version/MPIO_NANO|DPTO_NANO",
+      "dpto_nombre/DPTO_CNMBRE"
+    ]
+  },
+  "homonimos": {
+    "regla_metrica_1": {
+      "descripcion": "nombre original exacto MPIO_CNMBRE, sin normalizacion. nombre homonimo = >=2 codigos distintos MPIO_CDPMP. Contar codigos distintos.",
+      "nombres_homonimos": 66,
+      "registros_implicados": 151,
+      "codigos_distintos_involucrados": 151,
+      "ejemplos_top": [
+        {
+          "nombre": "BUENAVISTA",
+          "codigos": [
+            "15109",
+            "23079",
+            "63111",
+            "70110"
+          ]
+        },
+        {
+          "nombre": "LA UNIÓN",
+          "codigos": [
+            "05400",
+            "52399",
+            "70400",
+            "76400"
+          ]
+        },
+        {
+          "nombre": "VILLANUEVA",
+          "codigos": [
+            "13873",
+            "44874",
+            "68872",
+            "85440"
+          ]
+        }
+      ]
+    },
+    "regla_metrica_2_separada": {
+      "descripcion": "upper + sin acentos (NO usado para resolver identidades)",
+      "nombres_homonimos": 67,
+      "codigos_distintos_involucrados": 153,
+      "nota": "Diferencia por colisiones de normalizacion"
+    },
+    "informe128_cita": "67 nombres homónimos (texto) - conteo por regla estricta: 66"
+  },
+  "tipos_vintage_cotejos": {
+    "tipos_municipales": {
+      "MUNICIPIO": 1103,
+      "ISLA": 1,
+      "ÁREA NO MUNICIPALIZADA": 18
+    },
+    "vintage_municipios": {
+      "2025": 168,
+      "2024": 954
+    },
+    "vintage_departamentos": {
+      "2025": 21,
+      "2024": 12
+    },
+    "vintage_declarado_servicio": "MGN 2025",
+    "cotejos_por_codigo": {
+      "13001": {
+        "coincide": true,
+        "nota": "Cartagena de Indias, MUNICIPIO en capa 317"
+      },
+      "13673": {
+        "coincide": true,
+        "nota": "Santa Catalina (Bolívar), MUNICIPIO"
+      },
+      "23660": {
+        "coincide": true,
+        "nota": "Sahagún (Córdoba), grafía con acento solo existe"
+      },
+      "11001": {
+        "coincide": true,
+        "nota": "Bogotá D.C., MUNICIPIO en capa 317; departamento 11 separado. Sin distinción 'distrito' en MPIO_TIPO"
+      }
+    }
+  },
+  "limites": [
+    "Centros Poblados capa 305 no consultada",
+    "Capa 317 no expone estatus 'distrito' en MPIO_TIPO",
+    "Dataset mixto 2024/2025; adquisición 2026 vs vintage MGN 2025",
+    "Sin SQL/red/pruebas/aplicacion modificados",
+    "No dictamen EAF, no acreditación vigencia 2026 completa"
+  ],
+  "guion_reproducible": "bridge/128_catalogo_identidad_territorial/guion_captura_128.py (verificado)",
+  "salidas": [
+    "bridge/136_revision_opencode_catalogo_identidad.md",
+    "bridge/136_evidencia_opencode_catalogo_identidad.json"
+  ]
+}

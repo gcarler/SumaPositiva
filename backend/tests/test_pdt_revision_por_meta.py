@@ -70,9 +70,7 @@ def _datos_sinteticos_revision() -> dict[str, Any]:
             "time_series_forecast": {
                 "series": [
                     {
-                        "indicador": (
-                            "Entidad Ejecutora: Departamento Administrativo Distrital de Salud"
-                        ),
+                        "indicador": ("Entidad Ejecutora: Departamento Administrativo Distrital de Salud"),
                         "ISRI": 0.65,
                         "chow": {"ruptura_estructural_significativa": True},
                     }
@@ -207,15 +205,9 @@ def test_preservacion_ceros_observados_vs_nulos_brecha_informacion() -> None:
     assert ej_fis_cero["estado"] == ESTADO_CERO_OBSERVADO
     assert ej_fin_cero["apropiacion_definitiva_cop"] == 0.0
     assert ej_fin_cero["estado"] == ESTADO_CERO_OBSERVADO
-    assert (
-        meta_cero["dictamen_7_revisores"]["conciliador_ejecucion"]["ceros_observados_preservados"]
-        is True
-    )
+    assert meta_cero["dictamen_7_revisores"]["conciliador_ejecucion"]["ceros_observados_preservados"] is True
     # Sentido descendente detectado para mortalidad
-    assert (
-        meta_cero["evaluacion_10_dimensiones"]["formulacion"]["sentido_indicador"]
-        == "DESCENDENTE_REDUCCION"
-    )
+    assert meta_cero["evaluacion_10_dimensiones"]["formulacion"]["sentido_indicador"] == "DESCENDENTE_REDUCCION"
 
     # Meta con datos faltantes (None): debe quedar en BRECHA_DE_INFORMACION sin inventar score
     meta_nulo = por_codigo["M-NULO-02"]
@@ -265,10 +257,7 @@ def test_no_atribucion_espurea_sin_entidad_y_separacion_dominios() -> None:
     # Regla H1: M-NULO-02 no tiene entidad (SIN_ATRIBUCION) -> no hereda el ISRI de DADIS
     meta_nulo = por_codigo["M-NULO-02"]
     assert meta_nulo["dependencia_responsable"] == "SIN_ATRIBUCION"
-    assert (
-        meta_nulo["evaluacion_10_dimensiones"]["resultados_y_equidad"]["riesgo_isri_atribuido"]
-        is None
-    )
+    assert meta_nulo["evaluacion_10_dimensiones"]["resultados_y_equidad"]["riesgo_isri_atribuido"] is None
 
     # Separación de dominios sin score global opaco
     assert "score_global" not in meta_nulo
@@ -281,7 +270,7 @@ def test_no_atribucion_espurea_sin_entidad_y_separacion_dominios() -> None:
     }
 
 
-def test_integracion_bd_csh_pdd_2024_2027_universo_y_trazabilidad() -> None:
+def test_integracion_bd_csh_pdd_2024_2027_universo_y_trazabilidad(corpus_analitica) -> None:
     resultado = construir_matriz_revision_por_meta_pdt(
         codigo_plan="PDD_2024_2027",
         limit=15,
@@ -299,7 +288,7 @@ def test_integracion_bd_csh_pdd_2024_2027_universo_y_trazabilidad() -> None:
     assert tuple(primera["dictamen_7_revisores"].keys()) == SIETE_ROLES_REVISORES
 
 
-def test_integracion_bd_csh_filtro_por_dependencia() -> None:
+def test_integracion_bd_csh_filtro_por_dependencia(corpus_analitica) -> None:
     resultado = construir_matriz_revision_por_meta_pdt(
         codigo_plan="PDD_2024_2027",
         dependencia="Secretaría de Hacienda",
@@ -392,7 +381,7 @@ def test_revision_por_meta_integra_consistencia_trimestral_y_meta_regresiva() ->
     assert "REGLA_INCONSISTENCIA_ARITMETICA_TRIMESTRAL_T1_T4" in reglas
 
 
-def test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh() -> None:
+def test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh(corpus_analitica) -> None:
     from app.modules.compromisos.pdt_conciliador_vinculos_pa_triada import (
         TIPOS_VINCULO_CANONICOS,
         conciliar_y_poblar_vinculos_meta_pa_triada,
@@ -404,16 +393,13 @@ def test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh() -> None:
     assert res["total_filas_en_bd"] >= 1647
     dist_plan = res["distribucion_por_plan"]
     assert dist_plan["PDD_2024_2027"] == 1246
-    assert (
-        dist_plan["PDL_1_2024_2027"] + dist_plan["PDL_2_2024_2027"] + dist_plan["PDL_3_2024_2027"]
-        == 401
-    )
+    assert dist_plan["PDL_1_2024_2027"] + dist_plan["PDL_2_2024_2027"] + dist_plan["PDL_3_2024_2027"] == 401
     dist_tipo = res["distribucion_por_tipo_vinculo"]
     assert set(dist_tipo.keys()).issubset(set(TIPOS_VINCULO_CANONICOS.keys()))
     assert res["ceros_observados_preservados_count"] > 0
 
 
-def test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza() -> None:
+def test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza(corpus_analitica) -> None:
     from app.modules.compromisos.pdt_conciliador_vinculos_pa_triada import (
         TIPOS_VINCULO_CANONICOS,
     )
@@ -446,7 +432,7 @@ def test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza() -> None:
         assert isinstance(rev_art["es_vinculo_inferido"], bool)
 
 
-def test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1() -> None:
+def test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1(corpus_analitica) -> None:
     resultado = construir_matriz_revision_por_meta_pdt(
         codigo_plan="PDL_1_2024_2027",
         limit=20,
@@ -585,6 +571,4 @@ def test_codigo_plan_todos_revisa_universo_multiplan() -> None:
     )
     assert result["total_metas_plan"] == 4637
     assert result["metas_devueltas"] == 8
-    assert {row["codigo_plan"] for row in result["metas_auditadas"]} == set(
-        meta["codigo_plan"] for meta in metas
-    )
+    assert {row["codigo_plan"] for row in result["metas_auditadas"]} == set(meta["codigo_plan"] for meta in metas)

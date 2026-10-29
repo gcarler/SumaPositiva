@@ -6,9 +6,11 @@ import time
 from collections import defaultdict, deque
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 
 from app.core.config import Settings
+from app.modules.identidad.deps import requerir_permiso
+from app.modules.seguridad.schemas import CspMetricasRespuesta, CspReportResumen
 
 logger = logging.getLogger("polis.seguridad")
 
@@ -70,17 +72,8 @@ def extraer_datos_csp(payload: Any) -> tuple[str, str, str, str]:
             or item.get("violatedDirective")
             or "unknown"
         )
-        blocked_uri = (
-            item.get("blocked-uri")
-            or item.get("blockedURL")
-            or "unknown"
-        )
-        raw_pagina = (
-            item.get("document-uri")
-            or item.get("documentURL")
-            or item.get("url")
-            or "unknown"
-        )
+        blocked_uri = item.get("blocked-uri") or item.get("blockedURL") or "unknown"
+        raw_pagina = item.get("document-uri") or item.get("documentURL") or item.get("url") or "unknown"
         disposicion = item.get("disposition", "report")
         if raw_pagina and raw_pagina != "unknown":
             # Sanitizar página: eliminar query strings (?...) y fragmentos (#...) para evitar captura de PII
@@ -98,7 +91,7 @@ async def recolectar_violacion_csp(
     request: Request,
 ) -> Response:
     """Endpoint público para recepción anónima de reportes de violación CSP.
-    
+
     Aplica:
     - Validación estricta de tamaño máximo (32 KB).
     - Control de tasa por IP (60 reportes/minuto).
@@ -119,9 +112,7 @@ async def recolectar_violacion_csp(
     # Identificación segura de IP para rate-limiting
     forwarded = request.headers.get("x-forwarded-for")
     ip_cliente = (
-        forwarded.split(",")[0].strip()
-        if forwarded
-        else (request.client.host if request.client else "127.0.0.1")
+        forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "127.0.0.1")
     )
 
     limite = getattr(settings, "csp_report_limite_ip", 60)
@@ -160,3 +151,66 @@ async def recolectar_violacion_csp(
         )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get(
+    "/csp-report/recientes",
+    response_model=list[CspReportResumen],
+    summary="Consultar violaciones recientes de CSP (Supervisión perimetral)",
+    dependencies=[Depends(requerir_permiso("auditoria:leer", "declarada"))],
+)
+async def consultar_violaciones_csp_recientes() -> list[dict[str, str]]:
+    """Consulta la lista cronológica de violaciones CSP recientes anonimizadas."""
+    return [
+        {
+            "directiva_violada": r["directiva"],
+            "uri_bloqueada": r["blocked_uri"],
+            "pagina": r["pagina"],
+            "disposicion": r["disposicion"],
+        }
+        for r in obtener_reportes_csp_recientes()
+    ]
+
+
+@router.get(
+    "/csp-report/resumen",
+    response_model=CspMetricasRespuesta,
+    summary="Resumen estadístico de violaciones CSP",
+    dependencies=[Depends(requerir_permiso("auditoria:leer", "declarada"))],
+)
+async def obtener_resumen_metricas_csp() -> dict[str, Any]:
+    """Entrega un resumen estadístico agregado de incidentes CSP para monitoreo y alertas."""
+    reportes = obtener_reportes_csp_recientes()
+    directivas_conteo: dict[str, int] = defaultdict(int)
+    dominios_conteo: dict[str, int] = defaultdict(int)
+
+    for r in reportes:
+        directivas_conteo[r.get("directiva", "unknown")] += 1
+        blocked = r.get("blocked_uri", "unknown")
+        if "://" in blocked:
+            dominio = blocked.split("://")[1].split("/")[0]
+        else:
+            dominio = blocked.split("/")[0]
+        dominios_conteo[dominio] += 1
+
+    dominios_top = [
+        {"dominio": dom, "total": cant}
+        for dom, cant in sorted(dominios_conteo.items(), key=lambda x: x[1], reverse=True)[:10]
+    ]
+
+    ultimos = [
+        {
+            "directiva_violada": r["directiva"],
+            "uri_bloqueada": r["blocked_uri"],
+            "pagina": r["pagina"],
+            "disposicion": r["disposicion"],
+        }
+        for r in reportes[-10:]
+    ]
+
+    return {
+        "total_reportes": len(reportes),
+        "directivas_afectadas": dict(directivas_conteo),
+        "dominios_bloqueados_frecuentes": dominios_top,
+        "ultimos_reportes": ultimos,
+    }

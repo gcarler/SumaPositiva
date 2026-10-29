@@ -52,7 +52,8 @@ describe("GestorHerosPlataforma Component", () => {
   test("renderiza la biblioteca completa de fotografías territoriales para asignación", () => {
     const html = renderToString(<GestorHerosPlataforma />);
 
-    expect(html).toContain("Biblioteca de Fotografías Territoriales Oficiales");
+    expect(html).toContain("Biblioteca de imágenes hero");
+    expect(html).toContain('aria-label="Biblioteca de imágenes hero"');
     expect(html).toContain("Cabildo Abierto y Foro Ciudadano");
     expect(html).toContain("Diálogo Social y Rendición de Cuentas");
     expect(html).toContain("Taller Diferencial de Género y Juventud");
@@ -64,7 +65,7 @@ describe("GestorHerosPlataforma Component", () => {
   test("renderiza la sección de asignación de URL personalizada y calibración de opacidad", () => {
     const html = renderToString(<GestorHerosPlataforma />);
 
-    expect(html).toContain("Asignar Imagen Personalizada vía URL o Ruta Local");
+    expect(html).toContain("Nueva imagen hero");
     expect(html).toContain("Calibración Global de Intensidad Ambiental");
     expect(html).toContain("Certificado WCAG 2.1 AA");
     expect(html).toContain("80% (Recomendado)");
@@ -93,5 +94,36 @@ describe("GestorHerosPlataforma Component", () => {
     const html = renderToString(<GestorHerosPlataforma editar={false} />);
 
     expect(html).toContain("disabled");
+  });
+});
+
+
+describe("Gestor de catálogo editable (243)", () => {
+  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
+  test("muestra disponibilidad y acciones con nombres accesibles por imagen", () => {
+    const html = renderToString(<GestorHerosPlataforma />);
+    expect(html).toContain("Habilitada");
+    expect(html).toContain('role="switch"');
+    expect(html).toContain('aria-label="Habilitar Cabildo Abierto y Foro Ciudadano"');
+    expect(html).toContain('aria-label="Eliminar Cabildo Abierto y Foro Ciudadano"');
+    expect(html).toContain("Restaurar catálogo oficial");
+    expect(html).toContain("Nueva imagen hero");
+  });
+  test("conserva en biblioteca las deshabilitadas pero desactiva su botón Asignar", () => {
+    useHeroConfigStore.getState().toggleHabilitarImagen("dialogo-comunitario");
+    const html = renderToString(<GestorHerosPlataforma />);
+    const boton = html.match(/<button\b[^>]*>/g)?.find((tag) => tag.includes('aria-label="Asignar Diálogo Social y Rendición de Cuentas"'));
+    expect(boton).toContain('disabled=""');
+    expect(html).toContain("Deshabilitada");
+    expect(html).toContain('data-testid="imagen-hero-dialogo-comunitario"');
+  });
+  test("muestra una biblioteca vacía recuperable y las fotografías agregadas con miniatura", () => {
+    for (const imagen of [...useHeroConfigStore.getState().imagenesCatalogo]) useHeroConfigStore.getState().eliminarImagen(imagen.id);
+    expect(renderToString(<GestorHerosPlataforma />)).toContain("No hay imágenes en la biblioteca");
+    const imagen = useHeroConfigStore.getState().agregarImagen({ titulo: "Nueva fotografía",
+      descripcion: "Registro de participación.", enfoque: "Cabildo", archivo: "/images/nueva-243.webp", thumbnail: "/images/miniatura-243.png" });
+    const html = renderToString(<GestorHerosPlataforma />);
+    expect(html).toContain(imagen.titulo);
+    expect(html).toContain(imagen.thumbnail);
   });
 });

@@ -125,8 +125,7 @@ def test_creacion_publica_persistida_unica_y_estable(contexto, database_url):
     assert r.json()["configuracion"]["slug"] == slug
     persistido = consultar(
         database_url,
-        "SELECT slug, documento_constructor "
-        "FROM participacion_ciudadana.formularios_consulta WHERE id=:id",
+        "SELECT slug, documento_constructor FROM participacion_ciudadana.formularios_consulta WHERE id=:id",
         {"id": uuid.UUID(form["id"])},
     )
     assert persistido[0]["documento_constructor"]["titulo"] == "Título cambiado"
@@ -145,31 +144,18 @@ def test_borrador_no_expuesto_publicacion_y_cierre(contexto):
     assert client.get(f"/api/v1/formularios/{id}").status_code == 403
     assert all(f["id"] != id for f in client.get("/api/v1/formularios/publicos").json())
     assert all(f["id"] != id for f in client.get("/api/v1/formularios").json())
+    assert client.get(f"/api/v1/formularios/constructor/slug/{slug}", headers=headers).status_code == 200
     assert (
-        client.get(f"/api/v1/formularios/constructor/slug/{slug}", headers=headers).status_code
-        == 200
-    )
-    assert (
-        client.post(
-            f"/api/v1/formularios/{id}/respuestas", json=respuesta(), headers=anonimo(client)
-        ).status_code
+        client.post(f"/api/v1/formularios/{id}/respuestas", json=respuesta(), headers=anonimo(client)).status_code
         == 400
     )
     form["estado"] = "activo"
-    assert (
-        client.put(f"/api/v1/formularios/constructor/{id}", json=form, headers=headers).status_code
-        == 200
-    )
+    assert client.put(f"/api/v1/formularios/constructor/{id}", json=form, headers=headers).status_code == 200
     assert client.get(publico).status_code == 200
     form["estado"] = "cerrado"
+    assert client.put(f"/api/v1/formularios/constructor/{id}", json=form, headers=headers).status_code == 200
     assert (
-        client.put(f"/api/v1/formularios/constructor/{id}", json=form, headers=headers).status_code
-        == 200
-    )
-    assert (
-        client.post(
-            f"/api/v1/formularios/{id}/respuestas", json=respuesta(), headers=anonimo(client)
-        ).status_code
+        client.post(f"/api/v1/formularios/{id}/respuestas", json=respuesta(), headers=anonimo(client)).status_code
         == 400
     )
 
@@ -220,9 +206,7 @@ def test_cupo_atomico_con_respuestas_concurrentes(contexto):
 
 def test_rollback_constructor_despues_escritura(contexto, database_url, monkeypatch):
     client, headers = contexto
-    antes = consultar(
-        database_url, "SELECT count(*) total FROM participacion_ciudadana.formularios_consulta"
-    )
+    antes = consultar(database_url, "SELECT count(*) total FROM participacion_ciudadana.formularios_consulta")
     original = FormularioRepository.guardar
 
     async def fallar(self, form):
@@ -232,12 +216,7 @@ def test_rollback_constructor_despues_escritura(contexto, database_url, monkeypa
     monkeypatch.setattr(FormularioRepository, "guardar", fallar)
     with pytest.raises(RuntimeError, match="Fallo posterior"):
         client.post("/api/v1/formularios/constructor", json=documento(), headers=headers)
-    assert (
-        consultar(
-            database_url, "SELECT count(*) total FROM participacion_ciudadana.formularios_consulta"
-        )
-        == antes
-    )
+    assert consultar(database_url, "SELECT count(*) total FROM participacion_ciudadana.formularios_consulta") == antes
 
 
 def test_ocultas_y_saltos_excluyen_datos_y_obligatorias():
@@ -379,8 +358,7 @@ def test_respuesta_rollback_tras_flush(contexto, database_url, monkeypatch):
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS total FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS total FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": uuid.UUID(form["id"])},
         )[0]["total"]
         == 0
@@ -391,9 +369,4 @@ def test_sesion_sin_permiso_no_gestiona_formularios(contexto):
     client, _ = contexto
     headers = anonimo(client)
     assert client.get("/api/v1/formularios/constructor", headers=headers).status_code == 403
-    assert (
-        client.post(
-            "/api/v1/formularios/constructor", json=documento(), headers=headers
-        ).status_code
-        == 403
-    )
+    assert client.post("/api/v1/formularios/constructor", json=documento(), headers=headers).status_code == 403

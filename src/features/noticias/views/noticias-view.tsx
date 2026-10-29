@@ -264,24 +264,58 @@ export function NoticiasView() {
       {/* ================= GRID DE NOTICIAS ================= */}
       <section>
         {noticiasFiltradas.length === 0 ? (
+          /* TCA-09/TCA-10: se distingue la ausencia real de publicaciones
+             (sin filtros) del vacío por filtro o búsqueda, y se nombra la
+             categoría activa para que cada clic muestre una respuesta clara. */
           <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-12 text-center space-y-3">
             <Newspaper className="size-10 text-[var(--text-tertiary)]" />
-            <h3 className="text-base font-semibold text-[var(--text-primary)]">
-              No se encontraron noticias
-            </h3>
-            <p className="text-xs text-[var(--text-secondary)] max-w-sm">
-              No hay publicaciones que coincidan con los criterios seleccionados. Prueba limpiando los filtros o el buscador.
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setFiltro("todas");
-                setBusqueda("");
-              }}
-            >
-              Restablecer filtros
-            </Button>
+            {noticiasBase.length === 0 ? (
+              <>
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">
+                  Aún no hay noticias publicadas
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] max-w-sm">
+                  Las novedades, avances y convocatorias de la política pública
+                  aparecerán aquí cuando el equipo distrital las publique.
+                </p>
+                {esEditor && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openPanel("noticia-editor", {})}
+                  >
+                    <Plus className="size-3.5" />
+                    Crear la primera noticia
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">
+                  {filtroCategoria === "todas"
+                    ? "No hay publicaciones para esta búsqueda"
+                    : `No hay publicaciones en la categoría «${
+                        CATEGORIAS.find((c) => c.id === filtroCategoria)?.label ??
+                        "seleccionada"
+                      }»`}
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] max-w-sm">
+                  {busqueda.trim()
+                    ? "Ninguna publicación coincide con el texto buscado en esta categoría."
+                    : "Aún no hay publicaciones registradas en esta categoría."}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setFiltro("todas");
+                    setBusqueda("");
+                  }}
+                >
+                  Ver todas las categorías
+                </Button>
+              </>
+            )}
           </div>
         ) : (
           <motion.div

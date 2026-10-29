@@ -1,7 +1,6 @@
 """Pruebas periciales de seguridad perimetral, cabeceras y control de fugas (CIERRE-04)."""
 
-import pytest
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from fastapi.testclient import TestClient
 
 from app.core.config import Settings

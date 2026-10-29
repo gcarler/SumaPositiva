@@ -6,9 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class EvidenciaRespuesta(BaseModel):
     id: uuid.UUID = Field(description="Identificador único del archivo UUIDv7")
-    propuesta_id: uuid.UUID | None = Field(
-        default=None, description="Propuesta vinculada si aplica"
-    )
+    propuesta_id: uuid.UUID | None = Field(default=None, description="Propuesta vinculada si aplica")
     autor_sujeto_id: uuid.UUID | None = Field(default=None, description="Autor de la evidencia")
     nombre_archivo_original: str = Field(description="Nombre original subido por el usuario")
     nombre_archivo_seguro: str = Field(description="Nombre normalizado del archivo en disco")

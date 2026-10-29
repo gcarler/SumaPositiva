@@ -864,7 +864,7 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                 cargando || isPending ? "opacity-60 pointer-events-none" : "opacity-100"
               }`}
             >
-              <table className="w-full text-left text-xs text-text-secondary">
+              <table className="w-full text-left text-xs text-text-primary">
                 <thead className="border-b border-border bg-surface-2 text-[11px] uppercase tracking-wider text-text-primary font-bold">
                   <tr>
                     <th scope="col" className="px-4 py-3">Código / BPIM</th>
@@ -892,10 +892,10 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                             <span className="font-mono font-bold text-text-primary block">
                               {act.codigo}
                             </span>
-                            <span className="font-mono text-[10px] text-text-muted block">
+                            <span className="font-mono text-[10px] text-text-primary font-medium block">
                               BPIM: {act.codigo_bpim}
                             </span>
-                            <Badge variant="outline" className="text-[9px]">
+                            <Badge variant="outline" className="text-[9px] text-text-primary border-border">
                               {act.linea_estrategica_codigo}
                             </Badge>
                           </div>
@@ -906,19 +906,19 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                           <div className="space-y-1.5">
                             <div className="flex items-center gap-1.5">
                               <Badge
-                                variant="default"
-                                className="bg-ember text-text-inverse text-[10px] font-mono capitalize"
+                                variant="outline"
+                                className="bg-surface-2 text-text-primary border-border text-[10px] font-mono capitalize font-bold"
                               >
                                 {act.verbo_infinitivo}
                               </Badge>
-                              <span className="text-[10px] text-text-muted">
+                              <span className="text-[10px] text-text-primary font-medium">
                                 {act.entidad_responsable}
                               </span>
                             </div>
                             <p className="text-xs text-text-primary font-medium leading-relaxed">
                               {act.descripcion_actividad}
                             </p>
-                            <span className="text-[11px] text-text-muted line-clamp-1">
+                            <span className="text-[11px] text-text-primary font-medium line-clamp-1">
                               Proyecto: {act.proyecto_nombre}
                             </span>
                           </div>
@@ -926,27 +926,27 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
 
                         {/* Tipo Actividad */}
                         <td className="px-4 py-3.5 align-top">
-                          <Badge variant="outline" className="text-[10px]">
+                          <Badge variant="outline" className="text-[10px] text-text-primary border-border">
                             {act.tipo_actividad}
                           </Badge>
-                          <span className="text-[10px] text-text-muted block mt-1">
+                          <span className="text-[10px] text-text-primary font-medium block mt-1">
                             {act.tipo_meta}
                           </span>
                         </td>
 
                         {/* Hoja 2 Plan Indicativo */}
                         <td className="px-4 py-3.5 align-top">
-                          <span className="font-mono font-semibold text-info text-xs block">
+                          <span className="font-mono font-semibold text-text-primary text-xs block">
                             {act.compromiso_pas_codigo}
                           </span>
-                          <span className="text-[11px] text-text-muted line-clamp-2">
+                          <span className="text-[11px] text-text-primary font-medium line-clamp-2">
                             {act.programa_nombre}
                           </span>
                         </td>
 
                         {/* Cronograma */}
                         <td className="px-4 py-3.5 align-top whitespace-nowrap">
-                          <div className="text-[11px] space-y-0.5">
+                          <div className="text-[11px] text-text-primary space-y-0.5">
                             <div>Ini: {formatearFecha(act.fecha_inicio)}</div>
                             <div>Fin: {formatearFecha(act.fecha_terminacion)}</div>
                           </div>
@@ -959,7 +959,7 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                               <span className="font-bold text-text-primary">
                                 {pct}%
                               </span>
-                              <div className="flex gap-1 font-mono text-[9px] text-text-muted">
+                              <div className="flex gap-1 font-mono text-[9px] text-text-primary font-medium">
                                 <span>T1:{act.avance_t1}</span>
                                 <span>T2:{act.avance_t2}</span>
                               </div>
@@ -982,13 +982,13 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                         {/* Fuente y Presupuesto */}
                         <td className="px-4 py-3.5 align-top whitespace-nowrap">
                           <div className="space-y-0.5">
-                            <Badge variant="outline" className="text-[10px] font-mono">
+                            <Badge variant="outline" className="text-[10px] font-mono text-text-primary border-border">
                               {act.fuente_financiacion}
                             </Badge>
                             <div className="text-xs font-semibold text-text-primary">
                               {formatearCOP(act.monto_ejecutado_cop || 0)}
                             </div>
-                            <div className="text-[10px] text-text-muted">
+                            <div className="text-[10px] text-text-primary font-medium">
                               de {formatearCOP(act.monto_programado_cop || 0)}
                             </div>
                           </div>

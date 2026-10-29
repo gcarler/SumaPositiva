@@ -63,83 +63,17 @@ export interface SincronizarGoogleWorkspaceRespuesta {
 }
 
 export const ESTADO_WORKSPACE_INICIAL: EstadoGoogleWorkspaceRespuesta = {
-  conectado: true,
+  conectado: false,
   service_account_email: "polis-pshc@polis-511719.iam.gserviceaccount.com",
   carpeta_pshc_id: "1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6",
   carpeta_pshc_url: "https://drive.google.com/drive/folders/1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6",
   subcarpeta_expediente_id: "1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe",
   subcarpeta_expediente_url: "https://drive.google.com/drive/folders/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe",
-  archivos_nativos_detectados: [
-    {
-      id: "1-polis-sheet-pdd-01-master",
-      name: "[POLIS] 01_MATRIZ_MAESTRA_PLANES_DESARROLLO_2012_2027",
-      mimeType: "application/vnd.google-apps.spreadsheet",
-      webViewLink: "https://docs.google.com/spreadsheets/d/1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6/edit",
-      tipo: "SPREADSHEET",
-      modifiedTime: "2026-10-15T19:00:00Z",
-    },
-    {
-      id: "1-polis-sheet-pa-02-master",
-      name: "[POLIS] 02_MATRIZ_MAESTRA_PLANES_ACCION_DNP_29_ENTIDADES",
-      mimeType: "application/vnd.google-apps.spreadsheet",
-      webViewLink: "https://docs.google.com/spreadsheets/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-      tipo: "SPREADSHEET",
-      modifiedTime: "2026-10-15T19:05:00Z",
-    },
-    {
-      id: "1-polis-doc-informe-03-master",
-      name: "[POLIS] 03_INFORME_FORENSE_Y_PLIEGOS_CONTROL_POLITICO",
-      mimeType: "application/vnd.google-apps.document",
-      webViewLink: "https://docs.google.com/document/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-      tipo: "DOCUMENT",
-      modifiedTime: "2026-10-15T19:10:00Z",
-    },
-  ],
-  hojas_calculo_count: 2,
-  documentos_count: 1,
-  ultimo_resultado_sincronizacion: {
-    exito: true,
-    fecha_iso: "2026-10-15T19:15:00Z",
-    mensaje: "Sincronización nativa verificada: 2 Google Sheets (8 pestañas operativas) y 1 Google Doc (Informe Forense Integral) enlazados a carpeta PSHC.",
-    archivos_actualizados: [
-      {
-        id: "1-polis-sheet-pdd-01-master",
-        nombre: "[POLIS] 01_MATRIZ_MAESTRA_PLANES_DESARROLLO_2012_2027",
-        tipo: "SPREADSHEET",
-        webViewLink: "https://docs.google.com/spreadsheets/d/1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6/edit",
-        pestanas_actualizadas: [
-          "1_Resumen_8_Planes_PPI",
-          "2_Serie_Anual_2012_2027",
-          "3_Frontera_DEA_y_Malmquist",
-          "4_Justicia_Territorial_37_Mesas",
-        ],
-      },
-      {
-        id: "1-polis-sheet-pa-02-master",
-        nombre: "[POLIS] 02_MATRIZ_MAESTRA_PLANES_ACCION_DNP_29_ENTIDADES",
-        tipo: "SPREADSHEET",
-        webViewLink: "https://docs.google.com/spreadsheets/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-        pestanas_actualizadas: [
-          "1_Consolidado_Entidades_PA",
-          "2_Actividades_Motor_DNP",
-          "3_Censo_37_Mesas_15_Corregimientos",
-        ],
-      },
-      {
-        id: "1-polis-doc-informe-03-master",
-        nombre: "[POLIS] 03_INFORME_FORENSE_Y_PLIEGOS_CONTROL_POLITICO",
-        tipo: "DOCUMENT",
-        webViewLink: "https://docs.google.com/document/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-        pestanas_actualizadas: [
-          "1. Síntesis Ejecutiva 8 PDDs y 29 PAs",
-          "2. Dictamen Network DEA e Ilusión Burocrática",
-          "3. Pliegos Oficiales de Control Político Concejo Distrital",
-          "4. Anexo Certificado SHA-256",
-        ],
-      },
-    ],
-  },
-  instrucciones_plantillas: "Para sincronizar hojas adicionales, cree archivos de Google Sheets o Google Docs dentro de la carpeta PSHC compartida con la cuenta de servicio.",
+  archivos_nativos_detectados: [],
+  hojas_calculo_count: 0,
+  documentos_count: 0,
+  ultimo_resultado_sincronizacion: undefined,
+  instrucciones_plantillas: "Para sincronizar hojas adicionales, configure las credenciales de servicio de Google Workspace y verifique la conexión con la carpeta PSHC compartida.",
   esContingencia: true,
 };
 
@@ -169,49 +103,14 @@ export async function sincronizarGoogleWorkspace(): Promise<SincronizarGoogleWor
     }
     throw new Error("Respuesta no válida del backend");
   } catch (error) {
-    console.warn("Fallo al ejecutar sincronización Google Workspace, usando fallback resiliente:", error);
+    const mensajeError = error instanceof Error ? error.message : "Error de comunicación con el servicio de Workspace";
     return {
-      exito: true,
-      mensaje: "Sincronización nativa con Google Sheets y Google Docs ejecutada exitosamente (contingencia resiliente PSHC).",
+      exito: false,
+      mensaje: `Fallo en sincronización con Google Workspace: ${mensajeError}`,
       timestamp: new Date().toISOString(),
-      archivos_sincronizados: [
-        {
-          id: "1-polis-sheet-pdd-01-master",
-          nombre: "[POLIS] 01_MATRIZ_MAESTRA_PLANES_DESARROLLO_2012_2027",
-          tipo: "SPREADSHEET",
-          webViewLink: "https://docs.google.com/spreadsheets/d/1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6/edit",
-          pestanas_o_secciones: [
-            "1_Resumen_8_Planes_PPI",
-            "2_Serie_Anual_2012_2027",
-            "3_Frontera_DEA_y_Malmquist",
-            "4_Justicia_Territorial_37_Mesas",
-          ],
-        },
-        {
-          id: "1-polis-sheet-pa-02-master",
-          nombre: "[POLIS] 02_MATRIZ_MAESTRA_PLANES_ACCION_DNP_29_ENTIDADES",
-          tipo: "SPREADSHEET",
-          webViewLink: "https://docs.google.com/spreadsheets/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-          pestanas_o_secciones: [
-            "1_Consolidado_Entidades_PA",
-            "2_Actividades_Motor_DNP",
-            "3_Censo_37_Mesas_15_Corregimientos",
-          ],
-        },
-        {
-          id: "1-polis-doc-informe-03-master",
-          nombre: "[POLIS] 03_INFORME_FORENSE_Y_PLIEGOS_CONTROL_POLITICO",
-          tipo: "DOCUMENT",
-          webViewLink: "https://docs.google.com/document/d/1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe/edit",
-          pestanas_o_secciones: [
-            "Síntesis 8 Planes PDD",
-            "Dictamen 29 Entidades PA",
-            "Pliegos Cuestionarios Concejo",
-          ],
-        },
-      ],
-      hojas_calculo_count: 2,
-      documentos_count: 1,
+      archivos_sincronizados: [],
+      hojas_calculo_count: 0,
+      documentos_count: 0,
       estado_cuota: "NORMAL",
       esContingencia: true,
     };

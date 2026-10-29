@@ -38,16 +38,10 @@ def validar_esquema(preguntas):
 
 class FormularioCrear(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
-    codigo: str = Field(
-        ..., min_length=1, max_length=50, description="Código mnemónico único del formulario"
-    )
-    titulo: str = Field(
-        ..., min_length=1, max_length=250, description="Título público de la consulta"
-    )
+    codigo: str = Field(..., min_length=1, max_length=50, description="Código mnemónico único del formulario")
+    titulo: str = Field(..., min_length=1, max_length=250, description="Título público de la consulta")
     descripcion: str = Field(..., description="Descripción y justificación del formulario")
-    dimension_id: uuid.UUID | None = Field(
-        None, description="Dimensión de seguridad humana asociada"
-    )
+    dimension_id: uuid.UUID | None = Field(None, description="Dimensión de seguridad humana asociada")
     territorio_id: uuid.UUID | None = Field(None, description="Territorio focalizado de Cartagena")
     estado: Literal["BORRADOR", "PUBLICADO", "CERRADO"] = Field(
         default="PUBLICADO", description="Estado: BORRADOR, PUBLICADO, CERRADO"
@@ -55,9 +49,7 @@ class FormularioCrear(BaseModel):
     esquema_preguntas: list[PreguntaEsquema] = Field(
         ..., min_length=1, max_length=500, description="Lista de preguntas del formulario"
     )
-    enfoque_diferencial_habilitado: bool = Field(
-        True, description="Habilita preguntas de enfoque diferencial"
-    )
+    enfoque_diferencial_habilitado: bool = Field(True, description="Habilita preguntas de enfoque diferencial")
     permite_evidencias: bool = Field(True, description="Permite adjuntar evidencias fotográficas")
     fecha_cierre: datetime | None = Field(None, description="Fecha límite de participación")
 
@@ -71,12 +63,8 @@ class FormularioActualizar(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
     titulo: str | None = Field(None, min_length=1, max_length=250)
     descripcion: str | None = None
-    estado: Literal["BORRADOR", "PUBLICADO", "CERRADO"] | None = Field(
-        None, description="BORRADOR, PUBLICADO, CERRADO"
-    )
-    esquema_preguntas: list[PreguntaEsquema] | None = Field(
-        default=None, min_length=1, max_length=500
-    )
+    estado: Literal["BORRADOR", "PUBLICADO", "CERRADO"] | None = Field(None, description="BORRADOR, PUBLICADO, CERRADO")
+    esquema_preguntas: list[PreguntaEsquema] | None = Field(default=None, min_length=1, max_length=500)
     fecha_cierre: datetime | None = None
 
     @field_validator("esquema_preguntas")
@@ -105,18 +93,10 @@ class FormularioRespuesta(BaseModel):
 
 
 class RespuestaFormularioCrear(BaseModel):
-    datos_respuesta: dict[str, Any] = Field(
-        ..., description="Respuestas estructuradas por pregunta"
-    )
-    datos_enfoque: dict[str, Any] = Field(
-        default_factory=dict, description="Variables de enfoque diferencial"
-    )
-    evidencias: list[dict[str, Any]] = Field(
-        default_factory=list, description="Evidencias adjuntas"
-    )
-    territorio_id: uuid.UUID | None = Field(
-        None, description="Territorio donde reside el participante"
-    )
+    datos_respuesta: dict[str, Any] = Field(..., description="Respuestas estructuradas por pregunta")
+    datos_enfoque: dict[str, Any] = Field(default_factory=dict, description="Variables de enfoque diferencial")
+    evidencias: list[dict[str, Any]] = Field(default_factory=list, description="Evidencias adjuntas")
+    territorio_id: uuid.UUID | None = Field(None, description="Territorio donde reside el participante")
 
     @field_validator("datos_enfoque")
     @classmethod

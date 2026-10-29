@@ -4,6 +4,7 @@ Implementa la regla cardinal: "Sin ámbito asignado = Comportamiento actual (Glo
 Resuelve la pertenencia geográfica ascendiendo por territorio_padre_id en geodatos.territorios.
 """
 
+import logging
 import uuid
 from typing import Any
 
@@ -11,13 +12,14 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.transactions import transaction
 from app.modules.identidad.models import AmbitoTerritorialUsuario, EventoIdentidad
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 
+logger = logging.getLogger("polis.identidad.ambito_territorial")
 
-async def resolver_localidad_territorio(
-    session: AsyncSession, territorio_id: uuid.UUID
-) -> str | None:
+
+async def resolver_localidad_territorio(session: AsyncSession, territorio_id: uuid.UUID) -> str | None:
     """Resuelve la localidad (LOC-1, LOC-2, LOC-3) ascendiendo por territorio_padre_id."""
     stmt = text("""
         WITH RECURSIVE jerarquia AS (
@@ -85,9 +87,7 @@ async def resolver_info_territorial_mesa(
     }
 
 
-async def obtener_ambitos_activos(
-    session: AsyncSession, usuario_id: uuid.UUID
-) -> list[AmbitoTerritorialUsuario]:
+async def obtener_ambitos_activos(session: AsyncSession, usuario_id: uuid.UUID) -> list[AmbitoTerritorialUsuario]:
     """Consulta los ámbitos territoriales vigentes del usuario en autenticacion.ambitos_territoriales_usuario."""
     stmt = (
         select(AmbitoTerritorialUsuario)
@@ -114,7 +114,7 @@ async def verificar_ambito_territorial(
     ruta_http: str = "",
 ) -> bool:
     """Valida la autorización territorial PBAC del actor institucional.
-    
+
     Aplica rigurosamente la regla cardinal: "Sin ámbito = Comportamiento actual (Global)".
     """
     if not sujeto or sujeto.es_anonimo:
@@ -152,10 +152,7 @@ async def verificar_ambito_territorial(
         # Coincidencia por ámbito de tipo 'localidad'
         if mesa_info.get("localidad"):
             for a in ambitos:
-                if (
-                    a.tipo_ambito == "localidad"
-                    and a.identificador_territorial == mesa_info["localidad"]
-                ):
+                if a.tipo_ambito == "localidad" and a.identificador_territorial == mesa_info["localidad"]:
                     return True
 
     elif territorio_id is not None:
@@ -189,10 +186,7 @@ async def verificar_ambito_territorial(
         "ruta": ruta_http,
         "recurso_tipo": recurso_tipo,
         "ambito_requerido": ambito_req,
-        "ambitos_asignados": [
-            {"tipo": a.tipo_ambito, "identificador": a.identificador_territorial}
-            for a in ambitos
-        ],
+        "ambitos_asignados": [{"tipo": a.tipo_ambito, "identificador": a.identificador_territorial} for a in ambitos],
         "motivo": "fuera_de_ambito_territorial",
     }
 
@@ -218,17 +212,18 @@ async def verificar_ambito_territorial(
                 detalle=detalle_evento,
             )
             audit_session.add(evento)
-            await audit_session.commit()
+            # Límite transaccional separado y acotado: el evento se confirma antes
+            # del 403 para conservar la evidencia del acceso denegado aunque el
+            # caso de uso de la petición revierta (documentación del plan de
+            # remediación T5.5; precedente del contador de intentos en
+            # docs/transacciones.md).
+            async with transaction(audit_session):
+                pass
     except Exception:
-        # Fallback a la sesión actual si bind falla
-        evento = EventoIdentidad(
-            actor_id=sujeto.sujeto_id,
-            objetivo_id=obj_uuid,
-            accion="acceso_territorial_denegado",
-            detalle=detalle_evento,
+        logger.warning(
+            "No se pudo registrar el evento de acceso territorial denegado en la transacción separada",
+            exc_info=True,
         )
-        session.add(evento)
-        await session.flush()
 
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,

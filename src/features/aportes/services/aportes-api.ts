@@ -55,6 +55,9 @@ export interface PropuestaCiudadanaRead {
   metadata_enfoque: MetadataEnfoque;
   archivos_adjuntos: unknown[];
   metadatos: Record<string, unknown>;
+  /* El backend retira sesion_id/huella_hash de las respuestas públicas: los
+   * tipos del cliente los tratan como opcionales y los consumidores actuales
+   * no dependen de ellos. */
   sesion_id?: string | null;
   huella_hash?: string | null;
   apoyos_contador: number;
@@ -75,8 +78,10 @@ export interface SesionAnonimaRespuesta {
   token_acceso: string;
   tipo_token: string;
   expira_en_segundos: number;
-  sesion_id: string;
-  huella_hash: string;
+  /* Opcional por la misma retirada de datos de sesión en respuestas
+   * públicas; el cliente usa `?? ""` para no romper la continuidad. */
+  sesion_id?: string;
+  huella_hash?: string;
   rol: string;
 }
 
@@ -128,7 +133,7 @@ export async function asegurarSesionActiva(): Promise<string> {
     return sesion.token;
   }
   const nueva = await obtenerSesionAnonima();
-  useSesionStore.getState().setSesionAnonima(nueva.token_acceso, nueva.sesion_id,
+  useSesionStore.getState().setSesionAnonima(nueva.token_acceso, nueva.sesion_id ?? "",
     new Date(Date.now() + nueva.expira_en_segundos * 1000).toISOString());
   return nueva.token_acceso;
 }

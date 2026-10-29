@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 import qrcode
@@ -212,9 +212,7 @@ def generar_acta_pdf(
         )
     )
     elements.append(Spacer(1, 0.25 * cm))
-    elements.append(
-        HRFlowable(width="100%", thickness=1.5, color=colors.HexColor("#0B2545"), spaceAfter=6)
-    )
+    elements.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor("#0B2545"), spaceAfter=6))
     elements.append(Paragraph("ACTA OFICIAL DE CONCERTACIÓN Y DELIBERACIÓN TERRITORIAL", doc_title))
     elements.append(Spacer(1, 0.3 * cm))
 
@@ -225,10 +223,8 @@ def generar_acta_pdf(
         else f"ACTA-{mesa.codigo_oficial or str(mesa.id)[:8].upper()}-2026"
     )
     estado_acta = (acta.estado.upper() if acta else mesa.estado or "PROGRAMADA").replace("_", " ")
-    fecha_mesa_str = (
-        mesa.fecha.isoformat() if mesa.fecha else datetime.now(UTC).strftime("%Y-%m-%d")
-    )
-    horario_str = mesa.horario or "08:30 am - 12:30 pm"
+    fecha_mesa_str = mesa.fecha.isoformat() if mesa.fecha else "Por definir"
+    horario_str = mesa.horario or "Por definir"
     lugar_str = (
         mesa.lugar_nombre
         or (mesa.metadatos.get("lugar") if isinstance(mesa.metadatos, dict) else None)
@@ -241,15 +237,10 @@ def generar_acta_pdf(
     )
 
     total_asistentes_val = (
-        (acta.total_participantes if acta else None)
-        or len(participantes or [])
-        or mesa.total_asistentes
-        or 0
+        (acta.total_participantes if acta else None) or len(participantes or []) or mesa.total_asistentes or 0
     )
     quorum_str = (
-        "QUÓRUM VERIFICADO"
-        if (acta and acta.quorum_alcanzado) or total_asistentes_val >= 10
-        else "EN CONVOCATORIA"
+        "QUÓRUM VERIFICADO" if (acta and acta.quorum_alcanzado) or total_asistentes_val >= 10 else "EN CONVOCATORIA"
     )
 
     tabla_meta_data = [
@@ -300,9 +291,7 @@ def generar_acta_pdf(
 
     # 3. SECCIÓN I: RESUMEN DE LA DELIBERACIÓN COMUNITARIA
     elements.append(Paragraph("I. RESUMEN DE DELIBERACIÓN COMUNITARIA", section_title))
-    elements.append(
-        HRFlowable(width="100%", thickness=0.8, color=colors.HexColor("#CBD5E1"), spaceAfter=5)
-    )
+    elements.append(HRFlowable(width="100%", thickness=0.8, color=colors.HexColor("#CBD5E1"), spaceAfter=5))
 
     resumen_texto = ""
     if acta and acta.resumen_deliberacion and acta.resumen_deliberacion.strip():
@@ -323,12 +312,8 @@ def generar_acta_pdf(
     elements.append(Spacer(1, 0.4 * cm))
 
     # 4. SECCIÓN II: ACUERDOS CONCERTADOS Y COMPROMISOS INSTITUCIONALES
-    elements.append(
-        Paragraph("II. ACUERDOS CONCERTADOS Y COMPROMISOS INSTITUCIONALES", section_title)
-    )
-    elements.append(
-        HRFlowable(width="100%", thickness=0.8, color=colors.HexColor("#CBD5E1"), spaceAfter=5)
-    )
+    elements.append(Paragraph("II. ACUERDOS CONCERTADOS Y COMPROMISOS INSTITUCIONALES", section_title))
+    elements.append(HRFlowable(width="100%", thickness=0.8, color=colors.HexColor("#CBD5E1"), spaceAfter=5))
 
     acuerdos_raw: list[Any] = []
     if acta and isinstance(acta.acuerdos, list) and len(acta.acuerdos) > 0:
@@ -337,9 +322,7 @@ def generar_acta_pdf(
         acuerdos_raw = mesa.metadatos["acuerdos"]
     elif isinstance(mesa.metadatos, dict) and isinstance(mesa.metadatos.get("acuerdos"), str):
         lineas = [linea.strip() for linea in mesa.metadatos["acuerdos"].split("\n") if linea.strip()]
-        acuerdos_raw = [
-            {"detalle": linea, "responsables": ["Distrito de Cartagena"]} for linea in lineas
-        ]
+        acuerdos_raw = [{"detalle": linea, "responsables": ["Distrito de Cartagena"]} for linea in lineas]
 
     filas_acuerdos: list[list[Any]] = [
         [
@@ -358,11 +341,7 @@ def generar_acta_pdf(
                 if isinstance(ac, dict) and isinstance(ac.get("responsables"), list)
                 else "Secretaría del Interior / Alcaldía Distrital"
             )
-            plazo = (
-                ac.get("plazo", "Vigencia 2026–2027")
-                if isinstance(ac, dict)
-                else "Vigencia 2026–2027"
-            )
+            plazo = ac.get("plazo", "Vigencia 2026–2027") if isinstance(ac, dict) else "Vigencia 2026–2027"
             filas_acuerdos.append(
                 [
                     Paragraph(str(idx), cell_regular),
@@ -376,8 +355,7 @@ def generar_acta_pdf(
             [
                 Paragraph("1", cell_regular),
                 Paragraph(
-                    "Concertación de prioridades territoriales de seguridad "
-                    "integral y convivencia comunitaria.",
+                    "Concertación de prioridades territoriales de seguridad integral y convivencia comunitaria.",
                     cell_regular,
                 ),
                 Paragraph("Secretaría del Interior / Distriseguridad", cell_regular),
@@ -414,9 +392,7 @@ def generar_acta_pdf(
         semilla = f"{mesa.id}:{mesa.codigo_oficial}:{mesa.nombre}:{fecha_mesa_str}:{lugar_str}"
         sha256_hash = hashlib.sha256(semilla.encode("utf-8")).hexdigest()
 
-    url_verificacion = (
-        f"{url_base_publica.rstrip('/')}/asistencia/{mesa.shortcode_ciudadano or str(mesa.id)}"
-    )
+    url_verificacion = f"{url_base_publica.rstrip('/')}/asistencia/{mesa.shortcode_ciudadano or str(mesa.id)}"
     qr_imagen = _generar_qr_en_memoria(url_verificacion, tamano_cm=2.5)
 
     info_seguridad = [

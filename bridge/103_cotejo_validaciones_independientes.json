@@ -1,0 +1,130 @@
+{
+  "fecha_utc": "2026-10-25T13:17:00.531976+00:00",
+  "estado": "validacion_funcional_dirigida_reproducida_independientemente",
+  "checks_hash": [
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "backend/scripts/contrastar_fuentes_por_periodo.py",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "bridge/93_pytest_conciliacion_retrospectiva.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "bridge/93_pytest_conciliacion_antes_correccion.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "bridge/96_pytest_freebuff_conciliador.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "backend/app/modules/compromisos/parser_terridata_polis.py",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "backend/tests/test_parser_terridata_polis.py",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/84_contrato_parser_territorial.json",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/97_pytest_parser_territorial.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/99_pytest_conciliador_parser.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/98_validacion_funcional_parser_territorial.md",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/101_pytest_freebuff_parser_territorial.xml",
+      "sha_coincide": true
+    },
+    {
+      "evidencia": "bridge/100_evidencia_freebuff_validacion_parser_territorial.json",
+      "archivo": "bridge/102_pytest_freebuff_conciliador_parser.xml",
+      "sha_coincide": true
+    }
+  ],
+  "XML": {
+    "bridge/96_pytest_freebuff_conciliador.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "72",
+      "time": "1.244",
+      "timestamp": "2026-10-25T04:25:37.365403+00:00",
+      "hostname": "srv2006133",
+      "casos_contados": 72
+    },
+    "bridge/101_pytest_freebuff_parser_territorial.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "35",
+      "time": "0.075",
+      "timestamp": "2026-10-25T04:28:08.321183+00:00",
+      "hostname": "srv2006133",
+      "casos_contados": 35
+    },
+    "bridge/102_pytest_freebuff_conciliador_parser.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "107",
+      "time": "1.284",
+      "timestamp": "2026-10-25T04:28:09.602171+00:00",
+      "hostname": "srv2006133",
+      "casos_contados": 107
+    }
+  },
+  "erratas_documentales": [
+    {
+      "evidencia": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "archivo": "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json",
+      "bytes_declarados": 1126,
+      "bytes_reales": 34320,
+      "impacto": "errata_documental_hash_correcto"
+    }
+  ],
+  "D1": "comprobado_por_ejecucion_y_reproduccion",
+  "SQL": false,
+  "integracion_productiva": false,
+  "dictamen_EAF": false,
+  "siguiente_etapa": "especificacion_catalogo_planificador_y_piloto_ingesta_real_con_semantica_verificable"
+}

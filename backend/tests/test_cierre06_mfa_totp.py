@@ -1,22 +1,18 @@
-import asyncio
 import time
 import uuid
-from datetime import UTC, datetime
 from unittest.mock import patch
 
-from cryptography.fernet import Fernet
 import pytest
-from httpx import ASGITransport, AsyncClient
+from cryptography.fernet import Fernet
+from fastapi.testclient import TestClient
 
 from app.core.config import Settings
 from app.main import create_app
 from app.modules.identidad import mfa as mfa_utils
 from app.modules.identidad.security import (
-    crear_token_acceso,
     crear_token_desafio_mfa,
     decodificar_token_desafio_mfa,
 )
-
 
 pytestmark = pytest.mark.anyio
 
@@ -61,9 +57,7 @@ async def test_mfa_utilidades_criptograficas(settings):
     valido, paso = mfa_utils.verificar_codigo_totp(secreto, codigo)
     assert valido is True
     assert isinstance(paso, int)
-    valido_inv, paso_inv = mfa_utils.verificar_codigo_totp(
-        secreto, "000000" if codigo != "000000" else "999999"
-    )
+    valido_inv, paso_inv = mfa_utils.verificar_codigo_totp(secreto, "000000" if codigo != "000000" else "999999")
     assert valido_inv is False
     assert paso_inv is None
 
@@ -74,16 +68,12 @@ async def test_mfa_utilidades_criptograficas(settings):
         assert len(c) == 9 and c[4] == "-"
 
     hashes = [mfa_utils.hashear_codigo_recuperacion(c, settings.ip_salt) for c in codigos]
-    valido, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
-        codigos[0], hashes, settings.ip_salt
-    )
+    valido, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(codigos[0], hashes, settings.ip_salt)
     assert valido is True
     assert len(restantes) == 7
 
     # Quemado: el mismo código ya no debe ser válido en los restantes
-    invalido, _ = mfa_utils.verificar_y_consumir_codigo_recuperacion(
-        codigos[0], restantes, settings.ip_salt
-    )
+    invalido, _ = mfa_utils.verificar_y_consumir_codigo_recuperacion(codigos[0], restantes, settings.ip_salt)
     assert invalido is False
 
 
@@ -110,23 +100,17 @@ async def test_totp_antirreplay_unitario():
     codigo_t = mfa_utils.calcular_codigo_totp(secreto, timestamp=t_fijo)
 
     # 1. Primera verificación sin último paso registrado -> Éxito
-    valido, paso = mfa_utils.verificar_codigo_totp(
-        secreto, codigo_t, timestamp=t_fijo, ultimo_paso=None
-    )
+    valido, paso = mfa_utils.verificar_codigo_totp(secreto, codigo_t, timestamp=t_fijo, ultimo_paso=None)
     assert valido is True
     assert paso == paso_esperado
 
     # 2. Reintento con el mismo código en el mismo instante (replay) -> Rechazado
-    valido_replay, _ = mfa_utils.verificar_codigo_totp(
-        secreto, codigo_t, timestamp=t_fijo, ultimo_paso=paso
-    )
+    valido_replay, _ = mfa_utils.verificar_codigo_totp(secreto, codigo_t, timestamp=t_fijo, ultimo_paso=paso)
     assert valido_replay is False
 
     # 3. Código de un paso previo o igual -> Rechazado
     codigo_previo = mfa_utils.calcular_codigo_totp(secreto, timestamp=t_fijo - intervalo)
-    valido_prev, _ = mfa_utils.verificar_codigo_totp(
-        secreto, codigo_previo, timestamp=t_fijo, ultimo_paso=paso
-    )
+    valido_prev, _ = mfa_utils.verificar_codigo_totp(secreto, codigo_previo, timestamp=t_fijo, ultimo_paso=paso)
     assert valido_prev is False
 
     # 4. Código del siguiente intervalo temporal (t + 30s) -> Éxito
@@ -181,9 +165,6 @@ async def test_mfa_clave_cifrado_obligatoria():
     assert isinstance(cifrador, Fernet)
 
 
-from fastapi.testclient import TestClient
-
-
 def test_flujo_completo_mfa_api(database_url: str):
     """Prueba integral de enrolamiento, login desafiado, verificación y desactivación por API."""
     settings = Settings(
@@ -208,7 +189,9 @@ def test_flujo_completo_mfa_api(database_url: str):
         )
         assert reg_resp.status_code == 201
         user_data = reg_resp.json()
-        user_id = uuid.UUID(user_data["id"])
+        # Validación intrínseca en línea; AUD-2026-10-21 T2 elimina la variable
+        # muerta del original (el flujo MFA subsiguiente usa el correo, no el id).
+        assert uuid.UUID(user_data["id"])
 
         # 2. Login inicial (sin MFA activado)
         login1 = client.post(
@@ -300,7 +283,6 @@ def test_flujo_completo_mfa_api(database_url: str):
             data_verif = verif_ok.json()
             assert data_verif["mfa_requerido"] is False
             assert len(data_verif["token_acceso"]) > 20
-            token_post_mfa = data_verif["token_acceso"]
 
             # 10b. Intentar reutilizar inmediatamente el mismo código -> 401 (Antirreplay en login)
             login_replay = client.post(

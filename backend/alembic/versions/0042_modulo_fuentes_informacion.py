@@ -5,15 +5,16 @@ Revises: 0041_modulo_agendas_mesas
 Create Date: 2026-10-04 05:00:00.000000
 """
 
-import json
-from typing import Sequence, Union
-from alembic import op
+from collections.abc import Sequence
+
 from sqlalchemy import text
 
+from alembic import op
+
 revision: str = "0042_modulo_fuentes_informacion"
-down_revision: Union[str, Sequence[str], None] = "0041_modulo_agendas_mesas"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0041_modulo_agendas_mesas"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 # Catálogo canónico de fuentes oficiales de información identificadas para Cartagena.
 # AUDITORÍA EDIT-03b / OBS-REG-DATOS:

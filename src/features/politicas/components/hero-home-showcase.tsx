@@ -17,10 +17,9 @@ import {
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { cn } from "@/shared/lib/utils";
-import { useHeroConfigStore } from "@/features/politicas/state/hero-store";
+import { useHeroConfigStore, obtenerDiapositivasHero, esRutaImagenHero } from "@/features/politicas/state/hero-store";
 import {
   HERO_HOME_SLIDES,
-  type HeroPageConfig,
 } from "@/features/politicas/data/hero-pages.data";
 
 export interface HeroHomeShowcaseProps {
@@ -32,7 +31,7 @@ export interface HeroHomeShowcaseProps {
 }
 
 const DEFAULT_STATS = [
-  { valor: "37", label: "Mesas de diálogo territorial" },
+  { valor: "35", label: "Mesas de diálogo territorial" },
   { valor: "7", label: "Dimensiones de seguridad humana" },
   { valor: "2026–2036", label: "Vigencia de la política" },
   { valor: "3 + Insular", label: "Localidades cubiertas" },
@@ -65,30 +64,37 @@ export function HeroHomeShowcase({
 
   const {
     heroImageId,
+    imagenesCatalogo,
     opacidad,
     modoCarrusel,
     intervaloSegundos,
     pausado,
-    indiceActivo,
     siguienteImagen,
     anteriorImagen,
     irAImagen,
     togglePausa,
+    sincronizarConServidor,
   } = store;
 
-  /* Resolución de la diapositiva activa */
-  const slideIndex = HERO_HOME_SLIDES.findIndex((s) => s.id === heroImageId);
-  const currentIdx =
-    slideIndex >= 0 ? slideIndex : indiceActivo % HERO_HOME_SLIDES.length;
-  const slideActivo: HeroPageConfig =
-    HERO_HOME_SLIDES[currentIdx] ?? HERO_HOME_SLIDES[0];
+  /* Sincronización en segundo plano con el servidor de la plataforma */
+  useEffect(() => {
+    void sincronizarConServidor?.();
+  }, [sincronizarConServidor]);
 
-  const totalSlides = HERO_HOME_SLIDES.length;
-  const contadorTexto = `${String(currentIdx + 1).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
+  const slides = obtenerDiapositivasHero(imagenesCatalogo, store.slides);
+  // Conservar overrides URL anteriores a la biblioteca dinámica.
+  if (esRutaImagenHero(heroImageId) && !imagenesCatalogo.some((imagen) => imagen.id === heroImageId || imagen.archivo === heroImageId)) {
+    slides.push({ ...HERO_HOME_SLIDES[0], id: heroImageId, imagenFondo: heroImageId,
+      enfoque: "Imagen personalizada", ubicacionReal: "Imagen personalizada", badgeTexto: "Imagen personalizada", oficial: false });
+  }
+  const currentIdx = Math.max(0, slides.findIndex((slide) => slide.id === heroImageId));
+  const slideActivo = slides[currentIdx] ?? { ...HERO_HOME_SLIDES[0], ubicacionReal: "Cartagena de Indias", enfoque: "Fondo institucional", oficial: false };
+  const totalSlides = slides.length;
+  const contadorTexto = `${String(totalSlides ? currentIdx + 1 : 0).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
 
   /* Temporizador del carrusel automático (7s) con suspensión por interacción */
   useEffect(() => {
-    if (!modoCarrusel || pausado || isInteracting) return;
+    if (!modoCarrusel || pausado || isInteracting || heroImageId === "ninguna" || totalSlides < 2) return;
 
     const intervaloMs = Math.max(2, intervaloSegundos || 7) * 1000;
     const timer = setInterval(() => {
@@ -96,7 +102,7 @@ export function HeroHomeShowcase({
     }, intervaloMs);
 
     return () => clearInterval(timer);
-  }, [modoCarrusel, pausado, isInteracting, intervaloSegundos, siguienteImagen]);
+  }, [modoCarrusel, pausado, isInteracting, intervaloSegundos, siguienteImagen, heroImageId, totalSlides]);
 
   return (
     <section
@@ -112,7 +118,7 @@ export function HeroHomeShowcase({
       aria-label="Carrusel de frentes territoriales de Cartagena"
     >
       {/* ================= 1. CAPAS FOTOGRÁFICAS CON CROSSFADE Y KEN BURNS ================= */}
-      {HERO_HOME_SLIDES.map((slide, idx) => {
+      {slides.map((slide, idx) => {
         const esActivo = idx === currentIdx;
         return (
           <div
@@ -172,7 +178,7 @@ export function HeroHomeShowcase({
             </div>
             <div>
               <span className="label-micro block text-[var(--text-tertiary)] uppercase tracking-wider">
-                Procedencia Territorial Real
+                {slideActivo.oficial ? "Procedencia Territorial Real" : "Enfoque territorial"}
               </span>
               <span className="font-medium text-[var(--text-primary)]">
                 {slideActivo.ubicacionReal}
@@ -199,6 +205,7 @@ export function HeroHomeShowcase({
               variant="outline"
               size="icon-sm"
               onClick={anteriorImagen}
+              disabled={totalSlides < 2}
               aria-label="Diapositiva anterior"
               className="size-8 rounded-full"
             >
@@ -211,6 +218,7 @@ export function HeroHomeShowcase({
               variant="outline"
               size="icon-sm"
               onClick={togglePausa}
+              disabled={totalSlides < 2 || heroImageId === "ninguna"}
               aria-label={pausado ? "Reanudar carrusel" : "Pausar carrusel"}
               className="size-8 rounded-full"
             >
@@ -227,6 +235,7 @@ export function HeroHomeShowcase({
               variant="outline"
               size="icon-sm"
               onClick={siguienteImagen}
+              disabled={totalSlides < 2}
               aria-label="Diapositiva siguiente"
               className="size-8 rounded-full"
             >
@@ -235,13 +244,13 @@ export function HeroHomeShowcase({
           </div>
         </div>
 
-        {/* Barra de 5 Pills Temáticas para Selección Directa */}
+        {/* Barra de Pills Temáticas para Selección Directa */}
         <div
           className="mt-3 flex flex-wrap items-center gap-2"
           role="tablist"
           aria-label="Líneas temáticas de la portada"
         >
-          {HERO_HOME_SLIDES.map((slide, idx) => {
+          {slides.map((slide, idx) => {
             const esActivo = idx === currentIdx;
             return (
               <Button

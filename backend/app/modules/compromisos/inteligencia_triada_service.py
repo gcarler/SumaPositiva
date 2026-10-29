@@ -145,14 +145,10 @@ _ENTIDAD_LOCALIDAD = {
     "Alcaldía Local Industrial y de la Bahía": tuple(_LOCALIDADES)[2],
 }
 _ALIAS_LOCALIDAD = {
-    " ".join(alias.lower().split()): locality
-    for locality, aliases in _LOCALIDADES.items()
-    for alias in aliases
+    " ".join(alias.lower().split()): locality for locality, aliases in _LOCALIDADES.items() for alias in aliases
 }
 _LOCALIDAD_PATTERN = re.compile(
-    r"\b(?:"
-    + "|".join(re.escape(alias) for alias in sorted(_ALIAS_LOCALIDAD, key=len, reverse=True))
-    + r")\b"
+    r"\b(?:" + "|".join(re.escape(alias) for alias in sorted(_ALIAS_LOCALIDAD, key=len, reverse=True)) + r")\b"
 )
 _DEBILES = {
     "apoyar",
@@ -192,9 +188,7 @@ def _norm(value: Any) -> str:
 
 
 def _norm_fast(value: Any) -> str:
-    return " ".join(
-        _NON_WORD.sub(" ", str(value or "").lower().translate(_ACCENT_TRANSLATION)).split()
-    )
+    return " ".join(_NON_WORD.sub(" ", str(value or "").lower().translate(_ACCENT_TRANSLATION)).split())
 
 
 def _period(record: dict[str, Any]) -> str | None:
@@ -246,9 +240,7 @@ def _cache_result(method):
         if cached and time.monotonic() - cached[0] < _TTL:
             return cached[1]
         persistent_key = None
-        if method.__name__ in _PERSISTED_METHODS and _uses_default_arguments(
-            method, self, args, kwargs
-        ):
+        if method.__name__ in _PERSISTED_METHODS and _uses_default_arguments(method, self, args, kwargs):
             persistent_key = "/".join(
                 (
                     hashlib.sha256(self._cache_key.encode()).hexdigest(),
@@ -306,9 +298,7 @@ async def _store_persisted_result(key: str, value: Any) -> None:
         _DISK_RESULTS[key] = {"payload": value, "stored_at": time.time()}
         try:
             CACHE_INTELIGENCIA.parent.mkdir(parents=True, exist_ok=True)
-            fd, temporary = tempfile.mkstemp(
-                prefix="polis-inteligencia-", dir=str(CACHE_INTELIGENCIA.parent)
-            )
+            fd, temporary = tempfile.mkstemp(prefix="polis-inteligencia-", dir=str(CACHE_INTELIGENCIA.parent))
             try:
                 with os.fdopen(fd, "w", encoding="utf-8") as target:
                     json.dump(
@@ -326,9 +316,7 @@ async def _store_persisted_result(key: str, value: Any) -> None:
             return
 
 
-def _visible(
-    rows: list[dict[str, Any]], *, vigencia=None, periodo=None, dimension=None, entidad=None
-):
+def _visible(rows: list[dict[str, Any]], *, vigencia=None, periodo=None, dimension=None, entidad=None):
     norm_entidad = _norm(entidad) if entidad else None
     return [
         row
@@ -377,9 +365,7 @@ class InteligenciaTriadaService:
                 )
                 .where(_CLON_JSON.is_distinct_from("CONTENIDO_IDENTICO_OTRO_CORTE"))
             )
-            result = await self.session.stream(
-                stmt.execution_options(stream_results=True, yield_per=5000)
-            )
+            result = await self.session.stream(stmt.execution_options(stream_results=True, yield_per=5000))
             records = []
             async for partition in result.partitions(5000):
                 records.extend(dict(zip(_CAMPOS, tuple(row), strict=True)) for row in partition)
@@ -427,9 +413,7 @@ class InteligenciaTriadaService:
     @_cache_result
     async def patologias_dnp(self, *, vigencia=None, periodo=None, dimension=None, entidad=None):
         rows, _ = await self._snapshot()
-        selected = _visible(
-            rows, vigencia=vigencia, periodo=periodo, dimension=dimension, entidad=entidad
-        )
+        selected = _visible(rows, vigencia=vigencia, periodo=periodo, dimension=dimension, entidad=entidad)
         actions = [r for r in selected if r["motor_destino"] == "PLAN_ACCION"]
         strong = sum(r["verbo_fuerte_dnp"] is True for r in actions)
         weak = sum(r["verbo_fuerte_dnp"] is False for r in actions)
@@ -440,9 +424,7 @@ class InteligenciaTriadaService:
         ranking = []
         cases = []
         mirage = financial = bottleneck = 0
-        active_entities = _entidades_canonicas_activas(
-            [name for name, items in groups.items() for _ in items]
-        )
+        active_entities = _entidades_canonicas_activas([name for name, items in groups.items() for _ in items])
         for entity in active_entities:
             own = groups.get(entity, [])
             pa = [r for r in own if r["motor_destino"] == "PLAN_ACCION"]
@@ -452,22 +434,14 @@ class InteligenciaTriadaService:
             weak_n = sum(r["verbo_fuerte_dnp"] is False for r in pa)
             denominator = strong_n + weak_n
             pct_strong = 100 * strong_n / denominator if denominator else 0.0
-            op_values = [
-                _num(r["avance_fisico_pct"]) for r in pa if r["avance_fisico_pct"] is not None
-            ]
-            strategic = [
-                _num(r["avance_estrategico_pct"])
-                for r in pdd
-                if r["avance_estrategico_pct"] is not None
-            ]
+            op_values = [_num(r["avance_fisico_pct"]) for r in pa if r["avance_fisico_pct"] is not None]
+            strategic = [_num(r["avance_estrategico_pct"]) for r in pdd if r["avance_estrategico_pct"] is not None]
             appropriation = sum(_num(r["apropiacion_definitiva_cop"]) for r in own)
             payments = sum(_num(r["pagos_tesoreria_cop"]) for r in own)
             weak_majority = denominator > 0 and weak_n / denominator >= 0.6
             avg_op = sum(op_values) / len(op_values) if op_values else 0.0
             avg_strategic = sum(strategic) / len(strategic) if strategic else 0.0
-            entity_mirage = bool(
-                pdd and pa and avg_strategic <= 35 and (avg_op >= 75 or weak_majority)
-            )
+            entity_mirage = bool(pdd and pa and avg_strategic <= 35 and (avg_op >= 75 or weak_majority))
             entity_bottleneck = sum(
                 _num(r["apropiacion_definitiva_cop"]) > 0
                 and _num(r["obligaciones_cop"]) == 0
@@ -479,9 +453,7 @@ class InteligenciaTriadaService:
                 and max(_num(r["obligaciones_cop"]), _num(r["pagos_tesoreria_cop"]))
                 / _num(r["apropiacion_definitiva_cop"])
                 >= 0.75
-                and any(
-                    r[key] is not None for key in ("avance_fisico_pct", "avance_estrategico_pct")
-                )
+                and any(r[key] is not None for key in ("avance_fisico_pct", "avance_estrategico_pct"))
                 and max(_num(r["avance_fisico_pct"]), _num(r["avance_estrategico_pct"])) <= 35
                 for r in own
             )
@@ -489,8 +461,7 @@ class InteligenciaTriadaService:
             bottleneck += entity_bottleneck
             financial += entity_financial
             traceable = sum(
-                _clave_identificadora_valida(r["codigo_bpim"])
-                or _clave_identificadora_valida(r["codigo_meta_pdd"])
+                _clave_identificadora_valida(r["codigo_bpim"]) or _clave_identificadora_valida(r["codigo_meta_pdd"])
                 for r in own
             )
             coherence = (
@@ -508,9 +479,7 @@ class InteligenciaTriadaService:
                 else 0.0
             )
             score = round(
-                0.45 * pct_strong
-                + 0.30 * (100 * traceable / len(own) if own else 0)
-                + 0.25 * coherence,
+                0.45 * pct_strong + 0.30 * (100 * traceable / len(own) if own else 0) + 0.25 * coherence,
                 2,
             )
             predominant = (
@@ -561,12 +530,8 @@ class InteligenciaTriadaService:
                         and max(_num(r["obligaciones_cop"]), _num(r["pagos_tesoreria_cop"]))
                         / _num(r["apropiacion_definitiva_cop"])
                         >= 0.75
-                        and any(
-                            r[k] is not None
-                            for k in ("avance_fisico_pct", "avance_estrategico_pct")
-                        )
-                        and max(_num(r["avance_fisico_pct"]), _num(r["avance_estrategico_pct"]))
-                        <= 35
+                        and any(r[k] is not None for k in ("avance_fisico_pct", "avance_estrategico_pct"))
+                        and max(_num(r["avance_fisico_pct"]), _num(r["avance_estrategico_pct"])) <= 35
                     ):
                         typ = "SOBREEJECUCION_FINANCIERA"
                     else:
@@ -591,9 +556,7 @@ class InteligenciaTriadaService:
                 "total_actividades_evaluadas": len(actions),
                 "actividades_verbo_fuerte": strong,
                 "actividades_verbo_debil": weak,
-                "porcentaje_formulacion_fuerte_dnp": round(100 * strong / (strong + weak), 2)
-                if strong + weak
-                else 0.0,
+                "porcentaje_formulacion_fuerte_dnp": round(100 * strong / (strong + weak), 2) if strong + weak else 0.0,
                 "total_alertas_espejismo": mirage,
                 "total_alertas_sobreejecucion_financiera": financial,
                 "total_alertas_cuello_botella_contractual": bottleneck,
@@ -612,15 +575,11 @@ class InteligenciaTriadaService:
             if period:
                 per_period[period].append(row)
         comparison = {}
-        bpim_periods: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(
-            lambda: defaultdict(list)
-        )
+        bpim_periods: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
         recycled: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
         dimension_counts: dict[str, Counter[str]] = {p: Counter() for p in PERIODOS}
         for period, items in per_period.items():
-            bpims = {
-                r["codigo_bpim"] for r in items if _clave_identificadora_valida(r["codigo_bpim"])
-            }
+            bpims = {r["codigo_bpim"] for r in items if _clave_identificadora_valida(r["codigo_bpim"])}
             metas = {r["codigo_meta_pdd"] for r in items if r["codigo_meta_pdd"]}
             entities = {r["entidad_normalizada"] for r in items if r["entidad_normalizada"]}
             comparison[period] = {
@@ -636,9 +595,7 @@ class InteligenciaTriadaService:
                 bpim = row["codigo_bpim"]
                 if _clave_identificadora_valida(bpim):
                     bpim_periods[bpim][period].append(row)
-                text = _norm_fast(
-                    row["indicador"] or row["codigo_meta_pdd"] or row["descripcion_actividad"]
-                )
+                text = _norm_fast(row["indicador"] or row["codigo_meta_pdd"] or row["descripcion_actividad"])
                 if text and row["entidad_normalizada"]:
                     recycled[(row["entidad_normalizada"], text)].append(row)
                 for dim in row["dimensiones_seguridad_humana"] or []:
@@ -651,15 +608,11 @@ class InteligenciaTriadaService:
             highlights.append(
                 {
                     "codigo_bpim": code,
-                    "entidades": sorted(
-                        {r["entidad_normalizada"] for r in items if r["entidad_normalizada"]}
-                    ),
+                    "entidades": sorted({r["entidad_normalizada"] for r in items if r["entidad_normalizada"]}),
                     "periodos": sorted(bpim_periods[code]),
                     "vigencias": sorted({r["vigencia"] for r in items if r["vigencia"]}),
                     "total_registros": len(items),
-                    "apropiacion_acumulada_cop": sum(
-                        _num(r["apropiacion_definitiva_cop"]) for r in items
-                    ),
+                    "apropiacion_acumulada_cop": sum(_num(r["apropiacion_definitiva_cop"]) for r in items),
                 }
             )
         highlights.sort(key=lambda x: (-x["total_registros"], x["codigo_bpim"]))
@@ -680,11 +633,7 @@ class InteligenciaTriadaService:
                 {
                     "dimension": dim,
                     "periodos": weights,
-                    "tendencia": "CRECIENTE"
-                    if last - first > 1
-                    else "DECRECIENTE"
-                    if first - last > 1
-                    else "ESTABLE",
+                    "tendencia": "CRECIENTE" if last - first > 1 else "DECRECIENTE" if first - last > 1 else "ESTABLE",
                 }
             )
         recycled_items = []
@@ -694,11 +643,7 @@ class InteligenciaTriadaService:
                 continue
             advances = {
                 p: round(
-                    sum(
-                        _num(r["avance_estrategico_pct"] or r["avance_fisico_pct"])
-                        for r in items
-                        if _period(r) == p
-                    )
+                    sum(_num(r["avance_estrategico_pct"] or r["avance_fisico_pct"]) for r in items if _period(r) == p)
                     / sum(_period(r) == p for r in items),
                     2,
                 )
@@ -726,9 +671,7 @@ class InteligenciaTriadaService:
                 "total_bpims_historicos": len(bpim_periods),
                 "bpims_en_multiples_periodos": len(surviving),
                 "bpims_huerfanos_un_solo_periodo": len(bpim_periods) - len(surviving),
-                "tasa_continuidad_institucional_pct": round(
-                    100 * len(surviving) / len(bpim_periods), 2
-                )
+                "tasa_continuidad_institucional_pct": round(100 * len(surviving) / len(bpim_periods), 2)
                 if bpim_periods
                 else 0.0,
                 "proyectos_continuos_destacados": highlights[:20],
@@ -747,11 +690,7 @@ class InteligenciaTriadaService:
             if (not entity_norm or _norm(a["entidad"]) == entity_norm)
             and (vigencia is None or a["vigencia"] == vigencia)
         ]
-        clones = [
-            a
-            for a in candidates
-            if a["metadatos"].get("alerta_calidad") == "CONTENIDO_IDENTICO_OTRO_CORTE"
-        ]
+        clones = [a for a in candidates if a["metadatos"].get("alerta_calidad") == "CONTENIDO_IDENTICO_OTRO_CORTE"]
         clone_files = [
             {
                 "nombre_archivo": a["nombre_archivo"],
@@ -769,9 +708,7 @@ class InteligenciaTriadaService:
                 "nombre_archivo": a["nombre_archivo"],
                 "entidad": a["entidad"],
                 "vigencia": a["vigencia"],
-                "clones_tabulares_fusionados": a["metadatos"].get(
-                    "clones_tabulares_fusionados", []
-                ),
+                "clones_tabulares_fusionados": a["metadatos"].get("clones_tabulares_fusionados", []),
             }
             for a in candidates
             if a["metadatos"].get("clones_tabulares_fusionados")
@@ -795,13 +732,9 @@ class InteligenciaTriadaService:
                 by_activity[key].append(r)
         zombies = []
         for key, items in by_activity.items():
-            cuts = {
-                r["corte_periodo"] for r in items if r["corte_periodo"] in {"T1", "T2", "T3", "T4"}
-            }
+            cuts = {r["corte_periodo"] for r in items if r["corte_periodo"] in {"T1", "T2", "T3", "T4"}}
             vals = [
-                _num(
-                    r["avance_fisico_pct"] if r["avance_fisico_pct"] is not None else r["avance_t4"]
-                )
+                _num(r["avance_fisico_pct"] if r["avance_fisico_pct"] is not None else r["avance_t4"])
                 for r in items
                 if r["corte_periodo"] in cuts
             ]
@@ -824,12 +757,7 @@ class InteligenciaTriadaService:
                 per_entity_year[(r["entidad_normalizada"], r["vigencia"])].append(r)
         december = []
         for (entity, year), items in per_entity_year.items():
-            quarterly = [
-                _num(r[f"avance_t{i}"])
-                for r in items
-                for i in range(1, 4)
-                if r[f"avance_t{i}"] is not None
-            ]
+            quarterly = [_num(r[f"avance_t{i}"]) for r in items for i in range(1, 4) if r[f"avance_t{i}"] is not None]
             annual = [
                 _num(r["avance_t4"] if r["avance_t4"] is not None else r["avance_fisico_pct"])
                 for r in items
@@ -882,20 +810,13 @@ class InteligenciaTriadaService:
         total_hurtos, total_mesas = await self._ancillary()
         from app.modules.mesas.models import Mesa
 
-        mesa_rows = (
-            await self.session.execute(
-                select(Mesa.nombre, Mesa.lugar_nombre, Mesa.total_asistentes)
-            )
-        ).all()
+        mesa_rows = (await self.session.execute(select(Mesa.nombre, Mesa.lugar_nombre, Mesa.total_asistentes))).all()
         by_locality: dict[str, list[dict[str, Any]]] = {name: [] for name in _LOCALIDADES}
         focus: dict[str, dict[str, Any]] = {}
         barrios_por_localidad: dict[str, Counter[str]] = {name: Counter() for name in _LOCALIDADES}
         for row in rows:
             text = _norm_fast(
-                " ".join(
-                    str(row.get(k) or "")
-                    for k in ("descripcion_actividad", "indicador", "linea_estrategica")
-                )
+                " ".join(str(row.get(k) or "") for k in ("descripcion_actividad", "indicador", "linea_estrategica"))
             )
             mentions = set(_LOCALIDAD_PATTERN.findall(text))
             matches = set()
@@ -930,14 +851,8 @@ class InteligenciaTriadaService:
             payments = sum(_num(r["pagos_tesoreria_cop"]) for r in items)
             # Mesas no siempre tienen localidad estructurada; clasificar solo por nombre/lugar.
             terms = _LOCALIDADES[locality]
-            locality_mesas = [
-                m for m in mesa_rows if any(term in _norm(f"{m[0]} {m[1] or ''}") for term in terms)
-            ]
-            investment_share = (
-                100
-                * appropriation
-                / max(sum(_num(r["apropiacion_definitiva_cop"]) for r in rows), 1)
-            )
+            locality_mesas = [m for m in mesa_rows if any(term in _norm(f"{m[0]} {m[1] or ''}") for term in terms)]
+            investment_share = 100 * appropriation / max(sum(_num(r["apropiacion_definitiva_cop"]) for r in rows), 1)
             demand_share = 100 * len(locality_mesas) / max(total_mesas, 1)
             gap = abs(investment_share - demand_share)
             barrios = [name for name, _ in barrios_por_localidad[locality].most_common(10)]
@@ -945,9 +860,7 @@ class InteligenciaTriadaService:
                 {
                     "localidad": locality,
                     "registros_triada": len(items),
-                    "actividades_plan_accion": sum(
-                        r["motor_destino"] == "PLAN_ACCION" for r in items
-                    ),
+                    "actividades_plan_accion": sum(r["motor_destino"] == "PLAN_ACCION" for r in items),
                     "metas_pdd": len({r["codigo_meta_pdd"] for r in items if r["codigo_meta_pdd"]}),
                     "apropiacion_cop": appropriation,
                     "pagos_cop": payments,
@@ -975,8 +888,7 @@ class InteligenciaTriadaService:
                     set(r["id"] for values in by_locality.values() for r in values)
                 ),
                 "apropiacion_territorializada_cop": sum(
-                    sum(_num(r["apropiacion_definitiva_cop"]) for r in values)
-                    for values in by_locality.values()
+                    sum(_num(r["apropiacion_definitiva_cop"]) for r in values) for values in by_locality.values()
                 ),
             },
             "localidades": localidades,
@@ -984,9 +896,7 @@ class InteligenciaTriadaService:
         }
 
     @_cache_result
-    async def buscador(
-        self, *, q="seguridad", vigencia=None, periodo=None, dimension=None, motor=None, limite=50
-    ):
+    async def buscador(self, *, q="seguridad", vigencia=None, periodo=None, dimension=None, motor=None, limite=50):
         rows, _ = await self._snapshot()
         terms = [_norm(t) for t in q.split() if _norm(t)]
         matches = []
@@ -1093,9 +1003,7 @@ class InteligenciaTriadaService:
             },
             "total_coincidencias": len(matches),
             "presupuesto_asociado": {
-                "apropiacion_total_cop": sum(
-                    _num(r["apropiacion_definitiva_cop"]) for r in matches
-                ),
+                "apropiacion_total_cop": sum(_num(r["apropiacion_definitiva_cop"]) for r in matches),
                 "obligaciones_total_cop": sum(_num(r["obligaciones_cop"]) for r in matches),
                 "pagos_total_cop": sum(_num(r["pagos_tesoreria_cop"]) for r in matches),
             },
@@ -1119,11 +1027,7 @@ class InteligenciaTriadaService:
 
         def project(group, hist):
             vals = [
-                _num(
-                    r["avance_estrategico_pct"]
-                    if r["avance_estrategico_pct"] is not None
-                    else r["avance_fisico_pct"]
-                )
+                _num(r["avance_estrategico_pct"] if r["avance_estrategico_pct"] is not None else r["avance_fisico_pct"])
                 for r in group
                 if r["avance_estrategico_pct"] is not None or r["avance_fisico_pct"] is not None
             ]
@@ -1131,8 +1035,7 @@ class InteligenciaTriadaService:
             annual_history: dict[int, list[float]] = defaultdict(list)
             for row in hist:
                 if row["vigencia"] and (
-                    row["avance_estrategico_pct"] is not None
-                    or row["avance_fisico_pct"] is not None
+                    row["avance_estrategico_pct"] is not None or row["avance_fisico_pct"] is not None
                 ):
                     annual_history[row["vigencia"]].append(
                         _num(
@@ -1141,9 +1044,7 @@ class InteligenciaTriadaService:
                             else row["avance_fisico_pct"]
                         )
                     )
-            year_means = {
-                year: sum(values) / len(values) for year, values in annual_history.items()
-            }
+            year_means = {year: sum(values) / len(values) for year, values in annual_history.items()}
             history_years = sorted(year_means)
             speed = (
                 max(
@@ -1189,14 +1090,10 @@ class InteligenciaTriadaService:
                     if probability >= 50
                     else "INCUMPLIMIENTO_INMINENTE",
                     "aceleracion_trimestral_requerida_pct": round(max(0, (100 - actual) / 5), 2),
-                    "apropiacion_periodo_cop": sum(
-                        _num(r["apropiacion_definitiva_cop"]) for r in items
-                    ),
+                    "apropiacion_periodo_cop": sum(_num(r["apropiacion_definitiva_cop"]) for r in items),
                 }
             )
-        projections.sort(
-            key=lambda x: (x["semaforo_predictivo"], -x["avance_actual_pct"], x["entidad"])
-        )
+        projections.sort(key=lambda x: (x["semaforo_predictivo"], -x["avance_actual_pct"], x["entidad"]))
         dim_projections = []
         for name in DIMENSIONES:
             items = dims[name]
@@ -1215,26 +1112,20 @@ class InteligenciaTriadaService:
                 }
             )
         observed_current = [
-            r
-            for r in current
-            if r["avance_estrategico_pct"] is not None or r["avance_fisico_pct"] is not None
+            r for r in current if r["avance_estrategico_pct"] is not None or r["avance_fisico_pct"] is not None
         ]
         weighted_actual = (
             sum(
-                _num(
-                    r["avance_estrategico_pct"]
-                    if r["avance_estrategico_pct"] is not None
-                    else r["avance_fisico_pct"]
-                )
+                _num(r["avance_estrategico_pct"] if r["avance_estrategico_pct"] is not None else r["avance_fisico_pct"])
                 for r in observed_current
             )
             / len(observed_current)
             if observed_current
             else 0.0
         )
-        weighted_forecast = sum(
-            p["proyeccion_cierre_2027_pct"] * p["registros_2024_2027"] for p in projections
-        ) / max(sum(p["registros_2024_2027"] for p in projections), 1)
+        weighted_forecast = sum(p["proyeccion_cierre_2027_pct"] * p["registros_2024_2027"] for p in projections) / max(
+            sum(p["registros_2024_2027"] for p in projections), 1
+        )
         return {
             "horizonte": {
                 "periodo": "2024_2027",
@@ -1243,12 +1134,8 @@ class InteligenciaTriadaService:
                 "fraccion_tiempo_transcurrido_pct": 62.5,
             },
             "resumen_prediccion": {
-                "entidades_cumpliran": sum(
-                    p["semaforo_predictivo"] == "CUMPLIRA" for p in projections
-                ),
-                "entidades_riesgo_moderado": sum(
-                    p["semaforo_predictivo"] == "RIESGO_MODERADO" for p in projections
-                ),
+                "entidades_cumpliran": sum(p["semaforo_predictivo"] == "CUMPLIRA" for p in projections),
+                "entidades_riesgo_moderado": sum(p["semaforo_predictivo"] == "RIESGO_MODERADO" for p in projections),
                 "entidades_incumplimiento_inminente": sum(
                     p["semaforo_predictivo"] == "INCUMPLIMIENTO_INMINENTE" for p in projections
                 ),
@@ -1262,39 +1149,25 @@ class InteligenciaTriadaService:
     @_cache_result
     async def resumen_ejecutivo(self):
         rows, archives = await self._snapshot()
-        total_records = await self.session.scalar(
-            select(func.count()).select_from(RegistroTriadaNormalizado)
-        )
+        total_records = await self.session.scalar(select(func.count()).select_from(RegistroTriadaNormalizado))
         m1 = await self.patologias_dnp(vigencia=None, periodo=None, dimension=None, entidad=None)
         m2 = await self.continuidad_gobiernos(dimension=None, entidad=None)
         m3 = await self.radar_transparencia(entidad=None, vigencia=None)
         m4 = await self.alineacion_territorial()
-        m5 = await self.buscador(
-            q="seguridad", vigencia=None, periodo=None, dimension=None, motor=None, limite=50
-        )
+        m5 = await self.buscador(q="seguridad", vigencia=None, periodo=None, dimension=None, motor=None, limite=50)
         m6 = await self.simulador_cierre(entidad=None, dimension=None)
         return {
             "universo": {
                 "total_registros_saneados": total_records or 0,
                 "total_archivos_activos": len(archives),
-                "entidades_canonicas": len(
-                    {r["entidad_normalizada"] for r in rows if r["entidad_normalizada"]}
-                ),
+                "entidades_canonicas": len({r["entidad_normalizada"] for r in rows if r["entidad_normalizada"]}),
                 "cobertura_entidad_canonica_pct": round(
                     100 * sum(r["entidad_normalizada"] is not None for r in rows) / len(rows), 2
                 )
                 if rows
                 else 0,
-                "bpims_unicos": len(
-                    {
-                        r["codigo_bpim"]
-                        for r in rows
-                        if _clave_identificadora_valida(r["codigo_bpim"])
-                    }
-                ),
-                "metas_pdd_unicas": len(
-                    {r["codigo_meta_pdd"] for r in rows if r["codigo_meta_pdd"]}
-                ),
+                "bpims_unicos": len({r["codigo_bpim"] for r in rows if _clave_identificadora_valida(r["codigo_bpim"])}),
+                "metas_pdd_unicas": len({r["codigo_meta_pdd"] for r in rows if r["codigo_meta_pdd"]}),
             },
             "motor_1_patologias": {
                 "resumen_global": m1["resumen_global"],

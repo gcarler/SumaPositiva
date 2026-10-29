@@ -11,7 +11,7 @@ from app.modules.actores.schemas import (
     KpisActoresRespuesta,
 )
 from app.modules.actores.service import ActoresService
-from app.modules.identidad.deps import requerir_permiso
+from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 
 router = APIRouter(prefix="/actores", tags=["Mapeo de Actores Estratégicos"])
 
@@ -58,9 +58,13 @@ async def obtener_actor(id: uuid.UUID, service: ActoresServiceDep):
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
 )
-async def crear_actor(datos: ActorEstrategicoCrear, service: ActoresServiceDep):
+async def crear_actor(
+    datos: ActorEstrategicoCrear,
+    service: ActoresServiceDep,
+    sujeto: SujetoAutenticadoDep,
+):
     """Registra un nuevo actor estratégico con auditoría inmutable de procedencia."""
-    return await service.crear_actor(datos)
+    return await service.crear_actor(datos, usuario_id=sujeto.sujeto_id)
 
 
 @router.put(
@@ -72,9 +76,10 @@ async def actualizar_actor(
     id: uuid.UUID,
     cambios: ActorEstrategicoActualizar,
     service: ActoresServiceDep,
+    sujeto: SujetoAutenticadoDep,
 ):
     """Actualiza los datos o postura de un actor estratégico con registro de auditoría."""
-    return await service.actualizar_actor(id, cambios)
+    return await service.actualizar_actor(id, cambios, usuario_id=sujeto.sujeto_id)
 
 
 @router.delete(
@@ -82,6 +87,10 @@ async def actualizar_actor(
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
 )
-async def eliminar_actor(id: uuid.UUID, service: ActoresServiceDep):
+async def eliminar_actor(
+    id: uuid.UUID,
+    service: ActoresServiceDep,
+    sujeto: SujetoAutenticadoDep,
+):
     """Elimina un actor estratégico del catálogo con registro de auditoría forense."""
-    await service.eliminar_actor(id)
+    await service.eliminar_actor(id, usuario_id=sujeto.sujeto_id)

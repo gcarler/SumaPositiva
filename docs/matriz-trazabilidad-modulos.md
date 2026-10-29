@@ -1,7 +1,7 @@
 # Matriz de trazabilidad de módulos POLIS
 
 **Snapshot censado:** 2026-10-14, rama `main`, base de la tarea `0ed3e66f2a67fdd9aac25d86b4f0b3f1265492ed` más cambios locales de `[ARCH-CONSOLIDACION-01]`.
-**Alembic:** `0062_motor_plan_accion_dnp` (head único consultado con `uv run --project backend alembic -c backend/alembic.ini heads`).
+**Alembic:** el snapshot del 2026-10-14 se censó con cabeza `0062_motor_plan_accion_dnp` (head único consultado con `uv run --project backend alembic -c backend/alembic.ini heads`). Cabeza vigente verificada el 2026-10-27 [encargo 244]: `0084_aportes_colas_y_apoyos` (head único, mismo comando); la evolución 0063–0084 está resumida en [arquitectura.md](arquitectura.md).
 **Permisos:** la clasificación de método, ruta y acceso está en [permisos-api.md](permisos-api.md); la matriz siguiente no reemplaza ese contrato.
 
 ## Criterio de estado

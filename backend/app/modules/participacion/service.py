@@ -1,6 +1,5 @@
 import uuid
 from datetime import UTC, datetime
-from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -63,9 +62,7 @@ class ParticipacionService:
         estado: str | None = None,
     ) -> list[EscenarioEspecialLectura]:
         async with transaction(self.session):
-            escenarios = await self.repository.listar_escenarios_especiales(
-                tipo, territorio_id, estado
-            )
+            escenarios = await self.repository.listar_escenarios_especiales(tipo, territorio_id, estado)
             return [self._mapear_escenario(e) for e in escenarios]
 
     async def obtener_escenario_por_id(self, id: uuid.UUID) -> EscenarioEspecialLectura:
@@ -78,9 +75,7 @@ class ParticipacionService:
                 )
             return self._mapear_escenario(escenario)
 
-    async def crear_escenario_especial(
-        self, datos: EscenarioEspecialCrear
-    ) -> EscenarioEspecialLectura:
+    async def crear_escenario_especial(self, datos: EscenarioEspecialCrear) -> EscenarioEspecialLectura:
         async with transaction(self.session):
             escenario = EscenarioEspecial(
                 codigo_unico=datos.codigo_unico,

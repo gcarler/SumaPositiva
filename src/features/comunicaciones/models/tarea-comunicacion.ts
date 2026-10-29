@@ -42,3 +42,11 @@ export const ESTADOS_TAREA: Record<
   completada: { label: "Completada", tone: "success" },
   reprogramada: { label: "Reprogramada", tone: "warning" },
 };
+
+/** Orden canónico de columnas del tablero kanban. */
+export const ESTATES_ORDER: EstadoTarea[] = [
+  "pendiente",
+  "en_progreso",
+  "completada",
+  "reprogramada",
+];

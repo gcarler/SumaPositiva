@@ -8,8 +8,6 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
-logger = logging.getLogger("polis.auditoria")
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 
@@ -23,6 +21,10 @@ from app.modules.auditoria.schemas import (
     RespaldoArchivo,
 )
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+
+# AUD-2026-10-21 E402: el logger se inicializa tras los imports para no intercalar
+# sentencias entre módulos importados.
+logger = logging.getLogger("polis.auditoria")
 
 router = APIRouter(prefix="/auditoria", tags=["Auditoría y Supervisión"])
 BACKUP_DIR = Path("/root/polis/backups")
@@ -54,12 +56,7 @@ async def listar_registros_auditoria(
     total = await session.scalar(stmt_conteo) or 0
 
     # Consulta paginada
-    stmt = (
-        select(RegistroAuditoria)
-        .order_by(RegistroAuditoria.creado_en.desc())
-        .limit(limite)
-        .offset(desplazamiento)
-    )
+    stmt = select(RegistroAuditoria).order_by(RegistroAuditoria.creado_en.desc()).limit(limite).offset(desplazamiento)
     if condiciones:
         stmt = stmt.where(*condiciones)
 
@@ -151,7 +148,10 @@ async def ejecutar_respaldo_sistema(
         )
         raise HTTPException(
             status_code=500,
-            detail="Fallo al ejecutar el procedimiento de respaldo de base de datos. Se ha registrado el incidente para el equipo de infraestructura.",
+            detail=(
+                "Fallo al ejecutar el procedimiento de respaldo de base de datos. "
+                "Se ha registrado el incidente para el equipo de infraestructura."
+            ),
         )
 
     # Encontrar el archivo más reciente generado

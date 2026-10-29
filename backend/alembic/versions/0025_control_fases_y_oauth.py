@@ -6,6 +6,7 @@ Create Date: 2026-10-01 16:53:00
 """
 
 from sqlalchemy import text
+
 from alembic import op
 
 revision = "0025_control_fases_y_oauth"

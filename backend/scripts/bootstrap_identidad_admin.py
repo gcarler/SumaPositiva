@@ -13,14 +13,13 @@ import os
 import sys
 from typing import Any
 
-from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings
 from app.core.database import Database
 from app.core.transactions import transaction
-from app.modules.identidad.models import Rol, Usuario
+from app.modules.identidad.models import Usuario
 from app.modules.identidad.repository import IdentidadRepository
 from app.modules.identidad.schemas import UsuarioCreacion
 from app.modules.identidad.security import obtener_hash_contrasena
@@ -32,7 +31,7 @@ async def verificar_administradores(session: AsyncSession) -> list[dict[str, Any
     rol_admin = await repo.obtener_rol_por_codigo("administrador_identidades")
     if not rol_admin:
         return []
-    
+
     stmt = (
         select(Usuario)
         .where(Usuario.rol_id == rol_admin.id, Usuario.activo.is_(True))
@@ -97,9 +96,7 @@ async def ejecutar_bootstrap(
             # 3. Idempotencia: Si ya existe un administrador activo
             correo_normalizado = correo.strip().lower()
             if admins_actuales:
-                coincidencia = next(
-                    (a for a in admins_actuales if a["correo"].lower() == correo_normalizado), None
-                )
+                coincidencia = next((a for a in admins_actuales if a["correo"].lower() == correo_normalizado), None)
                 if coincidencia:
                     return {
                         "exito": True,
@@ -150,7 +147,7 @@ async def ejecutar_bootstrap(
             # 6. Creación atómica dentro de transacción serializada
             async with transaction(session):
                 await repo.serializar_administracion()
-                
+
                 # Re-comprobación bajo bloqueo de tabla
                 if not adicional:
                     if await repo.contar_administradores():
@@ -176,18 +173,14 @@ async def ejecutar_bootstrap(
                     apellidos=apellidos.strip(),
                     contrasena=contrasena,
                 )
-                
+
                 nuevo_admin = await repo.crear_usuario(
                     datos_usuario,
                     obtener_hash_contrasena(contrasena),
                     rol_admin.id,
                 )
 
-                accion_evento = (
-                    "bootstrap_administrador_adicional"
-                    if adicional
-                    else "bootstrap_administrador"
-                )
+                accion_evento = "bootstrap_administrador_adicional" if adicional else "bootstrap_administrador"
                 await repo.registrar_evento(
                     accion_evento,
                     None,
@@ -212,9 +205,7 @@ async def ejecutar_bootstrap(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Bootstrap administrativo idempotente de identidades POLIS."
-    )
+    parser = argparse.ArgumentParser(description="Bootstrap administrativo idempotente de identidades POLIS.")
     parser.add_argument(
         "--correo",
         default=os.environ.get("POLIS_BOOTSTRAP_ADMIN_EMAIL", "admin@seguridadhumanaintegral.org"),

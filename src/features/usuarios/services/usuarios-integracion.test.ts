@@ -133,7 +133,8 @@ describe("GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI", () 
         tipo_ambito: "localidad" as const,
         identificador_territorial: "LOC-1",
         activo: true,
-        asignado_en: "2026-10-13T04:00:00Z",
+        creado_en: "2026-10-13T04:00:00Z",
+        actualizado_en: "2026-10-13T04:00:00Z",
       },
     ];
     const spy = vi.spyOn(identidadApi, "ambitosUsuario").mockResolvedValue(ambitosMock);
@@ -152,7 +153,8 @@ describe("GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI", () 
       tipo_ambito: "mesa" as const,
       identificador_territorial: "MT-L01-01",
       activo: true,
-      asignado_en: "2026-10-13T04:00:00Z",
+      creado_en: "2026-10-13T04:00:00Z",
+      actualizado_en: "2026-10-13T04:00:00Z",
     };
     const spy = vi.spyOn(identidadApi, "asignarAmbitoUsuario").mockResolvedValue(nuevoAmbito);
 

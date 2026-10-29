@@ -33,10 +33,7 @@ def consultar(url, consulta, parametros=None):
 
 
 def roles(url):
-    return {
-        r["codigo"]: r["permisos"]
-        for r in consultar(url, "SELECT codigo, permisos FROM autenticacion.roles")
-    }
+    return {r["codigo"]: r["permisos"] for r in consultar(url, "SELECT codigo, permisos FROM autenticacion.roles")}
 
 
 @pytest.fixture
@@ -64,13 +61,12 @@ def migracion_anterior(database_url):
         command.upgrade(config, "head")
 
 
+@pytest.mark.migration
 def test_migracion_permiso_real_preserva_roles_y_es_idempotente(database_url, migracion_anterior):
     antes = roles(database_url)
     command.upgrade(migracion_anterior, REVISION)
     despues = roles(database_url)
-    assert set(despues["administrador_identidades"]) == (
-        set(antes["administrador_identidades"]) | PERMISOS
-    )
+    assert set(despues["administrador_identidades"]) == (set(antes["administrador_identidades"]) | PERMISOS)
     for rol in antes.keys() - {"administrador_identidades"}:
         assert despues[rol] == antes[rol]
     eventos = consultar(
@@ -92,11 +88,10 @@ def test_migracion_permiso_real_preserva_roles_y_es_idempotente(database_url, mi
     assert roles(database_url) == antes
 
 
+@pytest.mark.migration
 def test_migracion_rollback_permiso_y_evento(database_url, migracion_anterior, monkeypatch):
     antes = roles(database_url)
-    eventos = consultar(
-        database_url, "SELECT count(*) AS total FROM autenticacion.eventos_identidad"
-    )
+    eventos = consultar(database_url, "SELECT count(*) AS total FROM autenticacion.eventos_identidad")
     original = op.execute
 
     def fallar(sql, *args, **kwargs):
@@ -109,19 +104,11 @@ def test_migracion_rollback_permiso_y_evento(database_url, migracion_anterior, m
         with pytest.raises(RuntimeError, match="Fallo controlado"):
             command.upgrade(migracion_anterior, REVISION)
     assert roles(database_url) == antes
-    assert (
-        consultar(database_url, "SELECT count(*) AS total FROM autenticacion.eventos_identidad")
-        == eventos
-    )
-    assert (
-        consultar(database_url, "SELECT version_num FROM alembic_version")[0]["version_num"]
-        == ANTERIOR
-    )
+    assert consultar(database_url, "SELECT count(*) AS total FROM autenticacion.eventos_identidad") == eventos
+    assert consultar(database_url, "SELECT version_num FROM alembic_version")[0]["version_num"] == ANTERIOR
 
 
-def test_admin_crea_formulario_con_permisos_migrados_y_rechaza_sin_acceso(
-    database_url, provisionar_usuario_sync
-):
+def test_admin_crea_formulario_con_permisos_migrados_y_rechaza_sin_acceso(database_url, provisionar_usuario_sync):
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     usuarios_creados = []
     with TestClient(create_app(settings)) as client:
@@ -141,9 +128,7 @@ def test_admin_crea_formulario_con_permisos_migrados_y_rechaza_sin_acceso(
             )
             assert registro.status_code == 201
             usuarios_creados.append(registro.json()["id"])
-            respuesta = client.post(
-                "/api/v1/identidad/login", json={"correo": correo, "contrasena": contrasena}
-            )
+            respuesta = client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": contrasena})
             assert respuesta.status_code == 200
             return respuesta.json()
 
@@ -157,9 +142,7 @@ def test_admin_crea_formulario_con_permisos_migrados_y_rechaza_sin_acceso(
                 "titulo": "Formulario creado por admin",
                 "descripcion": "Prueba exclusiva de permisos reales",
                 "estado": "BORRADOR",
-                "esquema_preguntas": [
-                    {"id": "p1", "tipo": "texto_libre", "texto": "Describe el punto"}
-                ],
+                "esquema_preguntas": [{"id": "p1", "tipo": "texto_libre", "texto": "Describe el punto"}],
             }
             assert client.post("/api/v1/formularios", json=datos).status_code == 401
             for rol in ("ciudadano", "auditor_forense"):
@@ -176,8 +159,7 @@ def test_admin_crea_formulario_con_permisos_migrados_y_rechaza_sin_acceso(
             assert creado.status_code == 201, creado.text
             persistido = consultar(
                 database_url,
-                "SELECT titulo FROM participacion_ciudadana.formularios_consulta "
-                "WHERE codigo=:codigo",
+                "SELECT titulo FROM participacion_ciudadana.formularios_consulta WHERE codigo=:codigo",
                 {"codigo": codigo},
             )
             assert persistido[0]["titulo"] == datos["titulo"]

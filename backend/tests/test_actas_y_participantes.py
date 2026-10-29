@@ -150,17 +150,14 @@ async def test_flujo_acta_comunitaria_y_cierre_sha256(database_url: str, cabecer
                 "motivo": "Demanda de dotación urgente de ambulancia marítima",
             }
         ]
-        compromisos_iniciales = [
-            {"entidad": "Dadis", "responsable": "Dirección de Salud", "plazo": "90 días"}
-        ]
+        compromisos_iniciales = [{"entidad": "Dadis", "responsable": "Dirección de Salud", "plazo": "90 días"}]
 
         resp_borrador = client.post(
             f"/api/v1/mesas/{mesa_id}/acta",
             json={
                 "numero_acta": numero_acta,
                 ("resumen_deliberacion"): (
-                    "Deliberación pública sobre el Plan Decenal de Salud en el Distri"
-                    "to de Cartagena."
+                    "Deliberación pública sobre el Plan Decenal de Salud en el Distrito de Cartagena."
                 ),
                 "acuerdos": acuerdos_iniciales,
                 "disensos": disensos_iniciales,
@@ -178,11 +175,7 @@ async def test_flujo_acta_comunitaria_y_cierre_sha256(database_url: str, cabecer
         # 4. Cerrar y concertar formalmente el Acta
         resp_cierre = client.post(
             f"/api/v1/mesas/{mesa_id}/acta/cerrar",
-            json={
-                "resumen_deliberacion": (
-                    "Deliberación concluida con acuerdos vinculantes según Ley 1757/15."
-                )
-            },
+            json={"resumen_deliberacion": ("Deliberación concluida con acuerdos vinculantes según Ley 1757/15.")},
         )
         assert resp_cierre.status_code == 200
         acta_cerrada = resp_cierre.json()
@@ -228,9 +221,7 @@ async def test_flujo_acta_comunitaria_y_cierre_sha256(database_url: str, cabecer
             quorum_alcanzado=acta_cerrada["quorum_alcanzado"],
             total_participantes=acta_cerrada["total_participantes"],
             facilitador_firma_id=(
-                uuid.UUID(acta_cerrada["facilitador_firma_id"])
-                if acta_cerrada["facilitador_firma_id"]
-                else None
+                uuid.UUID(acta_cerrada["facilitador_firma_id"]) if acta_cerrada["facilitador_firma_id"] else None
             ),
             nombre_facilitador_firma=acta_cerrada["nombre_facilitador_firma"],
             estado=acta_cerrada["estado"],
@@ -239,9 +230,7 @@ async def test_flujo_acta_comunitaria_y_cierre_sha256(database_url: str, cabecer
         digest_original = servicio._calcular_hash_pericial(acta_hash)
         assert digest_original == acta_cerrada["sha256_acta"]
         assert servicio._calcular_hash_pericial(acta_hash) == digest_original
-        assert servicio._canonizar_json({"texto": "é"}) == servicio._canonizar_json(
-            {"texto": "e\u0301"}
-        )
+        assert servicio._canonizar_json({"texto": "é"}) == servicio._canonizar_json({"texto": "e\u0301"})
 
         for campo, valor in (
             ("id", uuid.uuid4()),
@@ -429,4 +418,3 @@ async def test_registro_asistencia_por_codigo_y_metadatos_completos(database_url
         resp_mesa_get = client.get(f"/api/v1/mesas/{mesa_uuid}")
         assert resp_mesa_get.status_code == 200
         assert resp_mesa_get.json()["total_asistentes"] == 1
-

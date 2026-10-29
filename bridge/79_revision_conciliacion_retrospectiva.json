@@ -1,0 +1,66 @@
+{
+  "fecha": "2026-10-24",
+  "estado": "requiere_R1_no_integrado",
+  "alcance": "revision_estatica_no_pruebas_funcionales",
+  "sha_entrega": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": "362aaeb4ca278ebd6ab8b0b4d52cbd2de166dd5cee9bb6ff3e49a077bea9b7c1",
+    "backend/scripts/contrastar_fuentes_por_periodo.py": "2fbbaaa23a909068310951cc8df378c52bcdc7eb54c902969565afb00bb2bf7a",
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": "23e1cf3584da67612c41e52eff3cd6c0199eae36a20e062686c1665c294f6165",
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": "61c5c173f6719440dd110b5594a78dbac7ce8ed1c1fea74bee2d7269a5390ba5"
+  },
+  "salida": {
+    "claves_return": [
+      "estado",
+      "metodo",
+      "modo_pareo",
+      "conteos",
+      "pares",
+      "observaciones_declaradas",
+      "pendientes",
+      "limites"
+    ],
+    "campos_contrato_ausentes": [
+      "esquema"
+    ],
+    "tipo_retorno_publico": "dict"
+  },
+  "observacion_campos": [
+    "id",
+    "fuente_id",
+    "producto_id",
+    "version_id",
+    "version_sha256_declarado",
+    "indicador_fenomeno",
+    "definicion_metodologica",
+    "unidad_observacion",
+    "unidad_medida",
+    "universo",
+    "poblacion",
+    "territorio",
+    "criterio_localizacion",
+    "periodo_fenomeno",
+    "fecha_referencia",
+    "evidencias",
+    "explicaciones",
+    "valor_original"
+  ],
+  "hallazgos": [
+    "producto_id se usa como criterio obligatorio de igualdad entre fuentes",
+    "No hay campos para fechas de registro/corte/extraccion fuera de fecha_referencia y periodo",
+    "Tipo de revision solo considera fuente/version, sin producto/celda ni identidad de version suficiente",
+    "Resultado es dict sin modelo tipado y omite esquema requerido por contrato",
+    "Resta Decimal sin contexto de precision propio ni limites de coeficiente/exponente",
+    "CLI lee bytes de entrada para parsear y luego los vuelve a leer para hash",
+    "Control de tamaño usa stat antes de lectura sin limite de read",
+    "No se valida inicio<=fin del periodo ni marcadores conocidos de metadatos pendientes",
+    "Explicaciones admiten grado documentado/verificado sin autor o evidencia y sin comprobacion referencial",
+    "razones_abstencion incluye diferencia_decimal_calculada y conteo revisiones depende de comparabilidad"
+  ],
+  "comprobaciones": {
+    "AST_2_archivos": true,
+    "ruff_check": "pass",
+    "ruff_format_check": "pass",
+    "sin_ejecucion_nucleo": true,
+    "sin_SQL_red_datos_reales": true
+  }
+}

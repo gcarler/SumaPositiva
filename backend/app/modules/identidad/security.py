@@ -130,4 +130,3 @@ def decodificar_token_desafio_mfa(
         return UUID(payload["sub"])
     except (jwt.PyJWTError, ValueError, KeyError, TypeError):
         return None
-

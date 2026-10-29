@@ -25,8 +25,7 @@ from app.modules.sesion.security import generar_uuidv7
 # Catálogo territorial de zonas étnicas de Cartagena y subregión
 ZONAS_ETNICAS_CARTAGENA = {
     ("tierrabomba"): (
-        "Consejos Comunitarios de la Isla de Tierrabomba (Tierrabomba, Ca"
-        "ño del Oro, Bocachica, Punta Arena)"
+        "Consejos Comunitarios de la Isla de Tierrabomba (Tierrabomba, Caño del Oro, Bocachica, Punta Arena)"
     ),
     "tierra bomba": "Consejos Comunitarios de la Isla de Tierrabomba",
     "bocachica": "Consejo Comunitario de Bocachica (Comunidad Negra)",
@@ -170,12 +169,8 @@ class AgenteJuridico:
 
     def evaluar_no_regresividad(self, entrada: EntradaJuridica) -> ControlRegresividadDESCA:
         """Aplica el test de no regresividad en Derechos Sociales (C-038/04, C-503/14)."""
-        texto_analizar = (
-            f"{entrada.titulo} {entrada.descripcion} {' '.join(entrada.lineas_accion)}".lower()
-        )
-        riesgo = entrada.modifica_beneficios_existentes or any(
-            t in texto_analizar for t in TERMINOS_REGRESIVIDAD
-        )
+        texto_analizar = f"{entrada.titulo} {entrada.descripcion} {' '.join(entrada.lineas_accion)}".lower()
+        riesgo = entrada.modifica_beneficios_existentes or any(t in texto_analizar for t in TERMINOS_REGRESIVIDAD)
 
         derechos: list[str] = [
             "Derecho a la Seguridad Humana",
@@ -196,9 +191,7 @@ class AgenteJuridico:
                 "echos sociales exige justificación imperiosa y no vulneración de"
                 "l núcleo esencial (Sentencia C-038 de 2004)."
             )
-            advertencias.append(
-                "La administración debe demostrar que se agotaron alternativas menos lesivas."
-            )
+            advertencias.append("La administración debe demostrar que se agotaron alternativas menos lesivas.")
         else:
             supera = True
             advertencias.append(
@@ -222,9 +215,7 @@ class AgenteJuridico:
         control_desca = self.evaluar_no_regresividad(entrada)
         recomendaciones: list[str] = []
 
-        texto_completo = (
-            f"{entrada.titulo} {entrada.descripcion} {' '.join(entrada.lineas_accion)}".lower()
-        )
+        texto_completo = f"{entrada.titulo} {entrada.descripcion} {' '.join(entrada.lineas_accion)}".lower()
 
         # Evaluación de competencia territorial (LOOT Ley 1454 / Ley 715 / Ley 1617)
         es_nacional = any(term in texto_completo for term in TERMINOS_COMPETENCIA_NACIONAL)
@@ -267,14 +258,9 @@ class AgenteJuridico:
             )
 
         # Trámite normativo
-        if (
-            len(entrada.lineas_accion) > 3
-            or "plurianual" in texto_completo
-            or "acuerdo" in texto_completo
-        ):
+        if len(entrada.lineas_accion) > 3 or "plurianual" in texto_completo or "acuerdo" in texto_completo:
             instrumento = (
-                "Proyecto de Acuerdo Distrital ante el Concejo Distrital de Carta"
-                "gena (2 debates obligatorios)"
+                "Proyecto de Acuerdo Distrital ante el Concejo Distrital de Cartagena (2 debates obligatorios)"
             )
         else:
             instrumento = "Decreto Distrital expedido por el Alcalde Mayor de Cartagena de Indias"

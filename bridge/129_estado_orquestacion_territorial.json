@@ -1,0 +1,49 @@
+{
+  "fecha_utc": "2026-10-26T00:49:28.201621+00:00",
+  "revision_parser_124": {
+    "resultado": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "61",
+      "time": "0.096",
+      "timestamp": "2026-10-26T00:42:49.346248+00:00",
+      "hostname": "srv2006133"
+    },
+    "hash_parser_verificado": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+    "hash_tests_verificado": "dd58ec7666089067ebcba7d7321e3f2eff4cbcbb8a8a044c589744d778433ef8",
+    "defectos_nuevos_declarados": false
+  },
+  "procedencia_piloto_118": {
+    "hash_parser_en_manifiesto": "60eae40d516f14a0f619b8e571d564e9f3c215a64ac58aa3ff559154708177c4",
+    "hash_parser_final": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+    "coinciden": false,
+    "reproduccion_final": {
+      "evidencia": "bridge/119_cotejo_piloto_numerico.json",
+      "filas_cotejadas_campo_a_campo": 12899
+    },
+    "causa_diferencia_hash": "no_acreditada_no_se_asume",
+    "historial_preservado": true
+  },
+  "implementado": {
+    "catalogo_a_planificador": "revision122_superada_con_registro_cerrado",
+    "conciliador": "72_pruebas_y_revision96",
+    "parser_terridata": "61_pruebas_y_revision124",
+    "seleccion_conjunta": "149_pruebas_en119"
+  },
+  "en_curso": {
+    "ficha_territorial": "tarea125_entrega126",
+    "identidad_territorial_oficial": "tarea127_entrega128"
+  },
+  "pendientes": [
+    "validacion_semantica_por_observacion",
+    "vintage_y_base_censal",
+    "condiciones_de_uso_por_producto",
+    "persistencia_PG_y_cortes_con_historia",
+    "consumidores_de_analisis_e_interpretacion_por_politica"
+  ],
+  "datos_promovidos_al_banco": false,
+  "despliegue": false,
+  "dictamen_EAF": false
+}

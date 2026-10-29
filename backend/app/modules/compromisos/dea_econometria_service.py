@@ -20,6 +20,8 @@ from scipy.stats import chi2, norm, pearsonr, spearmanr, wilcoxon
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.compromisos.ipc_deflactor_polis import factor_hacia_anio_base
+
 IPC_DANE = {
     2017: 4.09,
     2018: 3.18,
@@ -113,9 +115,8 @@ def _sigla(entity: str) -> str:
 
 
 def _factor(year: int) -> float | None:
-    if year > 2025 or year < 2017:
-        return None
-    return math.prod(1 + IPC_DANE[y] / 100 for y in range(year + 1, 2026))
+    factor = factor_hacia_anio_base(year, 2025)
+    return float(factor) if factor is not None else None
 
 
 def _origin_ratio(row: dict[str, Any]) -> float | None:
@@ -137,9 +138,7 @@ def _origin_ratio(row: dict[str, Any]) -> float | None:
     num = [
         float(v)
         for k, v in origin.items()
-        if re.search(r"ejecutad|reporte acumulad|avance acumulad", k, re.I)
-        and _num(v) is not None
-        and _num(v) >= 0
+        if re.search(r"ejecutad|reporte acumulad|avance acumulad", k, re.I) and _num(v) is not None and _num(v) >= 0
     ]
     if len(den) == len(num) == 1:
         return num[0] / den[0]
@@ -222,9 +221,7 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
     audit["archivos"] = len({r["archivo_id"] for r in rows})
     audit["filas_fisicas"] = len({(r["archivo_id"], r["hoja"], r["fila"]) for r in rows})
     audit["entidades"] = len({r["entidad"] for r in rows})
-    audit["filas_interinstitucionales"] = sum(
-        r["entidad"] != r.get("archivo_entidad") for r in rows
-    )
+    audit["filas_interinstitucionales"] = sum(r["entidad"] != r.get("archivo_entidad") for r in rows)
     audit["hojas_motor_analizadas"] = len(sheet)
     audit["hojas_motor_mixtas"] = sum(c["low"] > 0 and c["high"] > 0 for c in sheet.values())
     cuts_by_entity = defaultdict(set)
@@ -250,11 +247,7 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
             if value is None or value <= 0:
                 continue
             header = row.get(f"encabezado_{stage}")
-            if (
-                stage == "pagos"
-                and header
-                and re.search(r"compromis|registro presupuestal", header, re.I)
-            ):
+            if stage == "pagos" and header and re.search(r"compromis|registro presupuestal", header, re.I):
                 audit["pagos_encabezado_conflicto_excluidos"] += 1
                 continue
             factor, unit_state = _unit_factor(header)
@@ -286,9 +279,7 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
         same_cut_files[(entity, item, _stage, cut_rank)].add(str(row["archivo_id"]))
         if k not in best_file or rank > best_file[k]:
             best_file[k] = rank
-    audit["proyectos_etapa_multilibro_mismo_corte"] = sum(
-        len(files) > 1 for files in same_cut_files.values()
-    )
+    audit["proyectos_etapa_multilibro_mismo_corte"] = sum(len(files) > 1 for files in same_cut_files.values())
     money = defaultdict(lambda: defaultdict(float))
     dims = defaultdict(lambda: defaultdict(float))
     for signature, row in money_by_source.items():
@@ -353,9 +344,7 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
             m[f"{stage}_cop"] = raw
             m[f"{stage}_constante_2025_cop"] = raw * factor if factor is not None else None
         m["x2"] = float(len(m["bpim"]))
-        m["completitud_documental"] = (
-            len(cuts_by_entity[entity] & {"T1", "T2", "T3", "T4", "ANUAL"}) / 5
-        )
+        m["completitud_documental"] = len(cuts_by_entity[entity] & {"T1", "T2", "T3", "T4", "ANUAL"}) / 5
         m["pa_debil_proporcion"] = m["pa_debil"] / m["pa_total"] if m["pa_total"] else None
     audit["seleccionados_por_item"] = len(selected)
     bpim_cuts = defaultdict(list)
@@ -366,9 +355,7 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
     top_rank = defaultdict(lambda: -1)
     for row in rows:
         top_rank[row["entidad"]] = max(top_rank[row["entidad"]], CUT_RANK.get(row.get("corte"), -1))
-    audit["bpim_solo_corte_anterior"] = sum(
-        max(ranks) < top_rank[entity] for (entity, _), ranks in bpim_cuts.items()
-    )
+    audit["bpim_solo_corte_anterior"] = sum(max(ranks) < top_rank[entity] for (entity, _), ranks in bpim_cuts.items())
     audit["insumo_financiero_ausente"] = sum(m["apropiacion_cop"] <= 0 for m in metrics.values())
     audit["factor_ipc_2025"] = factor
     audit["provisional"] = year > 2025
@@ -551,9 +538,7 @@ def _frontier_contract(result: dict[str, Any], data: dict[str, Any]) -> dict[str
                 "ic95_inf": boot.get("ic95_inf"),
                 "ic95_sup": boot.get("ic95_sup"),
                 "bootstrap_estado": boot.get("estado"),
-                "peers": [
-                    {"sigla": _sigla(p["entidad"]), "lambda": p["peso"]} for p in score["peers"]
-                ],
+                "peers": [{"sigla": _sigla(p["entidad"]), "lambda": p["peso"]} for p in score["peers"]],
                 "holguras_slacks": {
                     "slack_x1_mcop": slx[0],
                     "slack_y1_metas": sly[0],
@@ -598,22 +583,14 @@ def _frontier_contract(result: dict[str, Any], data: dict[str, Any]) -> dict[str
         )
     result.update(
         {
-            "modo": "extendida_2x3"
-            if result.get("modo") == "extendido_2x3"
-            else result.get("modo", "nucleo_1x2"),
+            "modo": "extendida_2x3" if result.get("modo") == "extendido_2x3" else result.get("modo", "nucleo_1x2"),
             "cooper_n_minimo": result.get("minimo_cooper", 9),
             "dmus_totales_observadas": len(source),
             "dmus_estimables": len(ranking),
             "dmus_excluidas": len(excluded),
-            "eficiencia_media_ccr": float(np.mean([r["theta_ccr"] for r in ranking]))
-            if ranking
-            else 0,
-            "eficiencia_media_bcc": float(np.mean([r["theta_bcc"] for r in ranking]))
-            if ranking
-            else 0,
-            "eficiencia_media_sbm": float(
-                np.mean([r["theta_sbm"] for r in ranking if r["theta_sbm"] is not None])
-            )
+            "eficiencia_media_ccr": float(np.mean([r["theta_ccr"] for r in ranking])) if ranking else 0,
+            "eficiencia_media_bcc": float(np.mean([r["theta_bcc"] for r in ranking])) if ranking else 0,
+            "eficiencia_media_sbm": float(np.mean([r["theta_sbm"] for r in ranking if r["theta_sbm"] is not None]))
             if any(r["theta_sbm"] is not None for r in ranking)
             else 0,
             "ranking_eficiencia": ranking,
@@ -673,12 +650,7 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 200) -> d
         def objective(v):
             mu = z @ v[:-1]
             sigma = np.exp(v[-1])
-            value = (
-                -0.5 * ((y - mu) / sigma) ** 2
-                - 0.5 * math.log(2 * math.pi)
-                - v[-1]
-                - log_ndtr(mu / sigma)
-            )
+            value = -0.5 * ((y - mu) / sigma) ** 2 - 0.5 * math.log(2 * math.pi) - v[-1] - log_ndtr(mu / sigma)
             return -float(np.sum(value)) if np.all(np.isfinite(value)) else 1e100
 
         start = np.r_[np.linalg.lstsq(z, y, rcond=None)[0], np.log(max(np.std(y), 0.01))]
@@ -726,9 +698,7 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 200) -> d
                 "error_bootstrap": float(np.std(arr[:, i], ddof=1)),
                 "ic95_inf": float(np.quantile(arr[:, i], 0.025)),
                 "ic95_sup": float(np.quantile(arr[:, i], 0.975)),
-                "p_bootstrap_aproximado": float(
-                    2 * min(np.mean(arr[:, i] <= 0), np.mean(arr[:, i] >= 0))
-                ),
+                "p_bootstrap_aproximado": float(2 * min(np.mean(arr[:, i] <= 0), np.mean(arr[:, i] >= 0))),
             }
             for i, name in enumerate(names)
         ],
@@ -789,13 +759,7 @@ class DeaEconometriaService:
             # consultar la vigencia completa de una vez excede el timeout.
             for motor in ("INVERSION_PRESUPUESTAL", "PLAN_ACCION", "PLAN_DESARROLLO"):
                 part = (
-                    (
-                        await self.session.execute(
-                            _SQL, {"anio": year, "motor": motor, "clone": CLONE}
-                        )
-                    )
-                    .mappings()
-                    .all()
+                    (await self.session.execute(_SQL, {"anio": year, "motor": motor, "clone": CLONE})).mappings().all()
                 )
                 rows.extend(part)
             # Separar la labor numérica del event loop; descartar JSON bruto tras consolidar.
@@ -811,9 +775,7 @@ class DeaEconometriaService:
         years = [await self._year(y) for y in range(2020, 2027)]
         audits = [x["auditoria"] for x in years]
         total = (
-            await self.session.execute(
-                text("SELECT count(*) FROM seguimiento.registros_triada_normalizados")
-            )
+            await self.session.execute(text("SELECT count(*) FROM seguimiento.registros_triada_normalizados"))
         ).scalar_one()
         missing = [
             {
@@ -833,7 +795,7 @@ class DeaEconometriaService:
                 "vigencia": y,
                 "inflacion_anual_pct": IPC_DANE[y],
                 "factor_deflactor_base_2025": _factor(y),
-                "fuente": "DANE IPC cierre anual",
+                "fuente": "DANE IPC: variación diciembre; deflactor con promedio de 12 meses",
                 "estado": "BASE_CERRADA" if y == 2025 else "CERTIFICADO",
             }
             for y in range(2017, 2026)
@@ -850,24 +812,14 @@ class DeaEconometriaService:
         response = {
             "estado": "CALCULADO",
             "base_ipc": 2025,
-            "fuente_ipc": "DANE IPC variacion anual, cierre diciembre 2025 = 5,10%",
-            "vigencias": [
-                a | {"vigencia": x["vigencia"]} for a, x in zip(audits, years, strict=True)
-            ],
+            "fuente_ipc": "DANE IPC total nacional, serie empalmada septiembre 2026; COP promedio anual 2025",
+            "vigencias": [a | {"vigencia": x["vigencia"]} for a, x in zip(audits, years, strict=True)],
             "embudo_financiero": {
                 "presupuesto_bruto_cop": sum(a.get("bruto_apropiacion_cop", 0) for a in audits),
-                "duplicados_intermotor_filas": sum(
-                    a["registros"] - a["filas_fisicas"] for a in audits
-                ),
-                "presupuesto_deduplicado_cop": sum(
-                    a["finanzas_saneadas_cop"]["apropiacion"] for a in audits
-                ),
-                "bpim_complementarios_preservados": sum(
-                    a["bpim_solo_corte_anterior"] for a in audits
-                ),
-                "filas_interinstitucionales_preservadas": sum(
-                    a["filas_interinstitucionales"] for a in audits
-                ),
+                "duplicados_intermotor_filas": sum(a["registros"] - a["filas_fisicas"] for a in audits),
+                "presupuesto_deduplicado_cop": sum(a["finanzas_saneadas_cop"]["apropiacion"] for a in audits),
+                "bpim_complementarios_preservados": sum(a["bpim_solo_corte_anterior"] for a in audits),
+                "filas_interinstitucionales_preservadas": sum(a["filas_interinstitucionales"] for a in audits),
                 "grupos_repetidos_despropagados": sum(
                     sum(
                         a.get(f"repeticiones_sin_clave_{stage}", 0)
@@ -888,13 +840,9 @@ class DeaEconometriaService:
                 "total_hojas_motor_analizadas": sum(a["hojas_motor_analizadas"] for a in audits),
                 "hojas_mixtas_detectadas": sum(a["hojas_motor_mixtas"] for a in audits),
                 "reconciliadas_cociente_ejec_prog": sum(
-                    a.get("escala_COCIENTE_VERIFICADO", 0)
-                    + a.get("escala_PORCENTAJE_VERIFICADO", 0)
-                    for a in audits
+                    a.get("escala_COCIENTE_VERIFICADO", 0) + a.get("escala_PORCENTAJE_VERIFICADO", 0) for a in audits
                 ),
-                "casos_cuarentena_escala_ambigua": sum(
-                    a.get("escala_ESCALA_AMBIGUA", 0) for a in audits
-                ),
+                "casos_cuarentena_escala_ambigua": sum(a.get("escala_ESCALA_AMBIGUA", 0) for a in audits),
                 "casos_mayores_100_auditados": sum(
                     a.get("escala_SOBRECUMPLIMIENTO_O_CANTIDAD_ABSOLUTA", 0) for a in audits
                 ),
@@ -907,8 +855,7 @@ class DeaEconometriaService:
             "advertencias": [
                 "Estimaciones del corpus, pendientes de conciliacion presupuestal oficial",
                 "2026 es corte parcial; sin deflactor anual definitivo",
-                "Escalas ambiguas y unidades monetarias mixtas quedan visibles; "
-                "solo se reescalan unidades explicitas",
+                "Escalas ambiguas y unidades monetarias mixtas quedan visibles; solo se reescalan unidades explicitas",
             ],
         }
         return _set_result(result_key, response)
@@ -951,9 +898,7 @@ class DeaEconometriaService:
         task.add_done_callback(lambda _task, cache_key=key: _FRONTIER_TASKS.pop(cache_key, None))
         return response
 
-    async def _complete_frontier(
-        self, key: tuple[Any, ...], data: dict[str, Any], modo: str, insumo: str
-    ) -> None:
+    async def _complete_frontier(self, key: tuple[Any, ...], data: dict[str, Any], modo: str, insumo: str) -> None:
         try:
             full = await asyncio.to_thread(self._frontier_sync, data, modo, insumo, True)
             if modo == "nucleo_1x2":
@@ -966,12 +911,7 @@ class DeaEconometriaService:
 
     async def _local_panel(self, insumo: str) -> dict[str, Any]:
         years = [await self._year(y) for y in range(2020, 2026)]
-        local = [
-            m
-            for data in years
-            for m in data["metricas"].values()
-            if m["grupo"] == "ALCALDIAS_LOCALES"
-        ]
+        local = [m for data in years for m in data["metricas"].values() if m["grupo"] == "ALCALDIAS_LOCALES"]
         valid, X, Y = _arrays(local, "nucleo_1x2", insumo)
         if len(valid) < 9:
             return {
@@ -993,9 +933,7 @@ class DeaEconometriaService:
         }
 
     @staticmethod
-    def _frontier_sync(
-        data: dict[str, Any], modo: str, insumo: str, bootstrap: bool
-    ) -> dict[str, Any]:
+    def _frontier_sync(data: dict[str, Any], modo: str, insumo: str, bootstrap: bool) -> dict[str, Any]:
         all_items = sorted(data["metricas"].values(), key=lambda m: m["entidad"])
         valid, X, Y = _arrays(all_items, modo, insumo)
         minimum = 9 if modo == "nucleo_1x2" else 15
@@ -1050,11 +988,7 @@ class DeaEconometriaService:
                     "sbm": sbm,
                     "supereficiencia": super_vrs.get("eficiencia"),
                     "estado_supereficiencia": super_vrs["estado"],
-                    "peers": [
-                        {"entidad": valid[j]["entidad"], "peso": w}
-                        for j, w in enumerate(lambdas)
-                        if w > 1e-6
-                    ],
+                    "peers": [{"entidad": valid[j]["entidad"], "peso": w} for j, w in enumerate(lambdas) if w > 1e-6],
                     "bootstrap": {"estado": "PENDIENTE"},
                 }
             )
@@ -1127,9 +1061,7 @@ class DeaEconometriaService:
                 "n_elegible": len(valid),
                 "minimo_cooper": minimum,
                 "base_ipc": 2025,
-                "advertencia": (
-                    "DEA exploratorio sobre datos ingeridos sin conciliacion presupuestal externa"
-                ),
+                "advertencia": ("DEA exploratorio sobre datos ingeridos sin conciliacion presupuestal externa"),
                 "entidades": scores,
                 "fronteras_grupo": groups,
                 "exclusiones": [
@@ -1162,9 +1094,7 @@ class DeaEconometriaService:
             a, ax, ay = _arrays(list(old["metricas"].values()), "nucleo_1x2", "apropiacion")
             b, bx, by = _arrays(list(new["metricas"].values()), "nucleo_1x2", "apropiacion")
             if len(a) < 9 or len(b) < 9:
-                transitions.append(
-                    {"desde": y, "hasta": y + 1, "estado": "NO_ESTIMABLE_MUESTRA_INSUFICIENTE"}
-                )
+                transitions.append({"desde": y, "hasta": y + 1, "estado": "NO_ESTIMABLE_MUESTRA_INSUFICIENTE"})
                 continue
             ai = {m["entidad"]: i for i, m in enumerate(a)}
             bi = {m["entidad"]: i for i, m in enumerate(b)}
@@ -1179,17 +1109,10 @@ class DeaEconometriaService:
                     results.append({"entidad": entity, "estado": "NO_ESTIMABLE_DISTANCIA"})
                     continue
                 e = d11["eficiencia"] / d00["eficiencia"]
-                t = math.sqrt(
-                    (d01["eficiencia"] / d11["eficiencia"])
-                    * (d00["eficiencia"] / d10["eficiencia"])
-                )
+                t = math.sqrt((d01["eficiencia"] / d11["eficiencia"]) * (d00["eficiencia"] / d10["eficiencia"]))
                 v0 = _lp(ax, ay, ax[i], ay[i], vrs=True)
                 v1 = _lp(bx, by, bx[j], by[j], vrs=True)
-                pech = (
-                    v1["eficiencia"] / v0["eficiencia"]
-                    if v0["estado"] == v1["estado"] == "CALCULADO"
-                    else None
-                )
+                pech = v1["eficiencia"] / v0["eficiencia"] if v0["estado"] == v1["estado"] == "CALCULADO" else None
                 results.append(
                     {
                         "entidad": entity,
@@ -1238,12 +1161,8 @@ class DeaEconometriaService:
                 "techch_global": _geomean([r["techch"] for r in all_scores]),
                 "media_agregada": "GEOMETRICA",
                 "alertas_mpi_extremo": sum(r["mpi"] > 5 or r["mpi"] < 0.2 for r in all_scores),
-                "entidades_avance_productividad": len(
-                    {r["entidad"] for r in all_scores if r["mpi"] > 1}
-                ),
-                "entidades_retroceso_productividad": len(
-                    {r["entidad"] for r in all_scores if r["mpi"] < 1}
-                ),
+                "entidades_avance_productividad": len({r["entidad"] for r in all_scores if r["mpi"] > 1}),
+                "entidades_retroceso_productividad": len({r["entidad"] for r in all_scores if r["mpi"] < 1}),
                 "diagnostico_institucional": (
                     "Media geometrica exploratoria de anos cerrados; hay MPI extremos "
                     "por calidad de datos y no se infiere causalidad."
@@ -1280,32 +1199,31 @@ class DeaEconometriaService:
                             "y1": m["y1"],
                             "y2": m["y2"],
                             "debil": m["pa_debil_proporcion"],
-                            "continuidad": len(bpim & prior_bpim[m["entidad"]]) / len(bpim)
-                            if bpim
-                            else None,
+                            "continuidad": len(bpim & prior_bpim[m["entidad"]]) / len(bpim) if bpim else None,
                             "completitud_documental": m["completitud_documental"],
                             "grupo": m["grupo"],
                         }
                     )
-            values = [m["apropiacion_constante_2025_cop"] or 0 for m in metrics]
+            factor_anual = _factor(year)
+            values = [m["apropiacion_constante_2025_cop"] or 0 for m in metrics] if factor_anual is not None else []
             by_dim = defaultdict(float)
             for m in metrics:
-                for dim, value in m["dimensiones_cop"].items():
-                    by_dim[dim] += value * (_factor(year) or 1)
+                if factor_anual is not None:
+                    for dim, value in m["dimensiones_cop"].items():
+                        by_dim[dim] += value * factor_anual
                 prior_bpim[m["entidad"]].update(m["bpim"])
-            unassigned = by_dim.pop("SIN_ASIGNAR", 0.0)
+            unassigned = by_dim.pop("SIN_ASIGNAR", 0.0) if factor_anual is not None else None
             concentration.append(
                 {
                     "vigencia": year,
                     "n_entidades": len(metrics),
-                    "gini_entidades": _gini(values),
-                    "hhi_entidades": _hhi(values),
+                    "gini_entidades": _gini(values) if factor_anual is not None else None,
+                    "hhi_entidades": _hhi(values) if factor_anual is not None else None,
                     "sin_dimension_cop_2025": unassigned,
-                    "dimensiones": [
-                        {"dimension": k, "cop_2025": v} for k, v in sorted(by_dim.items())
-                    ],
-                    "gini_dimensiones": _gini(list(by_dim.values())),
-                    "hhi_dimensiones": _hhi(list(by_dim.values())),
+                    "dimensiones": [{"dimension": k, "cop_2025": v} for k, v in sorted(by_dim.items())],
+                    "gini_dimensiones": _gini(list(by_dim.values())) if factor_anual is not None else None,
+                    "hhi_dimensiones": _hhi(list(by_dim.values())) if factor_anual is not None else None,
+                    "estado_ipc": "ANUAL_COMPLETO" if factor_anual is not None else "SIN_IPC_ANUAL_COMPLETO",
                 }
             )
         correlations = []
@@ -1313,11 +1231,7 @@ class DeaEconometriaService:
         for i, a in enumerate(names):
             for b in names[i + 1 :]:
                 paired = [(r[a], r[b]) for r in panel if r[a] is not None and r[b] is not None]
-                if (
-                    len(paired) < 10
-                    or len({p[0] for p in paired}) < 3
-                    or len({p[1] for p in paired}) < 3
-                ):
+                if len(paired) < 10 or len({p[0] for p in paired}) < 3 or len({p[1] for p in paired}) < 3:
                     continue
                 va, vb = zip(*paired, strict=True)
                 rho, pr = spearmanr(va, vb)
@@ -1378,9 +1292,7 @@ class DeaEconometriaService:
                 "p_value": c["p_bootstrap_aproximado"],
                 "ic95_inferior": c["ic95_inf"],
                 "ic95_superior": c["ic95_sup"],
-                "significancia": "Exploratorio"
-                if c["p_bootstrap_aproximado"] < 0.05
-                else "No significativo",
+                "significancia": "Exploratorio" if c["p_bootstrap_aproximado"] < 0.05 else "No significativo",
                 "interpretacion_politica": "Asociacion no causal, condicionada a elegibilidad",
             }
             for c in regression.get("coeficientes", [])
@@ -1396,9 +1308,7 @@ class DeaEconometriaService:
             {
                 "dimension": dim,
                 "hhi_puntos": (_hhi(values) or 0) * 10000,
-                "clasificacion_hhi": "CONCENTRACION_ALTA"
-                if (_hhi(values) or 0) > 0.25
-                else "CONCENTRACION_MODERADA",
+                "clasificacion_hhi": "CONCENTRACION_ALTA" if (_hhi(values) or 0) > 0.25 else "CONCENTRACION_MODERADA",
                 "participacion_presupuesto_pct": 100 * sum(values) / dim_total if dim_total else 0,
             }
             for dim, values in sorted(dim_entities.items())
@@ -1413,9 +1323,7 @@ class DeaEconometriaService:
             "eficiencia_media_p2": compare.get("media_2024_2025", 0),
             "diferencia_medias": delta,
             "estadistico_w": compare.get("estadistico_wilcoxon", 0),
-            "z_score": math.copysign(norm.isf(max(p_w, 1e-12) / 2), delta)
-            if compare["estado"] == "CALCULADO"
-            else 0,
+            "z_score": math.copysign(norm.isf(max(p_w, 1e-12) / 2), delta) if compare["estado"] == "CALCULADO" else 0,
             "p_value_bilateral": p_w,
             "conclusion_cientifica": "Comparacion descriptiva pareada, sin inferencia causal"
             if compare["estado"] == "CALCULADO"
@@ -1455,9 +1363,7 @@ class DeaEconometriaService:
                 "hhi_general_distrital": (concentration[-1]["hhi_entidades"] or 0) * 10000,
             },
             "prueba_wilcoxon_pareada": wilcoxon_contract,
-            "advertencia": (
-                "Asociaciones descriptivas; no prueban causalidad ni presupuesto oficial"
-            ),
+            "advertencia": ("Asociaciones descriptivas; no prueban causalidad ni presupuesto oficial"),
         }
         return _set_result(result_key, response)
 
@@ -1479,11 +1385,7 @@ class DeaEconometriaService:
         msum = malmquist.get("resumen_periodo_completo", {})
         w = economy.get("prueba_wilcoxon_pareada", {})
         weak = next(
-            (
-                c
-                for c in economy.get("coeficientes_regresion", [])
-                if c["parametro"] == "verbo_debil"
-            ),
+            (c for c in economy.get("coeficientes_regresion", []) if c["parametro"] == "verbo_debil"),
             None,
         )
         return {

@@ -1,0 +1,74 @@
+{
+  "esquema": "polis.validacion_coordinacion_territorial.v1",
+  "codigo_y_pruebas_sha256": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd",
+    "backend/app/modules/compromisos/parser_terridata_polis.py": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+    "backend/app/modules/compromisos/adaptador_catalogo_fuentes_polis.py": "98e19295ddb337c21892adc4161f42a6b757392776e5066ba43d0bdd77bf7a09",
+    "backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py": "9c0c25de1307f2d0d7f2e596b41ba8743067cd3fc11f49e88aba9037e2eabfab",
+    "backend/app/modules/compromisos/ficha_territorial_polis.py": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874",
+    "backend/scripts/contrastar_fuentes_por_periodo.py": "15634cdedec70b20a75a6349a104b63e1031b62008c87708f3bad06d888bdd5e",
+    "backend/scripts/planificar_fuentes_politica.py": "c26e9db460fa1c4386c89f24564fe7feb6bfa8419b1500891906b4344903f3c0",
+    "backend/scripts/construir_ficha_territorial_polis.py": "7773e7a307ef8916fe85e6c0613950012dd716a273f2f817686e20198c36b570",
+    "backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py": "8e789b73f3408d103391d1412b5ed49b81231e8861bf65485a44562598e66b9f",
+    "backend/tests/test_parser_terridata_polis.py": "dd58ec7666089067ebcba7d7321e3f2eff4cbcbb8a8a044c589744d778433ef8",
+    "backend/tests/test_adaptador_catalogo_fuentes_polis.py": "0f5b0ed586e3608a9ebe607d17398faea62fdf2cdb3c882cb1df3a9c57776388",
+    "backend/tests/test_identidad_territorial_catalogo_polis.py": "a41ca1937f863149de7eff52532871504528725de887bed264daf9b08bb69a0c",
+    "backend/tests/test_ficha_territorial_polis.py": "9272b76e972583f43ea549c4845ec0bf937673c62e35aeb829f303aa15949e50",
+    "backend/tests/test_cli_ficha_territorial_polis.py": "3d0b71722407ed1722f5c75eb474b8a52d4be0677450fccabd6dfb3bd0729942"
+  },
+  "suites": [
+    {
+      "archivo": "bridge/157_pytest_coordinacion_final_1.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "234",
+      "time": "8.982",
+      "timestamp": "2026-10-26T03:47:23.540479+00:00",
+      "hostname": "srv2006133"
+    },
+    {
+      "archivo": "bridge/157_pytest_coordinacion_final_2.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "234",
+      "time": "9.533",
+      "timestamp": "2026-10-26T03:47:34.021152+00:00",
+      "hostname": "srv2006133"
+    },
+    {
+      "archivo": "bridge/163_validacion_opencode_ficha_final/pytest_ficha.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "42",
+      "time": "2.130",
+      "timestamp": "2026-10-26T03:46:22.955657+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "ruff": {
+    "check_exit_code": 0,
+    "format_check_exit_code": 0,
+    "archivos": 14
+  },
+  "pilotos": "bridge/157_validacion_coordinacion_ficha_final/validacion.json",
+  "perfil_demografico_reproducido": "bridge/149_reproduccion_coordinacion_perfil_demografico.json",
+  "estado": "validacion_tecnica_local_superada_ficha_provisional",
+  "no_certifica": [
+    "validacion_semantica",
+    "licencias",
+    "origen_criptografico_DANE",
+    "cobertura_nacional",
+    "integracion_productiva",
+    "dictamen_EAF"
+  ],
+  "sin_SQL": true,
+  "sin_cambios_banco": true,
+  "sin_deploy": true,
+  "sin_commit_push": true
+}

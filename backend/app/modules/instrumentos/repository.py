@@ -75,9 +75,7 @@ class InstrumentoRepository:
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
-    async def listar_nodos_por_instrumento(
-        self, instrumento_id: uuid.UUID
-    ) -> Sequence[NodoInstrumento]:
+    async def listar_nodos_por_instrumento(self, instrumento_id: uuid.UUID) -> Sequence[NodoInstrumento]:
         stmt = (
             select(NodoInstrumento)
             .where(NodoInstrumento.instrumento_id == instrumento_id)

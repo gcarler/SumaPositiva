@@ -5,6 +5,8 @@ import {
   listarCapas,
   estandarizarDireccion,
   obtenerIsocronas,
+  listarIndicadores,
+  listarIndicadoresTerritorio,
 } from "./geovisor-api";
 import * as apiClient from "@/core/http/api-client";
 
@@ -126,7 +128,7 @@ describe("Georreferenciación Territorial Inversa (AUD-SYNC-01)", () => {
 
       expect(spy).toHaveBeenCalledWith("/geodatos/estandarizar-direccion", {
         method: "POST",
-        body: JSON.stringify({ direccion_raw: "Calle 30 # 25-10 Pie de la Popa" }),
+        body: { direccion_raw: "Calle 30 # 25-10 Pie de la Popa" },
       });
       expect(resultado).toEqual(mockRespuesta);
       expect(resultado?.direccion_normalizada).toBe("CL 30 # 25-10, Pie de la Popa");
@@ -209,4 +211,70 @@ describe("Georreferenciación Territorial Inversa (AUD-SYNC-01)", () => {
       expect(resultado).toBeNull();
     });
   });
+
+  describe("Banco Multifuente de Seguridad Humana (GEO-FUENTES-01)", () => {
+    it("consulta GET /geodatos/indicadores con filtros multicriterio", async () => {
+      const mockRespuesta = {
+        total: 2449,
+        limit: 30,
+        offset: 0,
+        indicadores: [
+          {
+            id: "01a17e7a-673e-76f8-beae-a2b49b8e6ed0",
+            territorio_id: "01a0f5dd-538e-7900-afb0-68db850f2153",
+            codigo_indicador: "IND_DANE_POBLACION_MUNICIPAL",
+            nombre_indicador: "Poblacion cabecera",
+            valor: 900543,
+            unidad_medida: "personas",
+            nivel_riesgo: "medio",
+            anio_corte: 2027,
+            fuente_datos: "DANE",
+          },
+        ],
+      };
+
+      const spy = vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(mockRespuesta);
+
+      const resultado = await listarIndicadores({
+        limit: 30,
+        offset: 0,
+        dimension: "comunitaria",
+        fuente_datos: "DANE",
+        codigo_territorio: "DISTRITO-CTG",
+        busqueda: "cabecera",
+      });
+
+      expect(spy).toHaveBeenCalledWith(
+        "/geodatos/indicadores?limit=30&offset=0&dimension=comunitaria&fuente_datos=DANE&codigo_territorio=DISTRITO-CTG&busqueda=cabecera"
+      );
+      expect(resultado.total).toBe(2449);
+      expect(resultado.indicadores).toHaveLength(1);
+      expect(resultado.indicadores[0].fuente_datos).toBe("DANE");
+    });
+
+    it("consulta GET /geodatos/territorios/{id}/indicadores por UUID de territorio", async () => {
+      const mockIndicadores = [
+        {
+          id: "ind-1",
+          territorio_id: "loc-1",
+          codigo_indicador: "IND_HURTO",
+          nombre_indicador: "Hurtos Localidad 1",
+          valor: 120,
+          unidad_medida: "casos",
+          nivel_riesgo: "alto",
+          anio_corte: 2026,
+          fuente_datos: "Policia Nacional",
+        },
+      ];
+
+      const spy = vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(mockIndicadores);
+
+      const resultado = await listarIndicadoresTerritorio("loc-1");
+
+      expect(spy).toHaveBeenCalledWith("/geodatos/territorios/loc-1/indicadores");
+      expect(resultado).toHaveLength(1);
+      expect(resultado[0].territorio_id).toBe("loc-1");
+    });
+  });
 });
+

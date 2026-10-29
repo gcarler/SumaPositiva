@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { identidadApi, type Usuario } from "./identidad-api";
 import { sincronizarSesion } from "./sincronizar-sesion";
-import { useSesionStore } from "../state/session-store";
+import { useSesionStore, sesionLimitadaPorMfa } from "../state/session-store";
 import {
   apiFetch,
   setBearerToken,
@@ -39,6 +39,13 @@ afterEach(() => {
 });
 test("perfil remoto corrige el rol restaurado antes de habilitarlo", async () => {
   vi.spyOn(identidadApi, "perfil").mockResolvedValue(usuario);
+  vi.spyOn(identidadApi, "mfaEstado").mockResolvedValue({
+    activo: false,
+    activado_en: null,
+    codigos_restantes: 0,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
   await sincronizarSesion();
   expect(useSesionStore.getState().sesion?.rol).toBe("ciudadano");
   expect(useSesionStore.getState().cargando).toBe(false);
@@ -96,6 +103,149 @@ test("un perfil de cuenta desactivada limpia el acceso", async () => {
   });
   await sincronizarSesion();
   expect(useSesionStore.getState().sesion).toBeNull();
+});
+
+/* Recordatorio 186: al restaurar sesión o tras un cambio de rol, el perfil
+ * puede llegar con permisos vacíos conservando el rol interno; la restricción
+ * se deriva del estado MFA consultado, no del token del login. */
+test("restauración con rol que exige MFA consulta el estado real y siembra la restricción", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    mfa_activo: false,
+  });
+  const mfaEstado = vi.spyOn(identidadApi, "mfaEstado").mockResolvedValue({
+    activo: false,
+    activado_en: null,
+    codigos_restantes: 0,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
+  await sincronizarSesion();
+  expect(mfaEstado).toHaveBeenCalledOnce();
+  expect(useSesionStore.getState().estadoMfa).toEqual({
+    activo: false,
+    activado_en: null,
+    codigos_restantes: 0,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
+  /* La sesión no se destruye: queda limitada a perfil/estado/iniciar/activar/logout. */
+  expect(useSesionStore.getState().sesion?.rol).toBe("administrador_identidades");
+  expect(useSesionStore.getState().sesion?.token).toBe("anterior");
+  expect(useSesionStore.getState().errorSesion).toBeNull();
+});
+
+test("sesión activa no acreditada también queda representada como restringida", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "autoridad_distrital",
+    mfa_activo: true,
+  });
+  vi.spyOn(identidadApi, "mfaEstado").mockResolvedValue({
+    activo: true,
+    activado_en: "2026-01-01T00:00:00Z",
+    codigos_restantes: 10,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
+  await sincronizarSesion();
+  expect(useSesionStore.getState().estadoMfa).toEqual({
+    activo: true,
+    activado_en: "2026-01-01T00:00:00Z",
+    codigos_restantes: 10,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
+});
+
+test("503 de mfa/estado queda como lectura no disponible y no da acceso", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    mfa_activo: false,
+  });
+  vi.spyOn(identidadApi, "mfaEstado").mockRejectedValue(
+    new ApiError(503, "Lectura no disponible"),
+  );
+  await sincronizarSesion();
+  expect(useSesionStore.getState().estadoMfa).toBe("nodisponible");
+  expect(useSesionStore.getState().sesion?.token).toBe("anterior");
+  expect(useSesionStore.getState().errorSesion).toBeNull();
+  /* La restricción derivada no se transforma en acceso por rol nominal. */
+  expect(
+    sesionLimitadaPorMfa(
+      useSesionStore.getState().sesion,
+      useSesionStore.getState().estadoMfa,
+    ),
+  ).toBe(true);
+});
+
+test("401 de mfa/estado limpia la sesión", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    mfa_activo: false,
+  });
+  vi.spyOn(identidadApi, "mfaEstado").mockRejectedValue(
+    new ApiError(401, "Revocada"),
+  );
+  await sincronizarSesion();
+  expect(useSesionStore.getState().sesion).toBeNull();
+});
+
+test("409 de mfa/estado también queda como lectura no disponible", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    mfa_activo: false,
+  });
+  vi.spyOn(identidadApi, "mfaEstado").mockRejectedValue(
+    new ApiError(409, "Factor activo no puede reiniciar enrolamiento"),
+  );
+  await sincronizarSesion();
+  expect(useSesionStore.getState().estadoMfa).toBe("nodisponible");
+  expect(useSesionStore.getState().sesion?.token).toBe("anterior");
+  expect(useSesionStore.getState().errorSesion).toBeNull();
+});
+
+test("perfil con permisos plenos no consulta el estado MFA", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    permisos: ["usuarios:leer", "identidad:auditar"],
+    mfa_activo: true,
+  });
+  const mfaEstado = vi.spyOn(identidadApi, "mfaEstado");
+  await sincronizarSesion();
+  expect(mfaEstado).not.toHaveBeenCalled();
+  expect(useSesionStore.getState().estadoMfa).toBeNull();
+});
+
+test("cambio de rol a uno exigente restringe la sesión ya activa", async () => {
+  vi.spyOn(identidadApi, "perfil").mockResolvedValue({
+    ...usuario,
+    codigo_rol: "administrador_identidades",
+    permisos: [],
+    mfa_activo: false,
+  });
+  vi.spyOn(identidadApi, "mfaEstado").mockResolvedValue({
+    activo: false,
+    activado_en: null,
+    codigos_restantes: 0,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
+  await sincronizarSesion();
+  expect(useSesionStore.getState().sesion?.rol).toBe("administrador_identidades");
+  expect(useSesionStore.getState().sesion?.permisos).toEqual([]);
+  expect(useSesionStore.getState().estadoMfa).toEqual({
+    activo: false,
+    activado_en: null,
+    codigos_restantes: 0,
+    exigido_por_rol: true,
+    sesion_verificada: false,
+  });
 });
 
 test("un 401 del envío anónimo no cierra la sesión institucional", async () => {

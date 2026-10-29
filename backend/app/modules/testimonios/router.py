@@ -49,8 +49,13 @@ async def crear_testimonio(
     sujeto: SujetoAutenticadoDep,
     service: TestimoniosServiceDep,
 ):
-    """Registra un nuevo relato de memoria social. Ingresa a la cola en estado PENDIENTE."""
-    return await service.crear_testimonio(datos, sujeto_id=sujeto.sujeto_id)
+    """Registra un nuevo relato de memoria social. Admite BORRADOR, PENDIENTE o APROBADO directo si tiene permisos."""
+    puede_moderar = "testimonios:moderar" in (sujeto.permisos or [])
+    return await service.crear_testimonio(
+        datos,
+        sujeto_id=sujeto.sujeto_id,
+        puede_moderar=puede_moderar,
+    )
 
 
 @router.get("/resumen", response_model=ResumenTestimonios)
@@ -96,9 +101,7 @@ async def obtener_testimonio(
     response_model=TestimonioLectura,
     dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
 )
-async def editar_testimonio(
-    id: uuid.UUID, datos: TestimonioEdicion, service: TestimoniosServiceDep
-):
+async def editar_testimonio(id: uuid.UUID, datos: TestimonioEdicion, service: TestimoniosServiceDep):
     """Edición de contenido desde el panel institucional de testimonios."""
     return await service.editar_testimonio(id=id, datos=datos)
 

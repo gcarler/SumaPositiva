@@ -4,8 +4,9 @@ Revision ID: 0026_fotos_mes_vigilancia
 Revises: 0025_control_fases_y_oauth
 """
 
-from alembic import op
 from sqlalchemy import text
+
+from alembic import op
 
 revision = "0026_fotos_mes_vigilancia"
 down_revision = "0025_control_fases_y_oauth"
@@ -14,7 +15,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.execute(text("""
+    op.execute(
+        text("""
         CREATE TABLE mesas_trabajo.fotos_mesa (
             id UUID PRIMARY KEY DEFAULT public.generar_uuid_v7(),
             mesa_id UUID NOT NULL REFERENCES mesas_trabajo.mesas(id) ON DELETE CASCADE,
@@ -30,16 +32,23 @@ def upgrade() -> None:
             CONSTRAINT chk_fotos_mesa_estado CHECK (estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')),
             CONSTRAINT chk_fotos_mesa_aprobacion_autorizada CHECK (estado <> 'APROBADA' OR autorizacion_imagen)
         )
-    """))
-    op.execute(text("""
+    """)
+    )
+    op.execute(
+        text("""
         CREATE INDEX idx_fotos_mesa_publicas ON mesas_trabajo.fotos_mesa (mesa_id, creado_en DESC) WHERE estado = 'APROBADA'
-    """))
-    op.execute(text("""
+    """)
+    )
+    op.execute(
+        text("""
         CREATE INDEX idx_fotos_mesa_revision ON mesas_trabajo.fotos_mesa (creado_en) WHERE estado = 'PENDIENTE'
-    """))
-    op.execute(text("""
+    """)
+    )
+    op.execute(
+        text("""
         COMMENT ON TABLE mesas_trabajo.fotos_mesa IS 'Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.'
-    """))
+    """)
+    )
 
 
 def downgrade() -> None:

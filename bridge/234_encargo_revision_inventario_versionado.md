@@ -1,0 +1,11 @@
+# EAF-FUENTES-INVENTARIO-01 · Revisión acotada antes de publicación local
+
+26 de octubre de 2026. El usuario autorizó sanear el flujo de fuentes y trabajar con agentes. AGENTS exige independencia al evaluar persistencia. Revisar el cambio 227/228 y el candidato 223/224 antes de la sustitución local del inventario; no implementar la corrección ni publicar archivos activos.
+
+Preparación solo de lectura hasta señal `REVISAR_INVENTARIO_228` con hashes congelados. Entregables exclusivos: `bridge/235_revision_inventario_versionado.md` y `bridge/235_evidencia_revision_inventario/`. Sin aplicación, tests de producto, docs, SQL, red, servicios, banco ni evidencias históricas. Casos propios pequeños con fixtures temporales sintéticas dentro de evidencia; no duplicar global backend ni carga SQL de 224.
+
+Leer AGENTS/skill EAF, 205/207/216/217, 223/224, encargo 227, fuentes y entrega 228. El cambio autorizado tiene dos archivos: `scripts/inventariar_fuentes_polis.py` y `backend/tests/test_inventario_fuentes_polis.py`. El importador no cambia. Verificar independencia y bytes al inicio/final.
+
+Revisar y comprobar: exclusión exacta del resumen mutable sin ocultar insumos oficiales; captura derivada no promovida y contrato Drive intacto; preservación condicionada del hallazgo y SHA anterior; generar es lectura; escritura archiva bytes exactos anteriores/nuevos antes del reemplazo; conflictos, symlinks y referencias inconsistentes no sustituyen vista; repetición no corrompe versiones. Revisar transición real desde inventario histórico hacia candidato 223, usando copias físicas de las referencias en staging, sin materializar rutas de datos reales. No certificar inexistencia universal del original ni calidad semántica.
+
+Los resultados SQL de 224 se pueden citar como evidencia técnica de coordinación: 1.829 verificaciones, dos cargas idempotentes y rollback íntegro de seis tablas en base propia. No atribuirse esas ejecuciones ni afirmar que sustituyen una revisión EAF universal de los motores. Emitir conclusión precisa sobre si existe un defecto reproducible que impida esta publicación local, con límites explícitos. Conservar también los casos que fallen y notificar antes de proponer cambios.

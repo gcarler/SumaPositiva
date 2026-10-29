@@ -1,0 +1,84 @@
+{
+  "fecha_utc": "2026-10-26T00:41:42.817748+00:00",
+  "estado": "validacion_dirigida_superada_pendiente_revision_cruzada",
+  "pruebas": {
+    "bridge/119_pytest_adaptador_r1_corrida1.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "15",
+      "time": "5.475",
+      "timestamp": "2026-10-26T00:38:15.059819+00:00",
+      "hostname": "srv2006133"
+    },
+    "bridge/119_pytest_adaptador_corrida2.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "16",
+      "time": "5.998",
+      "timestamp": "2026-10-26T00:40:36.247997+00:00",
+      "hostname": "srv2006133"
+    },
+    "bridge/119_pytest_tres_componentes.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "149",
+      "time": "7.504",
+      "timestamp": "2026-10-26T00:39:47.087515+00:00",
+      "hostname": "srv2006133"
+    }
+  },
+  "ajuste_coordinador": "conservacion_texto_JSON_original_sin_recorte_y_prueba_roundtrip",
+  "primer_intento_prueba_nueva": "fallo_por_strip_heredado_corregido_antes_de_149_pass",
+  "piloto_real_cotejado": 12899,
+  "valores_numericos_convertidos": 12077,
+  "aceptadas_por_parser": 12230,
+  "retenidas": 667,
+  "rechazadas": 2,
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "archivos": {
+    "backend/app/modules/compromisos/adaptador_catalogo_fuentes_polis.py": {
+      "sha256": "98e19295ddb337c21892adc4161f42a6b757392776e5066ba43d0bdd77bf7a09",
+      "bytes": 17669
+    },
+    "backend/scripts/planificar_fuentes_politica.py": {
+      "sha256": "c26e9db460fa1c4386c89f24564fe7feb6bfa8419b1500891906b4344903f3c0",
+      "bytes": 9840
+    },
+    "backend/tests/test_adaptador_catalogo_fuentes_polis.py": {
+      "sha256": "0f5b0ed586e3608a9ebe607d17398faea62fdf2cdb3c882cb1df3a9c57776388",
+      "bytes": 13354
+    },
+    "backend/app/modules/compromisos/parser_terridata_polis.py": {
+      "sha256": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+      "bytes": 23283
+    },
+    "backend/tests/test_parser_terridata_polis.py": {
+      "sha256": "dd58ec7666089067ebcba7d7321e3f2eff4cbcbb8a8a044c589744d778433ef8",
+      "bytes": 11167
+    },
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd",
+      "bytes": 31061
+    },
+    "bridge/119_cotejo_piloto_numerico.json": {
+      "sha256": "09d566a83ae0ced31438cf69c6648e0a88c565b7fcc0198bb0d9c53bc96efefd",
+      "bytes": 1333
+    },
+    "bridge/120_revision_adaptador_y_parser_numerico.md": {
+      "sha256": "4a62b38c9f5063bab119d1e71467d3be786815870856bb44cf9c3304449bf14a",
+      "bytes": 4130
+    }
+  },
+  "SQL": false,
+  "red": false,
+  "promocion_banco": false,
+  "dictamen_EAF": false,
+  "despliegue": false
+}

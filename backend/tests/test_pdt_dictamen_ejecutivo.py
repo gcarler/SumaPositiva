@@ -61,11 +61,7 @@ def test_ppi_desagregado_cubre_2012_2027_y_prioriza_apropiacion_observada():
     assert all(row["origen_insumo"] == "ppi_oficial_desagregado_pdd" for row in by_year[2012])
     assert any(row["origen_insumo"] == "apropiacion_definitiva_cop" for row in by_year[2022])
     assert not any(row["origen_insumo"] == "ppi_oficial_desagregado_pdd" for row in by_year[2022])
-    assert all(
-        "proxy de estructura" in row["fuente_producto"]
-        for row in state["df_outputs"]
-        if row.get("codigo_plan")
-    )
+    assert all("proxy de estructura" in row["fuente_producto"] for row in state["df_outputs"] if row.get("codigo_plan"))
 
 
 def test_geodataframe_uses_postgis_geojson_polygon():
@@ -101,9 +97,7 @@ def test_dictamen_incluye_dependencias_sectores_y_markdown():
                         "slacks": {"insumos": [2], "productos": [0]},
                     }
                 ],
-                "bias_corrected": {
-                    "por_dmu": {"Secretaría de Salud|2024": {"ic_95_pct": [0.7, 0.9]}}
-                },
+                "bias_corrected": {"por_dmu": {"Secretaría de Salud|2024": {"ic_95_pct": [0.7, 0.9]}}},
                 "malmquist": {"pares": []},
             },
             "nlp_coherence": {
@@ -113,13 +107,9 @@ def test_dictamen_incluye_dependencias_sectores_y_markdown():
                 ],
                 "sectores": [],
             },
-            "spatial_lisa": {
-                "trampas_territoriales_gestion_publica": [{"unidad_dmu": "Secretaría de Salud"}]
-            },
+            "spatial_lisa": {"trampas_territoriales_gestion_publica": [{"unidad_dmu": "Secretaría de Salud"}]},
             "time_series_forecast": {
-                "series": [
-                    {"ISRI": 0.5, "entidad": "Secretaría de Salud", "chow": {"estado": "ESTIMADO"}}
-                ]
+                "series": [{"ISRI": 0.5, "entidad": "Secretaría de Salud", "chow": {"estado": "ESTIMADO"}}]
             },
         },
         dependencia="Salud",
@@ -138,15 +128,11 @@ def test_dictamen_endpoint_is_registered_and_returns_schema(monkeypatch):
 
     monkeypatch.setattr(router, "_cargar_pdt_ai_evaluator_fns", lambda: (None, execute, None))
     result = asyncio.run(
-        router.pdt_ai_evaluator_dictamen_ejecutivo(
-            object(), dependencia=None, sector=None, force_refresh=False
-        )
+        router.pdt_ai_evaluator_dictamen_ejecutivo(object(), dependencia=None, sector=None, force_refresh=False)
     )
     assert result["resumen_ejecutivo"].startswith("Dictamen PDT para Cartagena")
     route_paths = {route.path for route in router.router.routes}
-    assert any(
-        path.endswith("/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo") for path in route_paths
-    )
+    assert any(path.endswith("/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo") for path in route_paths)
 
 
 def test_isri_sin_entidad_no_se_asigna_a_todas_las_dependencias():

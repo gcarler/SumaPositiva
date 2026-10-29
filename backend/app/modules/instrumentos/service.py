@@ -108,9 +108,7 @@ class InstrumentoService:
             return ("EFECTO" if "EFECTO" in tipo_nodo else "FIN"), 2
         return "CENTRAL", 1
 
-    async def agregar_nodo(
-        self, instrumento_id: uuid.UUID, datos: NodoInstrumentoCrear
-    ) -> NodoInstrumentoRespuesta:
+    async def agregar_nodo(self, instrumento_id: uuid.UUID, datos: NodoInstrumentoCrear) -> NodoInstrumentoRespuesta:
         async with transaction(self.repository.session):
             instrumento = await self.repository.obtener_instrumento(instrumento_id)
             if not instrumento:
@@ -123,14 +121,10 @@ class InstrumentoService:
                     status.HTTP_400_BAD_REQUEST,
                     detail="Un Árbol de Problemas no admite nodos de tipo Objetivo, Medio o Fin.",
                 )
-            if not es_problemas and any(
-                k in datos.tipo_nodo for k in ("PROBLEMA", "CAUSA", "EFECTO")
-            ):
+            if not es_problemas and any(k in datos.tipo_nodo for k in ("PROBLEMA", "CAUSA", "EFECTO")):
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
-                    detail=(
-                        "Un Árbol de Objetivos no admite nodos de tipo Problema, Causa o Efecto."
-                    ),
+                    detail=("Un Árbol de Objetivos no admite nodos de tipo Problema, Causa o Efecto."),
                 )
 
             tipo_rel, nivel_inferido = self._inferir_relacion_y_nivel(datos.tipo_nodo)
@@ -169,9 +163,7 @@ class InstrumentoService:
         async with transaction(self.repository.session):
             nodo = await self.repository.obtener_nodo_para_actualizar(nodo_id)
             if not nodo or nodo.instrumento_id != instrumento_id:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, detail="Nodo no encontrado en este instrumento"
-                )
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Nodo no encontrado en este instrumento")
 
             # Optmistic Concurrency Control checks
             if if_match and if_match.strip('"') != str(nodo.version_seq):
@@ -183,22 +175,16 @@ class InstrumentoService:
             if datos.version_esperada is not None and datos.version_esperada != nodo.version_seq:
                 raise HTTPException(
                     status.HTTP_409_CONFLICT,
-                    detail=(
-                        "Conflicto de concurrencia: la versión esperada no coincide con la actual."
-                    ),
+                    detail=("Conflicto de concurrencia: la versión esperada no coincide con la actual."),
                 )
 
             if datos.version_seq is not None and datos.version_seq != nodo.version_seq:
                 raise HTTPException(
                     status.HTTP_409_CONFLICT,
-                    detail=(
-                        "Conflicto de concurrencia: la versión enviada no coincide con la actual."
-                    ),
+                    detail=("Conflicto de concurrencia: la versión enviada no coincide con la actual."),
                 )
 
-            for k, v in datos.model_dump(
-                exclude_unset=True, exclude={"version_esperada", "version_seq"}
-            ).items():
+            for k, v in datos.model_dump(exclude_unset=True, exclude={"version_esperada", "version_seq"}).items():
                 if v is not None:
                     if k == "tipo_nodo":
                         tipo_rel, nivel = self._inferir_relacion_y_nivel(v)
@@ -214,9 +200,7 @@ class InstrumentoService:
         async with transaction(self.repository.session):
             nodo = await self.repository.obtener_nodo(nodo_id)
             if not nodo or nodo.instrumento_id != instrumento_id:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, detail="Nodo no encontrado en este instrumento"
-                )
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Nodo no encontrado en este instrumento")
             await self.repository.eliminar_nodo(nodo)
 
     # --- Serialización Jerárquica del Árbol ---
@@ -299,17 +283,12 @@ class InstrumentoService:
         async with transaction(self.repository.session):
             origen = await self.repository.obtener_instrumento(instrumento_id)
             if not origen:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, detail="Árbol de problemas no encontrado"
-                )
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Árbol de problemas no encontrado")
 
             if origen.tipo_instrumento != "ARBOL_PROBLEMAS":
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
-                    detail=(
-                        "Solo un Árbol de Problemas puede ser convertido a Árbol de Objetivos según"
-                        " la MGA."
-                    ),
+                    detail=("Solo un Árbol de Problemas puede ser convertido a Árbol de Objetivos según la MGA."),
                 )
 
             nodos_origen = await self.repository.listar_nodos_por_instrumento(instrumento_id)
@@ -327,8 +306,7 @@ class InstrumentoService:
                 tipo_instrumento="ARBOL_OBJETIVOS",
                 nombre=nombre_obj,
                 descripcion=(
-                    f"Derivado metodológicamente según MGA DNP desde el Árbol de Problemas "
-                    f"'{origen.nombre}'."
+                    f"Derivado metodológicamente según MGA DNP desde el Árbol de Problemas '{origen.nombre}'."
                 ),
                 estado="VALIDADO",
                 instrumento_origen_id=origen.id,

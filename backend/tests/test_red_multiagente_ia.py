@@ -154,9 +154,7 @@ def test_juridico_control_no_regresividad_desca():
     agente = AgenteJuridico()
     entrada = EntradaJuridica(
         titulo="Reestructuración de Centros de Salud",
-        descripcion=(
-            "Ajuste operativo que contempla recorte de subsidios y cierre de puestos de salud"
-        ),
+        descripcion=("Ajuste operativo que contempla recorte de subsidios y cierre de puestos de salud"),
         lineas_accion=["Cerrar centros de salud periféricos para concentrar recursos"],
         poblacion_objetivo="Población vulnerable",
         modifica_beneficios_existentes=True,
@@ -167,9 +165,7 @@ def test_juridico_control_no_regresividad_desca():
     assert resultado.control_regresividad.existe_riesgo_regresividad is True
     assert resultado.control_regresividad.supera_test_progresividad is False
     assert resultado.es_viable is False
-    assert any(
-        "C-038" in adv for adv in resultado.control_regresividad.advertencias_constitucionales
-    )
+    assert any("C-038" in adv for adv in resultado.control_regresividad.advertencias_constitucionales)
 
 
 # =============================================================================
@@ -239,9 +235,7 @@ def test_devolucion_cumplimiento_taxativo_c150():
     p2 = PropuestaParaDevolucion(
         titulo="Construir un helipuerto en cada barrio",
         descripcion="Exigir presupuesto para helipuertos comunales",
-        motivo_descarte_preliminar=(
-            "Costo exorbitante que desborda el Marco Fiscal de Mediano Plazo"
-        ),
+        motivo_descarte_preliminar=("Costo exorbitante que desborda el Marco Fiscal de Mediano Plazo"),
     )
 
     entrada = EntradaDevolucion(
@@ -259,8 +253,7 @@ def test_devolucion_cumplimiento_taxativo_c150():
     assert item_juridico.causal_taxativa == CausalDevolucionTaxativa.JURIDICA
     assert len(item_juridico.fundamentacion_motivada) >= 20
     assert (
-        "Ley 1454" in item_juridico.fundamentacion_motivada
-        or "reserva de ley" in item_juridico.fundamentacion_motivada
+        "Ley 1454" in item_juridico.fundamentacion_motivada or "reserva de ley" in item_juridico.fundamentacion_motivada
     )
 
     item_presupuestal = resultado.matriz_devolucion[1]
@@ -283,13 +276,9 @@ def test_grafo_orquestador_ejecucion_completa_exitosa():
     entrada = EntradaCicloPolitica(
         politica_id=politica_id,
         titulo="Política Pública de Seguridad Humana de Cartagena 2026-2036",
-        descripcion=(
-            "Estrategia intersectorial para la convivencia pacífica y el desarrollo humano integral"
-        ),
+        descripcion=("Estrategia intersectorial para la convivencia pacífica y el desarrollo humano integral"),
         sector="seguridad_humana",
-        problema_central=(
-            "Elevada conflictividad comunitaria e insuficiencia de mecanismos de mediacion"
-        ),
+        problema_central=("Elevada conflictividad comunitaria e insuficiencia de mecanismos de mediacion"),
         causas_directas=["Precaria presencia de centros de mediacion pacifica"],
         efectos_directos=["Deterioro de la seguridad ciudadana barrial"],
         lineas_accion=["Red Distrital de Mediación Comunitaria y Casas de Justicia"],
@@ -385,9 +374,7 @@ async def test_endpoints_api_ia_integracion(monkeypatch):
             "/api/v1/ia/diagnostico",
             json={
                 "titulo": "Prueba Diagnóstico",
-                ("problema_central"): (
-                    "Elevada conflictividad en la Localidad de la Virgen y Turística"
-                ),
+                ("problema_central"): ("Elevada conflictividad en la Localidad de la Virgen y Turística"),
                 "causas_directas": ["Déficit de equipamientos culturales"],
             },
         )

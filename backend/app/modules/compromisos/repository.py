@@ -2,12 +2,11 @@ import uuid
 from collections.abc import Sequence
 from typing import Any
 
-from sqlalchemy import delete, func, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auditoria.models import RegistroAuditoria
 from app.modules.compromisos.models import ActividadPlanAccion, CompromisoPAS
-
 
 
 class CompromisosRepository:
@@ -101,6 +100,7 @@ class CompromisosRepository:
         categoria_recursos: str | None = None,
         fuente_financiacion: str | None = None,
         busqueda: str | None = None,
+        compromiso_pas_codigo: str | None = None,
     ) -> Sequence[ActividadPlanAccion]:
         stmt = select(ActividadPlanAccion).order_by(ActividadPlanAccion.codigo.asc())
         if vigencia:
@@ -109,6 +109,8 @@ class CompromisosRepository:
             stmt = stmt.where(ActividadPlanAccion.entidad_responsable == entidad)
         if linea_codigo and linea_codigo != "todas":
             stmt = stmt.where(ActividadPlanAccion.linea_estrategica_codigo == linea_codigo)
+        if compromiso_pas_codigo and compromiso_pas_codigo != "todas":
+            stmt = stmt.where(ActividadPlanAccion.compromiso_pas_codigo == compromiso_pas_codigo)
         if tipo_meta and tipo_meta != "todas":
             stmt = stmt.where(ActividadPlanAccion.tipo_meta == tipo_meta)
         if tipo_actividad and tipo_actividad != "todas":
@@ -133,9 +135,7 @@ class CompromisosRepository:
         res = await self.session.execute(stmt)
         return res.scalars().all()
 
-    async def obtener_actividad_por_id_o_codigo(
-        self, id_o_codigo: str | uuid.UUID
-    ) -> ActividadPlanAccion | None:
+    async def obtener_actividad_por_id_o_codigo(self, id_o_codigo: str | uuid.UUID) -> ActividadPlanAccion | None:
         if isinstance(id_o_codigo, uuid.UUID):
             stmt = select(ActividadPlanAccion).where(ActividadPlanAccion.id == id_o_codigo)
         else:
@@ -163,4 +163,3 @@ class CompromisosRepository:
     async def eliminar_actividad(self, actividad: ActividadPlanAccion) -> None:
         await self.session.delete(actividad)
         await self.session.flush()
-

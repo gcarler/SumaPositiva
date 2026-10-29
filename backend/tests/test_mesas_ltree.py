@@ -66,9 +66,7 @@ async def test_mesas_ltree_jerarquia(database_url: str, cabeceras_gestion):
         )
         assert resp_sub2.status_code == 201
         sub2 = resp_sub2.json()
-        assert (
-            sub2["ruta_jerarquica"] == f"csh.mt{test_id}.seguridad_{test_id}.prevencion_{test_id}"
-        )
+        assert sub2["ruta_jerarquica"] == f"csh.mt{test_id}.seguridad_{test_id}.prevencion_{test_id}"
 
         # 4. Obtener Descendientes de la Raiz (<@)
         resp_desc_raiz = client.get(f"/api/v1/mesas/{raiz_id}/submesas")
@@ -92,9 +90,7 @@ async def test_mesas_ltree_jerarquia(database_url: str, cabeceras_gestion):
             "csh.área",
             "csh.\\x00",
         ):
-            respuesta_invalida = client.get(
-                "/api/v1/mesas", params={"ancestro_ruta": ruta_invalida}
-            )
+            respuesta_invalida = client.get("/api/v1/mesas", params={"ancestro_ruta": ruta_invalida})
             assert respuesta_invalida.status_code == 422
 
         # Evitar el límite de longitud de URL de httpx y ejercer directamente el validador

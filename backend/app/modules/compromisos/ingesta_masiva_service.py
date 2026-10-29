@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import HTTPException
-from sqlalchemy import func, select
+from sqlalchemy import distinct, func, select
 
 from app.core.transactions import transaction
 from app.modules.compromisos.ingesta_masiva_excel import (
@@ -76,14 +76,10 @@ def _porcentaje_opcional(valor: Any) -> float | None:
     return numero if numero is not None and 0 <= numero <= 100 else None
 
 
-async def _fusionar_etiquetas_archivo(
-    session, archive: ArchivoPlanIngerido, incoming: dict[str, Any]
-) -> None:
+async def _fusionar_etiquetas_archivo(session, archive: ArchivoPlanIngerido, incoming: dict[str, Any]) -> None:
     metadata = dict(archive.metadatos or {})
     for key in ("rutas_drive", "drive_file_ids", "dimensiones_seguridad_humana"):
-        metadata[key] = list(
-            dict.fromkeys([*(metadata.get(key) or []), *(incoming.get(key) or [])])
-        )
+        metadata[key] = list(dict.fromkeys([*(metadata.get(key) or []), *(incoming.get(key) or [])]))
     archive.dimensiones_seguridad_humana = metadata["dimensiones_seguridad_humana"]
     archive.metadatos = {
         **metadata,
@@ -102,9 +98,7 @@ async def _fusionar_etiquetas_archivo(
         source = dict(data.get("_dimensiones_seguridad") or {})
         source["dimensiones_seguridad_humana"] = archive.dimensiones_seguridad_humana
         for key in ("rutas_drive", "drive_file_ids"):
-            source[key] = list(
-                dict.fromkeys([*(source.get(key) or []), *(metadata.get(key) or [])])
-            )
+            source[key] = list(dict.fromkeys([*(source.get(key) or []), *(metadata.get(key) or [])]))
         data["_dimensiones_seguridad"] = source
         row.datos_origen = data
 
@@ -122,8 +116,7 @@ def _datos_registro(
         motor_destino=fila["motor_destino"],
         vigencia=archivo.vigencia,
         corte_periodo=archivo.corte,
-        entidad_normalizada=_limpiar(fila.get("entidad_normalizada"), 180)
-        or _limpiar(archivo.entidad, 180),
+        entidad_normalizada=_limpiar(fila.get("entidad_normalizada"), 180) or _limpiar(archivo.entidad, 180),
         linea_estrategica=_limpiar(fila.get("linea_estrategica")),
         codigo_meta_pdd=_limpiar(fila.get("codigo_meta_pdd")),
         codigo_bpim=_limpiar(fila.get("codigo_bpim"), 100),
@@ -139,8 +132,7 @@ def _datos_registro(
         avance_t4=_porcentaje_opcional(fila.get("avance_t4")),
         avance_fisico_pct=_porcentaje_opcional(fila.get("avance_fisico_pct")),
         avance_estrategico_pct=_porcentaje_opcional(fila.get("avance_estrategico_pct")),
-        apropiacion_definitiva_cop=fila.get("apropiacion_definitiva_cop")
-        or fila.get("apropiacion_inicial_cop"),
+        apropiacion_definitiva_cop=fila.get("apropiacion_definitiva_cop") or fila.get("apropiacion_inicial_cop"),
         cdp_cop=fila.get("cdp_cop"),
         compromisos_rp_cop=fila.get("compromisos_rp_cop"),
         obligaciones_cop=fila.get("obligaciones_cop"),
@@ -153,9 +145,7 @@ def _datos_registro(
                 "_dimensiones_seguridad": archivo.metadatos_fuente or {},
             }
         ),
-        dimensiones_seguridad_humana=(archivo.metadatos_fuente or {}).get(
-            "dimensiones_seguridad_humana", []
-        ),
+        dimensiones_seguridad_humana=(archivo.metadatos_fuente or {}).get("dimensiones_seguridad_humana", []),
         periodo_gobierno=(archivo.metadatos_fuente or {}).get("periodo_gobierno"),
     )
 
@@ -176,35 +166,21 @@ def _registro_dict(row: RegistroTriadaNormalizado) -> dict[str, Any]:
         "descripcion_actividad": row.descripcion_actividad,
         "verbo_fuerte_dnp": row.verbo_fuerte_dnp,
         "verbo_detectado": row.verbo_detectado,
-        "meta_programada_anual": float(row.meta_programada_anual)
-        if row.meta_programada_anual is not None
-        else None,
-        "meta_ejecutada_anual": float(row.meta_ejecutada_anual)
-        if row.meta_ejecutada_anual is not None
-        else None,
+        "meta_programada_anual": float(row.meta_programada_anual) if row.meta_programada_anual is not None else None,
+        "meta_ejecutada_anual": float(row.meta_ejecutada_anual) if row.meta_ejecutada_anual is not None else None,
         "avance_t1": float(row.avance_t1) if row.avance_t1 is not None else None,
         "avance_t2": float(row.avance_t2) if row.avance_t2 is not None else None,
         "avance_t3": float(row.avance_t3) if row.avance_t3 is not None else None,
         "avance_t4": float(row.avance_t4) if row.avance_t4 is not None else None,
-        "avance_fisico_pct": float(row.avance_fisico_pct)
-        if row.avance_fisico_pct is not None
-        else None,
-        "avance_estrategico_pct": float(row.avance_estrategico_pct)
-        if row.avance_estrategico_pct is not None
-        else None,
+        "avance_fisico_pct": float(row.avance_fisico_pct) if row.avance_fisico_pct is not None else None,
+        "avance_estrategico_pct": float(row.avance_estrategico_pct) if row.avance_estrategico_pct is not None else None,
         "apropiacion_definitiva_cop": float(row.apropiacion_definitiva_cop)
         if row.apropiacion_definitiva_cop is not None
         else None,
         "cdp_cop": float(row.cdp_cop) if row.cdp_cop is not None else None,
-        "compromisos_rp_cop": float(row.compromisos_rp_cop)
-        if row.compromisos_rp_cop is not None
-        else None,
-        "obligaciones_cop": float(row.obligaciones_cop)
-        if row.obligaciones_cop is not None
-        else None,
-        "pagos_tesoreria_cop": float(row.pagos_tesoreria_cop)
-        if row.pagos_tesoreria_cop is not None
-        else None,
+        "compromisos_rp_cop": float(row.compromisos_rp_cop) if row.compromisos_rp_cop is not None else None,
+        "obligaciones_cop": float(row.obligaciones_cop) if row.obligaciones_cop is not None else None,
+        "pagos_tesoreria_cop": float(row.pagos_tesoreria_cop) if row.pagos_tesoreria_cop is not None else None,
         "hoja_origen": row.hoja_origen,
         "fila_origen_num": row.fila_origen_num,
     }
@@ -226,9 +202,7 @@ class IngestaMasivaService:
         metadatos_por_archivo: dict[str, dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         if not archivos:
-            raise HTTPException(
-                status_code=422, detail="Debe adjuntar al menos un archivo soportado."
-            )
+            raise HTTPException(status_code=422, detail="Debe adjuntar al menos un archivo soportado.")
         leidos: list[ArchivoLeido] = []
         errores = []
         for nombre, raw in archivos:
@@ -287,10 +261,7 @@ class IngestaMasivaService:
                         for candidato in candidatos:
                             if (candidato.metadatos or {}).get("huella_tabular_sha256") != huella:
                                 continue
-                            if (
-                                candidato.vigencia == book.vigencia
-                                and candidato.corte_periodo == book.corte
-                            ):
+                            if candidato.vigencia == book.vigencia and candidato.corte_periodo == book.corte:
                                 clon_mismo_corte = candidato
                                 break
                             clon_otro_corte = clon_otro_corte or candidato
@@ -326,9 +297,7 @@ class IngestaMasivaService:
                                 dimensiones_seguridad_humana=(book.metadatos_fuente or {}).get(
                                     "dimensiones_seguridad_humana", []
                                 ),
-                                periodo_gobierno=(book.metadatos_fuente or {}).get(
-                                    "periodo_gobierno"
-                                ),
+                                periodo_gobierno=(book.metadatos_fuente or {}).get("periodo_gobierno"),
                             )
                         )
                         continue
@@ -363,9 +332,7 @@ class IngestaMasivaService:
                                     "deduplicado_tabular": True,
                                     "archivo_canonico_id": str(clon_mismo_corte.id),
                                 },
-                                dimensiones_seguridad_humana=meta_book.get(
-                                    "dimensiones_seguridad_humana", []
-                                ),
+                                dimensiones_seguridad_humana=meta_book.get("dimensiones_seguridad_humana", []),
                                 periodo_gobierno=meta_book.get("periodo_gobierno"),
                             )
                         )
@@ -381,9 +348,7 @@ class IngestaMasivaService:
                     if clon_otro_corte:
                         meta_otro = dict(clon_otro_corte.metadatos or {})
                         meta_otro["cortes_con_mismo_contenido"] = list(
-                            dict.fromkeys(
-                                [*(meta_otro.get("cortes_con_mismo_contenido") or []), book.corte]
-                            )
+                            dict.fromkeys([*(meta_otro.get("cortes_con_mismo_contenido") or []), book.corte])
                         )
                         clon_otro_corte.metadatos = meta_otro
                         meta_book["alerta_calidad"] = "CONTENIDO_IDENTICO_OTRO_CORTE"
@@ -520,8 +485,7 @@ class IngestaMasivaService:
                         **base,
                         fuente=str(row.get("fuente_financiacion") or "RECURSOS_PROPIOS"),
                         apropiacion_definitiva_cop=_numero_no_negativo(
-                            row.get("apropiacion_definitiva_cop")
-                            or row.get("apropiacion_inicial_cop")
+                            row.get("apropiacion_definitiva_cop") or row.get("apropiacion_inicial_cop")
                         ),
                         cdp_acumulado_cop=_numero_no_negativo(row.get("cdp_cop")),
                         compromisos_rp_cop=_numero_no_negativo(row.get("compromisos_rp_cop")),
@@ -543,21 +507,13 @@ class IngestaMasivaService:
         if vigencia:
             archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.vigencia == vigencia)
         if entidad:
-            archivo_stmt = archivo_stmt.where(
-                ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%")
-            )
+            archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%"))
         if dimension:
-            archivo_stmt = archivo_stmt.where(
-                ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension])
-            )
+            archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension]))
         if periodo:
             archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.periodo_gobierno == periodo)
         archivos = list(
-            (
-                await self.session.scalars(
-                    archivo_stmt.order_by(ArchivoPlanIngerido.creado_en.desc()).limit(2000)
-                )
-            ).all()
+            (await self.session.scalars(archivo_stmt.order_by(ArchivoPlanIngerido.creado_en.desc()).limit(2000))).all()
         )
         lote_ids = {archivo.lote_id for archivo in archivos}
         stmt = select(LoteIngestaPlan).order_by(LoteIngestaPlan.creado_en.desc())
@@ -629,9 +585,7 @@ class IngestaMasivaService:
         if motor:
             filtros_sql.append(RegistroTriadaNormalizado.motor_destino == motor.upper())
         if dimension:
-            filtros_sql.append(
-                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
-            )
+            filtros_sql.append(RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension]))
         if periodo:
             filtros_sql.append(RegistroTriadaNormalizado.periodo_gobierno == periodo)
         if corte:
@@ -640,8 +594,7 @@ class IngestaMasivaService:
             filtros_sql.append(
                 RegistroTriadaNormalizado.archivo_id.not_in(
                     select(ArchivoPlanIngerido.id).where(
-                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
-                        == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext == "CONTENIDO_IDENTICO_OTRO_CORTE"
                     )
                 )
             )
@@ -703,17 +656,13 @@ class IngestaMasivaService:
         archivos = list((await self.session.scalars(select(ArchivoPlanIngerido))).all())
         huellas_binarias = {item.hash_sha256 for item in archivos}
         copias_binarias = max(0, len(archivos) - len(huellas_binarias))
-        clones = sum(
-            len((item.metadatos or {}).get("clones_tabulares_fusionados", [])) for item in archivos
-        )
+        clones = sum(len((item.metadatos or {}).get("clones_tabulares_fusionados", [])) for item in archivos)
         for item in archivos:
             for clone in (item.metadatos or {}).get("clones_tabulares_fusionados", []):
                 if clone.get("hash_sha256"):
                     huellas_binarias.add(clone["hash_sha256"])
         alertas = sum(
-            1
-            for item in archivos
-            if (item.metadatos or {}).get("alerta_calidad") == "CONTENIDO_IDENTICO_OTRO_CORTE"
+            1 for item in archivos if (item.metadatos or {}).get("alerta_calidad") == "CONTENIDO_IDENTICO_OTRO_CORTE"
         )
         canonical_names = list(ENTIDADES_CANONICAS_CARTAGENA)
         total, canonical, entities = (
@@ -735,14 +684,10 @@ class IngestaMasivaService:
             "clones_tabulares_fusionados": clones,
             "archivos_con_alerta_corte_identico": alertas,
             "entidades_oficiales_reconocidas": entities,
-            "registros_con_entidad_canonica_pct": round(100 * canonical / total, 2)
-            if total
-            else 0.0,
+            "registros_con_entidad_canonica_pct": round(100 * canonical / total, 2) if total else 0.0,
         }
 
-    async def resumen_dimensiones(
-        self, dimension: str | None = None, periodo: str | None = None
-    ) -> dict[str, Any]:
+    async def resumen_dimensiones(self, dimension: str | None = None, periodo: str | None = None) -> dict[str, Any]:
         salida = {}
         for dimension_name in [dimension] if dimension else DIMENSIONES:
             archivos_stmt = (
@@ -752,8 +697,7 @@ class IngestaMasivaService:
                 )
                 .where(
                     ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension_name]),
-                    ArchivoPlanIngerido.metadatos["origen_drive"].astext
-                    == "GOOGLE_DRIVE_SECTOR_SEGURIDAD",
+                    ArchivoPlanIngerido.metadatos["origen_drive"].astext == "GOOGLE_DRIVE_SECTOR_SEGURIDAD",
                 )
                 .group_by(ArchivoPlanIngerido.periodo_gobierno)
             )
@@ -766,13 +710,10 @@ class IngestaMasivaService:
                     func.count(),
                 )
                 .where(
-                    RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains(
-                        [dimension_name]
-                    ),
+                    RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension_name]),
                     RegistroTriadaNormalizado.archivo_id.not_in(
                         select(ArchivoPlanIngerido.id).where(
-                            ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
-                            == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                            ArchivoPlanIngerido.metadatos["alerta_calidad"].astext == "CONTENIDO_IDENTICO_OTRO_CORTE"
                         )
                     ),
                 )
@@ -783,32 +724,23 @@ class IngestaMasivaService:
                 )
             )
             if periodo:
-                archivos_por_periodo = {
-                    key: value for key, value in archivos_por_periodo.items() if key == periodo
-                }
-                registros_stmt = registros_stmt.where(
-                    RegistroTriadaNormalizado.periodo_gobierno == periodo
-                )
+                archivos_por_periodo = {key: value for key, value in archivos_por_periodo.items() if key == periodo}
+                registros_stmt = registros_stmt.where(RegistroTriadaNormalizado.periodo_gobierno == periodo)
             conteos = list((await self.session.execute(registros_stmt)).all())
-            entidades_stmt = select(RegistroTriadaNormalizado.entidad_normalizada).where(
+            entidades_stmt = select(distinct(RegistroTriadaNormalizado.entidad_normalizada)).where(
                 RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension_name]),
                 RegistroTriadaNormalizado.entidad_normalizada.is_not(None),
                 RegistroTriadaNormalizado.archivo_id.not_in(
                     select(ArchivoPlanIngerido.id).where(
-                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
-                        == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext == "CONTENIDO_IDENTICO_OTRO_CORTE"
                     )
                 ),
             )
             if periodo:
-                entidades_stmt = entidades_stmt.where(
-                    RegistroTriadaNormalizado.periodo_gobierno == periodo
-                )
-            entidades = sorted(set((await self.session.scalars(entidades_stmt)).all()))
+                entidades_stmt = entidades_stmt.where(RegistroTriadaNormalizado.periodo_gobierno == periodo)
+            entidades = sorted([e for e in (await self.session.scalars(entidades_stmt)).all() if e])
             registros_por_motor = {
-                motor: sum(
-                    count for _period, _year, found_motor, count in conteos if found_motor == motor
-                )
+                motor: sum(count for _period, _year, found_motor, count in conteos if found_motor == motor)
                 for motor in MOTORES
             }
             registros_por_periodo = {
@@ -821,11 +753,7 @@ class IngestaMasivaService:
                 "registros_por_motor": registros_por_motor,
                 "entidades": entidades,
                 "cobertura_interanual": {
-                    str(year): sum(
-                        count
-                        for _period, found_year, _motor, count in conteos
-                        if found_year == year
-                    )
+                    str(year): sum(count for _period, found_year, _motor, count in conteos if found_year == year)
                     for year in range(2016, 2027)
                 },
                 "periodos": {
@@ -852,9 +780,7 @@ class IngestaMasivaService:
         if entidad:
             stmt = stmt.where(RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%"))
         if dimension:
-            stmt = stmt.where(
-                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
-            )
+            stmt = stmt.where(RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension]))
         if periodo:
             stmt = stmt.where(RegistroTriadaNormalizado.periodo_gobierno == periodo)
         result = await self.session.execute(stmt.group_by(RegistroTriadaNormalizado.motor_destino))

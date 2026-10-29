@@ -1,0 +1,59 @@
+{
+  "fecha": "2026-10-24T15:39:33.834323+00:00",
+  "estado": "aceptado_como_contrato_documental_no_integrado",
+  "directorio_revision": "bridge/revision_fuentes_r2_coordinador_20261024T153933Z",
+  "sha_entradas": {
+    "bridge/fuentes_nacionales_aportadas_20.json": "feb3728a02b5c0ec82a59029eae27864eee17579172eae39cd3e829e063a7a31",
+    "bridge/48_inventario_fuentes_multipolitica.json": "549c519919d5e631c7f56913dda478498183cf69d75c08bf59891da4af0e1e8f",
+    "bridge/58_evidencia_adquisicion_fuentes.json": "c5861d20a618de5376cb5489e274876d4a22a671dee900b17e0c950a9b172e7e",
+    "bridge/58_resultados_descargas.csv": "4f1ec29ab5bffe45c9a14ca1fca88fc53d057ced63a655e622efe3e156a2def1",
+    "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/manifiesto.json": "08596bc6e7ce55f4a3404332dbe40fbf972a403555f7e1bbb4e827b4563a809b"
+  },
+  "sha_R2_recibida": {
+    "65_catalogo_clasificado_fuentes_ollamacodex.json": "61c082bcbb9bc48ffa77a8d0d253efa9e7472e65e30a7fd1a391e081eeb34ba2",
+    "65_schema_clasificacion_fuentes_ollamacodex.json": "d82d90ac438a5b428ad681c1a79849ffe3e77a36a57963a47fd4469c1c1c7430",
+    "65_entrega_ollamacodex_clasificacion_fuentes.md": "5f02d7c79442af4ffb7dfa85eef3c1efe2bbd064b8874ffcb215ce1d4c68a6cf",
+    "65_contrato_ciclo_fuentes_ollamacodex.md": "74ac4b02fdd7af2f78dc94137e1201791821f8a60f0bbf16cd1564ed5887331f"
+  },
+  "sha_entrega_final": {
+    "65_schema_clasificacion_fuentes_ollamacodex.json": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+    "65_catalogo_clasificado_fuentes_ollamacodex.json": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+    "65_contrato_ciclo_fuentes_ollamacodex.md": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+    "65_entrega_ollamacodex_clasificacion_fuentes.md": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666"
+  },
+  "comprobaciones": {
+    "schema_completo_errores": 0,
+    "formatos_jsonschema_errores": 0,
+    "fichas": 63,
+    "PR_sin_anios_inventados": 20,
+    "enlaces_PR": 21,
+    "locales_metadatos_preservados": 43,
+    "capturas_cotejadas_por_ID_y_referencia": 28,
+    "locales_sin_captura_nueva": 15,
+    "referencias_JSON_resueltas": 728,
+    "punteros_unicos": 91,
+    "entradas_sin_cambios": true,
+    "sin_cobertura_conjunta_inventada": true,
+    "unidad_observacion_separada_de_medida": true,
+    "fecha_informe_no_usada_como_extraccion": true,
+    "productos_del_intervalo_coinciden_con_manifiesto": true
+  },
+  "correcciones_coordinador": {
+    "punteros_reparados": 387,
+    "ambitos_normalizados": true,
+    "coberturas_heredadas_retiradas": true,
+    "unidad_medida_y_observacion_separadas": true,
+    "intervalo_run_documentado": true
+  },
+  "limites": [
+    "No integración en planificador ni motores",
+    "Sin acceso remoto ni SQL",
+    "Sin nuevas capturas ni promoción",
+    "Sin pruebas de aplicación",
+    "No dictamen EAF",
+    "No ejecución de conciliación estadística ni acreditación de causalidad"
+  ],
+  "incidencias_coordinacion": [
+    "Un primer intento de corrección documental introdujo nulos al transformar escalares; el validador lo rechazó. Se restauraron los cuatro entregables desde la copia R2 y se repitió la corrección conservando tipos. Las comprobaciones finales corresponden únicamente a la repetición aprobada; las fuentes de entrada no cambiaron."
+  ]
+}

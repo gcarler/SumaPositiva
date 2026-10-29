@@ -23,6 +23,7 @@ import {
 import {usePanels} from "@/core/panels/panel-store";
 import type {CompromisoInstitucional} from "../models/compromiso";
 import {ESTADOS_COMPROMISO} from "../models/compromiso";
+import { CollectionLayout, type CollectionViewMode } from "@/shared/ui/collection-view";
 
 function obtenerIconoEstado(estado: string) {
   switch (estado) {
@@ -41,6 +42,7 @@ function obtenerIconoEstado(estado: string) {
 }
 
 interface CompromisosTablaProps {
+  vista?: CollectionViewMode;
   compromisos: CompromisoInstitucional[];
   puedeEditar: boolean;
 }
@@ -60,6 +62,7 @@ function getProgressColor(porcentaje: number | null | undefined, estado: string)
 }
 
 export function CompromisosTabla({
+  vista = "lista",
   compromisos,
   puedeEditar,
 }: CompromisosTablaProps) {
@@ -84,6 +87,30 @@ export function CompromisosTabla({
           No hay metas o compromisos que coincidan con los filtros de búsqueda o entidad seleccionada.
         </p>
       </div>
+    );
+  }
+
+  if (vista === "tarjetas") {
+    return (
+      <CollectionLayout view={vista} aria-label="Tarjetas de compromisos institucionales PAS">
+        {compromisos.map((c) => {
+          const estado = ESTADOS_COMPROMISO[c.estado] ?? { label: c.estado, badgeVariant: "default" as const };
+          const sinReporte = c.porcentaje_cumplimiento == null || c.estado === "sin_reporte";
+          return (
+            <article key={c.id} className="flex flex-col gap-4 rounded-xl border border-border bg-surface-1 p-5">
+              <div className="space-y-2"><p className="font-mono text-xs text-text-tertiary">{c.codigo}</p><h2 className="break-words font-semibold">{c.nombre}</h2><p className="text-sm text-text-secondary">{c.meta_cuatrienal_descripcion}</p></div>
+              <div className="flex flex-wrap gap-2"><Badge variant={estado.badgeVariant}>{estado.label}</Badge>{c.metadatos?.es_demostracion && <Badge variant="warning">DEMO</Badge>}{c.metadatos?.meta_validada === false && <Badge variant="warning">Meta propuesta (sin validar)</Badge>}</div>
+              <dl className="space-y-3 text-sm">
+                <div><dt className="text-xs text-text-tertiary">Entidad responsable</dt><dd>{c.entidad_responsable}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Línea / Alternativa</dt><dd>{c.linea_estrategica_codigo} · {c.alternativa_mga_codigo}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Avance cuatrienal</dt><dd>{sinReporte ? "Sin medición / Sin reporte" : `${(c.avance_cuatrienal_valor ?? 0).toLocaleString("es-CO")} · ${c.porcentaje_cumplimiento}%`}</dd><dd className="text-xs text-text-secondary">Meta: {c.meta_cuatrienal_valor.toLocaleString("es-CO")} {c.unidad_medida}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Presupuesto anual</dt><dd>{formatCop(c.presupuesto_anual_cop)}</dd></div>
+              </dl>
+              <Button variant={puedeEditar ? "default" : "outline"} size="sm" className="mt-auto self-start" onClick={() => handleAbrirPanel(c)} aria-label={`${puedeEditar ? "Gestionar avance de" : "Ver detalle de"} compromiso ${c.codigo}`}>{puedeEditar ? "Gestionar Avance" : "Ver Detalle"}</Button>
+            </article>
+          );
+        })}
+      </CollectionLayout>
     );
   }
 

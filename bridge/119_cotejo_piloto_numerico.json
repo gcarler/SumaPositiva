@@ -1,0 +1,35 @@
+{
+  "captura_zip_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+  "TXT_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+  "filas_cotejadas_campo_a_campo": 12899,
+  "JSONL_sha256": "a6f30f18dccc7950ba12ed5dc83012fd3e46b03870660c1cbfbd3c8323c02e4c",
+  "conteos": {
+    "filas_datos": 12899,
+    "filas_aceptadas": 12230,
+    "filas_retenidas": 667,
+    "filas_rechazadas": 2,
+    "filas_ancho_inconsistente": 0,
+    "filas_celda_excede_limite": 0,
+    "filas_campo_obligatorio_vacio": 2,
+    "filas_con_valor_numerico_valido": 12077,
+    "filas_con_numerico_sin_regla": 0,
+    "filas_con_cualitativo": 335,
+    "filas_sin_valor_declarado": 659,
+    "filas_con_mes_0": 8,
+    "filas_descripcion_general": 102,
+    "filas_identidad_concordante_declarada": 12899,
+    "filas_identidad_discordante_declarada": 0,
+    "filas_identidad_no_contrastable": 0,
+    "filas_identidad_no_evaluable": 0
+  },
+  "numeros_convertidos_por_estado": {
+    "aceptada": 12072,
+    "retiene": 3,
+    "rechazada": 2
+  },
+  "campo_exportacion_adicional_verificado": "version_parser",
+  "nota_metodo": "primer cotejo literal no incluia version_parser agregado por guion118; cotejo final compara modelo mas ese campo de procedencia",
+  "sin_red": true,
+  "sin_SQL": true,
+  "promocion_al_banco": false
+}

@@ -42,27 +42,17 @@ class Noticia(Base):
     resumen: Mapped[str] = mapped_column(Text, nullable=False)
     contenido: Mapped[str] = mapped_column(Text, nullable=False)
     imagen_portada: Mapped[str | None] = mapped_column(Text, nullable=True)
-    galeria: Mapped[list[str]] = mapped_column(
-        JSONB, nullable=False, default=list, server_default="[]"
-    )
+    galeria: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list, server_default="[]")
     video_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     categoria: Mapped[str] = mapped_column(String(40), nullable=False)
     autor: Mapped[str] = mapped_column(String(200), nullable=False)
     publicada_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.clock_timestamp()
     )
-    destacada: Mapped[bool] = mapped_column(
-        Boolean, nullable=False, default=False, server_default="false"
-    )
-    orden_prioridad: Mapped[int] = mapped_column(
-        Integer, nullable=False, default=1, server_default="1"
-    )
-    estado: Mapped[str] = mapped_column(
-        String(20), nullable=False, default="borrador", server_default="borrador"
-    )
-    etiquetas: Mapped[list[str]] = mapped_column(
-        JSONB, nullable=False, default=list, server_default="[]"
-    )
+    destacada: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    orden_prioridad: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    estado: Mapped[str] = mapped_column(String(20), nullable=False, default="borrador", server_default="borrador")
+    etiquetas: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list, server_default="[]")
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.clock_timestamp()
     )

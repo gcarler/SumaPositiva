@@ -1,4 +1,5 @@
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -37,9 +38,7 @@ async def _crear_usuario_con_rol(database_url: str, rol_codigo: str):
             cuenta.rol_id, cuenta.rol = rol.id, rol
             await repo.guardar()
 
-        token_resp = await service.autenticar_usuario(
-            LoginPeticion(correo=correo, contrasena=password)
-        )
+        token_resp = await service.autenticar_usuario(LoginPeticion(correo=correo, contrasena=password))
         token = token_resp.token_acceso
 
     await engine.dispose()
@@ -169,9 +168,7 @@ async def test_facilitador_mesa_control_propiedad_403(database_url: str, cabecer
         assert "otro facilitador" in resp_patch.json()["detail"].lower()
 
 
-async def test_facilitador_mesa_prohibido_reasignar_facilitador_o_estado_403(
-    database_url: str, cabeceras_gestion
-):
+async def test_facilitador_mesa_prohibido_reasignar_facilitador_o_estado_403(database_url: str, cabeceras_gestion):
     """OBS-21 (c): Facilitador asignado no puede reasignar facilitador_id ni alterar estado (403 Forbidden)."""
     user_a_id, headers_a = await _crear_usuario_con_rol(database_url, "facilitador_mesa")
     user_otro_id, _ = await _crear_usuario_con_rol(database_url, "facilitador_mesa")
@@ -214,9 +211,7 @@ async def test_facilitador_mesa_prohibido_reasignar_facilitador_o_estado_403(
         assert "modificar el estado" in resp_estado.json()["detail"].lower()
 
 
-async def test_facilitador_mesa_edita_su_propia_mesa_exitosamente(
-    database_url: str, cabeceras_gestion
-):
+async def test_facilitador_mesa_edita_su_propia_mesa_exitosamente(database_url: str, cabeceras_gestion):
     """OBS-21: Facilitador asignado puede editar metadatos operativos permitidos (lugar, horario, entidad)."""
     user_a_id, headers_a = await _crear_usuario_con_rol(database_url, "facilitador_mesa")
 
@@ -378,34 +373,34 @@ async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str, ca
         resp = client.get("/api/v1/mesas/agendas")
         assert resp.status_code == 200
         agendas = resp.json()
-        assert len(agendas) >= 38
+        assert len(agendas) >= 36
 
         # pc-001 es la plenaria institucional y tiene mesa_id = None
         pc_001 = next((a for a in agendas if a["id"] == "pc-001"), None)
         assert pc_001 is not None
         assert pc_001["mesa_id"] is None
 
-        # Cada corregimiento debe tener su mesa canónica independiente.
+        # Cada territorio/sector debe tener su mesa canónica independiente.
         agendas_con_mesa = [a for a in agendas if a.get("mesa_id") is not None]
         por_id = {agenda["id"]: agenda for agenda in agendas}
         assert "mr-007b" not in por_id
-        for agenda_id in ("mr-007", "mr-012", "mr-013", "mr-014", "mr-015"):
+        for agenda_id in ("mr-007", "mr-010", "mr-011", "mp-009", "ms-012"):
             assert agenda_id in por_id
-        for agenda_id in ("mr-012", "mr-013", "mr-014", "mr-015"):
+        for agenda_id in ("mr-007", "mr-010", "mr-011", "mp-009", "ms-012"):
             assert por_id[agenda_id]["mesa_id"] is not None
         if por_id["mr-007"]["mesa_id"] is not None:
-            assert por_id["mr-007"]["mesa_id"] != por_id["mr-012"]["mesa_id"]
-            assert len(agendas_con_mesa) == 37
-            assert len({agenda["mesa_id"] for agenda in agendas_con_mesa}) == 37
+            assert len(agendas_con_mesa) == 35
+            assert len({agenda["mesa_id"] for agenda in agendas_con_mesa}) == 35
 
         mesas = {m["codigo_oficial"]: m for m in client.get("/api/v1/mesas").json()}
-        assert {"MR-ISL-12", "MR-ISL-13", "MR-ISL-14", "MR-RUR-15"} <= mesas.keys()
-        assert all(
-            mesas[codigo]["tipo_mesa"] == "RURAL_INSULAR"
-            for codigo in ("MR-ISL-12", "MR-ISL-13", "MR-ISL-14", "MR-RUR-15")
-        )
+        assert {"MP-POB-09", "MS-SEC-12", "MR-RUR-01", "MR-ISL-11"} <= mesas.keys()
+        assert mesas["MP-POB-09"]["tipo_mesa"] == "POBLACIONAL"
+        assert mesas["MS-SEC-12"]["tipo_mesa"] == "SECTORIAL"
         if "MR-RUR-01" in mesas:
-            assert sum(m["tipo_mesa"] == "RURAL_INSULAR" for m in mesas.values()) == 15
+            assert sum(m["tipo_mesa"] == "RURAL_INSULAR" for m in mesas.values()) == 11
+            assert sum(m["tipo_mesa"] == "POBLACIONAL" for m in mesas.values()) == 9
+            assert sum(m["tipo_mesa"] == "SECTORIAL" for m in mesas.values()) == 12
+            assert sum(m["tipo_mesa"] == "TERRITORIAL" for m in mesas.values()) == 3
 
         # Resolucion transparente por codigo de agenda
         agenda_ejemplo = agendas_con_mesa[0]
@@ -474,6 +469,3 @@ async def test_crear_mesa_persistencia_auditoria_y_unicidad(database_url: str, c
         data_col = resp_colision.json()
         assert data_col["id"] != data["id"]
         assert data_col["ruta_jerarquica"] != data["ruta_jerarquica"]
-
-
-

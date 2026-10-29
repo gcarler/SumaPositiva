@@ -86,9 +86,7 @@ class FormularioService:
                 raise error_integridad(error, "El código del formulario ya existe") from error
             return FormularioRespuesta.model_validate(creado)
 
-    async def actualizar_formulario(
-        self, formulario_id: uuid.UUID, datos: FormularioActualizar
-    ) -> FormularioRespuesta:
+    async def actualizar_formulario(self, formulario_id: uuid.UUID, datos: FormularioActualizar) -> FormularioRespuesta:
         async with transaction(self.session):
             f = await self.repo.obtener_por_id(formulario_id, bloquear=True)
             if not f:
@@ -111,9 +109,7 @@ class FormularioService:
                     await self.repo.contar_respuestas(f.id)
                     and [p.model_dump() for p in datos.esquema_preguntas] != f.esquema_preguntas
                 ):
-                    raise HTTPException(
-                        409, "El formulario tiene respuestas: conserve sus preguntas"
-                    )
+                    raise HTTPException(409, "El formulario tiene respuestas: conserve sus preguntas")
                 f.esquema_preguntas = [p.model_dump() for p in datos.esquema_preguntas]
             if "fecha_cierre" in datos.model_fields_set:
                 f.fecha_cierre = datos.fecha_cierre
@@ -134,9 +130,7 @@ class FormularioService:
                     detail=f"Formulario con id {formulario_id} no encontrado",
                 )
             if await self.repo.contar_respuestas(f.id):
-                raise HTTPException(
-                    409, "El formulario tiene respuestas: ciérrelo para conservar el registro"
-                )
+                raise HTTPException(409, "El formulario tiene respuestas: ciérrelo para conservar el registro")
             await self.repo.eliminar(f)
             return {"mensaje": f"Formulario {formulario_id} eliminado exitosamente"}
 
@@ -169,18 +163,11 @@ class FormularioService:
                 )
 
             if datos.evidencias and (f.documento_constructor or not f.permite_evidencias):
-                raise HTTPException(
-                    422, "Adjunte evidencias únicamente mediante los campos autorizados"
-                )
+                raise HTTPException(422, "Adjunte evidencias únicamente mediante los campos autorizados")
             if f.documento_constructor:
-                if (
-                    f.documento_constructor["configuracion"].get("respuestaAnonima")
-                    and not es_anonimo
-                ):
+                if f.documento_constructor["configuracion"].get("respuestaAnonima") and not es_anonimo:
                     raise HTTPException(403, "Este reporte requiere una sesión anónima")
-                datos.datos_respuesta = validar_respuestas(
-                    f.documento_constructor, datos.datos_respuesta
-                )
+                datos.datos_respuesta = validar_respuestas(f.documento_constructor, datos.datos_respuesta)
             else:
                 # Conservar números del contrato legado, validando también opciones y escalas.
                 documento = (await ConstructorService(self.session).documento(f)).model_dump(
@@ -189,17 +176,12 @@ class FormularioService:
                 originales = {
                     p["id"]: datos.datos_respuesta[p["id"]]
                     for p in f.esquema_preguntas
-                    if p["id"] in datos.datos_respuesta
-                    and datos.datos_respuesta[p["id"]] is not None
+                    if p["id"] in datos.datos_respuesta and datos.datos_respuesta[p["id"]] is not None
                 }
                 valores = dict(originales)
                 for p in f.esquema_preguntas:
                     v = valores.get(p["id"])
-                    if (
-                        p["tipo"] == "escala_likert"
-                        and isinstance(v, (int, float))
-                        and not isinstance(v, bool)
-                    ):
+                    if p["tipo"] == "escala_likert" and isinstance(v, (int, float)) and not isinstance(v, bool):
                         valores[p["id"]] = str(v)
                 efectivas = validar_respuestas(documento, valores)
                 datos.datos_respuesta = {k: originales[k] for k in efectivas}
@@ -221,9 +203,7 @@ class FormularioService:
                     detail="El participante ya ha enviado una respuesta a esta consulta.",
                 )
 
-            limite = (
-                (f.documento_constructor or {}).get("configuracion", {}).get("limiteRespuestas")
-            )
+            limite = (f.documento_constructor or {}).get("configuracion", {}).get("limiteRespuestas")
             if limite and await self.repo.contar_respuestas(f.id) >= limite:
                 raise HTTPException(409, "Se alcanzó el límite de respuestas")
 
@@ -240,9 +220,7 @@ class FormularioService:
                 guardada = await self.repo.guardar_respuesta(nueva_respuesta)
                 return RespuestaFormularioLectura.model_validate(guardada)
             except IntegrityError as error:
-                raise error_integridad(
-                    error, "El participante ya ha enviado una respuesta"
-                ) from error
+                raise error_integridad(error, "El participante ya ha enviado una respuesta") from error
 
     async def listar_respuestas(self, formulario_id: uuid.UUID) -> list[RespuestaFormularioLectura]:
         f = await self.repo.obtener_por_id(formulario_id)
@@ -285,9 +263,7 @@ class FormularioService:
             desglose_enfoque["genero"][genero] = desglose_enfoque["genero"].get(genero, 0) + 1
 
             edad = enf.get("grupo_etario", "No especificado")
-            desglose_enfoque["grupo_etario"][edad] = (
-                desglose_enfoque["grupo_etario"].get(edad, 0) + 1
-            )
+            desglose_enfoque["grupo_etario"][edad] = desglose_enfoque["grupo_etario"].get(edad, 0) + 1
 
             if enf.get("victima_conflicto") is True:
                 desglose_enfoque["victima_conflicto"]["si"] += 1

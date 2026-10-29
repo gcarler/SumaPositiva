@@ -40,8 +40,7 @@ async def auditar_cuentas(database_url: str) -> dict[str, Any]:
             )
             res_colisiones = await conn.execute(stmt_colisiones)
             colisiones = [
-                {"correo_normalizado": row.correo_norm, "total_cuentas": row.total}
-                for row in res_colisiones.fetchall()
+                {"correo_normalizado": row.correo_norm, "total_cuentas": row.total} for row in res_colisiones.fetchall()
             ]
 
             # 2. Consultar usuarios con roles
@@ -65,15 +64,12 @@ async def auditar_cuentas(database_url: str) -> dict[str, Any]:
             usuarios = res_usuarios.fetchall()
 
             # 3. Consultar eventos de origen por usuario en eventos_identidad
-            stmt_eventos = (
-                select(
-                    EventoIdentidad.objetivo_id,
-                    EventoIdentidad.accion,
-                    EventoIdentidad.detalle,
-                    EventoIdentidad.creado_en,
-                )
-                .order_by(EventoIdentidad.creado_en.asc())
-            )
+            stmt_eventos = select(
+                EventoIdentidad.objetivo_id,
+                EventoIdentidad.accion,
+                EventoIdentidad.detalle,
+                EventoIdentidad.creado_en,
+            ).order_by(EventoIdentidad.creado_en.asc())
             res_eventos = await conn.execute(stmt_eventos)
             primer_evento_por_usuario: dict[str, dict[str, Any]] = {}
             for ev in res_eventos.fetchall():
@@ -117,9 +113,7 @@ async def auditar_cuentas(database_url: str) -> dict[str, Any]:
                     "rol_nombre": u.rol_nombre,
                     "activo": bool(u.activo),
                     "correo_verificado": u.correo_verificado_en is not None,
-                    "correo_verificado_en": (
-                        u.correo_verificado_en.isoformat() if u.correo_verificado_en else None
-                    ),
+                    "correo_verificado_en": (u.correo_verificado_en.isoformat() if u.correo_verificado_en else None),
                     "creado_en": u.creado_en.isoformat() if u.creado_en else None,
                     "procedencia": procedencia,
                     "metadatos": metadatos,
@@ -138,9 +132,7 @@ async def auditar_cuentas(database_url: str) -> dict[str, Any]:
                 "total_ciudadanas": len(cuentas_ciudadanas),
                 "total_otros_roles": len(otras_cuentas),
                 "administradores_activos": sum(
-                    1
-                    for c in cuentas_institucionales
-                    if c["rol_codigo"] == "administrador_identidades" and c["activo"]
+                    1 for c in cuentas_institucionales if c["rol_codigo"] == "administrador_identidades" and c["activo"]
                 ),
                 "colisiones_correo": len(colisiones),
             }

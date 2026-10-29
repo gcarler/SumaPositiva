@@ -3,7 +3,7 @@ Alternancia de respaldos ciudadanos (1 ciudadano = 1 voto), consulta de mis-apoy
 """
 
 import asyncio
-import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select

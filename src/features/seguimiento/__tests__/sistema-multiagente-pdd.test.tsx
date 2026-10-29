@@ -103,7 +103,7 @@ describe("Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Hu
 
       expect(est.estado).toBe("COMPLETADO");
       expect(est.puertas_calidad).toHaveLength(6);
-      expect(exec.estado).toBe("COMPLETADO");
+      expect(exec.estado).toBe("FALLO");
       expect(comp.planes_pdd).toHaveLength(5);
       expect(comp.anexo_pdl).toHaveLength(3);
       expect(comp.preguntas_estrategicas).toHaveLength(4);

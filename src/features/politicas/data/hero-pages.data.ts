@@ -25,6 +25,7 @@ export interface HeroPageConfig {
   altura: HeroAltura;
   badgeTexto: string;
   accionPrimaria?: HeroPageAction;
+  activa?: boolean;
 }
 
 /**
@@ -194,11 +195,11 @@ export const HERO_PAGES_CONFIG: Record<string, HeroPageConfig> = {
     titulo: "Mesas de Diálogo y Concertación Territorial",
     subtitulo:
       "Espacios de concertación y deliberación comunitaria para construir acuerdos y documentar árboles de problemas y soluciones (Ley Estatutaria 1757 de 2015).",
-    enfoque: "37 Mesas de Diálogo Territorial",
+    enfoque: "35 Mesas de Diálogo Territorial",
     imagenFondo: "/images/hero/hero-asamblea-claustro.webp",
     ubicacionReal: "Claustro de la Merced — Centro Histórico",
     altura: "compact",
-    badgeTexto: "37 Mesas Distritales",
+    badgeTexto: "35 Mesas Distritales",
     accionPrimaria: {
       label: "Ver en Geovisor",
       href: "/geovisor",

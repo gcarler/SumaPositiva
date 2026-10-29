@@ -227,16 +227,34 @@ export function MesaPanel({
     );
   }
 
-  const confirmarAcuerdos = () => {
+  // El éxito solo se anuncia tras la confirmación del servidor (F06);
+  // el valor local se conserva ante fallo y el error es visible.
+  const confirmarAcuerdos = async () => {
     useMesasStore.getState().setAcuerdosPlenaria(mesa.id, acuerdosValor);
-    mutarAcuerdos.mutate({ mesaId: mesa.id, acuerdos: acuerdosValor });
-    toast.success("Acuerdos de plenaria guardados");
+    try {
+      await mutarAcuerdos.mutateAsync({ mesaId: mesa.id, acuerdos: acuerdosValor });
+      toast.success("Acuerdos de plenaria guardados");
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "No se pudieron guardar los acuerdos. El valor quedó local; reintentar."
+      );
+    }
   };
 
-  const confirmarInforme = () => {
+  const confirmarInforme = async () => {
     useMesasStore.getState().setInformeMesa(mesa.id, informeValor);
-    mutarInforme.mutate({ mesaId: mesa.id, informe: informeValor });
-    toast.success("Informe y relatoría de la mesa guardado");
+    try {
+      await mutarInforme.mutateAsync({ mesaId: mesa.id, informe: informeValor });
+      toast.success("Informe y relatoría de la mesa guardado");
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "No se pudo guardar el informe. El valor quedó local; reintentar."
+      );
+    }
   };
 
   const handleConsolidarSubmesas = () => {
@@ -480,7 +498,9 @@ export function MesaPanel({
                   className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
                   strokeWidth={1.5}
                 />
-                {format(new Date(mesa.fecha), "d MMM yyyy", { locale: es })}
+                {mesa.fecha && mesa.fecha !== "Por definir" && !isNaN(new Date(mesa.fecha.includes("T") ? mesa.fecha : `${mesa.fecha}T12:00:00`).getTime())
+                  ? format(new Date(mesa.fecha.includes("T") ? mesa.fecha : `${mesa.fecha}T12:00:00`), "d MMM yyyy", { locale: es })
+                  : "Por definir"}
               </dd>
             </div>
             <div className="space-y-1">

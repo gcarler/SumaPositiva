@@ -37,15 +37,7 @@ export function normalizarConsolidado(raw: Partial<TableroConsolidado> | null | 
     participacionWeb: web,
     participacionMesas: mesas,
     participacionEscenarios: escenarios,
-    desglose: raw?.desglose ?? {
-      hombres: Math.round(granTotal * 0.46),
-      mujeres: Math.round(granTotal * 0.53),
-      otros: Math.round(granTotal * 0.01),
-      jovenes: Math.round(granTotal * 0.3),
-      adultos: Math.round(granTotal * 0.5),
-      adultosMayores: Math.round(granTotal * 0.2),
-      enfoqueDiferencial: {},
-    },
+    desglose: raw?.desglose,
     ultimaActualizacion: fechaCorte,
   };
 }

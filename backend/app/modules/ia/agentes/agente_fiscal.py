@@ -56,22 +56,14 @@ class AgenteFiscal:
                 requiere_concejo = False
                 requiere_confis = False
                 ano_maximo = "N/A (Ejecución dentro de la vigencia fiscal ordinaria)"
-                fundamento = (
-                    "Decreto 111 de 1996 (Estatuto Orgánico del Presupuesto, principi"
-                    "o de anualidad)."
-                )
+                fundamento = "Decreto 111 de 1996 (Estatuto Orgánico del Presupuesto, principio de anualidad)."
             else:
                 tipo = TipoVigenciaFutura.ORDINARIA_LEY_819
                 requiere_concejo = False
                 requiere_confis = True
                 ano_maximo = "Durante el cuatrienio constitucional del Alcalde"
-                fundamento = (
-                    "Artículo 12 de la Ley 819 de 2003 (Vigencias Futuras Ordinarias "
-                    "Territoriales)."
-                )
-                condiciones.append(
-                    "El proyecto debe estar consignado en el Plan de Desarrollo Distrital."
-                )
+                fundamento = "Artículo 12 de la Ley 819 de 2003 (Vigencias Futuras Ordinarias Territoriales)."
+                condiciones.append("El proyecto debe estar consignado en el Plan de Desarrollo Distrital.")
                 condiciones.append("Requiere aval previo del CONFIS Distrital de Cartagena.")
         else:
             # Trasciende el período de gobierno: Ley 1483 de 2011
@@ -80,27 +72,18 @@ class AgenteFiscal:
             requiere_confis = True
             ano_maximo = "Primer o segundo año del período de gobierno del Alcalde Mayor"
             fundamento = (
-                "Artículo 1 de la Ley 1483 de 2011 (Vigencias Futuras Excepcional"
-                "es para Entidades Territoriales)."
+                "Artículo 1 de la Ley 1483 de 2011 (Vigencias Futuras Excepcionales para Entidades Territoriales)."
+            )
+            condiciones.append("El proyecto debe estar consignado en el Plan de Desarrollo Distrital.")
+            condiciones.append(
+                "Exige declaratoria previa de importancia estratégica aprobada por el Consejo de Gobierno."
+            )
+            condiciones.append("No puede exceder la capacidad de pago del Distrito (semáforos de la Ley 358 de 1997).")
+            condiciones.append(
+                "Requiere autorización expresa del Concejo Distrital de Cartagena mediante Acuerdo Distrital."
             )
             condiciones.append(
-                "El proyecto debe estar consignado en el Plan de Desarrollo Distrital."
-            )
-            condiciones.append(
-                "Exige declaratoria previa de importancia est"
-                "ratégica aprobada por el Consejo de Gobierno."
-            )
-            condiciones.append(
-                "No puede exceder la capacidad de pago del "
-                "Distrito (semáforos de la Ley 358 de 1997)."
-            )
-            condiciones.append(
-                "Requiere autorización expresa del Concejo Dist"
-                "rital de Cartagena mediante Acuerdo Distrital."
-            )
-            condiciones.append(
-                "Sector estratégico elegible: Infraestructura, t"
-                "ransporte, educación, salud o seguridad humana."
+                "Sector estratégico elegible: Infraestructura, transporte, educación, salud o seguridad humana."
             )
 
         return AlertaVigenciasFuturas(
@@ -129,12 +112,10 @@ class AgenteFiscal:
                     porcentaje=Decimal("60.0"),
                     monto_estimado_cop=monto_fonset,
                     base_legal=(
-                        "Ley 418 de 1997, Ley 1421 de 2010 y Decreto 1"
-                        "066 de 2015 (Fondo Territorial de Seguridad)."
+                        "Ley 418 de 1997, Ley 1421 de 2010 y Decreto 1066 de 2015 (Fondo Territorial de Seguridad)."
                     ),
                     destinacion_permitida=(
-                        "Dotación, tecnología, movilidad policial, casa"
-                        "s de justicia, convivencia y alertas tempranas."
+                        "Dotación, tecnología, movilidad policial, casas de justicia, convivencia y alertas tempranas."
                     ),
                 )
             )
@@ -143,12 +124,9 @@ class AgenteFiscal:
                     fuente=FuenteFinanciacion.ICLD,
                     porcentaje=Decimal("40.0"),
                     monto_estimado_cop=monto_icld,
-                    base_legal=(
-                        "Ley 617 de 2000 (Ingresos Corrientes de Libre Destinación del Distrito)."
-                    ),
+                    base_legal=("Ley 617 de 2000 (Ingresos Corrientes de Libre Destinación del Distrito)."),
                     destinacion_permitida=(
-                        "Programas sociales de prevención comunitari"
-                        "a, gestión del riesgo e inclusión ciudadana."
+                        "Programas sociales de prevención comunitaria, gestión del riesgo e inclusión ciudadana."
                     ),
                 )
             )
@@ -161,12 +139,9 @@ class AgenteFiscal:
                     fuente=FuenteFinanciacion.SGP,
                     porcentaje=Decimal("70.0"),
                     monto_estimado_cop=monto_sgp,
-                    base_legal=(
-                        "Ley 715 de 2001 y Ley 1176 de 2007 (Sistema General de Participaciones)."
-                    ),
+                    base_legal=("Ley 715 de 2001 y Ley 1176 de 2007 (Sistema General de Participaciones)."),
                     destinacion_permitida=(
-                        "Destinación forzosa sectorial en educación for"
-                        "mal o prestación del servicio de salud pública."
+                        "Destinación forzosa sectorial en educación formal o prestación del servicio de salud pública."
                     ),
                 )
             )
@@ -176,9 +151,7 @@ class AgenteFiscal:
                     porcentaje=Decimal("30.0"),
                     monto_estimado_cop=monto_icld,
                     base_legal="Ley 617 de 2000 (Recursos Propios Distritales).",
-                    destinacion_permitida=(
-                        "Infraestructura complementaria y programas territoriales de bienestar."
-                    ),
+                    destinacion_permitida=("Infraestructura complementaria y programas territoriales de bienestar."),
                 )
             )
         elif "infraestructura" in sector or "movilidad" in sector or "agua" in sector:
@@ -191,13 +164,9 @@ class AgenteFiscal:
                     fuente=FuenteFinanciacion.SGR,
                     porcentaje=Decimal("50.0"),
                     monto_estimado_cop=monto_sgr,
-                    base_legal=(
-                        "Ley 2056 de 2020 (Sistema General de Regalías - Asignaciones Reg"
-                        "ionales y Directas)."
-                    ),
+                    base_legal=("Ley 2056 de 2020 (Sistema General de Regalías - Asignaciones Regionales y Directas)."),
                     destinacion_permitida=(
-                        "Proyectos de inversión de impacto territor"
-                        "ial y cierre de brechas de infraestructura."
+                        "Proyectos de inversión de impacto territorial y cierre de brechas de infraestructura."
                     ),
                 )
             )
@@ -215,13 +184,8 @@ class AgenteFiscal:
                     fuente=FuenteFinanciacion.CREDITO_PUBLICO,
                     porcentaje=Decimal("20.0"),
                     monto_estimado_cop=monto_credito,
-                    base_legal=(
-                        "Ley 358 de 1997 (Endeudamiento territorial con sujeción a límite"
-                        "s de solvencia)."
-                    ),
-                    destinacion_permitida=(
-                        "Inversión física productiva con retorno social y económico."
-                    ),
+                    base_legal=("Ley 358 de 1997 (Endeudamiento territorial con sujeción a límites de solvencia)."),
+                    destinacion_permitida=("Inversión física productiva con retorno social y económico."),
                 )
             )
         else:
@@ -242,13 +206,8 @@ class AgenteFiscal:
                     fuente=FuenteFinanciacion.COOPERACION_INTERNACIONAL,
                     porcentaje=Decimal("30.0"),
                     monto_estimado_cop=monto_coop,
-                    base_legal=(
-                        "Mecanismos de cooperación bilateral y multilateral no reembolsab"
-                        "le (APC Colombia)."
-                    ),
-                    destinacion_permitida=(
-                        "Asistencia técnica, fortalecimiento institucional y derechos humanos."
-                    ),
+                    base_legal=("Mecanismos de cooperación bilateral y multilateral no reembolsable (APC Colombia)."),
+                    destinacion_permitida=("Asistencia técnica, fortalecimiento institucional y derechos humanos."),
                 )
             )
 

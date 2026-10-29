@@ -37,7 +37,8 @@ export function TestimoniosPlataformaView() {
       />
 
       {resumen.data && (
-        <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          <Metrica titulo="Borradores" valor={resumen.data.borradores ?? 0} />
           <Metrica titulo="Pendientes" valor={resumen.data.pendientes} />
           <Metrica titulo="Aprobados" valor={resumen.data.aprobados} />
           <Metrica titulo="Destacados" valor={resumen.data.destacados} />

@@ -1,0 +1,10 @@
+{
+  "fecha_utc": "2026-10-26T05:59:50.416094+00:00",
+  "alcance": "Solo archivos regulares actuales del checkout; sin seguir symlinks, sin dependencias/.git/builds; no archivos internos comprimidos ni rutas externas.",
+  "objetivo_sha256": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+  "bytes_esperados": 51693,
+  "archivos_regulares_revisados_por_tamano": 31424,
+  "candidatos_mismo_tamano": [],
+  "coincidencias": [],
+  "limite": "No encontrarlo en este alcance no acredita inexistencia universal ni causa de sobrescritura."
+}

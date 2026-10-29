@@ -23,6 +23,8 @@ import {usePanels} from "@/core/panels/panel-store";
 import type {CuadranteMatriz, PosturaActor} from "../models/actor";
 import {calcularCuadrante, useActoresFiltrados, useActoresStore} from "../state/actores-store";
 import {sanitizarCsv} from "@/shared/lib/csv";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 function formatearCuadrante(cuadrante: CuadranteMatriz): {
   etiqueta: string;
@@ -59,6 +61,7 @@ function formatearPostura(postura: PosturaActor): {
 }
 
 export function ActoresDataGrid() {
+  const [vista, setVista] = useCollectionView("actores", "lista");
   const actores = useActoresFiltrados();
   const totalTodos = useActoresStore((s) => s.actores.length);
   const cargarActores = useActoresStore((s) => s.cargarActores);
@@ -164,7 +167,8 @@ export function ActoresDataGrid() {
           Mostrando <strong className="text-text-primary">{actores.length}</strong> de{" "}
           <strong className="text-text-primary">{totalTodos}</strong> actores caracterizados
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del directorio de actores" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
@@ -186,7 +190,33 @@ export function ActoresDataGrid() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-surface-1">
+      {vista === "tarjetas" ? (
+        <CollectionLayout view={vista} aria-label="Tarjetas de actores">
+          {actores.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-text-secondary sm:col-span-2 xl:col-span-3">No hay actores que coincidan con los filtros seleccionados.</p>}
+          {actores.map((actor) => {
+            const cuadrante = formatearCuadrante(calcularCuadrante(actor.nivelPoder, actor.nivelInteres));
+            const postura = formatearPostura(actor.postura);
+            return (
+              <article key={actor.id} className="flex flex-col gap-4 rounded-xl border border-border bg-surface-1 p-5">
+                <div className="space-y-1">
+                  <p className="font-mono text-xs text-text-tertiary">{actor.codigo}</p>
+                  <h2 className="break-words font-semibold text-text-primary">{actor.nombre}</h2>
+                  {actor.es_demostracion && <Badge variant="warning">DEMO</Badge>}
+                  <p className="text-sm text-text-secondary">{actor.contacto?.organizacion || actor.nombre}</p>
+                  <p className="text-xs text-text-secondary">{actor.contacto?.cargo || "Vocero / Delegado"}</p>
+                </div>
+                <dl className="space-y-2 text-sm">
+                  <div><dt className="text-xs text-text-tertiary">Tipología</dt><dd className="capitalize">{actor.tipo.replaceAll("_", " ")}</dd></div>
+                  <div><dt className="text-xs text-text-tertiary">Territorio</dt><dd className="capitalize">{actor.territorio.replaceAll("_", " ")}{actor.barrioVereda && ` · ${actor.barrioVereda}`}</dd></div>
+                  <div><dt className="text-xs text-text-tertiary">Poder / Interés</dt><dd>{actor.nivelPoder} / {actor.nivelInteres}</dd></div>
+                </dl>
+                <div className="flex flex-wrap gap-2"><Badge variant={cuadrante.variante} className="whitespace-normal">{cuadrante.etiqueta}</Badge><Badge variant={postura.variante}>{postura.etiqueta}</Badge></div>
+                <Button variant="outline" size="sm" className="mt-auto self-start" onClick={() => abrirGestion(actor.id)} aria-label={`Gestionar ${actor.nombre}`}>Gestionar</Button>
+              </article>
+            );
+          })}
+        </CollectionLayout>
+      ) : <div className="overflow-hidden rounded-xl border border-border bg-surface-1">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -307,7 +337,7 @@ export function ActoresDataGrid() {
             </TableBody>
           </Table>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

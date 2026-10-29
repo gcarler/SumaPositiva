@@ -1,0 +1,56 @@
+{
+  "politica_id": "seguridad-humana-cartagena",
+  "version": "borrador-necesidades-20261023-v1",
+  "sector": "seguridad_humana",
+  "fecha_revision": "2026-10-23",
+  "necesidades": [
+    {
+      "necesidad_id": "homicidios_forenses",
+      "concepto": "muertes_por_homicidio_examen_forense",
+      "indicador": "casos_registrados",
+      "unidad": "casos",
+      "territorio": "DIVIPOLA:13001",
+      "poblacion": "total_municipal",
+      "anios": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "motores": [
+        "series_temporales"
+      ],
+      "candidatos": [
+        "local:medicina_homicidios",
+        "F-006"
+      ]
+    },
+    {
+      "necesidad_id": "homicidios_policiales",
+      "concepto": "homicidio_intencional_registro_policial",
+      "indicador": "casos_registrados",
+      "unidad": "casos",
+      "territorio": "DIVIPOLA:13001",
+      "poblacion": "total_municipal",
+      "anios": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "motores": [
+        "series_temporales"
+      ],
+      "candidatos": [
+        "local:policia_homicidios",
+        "F-033"
+      ]
+    }
+  ]
+}

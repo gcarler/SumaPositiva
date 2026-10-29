@@ -14,9 +14,7 @@ down_revision = "0004_sesion_anonima"
 branch_labels = None
 depends_on = None
 
-permisos_ciudadano = json.dumps(
-    ["aportes:crear", "aportes:leer", "aportes:apoyar", "mesas:deliberar"]
-)
+permisos_ciudadano = json.dumps(["aportes:crear", "aportes:leer", "aportes:apoyar", "mesas:deliberar"])
 permisos_facilitador = json.dumps(
     [
         "aportes:crear",
@@ -28,9 +26,7 @@ permisos_facilitador = json.dumps(
         "asistencia:verificar",
     ]
 )
-permisos_autoridad = json.dumps(
-    ["aportes:leer", "aportes:responder", "aportes:priorizar", "mesas:leer"]
-)
+permisos_autoridad = json.dumps(["aportes:leer", "aportes:responder", "aportes:priorizar", "mesas:leer"])
 permisos_auditor = json.dumps(["aportes:leer", "auditoria:leer"])
 
 INSTRUCCIONES_UPGRADE = [

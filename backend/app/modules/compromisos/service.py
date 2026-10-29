@@ -1,3 +1,4 @@
+import logging
 import re
 import unicodedata
 import uuid
@@ -7,15 +8,13 @@ from decimal import Decimal
 from typing import Any
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
-from sqlalchemy.orm import load_only
+from sqlalchemy import case, distinct, func, select
 
 from app.core.transactions import transaction
 from app.modules.compromisos.detector_multiformato import (
     detectar_y_normalizar_formato,
     obtener_muestras_multiformato,
 )
-from app.modules.compromisos.ingesta_masiva_service import IngestaMasivaService
 from app.modules.compromisos.models import (
     ActividadPlanAccion,
     ArchivoPlanIngerido,
@@ -53,6 +52,8 @@ from app.modules.compromisos.triada_motores import (
     motor_plan_desarrollo,
     obtener_catalogo_transparencia,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _porcentaje_triage(valor: Any) -> float:
@@ -109,16 +110,10 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
        explicitan numerador/denominador o referencia metodológica.
     """
     datos = registro if isinstance(registro, dict) else {}
-    datos_of = (
-        datos.get("datos_oficiales") if isinstance(datos.get("datos_oficiales"), dict) else {}
-    )
+    datos_of = datos.get("datos_oficiales") if isinstance(datos.get("datos_oficiales"), dict) else {}
 
     texto_combinado = " ".join(
-        str(
-            datos.get(k)
-            or datos_of.get(k)
-            or ""
-        )
+        str(datos.get(k) or datos_of.get(k) or "")
         for k in (
             "indicador",
             "Indicador de producto",
@@ -185,9 +180,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
         datos.get("porcentaje_avance_fisico")
         if datos.get("porcentaje_avance_fisico") is not None
         else (
-            datos.get("avance_fisico_pct")
-            if datos.get("avance_fisico_pct") is not None
-            else datos.get("avance_fisico")
+            datos.get("avance_fisico_pct") if datos.get("avance_fisico_pct") is not None else datos.get("avance_fisico")
         )
     )
 
@@ -198,9 +191,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
     trimestres_en_cero_count = len(ceros_observados)
     suma_trimestral = round(sum(reportados), 4) if reportados else None
     max_trimestral = round(max(reportados), 4) if reportados else None
-    promedio_trimestral = (
-        round(sum(reportados) / len(reportados), 4) if reportados else None
-    )
+    promedio_trimestral = round(sum(reportados) / len(reportados), 4) if reportados else None
 
     nota_sobrecumplimiento = str(
         datos.get("nota_sobrecumplimiento")
@@ -250,9 +241,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
         "porcentaje_avance_fisico": avance_pct,
         "trimestres_reportados_count": trimestres_reportados_count,
         "trimestres_en_cero_observado_count": trimestres_en_cero_count,
-        "ceros_observados_preservados": bool(
-            trimestres_en_cero_count > 0 or avance_pct == 0.0
-        ),
+        "ceros_observados_preservados": bool(trimestres_en_cero_count > 0 or avance_pct == 0.0),
         "suma_trimestral": suma_trimestral,
         "max_trimestral": max_trimestral,
         "promedio_trimestral": promedio_trimestral,
@@ -266,11 +255,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
         else (
             datos.get("linea_base_numerica")
             if datos.get("linea_base_numerica") is not None
-            else (
-                datos_of.get("Línea base")
-                if datos_of.get("Línea base") is not None
-                else datos_of.get("Linea base")
-            )
+            else (datos_of.get("Línea base") if datos_of.get("Línea base") is not None else datos_of.get("Linea base"))
         )
     )
     meta_ref = _a_float_preservando_cero(
@@ -307,10 +292,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
                 f"superior a la línea base ({linea_base})."
             )
         else:
-            detalle_lb_meta = (
-                f"Consistente con sentido {sentido_indicador}: "
-                f"línea base={linea_base}, meta={meta_ref}."
-            )
+            detalle_lb_meta = f"Consistente con sentido {sentido_indicador}: línea base={linea_base}, meta={meta_ref}."
 
     evaluacion_linea_base_vs_meta = {
         "linea_base": linea_base,
@@ -321,9 +303,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
         "detalle": detalle_lb_meta,
     }
 
-    unidad_txt = _normalizar_texto_auditoria(
-        datos.get("unidad_medida") or datos_of.get("Unidad de medida") or ""
-    )
+    unidad_txt = _normalizar_texto_auditoria(datos.get("unidad_medida") or datos_of.get("Unidad de medida") or "")
     formula_txt = _normalizar_texto_auditoria(
         datos.get("formula")
         or datos.get("formula_indicador")
@@ -332,8 +312,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
         or ""
     )
     es_relativo = any(
-        tok in norm_texto or tok in unidad_txt
-        for tok in ("%", "porcentaje", "tasa", "indice", "razon", "proporcion")
+        tok in norm_texto or tok in unidad_txt for tok in ("%", "porcentaje", "tasa", "indice", "razon", "proporcion")
     )
     tiene_ref_formula = bool(
         (formula_txt and formula_txt not in {"cociente_porcentual", "conteo_acumulado_unidad"})
@@ -373,9 +352,7 @@ def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> 
 
 
 class CompromisosService:
-    auditar_consistencia_serie_y_sentido_indicador = staticmethod(
-        auditar_consistencia_serie_y_sentido_indicador
-    )
+    auditar_consistencia_serie_y_sentido_indicador = staticmethod(auditar_consistencia_serie_y_sentido_indicador)
 
     def __init__(self, repository: CompromisosRepository) -> None:
         self.repo = repository
@@ -386,9 +363,7 @@ class CompromisosService:
         muestras = obtener_muestras_multiformato()
         if isinstance(solicitud, str):
             if solicitud not in muestras:
-                raise HTTPException(
-                    status_code=422, detail="Código de muestra multiformato desconocido."
-                )
+                raise HTTPException(status_code=422, detail="Código de muestra multiformato desconocido.")
             solicitud = muestras[solicitud]
         elif solicitud.muestra and not solicitud.hojas:
             muestra = muestras.get(solicitud.muestra)
@@ -396,14 +371,198 @@ class CompromisosService:
                 solicitud = muestra.model_copy(update={"nombre_archivo": solicitud.nombre_archivo})
         return detectar_y_normalizar_formato(solicitud)
 
-    async def cruzar_lecturas_triada(
-        self, solicitud: CruzarTresLecturasSolicitud
-    ) -> dict[str, Any]:
-        return cruzar_tres_lecturas(
-            solicitud.metas_estrategicas,
-            solicitud.actividades_operativas,
-            solicitud.ejecuciones_presupuestales,
+    async def cruzar_lecturas_triada(self, solicitud: CruzarTresLecturasSolicitud) -> dict[str, Any]:
+        metas = list(solicitud.metas_estrategicas)
+        actividades = list(solicitud.actividades_operativas)
+        ejecuciones = list(solicitud.ejecuciones_presupuestales)
+
+        if not metas and not actividades and not ejecuciones:
+            session = None
+            try:
+                if "session" in getattr(self.repo, "__dict__", {}):
+                    session = getattr(self.repo, "session", None)
+                elif hasattr(self.repo, "session") and not type(self.repo).__name__.startswith("Sin"):
+                    session = getattr(self.repo, "session", None)
+            except Exception:
+                session = None
+
+            if session is not None:
+                excluded_files = select(ArchivoPlanIngerido.id).where(
+                    ArchivoPlanIngerido.metadatos["alerta_calidad"].astext == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                )
+                db_filters = [RegistroTriadaNormalizado.archivo_id.not_in(excluded_files)]
+                if solicitud.vigencia is not None:
+                    db_filters.append(RegistroTriadaNormalizado.vigencia == solicitud.vigencia)
+                if solicitud.dependencia and solicitud.dependencia not in ("TODAS", "TODOS"):
+                    db_filters.append(
+                        RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{solicitud.dependencia.strip()}%")
+                    )
+                if solicitud.cuatrienio and solicitud.cuatrienio not in ("TODOS", "TODAS"):
+                    periodo_c = re.search(r"(20\d{2})\D+(20\d{2})", solicitud.cuatrienio)
+                    if periodo_c:
+                        c_inicio, c_fin = (int(periodo_c.group(i)) for i in (1, 2))
+                        db_filters.append(RegistroTriadaNormalizado.vigencia.between(c_inicio, c_fin))
+                if solicitud.fuente_financiacion and solicitud.fuente_financiacion not in ("TODAS", "TODOS"):
+                    fuente_term = f"%{solicitud.fuente_financiacion.strip()}%"
+                    from sqlalchemy import or_
+
+                    db_filters.append(
+                        or_(
+                            RegistroTriadaNormalizado.motor_destino != "INVERSION_PRESUPUESTAL",
+                            RegistroTriadaNormalizado.datos_origen["fuente"].astext.ilike(fuente_term),
+                            RegistroTriadaNormalizado.datos_origen["fuente_financiacion"].astext.ilike(fuente_term),
+                        )
+                    )
+
+                stmt_triad = select(
+                    RegistroTriadaNormalizado.motor_destino,
+                    RegistroTriadaNormalizado.entidad_normalizada,
+                    RegistroTriadaNormalizado.linea_estrategica,
+                    RegistroTriadaNormalizado.codigo_meta_pdd,
+                    RegistroTriadaNormalizado.codigo_bpim,
+                    RegistroTriadaNormalizado.indicador,
+                    RegistroTriadaNormalizado.descripcion_actividad,
+                    RegistroTriadaNormalizado.verbo_fuerte_dnp,
+                    RegistroTriadaNormalizado.avance_fisico_pct,
+                    RegistroTriadaNormalizado.avance_estrategico_pct,
+                    RegistroTriadaNormalizado.apropiacion_definitiva_cop,
+                    RegistroTriadaNormalizado.cdp_cop,
+                    RegistroTriadaNormalizado.compromisos_rp_cop,
+                    RegistroTriadaNormalizado.obligaciones_cop,
+                    RegistroTriadaNormalizado.pagos_tesoreria_cop,
+                    RegistroTriadaNormalizado.vigencia,
+                    RegistroTriadaNormalizado.datos_origen,
+                ).where(
+                    RegistroTriadaNormalizado.codigo_bpim.isnot(None),
+                    RegistroTriadaNormalizado.codigo_bpim.notin_(
+                        ["", "-", "----", "n/a", "na", "nd", "ninguno", "0", "sin codigo"]
+                    ),
+                    RegistroTriadaNormalizado.linea_estrategica.isnot(None),
+                    RegistroTriadaNormalizado.linea_estrategica != "",
+                    RegistroTriadaNormalizado.entidad_normalizada.isnot(None),
+                    RegistroTriadaNormalizado.entidad_normalizada != "",
+                    *db_filters,
+                )
+                try:
+                    res_triad = (await session.execute(stmt_triad)).fetchall()
+                    for r in res_triad:
+                        m_dest = r[0]
+                        if m_dest == "PLAN_DESARROLLO":
+                            metas.append(
+                                MetaEstrategicaTriada(
+                                    vigencia=r[15],
+                                    entidad=r[1] or "",
+                                    linea_estrategica=r[2] or "",
+                                    codigo_meta_pdd=r[3] or "",
+                                    codigo_bpim=r[4] or "",
+                                    indicador=r[5] or "",
+                                    avance_estrategico_pct=_porcentaje_triage(r[9] or r[8]),
+                                )
+                            )
+                        elif m_dest == "PLAN_ACCION":
+                            actividades.append(
+                                ActividadOperativaTriada(
+                                    vigencia=r[15],
+                                    entidad=r[1] or "",
+                                    linea_estrategica=r[2] or "",
+                                    codigo_meta_pdd=r[3] or "",
+                                    codigo_bpim=r[4] or "",
+                                    descripcion_actividad=r[6] or "",
+                                    avance_operativo_fisico_pct=_porcentaje_triage(r[8]),
+                                    formato_origen="INGESTA_BINARIA_PERSISTIDA",
+                                    porcentaje_verbos_fuertes_dnp=100.0 if r[7] else 0.0,
+                                )
+                            )
+                        elif m_dest == "INVERSION_PRESUPUESTAL":
+                            datos_orig = r[16] or {} if len(r) > 16 and isinstance(r[16], dict) else {}
+                            fuente_val = (
+                                datos_orig.get("fuente") or datos_orig.get("fuente_financiacion") or "RECURSOS_PROPIOS"
+                            )
+                            ejecuciones.append(
+                                EjecucionPresupuestalTriada(
+                                    vigencia=r[15],
+                                    entidad=r[1] or "",
+                                    linea_estrategica=r[2] or "",
+                                    codigo_bpim=r[4] or "",
+                                    fuente=str(fuente_val),
+                                    apropiacion_definitiva_cop=max(0.0, float(r[10] or 0)),
+                                    cdp_acumulado_cop=max(0.0, float(r[11] or 0)),
+                                    compromisos_rp_cop=max(0.0, float(r[12] or 0)),
+                                    obligaciones_cop=max(0.0, float(r[13] or 0)),
+                                    pagos_tesoreria_cop=max(0.0, float(r[14] or 0)),
+                                )
+                            )
+                except Exception as exc:
+                    logger.error("Error al consultar registros de triada en base de datos: %s", exc, exc_info=True)
+                    raise HTTPException(
+                        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                        detail=f"Base de datos no disponible para cruzar lecturas de la tríada: {exc}",
+                    ) from exc
+
+        if solicitud.vigencia is not None:
+            metas = [m for m in metas if m.vigencia == solicitud.vigencia]
+            actividades = [a for a in actividades if a.vigencia == solicitud.vigencia]
+            ejecuciones = [e for e in ejecuciones if e.vigencia == solicitud.vigencia]
+
+        if solicitud.dependencia and solicitud.dependencia not in ("TODAS", "TODOS"):
+            dep = solicitud.dependencia.strip().lower()
+            metas = [m for m in metas if dep in m.entidad.lower()]
+            actividades = [a for a in actividades if dep in a.entidad.lower()]
+            ejecuciones = [e for e in ejecuciones if dep in e.entidad.lower()]
+
+        if solicitud.fuente_financiacion and solicitud.fuente_financiacion not in ("TODAS", "TODOS"):
+            fuente = solicitud.fuente_financiacion.strip().lower()
+            ejecuciones = [e for e in ejecuciones if fuente in getattr(e, "fuente", "").lower()]
+            valid_keys = {(e.entidad.lower(), e.linea_estrategica.lower(), e.codigo_bpim.lower()) for e in ejecuciones}
+            metas = [
+                m
+                for m in metas
+                if (m.entidad.lower(), m.linea_estrategica.lower(), m.codigo_bpim.lower()) in valid_keys
+            ]
+            actividades = [
+                a
+                for a in actividades
+                if (a.entidad.lower(), a.linea_estrategica.lower(), a.codigo_bpim.lower()) in valid_keys
+            ]
+
+        if solicitud.cuatrienio and solicitud.cuatrienio not in ("TODOS", "TODAS"):
+            periodo = re.search(r"(20\d{2})\D+(20\d{2})", solicitud.cuatrienio)
+            if periodo:
+                inicio, fin = (int(periodo.group(i)) for i in (1, 2))
+                metas = [m for m in metas if m.vigencia is not None and inicio <= m.vigencia <= fin]
+                actividades = [a for a in actividades if a.vigencia is not None and inicio <= a.vigencia <= fin]
+                ejecuciones = [e for e in ejecuciones if e.vigencia is not None and inicio <= e.vigencia <= fin]
+
+        resultado = cruzar_tres_lecturas(
+            metas,
+            actividades,
+            ejecuciones,
         )
+
+        if solicitud.estado_semaforo and solicitud.estado_semaforo not in ("TODOS", "TODAS"):
+            sem = solicitud.estado_semaforo.strip()
+            cruces_filtrados = [c for c in resultado.get("cruces", []) if c.get("estado_semaforo") == sem]
+            alertas_filtradas = [a for a in resultado.get("alertas", []) if a.get("estado_semaforo") == sem]
+            resultado["cruces"] = cruces_filtrados
+            resultado["alertas"] = alertas_filtradas
+            resultado["total_cruces"] = len(cruces_filtrados)
+            resultado["totales_evaluados"] = len(cruces_filtrados)
+            resultado["resumen_semaforo"] = {
+                "coherencia_alta": sum(
+                    1 for c in cruces_filtrados if c.get("estado_semaforo") == "COHERENCIA_INTEGRAL_ALTA"
+                ),
+                "desfase_sobreejecucion": sum(
+                    1 for c in cruces_filtrados if c.get("estado_semaforo") == "DESFASE_CRITICO_SOBREEJECUCION"
+                ),
+                "rezago_contractual": sum(
+                    1 for c in cruces_filtrados if c.get("estado_semaforo") == "REZAGO_CONTRACTUAL_INVERSION"
+                ),
+                "meta_suboperacionalizada": sum(
+                    1 for c in cruces_filtrados if c.get("estado_semaforo") == "META_PDD_SUBOPERACIONALIZADA"
+                ),
+            }
+
+        return resultado
 
     async def obtener_resumen_triada(
         self,
@@ -436,133 +595,385 @@ class CompromisosService:
             )
             for a in actividades_db
         ]
-        ejecuciones: list[EjecucionPresupuestalTriada] = []
-        ingesta_stmt = select(RegistroTriadaNormalizado).options(
-            load_only(
-                RegistroTriadaNormalizado.archivo_id,
+        session = getattr(self.repo, "session", None)
+        if session is None:
+            # Fallback for mock repositories without database session
+            metas_pdd = []
+            ejecuciones: list[EjecucionPresupuestalTriada] = []
+            cruces = cruzar_tres_lecturas(metas_pdd, actividades, ejecuciones)
+            years = {year: 0 for year in range(2016, 2027)}
+            for actividad in actividades_db:
+                if actividad.vigencia in years:
+                    years[actividad.vigencia] += 1
+            profiles = [
+                {
+                    "perfil": profile,
+                    "vigencias": year_range,
+                    "datos_cargados": False,
+                }
+                for profile, year_range in (
+                    ("PA_MONOHOJA_2016_2019", "2016–2019"),
+                    ("PA_HIBRIDO_2020_2023", "2020–2023"),
+                    ("PA_MULTIHOJA_2024_2026", "2024–2026"),
+                    ("MATRIZ_PDD_2024_2027", "2024–2027"),
+                    ("EJECUCION_PRESUPUESTAL_HACIENDA", "2016–2027"),
+                    ("PA_CANONICO_DNP_POLIS", "dual"),
+                )
+            ]
+            return {
+                "filtros": {
+                    "cuatrienio": cuatrienio,
+                    "vigencia": vigencia,
+                    "entidad": entidad,
+                    "fuente": fuente,
+                    "dimension": dimension,
+                    "periodo": periodo_gobierno,
+                },
+                "motor_1_plan_desarrollo": {
+                    "estado_fuente": "SIN_CARGA_ESTRUCTURADA",
+                    "planes_referenciados": [
+                        {"nombre": "Primero la Gente", "cuatrienio": "2016-2019"},
+                        {"nombre": "Salvemos Juntos a Cartagena", "cuatrienio": "2020-2023"},
+                        {"nombre": "Cartagena Ciudad de Derechos", "cuatrienio": "2024-2027"},
+                    ],
+                    **motor_plan_desarrollo(metas_pdd),
+                },
+                "motor_2_plan_accion": {
+                    "estado_fuente": "PERSISTENCIA_POLIS_PAS",
+                    "origen_registros": [
+                        "seguimiento.actividades_plan_accion",
+                        "seguimiento.registros_triada_normalizados",
+                    ],
+                    "registros_persistidos": len(actividades_db),
+                    "conteo_vigencias_comparativa": years,
+                    **motor_plan_accion(actividades),
+                },
+                "motor_3_inversion_presupuestal": {
+                    "estado_fuente": "SIN_CARGA_CASCADA_PRESUPUESTAL",
+                    "cobertura_campos": [
+                        "apropiacion_inicial_cop",
+                        "apropiacion_definitiva_cop",
+                        "cdp_acumulado_cop",
+                        "compromisos_rp_cop",
+                        "obligaciones_cop",
+                        "pagos_tesoreria_cop",
+                    ],
+                    **motor_inversion_presupuestal(ejecuciones),
+                },
+                "cruce_tres_lecturas": cruces,
+                "comparativa_interanual_2016_2026": {
+                    str(year): {
+                        "registros_persistidos": years[year],
+                        "dato_disponible": years[year] > 0,
+                    }
+                    for year in years
+                }
+                | {"metodo": "campos normalizados comunes; las fuentes ausentes no se imputan"},
+                "perfiles_formato_excel": profiles,
+                "catalogo_transparencia_cartagena": obtener_catalogo_transparencia(),
+                "ingesta_masiva": {
+                    "archivos_persistidos": 0,
+                    "registros_normalizados": 0,
+                    "registros_por_motor": {
+                        "PLAN_DESARROLLO": 0,
+                        "PLAN_ACCION": 0,
+                        "INVERSION_PRESUPUESTAL": 0,
+                    },
+                    "comparativa_interanual": cruces,
+                },
+            }
+
+        # Optimized database aggregation branch
+        excluded_files = select(ArchivoPlanIngerido.id).where(
+            ArchivoPlanIngerido.metadatos["alerta_calidad"].astext == "CONTENIDO_IDENTICO_OTRO_CORTE"
+        )
+        base_filters = [RegistroTriadaNormalizado.archivo_id.not_in(excluded_files)]
+        if vigencia is not None:
+            base_filters.append(RegistroTriadaNormalizado.vigencia == vigencia)
+        if entidad:
+            base_filters.append(RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%"))
+        if dimension:
+            base_filters.append(RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension]))
+        if periodo_gobierno:
+            base_filters.append(RegistroTriadaNormalizado.periodo_gobierno == periodo_gobierno)
+        if periodo:
+            base_filters.append(RegistroTriadaNormalizado.vigencia.between(inicio, fin))
+
+        # 1. Counts per motor and distinct files
+        stmt_counts = (
+            select(
                 RegistroTriadaNormalizado.motor_destino,
-                RegistroTriadaNormalizado.vigencia,
+                func.count().label("total"),
+                func.count(distinct(RegistroTriadaNormalizado.archivo_id)).label("archivos"),
+            )
+            .where(*base_filters)
+            .group_by(RegistroTriadaNormalizado.motor_destino)
+        )
+        res_counts = (await session.execute(stmt_counts)).fetchall()
+        counts_by_motor = {row[0]: row[1] for row in res_counts}
+        total_archivos = sum(row[2] for row in res_counts)
+        total_registros = sum(counts_by_motor.values())
+        pdd_count = counts_by_motor.get("PLAN_DESARROLLO", 0)
+        pa_count = counts_by_motor.get("PLAN_ACCION", 0)
+        fin_count = counts_by_motor.get("INVERSION_PRESUPUESTAL", 0)
+
+        # 2. Interannual counts for PLAN_ACCION
+        stmt_years = (
+            select(RegistroTriadaNormalizado.vigencia, func.count())
+            .where(
+                RegistroTriadaNormalizado.motor_destino == "PLAN_ACCION",
+                RegistroTriadaNormalizado.vigencia.between(2016, 2026),
+                *base_filters,
+            )
+            .group_by(RegistroTriadaNormalizado.vigencia)
+        )
+        res_years = (await session.execute(stmt_years)).fetchall()
+        years = {year: 0 for year in range(2016, 2027)}
+        for actividad in actividades_db:
+            if actividad.vigencia in years:
+                years[actividad.vigencia] += 1
+        for vig, count in res_years:
+            if vig in years:
+                years[vig] += count
+
+        # 3. Motor 1 (PLAN_DESARROLLO) grouped lines
+        stmt_m1 = (
+            select(
                 RegistroTriadaNormalizado.entidad_normalizada,
                 RegistroTriadaNormalizado.linea_estrategica,
-                RegistroTriadaNormalizado.codigo_meta_pdd,
+                func.count().label("metas"),
+                func.avg(
+                    func.coalesce(
+                        RegistroTriadaNormalizado.avance_estrategico_pct,
+                        RegistroTriadaNormalizado.avance_fisico_pct,
+                        0,
+                    )
+                ).label("avance_avg"),
+            )
+            .where(RegistroTriadaNormalizado.motor_destino == "PLAN_DESARROLLO", *base_filters)
+            .group_by(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+            )
+            .order_by(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+            )
+        )
+        res_m1 = (await session.execute(stmt_m1)).fetchall()
+        m1_lineas = [
+            {
+                "entidad": r[0] or "",
+                "linea_estrategica": r[1] or "",
+                "metas": r[2],
+                "avance_estrategico_pct": _porcentaje_triage(round(float(r[3] or 0), 2)),
+            }
+            for r in res_m1
+        ]
+
+        # 4. Motor 2 (PLAN_ACCION) grouped lines
+        stmt_m2 = (
+            select(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+                func.count().label("actividades"),
+                func.avg(func.coalesce(RegistroTriadaNormalizado.avance_fisico_pct, 0)).label("avance_avg"),
+                func.avg(
+                    case(
+                        (RegistroTriadaNormalizado.verbo_fuerte_dnp.is_(True), 100.0),
+                        else_=0.0,
+                    )
+                ).label("verbos_avg"),
+            )
+            .where(RegistroTriadaNormalizado.motor_destino == "PLAN_ACCION", *base_filters)
+            .group_by(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+            )
+            .order_by(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+            )
+        )
+        res_m2 = (await session.execute(stmt_m2)).fetchall()
+        m2_map = {
+            (r[0] or "", r[1] or ""): {
+                "entidad": r[0] or "",
+                "linea_estrategica": r[1] or "",
+                "actividades": r[2],
+                "avance_operativo_fisico_pct": _porcentaje_triage(round(float(r[3] or 0), 2)),
+                "porcentaje_verbos_fuertes_dnp": round(float(r[4] or 0), 2),
+            }
+            for r in res_m2
+        }
+        for a in actividades:
+            key = (a.entidad or "", a.linea_estrategica or "")
+            if key in m2_map:
+                item = m2_map[key]
+                n_prev = item["actividades"]
+                item["actividades"] += 1
+                item["avance_operativo_fisico_pct"] = round(
+                    (item["avance_operativo_fisico_pct"] * n_prev + a.avance_operativo_fisico_pct) / (n_prev + 1), 2
+                )
+                item["porcentaje_verbos_fuertes_dnp"] = round(
+                    (item["porcentaje_verbos_fuertes_dnp"] * n_prev + a.porcentaje_verbos_fuertes_dnp) / (n_prev + 1), 2
+                )
+            else:
+                m2_map[key] = {
+                    "entidad": a.entidad or "",
+                    "linea_estrategica": a.linea_estrategica or "",
+                    "actividades": 1,
+                    "avance_operativo_fisico_pct": a.avance_operativo_fisico_pct,
+                    "porcentaje_verbos_fuertes_dnp": a.porcentaje_verbos_fuertes_dnp,
+                }
+        m2_lineas = [m2_map[k] for k in sorted(m2_map.keys())]
+
+        # 5. Motor 3 (INVERSION_PRESUPUESTAL) totals + bounded samples
+        stmt_m3_totals = select(
+            func.coalesce(func.sum(RegistroTriadaNormalizado.apropiacion_definitiva_cop), 0),
+            func.coalesce(func.sum(RegistroTriadaNormalizado.cdp_cop), 0),
+            func.coalesce(func.sum(RegistroTriadaNormalizado.compromisos_rp_cop), 0),
+            func.coalesce(func.sum(RegistroTriadaNormalizado.obligaciones_cop), 0),
+            func.coalesce(func.sum(RegistroTriadaNormalizado.pagos_tesoreria_cop), 0),
+        ).where(RegistroTriadaNormalizado.motor_destino == "INVERSION_PRESUPUESTAL", *base_filters)
+        r_m3_tot = (await session.execute(stmt_m3_totals)).fetchone()
+        tot_aprop = float(r_m3_tot[0] or 0)
+        tot_cdp = float(r_m3_tot[1] or 0)
+        tot_rp = float(r_m3_tot[2] or 0)
+        tot_ob = float(r_m3_tot[3] or 0)
+        tot_pagos = float(r_m3_tot[4] or 0)
+
+        stmt_m3_samples = (
+            select(
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
                 RegistroTriadaNormalizado.codigo_bpim,
-                RegistroTriadaNormalizado.indicador,
-                RegistroTriadaNormalizado.descripcion_actividad,
-                RegistroTriadaNormalizado.verbo_fuerte_dnp,
-                RegistroTriadaNormalizado.avance_fisico_pct,
-                RegistroTriadaNormalizado.avance_estrategico_pct,
                 RegistroTriadaNormalizado.apropiacion_definitiva_cop,
                 RegistroTriadaNormalizado.cdp_cop,
                 RegistroTriadaNormalizado.compromisos_rp_cop,
                 RegistroTriadaNormalizado.obligaciones_cop,
                 RegistroTriadaNormalizado.pagos_tesoreria_cop,
             )
+            .where(RegistroTriadaNormalizado.motor_destino == "INVERSION_PRESUPUESTAL", *base_filters)
+            .order_by(RegistroTriadaNormalizado.apropiacion_definitiva_cop.desc().nullslast())
+            .limit(100)
         )
-        ingesta_stmt = ingesta_stmt.where(
-            RegistroTriadaNormalizado.archivo_id.not_in(
-                select(ArchivoPlanIngerido.id).where(
-                    ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
-                    == "CONTENIDO_IDENTICO_OTRO_CORTE"
+        res_m3_samples = (await session.execute(stmt_m3_samples)).fetchall()
+        ejecuciones_items = []
+        for r in res_m3_samples:
+            aprop = max(0.0, float(r[3] or 0))
+            rp = max(0.0, float(r[5] or 0))
+            pag = max(0.0, float(r[7] or 0))
+            ejecuciones_items.append(
+                {
+                    "entidad": r[0] or "",
+                    "linea_estrategica": r[1] or "",
+                    "codigo_bpim": r[2] or "",
+                    "apropiacion_definitiva_cop": aprop,
+                    "cdp_acumulado_cop": max(0.0, float(r[4] or 0)),
+                    "compromisos_rp_cop": rp,
+                    "obligaciones_cop": max(0.0, float(r[6] or 0)),
+                    "pagos_tesoreria_cop": pag,
+                    "ejecucion_compromisos_pct": round(100 * rp / aprop, 2) if aprop else None,
+                    "giro_efectivo_pct": round(100 * pag / aprop, 2) if aprop else None,
+                }
+            )
+
+        # 6. Triad cross on records with valid keys
+        stmt_triad = select(
+            RegistroTriadaNormalizado.motor_destino,
+            RegistroTriadaNormalizado.entidad_normalizada,
+            RegistroTriadaNormalizado.linea_estrategica,
+            RegistroTriadaNormalizado.codigo_meta_pdd,
+            RegistroTriadaNormalizado.codigo_bpim,
+            RegistroTriadaNormalizado.indicador,
+            RegistroTriadaNormalizado.descripcion_actividad,
+            RegistroTriadaNormalizado.verbo_fuerte_dnp,
+            RegistroTriadaNormalizado.avance_fisico_pct,
+            RegistroTriadaNormalizado.avance_estrategico_pct,
+            RegistroTriadaNormalizado.apropiacion_definitiva_cop,
+            RegistroTriadaNormalizado.cdp_cop,
+            RegistroTriadaNormalizado.compromisos_rp_cop,
+            RegistroTriadaNormalizado.obligaciones_cop,
+            RegistroTriadaNormalizado.pagos_tesoreria_cop,
+            RegistroTriadaNormalizado.vigencia,
+        ).where(
+            RegistroTriadaNormalizado.codigo_bpim.isnot(None),
+            RegistroTriadaNormalizado.codigo_bpim.notin_(
+                ["", "-", "----", "n/a", "na", "nd", "ninguno", "0", "sin codigo"]
+            ),
+            RegistroTriadaNormalizado.linea_estrategica.isnot(None),
+            RegistroTriadaNormalizado.linea_estrategica != "",
+            RegistroTriadaNormalizado.entidad_normalizada.isnot(None),
+            RegistroTriadaNormalizado.entidad_normalizada != "",
+            *base_filters,
+        )
+        res_triad = (await session.execute(stmt_triad)).fetchall()
+        metas_triad = []
+        actividades_triad = [a for a in actividades if a.codigo_bpim and a.linea_estrategica and a.entidad]
+        ejecuciones_triad = []
+        for r in res_triad:
+            m = r[0]
+            if m == "PLAN_DESARROLLO":
+                metas_triad.append(
+                    MetaEstrategicaTriada(
+                        entidad=r[1] or "",
+                        linea_estrategica=r[2] or "",
+                        codigo_meta_pdd=r[3] or "",
+                        codigo_bpim=r[4] or "",
+                        indicador=r[5] or "",
+                        avance_estrategico_pct=_porcentaje_triage(r[9] or r[8]),
+                    )
                 )
-            )
-        )
-        if vigencia is not None:
-            ingesta_stmt = ingesta_stmt.where(RegistroTriadaNormalizado.vigencia == vigencia)
-        if entidad:
-            ingesta_stmt = ingesta_stmt.where(
-                RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%")
-            )
-        if dimension:
-            ingesta_stmt = ingesta_stmt.where(
-                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
-            )
-        if periodo_gobierno:
-            ingesta_stmt = ingesta_stmt.where(
-                RegistroTriadaNormalizado.periodo_gobierno == periodo_gobierno
-            )
-        if periodo:
-            ingesta_stmt = ingesta_stmt.where(
-                RegistroTriadaNormalizado.vigencia.between(inicio, fin)
-            )
-        session = getattr(self.repo, "session", None)
-        registros_ingesta = (
-            list((await session.scalars(ingesta_stmt)).all()) if session is not None else []
-        )
-        pdd_rows = [r for r in registros_ingesta if r.motor_destino == "PLAN_DESARROLLO"]
-        pa_rows = [r for r in registros_ingesta if r.motor_destino == "PLAN_ACCION"]
-        financial_rows = [
-            r for r in registros_ingesta if r.motor_destino == "INVERSION_PRESUPUESTAL"
-        ]
-        metas_pdd.extend(
-            MetaEstrategicaTriada(
-                entidad=r.entidad_normalizada or "",
-                linea_estrategica=r.linea_estrategica or "",
-                codigo_meta_pdd=r.codigo_meta_pdd or "",
-                codigo_bpim=r.codigo_bpim or "",
-                indicador=r.indicador or "",
-                avance_estrategico_pct=_porcentaje_triage(
-                    r.avance_estrategico_pct or r.avance_fisico_pct
-                ),
-            )
-            for r in pdd_rows
-        )
-        actividades.extend(
-            ActividadOperativaTriada(
-                entidad=r.entidad_normalizada or "",
-                linea_estrategica=r.linea_estrategica or "",
-                codigo_meta_pdd=r.codigo_meta_pdd or "",
-                codigo_bpim=r.codigo_bpim or "",
-                descripcion_actividad=r.descripcion_actividad or "",
-                avance_operativo_fisico_pct=_porcentaje_triage(r.avance_fisico_pct),
-                formato_origen="INGESTA_BINARIA_PERSISTIDA",
-                porcentaje_verbos_fuertes_dnp=100 if r.verbo_fuerte_dnp else 0,
-            )
-            for r in pa_rows
-        )
-        ejecuciones.extend(
-            EjecucionPresupuestalTriada(
-                entidad=r.entidad_normalizada or "",
-                linea_estrategica=r.linea_estrategica or "",
-                codigo_bpim=r.codigo_bpim or "",
-                apropiacion_definitiva_cop=max(0.0, float(r.apropiacion_definitiva_cop or 0)),
-                cdp_acumulado_cop=max(0.0, float(r.cdp_cop or 0)),
-                compromisos_rp_cop=max(0.0, float(r.compromisos_rp_cop or 0)),
-                obligaciones_cop=max(0.0, float(r.obligaciones_cop or 0)),
-                pagos_tesoreria_cop=max(0.0, float(r.pagos_tesoreria_cop or 0)),
-            )
-            for r in financial_rows
-        )
-        cruces = cruzar_tres_lecturas(metas_pdd, actividades, ejecuciones)
-        years = {year: 0 for year in range(2016, 2027)}
-        for actividad in actividades_db:
-            if actividad.vigencia in years:
-                years[actividad.vigencia] += 1
-        for row in pa_rows:
-            if row.vigencia in years:
-                years[row.vigencia] += 1
-        archivos_stmt = select(ArchivoPlanIngerido).options(
-            load_only(ArchivoPlanIngerido.perfil_detectado)
+            elif m == "PLAN_ACCION":
+                actividades_triad.append(
+                    ActividadOperativaTriada(
+                        entidad=r[1] or "",
+                        linea_estrategica=r[2] or "",
+                        codigo_meta_pdd=r[3] or "",
+                        codigo_bpim=r[4] or "",
+                        descripcion_actividad=r[6] or "",
+                        avance_operativo_fisico_pct=_porcentaje_triage(r[8]),
+                        formato_origen="INGESTA_BINARIA_PERSISTIDA",
+                        porcentaje_verbos_fuertes_dnp=100.0 if r[7] else 0.0,
+                    )
+                )
+            elif m == "INVERSION_PRESUPUESTAL":
+                ejecuciones_triad.append(
+                    EjecucionPresupuestalTriada(
+                        entidad=r[1] or "",
+                        linea_estrategica=r[2] or "",
+                        codigo_bpim=r[4] or "",
+                        apropiacion_definitiva_cop=max(0.0, float(r[10] or 0)),
+                        cdp_acumulado_cop=max(0.0, float(r[11] or 0)),
+                        compromisos_rp_cop=max(0.0, float(r[12] or 0)),
+                        obligaciones_cop=max(0.0, float(r[13] or 0)),
+                        pagos_tesoreria_cop=max(0.0, float(r[14] or 0)),
+                    )
+                )
+        cruces_raw = cruzar_tres_lecturas(metas_triad, actividades_triad, ejecuciones_triad)
+        cruces = {
+            "total_cruces": cruces_raw["total_cruces"],
+            "cruces": cruces_raw["cruces"][:100],
+            "alertas": cruces_raw["alertas"][:100],
+        }
+
+        # 7. Formats detected
+        archivos_stmt = select(distinct(ArchivoPlanIngerido.perfil_detectado)).where(
+            ArchivoPlanIngerido.id.not_in(excluded_files)
         )
         if vigencia is not None:
             archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia == vigencia)
         if entidad:
-            archivos_stmt = archivos_stmt.where(
-                ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%")
-            )
+            archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%"))
         if dimension:
-            archivos_stmt = archivos_stmt.where(
-                ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension])
-            )
+            archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension]))
         if periodo_gobierno:
-            archivos_stmt = archivos_stmt.where(
-                ArchivoPlanIngerido.periodo_gobierno == periodo_gobierno
-            )
+            archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.periodo_gobierno == periodo_gobierno)
         if periodo:
             archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia.between(inicio, fin))
-        archivos_ingesta = (
-            list((await session.scalars(archivos_stmt)).all()) if session is not None else []
-        )
-        archivos_perfil = {item.perfil_detectado for item in archivos_ingesta}
+
+        archivos_perfil = set((await session.scalars(archivos_stmt)).all())
         profiles = [
             {
                 "perfil": profile,
@@ -578,6 +989,7 @@ class CompromisosService:
                 ("PA_CANONICO_DNP_POLIS", "dual"),
             )
         ]
+
         return {
             "filtros": {
                 "cuatrienio": cuatrienio,
@@ -588,32 +1000,30 @@ class CompromisosService:
                 "periodo": periodo_gobierno,
             },
             "motor_1_plan_desarrollo": {
-                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA"
-                if pdd_rows
-                else "SIN_CARGA_ESTRUCTURADA",
+                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA" if pdd_count else "SIN_CARGA_ESTRUCTURADA",
                 "planes_referenciados": [
                     {"nombre": "Primero la Gente", "cuatrienio": "2016-2019"},
                     {"nombre": "Salvemos Juntos a Cartagena", "cuatrienio": "2020-2023"},
                     {"nombre": "Cartagena Ciudad de Derechos", "cuatrienio": "2024-2027"},
                 ],
-                **motor_plan_desarrollo(metas_pdd),
+                "motor": "plan_desarrollo",
+                "metas_evaluadas": pdd_count,
+                "lineas": m1_lineas,
             },
             "motor_2_plan_accion": {
-                "estado_fuente": "PERSISTENCIA_POLIS_PAS_E_INGESTA"
-                if pa_rows
-                else "PERSISTENCIA_POLIS_PAS",
+                "estado_fuente": "PERSISTENCIA_POLIS_PAS_E_INGESTA" if pa_count else "PERSISTENCIA_POLIS_PAS",
                 "origen_registros": [
                     "seguimiento.actividades_plan_accion",
                     "seguimiento.registros_triada_normalizados",
                 ],
-                "registros_persistidos": len(actividades_db) + len(pa_rows),
+                "registros_persistidos": len(actividades_db) + pa_count,
                 "conteo_vigencias_comparativa": years,
-                **motor_plan_accion(actividades),
+                "motor": "plan_accion",
+                "actividades_evaluadas": pa_count + len(actividades_db),
+                "lineas": m2_lineas,
             },
             "motor_3_inversion_presupuestal": {
-                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA"
-                if financial_rows
-                else "SIN_CARGA_CASCADA_PRESUPUESTAL",
+                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA" if fin_count else "SIN_CARGA_CASCADA_PRESUPUESTAL",
                 "cobertura_campos": [
                     "apropiacion_inicial_cop",
                     "apropiacion_definitiva_cop",
@@ -622,7 +1032,17 @@ class CompromisosService:
                     "obligaciones_cop",
                     "pagos_tesoreria_cop",
                 ],
-                **motor_inversion_presupuestal(ejecuciones),
+                "motor": "inversion_presupuestal",
+                "proyectos_evaluados": fin_count,
+                "apropiacion_definitiva_cop": tot_aprop,
+                "cdp_acumulado_cop": tot_cdp,
+                "compromisos_rp_cop": tot_rp,
+                "obligaciones_cop": tot_ob,
+                "pagos_tesoreria_cop": tot_pagos,
+                "porcentaje_cdp_global": round(100 * tot_cdp / tot_aprop, 2) if tot_aprop else 0.0,
+                "porcentaje_rp_global": round(100 * tot_rp / tot_aprop, 2) if tot_aprop else 0.0,
+                "porcentaje_pagos_global": round(100 * tot_pagos / tot_aprop, 2) if tot_aprop else 0.0,
+                "ejecuciones": ejecuciones_items,
             },
             "cruce_tres_lecturas": cruces,
             "comparativa_interanual_2016_2026": {
@@ -636,16 +1056,14 @@ class CompromisosService:
             "perfiles_formato_excel": profiles,
             "catalogo_transparencia_cartagena": obtener_catalogo_transparencia(),
             "ingesta_masiva": {
-                "archivos_persistidos": len({r.archivo_id for r in registros_ingesta}),
-                "registros_normalizados": len(registros_ingesta),
+                "archivos_persistidos": total_archivos,
+                "registros_normalizados": total_registros,
                 "registros_por_motor": {
-                    "PLAN_DESARROLLO": len(pdd_rows),
-                    "PLAN_ACCION": len(pa_rows),
-                    "INVERSION_PRESUPUESTAL": len(financial_rows),
+                    "PLAN_DESARROLLO": pdd_count,
+                    "PLAN_ACCION": pa_count,
+                    "INVERSION_PRESUPUESTAL": fin_count,
                 },
-                "comparativa_interanual": IngestaMasivaService._cruzar_persistidos(
-                    registros_ingesta
-                ),
+                "comparativa_interanual": cruces,
             },
         }
 
@@ -666,9 +1084,7 @@ class CompromisosService:
             )
         return compromiso
 
-    async def crear_compromiso(
-        self, datos: CompromisoPASCrear, actor_id: uuid.UUID | None = None
-    ) -> CompromisoPAS:
+    async def crear_compromiso(self, datos: CompromisoPASCrear, actor_id: uuid.UUID | None = None) -> CompromisoPAS:
         existente = await self.repo.obtener_por_id_o_codigo(datos.codigo)
         if existente:
             raise HTTPException(
@@ -737,11 +1153,7 @@ class CompromisosService:
         compromiso = await self.obtener_compromiso(id_o_codigo)
 
         if datos.avance_cuatrienal_valor is not None:
-            meta = (
-                float(compromiso.meta_cuatrienal_valor)
-                if compromiso.meta_cuatrienal_valor > 0
-                else 1.0
-            )
+            meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
             nuevo_avance = float(datos.avance_cuatrienal_valor)
             porcentaje = min(100.0, max(0.0, round((nuevo_avance / meta) * 100.0, 2)))
             compromiso.avance_cuatrienal_valor = nuevo_avance
@@ -820,15 +1232,8 @@ class CompromisosService:
                 campos_actualizados.append(campo)
 
         # Recalcular porcentaje si cambio avance o meta
-        if (
-            "avance_cuatrienal_valor" in campos_actualizados
-            or "meta_cuatrienal_valor" in campos_actualizados
-        ):
-            meta = (
-                float(compromiso.meta_cuatrienal_valor)
-                if compromiso.meta_cuatrienal_valor > 0
-                else 1.0
-            )
+        if "avance_cuatrienal_valor" in campos_actualizados or "meta_cuatrienal_valor" in campos_actualizados:
+            meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
             compromiso.porcentaje_cumplimiento = min(
                 100.0,
                 max(0.0, round((float(compromiso.avance_cuatrienal_valor) / meta) * 100.0, 2)),
@@ -851,9 +1256,7 @@ class CompromisosService:
 
         return actualizado
 
-    async def eliminar_compromiso(
-        self, id_o_codigo: str | uuid.UUID, actor_id: uuid.UUID | None = None
-    ) -> None:
+    async def eliminar_compromiso(self, id_o_codigo: str | uuid.UUID, actor_id: uuid.UUID | None = None) -> None:
         compromiso = await self.obtener_compromiso(id_o_codigo)
         comp_id = compromiso.id
         codigo = compromiso.codigo
@@ -862,9 +1265,7 @@ class CompromisosService:
             await self.repo.registrar_auditoria(
                 registro_id=comp_id,
                 accion="compromiso_eliminado",
-                justificacion_motivada=(
-                    f"Eliminación de compromiso PAS {codigo} de la matriz institucional."
-                ),
+                justificacion_motivada=(f"Eliminación de compromiso PAS {codigo} de la matriz institucional."),
                 usuario_id=actor_id,
                 causal="tecnica",
                 metadatos={"codigo": codigo},
@@ -885,29 +1286,19 @@ class CompromisosService:
                 presupuestoTotalAnualCop=0.0,
             )
 
-        con_reporte = [
-            c
-            for c in compromisos
-            if c.porcentaje_cumplimiento is not None and c.estado != "sin_reporte"
-        ]
+        con_reporte = [c for c in compromisos if c.porcentaje_cumplimiento is not None and c.estado != "sin_reporte"]
         total_con_reporte = len(con_reporte)
         sin_reporte = total - total_con_reporte
 
-        en_ejecucion_o_cumplidos = sum(
-            1 for c in compromisos if c.estado in ("cumplido", "en_ejecucion")
-        )
-        en_riesgo_o_retrasados = sum(
-            1 for c in compromisos if c.estado in ("en_riesgo", "retrasado")
-        )
+        en_ejecucion_o_cumplidos = sum(1 for c in compromisos if c.estado in ("cumplido", "en_ejecucion"))
+        en_riesgo_o_retrasados = sum(1 for c in compromisos if c.estado in ("en_riesgo", "retrasado"))
         promedio = (
             round(sum(float(c.porcentaje_cumplimiento) for c in con_reporte) / total_con_reporte, 1)
             if total_con_reporte > 0
             else None
         )
         suma_presupuesto = sum(
-            float(c.presupuesto_anual_cop or 0)
-            for c in compromisos
-            if c.presupuesto_anual_cop is not None
+            float(c.presupuesto_anual_cop or 0) for c in compromisos if c.presupuesto_anual_cop is not None
         )
 
         return KpisSeguimientoRespuesta(
@@ -1003,9 +1394,7 @@ class CompromisosService:
         return limpia.translate(tabla).lower()
 
     @classmethod
-    def validar_redaccion_dnp(
-        cls, descripcion: str, tipo_actividad: str | None = None
-    ) -> ValidarRedaccionRespuesta:
+    def validar_redaccion_dnp(cls, descripcion: str, tipo_actividad: str | None = None) -> ValidarRedaccionRespuesta:
         """Validador Lingüístico Oficial del DNP (Instructivo Kit Financiero, Pág. 12).
 
         Verifica que la actividad inicie con un verbo fuerte en infinitivo (-ar, -er, -ir)
@@ -1066,8 +1455,7 @@ class CompromisosService:
             es_infinitivo=True,
             es_verbo_debil_prohibido=False,
             mensaje_dnp=(
-                "Redacción válida según el estándar DNP. Inicia con el verbo fuerte en "
-                f"infinitivo '{verbo_norm}'."
+                f"Redacción válida según el estándar DNP. Inicia con el verbo fuerte en infinitivo '{verbo_norm}'."
             ),
             verbos_fuertes_sugeridos=[],
         )
@@ -1109,9 +1497,7 @@ class CompromisosService:
                         "estrategias, proyectos, metas, responsables, "
                         "distribución presupuestal) y el informe de gestión del año anterior."
                     ),
-                    "obligatoriedad": (
-                        "Fecha límite improrrogable: 31 de enero de cada vigencia fiscal."
-                    ),
+                    "obligatoriedad": ("Fecha límite improrrogable: 31 de enero de cada vigencia fiscal."),
                 },
                 {
                     "norma": "Decreto 2482 de 2012 / MIPG",
@@ -1140,9 +1526,7 @@ class CompromisosService:
                     "etapa": "Insumo Operativo de Inversión",
                     "actividad_dnp": "Articulación de actividades requeridas con cada proyecto de "
                     "inversión de la vigencia.",
-                    "producto_dnp": "Actividades necesarias con indicadores, recursos, fecha de "
-                    "inicio "
-                    "y terminación.",
+                    "producto_dnp": "Actividades necesarias con indicadores, recursos, fecha de inicio y terminación.",
                 },
                 {
                     "instrumento": "MFMP (Marco Fiscal de Mediano Plazo)",
@@ -1293,8 +1677,7 @@ class CompromisosService:
                     "definicion": "Cuantifica los bienes y/o servicios públicos entregados a la "
                     "comunidad para resolver la problemática diagnosticada en la "
                     "política pública.",
-                    "ejemplo": "250 cámaras de videovigilancia y analítica LPR operativas "
-                    "enlazadas al CAD MECAR.",
+                    "ejemplo": "250 cámaras de videovigilancia y analítica LPR operativas enlazadas al CAD MECAR.",
                 },
                 {
                     "tipo": "META_GESTION",
@@ -1302,8 +1685,7 @@ class CompromisosService:
                     "definicion": "Cuantifica el nivel de cumplimiento de procesos, trámites y "
                     "acciones internas o de gestión de recursos necesarias para "
                     "materializar los productos.",
-                    "ejemplo": "12 comités barriales de mediación y resolución comunitaria de "
-                    "conflictos instalados.",
+                    "ejemplo": "12 comités barriales de mediación y resolución comunitaria de conflictos instalados.",
                 },
                 {
                     "tipo": "ACTIVIDAD",
@@ -1311,8 +1693,7 @@ class CompromisosService:
                     "definicion": "Acción específica o recurrente requerida durante la vigencia "
                     "fiscal para avanzar en metas de proyectos o procesos misionales "
                     "continuos.",
-                    "ejemplo": "Colocar 1.200 luminarias LED de 150W en senderos escolares y "
-                    "paraderos del SITM.",
+                    "ejemplo": "Colocar 1.200 luminarias LED de 150W en senderos escolares y paraderos del SITM.",
                 },
             ],
             taxonomia_actividades=[
@@ -1428,8 +1809,7 @@ class CompromisosService:
                 "RECURSOS_GESTION": [
                     {
                         "codigo": "GESTION_NO_PRESUPUESTAL",
-                        "nombre": "Gestión Interinstitucional Directa (Sin Erogación Presupuestal "
-                        "ET)",
+                        "nombre": "Gestión Interinstitucional Directa (Sin Erogación Presupuestal ET)",
                     },
                 ],
             },
@@ -1459,6 +1839,7 @@ class CompromisosService:
         categoria_recursos: str | None = None,
         fuente_financiacion: str | None = None,
         busqueda: str | None = None,
+        compromiso_pas_codigo: str | None = None,
     ) -> MatrizPlanAccionRespuesta:
         """Obtiene la matriz completa DNP: Resumen Ejecutivo, Hoja 1 (PA) y Hoja 2 (PI)."""
         actividades = await self.repo.listar_actividades(
@@ -1470,6 +1851,7 @@ class CompromisosService:
             categoria_recursos=categoria_recursos,
             fuente_financiacion=fuente_financiacion,
             busqueda=busqueda,
+            compromiso_pas_codigo=compromiso_pas_codigo,
         )
 
         compromisos_pas = await self.repo.listar()
@@ -1480,9 +1862,7 @@ class CompromisosService:
         total_act_tipo = sum(1 for a in actividades if a.tipo_meta == "ACTIVIDAD")
 
         promedio_fisico = (
-            round(sum(float(a.porcentaje_avance_fisico) for a in actividades) / total_act, 2)
-            if total_act > 0
-            else 0.0
+            round(sum(float(a.porcentaje_avance_fisico) for a in actividades) / total_act, 2) if total_act > 0 else 0.0
         )
 
         suma_prog = sum(float(a.monto_programado_cop or 0) for a in actividades)
@@ -1507,12 +1887,8 @@ class CompromisosService:
         # Semáforo de alertas
         semaforo = {
             "en_meta": sum(1 for a in actividades if float(a.porcentaje_avance_fisico) >= 80.0),
-            "alerta_preventiva": sum(
-                1 for a in actividades if 50.0 <= float(a.porcentaje_avance_fisico) < 80.0
-            ),
-            "rezago_critico": sum(
-                1 for a in actividades if float(a.porcentaje_avance_fisico) < 50.0
-            ),
+            "alerta_preventiva": sum(1 for a in actividades if 50.0 <= float(a.porcentaje_avance_fisico) < 80.0),
+            "rezago_critico": sum(1 for a in actividades if float(a.porcentaje_avance_fisico) < 50.0),
         }
 
         resumen = ResumenEjecutivoPlanAccion(
@@ -1539,9 +1915,7 @@ class CompromisosService:
 
         return MatrizPlanAccionRespuesta(
             resumen_ejecutivo=resumen,
-            hoja_1_plan_accion=[
-                ActividadPlanAccionRespuesta.model_validate(a) for a in actividades
-            ],
+            hoja_1_plan_accion=[ActividadPlanAccionRespuesta.model_validate(a) for a in actividades],
             hoja_2_plan_indicativo=hoja_2,
         )
 
@@ -1575,19 +1949,13 @@ class CompromisosService:
         if existente:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=(
-                    f"Ya existe una actividad en el Plan de Acción con el código '{datos.codigo}'."
-                ),
+                detail=(f"Ya existe una actividad en el Plan de Acción con el código '{datos.codigo}'."),
             )
 
         # 3. Recalcular avance físico inicial
         t_values = [datos.avance_t1, datos.avance_t2, datos.avance_t3, datos.avance_t4]
         reported = [v for v in t_values if v > 0]
-        avance_fisico = (
-            round(sum(reported) / len(reported), 2)
-            if reported
-            else (datos.porcentaje_avance_fisico or 0.0)
-        )
+        avance_fisico = round(sum(reported) / len(reported), 2) if reported else (datos.porcentaje_avance_fisico or 0.0)
 
         actividad = ActividadPlanAccion(
             codigo=datos.codigo.strip().upper(),
@@ -1607,8 +1975,7 @@ class CompromisosService:
             objetivo_proyecto=datos.objetivo_proyecto.strip(),
             tipo_actividad=datos.tipo_actividad,
             descripcion_actividad=datos.descripcion_actividad.strip(),
-            verbo_infinitivo=valida.verbo_detectado
-            or (datos.verbo_infinitivo or "").strip().lower(),
+            verbo_infinitivo=valida.verbo_detectado or (datos.verbo_infinitivo or "").strip().lower(),
             fecha_inicio=datos.fecha_inicio,
             fecha_terminacion=datos.fecha_terminacion,
             periodicidad_seguimiento=datos.periodicidad_seguimiento or "TRIMESTRAL",
@@ -1688,9 +2055,7 @@ class CompromisosService:
             float(actividad.avance_t4),
         ]
         reported = [v for v in t_values if v > 0]
-        actividad.porcentaje_avance_fisico = (
-            round(sum(reported) / len(reported), 2) if reported else 0.0
-        )
+        actividad.porcentaje_avance_fisico = round(sum(reported) / len(reported), 2) if reported else 0.0
 
         metadatos = dict(actividad.metadatos or {})
         if datos.observacion_cualitativa:
@@ -1775,21 +2140,18 @@ class CompromisosService:
                         columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
                     else:
                         columna_e_meta_producto = (
-                            f"{pas_obj.meta_cuatrienal_valor} {pas_obj.unidad_medida}: "
-                            f"{pas_obj.descripcion}"
+                            f"{pas_obj.meta_cuatrienal_valor} {pas_obj.unidad_medida}: {pas_obj.descripcion}"
                         )
                 else:
                     hallazgos.append(
-                        f"Código de Plan Indicativo '{item.compromiso_pas_codigo}' "
-                        "no encontrado en Hoja 2."
+                        f"Código de Plan Indicativo '{item.compromiso_pas_codigo}' no encontrado en Hoja 2."
                     )
             elif item.tipo_meta == "ACTIVIDAD":
                 columna_d_programa = "Exención DNP Pág. 11 (Actividad Directa)"
                 columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
             else:
                 hallazgos.append(
-                    f"Las metas de tipo {item.tipo_meta} requieren vinculación con "
-                    "el Plan Indicativo (Pág. 11 DNP)."
+                    f"Las metas de tipo {item.tipo_meta} requieren vinculación con el Plan Indicativo (Pág. 11 DNP)."
                 )
 
             # 2. Validación Lingüística DNP de Verbos Fuertes
@@ -1900,17 +2262,9 @@ class CompromisosService:
             )
 
         total_filas = len(datos.items)
-        puntaje_calidad = (
-            round((filas_conformes / total_filas) * 100.0, 2) if total_filas > 0 else 100.0
-        )
-        estado_dictamen = (
-            "APTO_CONSEJO_GOBIERNO" if filas_con_obs == 0 else "REQUIERE_SUBSANACION_PREVIA"
-        )
-        porcentaje_global = (
-            round((total_ejecutado / total_programado) * 100.0, 2)
-            if total_programado > 0
-            else 100.0
-        )
+        puntaje_calidad = round((filas_conformes / total_filas) * 100.0, 2) if total_filas > 0 else 100.0
+        estado_dictamen = "APTO_CONSEJO_GOBIERNO" if filas_con_obs == 0 else "REQUIERE_SUBSANACION_PREVIA"
+        porcentaje_global = round((total_ejecutado / total_programado) * 100.0, 2) if total_programado > 0 else 100.0
 
         return ProcesarLotePlanAccionRespuesta(
             vigencia=datos.vigencia,

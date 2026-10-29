@@ -13,7 +13,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import delete, insert, text
+from pydantic import BaseModel, Field
+from sqlalchemy import func, insert, or_, text
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -56,9 +58,7 @@ PLANS: list[dict[str, Any]] = [
         "fuentes": ["pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md"],
         "metadatos": {
             "unidad_fuente": "miles de COP; convertido a COP",
-            "nota": (
-                "El plan maestro reporta importes anuales redondeados; el total oficial prevalece."
-            ),
+            "nota": ("El plan maestro reporta importes anuales redondeados; el total oficial prevalece."),
         },
     },
     {
@@ -83,7 +83,7 @@ PLANS: list[dict[str, Any]] = [
         "nombre_oficial": "Salvemos Juntos a Cartagena",
         "norma_adopcion": "Acuerdo Distrital 016 de 2020",
         "tipo_plan": "PDD",
-        "ppi_total_corriente_cop": 6_022_982_660_000,
+        "ppi_total_corriente_cop": None,
         "ppi_anual_cop": {
             "2020": 1_437_205_700_000,
             "2021": 1_473_130_500_000,
@@ -91,7 +91,13 @@ PLANS: list[dict[str, Any]] = [
             "2023": 1_584_429_700_000,
         },
         "fuentes": ["pdd_2020_2023_salvemos_juntos_cartagena.md"],
-        "metadatos": {"base_precios": "COP constantes diciembre 2019"},
+        "metadatos": {
+            "base_precios": "COP constantes diciembre 2019",
+            "total_narrativo_base_diciembre_2019_cop": 6_022_982_600_000,
+            "total_tabla_base_diciembre_2019_cop": 6_022_982_660_000,
+            "suma_anual_base_diciembre_2019_cop": 6_022_982_500_000,
+            "estado_total": "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA",
+        },
     },
     {
         "codigo_plan": "PDD_2024_2027",
@@ -205,31 +211,23 @@ def _heading_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
                 name = f"{title.split(maxsplit=1)[0]} {program_code.group(2)}"
         level = len(match.group(1))
         upper = name.upper()
-        is_program = bool(re.search(r"(?<![A-Z])PROGRAMA\s*:", upper)) or bool(
-            re.match(r"^PROGRAMA\s+", upper)
-        )
+        is_program = bool(re.search(r"(?<![A-Z])PROGRAMA\s*:", upper)) or bool(re.match(r"^PROGRAMA\s+", upper))
         is_driver = "COMPONENTE IMPULSOR DE AVANCE" in upper
         is_line = bool(re.search(r"\bL[IÍ]NEA ESTRAT[EÉ]GICA\b", upper))
         is_numbered_driver = bool(
-            code
-            and code.count(".") == 1
-            and code.split(".", 1)[0] in {"4", "5", "6", "7", "8", "9"}
+            code and code.count(".") == 1 and code.split(".", 1)[0] in {"4", "5", "6", "7", "8", "9"}
         )
         if plan_code == "PDD_2024_2027":
             relevant = is_program or is_driver or is_line or is_numbered_driver
             if not relevant:
                 continue
         elif plan_code == "PDD_2020_2023":
-            if not (
-                is_program or is_line or "PILAR CARTAGENA" in upper or "EJE TRANSVERSAL" in upper
-            ):
+            if not (is_program or is_line or "PILAR CARTAGENA" in upper or "EJE TRANSVERSAL" in upper):
                 continue
         elif plan_code.startswith("PDL_"):
             if not (is_program or is_line or "COMPONENTE" in upper):
                 continue
-        elif (
-            plan_code == "PDD_2013_2015" and not is_program and "OBJETIVO ESTRATÉGICO" not in upper
-        ):
+        elif plan_code == "PDD_2013_2015" and not is_program and "OBJETIVO ESTRATÉGICO" not in upper:
             continue
         elif plan_code == "PDD_2012_2015" and not (is_program or is_line or "OBJETIVO" in upper):
             continue
@@ -251,9 +249,7 @@ def _heading_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
             kind = "LINEA"
         else:
             kind = "COMPONENTE"
-        parent = next(
-            (parent_by_level[k] for k in sorted(parent_by_level, reverse=True) if k < level), None
-        )
+        parent = next((parent_by_level[k] for k in sorted(parent_by_level, reverse=True) if k < level), None)
         row_id = uuid.uuid4()
         order += 1
         result.append(
@@ -296,30 +292,21 @@ def _table_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
             continue
         header_text = " ".join(headers).casefold()
         if not any(
-            token in header_text
-            for token in ("meta", "indicador", "línea base", "linea base", "resultado", "producto")
+            token in header_text for token in ("meta", "indicador", "línea base", "linea base", "resultado", "producto")
         ):
             continue
-        data = {
-            headers[i] if i < len(headers) else f"columna_{i + 1}": cell
-            for i, cell in enumerate(cells)
-        }
+        data = {headers[i] if i < len(headers) else f"columna_{i + 1}": cell for i, cell in enumerate(cells)}
         nonempty = [value for value in cells if value and value not in {"-", "—"}]
         if len(nonempty) < 2:
             continue
         joined = header_text
-        kind = (
-            "BIENESTAR"
-            if any(token in joined for token in ("bienestar", "resultado"))
-            else "PRODUCTO"
-        )
+        kind = "BIENESTAR" if any(token in joined for token in ("bienestar", "resultado")) else "PRODUCTO"
         unit = next((v for k, v in data.items() if "unidad" in k.casefold() and v), None)
         line_name = next(
             (
                 v
                 for k, v in data.items()
-                if any(token in k.casefold() for token in ("línea", "linea", "pilar", "programa"))
-                and v
+                if any(token in k.casefold() for token in ("línea", "linea", "pilar", "programa")) and v
             ),
             None,
         )
@@ -328,11 +315,7 @@ def _table_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
                 "codigo_plan": plan_code,
                 "tipo_meta": kind,
                 "codigo": next(
-                    (
-                        v
-                        for k, v in data.items()
-                        if "código" in k.casefold() or "codigo" in k.casefold()
-                    ),
+                    (v for k, v in data.items() if "código" in k.casefold() or "codigo" in k.casefold()),
                     None,
                 ),
                 "nombre": next(
@@ -343,9 +326,7 @@ def _table_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
                     ),
                     nonempty[0],
                 ),
-                "indicador": next(
-                    (v for k, v in data.items() if "indicador" in k.casefold() and v), None
-                ),
+                "indicador": next((v for k, v in data.items() if "indicador" in k.casefold() and v), None),
                 "unidad_medida": unit[:120] if unit else None,
                 "linea_nombre": line_name,
                 "fuente": source.name,
@@ -396,9 +377,7 @@ def _quantified_ocr_metas(source: Path, plan_code: str) -> list[dict[str, Any]]:
             continuation = re.sub(r"\s+", " ", following).strip(" |\t-–—")
             if not continuation or re.search(r"^(?:#{1,6}|P[aá]gina\s+\d+)", continuation):
                 break
-            if re.search(
-                r"\b(?:ART[IÍ]CULO|ACUERDO\s+NO\.?|VIGENCIA\s+20\d\d)\b", continuation, re.I
-            ):
+            if re.search(r"\b(?:ART[IÍ]CULO|ACUERDO\s+NO\.?|VIGENCIA\s+20\d\d)\b", continuation, re.I):
                 break
             quote = f"{quote} {continuation}"
         quote = quote[:700]
@@ -631,9 +610,7 @@ def _legacy_program_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
             and compact.startswith(re.sub(r"\D", "", str(candidate["codigo"])))
         ]
         if parents:
-            parent = max(
-                parents, key=lambda candidate: len(re.sub(r"\D", "", str(candidate["codigo"])))
-            )
+            parent = max(parents, key=lambda candidate: len(re.sub(r"\D", "", str(candidate["codigo"]))))
             row["parent_id"] = parent["id"]
         else:
             for cut in range(len(code.split(".")) - 1, 0, -1):
@@ -653,24 +630,16 @@ def _matrix_hierarchy_rows(source: Path, plan_code: str) -> list[dict[str, Any]]
     carried = [""] * 5
     order = 0
     in_matrix = False
-    for line_no, raw in enumerate(
-        source.read_text(encoding="utf-8", errors="replace").splitlines(), 1
-    ):
+    for line_no, raw in enumerate(source.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
         if not raw.lstrip().startswith("|"):
             carried = [""] * 5
             in_matrix = False
             continue
-        cells = [
-            re.sub(r"\s+", " ", cell.replace("`", "")).strip()
-            for cell in raw.strip().strip("|").split("|")
-        ]
+        cells = [re.sub(r"\s+", " ", cell.replace("`", "")).strip() for cell in raw.strip().strip("|").split("|")]
         if len(cells) < 4 or all(re.fullmatch(r"[-: ]*", cell) for cell in cells):
             continue
         normalized_header = " ".join(cells).casefold()
-        if all(
-            token in normalized_header
-            for token in ("objetivo", "estrategia", "programa", "subprograma")
-        ):
+        if all(token in normalized_header for token in ("objetivo", "estrategia", "programa", "subprograma")):
             in_matrix = True
             carried = [""] * 5
             continue
@@ -720,7 +689,8 @@ def _matrix_hierarchy_rows(source: Path, plan_code: str) -> list[dict[str, Any]]
 
 
 def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
-    from app.modules.compromisos.pdd_dea_service import _money_factor
+    from app.modules.compromisos.ipc_deflactor_polis import factor_desde_diciembre_2019
+    from app.modules.compromisos.pdd_dea_service import _known_money_factor, _money_factor
 
     plans = []
     for original in PLANS:
@@ -729,12 +699,22 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         if "ppi_total_corriente_cop" not in plan and annual:
             plan["ppi_total_corriente_cop"] = sum(annual.values())
         plan["ppi_total_constante_2025_cop"] = (
-            sum(amount * _money_factor(int(year)) for year, amount in annual.items())
-            if annual
+            sum(amount * _known_money_factor(int(year)) for year, amount in annual.items())
+            if annual and all(_money_factor(int(year)) is not None for year in annual)
             else None
         )
         if plan["codigo_plan"] == "PDD_2020_2023":
-            plan["ppi_total_constante_2025_cop"] = 6_022_982_660_000 * _money_factor(2019)
+            suma_anual_convertida_corriente = sum(
+                amount * float(factor_desde_diciembre_2019(int(year))) for year, amount in annual.items()
+            )
+            plan["ppi_total_corriente_cop"] = None
+            plan["ppi_total_constante_2025_cop"] = None
+            plan["metadatos"] = plan["metadatos"] | {
+                "ppi_estado": "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA",
+                "suma_anual_convertida_corriente_cop": suma_anual_convertida_corriente,
+                "suma_anual_convertida_promedio_2025_cop": sum(annual.values())
+                * float(factor_desde_diciembre_2019(2025)),
+            }
         plans.append(plan)
     lines, metas = [], []
     for filename, plan_code in FILE_PLAN.items():
@@ -751,9 +731,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         source = DATA / filename
         if not source.exists():
             continue
-        extracted_rows = _legacy_program_rows(source, plan_code) + _matrix_hierarchy_rows(
-            source, plan_code
-        )
+        extracted_rows = _legacy_program_rows(source, plan_code) + _matrix_hierarchy_rows(source, plan_code)
         known_rows = {
             (
                 row["codigo_plan"],
@@ -785,9 +763,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
     # supplies an axis number. The 2013 matrix strategies are rooted at the four
     # canonical objective nodes used by the PPI summary.
     axes_2012 = {
-        str(row.get("codigo")): row
-        for row in lines
-        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
+        str(row.get("codigo")): row for row in lines if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
     }
     for row in lines:
         if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] in {
@@ -810,18 +786,14 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 ):
                     if re.search(pattern, normalized_name):
                         axis = candidate_axis
-                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = (
-                            "COINCIDENCIA_SEMANTICA_OCR"
-                        )
+                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = "COINCIDENCIA_SEMANTICA_OCR"
                         break
             if axis and axis in axes_2012:
                 row["parent_id"] = axes_2012[axis]["id"]
     matrix_objectives = {
         row["id"]: row
         for row in lines
-        if row["codigo_plan"] == "PDD_2013_2015"
-        and row["nivel"] == "OBJETIVO"
-        and row.get("codigo") is None
+        if row["codigo_plan"] == "PDD_2013_2015" and row["nivel"] == "OBJETIVO" and row.get("codigo") is None
     }
     # Older source tables flatten into OCR prose. Keep all quantified candidates
     # with literal evidence and distinguish low-confidence numeric rows explicitly.
@@ -840,8 +812,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             metas.extend(
                 meta
                 for meta in candidates
-                if re.sub(r"\W+", " ", str(meta.get("nombre") or "").casefold()).strip()
-                not in existing_signatures
+                if re.sub(r"\W+", " ", str(meta.get("nombre") or "").casefold()).strip() not in existing_signatures
             )
             if not any(meta["codigo_plan"] == plan_code for meta in metas):
                 # The 2016 OCR contains the adopted objectives and budget matrix,
@@ -883,8 +854,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             "EJE",
             [
                 (
-                    "Eje 1. Transversal: Atención a Grupos de Población Diferenciada "
-                    "y por Ciclo Vital",
+                    "Eje 1. Transversal: Atención a Grupos de Población Diferenciada y por Ciclo Vital",
                     196_661_713_000,
                 ),
                 ("Eje 2. Desarrollo Humano", 2_068_532_775_000),
@@ -934,9 +904,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 }
             )
     axes_2012 = {
-        str(row.get("codigo")): row
-        for row in lines
-        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
+        str(row.get("codigo")): row for row in lines if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
     }
     for row in lines:
         if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "PROGRAMA":
@@ -953,9 +921,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 ):
                     if re.search(pattern, normalized_name):
                         axis = candidate_axis
-                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = (
-                            "COINCIDENCIA_SEMANTICA_OCR"
-                        )
+                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = "COINCIDENCIA_SEMANTICA_OCR"
                         break
             if axis and axis in axes_2012:
                 row["parent_id"] = axes_2012[axis]["id"]
@@ -978,9 +944,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             for cell in match.groups()[3:]:
                 raw_amount = cell.strip().replace("$", "").replace(" ", "")
                 values.append(
-                    float(raw_amount.replace(".", "").replace(",", "."))
-                    if raw_amount not in {"-", "—", ""}
-                    else 0.0
+                    float(raw_amount.replace(".", "").replace(",", ".")) if raw_amount not in {"-", "—", ""} else 0.0
                 )
             rows_by_level["PROGRAMA" if label == "PROGRAMA" else "IMPULSOR"].append(
                 {
@@ -991,9 +955,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                     "codigo": code,
                     "nombre": name,
                     "orden": line_number,
-                    "ppi_anual_cop": dict(
-                        zip(("2024", "2025", "2026", "2027"), values, strict=True)
-                    ),
+                    "ppi_anual_cop": dict(zip(("2024", "2025", "2026", "2027"), values, strict=True)),
                     "fuente": bases.name,
                     "metadatos": {"extraccion": "tabla_PPI_oficial", "fila_markdown": line_number},
                 }
@@ -1007,10 +969,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         lines = [
             line
             for line in lines
-            if not (
-                line["codigo_plan"] == "PDD_2024_2027"
-                and line["nivel"] in {"LINEA", "IMPULSOR", "PROGRAMA"}
-            )
+            if not (line["codigo_plan"] == "PDD_2024_2027" and line["nivel"] in {"LINEA", "IMPULSOR", "PROGRAMA"})
         ]
         lines.extend(rows_by_level["IMPULSOR"])
         lines.extend(rows_by_level["PROGRAMA"])
@@ -1046,11 +1005,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             ),
         ),
     }
-    lines = [
-        row
-        for row in lines
-        if not (row["codigo_plan"] == "PDD_2020_2023" and row["nivel"] == "PILAR")
-    ]
+    lines = [row for row in lines if not (row["codigo_plan"] == "PDD_2020_2023" and row["nivel"] == "PILAR")]
     present_hierarchy = {
         (row["codigo_plan"], row["nivel"], row["nombre"].casefold())
         for row in lines
@@ -1080,9 +1035,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
     objective_by_code = {
         str(row.get("codigo")): row
         for row in lines
-        if row["codigo_plan"] == "PDD_2013_2015"
-        and row["nivel"] == "OBJETIVO"
-        and row.get("codigo")
+        if row["codigo_plan"] == "PDD_2013_2015" and row["nivel"] == "OBJETIVO" and row.get("codigo")
     }
     for row in lines:
         if row["codigo_plan"] != "PDD_2013_2015" or row["nivel"] not in {
@@ -1109,9 +1062,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             (target for needle, target in objective_aliases if needle.casefold() in source_text),
             None,
         )
-        target = canonical_objectives.get(
-            re.sub(r"\W+", " ", alias.casefold()).strip() if alias else ""
-        )
+        target = canonical_objectives.get(re.sub(r"\W+", " ", alias.casefold()).strip() if alias else "")
         if not target:
             continue
         matrix_objective_ids_to_drop.add(matrix_id)
@@ -1185,11 +1136,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 ),
                 None,
             )
-            name = node_name or (
-                entry.get("descripcion")
-                if isinstance(entry.get("descripcion"), str)
-                else None
-            )
+            name = node_name or (entry.get("descripcion") if isinstance(entry.get("descripcion"), str) else None)
             if not name or len(name.strip()) < 5:
                 continue
             level_raw = str(entry.get("nivel") or entry.get("level") or "").upper()
@@ -1278,10 +1225,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                                 or entry.get("eje_nombre")
                             ),
                             "fuente": path.name,
-                            "fila_fuente": int(
-                                entry.get("fila_fuente") or entry.get("pagina_origen") or 0
-                            )
-                            or None,
+                            "fila_fuente": int(entry.get("fila_fuente") or entry.get("pagina_origen") or 0) or None,
                             "datos_oficiales": {
                                 **entry,
                                 "evidencia_ocr_literal": f"{name.strip()} | {indicator}",
@@ -1327,16 +1271,12 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
     for source_line in indexed_lines:
         source_tokens = {
             token
-            for token in re.findall(
-                r"[A-ZÁÉÍÓÚÑ]{4,}", unicodedata.normalize("NFKC", source_line["nombre"]).upper()
-            )
+            for token in re.findall(r"[A-ZÁÉÍÓÚÑ]{4,}", unicodedata.normalize("NFKC", source_line["nombre"]).upper())
         }
         ranked = []
         for canonical in canonical_lines:
             target_text = unicodedata.normalize("NFKD", canonical["nombre"])
-            target_tokens = set(
-                re.findall(r"[A-Z]{4,}", target_text.encode("ascii", "ignore").decode().upper())
-            )
+            target_tokens = set(re.findall(r"[A-Z]{4,}", target_text.encode("ascii", "ignore").decode().upper()))
             shared = len(source_tokens & target_tokens)
             if shared:
                 ranked.append((shared, canonical))
@@ -1357,9 +1297,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
     objective_by_code_2016 = {
         str(row.get("codigo")): row
         for row in lines
-        if row["codigo_plan"] == "PDD_2016_2019"
-        and row["nivel"] == "OBJETIVO"
-        and row.get("codigo")
+        if row["codigo_plan"] == "PDD_2016_2019" and row["nivel"] == "OBJETIVO" and row.get("codigo")
     }
     for row in lines:
         if (
@@ -1375,11 +1313,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             aliases = candidate.get("metadatos", {}).get("aliases_indice_ocr", [])
             for alias in aliases:
                 alias_compact = re.sub(r"\D", "", str(alias.get("codigo") or ""))
-                if (
-                    alias_compact
-                    and len(alias_compact) < len(compact)
-                    and compact.startswith(alias_compact)
-                ):
+                if alias_compact and len(alias_compact) < len(compact) and compact.startswith(alias_compact):
                     candidate_lines.append((len(alias_compact), candidate))
         if candidate_lines:
             row["parent_id"] = max(candidate_lines, key=lambda item: item[0])[1]["id"]
@@ -1398,7 +1332,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         plan.setdefault("ppi_anual_cop", {})
         plan.setdefault("fuentes", [])
         plan.setdefault("metadatos", {})
-        plan["metadatos"] = {**plan["metadatos"], "ppi_estado": "OFICIAL_EXTRAIDO"}
+        plan["metadatos"] = {"ppi_estado": "OFICIAL_EXTRAIDO", **plan["metadatos"]}
     for row in lines:
         row.setdefault("id", uuid.uuid4())
         row.setdefault("parent_id", None)
@@ -1423,9 +1357,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
 
 
 def _norm(value: Any) -> str:
-    value = (
-        unicodedata.normalize("NFKD", str(value or "")).encode("ascii", "ignore").decode().lower()
-    )
+    value = unicodedata.normalize("NFKD", str(value or "")).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", " ", value).strip()
 
 
@@ -1513,9 +1445,7 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
         year = record["vigencia"]
         if year is None:
             continue
-        record_tokens = _tokens(
-            f"{record['indicador'] or ''} {record['descripcion_actividad'] or ''}"
-        )
+        record_tokens = _tokens(f"{record['indicador'] or ''} {record['descripcion_actividad'] or ''}")
         line_tokens = _tokens(record["linea_estrategica"])
         record_entity = _norm(record["entidad_normalizada"])
         prepared[record["id"]] = (record_tokens, line_tokens, record_entity)
@@ -1566,9 +1496,7 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
         start, end = _PERIOD[plan]
         years = range(start, end + 1)
         code = _norm(meta["codigo"])
-        exact = (
-            [row for year in years for row in by_code.get((str(year), code), ())] if code else []
-        )
+        exact = [row for year in years for row in by_code.get((str(year), code), ())] if code else []
         chosen = exact[0] if exact else None
         method = "CODIGO_EXACTO" if chosen else None
         meta_tokens = _tokens(f"{meta['indicador'] or ''} {meta['nombre'] or ''}")
@@ -1577,10 +1505,7 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
             " ".join(
                 str(value)
                 for key, value in official.items()
-                if any(
-                    token in _norm(key)
-                    for token in ("entidad", "dependencia", "secretaria", "responsab")
-                )
+                if any(token in _norm(key) for token in ("entidad", "dependencia", "secretaria", "responsab"))
                 and isinstance(value, str)
             )
         )
@@ -1596,20 +1521,14 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
             if entity_hint:
                 for year in years:
                     for entity, entity_records in by_year_entities.get(year, {}).items():
-                        if entity and (
-                            entity == entity_hint or entity in entity_hint or entity_hint in entity
-                        ):
+                        if entity and (entity == entity_hint or entity in entity_hint or entity_hint in entity):
                             for record in entity_records:
                                 candidates[record["id"]] = record
             for record in candidates.values():
                 record_tokens, record_line_tokens, record_entity = prepared[record["id"]]
                 entity_match = bool(
                     entity_hint
-                    and (
-                        record_entity == entity_hint
-                        or record_entity in entity_hint
-                        or entity_hint in record_entity
-                    )
+                    and (record_entity == entity_hint or record_entity in entity_hint or entity_hint in record_entity)
                 )
                 shared = len(meta_tokens & record_tokens)
                 line_shared = len(line_tokens & record_line_tokens)
@@ -1696,8 +1615,7 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
             "score_emparejamiento": score,
             "fuente_primaria_id": duplicate_primary.get(str(meta["id"])),
             "regla": "EAF_11B_V1",
-            "requiere_revision_humana": coverage == "CANDIDATO_BAJA_CONFIANZA"
-            or taxonomy == "REVISION_HUMANA",
+            "requiere_revision_humana": coverage == "CANDIDATO_BAJA_CONFIANZA" or taxonomy == "REVISION_HUMANA",
         }
         coverage_counts[coverage] += 1
         mga_counts[taxonomy] += 1
@@ -1717,70 +1635,223 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
     )
 
 
+def _valor_identidad(valor: Any) -> str:
+    return re.sub(r"\s+", " ", str(valor if valor is not None else "")).strip().casefold()
+
+
+def _identidad_linea(fila: dict[str, Any]) -> tuple[str, ...]:
+    return tuple(
+        _valor_identidad(fila.get(campo)) for campo in ("codigo_plan", "nivel", "codigo", "nombre", "fuente", "orden")
+    )
+
+
+def _identidad_meta(fila: dict[str, Any]) -> tuple[str, ...]:
+    return tuple(
+        _valor_identidad(fila.get(campo))
+        for campo in ("codigo_plan", "fuente", "fila_fuente", "tipo_meta", "nombre", "indicador")
+    )
+
+
+def _indice_unico(filas: list[dict[str, Any]], identidad, nombre: str) -> dict[tuple[str, ...], dict[str, Any]]:
+    indice: dict[tuple[str, ...], dict[str, Any]] = {}
+    for fila in filas:
+        clave = identidad(fila)
+        if clave in indice:
+            raise ValueError(f"Identidad ambigua de {nombre}: {clave}")
+        indice[clave] = fila
+    return indice
+
+
+def _reconciliar_catalogo(
+    lines: list[dict[str, Any]],
+    metas: list[dict[str, Any]],
+    old_lines: list[dict[str, Any]],
+    old_metas: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, int]]:
+    """Conserva IDs existentes y deja sin insertar reformulaciones no acreditadas."""
+    anteriores_lineas = _indice_unico(old_lines, _identidad_linea, "línea existente")
+    nuevas_lineas = _indice_unico(lines, _identidad_linea, "línea extraída")
+    anteriores_metas = _indice_unico(old_metas, _identidad_meta, "meta existente")
+    nuevas_metas = _indice_unico(metas, _identidad_meta, "meta extraída")
+    remapeo = {linea["id"]: anteriores_lineas.get(clave, linea)["id"] for clave, linea in nuevas_lineas.items()}
+    lineas_insertar = []
+    for linea in lines:
+        if _identidad_linea(linea) in anteriores_lineas:
+            continue
+        nueva = dict(linea)
+        nueva["id"] = remapeo[linea["id"]]
+        if nueva.get("parent_id") is not None:
+            if nueva["parent_id"] not in remapeo:
+                raise ValueError("Padre de línea sin identidad en la extracción")
+            nueva["parent_id"] = remapeo[nueva["parent_id"]]
+        lineas_insertar.append(nueva)
+    planes_con_metas = {fila["codigo_plan"] for fila in old_metas}
+    metas_insertar = []
+    metas_pendientes = 0
+    for meta in metas:
+        if _identidad_meta(meta) in anteriores_metas:
+            continue
+        if meta["codigo_plan"] in planes_con_metas:
+            metas_pendientes += 1
+            continue
+        nueva = dict(meta)
+        if nueva.get("linea_id") is not None:
+            if nueva["linea_id"] not in remapeo:
+                raise ValueError("Línea de meta sin identidad en la extracción")
+            nueva["linea_id"] = remapeo[nueva["linea_id"]]
+        metas_insertar.append(nueva)
+    return (
+        lineas_insertar,
+        metas_insertar,
+        {
+            "lineas_reutilizadas": len(lines) - len(lineas_insertar),
+            "lineas_nuevas": len(lineas_insertar),
+            "lineas_historicas_conservadas": len(anteriores_lineas.keys() - nuevas_lineas.keys()),
+            "metas_reutilizadas": len(metas) - metas_pendientes - len(metas_insertar),
+            "metas_nuevas": len(metas_insertar),
+            "metas_pendientes_identidad": metas_pendientes,
+            "metas_historicas_conservadas": len(anteriores_metas.keys() - nuevas_metas.keys()),
+        },
+    )
+
+
+class ResumenPersistenciaCatalogo(BaseModel):
+    planes: int = Field(ge=0)
+    lineas_programas: int = Field(ge=0)
+    metas_oficiales: int = Field(ge=0)
+    lineas_reutilizadas: int = Field(ge=0)
+    lineas_nuevas: int = Field(ge=0)
+    lineas_historicas_conservadas: int = Field(ge=0)
+    metas_reutilizadas: int = Field(ge=0)
+    metas_nuevas: int = Field(ge=0)
+    metas_pendientes_identidad: int = Field(ge=0)
+    metas_historicas_conservadas: int = Field(ge=0)
+    vinculos_recalculados: bool
+    estado_publicacion: str = "no_publicable"
+
+
+async def _upsert_planes(conn: Any, plans: list[dict[str, Any]]) -> None:
+    if not plans:
+        return
+    stmt = pg_insert(PlanDesarrolloDistrital).values(plans)
+    metadatos_nuevos = PlanDesarrolloDistrital.metadatos.op("||")(stmt.excluded.metadatos)
+    stmt = stmt.on_conflict_do_update(
+        index_elements=[PlanDesarrolloDistrital.codigo_plan],
+        set_={
+            "periodo": stmt.excluded.periodo,
+            "nombre_oficial": stmt.excluded.nombre_oficial,
+            "norma_adopcion": stmt.excluded.norma_adopcion,
+            "tipo_plan": stmt.excluded.tipo_plan,
+            "localidad": stmt.excluded.localidad,
+            "ppi_total_corriente_cop": stmt.excluded.ppi_total_corriente_cop,
+            "ppi_total_constante_2025_cop": stmt.excluded.ppi_total_constante_2025_cop,
+            "ppi_anual_cop": stmt.excluded.ppi_anual_cop,
+            "metadatos": metadatos_nuevos,
+            "sincronizado_en": func.clock_timestamp(),
+        },
+        where=or_(
+            PlanDesarrolloDistrital.periodo.is_distinct_from(stmt.excluded.periodo),
+            PlanDesarrolloDistrital.nombre_oficial.is_distinct_from(stmt.excluded.nombre_oficial),
+            PlanDesarrolloDistrital.norma_adopcion.is_distinct_from(stmt.excluded.norma_adopcion),
+            PlanDesarrolloDistrital.tipo_plan.is_distinct_from(stmt.excluded.tipo_plan),
+            PlanDesarrolloDistrital.localidad.is_distinct_from(stmt.excluded.localidad),
+            PlanDesarrolloDistrital.ppi_total_corriente_cop.is_distinct_from(stmt.excluded.ppi_total_corriente_cop),
+            PlanDesarrolloDistrital.ppi_total_constante_2025_cop.is_distinct_from(
+                stmt.excluded.ppi_total_constante_2025_cop
+            ),
+            PlanDesarrolloDistrital.ppi_anual_cop.is_distinct_from(stmt.excluded.ppi_anual_cop),
+            PlanDesarrolloDistrital.metadatos.is_distinct_from(metadatos_nuevos),
+        ),
+    )
+    await conn.execute(stmt)
+
+
 async def synchronize(
     dry_run: bool = False,
-    extracted: tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
-    | None = None,
-) -> dict[str, int]:
+    extracted: tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
     plans, lines, metas = extracted or extract_catalog()
     lines = _order_hierarchy_parent_first(lines)
     if dry_run:
         return {"planes": len(plans), "lineas_programas": len(lines), "metas_oficiales": len(metas)}
     engine = create_async_engine(Settings().async_database_url)
+    try:
+        async with engine.connect() as conn:
+            existe_matriz = await conn.scalar(
+                text("SELECT to_regclass('seguimiento.pdd_correspondencias_meta_pa_bpim') IS NOT NULL")
+            )
+            if existe_matriz:
+                reglas = (
+                    (
+                        await conn.execute(
+                            text(
+                                """SELECT confdeltype FROM pg_constraint
+                                   WHERE conrelid='seguimiento.pdd_correspondencias_meta_pa_bpim'::regclass
+                                     AND contype='f'"""
+                            )
+                        )
+                    )
+                    .scalars()
+                    .all()
+                )
+                if len(reglas) != 3 or any(regla not in ("r", b"r") for regla in reglas):
+                    raise RuntimeError("Sincronización bloqueada: las correspondencias aún admiten borrado en cascada")
+    except BaseException:
+        await engine.dispose()
+        raise
     link_counts: dict[str, int] = {}
-    async with engine.begin() as conn:
-        await conn.execute(delete(PddMetaOficial))
-        await conn.execute(delete(PddLineaPrograma))
-        await conn.execute(delete(PlanDesarrolloDistrital))
-        await conn.execute(insert(PlanDesarrolloDistrital), plans)
-        if lines:
-            await conn.execute(insert(PddLineaPrograma), lines)
-        if metas:
-            await conn.execute(insert(PddMetaOficial), metas)
-        link_counts = await _link_official_metas(conn)
-        population_rows = [
-            ("DISTRITO-CTG", 1_065_570, "DANE_CNPV2018_PROYECCION_2023", 2023),
-            ("LOC-1", 412_580, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
-            ("LOC-2", 348_190, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
-            ("LOC-3", 304_800, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
-        ]
-        await conn.execute(
-            text("""UPDATE geodatos.territorios t
-                SET poblacion_estimada = CAST(source.pop AS integer),
-                    metadatos = coalesce(t.metadatos, '{}'::jsonb) ||
-                      jsonb_build_object('poblacion_fuente', source.provenance,
-                                         'poblacion_vigencia', CAST(source.year AS integer),
-                                         'poblacion_revision', '11B')
-                FROM (VALUES (CAST(:district AS text), CAST(:pop_district AS integer),
-                               CAST(:src_district AS text), CAST(:year_district AS integer)),
-                             (CAST(:loc1 AS text), CAST(:pop1 AS integer),
-                              CAST(:src_loc AS text), NULL::integer),
-                             (CAST(:loc2 AS text), CAST(:pop2 AS integer),
-                              CAST(:src_loc AS text), NULL::integer),
-                             (CAST(:loc3 AS text), CAST(:pop3 AS integer),
-                              CAST(:src_loc AS text), NULL::integer))
-                     AS source(code, pop, provenance, year)
-                WHERE t.codigo = source.code AND t.poblacion_estimada IS NULL"""),
-            {
-                "district": population_rows[0][0],
-                "pop_district": population_rows[0][1],
-                "src_district": population_rows[0][2],
-                "year_district": population_rows[0][3],
-                "loc1": population_rows[1][0],
-                "pop1": population_rows[1][1],
-                "loc2": population_rows[2][0],
-                "pop2": population_rows[2][1],
-                "loc3": population_rows[3][0],
-                "pop3": population_rows[3][1],
-                "src_loc": "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE",
-            },
-        )
-    await engine.dispose()
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(
+                text(
+                    "LOCK TABLE seguimiento.planes_desarrollo_distrital, seguimiento.pdd_lineas_y_programas, "
+                    "seguimiento.pdd_metas_oficiales IN SHARE ROW EXCLUSIVE MODE"
+                )
+            )
+            old_lines = [
+                dict(row)
+                for row in (
+                    await conn.execute(
+                        text(
+                            "SELECT id, codigo_plan, nivel, codigo, nombre, fuente, orden, parent_id "
+                            "FROM seguimiento.pdd_lineas_y_programas"
+                        )
+                    )
+                ).mappings()
+            ]
+            old_metas = [
+                dict(row)
+                for row in (
+                    await conn.execute(
+                        text(
+                            "SELECT id, codigo_plan, fuente, fila_fuente, tipo_meta, nombre, indicador "
+                            "FROM seguimiento.pdd_metas_oficiales"
+                        )
+                    )
+                ).mappings()
+            ]
+            lineas_insertar, metas_insertar, conteos = _reconciliar_catalogo(lines, metas, old_lines, old_metas)
+            await _upsert_planes(conn, plans)
+            if lineas_insertar:
+                await conn.execute(insert(PddLineaPrograma), lineas_insertar)
+            if metas_insertar:
+                await conn.execute(insert(PddMetaOficial), metas_insertar)
+            if not old_metas and metas_insertar:
+                link_counts = await _link_official_metas(conn)
+            persistencia = ResumenPersistenciaCatalogo.model_validate(
+                {
+                    "planes": len(plans),
+                    "lineas_programas": len(lines),
+                    "metas_oficiales": len(metas),
+                    **conteos,
+                    "vinculos_recalculados": bool(link_counts),
+                }
+            )
+    finally:
+        await engine.dispose()
     cache_count = await warm_pdd_cache()
     return {
-        "planes": len(plans),
-        "lineas_programas": len(lines),
-        "metas_oficiales": len(metas),
+        **persistencia.model_dump(),
         **{f"vinculos_{k.lower()}": v for k, v in link_counts.items()},
         "cache_payloads": cache_count,
     }
@@ -1793,9 +1864,7 @@ def _order_hierarchy_parent_first(lines: list[dict[str, Any]]) -> list[dict[str,
     for row in lines:
         parent = str(row["parent_id"]) if row.get("parent_id") else None
         if parent and parent not in ids:
-            raise ValueError(
-                f"Nodo {row['id']} referencia un padre ausente en el catálogo: {parent}"
-            )
+            raise ValueError(f"Nodo {row['id']} referencia un padre ausente en el catálogo: {parent}")
         children[parent].append(row)
     ordered: list[dict[str, Any]] = []
     queue = list(children[None])
@@ -1837,9 +1906,7 @@ async def warm_pdd_cache() -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Extraer y contar sin escribir en la BD"
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Extraer y contar sin escribir en la BD")
     args = parser.parse_args()
     print(asyncio.run(synchronize(args.dry_run)))
 

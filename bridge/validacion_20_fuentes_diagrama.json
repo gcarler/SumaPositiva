@@ -1,0 +1,65 @@
+{
+  "html_sha256": "30b9609928312814f782fbe6a158ebc1ad49e300f04fbc22f23f55182d75d31e",
+  "nativo": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "finalize",
+    "status": "pass",
+    "type": "architecture",
+    "quality": "showcase",
+    "specification": {
+      "path": "/root/polis/.archify/fuentes-20-aportadas-20261024-143956/candidate.json",
+      "sha256": "c100e216ebf910cd7382b62c1d7cd73871ddd0d8007a4c90eccaea5605bc8c78",
+      "bytes": 8714
+    },
+    "artifact": {
+      "path": "/root/polis/.archify/fuentes-20-aportadas-20261024-143956/priorizadas.html",
+      "sha256": "b41a3192c16a341bfc410be59e687b2e647ebd4f14f996c1ccb965151b936753",
+      "bytes": 833173
+    },
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "diagnostics": [],
+    "diagnosticSummary": {
+      "total": 0,
+      "shown": 0,
+      "truncated": false
+    },
+    "evidence": {
+      "receipt": "/root/polis/.archify/fuentes-20-aportadas-20261024-143956/priorizadas.finalize.json",
+      "summaryReceipt": "/root/polis/.archify/fuentes-20-aportadas-20261024-143956/priorizadas.finalize-summary.json",
+      "browserCheckReceipt": "/root/polis/.archify/fuentes-20-aportadas-20261024-143956/priorizadas.browser-check.json"
+    },
+    "update": {
+      "status": "current",
+      "installedVersion": "3.2.0",
+      "availableVersion": "3.2.0",
+      "releaseNotes": null,
+      "checkedAt": "2026-10-24T14:17:24.544Z",
+      "source": "cache",
+      "noticeRequired": false,
+      "noticeText": null
+    },
+    "visualReview": "not-requested",
+    "durationMs": 6617,
+    "browserCheck": {
+      "requested": true,
+      "ran": true
+    }
+  },
+  "portada": {
+    "defaultCards": 20,
+    "nativeNodes": 20,
+    "clickedCards": 1,
+    "sisptLinks": 2,
+    "clickedSource": "PR-20 · Sistema de Planeación Territorial (SisPT)",
+    "all": 261,
+    "mobile": 20,
+    "errors": []
+  },
+  "revision_visual": "Captura de escritorio inspeccionada."
+}

@@ -1,7 +1,5 @@
 """Contratos y salvaguardas del motor DEA, sin escribir en bd_csh."""
 
-import math
-
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
@@ -70,8 +68,17 @@ def _row(
 
 def test_ipc_2025_cerrado_y_2026_provisional():
     assert _factor(2025) == 1
-    assert math.isclose(_factor(2024), 1.051)
+    assert _factor(2024) == pytest.approx(1.0514277712298554)
     assert _factor(2026) is None
+
+
+def test_2026_no_recibe_pesos_constantes_sin_ipc_anual():
+    row = _row(1, motor="INVERSION_PRESUPUESTAL", bpim="2024130010001", app=100)
+    resultado = _prepare([row], 2026)
+    metrica = resultado["metricas"][row["entidad"]]
+    assert metrica["apropiacion_cop"] == 100
+    assert metrica["apropiacion_constante_2025_cop"] is None
+    assert resultado["auditoria"]["factor_ipc_2025"] is None
 
 
 def test_escala_con_cociente_y_ambiguedad():
@@ -125,9 +132,7 @@ def test_regresion_segunda_etapa_admite_panel_26_entidades():
             panel.append(
                 {
                     "entidad": f"Entidad {entity}",
-                    "grupo": "SECTOR_CENTRAL_RECTOR"
-                    if entity < 10
-                    else "DESCENTRALIZADAS_Y_AUTORIDADES",
+                    "grupo": "SECTOR_CENTRAL_RECTOR" if entity < 10 else "DESCENTRALIZADAS_Y_AUTORIDADES",
                     "eficiencia": 0.5 + ((entity * 3 + year) % 10) / 20,
                     "debil": ((entity + year) % 5) / 5,
                     "continuidad": ((entity * 2 + year) % 7) / 7,
@@ -225,14 +230,10 @@ def test_cinco_rutas_dea_y_validacion_http(monkeypatch):
             assert response.status_code == 200, response.text
             assert response.json()["estado"] == "CALCULADO"
         assert (
-            client.get(
-                "/api/v1/compromisos/triada/dea/frontera-eficiencia", params={"modo": "incorrecto"}
-            ).status_code
+            client.get("/api/v1/compromisos/triada/dea/frontera-eficiencia", params={"modo": "incorrecto"}).status_code
             == 422
         )
         assert (
-            client.get(
-                "/api/v1/compromisos/triada/dea/malmquist", params={"desde": 2025, "hasta": 2020}
-            ).status_code
+            client.get("/api/v1/compromisos/triada/dea/malmquist", params={"desde": 2025, "hasta": 2020}).status_code
             == 422
         )

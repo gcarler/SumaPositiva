@@ -26,9 +26,7 @@ def tabular_pregunta(pregunta, respuestas):
                         (
                             o["id"]
                             for o in opciones
-                            if isinstance(o, dict)
-                            and o.get("esOtro")
-                            and v.startswith(o["id"] + ":")
+                            if isinstance(o, dict) and o.get("esOtro") and v.startswith(o["id"] + ":")
                         ),
                         None,
                     )
@@ -42,8 +40,7 @@ def tabular_pregunta(pregunta, respuestas):
             salida["etiquetas"] = etiquetas
         if tipo != "opcion_multiple":
             salida["porcentajes"] = {
-                k: round(v / respondidos * 100, 1) if respondidos else 0.0
-                for k, v in conteos.items()
+                k: round(v / respondidos * 100, 1) if respondidos else 0.0 for k, v in conteos.items()
             }
     elif tipo in ("escala_likert", "likert", "escala_lineal", "numero"):
         valores = []
@@ -56,9 +53,7 @@ def tabular_pregunta(pregunta, respuestas):
                     valores.append(n)
             except ValueError:
                 continue
-        distribucion = (
-            {str(i): 0 for i in range(1, 6)} if tipo in ("escala_likert", "likert") else {}
-        )
+        distribucion = {str(i): 0 for i in range(1, 6)} if tipo in ("escala_likert", "likert") else {}
         for n in valores:
             clave = str(int(n)) if n.is_integer() else str(n)
             distribucion[clave] = distribucion.get(clave, 0) + 1

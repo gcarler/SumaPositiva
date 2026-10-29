@@ -127,10 +127,7 @@ def test_enviar_respuesta_y_unicidad_por_sujeto(sync_client: TestClient):
     datos_creados = resp_envio.json()
     assert datos_creados["formulario_id"] == form_id
     assert datos_creados["sujeto_id"] == sujeto_id
-    assert (
-        datos_creados["datos_enfoque"]["poblacion_vulnerable"]
-        == "Ley 1448/11 (Víctimas del Conflicto)"
-    )
+    assert datos_creados["datos_enfoque"]["poblacion_vulnerable"] == "Ley 1448/11 (Víctimas del Conflicto)"
 
     # 2. Intento de respuesta duplicada por el mismo sujeto -> 409 Conflict
     resp_duplicada = sync_client.post(
@@ -180,9 +177,7 @@ def test_analitica_y_tabulacion_matematica(sync_client: TestClient, provisionar_
     assert "preg-conv-01" in analitica["tabulacion_preguntas"]
 
 
-def test_gestion_formularios_crud_y_denegacion_ciudadano(
-    sync_client: TestClient, provisionar_usuario_sync
-):
+def test_gestion_formularios_crud_y_denegacion_ciudadano(sync_client: TestClient, provisionar_usuario_sync):
     """Valida el ciclo CRUD institucional y la denegación (403) a ciudadanos no autorizados."""
     token_ciudadano, _ = obtener_token_ciudadano(sync_client)
     token_autoridad = obtener_token_autoridad(sync_client, provisionar_usuario_sync)
@@ -231,9 +226,7 @@ def test_gestion_formularios_crud_y_denegacion_ciudadano(
         headers={"Authorization": f"Bearer {token_autoridad}"},
     )
     assert resp_actualizar.status_code == 200
-    assert (
-        resp_actualizar.json()["descripcion"] == "Descripción actualizada con enfoque territorial."
-    )
+    assert resp_actualizar.json()["descripcion"] == "Descripción actualizada con enfoque territorial."
 
     # 4. Autoridad elimina formulario -> 200 OK
     resp_eliminar = sync_client.delete(

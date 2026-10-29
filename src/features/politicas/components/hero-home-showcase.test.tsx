@@ -136,3 +136,40 @@ describe("HeroHomeShowcase Component (HERO-PAGES-02)", () => {
     expect(html).toContain("Política Pública de Seguridad Humana Integral");
   });
 });
+
+
+describe("Portada con catálogo editable (243)", () => {
+  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
+  test("no renderiza ni ofrece una imagen deshabilitada aunque la lista temática original la contenga", () => {
+    useHeroConfigStore.getState().toggleHabilitarImagen("enfoque-diferencial");
+    const html = renderToString(<HeroHomeShowcase />);
+    expect(html).not.toContain("hero-enfoque-diferencial.webp");
+    expect(html).not.toContain("Ver diapositiva 3: Enfoque Diferencial e Inclusivo");
+    expect(html).toContain("01 / 04");
+  });
+  test("renderiza imágenes agregadas con sus metadatos sin inventar procedencia oficial", () => {
+    const imagen = useHeroConfigStore.getState().agregarImagen({
+      titulo: "Encuentro barrial", descripcion: "Encuentro y concertación vecinal.",
+      enfoque: "Participación de la comunidad", archivo: "/images/nueva-243.webp", thumbnail: "",
+    });
+    useHeroConfigStore.getState().setHeroImageId(imagen.id);
+    const html = renderToString(<HeroHomeShowcase />);
+    expect(html).toContain(imagen.archivo);
+    expect(html).toContain(imagen.descripcion);
+    expect(html).toContain("Enfoque territorial");
+    expect(html).not.toContain("Procedencia Territorial Real");
+    expect(html).toContain("06 / 06");
+  });
+  test("retirar todo el catálogo deja una portada institucional sin imágenes ni errores de índice", () => {
+    for (const imagen of [...useHeroConfigStore.getState().imagenesCatalogo]) useHeroConfigStore.getState().eliminarImagen(imagen.id);
+    const html = renderToString(<HeroHomeShowcase />);
+    expect(html).not.toContain("<img");
+    expect(html).toContain("00 / 00");
+    expect(html).toContain("Política Pública de Seguridad Humana Integral");
+    expect(html).not.toContain("NaN");
+  });
+  test("conserva las URLs de portada previas al catálogo editable", () => {
+    useHeroConfigStore.getState().setPageImage("home", "https://ejemplo.gov.co/portada.webp");
+    expect(renderToString(<HeroHomeShowcase />)).toContain("https://ejemplo.gov.co/portada.webp");
+  });
+});

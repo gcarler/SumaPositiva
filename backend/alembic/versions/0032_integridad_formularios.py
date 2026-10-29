@@ -23,13 +23,9 @@ REGLAS = (
 
 def upgrade():
     for tabla, nombre, condicion in REGLAS:
-        op.create_check_constraint(
-            op.f(f"ck_{tabla}_{nombre}"), tabla, condicion, schema="participacion_ciudadana"
-        )
+        op.create_check_constraint(op.f(f"ck_{tabla}_{nombre}"), tabla, condicion, schema="participacion_ciudadana")
 
 
 def downgrade():
     for tabla, nombre, _ in reversed(REGLAS):
-        op.drop_constraint(
-            op.f(f"ck_{tabla}_{nombre}"), tabla, schema="participacion_ciudadana", type_="check"
-        )
+        op.drop_constraint(op.f(f"ck_{tabla}_{nombre}"), tabla, schema="participacion_ciudadana", type_="check")

@@ -9,12 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings
 from app.core.transactions import transaction
 from app.modules.evidencia.models import EvidenciaMultimedia, FotoMesa
-from app.modules.mesas.models import Mesa
 from app.modules.evidencia.repository import EvidenciaRepository
 from app.modules.evidencia.sanitizer import sanitizar_imagen_bytes
 from app.modules.evidencia.schemas import EvidenciaRespuesta
 from app.modules.identidad.ambito_territorial import verificar_ambito_territorial
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
+from app.modules.mesas.models import Mesa
 from app.modules.mesas.schemas import (
     FotoMesaModeracion,
     FotoMesaModeradaRespuesta,
@@ -40,8 +40,7 @@ class EvidenciaService:
             raise HTTPException(
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                 detail=(
-                    "Tipo de archivo no permitido. Tipos autorizados: "
-                    f"{', '.join(self.settings.tipos_mime_permitidos)}"
+                    f"Tipo de archivo no permitido. Tipos autorizados: {', '.join(self.settings.tipos_mime_permitidos)}"
                 ),
             )
 
@@ -50,14 +49,11 @@ class EvidenciaService:
             raise HTTPException(
                 status_code=status.HTTP_413_CONTENT_TOO_LARGE,
                 detail=(
-                    f"El archivo excede el tamaño máximo permitido de "
-                    f"{self.settings.tamano_maximo_archivo_mb} MB."
+                    f"El archivo excede el tamaño máximo permitido de {self.settings.tamano_maximo_archivo_mb} MB."
                 ),
             )
         try:
-            bytes_limpios, metadatos = sanitizar_imagen_bytes(
-                contenido, archivo.filename or "evidencia_anonima.jpg"
-            )
+            bytes_limpios, metadatos = sanitizar_imagen_bytes(contenido, archivo.filename or "evidencia_anonima.jpg")
         except ValueError as error:
             raise HTTPException(status_code=400, detail=str(error)) from error
         if metadatos["tipo_mime"] not in self.settings.tipos_mime_permitidos:
@@ -70,9 +66,7 @@ class EvidenciaService:
         extension = metadatos["tipo_mime"].split("/")[-1]
         if extension == "jpeg":
             extension = "jpg"
-        nombre_original_limpio = re.sub(
-            r"[^a-zA-Z0-9_\-\.]", "_", metadatos["nombre_original"]
-        )
+        nombre_original_limpio = re.sub(r"[^a-zA-Z0-9_\-\.]", "_", metadatos["nombre_original"])
         nombre_seguro = f"{archivo_id}_{nombre_original_limpio}"
         if not nombre_seguro.endswith(f".{extension}"):
             nombre_seguro = f"{nombre_seguro}.{extension}"
@@ -317,9 +311,7 @@ class EvidenciaService:
             id=modelo.id,
             propuesta_id=modelo.propuesta_id,
             autor_sujeto_id=None if es_foto_mesa else modelo.autor_sujeto_id,
-            nombre_archivo_original=(
-                "Fotografía de mesa aprobada" if es_foto_mesa else modelo.nombre_archivo_original
-            ),
+            nombre_archivo_original=("Fotografía de mesa aprobada" if es_foto_mesa else modelo.nombre_archivo_original),
             nombre_archivo_seguro=modelo.nombre_archivo_seguro,
             tamano_bytes=modelo.tamano_bytes,
             tipo_mime=modelo.tipo_mime,
@@ -341,5 +333,7 @@ class EvidenciaService:
                 raise HTTPException(status_code=404, detail="Evidencia no encontrada.")
         ruta = Path(modelo.ruta_almacenamiento)
         if not ruta.exists():
-            raise HTTPException(status_code=404, detail="El archivo físico sanitizado no se encuentra en el almacenamiento.")
+            raise HTTPException(
+                status_code=404, detail="El archivo físico sanitizado no se encuentra en el almacenamiento."
+            )
         return ruta, modelo.tipo_mime

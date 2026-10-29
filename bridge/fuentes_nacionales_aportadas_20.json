@@ -1,0 +1,243 @@
+[
+  {
+    "id": "PR-01",
+    "nombre": "USAID Colombia",
+    "etiqueta": "USAID · cooperación",
+    "tipo": "Cooperación internacional",
+    "enlaces": [
+      "https://www.usaid.gov/es/colombia"
+    ],
+    "revision_enlace": "Lectura sin contenido verificable; vigencia operativa pendiente.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-02",
+    "nombre": "FUPAD Colombia",
+    "etiqueta": "FUPAD · cooperación",
+    "tipo": "Cooperación internacional",
+    "enlaces": [
+      "https://www.fupad.org"
+    ],
+    "revision_enlace": "No accesible desde la herramienta de consulta; no implica ausencia de datos.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-03",
+    "nombre": "Sistema de Monitoreo de Bosques y Carbono (SMByC)",
+    "etiqueta": "SMByC · IDEAM",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "http://www.ideam.gov.co/web/siac/smbyc"
+    ],
+    "revision_enlace": "La consulta al enlace no recuperó contenido; localizar producto vigente.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-04",
+    "nombre": "Sistema de Alertas Tempranas (SAT)",
+    "etiqueta": "SAT · Defensoría",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://alertastempranas.defensoria.gov.co/Alerta/Tablero"
+    ],
+    "revision_enlace": "Tablero recuperado; consulta de mapas/reportes no equivale a descarga.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-05",
+    "nombre": "Observatorio de Derechos Humanos y Defensa Nacional",
+    "etiqueta": "DD. HH. y Defensa · MinDefensa",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3"
+    ],
+    "revision_enlace": "Enlace legado aportado; contenido no recuperado en la consulta.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-06",
+    "nombre": "Sistema Único de Información Normativa (SUIN-JURISCOL)",
+    "etiqueta": "SUIN-JURISCOL · MinJusticia",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.suin-juriscol.gov.co/"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; no se acredita disponibilidad.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-07",
+    "nombre": "Observatorio de Drogas de Colombia (ODC)",
+    "etiqueta": "ODC · MinJusticia",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.minjusticia.gov.co/programas-co/ODC"
+    ],
+    "revision_enlace": "El enlace redirige a https://odc.minjusticia.gov.co/odc; producto por seleccionar.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-08",
+    "nombre": "Observatorio de Política Criminal",
+    "etiqueta": "Política Criminal · MinJusticia",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal"
+    ],
+    "revision_enlace": "Página recuperada en la consulta; no acredita extracción ni cobertura.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-09",
+    "nombre": "Sistema de Análisis de Grupos Armados (SAGA)",
+    "etiqueta": "SAGA · UNODC",
+    "tipo": "Sistema de cooperación",
+    "enlaces": [
+      "https://saga.unodc.org.co/"
+    ],
+    "revision_enlace": "Portal recuperado. La página identifica UNODC; vínculo institucional con ARN aportado por el usuario pendiente de cotejo.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-10",
+    "nombre": "Sistema de Información Unificado de Convivencia Escolar (SIUCE)",
+    "etiqueta": "SIUCE · MinEducación",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.mineducacion.gov.co/portal/salaprensa/Noticias/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE"
+    ],
+    "revision_enlace": "Referencia de noticia aportada; no se recuperó contenido ni se identificó descarga.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-11",
+    "nombre": "Portal de Migración Colombia",
+    "etiqueta": "Migración Colombia",
+    "tipo": "Portal nacional",
+    "enlaces": [
+      "https://www.migracioncolombia.gov.co/"
+    ],
+    "revision_enlace": "Portal recuperado; seleccionar conjuntos y cobertura para cada política.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-12",
+    "nombre": "Observatorio Colombiano de Mujeres (OCM)",
+    "etiqueta": "OCM · mujeres",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://observatoriomujeres.gov.co/es/OAG"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; custodio y vigencia por verificar.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-13",
+    "nombre": "Mecanismo Unificado de Monitoreo de Riesgos",
+    "etiqueta": "Monitoreo de Riesgos · JEP",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; producto y cobertura por verificar.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-14",
+    "nombre": "Batería de indicadores PATR",
+    "etiqueta": "PATR · ART",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://centralpdet.renovacionterritorio.gov.co/avance-patr/"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; pertinencia territorial PDET por verificar.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-15",
+    "nombre": "Índice de Desarrollo de Municipios Costeros (IDMC)",
+    "etiqueta": "IDMC · DNP",
+    "tipo": "Indicador nacional",
+    "enlaces": [
+      "https://portalterritorial.dnp.gov.co/AdmCPBioceanica/iGrupoCMunicipios"
+    ],
+    "revision_enlace": "El enlace devolvió una página de error interno; no acredita disponibilidad del indicador.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-16",
+    "nombre": "Observatorio de Conflictos Ambientales",
+    "etiqueta": "Conflictos Ambientales · UNAL",
+    "tipo": "Fuente académica",
+    "enlaces": [
+      "https://conflictosambientales.unal.edu.co/oca/"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; no acredita inexistencia de datos.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-17",
+    "nombre": "Estadística delictiva (SIEDCO)",
+    "etiqueta": "SIEDCO · Policía Nacional",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva"
+    ],
+    "revision_enlace": "El enlace aportado no recuperó la página (404). Las capturas policiales anteriores por datos abiertos son evidencia separada.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-18",
+    "nombre": "Encuesta de Convivencia y Seguridad Ciudadana (ECSC)",
+    "etiqueta": "ECSC · DANE",
+    "tipo": "Encuesta nacional",
+    "enlaces": [
+      "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc"
+    ],
+    "revision_enlace": "Página recuperada. Existe captura previa del anexo ECSC en la entrega 58; no se renovó en este cambio.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-19",
+    "nombre": "Observatorio del Sistema de Ciudades",
+    "etiqueta": "Sistema de Ciudades · DNP",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://osc.dnp.gov.co/"
+    ],
+    "revision_enlace": "Consulta sin contenido recuperado; cobertura territorial por verificar.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  },
+  {
+    "id": "PR-20",
+    "nombre": "Sistema de Planeación Territorial (SisPT)",
+    "etiqueta": "SisPT / PISCC · DNP",
+    "tipo": "Sistema nacional",
+    "enlaces": [
+      "https://portalterritorial.dnp.gov.co/kpt/",
+      "https://sispt.dnp.gov.co/piscc"
+    ],
+    "revision_enlace": "Dos enlaces registrados bajo una sola fuente. No se recuperó contenido en esta consulta.",
+    "procedencia": "lista_usuario_2026-10-24",
+    "estado": "referencia_registrada_no_nueva_descarga"
+  }
+]

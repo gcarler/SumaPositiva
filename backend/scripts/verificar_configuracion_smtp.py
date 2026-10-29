@@ -9,15 +9,13 @@ import asyncio
 import json
 import re
 import socket
-import ssl
 import sys
 from typing import Any
 
-from sqlalchemy import select, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import Settings
-from app.modules.identidad.models import TokenAccion
 
 RE_CORREO = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -28,147 +26,181 @@ def validar_configuracion_memoria(settings: Settings) -> dict[str, Any]:
     es_valido = True
 
     # 1. POLIS_ENVIRONMENT
-    chequeos.append({
-        "variable": "POLIS_ENVIRONMENT",
-        "valor": settings.environment,
-        "estado": "OK",
-        "detalle": f"Entorno configurado: {settings.environment}",
-    })
+    chequeos.append(
+        {
+            "variable": "POLIS_ENVIRONMENT",
+            "valor": settings.environment,
+            "estado": "OK",
+            "detalle": f"Entorno configurado: {settings.environment}",
+        }
+    )
 
     # 2. POLIS_JWT_SECRET_KEY
     if not settings.jwt_secret_key or len(settings.jwt_secret_key) < 32:
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_JWT_SECRET_KEY",
-            "valor": "[REDACTADO]" if settings.jwt_secret_key else "NO_CONFIGURADO",
-            "estado": "FALLO",
-            "detalle": "Debe tener al menos 32 caracteres criptográficos obligatorios.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_JWT_SECRET_KEY",
+                "valor": "[REDACTADO]" if settings.jwt_secret_key else "NO_CONFIGURADO",
+                "estado": "FALLO",
+                "detalle": "Debe tener al menos 32 caracteres criptográficos obligatorios.",
+            }
+        )
     elif settings.environment == "production" and "test" in settings.jwt_secret_key.lower():
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_JWT_SECRET_KEY",
-            "valor": "[REDACTADO]",
-            "estado": "FALLO",
-            "detalle": "En entorno de producción no se permiten secretos con la palabra 'test'.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_JWT_SECRET_KEY",
+                "valor": "[REDACTADO]",
+                "estado": "FALLO",
+                "detalle": "En entorno de producción no se permiten secretos con la palabra 'test'.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_JWT_SECRET_KEY",
-            "valor": "[CONFIGURADO]",
-            "estado": "OK",
-            "detalle": f"Clave secreta válida ({len(settings.jwt_secret_key)} caracteres).",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_JWT_SECRET_KEY",
+                "valor": "[CONFIGURADO]",
+                "estado": "OK",
+                "detalle": f"Clave secreta válida ({len(settings.jwt_secret_key)} caracteres).",
+            }
+        )
 
     # 3. POLIS_IP_SALT
     if not settings.ip_salt:
-        chequeos.append({
-            "variable": "POLIS_IP_SALT",
-            "valor": "NO_CONFIGURADO",
-            "estado": "ADVERTENCIA",
-            "detalle": "Se recomienda definir un salt específico para anonimización Habeas Data.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IP_SALT",
+                "valor": "NO_CONFIGURADO",
+                "estado": "ADVERTENCIA",
+                "detalle": "Se recomienda definir un salt específico para anonimización Habeas Data.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_IP_SALT",
-            "valor": "[CONFIGURADO]",
-            "estado": "OK",
-            "detalle": "Salt para anonimización de direcciones IP configurado.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IP_SALT",
+                "valor": "[CONFIGURADO]",
+                "estado": "OK",
+                "detalle": "Salt para anonimización de direcciones IP configurado.",
+            }
+        )
 
     # 4. POLIS_IDENTIDAD_URL_PUBLICA
     url_pub = settings.identidad_url_publica
     if not url_pub or not (url_pub.startswith("http://") or url_pub.startswith("https://")):
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
-            "valor": str(url_pub),
-            "estado": "FALLO",
-            "detalle": "Debe ser una URL válida absoluta con esquema http:// o https://.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
+                "valor": str(url_pub),
+                "estado": "FALLO",
+                "detalle": "Debe ser una URL válida absoluta con esquema http:// o https://.",
+            }
+        )
     elif settings.environment == "production" and not url_pub.startswith("https://"):
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
-            "valor": str(url_pub),
-            "estado": "FALLO",
-            "detalle": "En producción, la URL pública DEBE requerir HTTPS.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
+                "valor": str(url_pub),
+                "estado": "FALLO",
+                "detalle": "En producción, la URL pública DEBE requerir HTTPS.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
-            "valor": str(url_pub),
-            "estado": "OK",
-            "detalle": f"URL canónica de enlaces: {url_pub}",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IDENTIDAD_URL_PUBLICA",
+                "valor": str(url_pub),
+                "estado": "OK",
+                "detalle": f"URL canónica de enlaces: {url_pub}",
+            }
+        )
 
     # 5. POLIS_SMTP_HOST y PUERTO
     if not settings.smtp_host:
-        chequeos.append({
-            "variable": "POLIS_SMTP_HOST",
-            "valor": "NO_CONFIGURADO",
-            "estado": "ADVERTENCIA",
-            "detalle": "Sin host SMTP; la API devolverá HTTP 503 al solicitar envíos.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_HOST",
+                "valor": "NO_CONFIGURADO",
+                "estado": "ADVERTENCIA",
+                "detalle": "Sin host SMTP; la API devolverá HTTP 503 al solicitar envíos.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_SMTP_HOST",
-            "valor": settings.smtp_host,
-            "estado": "OK",
-            "detalle": f"Host SMTP definido: {settings.smtp_host}:{settings.smtp_port}",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_HOST",
+                "valor": settings.smtp_host,
+                "estado": "OK",
+                "detalle": f"Host SMTP definido: {settings.smtp_host}:{settings.smtp_port}",
+            }
+        )
 
     # 6. POLIS_SMTP_TLS
     if settings.environment == "production" and settings.smtp_host and not settings.smtp_tls:
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_SMTP_TLS",
-            "valor": str(settings.smtp_tls),
-            "estado": "FALLO",
-            "detalle": "En producción, el transporte SMTP DEBE tener TLS activado.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_TLS",
+                "valor": str(settings.smtp_tls),
+                "estado": "FALLO",
+                "detalle": "En producción, el transporte SMTP DEBE tener TLS activado.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_SMTP_TLS",
-            "valor": str(settings.smtp_tls),
-            "estado": "OK",
-            "detalle": f"Modo TLS seguro: {'Habilitado' if settings.smtp_tls else 'Deshabilitado'}",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_TLS",
+                "valor": str(settings.smtp_tls),
+                "estado": "OK",
+                "detalle": f"Modo TLS seguro: {'Habilitado' if settings.smtp_tls else 'Deshabilitado'}",
+            }
+        )
 
     # 7. POLIS_SMTP_REMITENTE
     remitente = settings.smtp_remitente
     if not remitente or ("@" not in remitente):
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_SMTP_REMITENTE",
-            "valor": str(remitente),
-            "estado": "FALLO",
-            "detalle": "El remitente debe ser una dirección de correo válida.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_REMITENTE",
+                "valor": str(remitente),
+                "estado": "FALLO",
+                "detalle": "El remitente debe ser una dirección de correo válida.",
+            }
+        )
     else:
-        chequeos.append({
-            "variable": "POLIS_SMTP_REMITENTE",
-            "valor": remitente,
-            "estado": "OK",
-            "detalle": f"Remitente oficial: {remitente}",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_SMTP_REMITENTE",
+                "valor": remitente,
+                "estado": "OK",
+                "detalle": f"Remitente oficial: {remitente}",
+            }
+        )
 
     # 8. TTL de enlaces
     if 5 <= settings.identidad_token_minutos <= 120:
-        chequeos.append({
-            "variable": "POLIS_IDENTIDAD_TOKEN_MINUTOS",
-            "valor": str(settings.identidad_token_minutos),
-            "estado": "OK",
-            "detalle": f"Caducidad de enlace: {settings.identidad_token_minutos} minutos.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IDENTIDAD_TOKEN_MINUTOS",
+                "valor": str(settings.identidad_token_minutos),
+                "estado": "OK",
+                "detalle": f"Caducidad de enlace: {settings.identidad_token_minutos} minutos.",
+            }
+        )
     else:
         es_valido = False
-        chequeos.append({
-            "variable": "POLIS_IDENTIDAD_TOKEN_MINUTOS",
-            "valor": str(settings.identidad_token_minutos),
-            "estado": "FALLO",
-            "detalle": "El TTL del enlace debe estar comprendido entre 5 y 120 minutos.",
-        })
+        chequeos.append(
+            {
+                "variable": "POLIS_IDENTIDAD_TOKEN_MINUTOS",
+                "valor": str(settings.identidad_token_minutos),
+                "estado": "FALLO",
+                "detalle": "El TTL del enlace debe estar comprendido entre 5 y 120 minutos.",
+            }
+        )
 
     return {
         "es_valido": es_valido,
@@ -182,11 +214,9 @@ async def auditar_cola_durable(database_url: str) -> dict[str, Any]:
     try:
         async with engine.connect() as conn:
             await conn.execute(text("SET TRANSACTION READ ONLY"))
-            
+
             # Verificar si existe la tabla
-            regclass = await conn.scalar(
-                text("SELECT to_regclass('autenticacion.tokens_accion')")
-            )
+            regclass = await conn.scalar(text("SELECT to_regclass('autenticacion.tokens_accion')"))
             if not regclass:
                 return {
                     "disponible": False,
@@ -321,9 +351,7 @@ def main():
         resultado["cola_durable"] = asyncio.run(auditar_cola_durable(db_url))
 
     if args.probar_red and settings.smtp_host:
-        resultado["conectividad_smtp"] = probar_socket_smtp(
-            settings.smtp_host, settings.smtp_port, settings.smtp_tls
-        )
+        resultado["conectividad_smtp"] = probar_socket_smtp(settings.smtp_host, settings.smtp_port, settings.smtp_tls)
         if not resultado["conectividad_smtp"]["conectividad"]:
             resultado["es_valido"] = False
 

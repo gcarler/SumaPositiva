@@ -32,14 +32,12 @@ export function Footer() {
             Modo Barrio (Bajo consumo)
           </Link>
           {["Datos abiertos", "Trazabilidad", "Marco legal", "Contacto"].map((l) => (
-            <a
+            <span
               key={l}
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              className="label-micro text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
+              className="label-micro text-[var(--text-tertiary)]"
             >
-              {l}
-            </a>
+              {l} <span className="whitespace-nowrap">(en preparación)</span>
+            </span>
           ))}
         </nav>
 

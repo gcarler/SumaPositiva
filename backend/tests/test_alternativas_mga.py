@@ -1,6 +1,5 @@
 import asyncio
 import uuid
-from decimal import Decimal
 
 import pytest
 from fastapi.testclient import TestClient
@@ -9,7 +8,6 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import Settings
 from app.main import create_app
-from app.modules.identidad.security import crear_token_acceso
 
 
 def test_listar_alternativas_publicas(database_url: str):
@@ -85,6 +83,7 @@ def cabeceras_ciudadano(prepared_test_database):
         pytest.skip("Configura una base exclusiva de pruebas")
 
     from sqlalchemy.ext.asyncio import async_sessionmaker
+
     from app.modules.identidad.schemas import LoginPeticion, UsuarioCreacion
     from app.modules.identidad.service import IdentidadService
 
@@ -104,9 +103,7 @@ def cabeceras_ciudadano(prepared_test_database):
                     )
                 )
                 return (
-                    await service.autenticar_usuario(
-                        LoginPeticion(correo=correo, contrasena="PruebaCiudadano2026*")
-                    )
+                    await service.autenticar_usuario(LoginPeticion(correo=correo, contrasena="PruebaCiudadano2026*"))
                 ).token_acceso
         finally:
             await engine.dispose()
@@ -114,9 +111,7 @@ def cabeceras_ciudadano(prepared_test_database):
     return {"Authorization": f"Bearer {asyncio.run(iniciar())}"}
 
 
-def test_flujo_crud_persistencia_rbac_y_auditoria(
-    database_url: str, cabeceras_gestion, cabeceras_ciudadano
-):
+def test_flujo_crud_persistencia_rbac_y_auditoria(database_url: str, cabeceras_gestion, cabeceras_ciudadano):
     """Prueba integral de formulación, edición, RBAC y auditoría inmutable."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
@@ -212,9 +207,7 @@ def test_flujo_crud_persistencia_rbac_y_auditoria(
     asyncio.run(verificar_auditoria())
 
 
-def test_restriccion_eliminacion_si_existen_compromisos_vinculados(
-    database_url: str, cabeceras_gestion
-):
+def test_restriccion_eliminacion_si_existen_compromisos_vinculados(database_url: str, cabeceras_gestion):
     """Verifica que no se pueda eliminar una alternativa con compromisos PAS vinculados (409 Conflict)."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)

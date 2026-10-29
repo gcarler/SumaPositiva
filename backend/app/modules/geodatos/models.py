@@ -87,8 +87,7 @@ class Territorio(Base):
         default=False,
         nullable=False,
         comment=(
-            "Indica si el territorio es consejo comunitario afrodescendiente "
-            "o resguardo indígena (Consulta Previa)"
+            "Indica si el territorio es consejo comunitario afrodescendiente o resguardo indígena (Consulta Previa)"
         ),
     )
     nombre_consejo_comunitario: Mapped[str | None] = mapped_column(String(250), nullable=True)
@@ -149,12 +148,16 @@ class IndicadorTerritorio(Base):
         Index("idx_indicadores_codigo", "codigo_indicador", postgresql_include=[]),
         Index("idx_indicadores_dimension", "dimension_id", postgresql_include=[]),
         Index("idx_indicadores_territorio", "territorio_id", postgresql_include=[]),
+        Index(
+            "ux_indicadores_territorio_terr_cod_anio",
+            "territorio_id",
+            "codigo_indicador",
+            "anio_corte",
+            unique=True,
+        ),
         {
             ("schema"): ("geodatos"),
-            ("comment"): (
-                "Estadísticas e indicadores territoriales para la conexión bidire"
-                "ccional Mapa <-> Datos"
-            ),
+            ("comment"): ("Estadísticas e indicadores territoriales para la conexión bidireccional Mapa <-> Datos"),
         },
     )
 
@@ -207,9 +210,7 @@ class CapaGeovisor(Base):
     __table_args__ = (
         {
             ("schema"): ("geodatos"),
-            ("comment"): (
-                "Catálogo de capas espaciales temáticas superponibles en el Geovisor de Cartagena"
-            ),
+            ("comment"): ("Catálogo de capas espaciales temáticas superponibles en el Geovisor de Cartagena"),
         },
     )
 
@@ -281,9 +282,7 @@ class PoligonoAnaliticaHurto(Base):
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     zona: Mapped[str] = mapped_column(String(20), nullable=False)
     geometria: Mapped[Any] = mapped_column(Geometria("MultiPolygon", 4326), nullable=False)
-    geometria_simplificada: Mapped[Any | None] = mapped_column(
-        Geometria("MultiPolygon", 4326), nullable=True
-    )
+    geometria_simplificada: Mapped[Any | None] = mapped_column(Geometria("MultiPolygon", 4326), nullable=True)
     area_km2: Mapped[float | None] = mapped_column(Float, nullable=True)
     centroide: Mapped[Any | None] = mapped_column(Geometria("Point", 4326), nullable=True)
     metadatos: Mapped[dict[str, Any]] = mapped_column(
@@ -324,14 +323,9 @@ class EstadisticaHurto(Base):
     armas_medios: Mapped[str] = mapped_column(String(100), nullable=False)
     clase_sitio: Mapped[str] = mapped_column(String(100), nullable=False)
     dia_semana: Mapped[str] = mapped_column(String(20), nullable=False)
-    cantidad: Mapped[int] = mapped_column(
-        Integer, default=1, server_default=text("1"), nullable=False
-    )
+    cantidad: Mapped[int] = mapped_column(Integer, default=1, server_default=text("1"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
 
-    poligono: Mapped["PoligonoAnaliticaHurto"] = relationship(
-        "PoligonoAnaliticaHurto", back_populates="estadisticas"
-    )
-
+    poligono: Mapped["PoligonoAnaliticaHurto"] = relationship("PoligonoAnaliticaHurto", back_populates="estadisticas")

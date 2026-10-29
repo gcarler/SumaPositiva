@@ -70,9 +70,7 @@ async def crear_ficha(datos: FichaIndicadorCrear, service: IndicadoresServiceDep
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(requerir_permiso("indicadores:gestionar", nivel_minimo="declarada"))],
 )
-async def registrar_medicion(
-    id: uuid.UUID, datos: MedicionIndicadorCrear, service: IndicadoresServiceDep
-):
+async def registrar_medicion(id: uuid.UUID, datos: MedicionIndicadorCrear, service: IndicadoresServiceDep):
     return await service.registrar_medicion(id, datos)
 
 

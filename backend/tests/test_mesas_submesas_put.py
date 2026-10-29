@@ -64,13 +64,9 @@ async def test_submesa_crear_derivada_y_actualizar_put(database_url: str, cabece
                 "modalidad": "PRESENCIAL",
             },
         ).json()["id"]
-        ajena = client.put(
-            f"/api/v1/mesas/{otra}/submesas/{sub_id}", json={"nombre": "X"}
-        )
+        ajena = client.put(f"/api/v1/mesas/{otra}/submesas/{sub_id}", json={"nombre": "X"})
         assert ajena.status_code == 404
 
         # Inexistente → 404
-        nada = client.put(
-            f"/api/v1/mesas/{raiz_id}/submesas/{uuid.uuid4()}", json={"nombre": "X"}
-        )
+        nada = client.put(f"/api/v1/mesas/{raiz_id}/submesas/{uuid.uuid4()}", json={"nombre": "X"})
         assert nada.status_code == 404

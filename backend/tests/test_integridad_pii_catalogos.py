@@ -6,9 +6,8 @@ Verifica que ningún archivo `src/**/data/*.data.ts` contenga:
 - Nombres de personas naturales en estado inicial
 """
 
-from pathlib import Path
 import re
-import pytest
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SRC_DIR = REPO_ROOT / "src"

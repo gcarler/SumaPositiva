@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
+  CalendarRange,
   CheckCircle2,
   Clock,
   Edit3,
@@ -13,14 +14,15 @@ import {
   Sparkles,
   MapPin,
   Package,
-  X,
-  Save,
+  Building2,
+  ListChecks,
+  LayoutDashboard,
+  LayoutGrid,
 } from "lucide-react";
+import { toast } from "sonner";
+import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Label } from "@/shared/ui/label";
-import { Badge } from "@/shared/ui/badge";
 import { Notice } from "@/shared/ui/notice";
 import {
   Select,
@@ -29,48 +31,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { usePanelStore } from "@/core/panels/panel-store";
+import { GanttCronograma } from "./gantt-cronograma";
+import { CollectionLayout } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 import {
   ETAPAS_CRONOGRAMA,
   ESTADOS_TAREA,
+  ESTATES_ORDER,
   type EstadoTarea,
   type TareaComunicacion,
-  type TareaComunicacionPayload,
 } from "../models/tarea-comunicacion";
 import {
   actualizarTareaComunicacion,
-  crearTareaComunicacion,
   listarTareasComunicacion,
 } from "../services/comunicaciones-api";
 
 export function ComunicacionesView() {
+  const { openPanel } = usePanelStore();
   const [tareas, setTareas] = useState<TareaComunicacion[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Gestión tipo proyectos: pestañas de vista cronograma / tablero
+  const [vistaColeccion, setVistaColeccion] = useCollectionView("comunicaciones", "lista");
+  const [vistaEspecial, setVistaEspecial] = useState<"kanban" | "gantt" | null>(null);
+  const vista = vistaEspecial ?? (vistaColeccion === "lista" ? "cronograma" : "tarjetas");
+  const cambiarVista = (next: string) => {
+    if (next === "cronograma" || next === "tarjetas") {
+      setVistaColeccion(next === "cronograma" ? "lista" : "tarjetas");
+      setVistaEspecial(null);
+    } else if (next === "kanban" || next === "gantt") {
+      setVistaEspecial(next);
+    }
+  };
 
   // Filtros
   const [etapaSeleccionada, setEtapaSeleccionada] = useState<string>("todas");
   const [estadoSeleccionado, setEstadoSeleccionado] = useState<string>("todos");
   const [busqueda, setBusqueda] = useState<string>("");
 
-  // Editor activo (inline)
-  const [editorAbierto, setEditorAbierto] = useState(false);
-  const [tareaSeleccionada, setTareaSeleccionada] = useState<TareaComunicacion | null>(null);
-
-  // Campos del editor
-  const [formCodigo, setFormCodigo] = useState("");
-  const [formTitulo, setFormTitulo] = useState("");
-  const [formEtapa, setFormEtapa] = useState<string>(ETAPAS_CRONOGRAMA[0]);
-  const [formTerritorio, setFormTerritorio] = useState("");
-  const [formFechaInicio, setFormFechaInicio] = useState("");
-  const [formFechaFin, setFormFechaFin] = useState("");
-  const [formEstado, setFormEstado] = useState<EstadoTarea>("pendiente");
-  const [formResponsable, setFormResponsable] = useState("Equipo de Comunicaciones");
-  const [formDescripcion, setFormDescripcion] = useState("");
-  const [formEntregables, setFormEntregables] = useState("");
-  const [formOrden, setFormOrden] = useState(0);
-  const [guardando, setGuardando] = useState(false);
-  const [errorForm, setErrorForm] = useState<string | null>(null);
-  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+  // Guarda en vuelo del cambio rápido de estado por tarjeta
+  const [estadoEnCambio, setEstadoEnCambio] = useState<string | null>(null);
 
   const cargarTareas = async () => {
     setCargando(true);
@@ -92,133 +95,55 @@ export function ComunicacionesView() {
   }, []);
 
   const abrirEdicion = (tarea: TareaComunicacion) => {
-    setTareaSeleccionada(tarea);
-    setFormCodigo(tarea.codigo);
-    setFormTitulo(tarea.titulo);
-    setFormEtapa(tarea.etapa);
-    setFormTerritorio(tarea.territorio);
-    setFormFechaInicio(tarea.fecha_inicio);
-    setFormFechaFin(tarea.fecha_fin);
-    setFormEstado(tarea.estado);
-    setFormResponsable(tarea.responsable);
-    setFormDescripcion(tarea.descripcion);
-    setFormEntregables(tarea.entregables);
-    setFormOrden(tarea.orden);
-    setErrorForm(null);
-    setMensajeExito(null);
-    setEditorAbierto(true);
+    openPanel("tarea-comunicacion-editor", {
+      tarea,
+      ordenSugerido: tarea.orden,
+      onGuardada: (guardada) => {
+        setTareas((prev) => {
+          const idx = prev.findIndex((t) => t.id === guardada.id);
+          if (idx >= 0) {
+            const copia = [...prev];
+            copia[idx] = guardada;
+            return copia;
+          }
+          return [...prev, guardada].sort(
+            (a, b) => a.fecha_inicio.localeCompare(b.fecha_inicio) || a.orden - b.orden,
+          );
+        });
+      },
+    });
   };
 
   const abrirCreacion = () => {
-    setTareaSeleccionada(null);
-    setFormCodigo("");
-    setFormTitulo("");
-    setFormEtapa(ETAPAS_CRONOGRAMA[0]);
-    setFormTerritorio("");
-    setFormFechaInicio("2026-10-06");
-    setFormFechaFin("2026-10-06");
-    setFormEstado("pendiente");
-    setFormResponsable("Equipo de Comunicaciones");
-    setFormDescripcion("");
-    setFormEntregables("");
-    setFormOrden(tareas.length + 1);
-    setErrorForm(null);
-    setMensajeExito(null);
-    setEditorAbierto(true);
+    openPanel("tarea-comunicacion-editor", {
+      tarea: null,
+      ordenSugerido: tareas.length + 1,
+      onGuardada: (guardada) => {
+        setTareas((prev) => {
+          const yaExiste = prev.some((t) => t.id === guardada.id);
+          if (yaExiste) return prev.map((t) => (t.id === guardada.id ? guardada : t));
+          return [...prev, guardada].sort(
+            (a, b) => a.fecha_inicio.localeCompare(b.fecha_inicio) || a.orden - b.orden,
+          );
+        });
+      },
+    });
   };
 
-  const cerrarEditor = () => {
-    setEditorAbierto(false);
-    setTareaSeleccionada(null);
-    setErrorForm(null);
-  };
-
-  const handleGuardarForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorForm(null);
-
-    if (!formCodigo.trim()) {
-      setErrorForm("El código de la tarea es obligatorio (ej. TC-01).");
-      return;
-    }
-    if (!formTitulo.trim()) {
-      setErrorForm("El título de la tarea es obligatorio.");
-      return;
-    }
-    if (!formFechaInicio || !formFechaFin) {
-      setErrorForm("Las fechas de inicio y culminación son obligatorias.");
-      return;
-    }
-    if (formFechaFin < formFechaInicio) {
-      setErrorForm("La fecha de culminación no puede ser anterior a la fecha de inicio.");
-      return;
-    }
-
-    setGuardando(true);
+  const cambiarEstadoRapido = async (tarea: TareaComunicacion, nuevoEstado: EstadoTarea) => {
+    setEstadoEnCambio(tarea.id);
     try {
-      const payload: TareaComunicacionPayload = {
-        codigo: formCodigo.trim(),
-        titulo: formTitulo.trim(),
-        etapa: formEtapa,
-        territorio: formTerritorio.trim() || "Distrito de Cartagena",
-        fecha_inicio: formFechaInicio,
-        fecha_fin: formFechaFin,
-        estado: formEstado,
-        responsable: formResponsable.trim() || "Equipo de Comunicaciones",
-        descripcion: formDescripcion.trim(),
-        entregables: formEntregables.trim(),
-        orden: formOrden,
-      };
-
-      let guardada: TareaComunicacion;
-      if (tareaSeleccionada) {
-        guardada = await actualizarTareaComunicacion(tareaSeleccionada.id, payload);
-      } else {
-        guardada = await crearTareaComunicacion(payload);
-      }
-
-      setTareas((prev) => {
-        const idx = prev.findIndex((t) => t.id === guardada.id);
-        if (idx >= 0) {
-          const copia = [...prev];
-          copia[idx] = guardada;
-          return copia;
-        }
-        return [...prev, guardada].sort(
-          (a, b) => a.fecha_inicio.localeCompare(b.fecha_inicio) || a.orden - b.orden
-        );
-      });
-
-      setMensajeExito(
-        `Tarea ${guardada.codigo} guardada correctamente con fechas del ${guardada.fecha_inicio} al ${guardada.fecha_fin}.`
-      );
-      setEditorAbierto(false);
+      const actualizada = await actualizarTareaComunicacion(tarea.id, { estado: nuevoEstado });
+      setTareas((prev) => prev.map((t) => (t.id === actualizada.id ? actualizada : t)));
+      toast.success(`${actualizada.codigo} ahora está en estado «${ESTADOS_TAREA[nuevoEstado].label}».`);
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : "Error al guardar la tarea de comunicación.";
-      setErrorForm(msg);
-    } finally {
-      setGuardando(false);
-    }
-  };
-
-  const cambiarEstadoRapido = async (
-    tarea: TareaComunicacion,
-    nuevoEstado: EstadoTarea
-  ) => {
-    try {
-      const actualizada = await actualizarTareaComunicacion(tarea.id, {
-        estado: nuevoEstado,
-      });
-      setTareas((prev) =>
-        prev.map((t) => (t.id === actualizada.id ? actualizada : t))
-      );
-    } catch (err: unknown) {
-      alert(
         err instanceof Error
           ? err.message
-          : "No se pudo actualizar el estado de la tarea."
-      );
+          : "No se pudo actualizar el estado de la tarea.";
+      toast.error(msg);
+    } finally {
+      setEstadoEnCambio(null);
     }
   };
 
@@ -244,11 +169,59 @@ export function ComunicacionesView() {
     });
   }, [tareas, etapaSeleccionada, estadoSeleccionado, busqueda]);
 
-  // Métricas
+  // Métricas ejecutivas de avance del plan
   const total = tareas.length;
   const enProgreso = tareas.filter((t) => t.estado === "en_progreso").length;
   const completadas = tareas.filter((t) => t.estado === "completada").length;
   const pendientes = tareas.filter((t) => t.estado === "pendiente").length;
+  const reprogramadas = tareas.filter((t) => t.estado === "reprogramada").length;
+  const avanceGlobal = total > 0 ? Math.round((completadas / total) * 100) : 0;
+
+  // Barras de progreso por etapa (% de tareas completadas)
+  const avancePorEtapa = useMemo(() => {
+    const porEtapa = new Map<string, { total: number; completadas: number }>();
+    for (const tarea of tareas) {
+      const registro = porEtapa.get(tarea.etapa) ?? { total: 0, completadas: 0 };
+      registro.total += 1;
+      if (tarea.estado === "completada") registro.completadas += 1;
+      porEtapa.set(tarea.etapa, registro);
+    }
+    const ordenadas = [
+      ...ETAPAS_CRONOGRAMA.filter((etapa) => porEtapa.has(etapa)),
+      ...[...porEtapa.keys()].filter(
+        (etapa) => !(ETAPAS_CRONOGRAMA as readonly string[]).includes(etapa),
+      ),
+    ];
+    return ordenadas.map((etapa) => {
+      const registro = porEtapa.get(etapa)!;
+      return {
+        etapa,
+        ...registro,
+        pct: Math.round((registro.completadas / registro.total) * 100),
+      };
+    });
+  }, [tareas]);
+
+  // El Gantt respeta también el filtro de estado (AZA: su proyección por barras)
+  const mostrarFiltroEstado = vista !== "kanban";
+  const listaPorEtapa = useMemo(() => {
+    const grupos = new Map<string, TareaComunicacion[]>();
+    for (const tarea of tareasFiltradas) {
+      const grupo = grupos.get(tarea.etapa) ?? [];
+      grupo.push(tarea);
+      grupos.set(tarea.etapa, grupo);
+    }
+    const ordenadas = [
+      ...ETAPAS_CRONOGRAMA.filter((etapa) => grupos.has(etapa)),
+      ...[...grupos.keys()].filter(
+        (etapa) => !(ETAPAS_CRONOGRAMA as readonly string[]).includes(etapa),
+      ),
+    ];
+    return ordenadas.map((etapa) => ({
+      etapa,
+      tareas: grupos.get(etapa)!,
+    }));
+  }, [tareasFiltradas]);
 
   return (
     <div className="space-y-6">
@@ -273,13 +246,6 @@ export function ComunicacionesView() {
           Nueva Tarea
         </Button>
       </div>
-
-      {/* Notificación de Éxito al Guardar */}
-      {mensajeExito && (
-        <Notice tone="success" title="Operación exitosa">
-          {mensajeExito}
-        </Notice>
-      )}
 
       {/* Tarjetas de Métricas */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -306,10 +272,10 @@ export function ComunicacionesView() {
         <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 shadow-xs">
           <div className="flex items-center gap-1 text-xs font-semibold text-primary">
             <Sparkles className="size-3.5" />
-            Primera Mesa
+            Inicio Diagnóstico
           </div>
-          <p className="mt-1 text-sm font-bold text-primary">15 Octubre</p>
-          <p className="text-2xs text-text-secondary">Hito Inaugural</p>
+          <p className="mt-1 text-sm font-bold text-primary">27 Octubre</p>
+          <p className="text-2xs text-text-secondary">(Ayer)</p>
         </div>
 
         <div className="rounded-lg border border-border bg-surface-1 p-3 shadow-xs">
@@ -317,407 +283,478 @@ export function ComunicacionesView() {
             <CheckCircle2 className="size-3.5" />
             Cierre Diagnóstico
           </div>
-          <p className="mt-1 text-sm font-bold text-text-primary">15 Diciembre</p>
+          <p className="mt-1 text-sm font-bold text-text-primary">31 Diciembre</p>
           <p className="text-2xs text-text-secondary">Entrega Oficial</p>
         </div>
       </div>
 
-      {/* Editor Integrado (Zero-Modals: Panel Inline) */}
-      {editorAbierto && (
-        <section
-          aria-label="Editor de Tarea y Fechas"
-          className="rounded-xl border-2 border-primary/40 bg-surface-1 p-5 shadow-md"
+      {/* Gestión tipo proyectos: avance global y por etapa */}
+      <div className="rounded-lg border border-border bg-surface-1 p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-sm font-semibold text-text-primary">Avance del plan</h2>
+          <p className="text-2xs text-text-secondary">
+            {reprogramadas > 0 ? `${reprogramadas} tarea(s) reprogramada(s)` : "Sin reprogramaciones activas"}
+          </p>
+        </div>
+        <div
+          role="progressbar"
+          aria-label="Avance global del plan de comunicaciones"
+          aria-valuenow={avanceGlobal}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          className="mt-3"
         >
-          <div className="flex items-center justify-between border-b border-border pb-3">
-            <div>
-              <h2 className="text-base font-bold text-text-primary">
-                {tareaSeleccionada
-                  ? `Editar Tarea y Fechas: ${tareaSeleccionada.codigo}`
-                  : "Nueva Tarea de Comunicación"}
-              </h2>
-              <p className="text-xs text-text-secondary">
-                Ajusta las fechas de inicio/fin, territorio, estado y entregables operativos.
-              </p>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={cerrarEditor}
-              aria-label="Cerrar editor"
-            >
-              <X className="size-4" />
-            </Button>
-          </div>
-
-          {errorForm && (
-            <div className="mt-3">
-              <Notice tone="danger" title="Error en la tarea">
-                {errorForm}
-              </Notice>
-            </div>
-          )}
-
-          <form onSubmit={handleGuardarForm} className="mt-4 space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-codigo">Código identificador *</Label>
-                <Input
-                  id="tc-form-codigo"
-                  value={formCodigo}
-                  onChange={(e) => setFormCodigo(e.target.value)}
-                  placeholder="Ej. TC-01"
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-estado">Estado de avance</Label>
-                <Select
-                  value={formEstado}
-                  onValueChange={(val) => setFormEstado(val as EstadoTarea)}
-                >
-                  <SelectTrigger id="tc-form-estado" aria-label="Estado de avance">
-                    <SelectValue placeholder="Seleccionar estado" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(ESTADOS_TAREA).map(([k, v]) => (
-                      <SelectItem key={k} value={k}>
-                        {v.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="tc-form-titulo">Título de la actividad *</Label>
-              <Input
-                id="tc-form-titulo"
-                value={formTitulo}
-                onChange={(e) => setFormTitulo(e.target.value)}
-                placeholder="Ej. Jornada de Campo 1: Entorno Urbano y Convivencia"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-etapa">Etapa del cronograma</Label>
-                <Select
-                  value={formEtapa}
-                  onValueChange={(val) => setFormEtapa(val)}
-                >
-                  <SelectTrigger id="tc-form-etapa" aria-label="Etapa del cronograma">
-                    <SelectValue placeholder="Seleccionar etapa" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ETAPAS_CRONOGRAMA.map((et) => (
-                      <SelectItem key={et} value={et}>
-                        {et}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-territorio">Territorio / Barrios</Label>
-                <Input
-                  id="tc-form-territorio"
-                  value={formTerritorio}
-                  onChange={(e) => setFormTerritorio(e.target.value)}
-                  placeholder="Ej. Localidad 1: San Francisco y Canapote"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-ini">Fecha de inicio (YYYY-MM-DD) *</Label>
-                <Input
-                  id="tc-form-ini"
-                  type="date"
-                  value={formFechaInicio}
-                  onChange={(e) => setFormFechaInicio(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-fin">Fecha de culminación (YYYY-MM-DD) *</Label>
-                <Input
-                  id="tc-form-fin"
-                  type="date"
-                  value={formFechaFin}
-                  onChange={(e) => setFormFechaFin(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-resp">Responsable de entrega</Label>
-                <Input
-                  id="tc-form-resp"
-                  value={formResponsable}
-                  onChange={(e) => setFormResponsable(e.target.value)}
-                  placeholder="Ej. Equipo Audiovisual y Reportería Social"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="tc-form-orden">Orden numérico</Label>
-                <Input
-                  id="tc-form-orden"
-                  type="number"
-                  value={formOrden}
-                  onChange={(e) => setFormOrden(parseInt(e.target.value, 10) || 0)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="tc-form-desc">Descripción operativa de la actividad</Label>
-              <Textarea
-                id="tc-form-desc"
-                rows={3}
-                value={formDescripcion}
-                onChange={(e) => setFormDescripcion(e.target.value)}
-                placeholder="Detalla qué se hará en campo, temas de entrevistas, reuniones o cobertura..."
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="tc-form-entregables">Entregables verificables</Label>
-              <Textarea
-                id="tc-form-entregables"
-                rows={2}
-                value={formEntregables}
-                onChange={(e) => setFormEntregables(e.target.value)}
-                placeholder="Ej. 15 fotos de alta resolución + 3 cápsulas de video con testimonios..."
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={cerrarEditor}
-                disabled={guardando}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={guardando} className="gap-2">
-                <Save className="size-4" />
-                {guardando ? "Guardando..." : "Guardar Tarea y Fechas"}
-              </Button>
-            </div>
-          </form>
-        </section>
-      )}
-
-      {/* Barra de Filtros y Búsqueda */}
-      <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-1 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          <div className="relative min-w-[220px] flex-1 sm:max-w-xs">
-            <Search className="absolute left-2.5 top-2.5 size-4 text-text-secondary" />
-            <Input
-              type="text"
-              placeholder="Buscar por código, barrio o título..."
-              className="pl-8 text-sm"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              aria-label="Buscar tareas"
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
+            <div
+              className="h-full rounded-full bg-success transition-all duration-500"
+              style={{ width: `${avanceGlobal}%` }}
             />
           </div>
-
-          <div className="flex items-center gap-1.5 min-w-[170px]">
-            <Filter className="size-4 text-text-secondary shrink-0" />
-            <Select
-              value={etapaSeleccionada}
-              onValueChange={(val) => setEtapaSeleccionada(val)}
-            >
-              <SelectTrigger aria-label="Filtrar por etapa" className="text-xs h-9">
-                <SelectValue placeholder="Todas las Etapas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todas las Etapas</SelectItem>
-                {ETAPAS_CRONOGRAMA.map((et) => (
-                  <SelectItem key={et} value={et}>
-                    {et}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="min-w-[140px]">
-            <Select
-              value={estadoSeleccionado}
-              onValueChange={(val) => setEstadoSeleccionado(val)}
-            >
-              <SelectTrigger aria-label="Filtrar por estado" className="text-xs h-9">
-                <SelectValue placeholder="Todos los Estados" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos los Estados</SelectItem>
-                {Object.entries(ESTADOS_TAREA).map(([key, val]) => (
-                  <SelectItem key={key} value={key}>
-                    {val.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <p className="mt-1.5 text-xs font-semibold text-success">
+            {completadas} de {total} actividades completadas ({avanceGlobal}%)
+          </p>
         </div>
 
-        <div className="text-xs text-text-secondary">
-          Mostrando <strong>{tareasFiltradas.length}</strong> de {total} tareas
-        </div>
+        {avancePorEtapa.length > 0 && (
+          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {avancePorEtapa.map(({ etapa, total: totalEtapa, completadas: completadasEtapa, pct }) => (
+              <li key={etapa} className="rounded-md border border-border bg-surface-2 p-3">
+                <div className="flex items-center gap-1.5">
+                  <Building2 className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="line-clamp-2 text-2xs font-medium text-text-primary" title={etapa}>
+                    {etapa}
+                  </span>
+                </div>
+                <div
+                  role="progressbar"
+                  aria-label={`Avance de ${etapa}`}
+                  aria-valuenow={pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-0"
+                >
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <p className="mt-1 text-2xs text-text-secondary">
+                  {completadasEtapa}/{totalEtapa} completadas · {pct}%
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      {/* Mensaje de Error si ocurre */}
-      {error && (
-        <Notice tone="danger" title="No se pudieron cargar las tareas">
-          {error}
-          <div className="mt-2">
-            <Button size="sm" variant="outline" onClick={cargarTareas}>
-              Reintentar
-            </Button>
+      {/* Pestañas de vista: Cronograma (lista por etapas) vs Tablero Kanban */}
+      <Tabs value={vista} onValueChange={cambiarVista}>
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          {/* Pestañas desplazables en pantallas estrechas: el scroll queda contenido
+              aquí y no desborda la página (Regla 6). */}
+          <div className="max-w-full overflow-x-auto pb-1">
+            <TabsList aria-label="Vista del plan de comunicaciones" className="w-max max-w-none">
+              <TabsTrigger value="cronograma" className="gap-1.5">
+                <ListChecks className="size-4" />
+                Lista por etapas
+              </TabsTrigger>
+              <TabsTrigger value="tarjetas" className="gap-1.5">
+                <LayoutGrid className="size-4" aria-hidden="true" />Tarjetas
+              </TabsTrigger>
+              <TabsTrigger value="kanban" className="gap-1.5">
+                <LayoutDashboard className="size-4" />
+                Tablero Kanban
+              </TabsTrigger>
+              <TabsTrigger value="gantt" className="gap-1.5">
+                <CalendarRange className="size-4" />
+                Diagrama de Gantt
+              </TabsTrigger>
+            </TabsList>
           </div>
-        </Notice>
-      )}
 
-      {/* Lista de Tareas */}
-      {cargando ? (
-        <div className="rounded-lg border border-border bg-surface-1 p-12 text-center text-sm text-text-secondary">
-          Cargando cronograma de comunicaciones de la política pública...
-        </div>
-      ) : tareasFiltradas.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface-1 p-12 text-center">
-          <p className="text-sm font-medium text-text-primary">
-            No se encontraron tareas con los filtros actuales.
-          </p>
-          <p className="mt-1 text-xs text-text-secondary">
-            Intenta cambiar los filtros de etapa o búsqueda, o crea una nueva tarea.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {tareasFiltradas.map((tarea) => {
-            const estadoCfg = ESTADOS_TAREA[tarea.estado] || ESTADOS_TAREA.pendiente;
-            const esMismoDia = tarea.fecha_inicio === tarea.fecha_fin;
+          {/* Barra de Filtros y Búsqueda */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative min-w-[200px] flex-1">
+              <Search className="absolute left-2.5 top-2.5 size-4 text-text-secondary" />
+              <Input
+                type="text"
+                placeholder="Buscar por código, barrio o título..."
+                className="pl-8 text-sm"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                aria-label="Buscar tareas"
+              />
+            </div>
 
-            return (
-              <div
-                key={tarea.id}
-                className="group relative flex flex-col justify-between gap-4 rounded-lg border border-border bg-surface-1 p-4 shadow-2xs transition hover:border-primary/40 hover:shadow-xs md:flex-row md:items-start"
+            <div className="flex items-center gap-1.5 min-w-[170px]">
+              <Filter className="size-4 shrink-0 text-text-secondary" />
+              <Select
+                value={etapaSeleccionada}
+                onValueChange={(val) => setEtapaSeleccionada(val)}
               >
-                <div className="space-y-2 flex-1 min-w-0">
-                  {/* Encabezado: Código, Etapa, Estado */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-primary">
-                      {tarea.codigo}
-                    </span>
-                    <Badge variant={estadoCfg.tone}>{estadoCfg.label}</Badge>
-                    <span className="text-xs text-text-secondary">·</span>
-                    <span className="text-xs font-medium text-text-secondary">
-                      {tarea.etapa}
-                    </span>
-                  </div>
+                <SelectTrigger aria-label="Filtrar por etapa" className="h-9 text-xs">
+                  <SelectValue placeholder="Todas las Etapas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las Etapas</SelectItem>
+                  {ETAPAS_CRONOGRAMA.map((et) => (
+                    <SelectItem key={et} value={et}>
+                      {et}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                  {/* Título */}
-                  <h3 className="text-base font-semibold text-text-primary">
-                    {tarea.titulo}
-                  </h3>
-
-                  {/* Metadatos: Fechas, Territorio, Responsable */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
-                    <div className="flex items-center gap-1 font-medium text-text-primary">
-                      <Calendar className="size-3.5 text-primary" />
-                      <span>
-                        {esMismoDia
-                          ? tarea.fecha_inicio
-                          : `${tarea.fecha_inicio} al ${tarea.fecha_fin}`}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <MapPin className="size-3.5 text-text-secondary" />
-                      <span>{tarea.territorio}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <Clock className="size-3.5 text-text-secondary" />
-                      <span>Resp: {tarea.responsable}</span>
-                    </div>
-                  </div>
-
-                  {/* Descripción */}
-                  {tarea.descripcion && (
-                    <p className="text-xs text-text-secondary leading-relaxed">
-                      {tarea.descripcion}
-                    </p>
-                  )}
-
-                  {/* Entregables */}
-                  {tarea.entregables && (
-                    <div className="flex items-start gap-1.5 rounded-md bg-surface-2 p-2.5 text-xs text-text-primary">
-                      <Package className="size-4 shrink-0 text-primary mt-0.5" />
-                      <div>
-                        <strong className="font-medium text-text-primary">Entregables: </strong>
-                        <span>{tarea.entregables}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Acciones de la Tarea */}
-                <div className="flex shrink-0 flex-row items-center gap-2 self-end md:flex-col md:items-end md:self-start">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => abrirEdicion(tarea)}
-                  >
-                    <Edit3 className="size-3.5" />
-                    Editar Tarea y Fechas
-                  </Button>
-
-                  {/* Conmutador Rápido de Estado */}
-                  <div className="flex items-center gap-1">
-                    {tarea.estado !== "completada" ? (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => cambiarEstadoRapido(tarea, "completada")}
-                        className="text-2xs text-success hover:bg-success/10"
-                        title="Marcar como completada"
-                      >
-                        ✓ Marcar lista
-                      </Button>
-                    ) : (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => cambiarEstadoRapido(tarea, "en_progreso")}
-                        className="text-2xs text-info hover:bg-info/10"
-                        title="Reabrir a en progreso"
-                      >
-                        Reabrir
-                      </Button>
-                    )}
-                  </div>
-                </div>
+            {mostrarFiltroEstado && (
+              <div className="min-w-[140px]">
+                <Select
+                  value={estadoSeleccionado}
+                  onValueChange={(val) => setEstadoSeleccionado(val)}
+                >
+                  <SelectTrigger aria-label="Filtrar por estado" className="h-9 text-xs">
+                    <SelectValue placeholder="Todos los Estados" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos los Estados</SelectItem>
+                    {Object.entries(ESTADOS_TAREA).map(([key, val]) => (
+                      <SelectItem key={key} value={key}>
+                        {val.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            );
-          })}
+            )}
+          </div>
         </div>
-      )}
+
+        {/* Mensaje de Error si ocurre */}
+        {error && (
+          <div className="mt-4">
+            <Notice tone="danger" title="No se pudieron cargar las tareas">
+              {error}
+              <div className="mt-2">
+                <Button size="sm" variant="outline" onClick={cargarTareas}>
+                  Reintentar
+                </Button>
+              </div>
+            </Notice>
+          </div>
+        )}
+
+        {cargando ? (
+          <div className="rounded-lg border border-border bg-surface-1 p-12 text-center text-sm text-text-secondary">
+            Cargando cronograma de comunicaciones de la política pública...
+          </div>
+        ) : tareas.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-border bg-surface-1 p-12 text-center">
+            <p className="text-sm font-medium text-text-primary">
+              No hay tareas registradas todavía.
+            </p>
+            <p className="mt-1 text-xs text-text-secondary">
+              Crea la primera tarea del plan de comunicaciones.
+            </p>
+          </div>
+        ) : (
+          <>
+            <TabsContent value="cronograma" className="outline-none">
+              {tareasFiltradas.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-surface-1 p-12 text-center">
+                  <p className="text-sm font-medium text-text-primary">
+                    No se encontraron tareas con los filtros actuales.
+                  </p>
+                  <p className="mt-1 text-xs text-text-secondary">
+                    Intenta cambiar los filtros de etapa o búsqueda, o crea una nueva tarea.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {listaPorEtapa.map(({ etapa, tareas: tareasEtapa }) => (
+                    <section
+                      key={etapa}
+                      aria-label={`Etapa ${etapa}`}
+                      className="rounded-lg border border-border bg-surface-1 p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h3 className="text-sm font-bold text-text-primary">{etapa}</h3>
+                        <span className="text-2xs text-text-secondary">
+                          {tareasEtapa.length} tarea(s)
+                        </span>
+                      </div>
+                      <div className="mt-3 space-y-4">
+                        {tareasEtapa.map((tarea) => (
+                          <TarjetaTarea
+                            key={tarea.id}
+                            tarea={tarea}
+                            estadoEnCambio={estadoEnCambio === tarea.id}
+                            onEditar={abrirEdicion}
+                            onCambiarEstado={cambiarEstadoRapido}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="tarjetas" className="outline-none">
+              {tareasFiltradas.length === 0 ? (
+                <p className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-text-secondary">No se encontraron tareas con los filtros actuales.</p>
+              ) : (
+                <CollectionLayout view="tarjetas" className="xl:grid-cols-2" aria-label="Tarjetas de tareas de comunicación">
+                  {tareasFiltradas.map((tarea) => (
+                    <TarjetaTarea key={tarea.id} tarea={tarea} tarjeta estadoEnCambio={estadoEnCambio === tarea.id} onEditar={abrirEdicion} onCambiarEstado={cambiarEstadoRapido} />
+                  ))}
+                </CollectionLayout>
+              )}
+            </TabsContent>
+
+            <TabsContent value="kanban" className="outline-none">
+              {tareasFiltradas.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-surface-1 p-12 text-center">
+                  <p className="text-sm font-medium text-text-primary">
+                    No se encontraron tareas con los filtros actuales.
+                  </p>
+                  <p className="mt-1 text-xs text-text-secondary">
+                    Intenta cambiar los filtros de etapa o búsqueda, o crea una nueva tarea.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                  {ESTATES_ORDER.map((estado) => {
+                    const cfg = ESTADOS_TAREA[estado];
+                    const columnas = tareasFiltradas.filter((t) => t.estado === estado);
+                    return (
+                      <div
+                        key={estado}
+                        aria-label={`Columna ${cfg.label}`}
+                        className="flex flex-col rounded-lg border border-border bg-surface-1 p-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <Badge variant={cfg.tone}>{cfg.label}</Badge>
+                          <span className="text-2xs font-semibold text-text-secondary">
+                            {columnas.length}
+                          </span>
+                        </div>
+                        <div className="mt-3 space-y-3">
+                          {columnas.length === 0 ? (
+                            <p className="rounded-md border border-dashed border-border bg-surface-2 p-3 text-center text-2xs text-text-secondary">
+                              Sin tareas en este estado
+                            </p>
+                          ) : (
+                            columnas.map((tarea) => (
+                              <div
+                                key={tarea.id}
+                                className="rounded-md border border-border bg-surface-2 p-3 shadow-2xs"
+                              >
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className="font-mono text-2xs font-bold text-primary">
+                                    {tarea.codigo}
+                                  </span>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon-sm"
+                                    onClick={() => abrirEdicion(tarea)}
+                                    aria-label={`Editar tarea ${tarea.codigo}`}
+                                  >
+                                    <Edit3 className="size-3.5" />
+                                  </Button>
+                                </div>
+                                <p className="mt-1 line-clamp-2 text-xs font-semibold text-text-primary" title={tarea.titulo}>
+                                  {tarea.titulo}
+                                </p>
+                                <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-2xs text-text-secondary">
+                                  <span title={tarea.etapa}>{etapaCorta(tarea.etapa)}</span>
+                                  <Calendar className="size-3 text-primary" aria-hidden="true" />
+                                  <span>{tarea.fecha_inicio}</span>
+                                </div>
+                                <p className="mt-1 truncate text-2xs text-text-secondary" title={tarea.responsable}>
+                                  Resp: {tarea.responsable}
+                                </p>
+                                <div className="mt-2">
+                                  <Select
+                                    value={tarea.estado}
+                                    disabled={estadoEnCambio === tarea.id}
+                                    onValueChange={(val) => cambiarEstadoRapido(tarea, val as EstadoTarea)}
+                                  >
+                                    <SelectTrigger
+                                      aria-label={`Cambiar estado de ${tarea.codigo}`}
+                                      className="h-7 text-2xs"
+                                    >
+                                      <SelectValue placeholder={cfg.label} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {ESTATES_ORDER.map((op) => (
+                                        <SelectItem key={op} value={op}>
+                                          {ESTADOS_TAREA[op].label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent value="gantt" className="outline-none">
+              {tareasFiltradas.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-surface-1 p-12 text-center">
+                  <p className="text-sm font-medium text-text-primary">
+                    No se encontraron tareas con los filtros actuales.
+                  </p>
+                  <p className="mt-1 text-xs text-text-secondary">
+                    Intenta cambiar los filtros de etapa o búsqueda, o crea una nueva tarea.
+                  </p>
+                </div>
+              ) : (
+                <GanttCronograma tareas={tareasFiltradas} onAbrir={abrirEdicion} />
+              )}
+            </TabsContent>
+          </>
+        )}
+      </Tabs>
+    </div>
+  );
+}
+
+/** Resumen corto de la etapa para el tablero: "Etapa 3: Despliegue..." → "Etapa 3". */
+function etapaCorta(etapa: string): string {
+  const match = etapa.match(/Etapa\s+(\d+)/);
+  return match ? `Etapa ${match[1]}` : etapa;
+}
+
+interface PropsTarjeta {
+  tarjeta?: boolean;
+  tarea: TareaComunicacion;
+  estadoEnCambio: boolean;
+  onEditar: (tarea: TareaComunicacion) => void;
+  onCambiarEstado: (tarea: TareaComunicacion, estado: EstadoTarea) => void;
+}
+
+function TarjetaTarea({ tarea, tarjeta = false, estadoEnCambio, onEditar, onCambiarEstado }: PropsTarjeta) {
+  const estadoCfg = ESTADOS_TAREA[tarea.estado] || ESTADOS_TAREA.pendiente;
+  const esMismoDia = tarea.fecha_inicio === tarea.fecha_fin;
+
+  return (
+    <div className={`group relative flex flex-col justify-between gap-4 rounded-lg border border-border bg-surface-0 p-4 shadow-2xs transition hover:border-primary/40 hover:shadow-xs ${tarjeta ? "" : "md:flex-row md:items-start"}`}>
+      <div className="flex-1 min-w-0 space-y-2">
+        {/* Encabezado: Código, Etapa, Estado */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-xs font-bold text-primary">{tarea.codigo}</span>
+          <Badge variant={estadoCfg.tone}>{estadoCfg.label}</Badge>
+          <span className="text-xs text-text-secondary">·</span>
+          <span className="text-xs font-medium text-text-secondary">{tarea.etapa}</span>
+        </div>
+
+        {/* Título */}
+        <h3 className="text-base font-semibold text-text-primary">{tarea.titulo}</h3>
+
+        {/* Metadatos: Fechas, Territorio, Responsable */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary">
+          <div className="flex items-center gap-1 font-medium text-text-primary">
+            <Calendar className="size-3.5 text-primary" />
+            <span>
+              {esMismoDia ? tarea.fecha_inicio : `${tarea.fecha_inicio} al ${tarea.fecha_fin}`}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <MapPin className="size-3.5 text-text-secondary" />
+            <span>{tarea.territorio}</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Clock className="size-3.5 text-text-secondary" />
+            <span>Resp: {tarea.responsable}</span>
+          </div>
+        </div>
+
+        {/* Descripción */}
+        {tarea.descripcion && (
+          <p className="text-xs text-text-secondary leading-relaxed">{tarea.descripcion}</p>
+        )}
+
+        {/* Entregables */}
+        {tarea.entregables && (
+          <div className="flex items-start gap-1.5 rounded-md bg-surface-2 p-2.5 text-xs text-text-primary">
+            <Package className="size-4 shrink-0 text-primary mt-0.5" />
+            <div>
+              <strong className="font-medium text-text-primary">Entregables: </strong>
+              <span>{tarea.entregables}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Acciones de la Tarea */}
+      <div className={`flex shrink-0 flex-wrap items-center gap-2 ${tarjeta ? "mt-auto" : "self-end md:flex-col md:items-end md:self-start"}`}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5 text-xs"
+          onClick={() => onEditar(tarea)}
+        >
+          <Edit3 className="size-3.5" />
+          Editar Tarea y Fechas
+        </Button>
+
+        {/* Conmutador Rápido de Estado (tipo proyectos) */}
+        <div className="flex flex-wrap items-center gap-1">
+          <Select
+            value={tarea.estado}
+            disabled={estadoEnCambio}
+            onValueChange={(val) => onCambiarEstado(tarea, val as EstadoTarea)}
+          >
+            <SelectTrigger
+              aria-label={`Cambiar estado de ${tarea.codigo}`}
+              className="h-9 text-xs"
+            >
+              <SelectValue placeholder={estadoCfg.label} />
+            </SelectTrigger>
+            <SelectContent>
+              {ESTATES_ORDER.map((op) => (
+                <SelectItem key={op} value={op}>
+                  {ESTADOS_TAREA[op].label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {tarea.estado !== "completada" ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={estadoEnCambio}
+              onClick={() => onCambiarEstado(tarea, "completada")}
+              className="text-2xs text-success hover:bg-success/10"
+              title="Marcar como completada"
+            >
+              ✓ Marcar lista
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={estadoEnCambio}
+              onClick={() => onCambiarEstado(tarea, "en_progreso")}
+              className="text-2xs text-info hover:bg-info/10"
+              title="Reabrir a en progreso"
+            >
+              Reabrir
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

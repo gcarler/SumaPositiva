@@ -8,15 +8,14 @@ Revises: 0055_ingesta_indicadores_reales
 Create Date: 2026-10-11 14:30:00.000000
 """
 
-from typing import Sequence, Union
-from alembic import op
-from sqlalchemy import text
+from collections.abc import Sequence
 
+from alembic import op
 
 revision: str = "0056_radicacion_notif"
-down_revision: Union[str, Sequence[str], None] = "0055_ingesta_indicadores_reales"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0055_ingesta_indicadores_reales"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

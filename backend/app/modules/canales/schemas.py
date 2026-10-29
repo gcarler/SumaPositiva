@@ -2,6 +2,7 @@
 
 import uuid
 from typing import Any, Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -35,7 +36,7 @@ class WhatsAppMessage(BaseModel):
     """Estructura de mensaje individual de Meta WhatsApp Cloud API."""
 
     from_: str = Field(alias="from", description="Número de teléfono remitente en formato E.164")
-    id: str = Field(..., description="ID único del mensaje de WhatsApp")
+    id: str = Field(..., min_length=1, max_length=300, description="ID único del mensaje de WhatsApp")
     timestamp: str | None = None
     type: str = Field(default="text", description="text, audio, image, document, etc.")
     text: WhatsAppTextMessage | None = None
@@ -84,7 +85,7 @@ class WhatsAppChange(BaseModel):
 class WhatsAppEntry(BaseModel):
     """Entrada de webhook de Meta."""
 
-    id: str
+    id: str = Field(min_length=1, max_length=150)
     changes: list[WhatsAppChange] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="allow")
@@ -101,6 +102,8 @@ class WhatsAppWebhookPayload(BaseModel):
 
 class WhatsAppSimulacionEntrante(BaseModel):
     """Esquema para simulación directa de pruebas y auditoría forense."""
+
+    model_config = ConfigDict(extra="forbid")
 
     telefono_remitente: str = Field(
         ...,
@@ -159,3 +162,21 @@ class WhatsAppIngestaRespuesta(BaseModel):
         ...,
         description="Mensaje institucional generado para el acuse de recibo en WhatsApp",
     )
+
+
+class WhatsAppRecepcionRespuesta(BaseModel):
+    """HTTP200 acredita recepción durable; el resultado se obtiene del consumidor."""
+
+    status: Literal["received"] = "received"
+    mensajes_recibidos: int
+    mensajes_nuevos: int
+    mensajes_repetidos: int
+    descripcion: str = "Recepción durable confirmada; radicación pendiente de procesamiento por mensaje."
+
+
+class WhatsAppProcesamientoResultado(BaseModel):
+    recepcion_id: uuid.UUID
+    estado: Literal["procesado", "rechazado", "error", "reclamo_perdido"]
+    intentos: int
+    codigo_radicado: str | None = None
+    error_codigo: str | None = None

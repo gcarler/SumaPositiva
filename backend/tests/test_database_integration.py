@@ -1,5 +1,4 @@
 import asyncio
-import os
 import uuid
 from pathlib import Path
 
@@ -7,7 +6,6 @@ import pytest
 from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import command
@@ -17,17 +15,33 @@ from app.main import create_app
 pytestmark = pytest.mark.integration
 
 
-def test_migrations_and_readiness_on_postgres(monkeypatch):
-    database_url = os.getenv("POLIS_TEST_DATABASE_URL")
-    if not database_url:
-        pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva de pruebas")
-    if not (make_url(database_url).database or "").startswith("polis_test"):
-        pytest.fail("La base de pruebas debe llamarse polis_test o comenzar por polis_test")
-
+@pytest.mark.migration
+def test_migrations_and_readiness_on_postgres(database_url, monkeypatch):
     monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
     config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     command.upgrade(config, "head")
     command.check(config)
+
+    async def reasignar_admins_de_prueba() -> None:
+        engine = create_async_engine(database_url)
+        try:
+            async with engine.begin() as connection:
+                await connection.execute(
+                    text("""
+                        UPDATE autenticacion.usuarios
+                        SET rol_id = (SELECT id FROM autenticacion.roles WHERE codigo='ciudadano')
+                        WHERE rol_id = (
+                            SELECT id FROM autenticacion.roles
+                            WHERE codigo='administrador_identidades'
+                        )
+                    """)
+                )
+        finally:
+            await engine.dispose()
+
+    # Este ensayo reconstruye solo la base dedicada de migraciones; nunca
+    # reutiliza ni degrada cuentas/contactos creados por otras pruebas.
+    asyncio.run(reasignar_admins_de_prueba())
     # Simular registros anteriores a la corrección de integridad.
     command.downgrade(config, "0015_poligonos_geovisor")
     mesa_id = uuid.uuid4()
@@ -90,6 +104,7 @@ def test_migrations_and_readiness_on_postgres(monkeypatch):
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     with TestClient(create_app(settings)) as client:
         assert client.get("/api/v1/health/ready").status_code == 200
+        asyncio.run(reasignar_admins_de_prueba())
         command.downgrade(config, "base")
         response = client.get("/api/v1/health/ready")
         assert response.status_code == 503

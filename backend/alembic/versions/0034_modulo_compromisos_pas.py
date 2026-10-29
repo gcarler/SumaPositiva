@@ -16,8 +16,9 @@ Create Date: 2026-10-03 23:50:00.000000
 import json
 import uuid
 
-from alembic import op
 from sqlalchemy import text
+
+from alembic import op
 
 revision = "0034_compromisos_pas"
 down_revision = "0033_conservar_respuestas"
@@ -316,7 +317,9 @@ def upgrade() -> None:
         );
     """)
     op.execute("CREATE INDEX IF NOT EXISTS idx_compromisos_codigo ON seguimiento.compromisos_pas (codigo);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_compromisos_entidad ON seguimiento.compromisos_pas (entidad_responsable);")
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_compromisos_entidad ON seguimiento.compromisos_pas (entidad_responsable);"
+    )
     op.execute("CREATE INDEX IF NOT EXISTS idx_compromisos_estado ON seguimiento.compromisos_pas (estado);")
 
     # 3. Asignar permisos en autenticacion.roles

@@ -10,7 +10,7 @@ from app.modules.compromisos.pdt_diagnostico_seguridad_humana_8planes import (
 )
 
 
-def test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas() -> None:
+def test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas(corpus_analitica) -> None:
     """Verifica el embudo 3 etapas (4637 metas en bd_csh) y suma exacta de los 8 planes."""
     res = construir_diagnostico_seguridad_humana_8planes("TODOS")
 
@@ -26,10 +26,7 @@ def test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas() -> None:
     assert e1 == 4637
     assert embudo_sec3["etapa_1_universo_total_metas"] == 4637
     assert 4637 >= e2 >= e3 > 0
-    assert (
-        embudo_res["etapa_1_metas_producto"] + embudo_res["etapa_1_metas_resultado_bienestar"]
-        == 4637
-    )
+    assert embudo_res["etapa_1_metas_producto"] + embudo_res["etapa_1_metas_resultado_bienestar"] == 4637
 
     evolucion = res["diagnostico_macro_8_planes"]["evolucion_cuatrienial_8_planes"]
     assert len(evolucion) == 8
@@ -40,7 +37,7 @@ def test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas() -> None:
     assert sum(row["etapa_3_nucleo_seguridad_humana_metas"] for row in evolucion) == e3
 
 
-def test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos() -> None:
+def test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos(corpus_analitica) -> None:
     """Verifica monografias_por_plan, Top 30 secretarias y embudo x vinculo."""
     res = construir_diagnostico_seguridad_humana_8planes("TODOS")
     macro = res["diagnostico_macro_8_planes"]
@@ -50,10 +47,7 @@ def test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos() -> 
     assert [m["codigo_plan"] for m in monografias] == list(PLANES_8_ORDEN)
     for mono in monografias:
         assert len(mono["desglose_lineas_estrategicas"]) >= 1
-        assert (
-            sum(x["metas_totales"] for x in mono["desglose_lineas_estrategicas"])
-            == (mono["metas_totales"])
-        )
+        assert sum(x["metas_totales"] for x in mono["desglose_lineas_estrategicas"]) == (mono["metas_totales"])
         assert len(mono["distribucion_7_dimensiones_en_plan"]) == 7
         parrafos = mono["analisis_doctrinal_e_institucional_extenso"]
         assert len(parrafos) == 4
@@ -75,16 +69,11 @@ def test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos() -> 
     assert len(matriz_vinculos) == 8
     assert sum(r["etapa_1_universo_metas"] for r in matriz_vinculos) == 4637
     for r in matriz_vinculos:
-        suma_v = (
-            r["DIRECTO_CODIGO"]
-            + r["HIBRIDO_LINEA_SEMANTICO"]
-            + r["SEMANTICO_PA"]
-            + r["SOLO_META_PDT"]
-        )
+        suma_v = r["DIRECTO_CODIGO"] + r["HIBRIDO_LINEA_SEMANTICO"] + r["SEMANTICO_PA"] + r["SOLO_META_PDT"]
         assert suma_v == r["etapa_1_universo_metas"]
 
 
-def test_7_dimensiones_v2_con_10_bloques_profundos_y_metas_reales_bd_csh() -> None:
+def test_7_dimensiones_v2_con_10_bloques_profundos_y_metas_reales_bd_csh(corpus_analitica) -> None:
     """Verifica las 7 dimensiones (4.1 a 4.7) y sus 10 bloques profundos V2."""
     res = construir_diagnostico_seguridad_humana_8planes("TODOS")
 
@@ -135,10 +124,7 @@ def test_7_dimensiones_v2_con_10_bloques_profundos_y_metas_reales_bd_csh() -> No
         assert len(sispt_dim["por_formula_indicador"]) == 4
         assert len(sispt_dim["por_tipo_actividad_pa"]) == 4
         assert len(sispt_dim["por_rango_semaforo_sispt"]) == 4
-        assert (
-            sum(x["conteo_metas"] for x in sispt_dim["por_formula_indicador"])
-            == dim["total_metas_nucleo"]
-        )
+        assert sum(x["conteo_metas"] for x in sispt_dim["por_formula_indicador"]) == dim["total_metas_nucleo"]
 
         top_25 = dim["catalogo_metas_mayor_presupuesto"]
         top_15 = dim["catalogo_metas_criticas_rezagadas"]
@@ -169,10 +155,7 @@ def test_secciones_ii_v_y_vi_dea_lisa_18_territorios_isri_y_clasificador() -> No
     res = construir_diagnostico_seguridad_humana_8planes("TODOS")
 
     marco = res["marco_teorico_normativo_metodologico"]
-    assert (
-        "Resolución 66/290"
-        in marco["paradigma_seguridad_humana"]["instrumentos_normativos_vinculantes"][1]
-    )
+    assert "Resolución 66/290" in marco["paradigma_seguridad_humana"]["instrumentos_normativos_vinculantes"][1]
 
     avanzado = res["analisis_avanzado_dea_espacial_series"]
     lisa = avanzado["econometria_espacial_lisa"]

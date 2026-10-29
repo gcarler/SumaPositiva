@@ -31,17 +31,15 @@ Antes de remover las columnas fisicas, los datos reales no redundantes
 se migran al campo canonico JSONB `metadatos`, garantizando cero perdida de informacion.
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 from alembic import op
-import sqlalchemy as sa
-
 
 # revision identifiers, used by Alembic.
 revision: str = "0046_depurar_columnas_mesas"
-down_revision: Union[str, None] = "0045_agendas_mesa_id"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "0045_agendas_mesa_id"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -112,16 +110,24 @@ def downgrade() -> None:
     # Paso 1: Recrear las 14 columnas legadas si no existen
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS descripcion TEXT;")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS coordenadas geometry(Point, 4326);")
-    op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS dimension_principal_id UUID REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL;")
-    op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS enfoque_poblacional VARCHAR(50) DEFAULT 'GENERAL';")
+    op.execute(
+        "ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS dimension_principal_id UUID REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL;"
+    )
+    op.execute(
+        "ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS enfoque_poblacional VARCHAR(50) DEFAULT 'GENERAL';"
+    )
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS es_consulta_previa BOOLEAN DEFAULT false;")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS enlace_streaming VARCHAR(255);")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS aforo_presencial INTEGER DEFAULT 150;")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS facilitador_responsable VARCHAR(150);")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS relator_comunitario VARCHAR(150);")
-    op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS total_asistentes_presenciales INTEGER DEFAULT 0;")
+    op.execute(
+        "ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS total_asistentes_presenciales INTEGER DEFAULT 0;"
+    )
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS total_asistentes_digitales INTEGER DEFAULT 0;")
-    op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS total_propuestas_producidas INTEGER DEFAULT 0;")
+    op.execute(
+        "ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS total_propuestas_producidas INTEGER DEFAULT 0;"
+    )
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS acta_pdf_url VARCHAR(255);")
     op.execute("ALTER TABLE mesas_trabajo.mesas ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}'::jsonb;")
 

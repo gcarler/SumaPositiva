@@ -1,0 +1,361 @@
+{
+  "fecha_utc": "2026-10-26T03:17:39.332499+00:00",
+  "estado": "resolver_validacion_dirigida_superada_pendiente_revision_independiente143",
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "31",
+    "time": "0.077",
+    "timestamp": "2026-10-26T03:15:58.641607+00:00",
+    "hostname": "srv2006133"
+  },
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "hashes": {
+    "backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py": "9c0c25de1307f2d0d7f2e596b41ba8743067cd3fc11f49e88aba9037e2eabfab",
+    "backend/tests/test_identidad_territorial_catalogo_polis.py": "a41ca1937f863149de7eff52532871504528725de887bed264daf9b08bb69a0c"
+  },
+  "cotejos_reales": [
+    {
+      "nivel": "municipal",
+      "estado": "encontrado",
+      "codigo_entidad": "13001",
+      "codigo_departamento": "13",
+      "nombre_declarado": null,
+      "registro_catalogo": {
+        "dpto": "13",
+        "dpto_nombre": "BOLÍVAR",
+        "mpio": "001",
+        "concat": "13001",
+        "tipo": "MUNICIPIO",
+        "nombre": "CARTAGENA DE INDIAS",
+        "anio_version": 2025,
+        "anio_creacion": "1599"
+      },
+      "nombre_catalogo": "CARTAGENA DE INDIAS",
+      "departamento_catalogo": {
+        "dpto": "13",
+        "nombre": "BOLÍVAR",
+        "anio_version": 2025,
+        "anio_creacion": 1886,
+        "acto_administrativo": "Constitucion Politica de 1886"
+      },
+      "concordancia_departamento": true,
+      "detalle_estado": [
+        "Codigo departamental declarado coincide con el propietario del registro",
+        "Registro tipo MUNICIPIO en la fuente; sin certificar estatus juridico",
+        "anio_version del registro: 2025; metadato de registro MGN2025, distinto de la fecha de adquisicion del catalogo"
+      ],
+      "metadatos_catalogo": {
+        "esquema": "polis.catalogo_identity_territorial.v1",
+        "vintage_declarado_por_fuente": "MGN 2025",
+        "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+        "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+        "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "bytes_catalogo": 277494,
+        "origen": {
+          "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+          "capas_consultadas": {
+            "municipios": {
+              "id": 317,
+              "nombre": "Municipio",
+              "conteo_esperado": 1122
+            },
+            "departamentos": {
+              "id": 319,
+              "nombre": "Departamento",
+              "conteo_esperado": 33
+            }
+          },
+          "sha256_respuestas": {
+            "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+            "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+          },
+          "niveles_no_consultados": [
+            "305 Centros Poblados"
+          ],
+          "metadato_http_grupo": "ver originales/peticiones_http.json"
+        },
+        "limites_declarados": [
+          "vintage 2025 no prueba corte 2026 en todas las provincias",
+          "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+          "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+          "geometria no consultada; poblacion no incluida ni certificada"
+        ]
+      }
+    },
+    {
+      "nivel": "municipal",
+      "estado": "encontrado",
+      "codigo_entidad": "13673",
+      "codigo_departamento": "13",
+      "nombre_declarado": null,
+      "registro_catalogo": {
+        "dpto": "13",
+        "dpto_nombre": "BOLÍVAR",
+        "mpio": "673",
+        "concat": "13673",
+        "tipo": "MUNICIPIO",
+        "nombre": "SANTA CATALINA",
+        "anio_version": 2025,
+        "anio_creacion": "1772"
+      },
+      "nombre_catalogo": "SANTA CATALINA",
+      "departamento_catalogo": {
+        "dpto": "13",
+        "nombre": "BOLÍVAR",
+        "anio_version": 2025,
+        "anio_creacion": 1886,
+        "acto_administrativo": "Constitucion Politica de 1886"
+      },
+      "concordancia_departamento": true,
+      "detalle_estado": [
+        "Codigo departamental declarado coincide con el propietario del registro",
+        "Registro tipo MUNICIPIO en la fuente; sin certificar estatus juridico",
+        "anio_version del registro: 2025; metadato de registro MGN2025, distinto de la fecha de adquisicion del catalogo"
+      ],
+      "metadatos_catalogo": {
+        "esquema": "polis.catalogo_identity_territorial.v1",
+        "vintage_declarado_por_fuente": "MGN 2025",
+        "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+        "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+        "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "bytes_catalogo": 277494,
+        "origen": {
+          "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+          "capas_consultadas": {
+            "municipios": {
+              "id": 317,
+              "nombre": "Municipio",
+              "conteo_esperado": 1122
+            },
+            "departamentos": {
+              "id": 319,
+              "nombre": "Departamento",
+              "conteo_esperado": 33
+            }
+          },
+          "sha256_respuestas": {
+            "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+            "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+          },
+          "niveles_no_consultados": [
+            "305 Centros Poblados"
+          ],
+          "metadato_http_grupo": "ver originales/peticiones_http.json"
+        },
+        "limites_declarados": [
+          "vintage 2025 no prueba corte 2026 en todas las provincias",
+          "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+          "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+          "geometria no consultada; poblacion no incluida ni certificada"
+        ]
+      }
+    },
+    {
+      "nivel": "municipal",
+      "estado": "encontrado",
+      "codigo_entidad": "23660",
+      "codigo_departamento": "23",
+      "nombre_declarado": null,
+      "registro_catalogo": {
+        "dpto": "23",
+        "dpto_nombre": "CÓRDOBA",
+        "mpio": "660",
+        "concat": "23660",
+        "tipo": "MUNICIPIO",
+        "nombre": "SAHAGÚN",
+        "anio_version": 2025,
+        "anio_creacion": "1834"
+      },
+      "nombre_catalogo": "SAHAGÚN",
+      "departamento_catalogo": {
+        "dpto": "23",
+        "nombre": "CÓRDOBA",
+        "anio_version": 2025,
+        "anio_creacion": 1951,
+        "acto_administrativo": "Ley 9 del 18 de Diciembre de 1951"
+      },
+      "concordancia_departamento": true,
+      "detalle_estado": [
+        "Codigo departamental declarado coincide con el propietario del registro",
+        "Registro tipo MUNICIPIO en la fuente; sin certificar estatus juridico",
+        "anio_version del registro: 2025; metadato de registro MGN2025, distinto de la fecha de adquisicion del catalogo"
+      ],
+      "metadatos_catalogo": {
+        "esquema": "polis.catalogo_identity_territorial.v1",
+        "vintage_declarado_por_fuente": "MGN 2025",
+        "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+        "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+        "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "bytes_catalogo": 277494,
+        "origen": {
+          "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+          "capas_consultadas": {
+            "municipios": {
+              "id": 317,
+              "nombre": "Municipio",
+              "conteo_esperado": 1122
+            },
+            "departamentos": {
+              "id": 319,
+              "nombre": "Departamento",
+              "conteo_esperado": 33
+            }
+          },
+          "sha256_respuestas": {
+            "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+            "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+          },
+          "niveles_no_consultados": [
+            "305 Centros Poblados"
+          ],
+          "metadato_http_grupo": "ver originales/peticiones_http.json"
+        },
+        "limites_declarados": [
+          "vintage 2025 no prueba corte 2026 en todas las provincias",
+          "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+          "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+          "geometria no consultada; poblacion no incluida ni certificada"
+        ]
+      }
+    },
+    {
+      "nivel": "municipal",
+      "estado": "encontrado",
+      "codigo_entidad": "11001",
+      "codigo_departamento": "11",
+      "nombre_declarado": null,
+      "registro_catalogo": {
+        "dpto": "11",
+        "dpto_nombre": "BOGOTÁ, D.C.",
+        "mpio": "001",
+        "concat": "11001",
+        "tipo": "MUNICIPIO",
+        "nombre": "BOGOTÁ, D.C.",
+        "anio_version": 2025,
+        "anio_creacion": "1538"
+      },
+      "nombre_catalogo": "BOGOTÁ, D.C.",
+      "departamento_catalogo": {
+        "dpto": "11",
+        "nombre": "BOGOTÁ, D.C.",
+        "anio_version": 2025,
+        "anio_creacion": 1538,
+        "acto_administrativo": "Constitucion Politica de 1886"
+      },
+      "concordancia_departamento": true,
+      "detalle_estado": [
+        "Codigo departamental declarado coincide con el propietario del registro",
+        "Registro tipo MUNICIPIO en la fuente; sin certificar estatus juridico",
+        "anio_version del registro: 2025; metadato de registro MGN2025, distinto de la fecha de adquisicion del catalogo"
+      ],
+      "metadatos_catalogo": {
+        "esquema": "polis.catalogo_identity_territorial.v1",
+        "vintage_declarado_por_fuente": "MGN 2025",
+        "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+        "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+        "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "bytes_catalogo": 277494,
+        "origen": {
+          "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+          "capas_consultadas": {
+            "municipios": {
+              "id": 317,
+              "nombre": "Municipio",
+              "conteo_esperado": 1122
+            },
+            "departamentos": {
+              "id": 319,
+              "nombre": "Departamento",
+              "conteo_esperado": 33
+            }
+          },
+          "sha256_respuestas": {
+            "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+            "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+          },
+          "niveles_no_consultados": [
+            "305 Centros Poblados"
+          ],
+          "metadato_http_grupo": "ver originales/peticiones_http.json"
+        },
+        "limites_declarados": [
+          "vintage 2025 no prueba corte 2026 en todas las provincias",
+          "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+          "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+          "geometria no consultada; poblacion no incluida ni certificada"
+        ]
+      }
+    },
+    {
+      "nivel": "departamental",
+      "estado": "encontrado",
+      "codigo_entidad": "11",
+      "codigo_departamento": null,
+      "nombre_declarado": null,
+      "registro_catalogo": {
+        "dpto": "11",
+        "nombre": "BOGOTÁ, D.C.",
+        "anio_version": 2025,
+        "anio_creacion": 1538,
+        "acto_administrativo": "Constitucion Politica de 1886"
+      },
+      "nombre_catalogo": "BOGOTÁ, D.C.",
+      "departamento_catalogo": {
+        "dpto": "11",
+        "nombre": "BOGOTÁ, D.C.",
+        "anio_version": 2025,
+        "anio_creacion": 1538,
+        "acto_administrativo": "Constitucion Politica de 1886"
+      },
+      "concordancia_departamento": null,
+      "detalle_estado": [
+        "Resolucion departamental sin padre declarado; sin inferir capital"
+      ],
+      "metadatos_catalogo": {
+        "esquema": "polis.catalogo_identity_territorial.v1",
+        "vintage_declarado_por_fuente": "MGN 2025",
+        "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+        "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+        "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "bytes_catalogo": 277494,
+        "origen": {
+          "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+          "capas_consultadas": {
+            "municipios": {
+              "id": 317,
+              "nombre": "Municipio",
+              "conteo_esperado": 1122
+            },
+            "departamentos": {
+              "id": 319,
+              "nombre": "Departamento",
+              "conteo_esperado": 33
+            }
+          },
+          "sha256_respuestas": {
+            "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+            "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+          },
+          "niveles_no_consultados": [
+            "305 Centros Poblados"
+          ],
+          "metadato_http_grupo": "ver originales/peticiones_http.json"
+        },
+        "limites_declarados": [
+          "vintage 2025 no prueba corte 2026 en todas las provincias",
+          "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+          "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+          "geometria no consultada; poblacion no incluida ni certificada"
+        ]
+      }
+    }
+  ],
+  "SQL": false,
+  "red": false,
+  "promocion_banco": false,
+  "ficha": "R2_en_curso_138_139"
+}

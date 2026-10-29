@@ -17,14 +17,20 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from sembrar_actores_demo import (
     resolver_database_url as resolver_actores_url,
+)
+from sembrar_actores_demo import (
     validar_bd_destino as validar_actores_bd,
 )
 from sembrar_compromisos_demo import (
     resolver_database_url as resolver_compromisos_url,
+)
+from sembrar_compromisos_demo import (
     validar_bd_destino as validar_compromisos_bd,
 )
 from sembrar_mediciones_demo import (
     resolver_database_url as resolver_mediciones_url,
+)
+from sembrar_mediciones_demo import (
     validar_bd_destino as validar_mediciones_bd,
 )
 

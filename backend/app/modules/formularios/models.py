@@ -54,18 +54,12 @@ class FormularioConsulta(Base):
         ForeignKey("geodatos.territorios.id", ondelete="SET NULL"),
         nullable=True,
     )
-    estado: Mapped[str] = mapped_column(
-        String(50), server_default=text("'PUBLICADO'"), nullable=False
-    )
+    estado: Mapped[str] = mapped_column(String(50), server_default=text("'PUBLICADO'"), nullable=False)
     esquema_preguntas: Mapped[list[dict[str, Any]]] = mapped_column(
         JSONB, server_default=text("'[]'::jsonb"), nullable=False
     )
-    enfoque_diferencial_habilitado: Mapped[bool] = mapped_column(
-        Boolean, server_default=text("true"), nullable=False
-    )
-    permite_evidencias: Mapped[bool] = mapped_column(
-        Boolean, server_default=text("true"), nullable=False
-    )
+    enfoque_diferencial_habilitado: Mapped[bool] = mapped_column(Boolean, server_default=text("true"), nullable=False)
+    permite_evidencias: Mapped[bool] = mapped_column(Boolean, server_default=text("true"), nullable=False)
     fecha_cierre: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
@@ -109,19 +103,11 @@ class RespuestaFormulario(Base):
         ForeignKey("geodatos.territorios.id", ondelete="SET NULL"),
         nullable=True,
     )
-    datos_enfoque: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
-    datos_respuesta: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
-    evidencias: Mapped[list[dict[str, Any]]] = mapped_column(
-        JSONB, server_default=text("'[]'::jsonb"), nullable=False
-    )
+    datos_enfoque: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
+    datos_respuesta: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
+    evidencias: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, server_default=text("'[]'::jsonb"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
 
-    formulario: Mapped["FormularioConsulta"] = relationship(
-        "FormularioConsulta", back_populates="respuestas"
-    )
+    formulario: Mapped["FormularioConsulta"] = relationship("FormularioConsulta", back_populates="respuestas")

@@ -8,10 +8,27 @@ import struct
 import time
 from urllib.parse import quote
 
-from cryptography.fernet import Fernet
 import qrcode
+from cryptography.fernet import Fernet
 
 from app.core.config import Settings
+
+
+def rol_exige_mfa(codigo_rol: str, settings: Settings) -> bool:
+    roles = {rol.strip().lower() for rol in (settings.mfa_roles_exigidos or "").split(",") if rol.strip()}
+    return codigo_rol.lower() in roles
+
+
+def acreditacion_sesion_mfa(factor, sesion_id, settings: Settings) -> str:
+    """Acreditación del servidor ligada a cuenta, sesión y versión del factor.
+
+    Cambiar el secreto, reactivar o sustituir el factor invalida la acreditación.
+    Ni los claims del JWT ni los metadatos de una sesión anónima la conceden.
+    """
+    contenido = ":".join(
+        [str(factor.usuario_id), str(sesion_id), str(factor.id), str(factor.activado_en), factor.secreto_cifrado]
+    )
+    return hmac.new(settings.ip_salt.encode(), contenido.encode(), hashlib.sha256).hexdigest()
 
 
 def obtener_cifrador_mfa(settings: Settings) -> Fernet:
@@ -19,9 +36,7 @@ def obtener_cifrador_mfa(settings: Settings) -> Fernet:
     if settings.mfa_encryption_key and len(settings.mfa_encryption_key.strip()) > 0:
         return Fernet(settings.mfa_encryption_key.strip().encode("ascii"))
     if settings.environment == "production" or bool((settings.mfa_roles_exigidos or "").strip()):
-        raise RuntimeError(
-            "POLIS_MFA_ENCRYPTION_KEY es obligatoria en producción o cuando se exige MFA por rol."
-        )
+        raise RuntimeError("POLIS_MFA_ENCRYPTION_KEY es obligatoria en producción o cuando se exige MFA por rol.")
     # Fallback seguro determinístico para pruebas y entornos locales sin MFA en producción
     digest = hashlib.sha256(settings.jwt_secret_key.encode("utf-8")).digest()
     clave_fernet = base64.urlsafe_b64encode(digest)
@@ -53,14 +68,7 @@ def construir_uri_totp(
 ) -> str:
     """Construye la URI estandarizada otpauth:// para clientes TOTP."""
     etiqueta = f"{quote(emisor)}:{quote(correo)}"
-    return (
-        f"otpauth://totp/{etiqueta}?"
-        f"secret={secreto_b32}&"
-        f"issuer={quote(emisor)}&"
-        f"algorithm=SHA1&"
-        f"digits=6&"
-        f"period=30"
-    )
+    return f"otpauth://totp/{etiqueta}?secret={secreto_b32}&issuer={quote(emisor)}&algorithm=SHA1&digits=6&period=30"
 
 
 def generar_qr_code_data_uri(otpauth_uri: str) -> str:
@@ -132,9 +140,7 @@ def verificar_codigo_totp(
         paso_candidato = paso_actual + delta
         if ultimo_paso is not None and paso_candidato <= ultimo_paso:
             continue
-        codigo_esperado = calcular_codigo_totp(
-            secreto_b32, timestamp=paso_candidato * intervalo, intervalo=intervalo
-        )
+        codigo_esperado = calcular_codigo_totp(secreto_b32, timestamp=paso_candidato * intervalo, intervalo=intervalo)
         if hmac.compare_digest(codigo_esperado, codigo_limpio):
             return True, paso_candidato
     return False, None
@@ -179,7 +185,7 @@ def normalizar_codigo_recuperacion(codigo: str) -> str:
 def hashear_codigo_recuperacion(codigo: str, salt: str = "") -> str:
     """Genera hash criptográfico SHA-256 para almacenamiento en reposo."""
     codigo_norm = normalizar_codigo_recuperacion(codigo)
-    return hashlib.sha256(f"{salt}:{codigo_norm}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{salt}:{codigo_norm}".encode()).hexdigest()
 
 
 def verificar_y_consumir_codigo_recuperacion(

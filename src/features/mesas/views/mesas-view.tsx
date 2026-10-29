@@ -242,13 +242,15 @@ export function MesasView() {
                   (mesa.plenaria?.acuerdos && mesa.plenaria.acuerdos.trim().length > 0) ||
                   mesa.estado === "cerrada";
 
-                let fechaFormateada = mesa.fecha;
-                try {
-                  const d = new Date(`${mesa.fecha.slice(0, 10)}T12:00:00`);
-                  if (!isNaN(d.getTime())) {
-                    fechaFormateada = format(d, "d 'de' MMMM, yyyy", { locale: es });
-                  }
-                } catch {}
+                let fechaFormateada = "Por definir";
+                if (mesa.fecha && mesa.fecha !== "Por definir") {
+                  try {
+                    const d = new Date(mesa.fecha.includes("T") ? mesa.fecha : `${mesa.fecha.slice(0, 10)}T12:00:00`);
+                    if (!isNaN(d.getTime())) {
+                      fechaFormateada = format(d, "d 'de' MMMM, yyyy", { locale: es });
+                    }
+                  } catch {}
+                }
 
                 return (
                   <motion.div
@@ -302,7 +304,7 @@ export function MesasView() {
                             className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
                             strokeWidth={1.5}
                           />
-                          <span className="truncate">{mesa.lugar}</span>
+                          <span className="truncate">{mesa.lugar || "Por definir"}</span>
                         </div>
                         <div className="flex items-center gap-2 text-[var(--text-tertiary)]">
                           <CalendarDays className="size-3.5 shrink-0" strokeWidth={1.5} />

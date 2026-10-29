@@ -8,15 +8,14 @@ Revises: 0060_ambito_territorial
 Create Date: 2026-10-13 16:30:00.000000
 """
 
-from typing import Sequence, Union
-from alembic import op
-import sqlalchemy as sa
+from collections.abc import Sequence
 
+from alembic import op
 
 revision: str = "0061_analitica_hurtos"
-down_revision: Union[str, Sequence[str], None] = "0060_ambito_territorial"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0060_ambito_territorial"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -58,18 +57,10 @@ def upgrade() -> None:
             creado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
         );
     """)
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_hurtos_delito_anio ON geodatos.estadisticas_hurtos (delito, anio);"
-    )
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_hurtos_anio_mes ON geodatos.estadisticas_hurtos (anio, mes);"
-    )
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_hurtos_zona ON geodatos.estadisticas_hurtos (zona);"
-    )
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_hurtos_poligono_id ON geodatos.estadisticas_hurtos (poligono_id);"
-    )
+    op.execute("CREATE INDEX IF NOT EXISTS idx_hurtos_delito_anio ON geodatos.estadisticas_hurtos (delito, anio);")
+    op.execute("CREATE INDEX IF NOT EXISTS idx_hurtos_anio_mes ON geodatos.estadisticas_hurtos (anio, mes);")
+    op.execute("CREATE INDEX IF NOT EXISTS idx_hurtos_zona ON geodatos.estadisticas_hurtos (zona);")
+    op.execute("CREATE INDEX IF NOT EXISTS idx_hurtos_poligono_id ON geodatos.estadisticas_hurtos (poligono_id);")
     op.execute(
         "CREATE INDEX IF NOT EXISTS idx_hurtos_delito_zona_anio ON geodatos.estadisticas_hurtos (delito, zona, anio);"
     )
@@ -89,6 +80,8 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.execute("DELETE FROM geodatos.capas_geovisor WHERE codigo IN ('HURTO_MOTOCICLETAS', 'HURTO_RESIDENCIAS', 'HURTO_COMERCIO');")
+    op.execute(
+        "DELETE FROM geodatos.capas_geovisor WHERE codigo IN ('HURTO_MOTOCICLETAS', 'HURTO_RESIDENCIAS', 'HURTO_COMERCIO');"
+    )
     op.execute("DROP TABLE IF EXISTS geodatos.estadisticas_hurtos CASCADE;")
     op.execute("DROP TABLE IF EXISTS geodatos.poligonos_analitica_hurtos CASCADE;")

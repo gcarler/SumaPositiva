@@ -16,9 +16,7 @@ class PresupuestoRepository:
         return res.scalars().all()
 
     async def obtener_fuente(self, id: uuid.UUID) -> FuenteFinanciacion | None:
-        res = await self.session.execute(
-            select(FuenteFinanciacion).where(FuenteFinanciacion.id == id)
-        )
+        res = await self.session.execute(select(FuenteFinanciacion).where(FuenteFinanciacion.id == id))
         return res.scalar_one_or_none()
 
     async def crear_asignacion(self, asignacion: AsignacionPresupuestal) -> AsignacionPresupuestal:
@@ -32,9 +30,7 @@ class PresupuestoRepository:
         return res.scalars().all()
 
     async def obtener_resumen_costeo(self) -> dict:
-        total_res = await self.session.execute(
-            select(func.sum(AsignacionPresupuestal.monto_estimado))
-        )
+        total_res = await self.session.execute(select(func.sum(AsignacionPresupuestal.monto_estimado)))
         total = total_res.scalar() or 0
 
         fuentes_res = await self.session.execute(

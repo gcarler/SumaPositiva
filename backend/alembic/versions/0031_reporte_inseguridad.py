@@ -43,8 +43,5 @@ def downgrade():
     """)
     )
     op.execute(
-        text(
-            "DELETE FROM participacion_ciudadana.formularios_consulta "
-            "WHERE id='4ecd649a-6764-4d62-8ddb-1bcecd342031'"
-        )
+        text("DELETE FROM participacion_ciudadana.formularios_consulta WHERE id='4ecd649a-6764-4d62-8ddb-1bcecd342031'")
     )

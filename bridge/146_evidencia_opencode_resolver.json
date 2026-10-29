@@ -1,0 +1,101 @@
+{
+  "esquema": "polis.evidencia_opencode_resolver_precision.v1",
+  "tarea": "OP-ID-QA-02-R1",
+  "fecha_utc": "2026-10-26T03:33:32Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "fe_erratas_documental_completada",
+  "alcance": "Exclusivamente documental. Sin modificar codigo/tests. Sin repetir pytest.",
+  "conservados": [
+    "bridge/143_revision_opencode_resolver.md",
+    "bridge/143_validacion_opencode_resolver/"
+  ],
+  "consultados": [
+    "bridge/145_tarea_opencode_precision_auditoria_resolver.md",
+    "backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py",
+    "backend/tests/test_identidad_territorial_catalogo_polis.py",
+    "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+    "bridge/128_catalogo_identidad_territorial/manifiesto_entrega_128.json",
+    "bridge/130_cotejo_catalogo_identidad.json",
+    "bridge/136_revision_opencode_catalogo_identidad.md",
+    "bridge/143_validacion_opencode_resolver/hashes_134.txt",
+    "bridge/143_validacion_opencode_resolver/pytest_resolver.xml"
+  ],
+  "hashes_consultados": {
+    "catalogo_identidad_territorial.json": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+    "identidad_territorial_catalogo_polis.py": "9c0c25de1307f2d0d7f2e596b41ba8743067cd3fc11f49e88aba9037e2eabfab",
+    "test_identidad_territorial_catalogo_polis.py": "a41ca1937f863149de7eff52532871504528725de887bed264daf9b08bb69a0c"
+  },
+  "verificacion_pytest_xml": {
+    "archivo": "bridge/143_validacion_opencode_resolver/pytest_resolver.xml",
+    "tests": 31,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "hallazgos": {
+    "1_homonimos": {
+      "sahagun_fixture": {
+        "ubicacion": "tests/test_identidad_territorial_catalogo_polis.py:81-91, 538-549",
+        "sahagun_23660_bolivar_13601": "13601 no existe en catalogo real 128",
+        "real": {
+          "SAHAGÚN": [
+            "23660"
+          ]
+        }
+      },
+      "ejemplo_real_recomendado": {
+        "nombre": "ARGELIA",
+        "codigos": [
+          "05055",
+          "19050",
+          "76054"
+        ],
+        "departamentos": [
+          "ANTIOQUIA",
+          "CAUCA",
+          "VALLE DEL CAUCA"
+        ],
+        "presente_en_catalogo_real": true
+      }
+    },
+    "2_trim_normalizacion": {
+      "contratocatalogo_str_strip_whitespace": true,
+      "sha_esperado_strip_lower": true,
+      "codigos_literal_sin_relleno_sin_coercion": true,
+      "busqueda_estricta_por_codigo_sin_fuzzy": true,
+      "nombres_mantenidos_con_acentos": true,
+      "distinguir_carga_vs_resolucion": true
+    },
+    "3_estado": {
+      "funcion_publica_sin_estado_externo": true,
+      "resolucion_modelo_tiene_estado_computado": true,
+      "validador_coherencia_registro_estado": true,
+      "test_no_demuestra_garantia_modelo": true
+    },
+    "4_punteros": {
+      "presentes": [
+        "procedencia",
+        "origen",
+        "sha256_bytes_catalogo",
+        "bytes_catalogo",
+        "vintage_declarado_por_fuente",
+        "fecha_adquisicion_utc",
+        "limites_declarados",
+        "registro_catalogo_completo",
+        "departamento_catalogo",
+        "metadatos_catalogo"
+      ],
+      "json_pointer_especifico_por_registro_evidenciado": false,
+      "correccion": "metadatos/punteros de procedencia y registro disponibles, no afirmar JSON Pointer específico"
+    }
+  },
+  "implicaciones": [
+    "Solo documental; no modifica resolver ni tests",
+    "31 pruebas no invalidadas",
+    "Distingue fixture sintético vs catálogo real 128"
+  ],
+  "salidas": [
+    "bridge/146_fe_erratas_opencode_resolver.md",
+    "bridge/146_evidencia_opencode_resolver.json"
+  ]
+}

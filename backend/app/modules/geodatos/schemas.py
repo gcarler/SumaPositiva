@@ -7,24 +7,16 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class TerritorioBase(BaseModel):
-
     codigo: str = Field(..., max_length=50, description="Código único del territorio")
     nombre: str = Field(..., max_length=200, description="Nombre oficial del territorio")
     tipo_territorio: str = Field(
         ...,
         max_length=50,
-        description=(
-            "Nivel: distrito, localidad, unidad_actuacion_comunera, "
-            "barrio, corregimiento o zona_insular"
-        ),
+        description=("Nivel: distrito, localidad, unidad_actuacion_comunera, barrio, corregimiento o zona_insular"),
     )
-    territorio_padre_id: uuid.UUID | None = Field(
-        default=None, description="UUID del territorio padre"
-    )
+    territorio_padre_id: uuid.UUID | None = Field(default=None, description="UUID del territorio padre")
     poblacion_estimada: int | None = Field(default=None, description="Población estimada")
-    estrato_predominante: int | None = Field(
-        default=None, description="Estrato socioeconómico predominante"
-    )
+    estrato_predominante: int | None = Field(default=None, description="Estrato socioeconómico predominante")
     es_zona_etnica: bool = Field(
         default=False,
         description="Indica si es comunidad negra/afrodescendiente o resguardo indígena",
@@ -58,9 +50,7 @@ class IndicadorTerritorioBase(BaseModel):
     """Esquema base para indicador estadístico territorial."""
 
     territorio_id: uuid.UUID = Field(..., description="UUID del territorio asociado")
-    dimension_id: uuid.UUID | None = Field(
-        default=None, description="UUID de la dimensión de seguridad humana"
-    )
+    dimension_id: uuid.UUID | None = Field(default=None, description="UUID de la dimensión de seguridad humana")
     codigo_indicador: str = Field(..., max_length=100, description="Código único del indicador")
     nombre_indicador: str = Field(..., max_length=250, description="Nombre del indicador")
     valor: Decimal = Field(..., description="Valor cuantitativo del indicador")
@@ -91,6 +81,26 @@ class IndicadorTerritorioRead(IndicadorTerritorioBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class IndicadorTerritorioDetalladoRead(IndicadorTerritorioRead):
+    """Esquema de lectura para indicador territorial con detalles del territorio y dimensión."""
+
+    codigo_territorio: str | None = Field(default=None, description="Código único del territorio (ej. DISTRITO-CTG)")
+    nombre_territorio: str | None = Field(default=None, description="Nombre oficial del territorio")
+    codigo_dimension: str | None = Field(default=None, description="Código de la dimensión de seguridad humana")
+    nombre_dimension: str | None = Field(default=None, description="Nombre oficial de la dimensión")
+
+
+class IndicadoresTerritorioResponse(BaseModel):
+    """Respuesta paginada y filtrada para consulta de indicadores territoriales."""
+
+    total: int = Field(..., ge=0, description="Total de registros que coinciden con los filtros")
+    limit: int = Field(..., ge=1, description="Límite de registros por página")
+    offset: int = Field(..., ge=0, description="Desplazamiento aplicado")
+    indicadores: list[IndicadorTerritorioDetalladoRead] = Field(
+        default_factory=list, description="Lista de indicadores territoriales"
+    )
+
+
 class CapaGeovisorBase(BaseModel):
     """Esquema base para capa espacial del Geovisor."""
 
@@ -98,12 +108,8 @@ class CapaGeovisorBase(BaseModel):
     nombre: str = Field(..., max_length=200, description="Nombre visible de la capa")
     categoria: str = Field(..., max_length=100, description="Categoría temática")
     descripcion: str | None = Field(default=None, description="Descripción funcional de la capa")
-    tipo_geometria: str = Field(
-        default="Poligonos", max_length=50, description="Tipo: Puntos, Poligonos, MapaCalor"
-    )
-    color_estilo: str = Field(
-        default="#ef4444", max_length=7, description="Código de color hexadecimal"
-    )
+    tipo_geometria: str = Field(default="Poligonos", max_length=50, description="Tipo: Puntos, Poligonos, MapaCalor")
+    color_estilo: str = Field(default="#ef4444", max_length=7, description="Código de color hexadecimal")
     activa: bool = Field(default=True, description="Estado de visibilidad")
     metadatos: dict[str, Any] = Field(default_factory=dict, description="Metadatos de la capa")
 
@@ -146,9 +152,7 @@ class DireccionEstandarizadaResponse(BaseModel):
     """Respuesta con dirección normalizada, desglose de vía/sector y georreferenciación distrital."""
 
     direccion_original: str = Field(..., description="Texto original proporcionado")
-    direccion_normalizada: str = Field(
-        ..., description="Dirección normalizada según nomenclatura distrital oficial"
-    )
+    direccion_normalizada: str = Field(..., description="Dirección normalizada según nomenclatura distrital oficial")
     tipo_via: str | None = Field(
         default=None,
         description="Tipo de vía: Calle, Carrera, Diagonal, Transversal, Avenida, Sector, etc.",
@@ -186,9 +190,7 @@ class NodoCercanoRead(BaseModel):
 
     nombre: str = Field(..., description="Nombre del nodo de seguridad humana")
     tipo: str = Field(..., description="Tipo de nodo: seguridad, salud, justicia")
-    distancia_metros: float = Field(
-        ..., description="Distancia geodésica en metros desde el origen"
-    )
+    distancia_metros: float = Field(..., description="Distancia geodésica en metros desde el origen")
 
 
 class IsocronaProperties(BaseModel):
@@ -197,6 +199,10 @@ class IsocronaProperties(BaseModel):
     minutos: int = Field(..., description="Intervalo temporal en minutos (5, 10, 15)")
     modo: str = Field(..., description="Modo de desplazamiento: 'pie' o 'vehiculo'")
     radio_metros: float = Field(..., description="Radio de cobertura estimado en metros")
+    metodo_calculo: str = Field(
+        default="buffer_euclidiano_geodesico",
+        description="Metodología de cálculo: buffer euclidiano/geodésico o ruteo en red vial",
+    )
     nodo_cercano: NodoCercanoRead | None = Field(
         default=None, description="Nodo de seguridad humana más cercano alcanzable"
     )
@@ -279,18 +285,10 @@ class ResumenHurtosResponse(BaseModel):
     delito: str | None = Field(default=None, description="Filtro de delito aplicado")
     anio: int | None = Field(default=None, description="Filtro de año aplicado")
     zona: str | None = Field(default=None, description="Filtro de zona aplicado")
-    serie_anual: list[SerieTemporalItem] = Field(
-        default_factory=list, description="Serie temporal anual 2018-2026"
-    )
-    serie_mensual: list[SerieTemporalItem] = Field(
-        default_factory=list, description="Distribución mensual"
-    )
-    top_armas: list[CategoriaConteo] = Field(
-        default_factory=list, description="Top 5 armas o medios empleados"
-    )
-    top_sitios: list[CategoriaConteo] = Field(
-        default_factory=list, description="Top 5 clases de sitio"
-    )
+    serie_anual: list[SerieTemporalItem] = Field(default_factory=list, description="Serie temporal anual 2018-2026")
+    serie_mensual: list[SerieTemporalItem] = Field(default_factory=list, description="Distribución mensual")
+    top_armas: list[CategoriaConteo] = Field(default_factory=list, description="Top 5 armas o medios empleados")
+    top_sitios: list[CategoriaConteo] = Field(default_factory=list, description="Top 5 clases de sitio")
     distribucion_zona: list[DistribucionZonaItem] = Field(
         default_factory=list, description="Distribución por zona urbana vs rural"
     )
@@ -326,9 +324,7 @@ class HurtosFeatureCollection(BaseModel):
     """Colección GeoJSON con los polígonos urbano y rural y sus estadísticas asociadas."""
 
     type: str = Field(default="FeatureCollection", description="Tipo GeoJSON FeatureCollection")
-    features: list[HurtoFeature] = Field(
-        default_factory=list, description="Polígonos temáticos analíticos"
-    )
+    features: list[HurtoFeature] = Field(default_factory=list, description="Polígonos temáticos analíticos")
 
 
 class RegistroHurtoItem(BaseModel):
@@ -376,5 +372,3 @@ class ExploradorHurtosResponse(BaseModel):
     registros: list[RegistroHurtoItem] = Field(default_factory=list)
     agrupacion: list[AgrupacionHurtoItem] = Field(default_factory=list)
     catalogos: CatalogosHurtos
-
-

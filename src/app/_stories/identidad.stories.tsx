@@ -56,6 +56,7 @@ const login: Login = {
   nivel_identidad: "declarada",
   token_acceso: "token-exclusivo-de-storybook",
   expira_en: "2099-01-01T00:00:00Z",
+  mfa_enrolamiento_requerido: false,
 };
 const originales = { ...identidadApi };
 const mensaje = { mensaje: "Solicitud completada" };
@@ -108,12 +109,13 @@ const meta = {
       mfaEstado: fn(async () => ({
         activo: false,
         activado_en: null,
-        ultimo_uso_en: null,
         codigos_restantes: 0,
+        exigido_por_rol: false,
+        sesion_verificada: false,
       })),
       mfaIniciar: fn(async () => ({
         secreto_b32: "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP",
-        uri_totp: "otpauth://totp/POLIS:test@example.org?secret=JBSWY3DPEHPK3PXP",
+        otpauth_uri: "otpauth://totp/POLIS:test@example.org?secret=JBSWY3DPEHPK3PXP",
         qr_code_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY44YAAAAASUVORK5CYII=",
       })),
       mfaActivar: fn(async () => ({
@@ -151,7 +153,8 @@ const meta = {
         tipo_ambito: datos.tipo_ambito as "distrital" | "localidad" | "mesa",
         identificador_territorial: datos.identificador_territorial,
         activo: true,
-        asignado_en: new Date().toISOString(),
+        creado_en: new Date().toISOString(),
+        actualizado_en: new Date().toISOString(),
       })),
       revocarAmbitoUsuario: fn(async () => mensaje),
     } satisfies typeof identidadApi);
@@ -484,5 +487,264 @@ export const SesionNuevaConRespuestaAnterior: Story = {
     await expect(useSesionStore.getState().sesion?.token).toBe(
       "sesion-nueva-story",
     );
+  },
+};
+
+/* Contratos de identidad alineados con EDD 181: sesión limitada al enrolamiento,
+ * estado de MFA sin último uso y acreditación por sesión. */
+const loginLimitado: Login = {
+  ...login,
+  token_acceso: "token-limite-storybook",
+  permisos: [],
+  usuario: { ...usuario, permisos: [] },
+  mfa_enrolamiento_requerido: true,
+};
+/* Enrolamiento exigido vía Magic Link: el enlace instala una sesión limitada
+ * alimentada por confirmarMagicLink (sin reemplazar los login por contraseña). */
+const magicLinkLimitado: Login = {
+  ...loginLimitado,
+  token_acceso: "token-magic-limitado-storybook",
+};
+export const EnrolamientoExigido: Story = {
+  beforeEach: () => {
+    identidadApi.login = fn(async () => structuredClone(loginLimitado));
+    identidadApi.mfaEstado = fn(async () => ({
+      activo: false,
+      activado_en: null,
+      codigos_restantes: 0,
+      exigido_por_rol: true,
+      sesion_verificada: false,
+    }));
+  },
+  play: async ({ canvasElement }) => {
+    const panel = within(await within(canvasElement).findByRole("dialog"));
+    await userEvent.type(
+      panel.getByLabelText("Correo electrónico", { exact: false }),
+      "ana@example.org",
+    );
+    await userEvent.type(
+      panel.getByLabelText(/^Contraseña/),
+      "ClavePrueba2026*",
+    );
+    await userEvent.click(
+      panel.getAllByRole("button", { name: "Iniciar sesión" })[1],
+    );
+    /* Sesión limitada sembrada: sin anuncio de acceso pleno ni navegación. */
+    await waitFor(() =>
+      expect(useSesionStore.getState().sesion?.token).toBe(
+        "token-limite-storybook",
+      ),
+    );
+    expect(getRouter().push).not.toHaveBeenCalledWith("/plataforma");
+    /* El enrolamiento pendiente se representa y lleva a la configuración real. */
+    await expect(
+      await panel.findByText(/Verificación en dos pasos pendiente/),
+    ).toBeVisible();
+    await userEvent.click(
+      panel.getByRole("button", {
+        name: "Configurar verificación en dos pasos (TOTP)",
+      }),
+    );
+    await expect(
+      panel.getByAltText("Código QR de configuración TOTP"),
+    ).toBeVisible();
+  },
+};
+export const EnrolamientoExigidoOscuro: Story = {
+  ...EnrolamientoExigido,
+  globals: { theme: "dark" },
+};
+
+/* H3 (211/ID06): el consumo de un Magic Link que responde sesión limitada
+ * conserva la ficha de "Mi cuenta"; NO anuncia acceso pleno ni navega a la
+ * plataforma, y el token no se re-consume en re-renderces siguientes. */
+/* Revisión preventiva 238: la sesión puede ser reemplazada (logout, nuevo
+ * login) mientras el backend resolvía el perfil tras la activación; el
+ * componente DEBE abandonar sin pisar identidad/permisos de la sesión nueva.
+ * Respuesta de perfil diferida para reproducir la ventana real. */
+export const ActivacionMfaSesionReemplazada: Story = {
+  ...MiCuenta,
+  play: async ({ canvasElement }) => {
+    const panel = within(await within(canvasElement).findByRole("dialog"));
+    let resolverPerfil: (usuario: Usuario) => void = () => {};
+    const perfilDiferido = new Promise<Usuario>((resolver) => {
+      resolverPerfil = resolver;
+    });
+    identidadApi.perfil = fn(() => perfilDiferido);
+    await userEvent.click(
+      await panel.findByRole("button", {
+        name: "Configurar verificación en dos pasos (TOTP)",
+      }),
+    );
+    await userEvent.type(
+      await panel.findByLabelText(/Código de verificación/),
+      "123456",
+    );
+    await userEvent.click(
+      panel.getByRole("button", { name: "Verificar y activar MFA" }),
+    );
+    await waitFor(() =>
+      expect(identidadApi.mfaActivar).toHaveBeenCalledWith("123456"),
+    );
+    /* La sesión fue reemplazada mientras el perfil retardado seguía vivo. */
+    useSesionStore
+      .getState()
+      .iniciarSesion({ ...login, token_acceso: "token-reemplazo-storybook" });
+    /* El perfil retardado responde con datos de la sesión vieja. */
+    resolverPerfil({
+      ...login.usuario,
+      correo: "sesion.reemplazada@example.org",
+      apellidos: "DelFactorReemplazado",
+    });
+    await waitFor(() =>
+      expect(useSesionStore.getState().sesion?.token).toBe(
+        "token-reemplazo-storybook",
+      ),
+    );
+    /* Sin guardas, identidad/permisos/rol serían pisados por el perfil viejo. */
+    await expect(identidadApi.perfil).toHaveBeenCalled();
+    await expect(
+      await waitFor(() => useSesionStore.getState().sesion?.usuario?.apellidos),
+    ).toBe("Torres");
+    await expect(useSesionStore.getState().sesion?.usuario?.correo).toBe(
+      login.usuario.correo,
+    );
+    await expect(useSesionStore.getState().sesion?.permisos).toEqual(
+      login.permisos,
+    );
+    await expect(useSesionStore.getState().sesion?.rol).toBe(login.rol);
+  },
+};
+export const MagicLinkLimitado: Story = {
+  beforeEach: () => {
+    const sesionDeshabilitada = structuredClone(magicLinkLimitado);
+    identidadApi.confirmarMagicLink = fn(async () => sesionDeshabilitada);
+    identidadApi.mfaEstado = fn(async () => ({
+      activo: false,
+      activado_en: null,
+      codigos_restantes: 0,
+      exigido_por_rol: true,
+      sesion_verificada: false,
+    }));
+    usePanelStore.getState().closeAll();
+    usePanelStore
+      .getState()
+      .openPanel("sesion", { accion: "magic_link", token: "enlace-magic-story" });
+    return () => {
+      identidadApi.confirmarMagicLink = originales.confirmarMagicLink;
+      identidadApi.mfaEstado = originales.mfaEstado;
+      usePanelStore.getState().closeAll();
+      useSesionStore.getState().limpiarSesion();
+    };
+  },
+  play: async () => {
+    /* Consumo único y real: sesión limitada sin anuncio de acceso pleno. */
+    await waitFor(() =>
+      expect(useSesionStore.getState().sesion?.token).toBe(
+        "token-magic-limitado-storybook",
+      ),
+    );
+    await expect(identidadApi.confirmarMagicLink).toHaveBeenCalledTimes(1);
+    expect(getRouter().push).not.toHaveBeenCalledWith("/plataforma");
+    /* La ficha pasa a "Mi cuenta" con el enrolamiento del rol pendiente. */
+    const cuerpo = within(document.body);
+    const ficha = await cuerpo.findByRole("heading", { name: "Mi cuenta" });
+    await expect(ficha).toBeVisible();
+    await expect(
+      await cuerpo.findByText(/Verificación en dos pasos pendiente/),
+    ).toBeVisible();
+    /* El token no se re-consume montajes posteriores del panel. */
+    await waitFor(async () => {
+      await expect(
+        await cuerpo.findByRole("heading", { name: "Mi cuenta" }),
+      ).toBeVisible();
+    });
+    usePanelStore.getState().closeAll();
+    usePanelStore.getState().openPanel("sesion", {});
+    await waitFor(async () => {
+      await expect(
+        await cuerpo.findByRole("heading", { name: "Mi cuenta" }),
+      ).toBeVisible();
+    });
+    await expect(identidadApi.confirmarMagicLink).toHaveBeenCalledTimes(1);
+  },
+};
+export const MagicLinkLimitadoOscuro: Story = {
+  ...MagicLinkLimitado,
+  globals: { theme: "dark" },
+};
+
+export const MagicLinkLimitadoMovil: Story = {
+  ...MagicLinkLimitado,
+  parameters: { viewport: { defaultViewport: "mobile1" } },
+};
+export const MfaExigidoSesionPrevia: Story = {
+  ...MiCuenta,
+  beforeEach: () => {
+    useSesionStore.getState().iniciarSesion(login);
+    identidadApi.mfaEstado = fn(async () => ({
+      activo: true,
+      activado_en: "2026-10-20T10:00:00Z",
+      codigos_restantes: 8,
+      exigido_por_rol: true,
+      sesion_verificada: false,
+    }));
+  },
+  play: async ({ canvasElement }) => {
+    const panel = within(await within(canvasElement).findByRole("dialog"));
+    await expect(await panel.findByText(/Sesión sin verificar/)).toBeVisible();
+    await userEvent.click(
+      panel.getByRole("button", { name: "Cerrar sesión y volver a entrar" }),
+    );
+    await waitFor(() =>
+      expect(useSesionStore.getState().sesion).toBeNull(),
+    );
+  },
+};
+export const MfaConFactorActivo409: Story = {
+  ...MiCuenta,
+  play: async ({ canvasElement }) => {
+    const panel = within(await within(canvasElement).findByRole("dialog"));
+    /* La API rechaza reiniciar un factor ya activo con 409 (contrato con EDD). */
+    identidadApi.mfaIniciar = fn(async () => {
+      throw new ApiError(409, "Ya existe un factor activo para esta cuenta");
+    });
+    await userEvent.click(
+      await panel.findByRole("button", {
+        name: "Configurar verificación en dos pasos (TOTP)",
+      }),
+    );
+    await expect(
+      await panel.findByText(/Ya existe un factor activo/),
+    ).toBeVisible();
+    /* No se anuncia enrolamiento ni éxito: el error queda presente. */
+    await expect(
+      panel.queryByAltText("Código QR de configuración TOTP"),
+    ).toBeNull();
+  },
+};
+export const ActivacionMfaAcreditaSesion: Story = {
+  ...MiCuenta,
+  play: async ({ canvasElement }) => {
+    const panel = within(await within(canvasElement).findByRole("dialog"));
+    await userEvent.click(
+      panel.getByRole("button", {
+        name: "Configurar verificación en dos pasos (TOTP)",
+      }),
+    );
+    await userEvent.type(
+      await panel.findByLabelText(/Código de verificación/),
+      "123456",
+    );
+    await userEvent.click(
+      panel.getByRole("button", { name: "Verificar y activar MFA" }),
+    );
+    await expect(
+      await panel.findByText("Autenticación multifactor activada con éxito."),
+    ).toBeVisible();
+    /* La acreditación es de esta sesión: se refresca el perfil para obtener
+     * los permisos efectivos y el estado de verificación actualizado. */
+    await waitFor(() => expect(identidadApi.perfil).toHaveBeenCalled());
+    await expect(await panel.findByText(/AAAA-1111/)).toBeVisible();
   },
 };

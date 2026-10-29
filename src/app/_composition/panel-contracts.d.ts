@@ -1,4 +1,6 @@
+import type { TareaComunicacion } from "@/features/comunicaciones/models/tarea-comunicacion";
 import type { ArbolPanel } from "@/features/mesas/models/arbol-panel";
+import type { ActividadProyecto } from "@/features/proyectos/models/actividad-proyecto";
 
 declare module "@/core/panels/panel-store" {
   interface PanelPropsRegistry {
@@ -112,5 +114,18 @@ declare module "@/core/panels/panel-store" {
       onGuardado?: () => void;
     };
     "dimension-detalle": { dimensionId: string };
+    "tarea-comunicacion-editor": {
+      tarea: TareaComunicacion | null;
+      ordenSugerido: number;
+      /** La vista padre reemplaza la fila guardada al recibirla. */
+      onGuardada: (tarea: TareaComunicacion) => void;
+    };
+    /** Ficha de detalle de una actividad del agregado de Proyectos (read-only). */
+    "ficha-actividad-proyecto": {
+      actividad: ActividadProyecto;
+      seccionInicial?: "anexos";
+      /** Acción de edición del módulo dueño; la vista decide por permiso. */
+      onEditar?: () => void;
+    };
   }
 }

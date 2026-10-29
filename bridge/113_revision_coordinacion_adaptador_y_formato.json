@@ -1,0 +1,25 @@
+{
+  "fecha_utc": "2026-10-25T20:15:29.107512+00:00",
+  "estado": "adaptador_devuelto_para_R1",
+  "resultado_reproducido": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "1",
+    "skipped": "0",
+    "tests": "10",
+    "time": "2.965",
+    "timestamp": "2026-10-25T20:13:32.195418+00:00",
+    "hostname": "srv2006133"
+  },
+  "causa_prueba_fallida": "salida_CLI_fija_ya_existe_entrega110_preservada",
+  "revision": "bridge/115_tarea_ollamacodex_adaptador_r1.md",
+  "formato_numerico_verificado": {
+    "coma_simple": 7582,
+    "coma_miles_punto": 4495,
+    "otros": 0,
+    "max_digitos_enteros_sin_separadores": 13,
+    "max_longitud_texto": 20
+  },
+  "siguiente_parser": "bridge/117_tarea_freebuff_regla_numerica_parser.md",
+  "sin_promocion_al_banco": true
+}

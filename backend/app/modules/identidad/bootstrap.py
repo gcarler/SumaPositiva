@@ -20,19 +20,13 @@ async def crear_administrador(datos: UsuarioCreacion, motivo: str, settings: Set
             async with transaction(session):
                 await repo.serializar_administracion()
                 if await repo.contar_administradores():
-                    raise ValueError(
-                        "Ya existe un administrador activo; utiliza la administración web"
-                    )
+                    raise ValueError("Ya existe un administrador activo; utiliza la administración web")
                 if await repo.obtener_usuario_por_correo(str(datos.correo)):
-                    raise ValueError(
-                        "El correo ya existe; el bootstrap no promueve cuentas históricas"
-                    )
+                    raise ValueError("El correo ya existe; el bootstrap no promueve cuentas históricas")
                 rol = await repo.obtener_rol_por_codigo("administrador_identidades")
                 if not rol:
                     raise ValueError("Aplica las migraciones antes del bootstrap")
-                usuario = await repo.crear_usuario(
-                    datos, obtener_hash_contrasena(datos.contrasena), rol.id
-                )
+                usuario = await repo.crear_usuario(datos, obtener_hash_contrasena(datos.contrasena), rol.id)
                 await repo.registrar_evento(
                     "bootstrap_administrador",
                     None,
@@ -56,9 +50,7 @@ def main():
     contrasena = getpass.getpass("Contraseña del primer administrador: ")
     if contrasena != getpass.getpass("Confirma la contraseña: "):
         parser.error("Las contraseñas no coinciden")
-    datos = UsuarioCreacion(
-        correo=args.correo, nombres=args.nombres, apellidos=args.apellidos, contrasena=contrasena
-    )
+    datos = UsuarioCreacion(correo=args.correo, nombres=args.nombres, apellidos=args.apellidos, contrasena=contrasena)
     try:
         usuario_id = asyncio.run(crear_administrador(datos, args.motivo, Settings()))
     except ValueError as error:

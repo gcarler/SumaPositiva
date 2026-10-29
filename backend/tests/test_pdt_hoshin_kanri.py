@@ -84,21 +84,15 @@ def _payload_sintetico_hoshin() -> dict[str, Any]:
                     {
                         "codigo_plan": "PDD_2024_2027",
                         "codigo_meta": "ME.01",
-                        "meta_estrategica": (
-                            "Ampliar cobertura educativa preescolar y media técnica"
-                        ),
-                        "actividad_operativa": (
-                            "Dotación y mejoramiento de aulas escolares oficiales"
-                        ),
+                        "meta_estrategica": ("Ampliar cobertura educativa preescolar y media técnica"),
+                        "actividad_operativa": ("Dotación y mejoramiento de aulas escolares oficiales"),
                         "dependencias": ["Secretaría de Educación"],
                         "similaridad_coseno_lexica": 0.78,
                     },
                     {
                         "codigo_plan": "PDD_2024_2027",
                         "codigo_meta": "MS.02",
-                        "meta_estrategica": (
-                            "Reducir mortalidad materna y fortalecer atención primaria"
-                        ),
+                        "meta_estrategica": ("Reducir mortalidad materna y fortalecer atención primaria"),
                         "actividad_operativa": "Jornadas preventivas de salud familiar en barrios",
                         "dependencias": ["Secretaría de Salud"],
                         "similaridad_coseno_lexica": 0.54,
@@ -301,9 +295,7 @@ def test_construir_matriz_x_con_payload_sintetico() -> None:
     simbolos_on = {item["simbolo"] for item in esquinas["oeste_norte_anual_vs_proyectos"]}
     assert simbolos_on == {SIMBOLO_FUERTE, SIMBOLO_MEDIA, SIMBOLO_DEBIL}
 
-    simbolos_ne = {
-        item["simbolo"] for item in esquinas["norte_este_proyectos_vs_kpis_responsables"]
-    }
+    simbolos_ne = {item["simbolo"] for item in esquinas["norte_este_proyectos_vs_kpis_responsables"]}
     assert simbolos_ne == {SIMBOLO_FUERTE, SIMBOLO_MEDIA, SIMBOLO_DEBIL}
 
     simbolos_es = {item["simbolo"] for item in esquinas["este_sur_kpis_vs_ruptura_territorial"]}
@@ -373,10 +365,7 @@ def test_filtros_por_dependencia_y_sector_cache_real() -> None:
     ]
     assert sectores_sur == ["Educación Pública"]
 
-    deps_este = [
-        item["dependencia_responsable"]
-        for item in filtrado["matriz_x"]["cuadrante_este_kpis_responsables"]
-    ]
+    deps_este = [item["dependencia_responsable"] for item in filtrado["matriz_x"]["cuadrante_este_kpis_responsables"]]
     assert deps_este == ["Secretaría de Educación"]
     assert len(filtrado["catchball_sesiones"]) == 1
     assert filtrado["catchball_sesiones"][0]["dependencia"] == "Secretaría de Educación"
@@ -455,13 +444,4 @@ def test_articulacion_local_pdl_consulta_planes_metas_y_ucgs():
     assert len(articulation["localidades"]) == 3
     assert [len(row["ucgs_territoriales"]) for row in articulation["localidades"]] == [5, 5, 5]
     assert articulation["localidades"][1]["coldspots_lisa_en_localidad"] == 1
-    assert (
-        len(
-            [
-                row
-                for row in result["catchball_sesiones"]
-                if row.get("tipo") == "DISTRITAL_LOCAL_PDL"
-            ]
-        )
-        == 3
-    )
+    assert len([row for row in result["catchball_sesiones"] if row.get("tipo") == "DISTRITAL_LOCAL_PDL"]) == 3

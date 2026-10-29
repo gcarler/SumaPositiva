@@ -92,6 +92,11 @@ backend/media/evidencias/*
 bridge/.*
 backend/.secrets/
 
+# Local OAuth credentials and activity uploads
+/google_credentials.json
+/backend/media/actividades_anexos/*
+!/backend/media/actividades_anexos/.gitkeep
+
 # Large GIS raw archive (>1GB) and temporary caches
 geodatos_cartagena/*.zip
 .archify/

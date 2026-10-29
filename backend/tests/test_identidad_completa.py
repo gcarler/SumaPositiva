@@ -142,9 +142,7 @@ def test_sesiones_ajenas_y_cerrar_todas(contexto):
     sesiones = client.get("/api/v1/identidad/sesiones", headers=headers).json()
     assert len(sesiones) == 2 and sum(s["actual"] for s in sesiones) == 1
     id_ajeno = client.get("/api/v1/identidad/sesiones", headers=ajeno).json()[0]["id"]
-    assert (
-        client.delete(f"/api/v1/identidad/sesiones/{id_ajeno}", headers=headers).status_code == 404
-    )
+    assert client.delete(f"/api/v1/identidad/sesiones/{id_ajeno}", headers=headers).status_code == 404
     assert client.delete("/api/v1/identidad/sesiones", headers=headers).status_code == 200
     assert client.get("/api/v1/identidad/perfil", headers=headers).status_code == 401
     assert (
@@ -180,12 +178,7 @@ def test_cambiar_contrasena_revoca_y_exige_actual(contexto):
     )
     assert client.get("/api/v1/identidad/perfil", headers=headers).status_code == 401
     assert client.post("/api/v1/identidad/login", json=datos).status_code == 401
-    assert (
-        client.post(
-            "/api/v1/identidad/login", json={**datos, "contrasena": "NuevaClave2026*"}
-        ).status_code
-        == 200
-    )
+    assert client.post("/api/v1/identidad/login", json={**datos, "contrasena": "NuevaClave2026*"}).status_code == 200
 
 
 def test_verificacion_correo_uso_unico_y_separacion_de_proposito(contexto):
@@ -203,12 +196,8 @@ def test_verificacion_correo_uso_unico_y_separacion_de_proposito(contexto):
         ).status_code
         == 400
     )
-    assert (
-        client.post("/api/v1/identidad/correo/confirmar", json={"token": token}).status_code == 200
-    )
-    assert (
-        client.post("/api/v1/identidad/correo/confirmar", json={"token": token}).status_code == 400
-    )
+    assert client.post("/api/v1/identidad/correo/confirmar", json={"token": token}).status_code == 200
+    assert client.post("/api/v1/identidad/correo/confirmar", json={"token": token}).status_code == 400
     perfil = client.get("/api/v1/identidad/perfil", headers=headers).json()
     assert perfil["correo_verificado_en"]
     assert perfil["codigo_rol"] == "ciudadano" and perfil["nivel_identidad"] == "declarada"
@@ -217,12 +206,8 @@ def test_verificacion_correo_uso_unico_y_separacion_de_proposito(contexto):
 def test_recuperacion_generica_hash_y_revocacion(contexto, database_url):
     client, registrar, correo, procesar, *_ = contexto
     usuario, headers, datos = registrar()
-    conocido = client.post(
-        "/api/v1/identidad/recuperacion/solicitar", json={"correo": datos["correo"]}
-    )
-    desconocido = client.post(
-        "/api/v1/identidad/recuperacion/solicitar", json={"correo": "inexistente@example.org"}
-    )
+    conocido = client.post("/api/v1/identidad/recuperacion/solicitar", json={"correo": datos["correo"]})
+    desconocido = client.post("/api/v1/identidad/recuperacion/solicitar", json={"correo": "inexistente@example.org"})
     assert conocido.status_code == desconocido.status_code == 200
     assert conocido.json() == desconocido.json()
     procesar()
@@ -232,9 +217,7 @@ def test_recuperacion_generica_hash_y_revocacion(contexto, database_url):
         engine = create_async_engine(database_url)
         try:
             async with async_sessionmaker(engine)() as session:
-                registro = await session.get(
-                    TokenAccion, hashlib.sha256(token.encode()).hexdigest()
-                )
+                registro = await session.get(TokenAccion, hashlib.sha256(token.encode()).hexdigest())
                 assert registro.usuario_id == uuid.UUID(usuario["id"])
                 assert token not in str(registro.__dict__)
         finally:
@@ -265,10 +248,7 @@ def test_cola_correo_retry_y_caducidad(contexto, database_url):
         try:
             async with engine.begin() as connection:
                 await connection.execute(
-                    text(
-                        "UPDATE autenticacion.tokens_accion SET expira_en=:exp "
-                        "WHERE hash_token=:hash"
-                    ),
+                    text("UPDATE autenticacion.tokens_accion SET expira_en=:exp WHERE hash_token=:hash"),
                     {
                         "exp": datetime.now(UTC) - timedelta(minutes=1),
                         "hash": hashlib.sha256(token.encode()).hexdigest(),
@@ -315,9 +295,7 @@ def test_admin_creacion_asignacion_desactivacion_y_ultimo_admin(contexto):
         "activo": True,
         "motivo": "Asignación autorizada de prueba",
     }
-    response = client.patch(
-        f"/api/v1/identidad/usuarios/{ciudadano['id']}", headers=headers, json=editar
-    )
+    response = client.patch(f"/api/v1/identidad/usuarios/{ciudadano['id']}", headers=headers, json=editar)
     assert response.status_code == 200, response.text
     assert response.json()["codigo_rol"] == "facilitador_mesa"
     assert client.get("/api/v1/identidad/perfil", headers=ciudadano_headers).status_code == 401
@@ -353,9 +331,7 @@ def test_roles_personalizados_permisos_vigentes_y_proteccion(contexto):
     roles_creados.append(codigo)
     usuario, headers, _ = registrar(codigo)
     assert client.get("/api/v1/identidad/usuarios", headers=headers).status_code == 200
-    cambio = client.patch(
-        f"/api/v1/identidad/roles/{codigo}", headers=admin_headers, json={**datos, "permisos": []}
-    )
+    cambio = client.patch(f"/api/v1/identidad/roles/{codigo}", headers=admin_headers, json={**datos, "permisos": []})
     assert cambio.status_code == 200
     # El JWT aún conserva usuarios:leer; el servidor toma el permiso actual del rol.
     assert client.get("/api/v1/identidad/usuarios", headers=headers).status_code == 403
@@ -366,12 +342,7 @@ def test_roles_personalizados_permisos_vigentes_y_proteccion(contexto):
         ).status_code
         == 409
     )
-    assert (
-        client.patch(
-            "/api/v1/identidad/roles/ciudadano", headers=admin_headers, json=datos
-        ).status_code
-        == 409
-    )
+    assert client.patch("/api/v1/identidad/roles/ciudadano", headers=admin_headers, json=datos).status_code == 409
     assert (
         client.post(
             "/api/v1/identidad/roles",
@@ -396,23 +367,10 @@ def test_normalizacion_correo_y_limite_bytes(contexto):
     client, registrar, *_ = contexto
     _, _, datos = registrar()
     assert (
-        client.post(
-            "/api/v1/identidad/registro", json={**datos, "correo": datos["correo"].upper()}
-        ).status_code
-        == 409
+        client.post("/api/v1/identidad/registro", json={**datos, "correo": datos["correo"].upper()}).status_code == 409
     )
-    assert (
-        client.post(
-            "/api/v1/identidad/login", json={**datos, "correo": datos["correo"].upper()}
-        ).status_code
-        == 200
-    )
-    assert (
-        client.post(
-            "/api/v1/identidad/registro", json={**datos, "contrasena": "😀" * 20}
-        ).status_code
-        == 422
-    )
+    assert client.post("/api/v1/identidad/login", json={**datos, "correo": datos["correo"].upper()}).status_code == 200
+    assert client.post("/api/v1/identidad/registro", json={**datos, "contrasena": "😀" * 20}).status_code == 422
 
 
 def test_jwt_caducado_malformado_y_no_persistido(contexto):
@@ -426,14 +384,9 @@ def test_jwt_caducado_malformado_y_no_persistido(contexto):
         {"jti": str(uuid.uuid4())},
         {"typ": "otro"},
     ]:
-        modificado = jwt.encode(
-            {**payload, **cambios}, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
-        )
+        modificado = jwt.encode({**payload, **cambios}, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
         assert (
-            client.get(
-                "/api/v1/identidad/perfil", headers={"Authorization": f"Bearer {modificado}"}
-            ).status_code
-            == 401
+            client.get("/api/v1/identidad/perfil", headers={"Authorization": f"Bearer {modificado}"}).status_code == 401
         )
 
 
@@ -449,21 +402,12 @@ def test_limite_login_persistente_y_smtp_no_configurado(database_url):
     with TestClient(create_app(settings)) as client:
         for _ in range(2):
             assert (
-                client.post(
-                    "/api/v1/identidad/login", json={"correo": correo, "contrasena": "invalida"}
-                ).status_code
+                client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": "invalida"}).status_code
                 == 401
             )
-        response = client.post(
-            "/api/v1/identidad/login", json={"correo": correo, "contrasena": "invalida"}
-        )
+        response = client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": "invalida"})
         assert response.status_code == 429 and response.headers["Retry-After"]
-        assert (
-            client.post(
-                "/api/v1/identidad/recuperacion/solicitar", json={"correo": correo}
-            ).status_code
-            == 503
-        )
+        assert client.post("/api/v1/identidad/recuperacion/solicitar", json={"correo": correo}).status_code == 503
 
 
 @pytest.mark.anyio
@@ -489,15 +433,10 @@ async def test_registro_rollback_respuesta_y_evento(database_url, monkeypatch):
             with pytest.raises(ValueError, match="fallo de respuesta"):
                 await IdentidadService(session).registrar_usuario(datos)
         async with sessions() as observador:
-            assert (
-                await observador.scalar(select(Usuario).where(Usuario.correo == str(datos.correo)))
-                is None
-            )
+            assert await observador.scalar(select(Usuario).where(Usuario.correo == str(datos.correo))) is None
             assert ids
             assert not (
-                await observador.scalars(
-                    select(EventoIdentidad).where(EventoIdentidad.objetivo_id == ids[0])
-                )
+                await observador.scalars(select(EventoIdentidad).where(EventoIdentidad.objetivo_id == ids[0]))
             ).all()
     finally:
         await engine.dispose()
@@ -667,9 +606,7 @@ def test_login_rollback_incluye_sesion_civica_y_evento(contexto, database_url, m
             monkeypatch.setattr(modulo, "TokenRespuesta", fallar)
             async with sessions() as session:
                 with pytest.raises(ValueError, match="Respuesta fallida"):
-                    await IdentidadService(session).autenticar_usuario(
-                        LoginPeticion.model_validate(datos)
-                    )
+                    await IdentidadService(session).autenticar_usuario(LoginPeticion.model_validate(datos))
             async with sessions() as observador:
                 assert await contar(observador) == antes
                 assert await observador.get(Usuario, uuid.UUID(usuario["id"])) is not None
@@ -761,9 +698,10 @@ def test_ultimo_administrador_protegido_con_ediciones_concurrentes(contexto, dat
                     return error.status_code
 
         try:
-            assert sorted(
-                await asyncio.gather(desactivar(uno, cabeceras_uno), desactivar(dos, cabeceras_dos))
-            ) == [200, 409]
+            assert sorted(await asyncio.gather(desactivar(uno, cabeceras_uno), desactivar(dos, cabeceras_dos))) == [
+                200,
+                409,
+            ]
             async with engine.connect() as connection:
                 assert (
                     await connection.scalar(
@@ -800,9 +738,7 @@ def test_cambiar_clave_rollback_conserva_hash_y_sesiones(contexto, database_url,
             async with sessions() as session:
                 with pytest.raises(ValueError, match="Fallo después"):
                     await IdentidadService(session).cambiar_contrasena(
-                        CambiarContrasena(
-                            contrasena_actual=datos["contrasena"], contrasena="NuevaClave2026*"
-                        ),
+                        CambiarContrasena(contrasena_actual=datos["contrasena"], contrasena="NuevaClave2026*"),
                         actor,
                     )
             async with sessions() as observador:
@@ -831,9 +767,7 @@ def test_bootstrap_primer_admin_sin_promover_cuentas(database_url):
     async def ejecutar():
         usuario_id = None
         try:
-            usuario_id = await crear_administrador(
-                datos, "Alta inicial autorizada de prueba", settings
-            )
+            usuario_id = await crear_administrador(datos, "Alta inicial autorizada de prueba", settings)
             with pytest.raises(ValueError, match="Ya existe un administrador"):
                 await crear_administrador(datos, "Segunda alta rechazada de prueba", settings)
         finally:
@@ -870,6 +804,4 @@ def test_transporte_smtp_tls_y_enlace_en_fragmento(monkeypatch):
     smtp.starttls.assert_called_once()
     smtp.login.assert_called_once_with("usuario-prueba", "clave-prueba")
     mensaje = smtp.send_message.call_args.args[0]
-    assert (
-        "https://polis.example.org#accion=recuperar&token=token-de-prueba" in mensaje.get_content()
-    )
+    assert "https://polis.example.org#accion=recuperar&token=token-de-prueba" in mensaje.get_content()

@@ -23,7 +23,7 @@ from app.core.database import Base
 
 class BancoAlternativas(Base):
     """Iniciativa de solución formulada en el Banco Distrital de Alternativas MGA.
-    
+
     Estructurada metodológicamente bajo lineamientos DNP para la Política Pública
     de Seguridad Humana Integral de Cartagena de Indias 2026–2036.
     """
@@ -78,9 +78,7 @@ class BancoAlternativas(Base):
     costo_estimado_cop: Mapped[Decimal] = mapped_column(
         Numeric(18, 2), default=Decimal("0.00"), server_default=text("0.00"), nullable=False
     )
-    horizonte_anios: Mapped[int] = mapped_column(
-        Integer, default=4, server_default=text("4"), nullable=False
-    )
+    horizonte_anios: Mapped[int] = mapped_column(Integer, default=4, server_default=text("4"), nullable=False)
     estado: Mapped[str] = mapped_column(
         String(30), default="en_formulacion", server_default=text("'en_formulacion'"), nullable=False
     )

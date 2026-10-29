@@ -1,0 +1,262 @@
+{
+  "esquema": "polis.evidencia_revision_fuentes.v1",
+  "tarea": "OP-FUENTES-01",
+  "fecha": "2026-10-24",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "revision_preventiva_entregada_pendiente_de_codex",
+  "entradas_leidas": [
+    {
+      "ruta": "bridge/65_schema_clasificacion_fuentes_ollamacodex.json",
+      "clase": "sha_entrega_final",
+      "sha256_leido": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+      "sha256_esperado": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+      "clase": "sha_entrega_final",
+      "sha256_leido": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+      "sha256_esperado": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/65_contrato_ciclo_fuentes_ollamacodex.md",
+      "clase": "sha_entrega_final",
+      "sha256_leido": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+      "sha256_esperado": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/65_entrega_ollamacodex_clasificacion_fuentes.md",
+      "clase": "sha_entrega_final",
+      "sha256_leido": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+      "sha256_esperado": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/70_revision_final_clasificacion_fuentes.json",
+      "clase": "archivo_de_revision",
+      "sha256_leido": "2583c59f5ec558551e7e2ff950955c66e94c73c3d6a6f80b1c8933e6c5da44fc",
+      "sha256_esperado": "2583c59f5ec558551e7e2ff950955c66e94c73c3d6a6f80b1c8933e6c5da44fc",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/70_revision_final_clasificacion_fuentes.md",
+      "clase": "archivo_de_revision",
+      "sha256_leido": "838d4ef5bcb3ff26b457c7d7ae606b741df8baf66fa83af0330048f9dc61f9fe",
+      "sha256_esperado": "838d4ef5bcb3ff26b457c7d7ae606b741df8baf66fa83af0330048f9dc61f9fe",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/71_tarea_opencode_integracion_catalogo_fuentes.md",
+      "clase": "tarea",
+      "sha256_leido": "8ba59f39b8f560da855f629450db91dc9a441d608b1e13e21fc5b4aed8f45306",
+      "sha256_esperado": "8ba59f39b8f560da855f629450db91dc9a441d608b1e13e21fc5b4aed8f45306",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/67_ampliacion_conciliacion_retrospectiva_fuentes.md",
+      "clase": "lectura_requerida",
+      "sha256_leido": "0ca09ac5fb761820080b9571634c8e323071de684f825162f9d6abeb6c52a808",
+      "sha256_esperado": "0ca09ac5fb761820080b9571634c8e323071de684f825162f9d6abeb6c52a808",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/68_misionalidad_temporalidad_e_inferencia_fuentes.md",
+      "clase": "lectura_requerida",
+      "sha256_leido": "3046055452c87889e197a671c57f8aa937b2fd24183e8286e3b20702115a0b34",
+      "sha256_esperado": "3046055452c87889e197a671c57f8aa937b2fd24183e8286e3b20702115a0b34",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/48_inventario_fuentes_multipolitica.json",
+      "clase": "entrada_de_datos",
+      "sha256_leido": "549c519919d5e631c7f56913dda478498183cf69d75c08bf59891da4af0e1e8f",
+      "sha256_esperado": "549c519919d5e631c7f56913dda478498183cf69d75c08bf59891da4af0e1e8f",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/fuentes_nacionales_aportadas_20.json",
+      "clase": "entrada_de_datos",
+      "sha256_leido": "feb3728a02b5c0ec82a59029eae27864eee17579172eae39cd3e829e063a7a31",
+      "sha256_esperado": "feb3728a02b5c0ec82a59029eae27864eee17579172eae39cd3e829e063a7a31",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/58_evidencia_adquisicion_fuentes.json",
+      "clase": "referencia_citada_en_70",
+      "sha256_leido": "c5861d20a618de5376cb5489e274876d4a22a671dee900b17e0c950a9b172e7e",
+      "sha256_esperado": "c5861d20a618de5376cb5489e274876d4a22a671dee900b17e0c950a9b172e7e",
+      "coincide": true
+    },
+    {
+      "ruta": "bridge/58_resultados_descargas.csv",
+      "clase": "referencia_citada_en_70",
+      "sha256_leido": "4f1ec29ab5bffe45c9a14ca1fca88fc53d057ced63a655e622efe3e156a2def1",
+      "sha256_esperado": "4f1ec29ab5bffe45c9a14ca1fca88fc53d057ced63a655e622efe3e156a2def1",
+      "coincide": true
+    }
+  ],
+  "confirmacion_hashes_70": {
+    "sha_entrega_final_consultado": "bridge/70_revision_final_clasificacion_fuentes.json#/sha_entrega_final",
+    "resultado": "4 de 4 coinciden (schema, catalogo, contrato, entrega)",
+    "nota": "Los hashes finales de 70 prevalecen; coinciden byte a byte con los archivos presentes en bridge/."
+  },
+  "codigo_comprobado": [
+    {
+      "ruta": "backend/app/modules/compromisos/registro_descargas_polis.py",
+      "sha256": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd",
+      "rol": "registro real de adaptadores; 28 claves; despacho por producto_id"
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/adquisicion_fuentes_polis.py",
+      "sha256": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3",
+      "rol": "productos_desde_plan, adquirir_fuentes, manifiesto y validaciones"
+    },
+    {
+      "ruta": "backend/scripts/planificar_fuentes_politica.py",
+      "sha256": "b1423ed6eda1b36a0fb38c48366476bddba5da5ff64d9ea7138eea8cd135b0a4",
+      "rol": "unico importador del planificador (linea 14)"
+    },
+    {
+      "ruta": "backend/scripts/adquirir_fuentes_politica.py",
+      "sha256": "a8986ada9a6f7a2d7a93838608b153d29fe63d8e7e348fc9595886656cb83184",
+      "rol": "unico consumidor de adquirir_fuentes (linea 11)"
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/corte_datos_polis.py",
+      "sha256": "16cc4fd6b3aecf423f24e4bcea236728aa56f21f16ce6e14ad44012bb8be5f0f",
+      "rol": "ManifiestoCorteDatos, ReferenciaVersionFuente, verificar_manifiesto_corte"
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/contexto_corte_polis.py",
+      "sha256": "3daa460376e0b0fa3bb005445513c557e388dbdeb8209a0648e2fc1c94261a58",
+      "rol": "ContextoCorte; verifica manifiesto, no usa catalogo de fuentes"
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/orquestador_grafo.py",
+      "sha256": "58a2e6daecc382825fa51e7ef0315b5a675aef3042dcedac737550e9bc3855f5",
+      "rol": "etapa 'fuentes' operada por scripts y manifiesto; no importa el planificador"
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/metadatos_socrata_polis.py",
+      "sha256": "a37f37999da5b360e64112a7d2f977123433d6bb7c4940dce52e1677d51d8efd",
+      "rol": "ficha_metadata: licencia/atribucion del portal, estado_acreditacion=PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION"
+    }
+  ],
+  "hallazgo_modulo_ausente": {
+    "ruta": ".archify/workflow-politicas-publicas-20261024-010417/evidencia/backend/app/modules/compromisos/planificador_fuentes_politica.py",
+    "sha256": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+    "lineas": 289,
+    "copia_pyc": "backend/app/modules/compromisos/__pycache__/planificador_fuentes_politica.cpython-312.pyc",
+    "sha256_pyc": "c3c000f2106c50e528b135c4b8ed2fe52212d942a85ee30385fa2206d80f25f6",
+    "estado_arbol": "ausente; no esta en HEAD; git log del archivo vacio",
+    "importador": "backend/scripts/planificar_fuentes_politica.py:14",
+    "efecto": "ImportError al ejecutar el CLI 'planificar'. Analisis de contrato basado en la copia de evidencia, no en fuente vigente."
+  },
+  "referencias_de_codigo": {
+    "producto_fuente": "planificador evidencia L66-85 (producto_id, nombre, tipo, conceptos, indicadores, unidades, territorios, poblaciones, anios, coberturas_acreditadas, acceso, url_referencia, claves_locales_relacionadas, version_local_sha256, evidencia_validacion, vigente_hasta, condiciones_uso, adaptador, procedencia)",
+    "cobertura_fuente": "planificador evidencia L60-65",
+    "evaluar": "planificador evidencia L128-181 (escalera de acciones y motivos)",
+    "seleccionar": "planificador evidencia L184-207 (candidatos explicitos o por indicador+concepto)",
+    "consolidar": "planificador evidencia L209-248 (brechas, productos_con_ficha_semantica_pendiente)",
+    "importadores": "planificador evidencia L252-289",
+    "productos_desde_plan": "adquisicion L69-84",
+    "adquirir_fuentes": "adquisicion L388-420 (validacion todo-o-nada, destino bajo bridge/, territorio DIVIPOLA:13001, anios del CLI)",
+    "registro_descargas": "registro L37-215 (28 claves reales; 'local:'+clave via _socrata)",
+    "corte": "corte_datos_polis.py L14-30 (ReferenciaVersionFuente fuente_clave/version_id/sha256_contenido); L100-118 (verificar)",
+    "orquestador": "orquestador_grafo.py L64 GRAFO_ETAPAS=('fuentes','conciliacion','dea'); L613-628 etapa 'fuentes' con manifiesto congelado; no importa el planificador"
+  },
+  "conteos": {
+    "fichas_total": 63,
+    "fichas_PR": 20,
+    "fichas_locales": 43,
+    "clase_registro": {
+      "institucion": 2,
+      "sistema": 13,
+      "portal": 2,
+      "indicador": 2,
+      "encuesta": 1,
+      "serie": 43
+    },
+    "naturaleza": {
+      "cooperacion": 3,
+      "publico": 52,
+      "academia": 1,
+      "por_verificar": 7
+    },
+    "ambito_institucional": {
+      "internacional": 3,
+      "nacional": 53,
+      "por_verificar": 7
+    },
+    "cobertura_dato": {
+      "desconocido": 20,
+      "cabecera": 1,
+      "municipal": 35,
+      "municipal_con_desglose_urbano_rural": 6,
+      "estacion": 1
+    },
+    "verificacion": {
+      "parcial": 62,
+      "pendiente": 1
+    },
+    "producto_estadistico_estado": {
+      "pendiente": 20,
+      "parcial": 43
+    },
+    "claves_registro_descargas": 28,
+    "fichas_con_adaptador": 28,
+    "fichas_sin_adaptador": 35,
+    "fichas_sin_adaptador_desglose": {
+      "PR": 20,
+      "locales": 15
+    },
+    "suma_indicadores_43_locales": 136,
+    "suma_unidades_43_locales": 60,
+    "territorios_no_vacios": 9,
+    "poblaciones_no_vacias": 0,
+    "coberturas_no_vacias": 0,
+    "unidad_observacion_no_vacia": 0,
+    "producto_estadistico_definicion_indicador_no_nula": 0,
+    "vigencia_no_nula": 0,
+    "alias_no_vacios": 0,
+    "vinculos_rol_no_vacios": 0,
+    "relaciones_candidatas_no_vacias": 0,
+    "enlaces_PR_declarados": 21,
+    "PR_con_anios": 0,
+    "sha_contenido_declarado_igual_a_48": 43,
+    "productores_en_repo_de_campos_de_acreditacion": 0
+  },
+  "comprobaciones": [
+    "Los 4 hashes finales de 65 coinciden con 70.json#/sha_entrega_final.",
+    "Los 43 sha_contenido_declarado locales son identicos a 48#/fuentes/*/sha256_contenido_declarado.",
+    "Las 28 claves de registro_descargas() tienen ficha en 65; ninguna clave queda sin ficha.",
+    "Las 28 fichas con adaptador corresponden a las 28 capturas cotejadas que declara 70.",
+    "Ninguna ficha declara coberturas, poblaciones, unidad_observacion ni definicion_indicador.",
+    "Ningun codigo en backend/ o scripts/ asigna conceptos, territorios, poblaciones, coberturas_acreditadas, acceso, adaptador, condiciones_uso o evidencia_validacion (grep sin resultados propios).",
+    "El planificador solo es importado por el CLI; adquirir_fuentes solo por el CLI.",
+    "El orquestador opera la etapa 'fuentes' con manifiesto de corte, no con el catalogo 65 ni con el planificador.",
+    "adquirir_fuentes fija territorio DIVIPOLA:13001 y toma anios del argumento CLI, no del plan."
+  ],
+  "no_ejecutado": [
+    "planificador_fuentes_politica (no ejecutado)",
+    "CLI planificar/adquirir (no ejecutados)",
+    "adaptadores de descarga y red (no ejecutados)",
+    "motores analiticos/DEA/grafo (no ejecutados)",
+    "pruebas de aplicacion, pytest, SQL, migraciones (no ejecutados)",
+    "lectura de bytes de conjuntos analiticos (no realizada)",
+    "commit, push, despliegue (no realizados)"
+  ],
+  "limites": [
+    "Revision preventiva; no es dictamen EAF ni cierre de orquestacion universal.",
+    "El contrato del planificador proviene de copia de evidencia por ausencia de fuente (D1); puede diferir de la version que se restaure.",
+    "Los conteos son sobre el JSON 65 congelado, no sobre datos analiticos.",
+    "No se acredita licencia, calidad, cobertura ni causalidad."
+  ],
+  "salidas": [
+    "bridge/72_revision_preventiva_integracion_fuentes_opencode.md",
+    "bridge/72_matriz_correspondencia_catalogo_planificador.json",
+    "bridge/72_evidencia_revision_fuentes_opencode.json"
+  ]
+}

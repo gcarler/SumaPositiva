@@ -72,24 +72,15 @@ def test_siete_endpoints_inteligencia_entregan_contratos_analiticos(client_intel
     m1 = responses["patologias-dnp"]["resumen_global"]
     classified = m1["actividades_verbo_fuerte"] + m1["actividades_verbo_debil"]
     assert 0 <= classified <= m1["total_actividades_evaluadas"]
-    assert (
-        responses["alineacion-territorial"]["resumen_territorial"][
-            "total_registros_triada_territorializados"
-        ]
-        >= 0
-    )
+    assert responses["alineacion-territorial"]["resumen_territorial"]["total_registros_triada_territorializados"] >= 0
     assert responses["buscador"]["consulta"]["q"] == "seguridad"
     assert responses["simulador-cierre"]["horizonte"]["anio_cierre"] == 2027
 
 
 def test_inteligencia_valida_filtros_y_limites(client_inteligencia):
     base = "/api/v1/compromisos/triada/inteligencia"
-    invalid_dimension = client_inteligencia.get(
-        f"{base}/patologias-dnp", params={"dimension": "Dimensión ajena"}
-    )
-    invalid_period = client_inteligencia.get(
-        f"{base}/buscador", params={"periodo": "PERIODO_AJENO"}
-    )
+    invalid_dimension = client_inteligencia.get(f"{base}/patologias-dnp", params={"dimension": "Dimensión ajena"})
+    invalid_period = client_inteligencia.get(f"{base}/buscador", params={"periodo": "PERIODO_AJENO"})
     invalid_search = client_inteligencia.get(f"{base}/buscador", params={"q": "x"})
     assert invalid_dimension.status_code == 422
     assert invalid_period.status_code == 422

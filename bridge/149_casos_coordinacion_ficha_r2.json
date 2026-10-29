@@ -1,0 +1,87 @@
+{
+  "fecha_utc": "2026-10-26T03:28:44.330565+00:00",
+  "naturaleza": "casos_sinteticos_locales_no_modifican_codigo",
+  "sha_codigo": {
+    "backend/app/modules/compromisos/ficha_territorial_polis.py": "b2ef85dafd46b0e153db2ef251743c0d7f7ac7036694ee8680a74bf4a94756a0",
+    "backend/scripts/construir_ficha_territorial_polis.py": "65776615e2d32d985a8730b7f76664142e2ab9cb0f514b43a196f9da8c08070c",
+    "backend/tests/test_ficha_territorial_polis.py": "f175ffd04c3ab13a30145e399a218a49b5f4f232bfd39628f150621ec1218784"
+  },
+  "casos": [
+    {
+      "caso": "omitir_hallazgo_duplicado_manteniendo_dos_observaciones",
+      "aceptado": true,
+      "conteos": {
+        "filas_total": 2,
+        "filas_contexto_general": 0,
+        "observaciones": 2,
+        "filas_excluidas_seleccion": 0,
+        "series": 1,
+        "duplicados_celda": 0,
+        "observaciones_aceptadas": 2,
+        "observaciones_retenidas": 0,
+        "observaciones_rechazadas": 0,
+        "contexto_aceptadas": 0,
+        "contexto_retenidas": 0,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      }
+    },
+    {
+      "caso": "orden_compartido_observacion_y_excluida",
+      "aceptado": true,
+      "conteos": {
+        "filas_total": 2,
+        "filas_contexto_general": 0,
+        "observaciones": 1,
+        "filas_excluidas_seleccion": 1,
+        "series": 1,
+        "duplicados_celda": 0,
+        "observaciones_aceptadas": 1,
+        "observaciones_retenidas": 0,
+        "observaciones_rechazadas": 0,
+        "contexto_aceptadas": 0,
+        "contexto_retenidas": 0,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 1,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      }
+    },
+    {
+      "caso": "dos_observaciones_distinto_id_mismo_orden",
+      "aceptado": true,
+      "conteos": {
+        "filas_total": 2,
+        "filas_contexto_general": 0,
+        "observaciones": 2,
+        "filas_excluidas_seleccion": 0,
+        "series": 1,
+        "duplicados_celda": 0,
+        "observaciones_aceptadas": 2,
+        "observaciones_retenidas": 0,
+        "observaciones_rechazadas": 0,
+        "contexto_aceptadas": 0,
+        "contexto_retenidas": 0,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      }
+    },
+    {
+      "caso": "identidad_parcial_sin_codigo_entidad_con_catalogo",
+      "construida": false,
+      "error": "ValidationError",
+      "detalle": "1 validation error for ResolucionIdentidadTerritorial\ncodigo_entidad\n  String should have at least 1 character [type=string_too_short, input_value='', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/string_too_short"
+    },
+    {
+      "caso": "nivel_departamental_explicito",
+      "nivel_declarado": "departamental",
+      "nivel_en_ficha": "municipal",
+      "estado_en_ficha": "no_evaluable",
+      "estado_resolver_con_nivel_correcto": "encontrado"
+    }
+  ]
+}

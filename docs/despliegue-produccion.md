@@ -59,6 +59,7 @@ A continuación se detalla la nómina de variables requeridas para el funcionami
 | `PORT` | Entero | **Sí** | Puerto TCP en el que escucha el servidor standalone de Next.js (`3000`). |
 | `HOSTNAME` | IP | **Sí** | Dirección IP de enlace del frontend (`127.0.0.1`). |
 | `NODE_ENV` | Literal | **Sí** | Debe fijarse en `production` para optimización de bundles, server components y caché. |
+| `POLIS_CSP_ENFORCE` | Booleano | Opcional | Control de modo de Content-Security-Policy. En `production` aplica `true` (Enforce) por defecto; configurable como opt-out a `false` solo si se requiere Report-Only transitorio. |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | String | Opcional | ID de cliente público de Google OAuth para el componente web de autenticación. |
 
 ---
@@ -290,7 +291,7 @@ sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
 sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
-PGPASSWORD="$POLIS_DB_PASS" pg_restore -h 127.0.0.1 -U polis -d bd_csh --no-owner /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump
+pg_restore --password -h 127.0.0.1 -U polis -d bd_csh --no-owner /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump
 ```
 
 ### 5.3. Rollback alternativo vía Alembic (si la base no sufrió corrupción)

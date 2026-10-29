@@ -1,0 +1,15 @@
+# EAF-APORTES-GOLIVE-01 · Dictamen independiente de persistencia/aportes
+
+Solicitud de coordinación recibida26-oct-2026. Evaluador nuevo, sin participación en implementación. Alcance: aportes y límites transaccionales de sus casos de uso y dependencias directas (incluidas devolución motivada/apoyos/evidencias si intervienen), permisos, modelos/migraciones y suites pertinentes. Identidad de usuarios tiene evaluador propio168; coordinar hallazgos compartidos sin duplicar ni invadir su base.
+
+Aplicar AGENTS, arquitectura, transacciones, docs/equipo_auditores_forenses.md y `.agents/skills/polis-eaf-transactions/SKILL.md`. Snapshot inicial HEAD07096bcd73531415d8b8329a8aba0ad64fa5d23c en rama remediacion/aud-2026-10-21; árbol compartido sucio. Registrar hashes del alcance antes/después; no atribuir cambios sin commit al HEAD.
+
+Únicas escrituras de repositorio: `bridge/171_dictamen_eaf_persistencia_aportes.md` y nuevo directorio `bridge/171_evidencia_eaf_persistencia_aportes/`. Sin remediar app/tests/src/docs de estado, commit/push/deploy ni mensajes externos. No emitir dictamen sobre134/143 (resolver territorial puro).
+
+Revisar endpoint→servicio→repositorio y llamadores directos: una confirmación al completar caso, sin commit/rollback de repositorio, respuesta validada dentro del límite, sesiones exclusivas, locks/versiones conservados, rollback de todos los estados dependientes, archivos compensados y denegación/autorización según permisos-api. Revisar funciones SQL privilegiadas por uso real y privilegios, no por coincidencia textual aislada.
+
+Pruebas de aportes/transacciones/permisos e integración pertinentes y backend:check autorizadas **solo en base aislada nueva `polis_test_eaf_aportes_20261026_<sufijo>`**. No usar bases del otro evaluador ni de agentes existentes. Fijar explícitamente POLIS_TEST_DATABASE_URL/POLIS_DATABASE_URL antes de cargar configuración y comprobar nombre mediante make_url. Prohibido fallback/consulta/escritura de bd_csh o bases productivas. Puede provisionarse una base nueva local si existe acceso, sin modificar cuentas/roles/servicios productivos ni exponer credenciales; no borrar bases preexistentes. Si falta acceso, declarar límite y completar lo posible por lectura.
+
+Éxito observado desde conexión nueva; fallo después de flush, fallo de commit, validación/cancelación, restricciones y compensaciones pertinentes. En migraciones revisadas: instalación vacía, Alembic check/metadata, downgrade/reconstrucción y actualización con datos de prueba conservados. Sin mocks como sustituto de atomicidad real. Escenarios de auditoría nuevos solo bajo tu directorio y base, sin editar las pruebas de aplicación.
+
+Dictamen reproducible según formato EAF, independencia, snapshot/hashes, alcance, entorno/comandos/base sin credenciales, resultados, hallazgos ruta/línea/escenario/esperado/observado/impacto/severidad/corrección propuesta, límites y estado acotado APROBADO/OBSERVADO/BLOQUEADO/NO EVALUADO. No aprobar todo POLIS por una suite parcial, no certificar condiciones jurídicas ni autorizar despliegue. Reportar progreso al coordinador y entregar rutas al terminar.

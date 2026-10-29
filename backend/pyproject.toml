@@ -29,6 +29,7 @@ dependencies = [
   "sqlalchemy[asyncio]>=2.0,<2.1",
   "uvicorn[standard]>=0.35,<1",
   "xlrd>=2.0.2",
+  "langgraph-checkpoint-postgres==3.2.0",
 ]
 
 [dependency-groups]
@@ -37,11 +38,16 @@ dev = ["httpx2>=2,<3", "pytest>=8,<10", "ruff>=0.12,<1"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-markers = ["integration: requiere una base PostgreSQL/PostGIS exclusiva de pruebas"]
+markers = [
+  "integration: requiere una base PostgreSQL/PostGIS exclusiva de pruebas",
+  "migration: reconstruye solo POLIS_TEST_MIGRATIONS_DATABASE_URL, distinta de la base principal",
+]
 
 [tool.ruff]
 target-version = "py312"
-line-length = 100
+# AUD-2026-10-21 Fase 0: umbral 120 conforme al estándar del código; aún quedan
+# ~112 líneas >120 a reescribir (ver plan T3 paso 5).
+line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -49,4 +55,37 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.ruff.lint.per-file-ignores]
 "alembic/env.py" = ["E402"]
 "alembic/versions/*" = ["E501"]
-
+# AUD-2026-10-21 T3: este test registra scripts/ en sys.path antes de importar
+# los módulos sembrar_*; el orden es imprescindible, no es un descuido.
+"tests/test_aud11_scripts_seguridad.py" = ["E402"]
+# AUD-2026-10-21 ciclo 3 — E501 residual en umbral 120, justificación por
+# fichero (ratificación EAF pendiente; ver plan_remediacion_20102026.md T3):
+# - notificaciones/correo.py: plantillas HTML de correo (59 líneas); partir las
+#   etiquetas degrada localización y legibilidad del markup prod.
+# - mesas/service.py y participacion/repository.py: SQL formal multilínea con
+#   cláusulas y comentarios legibles; dividir_strings SQL rompe el formato
+#   canónico documentado en docs/transacciones.md.
+# - politicas/{gating,schemas}.py: reglas del kit y descripciones contractuales
+#   (tags OpenAPI del catálogo de permisos) que deben copiarse verbatim.
+# - geodatos/{service,router}.py y test_geodatos_analitica_hurtos: consultas
+#   PostGIS/tablas de la analítica; cadenas de datos de prueba con geometrías.
+# - identidad/script bootstrap_identidad_admin.py: runbook ETL legible (ya
+#   declara `# ruff: noqa: E501` segmentos SQL amplios).
+# - tests/test_cierre07_ambito_territorial.py: docstrings normativos del CA
+#   CIERRE-07 (condiciones de cumplimiento copiadas verbatim del contrato).
+# Los ficheros corregibles ya se arreglaron y se retiraron de esta lista
+# (ciclo 3: auditoria/router, evidencia/models, indicadores/service, fotos,
+# mediciones, fuentes, canal_whatsapp, integridad_compromisos, cierre01,
+# aud06_perfil_produccion).
+"app/modules/notificaciones/correo.py" = ["E501"]
+"tests/test_geodatos_analitica_hurtos.py" = ["E501"]
+"app/modules/politicas/gating.py" = ["E501"]
+"scripts/bootstrap_identidad_admin.py" = ["E501"]
+"app/modules/participacion/repository.py" = ["E501"]
+"app/modules/mesas/service.py" = ["E501"]
+"app/modules/politicas/schemas.py" = ["E501"]
+"app/modules/geodatos/service.py" = ["E501"]
+"app/modules/geodatos/router.py" = ["E501"]
+"tests/test_cierre07_ambito_territorial.py" = ["E501"]
+"app/modules/aportes/models.py" = ["E501"]
+"app/modules/alternativas/router.py" = ["E501"]

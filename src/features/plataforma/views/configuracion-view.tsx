@@ -29,8 +29,11 @@ import { GestorHerosPlataforma } from "../components/gestor-heros-plataforma";
 import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
 import { SaludSistemaSection } from "../components/salud-sistema-section";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function ConfiguracionView() {
+  const [vista, setVista] = useCollectionView("configuracion");
   const sesion = useSesionStore((state) => state.sesion);
   const { theme, setTheme } = useTheme();
   const cache = useQueryClient();
@@ -63,7 +66,8 @@ export function ConfiguracionView() {
       {!editar && <Notice title="Solo lectura">Puedes consultar estos parámetros. Los cambios requieren el permiso de gestión de configuración.</Notice>}
       <Notice tone="info" title="Alcance de esta configuración">Las preferencias de tema se guardan localmente. Los parámetros distritales y de despliegue se muestran como referencia; su modificación se administra por los canales de configuración autorizados.</Notice>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de las secciones de configuración" />
+      <CollectionLayout view={vista} className="sm:grid-cols-1 xl:grid-cols-2">
         <section className="overflow-hidden rounded-2xl border border-border bg-surface-1">
           <CabeceraSeccion icono={<Palette className="size-5" />} titulo="Apariencia" detalle="Personaliza la lectura de la plataforma." />
           <div className="space-y-5 p-5">
@@ -175,7 +179,7 @@ export function ConfiguracionView() {
           <div className="flex items-start gap-3"><Settings2 className="mt-0.5 size-5 text-ember" aria-hidden="true" /><div><h2 className="font-semibold">Participación y fases</h2><p className="mt-1 text-sm text-text-secondary">La recepción web y los cierres se configuran desde cada fase y formulario.</p></div></div>
           {editar && sesion?.permisos?.includes("politicas:gestionar") && <Button variant="outline" onClick={() => openPanel("fases-control", {})}>Configurar fases</Button>}
         </section>
-      </div>
+      </CollectionLayout>
     </div>
   );
 }

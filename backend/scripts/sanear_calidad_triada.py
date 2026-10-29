@@ -66,18 +66,10 @@ async def sanear() -> dict[str, int]:
     async with database.sessions() as session:
         async with transaction(session):
             archives = list(
-                (
-                    await session.scalars(
-                        select(ArchivoPlanIngerido).order_by(ArchivoPlanIngerido.creado_en)
-                    )
-                ).all()
+                (await session.scalars(select(ArchivoPlanIngerido).order_by(ArchivoPlanIngerido.creado_en))).all()
             )
-            fingerprints: dict[
-                tuple[str | None, int | None, str, str], list[ArchivoPlanIngerido]
-            ] = defaultdict(list)
-            clones_por_entidad_huella: dict[tuple[str | None, str], list[ArchivoPlanIngerido]] = (
-                defaultdict(list)
-            )
+            fingerprints: dict[tuple[str | None, int | None, str, str], list[ArchivoPlanIngerido]] = defaultdict(list)
+            clones_por_entidad_huella: dict[tuple[str | None, str], list[ArchivoPlanIngerido]] = defaultdict(list)
             deleted_archive_ids = set()
             for archive in archives:
                 rows = list(
@@ -117,9 +109,7 @@ async def sanear() -> dict[str, int]:
                     data = dict(row.datos_origen or {})
                     recognized, raw_entity = _entidad_en_datos_origen(data)
                     row_entity_before = row.entidad_normalizada
-                    canonical = (
-                        recognized or entity_from_name or normalizar_entidad(row_entity_before)
-                    )
+                    canonical = recognized or entity_from_name or normalizar_entidad(row_entity_before)
                     if raw_entity and normalizar_entidad(raw_entity) is None:
                         data.setdefault("_responsable_celda", raw_entity)
                     elif row_entity_before and normalizar_entidad(row_entity_before) is None:
@@ -143,18 +133,10 @@ async def sanear() -> dict[str, int]:
                             "meta_ejecutada_anual": float(row.meta_ejecutada_anual)
                             if row.meta_ejecutada_anual is not None
                             else None,
-                            "avance_t1": float(row.avance_t1)
-                            if row.avance_t1 is not None
-                            else None,
-                            "avance_t2": float(row.avance_t2)
-                            if row.avance_t2 is not None
-                            else None,
-                            "avance_t3": float(row.avance_t3)
-                            if row.avance_t3 is not None
-                            else None,
-                            "avance_t4": float(row.avance_t4)
-                            if row.avance_t4 is not None
-                            else None,
+                            "avance_t1": float(row.avance_t1) if row.avance_t1 is not None else None,
+                            "avance_t2": float(row.avance_t2) if row.avance_t2 is not None else None,
+                            "avance_t3": float(row.avance_t3) if row.avance_t3 is not None else None,
+                            "avance_t4": float(row.avance_t4) if row.avance_t4 is not None else None,
                             "avance_fisico_pct": float(row.avance_fisico_pct)
                             if row.avance_fisico_pct is not None
                             else None,
@@ -181,30 +163,24 @@ async def sanear() -> dict[str, int]:
                 archive_entity_before = archive.entidad_normalizada
                 canonical_archive = entity_from_name or normalizar_entidad(archive_entity_before)
                 if not canonical_archive:
-                    canonical_archive = next(
-                        (r.entidad_normalizada for r in rows if r.entidad_normalizada), None
-                    )
+                    canonical_archive = next((r.entidad_normalizada for r in rows if r.entidad_normalizada), None)
                 archive.entidad_normalizada = canonical_archive
                 if archive_entity_before != canonical_archive:
                     stats["entidades_archivo_corregidas"] += 1
                 if rows:
-                    synthetic_sheets = [
-                        HojaLeida(name, 0, {}, sheet_rows[name], []) for name in sorted(sheet_rows)
-                    ]
+                    synthetic_sheets = [HojaLeida(name, 0, {}, sheet_rows[name], []) for name in sorted(sheet_rows)]
                     fingerprint = huella_tabular_sha256(synthetic_sheets)
                     metadata = dict(archive.metadatos or {})
                     metadata["huella_tabular_sha256"] = fingerprint
                     archive.metadatos = metadata
-                    fingerprints[
-                        (canonical_archive, archive.vigencia, archive.corte_periodo, fingerprint)
-                    ].append(archive)
+                    fingerprints[(canonical_archive, archive.vigencia, archive.corte_periodo, fingerprint)].append(
+                        archive
+                    )
                     clones_por_entidad_huella[(canonical_archive, fingerprint)].append(archive)
             for key, group in fingerprints.items():
                 if len(group) < 2 or not key[0] or key[1] is None:
                     continue
-                group.sort(
-                    key=lambda item: (item.filas_extraidas == 0, item.creado_en, str(item.id))
-                )
+                group.sort(key=lambda item: (item.filas_extraidas == 0, item.creado_en, str(item.id)))
                 canonical = group[0]
                 canonical_meta = dict(canonical.metadatos or {})
                 for duplicate in group[1:]:
@@ -228,9 +204,7 @@ async def sanear() -> dict[str, int]:
                     canonical.dimensiones_seguridad_humana = dims
                     canonical_meta["dimensiones_seguridad_humana"] = dims
                     for row in await session.scalars(
-                        select(RegistroTriadaNormalizado).where(
-                            RegistroTriadaNormalizado.archivo_id == canonical.id
-                        )
+                        select(RegistroTriadaNormalizado).where(RegistroTriadaNormalizado.archivo_id == canonical.id)
                     ):
                         row.dimensiones_seguridad_humana = dims
                         source_data = dict(row.datos_origen or {})
@@ -273,14 +247,10 @@ async def sanear() -> dict[str, int]:
                             0,
                             lot.total_hojas_procesadas - len(duplicate.hojas_analizadas or []),
                         )
-                        lot.total_registros_normalizados = max(
-                            0, lot.total_registros_normalizados - len(rows)
-                        )
+                        lot.total_registros_normalizados = max(0, lot.total_registros_normalizados - len(rows))
                         motor_counts = dict(lot.resumen_motores or {})
                         for row in rows:
-                            motor_counts[row.motor_destino] = max(
-                                0, motor_counts.get(row.motor_destino, 0) - 1
-                            )
+                            motor_counts[row.motor_destino] = max(0, motor_counts.get(row.motor_destino, 0) - 1)
                         lot.resumen_motores = motor_counts
                     if rows:
                         await session.execute(

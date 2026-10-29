@@ -71,7 +71,7 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
         <span className="truncate">DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro Distrital</span>
       </div>
 
-      {/* Lado derecho: Botón Panel Superior, Datos Estadísticos, Menú de Vistas y Controles de los 4 Paneles */}
+      {/* Lado derecho: Botón Panel Superior, Banco Multifuente, Datos Estadísticos, Menú de Vistas y Controles de los 4 Paneles */}
       <div className="flex items-center gap-1.5">
         <Button
           type="button"
@@ -83,6 +83,19 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
           title={topOpen ? "Ocultar panel superior de controles y KPIs" : "Mostrar panel superior de controles y KPIs"}
         >
           <span>{topOpen ? "Ocultar Panel Superior" : "Mostrar Panel Superior"}</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant="default"
+          size="sm"
+          onClick={() => openView("fuentes")}
+          data-testid="workbench-btn-banco-multifuente"
+          className="h-7.5 gap-1.5 text-xs bg-[var(--ember)] text-[var(--ember-foreground)] hover:bg-[var(--ember)]/90 font-semibold"
+          title="Ver Banco Multifuente de Seguridad Humana (2.449 indicadores)"
+        >
+          <Database className="size-3.5" aria-hidden="true" />
+          <span className="hidden sm:inline">Banco Multifuente</span>
         </Button>
 
         <Button

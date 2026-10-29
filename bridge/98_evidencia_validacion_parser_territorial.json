@@ -1,0 +1,61 @@
+{
+  "fecha_utc": "2026-10-25T04:25:59.759095+00:00",
+  "estado": "validacion_dirigida_superada_sin_integracion",
+  "parser_sin_cambios": true,
+  "resultados": {
+    "bridge/97_pytest_parser_territorial.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "35",
+      "time": "0.141",
+      "timestamp": "2026-10-25T04:25:24.460120+00:00",
+      "hostname": "srv2006133"
+    },
+    "bridge/99_pytest_conciliador_parser.xml": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "107",
+      "time": "1.242",
+      "timestamp": "2026-10-25T04:25:50.586546+00:00",
+      "hostname": "srv2006133"
+    }
+  },
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "datos": "sinteticos_no_oficiales",
+  "SQL": false,
+  "red": false,
+  "corpus_real_procesado": false,
+  "integracion_productiva": false,
+  "dictamen_EAF": false,
+  "archivos": {
+    "backend/app/modules/compromisos/parser_terridata_polis.py": {
+      "sha256": "747ff3443ce03812ad3ce0ea31c35a322eddaaa7114345911aee7dbf04583de3",
+      "bytes": 21253
+    },
+    "backend/tests/test_parser_terridata_polis.py": {
+      "sha256": "28e4e56d1b91b3fa900d9147bdeb900e911fb5b9de592790e9de7917b485db66",
+      "bytes": 7602
+    },
+    "bridge/84_contrato_parser_territorial.json": {
+      "sha256": "afff629b65948919a01fec0716e459096c6e5dedef7f14ba2498b63610678039",
+      "bytes": 25331
+    },
+    "bridge/97_pytest_parser_territorial.xml": {
+      "sha256": "443dde146e680766041dde51670c72958fba0d4f7597a529982adbdfe77fae7c",
+      "bytes": 4617
+    },
+    "bridge/99_pytest_conciliador_parser.xml": {
+      "sha256": "e504aadbdf3e6f73399370a6d91760d2734db3d0fbf495f59172616885255a1c",
+      "bytes": 15820
+    },
+    "bridge/98_validacion_funcional_parser_territorial.md": {
+      "sha256": "7ee8fdf9b42bd1f4301a11be1b16a6df1e48f2405c3ac58acf1c193b76df27fc",
+      "bytes": 2955
+    }
+  }
+}

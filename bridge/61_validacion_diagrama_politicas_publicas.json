@@ -1,0 +1,82 @@
+{
+  "fecha": "2026-10-24",
+  "html": "bridge/60_flujo_sistema_politicas_publicas.html",
+  "sha256": "ea93f904c2bc4925b7422ea357b173703f91449d0aba54bafd3573e58f81fa61",
+  "diagramas": [
+    {
+      "vista": "panorama",
+      "tipo": "architecture",
+      "estado": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "spec_sha256": "65974bf8f8adb9e7cd66173888d7e3c3d2c02d3657c597c17e2d45e6c50e7009",
+      "artefacto_sha256": "c0d25902f3ccd541cb1e15e91d828ce39b175a44cd0102f3a2b61f09b121b32b",
+      "recibo": ".archify/workflow-politicas-publicas-20261024-010417/panorama/panorama.finalize-summary.json"
+    },
+    {
+      "vista": "datos",
+      "tipo": "architecture",
+      "estado": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "spec_sha256": "f7ccb19573f95249567f815a9e1936be41ad23d3cb6ff85b942abc5ecbba2e4b",
+      "artefacto_sha256": "d15b351fe6d5ff3c03e6889ad964dca404b23616a972020a212e529c4d6f8cf5",
+      "recibo": ".archify/workflow-politicas-publicas-20261024-010417/datos/datos.finalize-summary.json"
+    },
+    {
+      "vista": "formulacion",
+      "tipo": "architecture",
+      "estado": "pass",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "spec_sha256": "8a950f115d488bb79a64986caa65822521f7527929a8b28a869c45ddc7106148",
+      "artefacto_sha256": "3b3d69fec36ecc2b52503264d35c7f3c82b7bc2797c51ee218aa705584c0d88d",
+      "recibo": ".archify/workflow-politicas-publicas-20261024-010417/formulacion/formulacion.finalize-summary.json"
+    }
+  ],
+  "revision_visual": {
+    "panorama": "Captura1440 clara revisada; retorno externo sin cruces",
+    "datos": "Captura de portada revisada",
+    "formulacion": "Captura de portada revisada"
+  },
+  "portal": {
+    "fecha": "2026-10-24T01:13:02.203Z",
+    "artefacto": "bridge/60_flujo_sistema_politicas_publicas.html",
+    "vistas": [
+      {
+        "id": "panorama",
+        "titulo": "POLIS · de la necesidad pública a la evaluación",
+        "seleccion": "true"
+      },
+      {
+        "id": "datos",
+        "titulo": "POLIS · fuentes, calidad y corte de análisis",
+        "seleccion": "true"
+      },
+      {
+        "id": "formulacion",
+        "titulo": "POLIS · formular, concertar y decidir",
+        "seleccion": "true"
+      }
+    ],
+    "errores_consola": [],
+    "navegacion_teclado_datos": "true",
+    "vista_completa": "POLIS · de la necesidad pública a la evaluación",
+    "portada_sin_desbordamiento_horizontal": true
+  },
+  "repositorio_polis_HEAD_sin_cambios": true,
+  "fuentes_documentales": 26,
+  "nota": "Snapshot documental aislado; no se creó un commit de aplicación. Los controles son del artefacto visual, no una suite de POLIS."
+}

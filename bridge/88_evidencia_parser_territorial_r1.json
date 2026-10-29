@@ -1,0 +1,31 @@
+{
+  "fecha_utc": "2026-10-24T17:10:24.108829+00:00",
+  "estado": "sin_hallazgos_bloqueantes_revision_estatica",
+  "aceptacion_funcional": false,
+  "integracion": false,
+  "ejecucion_parser": false,
+  "pruebas_ejecutadas": false,
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "AST": "valido",
+  "JSON": "valido",
+  "JSON_Schema_Draft_2020_12": "valido_no_acredita_paridad_funcional",
+  "casos_previstos_no_ejecutados": 22,
+  "hallazgos_87": "cuatro_corregidos_por_lectura",
+  "detalle_menor": "informe_84_omite_estado_temporal_no_evaluable_por_estructura_en_lista_resumen",
+  "archivos": {
+    "backend/app/modules/compromisos/parser_terridata_polis.py": {
+      "sha256": "747ff3443ce03812ad3ce0ea31c35a322eddaaa7114345911aee7dbf04583de3",
+      "bytes": 21253
+    },
+    "bridge/84_contrato_parser_territorial.json": {
+      "sha256": "afff629b65948919a01fec0716e459096c6e5dedef7f14ba2498b63610678039",
+      "bytes": 25331
+    },
+    "bridge/84_entrega_ollamacodex_parser_territorial.md": {
+      "sha256": "1880541149c48044ce8ac153f6c5545a25e646af8aea053fb5fb494129bdedd7",
+      "bytes": 5806
+    }
+  },
+  "revision": "bridge/88_revision_parser_territorial_r1.md"
+}

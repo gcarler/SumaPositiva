@@ -82,12 +82,8 @@ class FaseConmutarPeticion(BaseModel):
         default=None,
         description="Nuevo estado: 'preparatoria', 'activa', 'en_revision', 'cerrada', 'archivada'",
     )
-    habilitada_web: bool | None = Field(
-        default=None, description="Interruptor maestro de participación ciudadana web"
-    )
-    motivo: str | None = Field(
-        default=None, max_length=500, description="Motivo institucional del cambio de fase"
-    )
+    habilitada_web: bool | None = Field(default=None, description="Interruptor maestro de participación ciudadana web")
+    motivo: str | None = Field(default=None, max_length=500, description="Motivo institucional del cambio de fase")
 
 
 class FaseControlLectura(FasePoliticaRead):
@@ -105,15 +101,9 @@ class LineaEstrategicaBase(BaseModel):
     codigo: str = Field(..., max_length=50, description="Código de la línea (ej: LE-01)")
     titulo: str = Field(..., max_length=300, description="Título o eje de la línea estratégica")
     descripcion: str = Field(..., description="Descripción detallada de la intervención")
-    problema_abordado: str | None = Field(
-        default=None, description="Problema central diagnosticado"
-    )
-    objetivo_especifico: str | None = Field(
-        default=None, description="Objetivo transformador esperado"
-    )
-    costo_estimado: Decimal = Field(
-        default=Decimal("0.00"), ge=0, description="Presupuesto proyectado en COP"
-    )
+    problema_abordado: str | None = Field(default=None, description="Problema central diagnosticado")
+    objetivo_especifico: str | None = Field(default=None, description="Objetivo transformador esperado")
+    costo_estimado: Decimal = Field(default=Decimal("0.00"), ge=0, description="Presupuesto proyectado en COP")
     fuentes_financiacion: list[str] = Field(
         default_factory=lambda: ["FONSET"],
         description="Fuentes presupuestales (FONSET, SGP, SGR, etc.)",
@@ -206,7 +196,7 @@ class FasePoliticaResumen(BaseModel):
 
 class PoliticaPublicaRead(BaseModel):
     """Representación canónica institucional de la Política Pública de Seguridad Humana de Cartagena (Decreto 037/2026).
-    
+
     Los atributos institucionales (título, resumen, problema, sector, cobertura y fechas) corresponden
     a la definición canónica distrital oficial. Las fases metodológicas DNP y líneas estratégicas
     se hidratan dinámicamente desde motor_politicas.fases_politica y motor_politicas.lineas_estrategicas,
@@ -247,3 +237,73 @@ class PoliticaPublicaRead(BaseModel):
     fases: list[FasePoliticaResumen] = Field(default_factory=list)
     model_config = ConfigDict(populate_by_name=True)
 
+
+class HeroAccionPrimaria(BaseModel):
+    label: str
+    href: str | None = None
+    onClickAction: str | None = None
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class HeroSlideRead(BaseModel):
+    id: str
+    titulo: str
+    subtitulo: str
+    enfoque: str = ""
+    imagenFondo: str
+    ubicacionReal: str = ""
+    altura: str = "fullscreen"
+    badgeTexto: str = ""
+    activa: bool = True
+    hero_image_id: str | None = Field(default=None, alias="heroImageId")
+    accionPrimaria: HeroAccionPrimaria | None = None
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class HeroSlideUpdate(BaseModel):
+    id: str
+    titulo: str
+    subtitulo: str
+    enfoque: str = ""
+    imagenFondo: str
+    ubicacionReal: str = ""
+    altura: str = "fullscreen"
+    badgeTexto: str = ""
+    activa: bool = True
+    hero_image_id: str | None = Field(default=None, alias="heroImageId")
+    accionPrimaria: HeroAccionPrimaria | None = None
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class HeroImageOptionRead(BaseModel):
+    id: str
+    titulo: str
+    descripcion: str = ""
+    archivo: str
+    thumbnail: str = ""
+    enfoque: str = ""
+    habilitada: bool = True
+    hero_image_id: str | None = Field(default=None, alias="heroImageId")
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class HerosConfigRead(BaseModel):
+    slides: list[HeroSlideRead] = Field(default_factory=list)
+    catalogoImagenes: list[HeroImageOptionRead] = Field(default_factory=list)
+    opacidad: int = 80
+    modoCarrusel: bool = True
+    intervaloSegundos: int = 7
+    hero_image_id: str | None = Field(default=None, alias="heroImageId")
+    pageImages: dict[str, str] = Field(default_factory=dict)
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class HerosConfigUpdate(BaseModel):
+    slides: list[HeroSlideUpdate] = Field(default_factory=list)
+    catalogoImagenes: list[HeroImageOptionRead] = Field(default_factory=list)
+    opacidad: int = Field(default=80, ge=10, le=95)
+    modoCarrusel: bool = True
+    intervaloSegundos: int = Field(default=7, ge=1, le=60)
+    hero_image_id: str | None = Field(default=None, alias="heroImageId")
+    pageImages: dict[str, str] = Field(default_factory=dict)
+    model_config = ConfigDict(populate_by_name=True)

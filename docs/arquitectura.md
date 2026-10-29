@@ -135,7 +135,19 @@ inventario de features, módulos, conexión y límites de evidencia está en la
 21 directorios frontend, no los 23 esperados por la asignación; la diferencia
 queda pendiente de revisión EAF.
 
-Alembic informa la cabeza única `0062_motor_plan_accion_dnp`. En `next.config.ts`
+Alembic informa la cabeza única `0084_aportes_colas_y_apoyos`, verificada el
+2026-10-27 con `cd backend && .venv/bin/alembic -c alembic.ini heads`
+(actualizada desde la cita histórica `0062_motor_plan_accion_dnp` por el encargo
+[EAF 244]). La evolución 0063–0068 incorpora la ingesta masiva de la triada, el
+corpus Drive de seguridad humana, el catálogo de planes de desarrollo, las
+quince mesas de corregimientos, la evidencia paginada de PDD y las tablas del
+evaluador AI; 0069–0074 cubren índices de indicadores territoriales, el
+seguimiento de corridas y del grafo del pipeline con integridad, checkpoint
+duradero e idempotencia; 0075–0078 añaden el catálogo de fuentes, lotes
+idempotentes y paquetes de artefactos con su evidencia Drive; 0079–0081 registran
+las correspondencias meta↔PA 1:n y sus guardas de revisión; y 0082–0084 suman
+las tablas DEA DMU nivel 3, el conciliador gold set y las colas y apoyos de
+aportes. En `next.config.ts`
 la CSP se envía como `Content-Security-Policy-Report-Only` por defecto; Next.js
 permite habilitar enforcement con `POLIS_CSP_ENFORCE=true` o
 `POLIS_CSP_REPORT_ONLY=false`. La configuración de código no demuestra que el

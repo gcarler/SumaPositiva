@@ -12,7 +12,6 @@ from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 
@@ -33,13 +32,8 @@ def _rows(value: Any) -> list[dict[str, Any]]:
 
 async def _invoke(fn, **kwargs):
     signature = inspect.signature(fn)
-    accepts_kwargs = any(
-        parameter.kind is inspect.Parameter.VAR_KEYWORD
-        for parameter in signature.parameters.values()
-    )
-    filtered = {
-        key: value for key, value in kwargs.items() if accepts_kwargs or key in signature.parameters
-    }
+    accepts_kwargs = any(parameter.kind is inspect.Parameter.VAR_KEYWORD for parameter in signature.parameters.values())
+    filtered = {key: value for key, value in kwargs.items() if accepts_kwargs or key in signature.parameters}
     result = fn(**filtered)
     return await result if inspect.isawaitable(result) else result
 
@@ -77,29 +71,15 @@ async def _cobertura_historica_8_planes(db: AsyncSession | None = None) -> dict[
     )
     try:
         if db is not None:
-            rows = (
-                (await db.execute(query, {"codigos": [row[0] for row in _HISTORICAL_PLANS]}))
-                .mappings()
-                .all()
-            )
+            rows = (await db.execute(query, {"codigos": [row[0] for row in _HISTORICAL_PLANS]})).mappings().all()
         else:
-            from app.core.config import Settings
+            from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
-            url = Settings().async_database_url
-            parsed = make_url(url)
-            if (parsed.database or "").startswith("polis_test"):
-                url = parsed.set(database="bd_csh").render_as_string(hide_password=False)
-            engine = create_async_engine(url, pool_pre_ping=True)
+            engine = create_async_engine(resolver_url_bd_csh(), pool_pre_ping=True)
             try:
                 async with engine.connect() as conn:
                     rows = (
-                        (
-                            await conn.execute(
-                                query, {"codigos": [row[0] for row in _HISTORICAL_PLANS]}
-                            )
-                        )
-                        .mappings()
-                        .all()
+                        (await conn.execute(query, {"codigos": [row[0] for row in _HISTORICAL_PLANS]})).mappings().all()
                     )
             finally:
                 await engine.dispose()
@@ -108,9 +88,7 @@ async def _cobertura_historica_8_planes(db: AsyncSession | None = None) -> dict[
             return {
                 "estado": "DISPONIBLE_BD_CSH",
                 "total_planes_oficiales": len(plans),
-                "total_metas_historicas_y_locales": sum(
-                    int(row["total_metas"] or 0) for row in plans
-                ),
+                "total_metas_historicas_y_locales": sum(int(row["total_metas"] or 0) for row in plans),
                 "planes": plans,
             }
     except Exception:
@@ -131,9 +109,7 @@ async def _cobertura_historica_8_planes(db: AsyncSession | None = None) -> dict[
         "total_planes_oficiales": 8,
         "total_metas_historicas_y_locales": 4637,
         "planes": fallback,
-        "nota": (
-            "Corte de respaldo determinista; la consulta bd_csh prevalece cuando está disponible."
-        ),
+        "nota": ("Corte de respaldo determinista; la consulta bd_csh prevalece cuando está disponible."),
     }
 
 
@@ -180,17 +156,9 @@ async def _load_revision(plan_codigo: str) -> dict[str, Any]:
         builder = getattr(module, "evaluar_metas_10_dimensiones", None)
         if builder is None:
             builder = module.construir_matriz_revision_por_meta_pdt
-        payload = _as_dict(
-            await _invoke(builder, plan_codigo=plan_codigo, codigo_plan=plan_codigo, limit=50)
-        )
-        dimensions = payload.get("resumen_dimensiones") or payload.get(
-            "evaluacion_10_dimensiones", {}
-        )
-        triada = (
-            payload.get("resumen_vinculos_pa_triada")
-            or payload.get("resumen_articulacion_pa")
-            or {}
-        )
+        payload = _as_dict(await _invoke(builder, plan_codigo=plan_codigo, codigo_plan=plan_codigo, limit=50))
+        dimensions = payload.get("resumen_dimensiones") or payload.get("evaluacion_10_dimensiones", {})
+        triada = payload.get("resumen_vinculos_pa_triada") or payload.get("resumen_articulacion_pa") or {}
         reviewers = payload.get("dictamen_7_revisores", payload.get("hallazgos_por_revisor", {}))
         if isinstance(reviewers, list):
             reviewers = _count_values(reviewers, "revisor", "rol")
@@ -238,9 +206,7 @@ async def _load_dictamens(db, plan_codigo: str) -> dict[str, Any]:
         fn = getattr(module, "listar_dictamenes_hallazgos_pg", None)
         if fn is None:
             fn = module.listar_dictamenes_hallazgos_pdt_pg
-        return _as_dict(
-            await _invoke(fn, db=db, plan_codigo=plan_codigo, codigo_plan=plan_codigo, limit=25)
-        )
+        return _as_dict(await _invoke(fn, db=db, plan_codigo=plan_codigo, codigo_plan=plan_codigo, limit=25))
     except Exception as exc:
         return {
             "estado": "NO_DISPONIBLE",
@@ -304,15 +270,9 @@ def _summarize_levels(payload: dict[str, Any]) -> dict[str, Any]:
                 sub = _as_dict(block.get(subkey))
                 dmus.extend(_rows(sub.get("resultados_dmu", sub.get("dmus"))))
         levels[key] = {
-            "total_dmus_evaluadas": block.get(
-                "total_dmus", block.get("total_dmus_evaluadas", len(dmus))
-            ),
-            "dmus_eficientes": block.get(
-                "eficientes", sum(1 for row in dmus if _theta(row) >= 1.0)
-            ),
-            "dmus_ineficientes": block.get(
-                "ineficientes", sum(1 for row in dmus if _theta(row) < 1.0)
-            ),
+            "total_dmus_evaluadas": block.get("total_dmus", block.get("total_dmus_evaluadas", len(dmus))),
+            "dmus_eficientes": block.get("eficientes", sum(1 for row in dmus if _theta(row) >= 1.0)),
+            "dmus_ineficientes": block.get("ineficientes", sum(1 for row in dmus if _theta(row) < 1.0)),
             "frontera_separada_homogenea": True,
             "padron_censal_bd_csh": block.get("padron_censal_bd_csh", {}),
             "fuentes_financiacion": block.get(
@@ -325,9 +285,7 @@ def _summarize_levels(payload: dict[str, Any]) -> dict[str, Any]:
         "estado": payload.get("estado", "DISPONIBLE"),
         "orientacion": payload.get("orientacion"),
         "fronteras_independientes": True,
-        "resumen_fuentes_financiacion_y_holguras": payload.get(
-            "resumen_fuentes_financiacion_y_holguras", {}
-        ),
+        "resumen_fuentes_financiacion_y_holguras": payload.get("resumen_fuentes_financiacion_y_holguras", {}),
         "niveles": levels,
     }
 
@@ -347,9 +305,7 @@ def _fmt_benchmarks(raw: Any) -> list[str]:
         if isinstance(item, str) and item.strip():
             out.append(item.strip())
         elif isinstance(item, dict):
-            label = str(
-                item.get("dmu") or item.get("unidad") or item.get("benchmark") or ""
-            ).strip()
+            label = str(item.get("dmu") or item.get("unidad") or item.get("benchmark") or "").strip()
             if label:
                 out.append(label)
     return out
@@ -466,12 +422,9 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
             "",
             "## Seguimiento SisPT DNP, CUIPO y PIIP",
             f"Eficacia media bruta: {sispt.get('eficacia_media_bruta_pct')}",
-            "Eficacia media SisPT truncada al 100%: "
-            f"{sispt.get('eficacia_media_truncada_sispt_pct')}",
-            "Tipologías: `"
-            f"{json.dumps(sispt.get('conteo_por_tipologia', {}), ensure_ascii=False)}`",
-            "Coherencia CUIPO/PIIP: `"
-            f"{json.dumps(sispt.get('alertas_cuipo_piip', {}), ensure_ascii=False)}`",
+            f"Eficacia media SisPT truncada al 100%: {sispt.get('eficacia_media_truncada_sispt_pct')}",
+            f"Tipologías: `{json.dumps(sispt.get('conteo_por_tipologia', {}), ensure_ascii=False)}`",
+            f"Coherencia CUIPO/PIIP: `{json.dumps(sispt.get('alertas_cuipo_piip', {}), ensure_ascii=False)}`",
             "",
             "## Fronteras DEA",
             "| Nivel | DMUs | Eficientes | Ineficientes |",
@@ -480,8 +433,7 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
     )
     for name, value in dea["niveles"].items():
         md.append(
-            f"| {name} | {value['total_dmus_evaluadas']} | "
-            f"{value['dmus_eficientes']} | {value['dmus_ineficientes']} |"
+            f"| {name} | {value['total_dmus_evaluadas']} | {value['dmus_eficientes']} | {value['dmus_ineficientes']} |"
         )
     md.extend(
         [
@@ -517,16 +469,12 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
     writer = csv.DictWriter(buffer, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     by_dmu = {
-        str(row.get("dmu", row.get("unidad", ""))): row
-        for level in dea["niveles"].values()
-        for row in level["dmus"]
+        str(row.get("dmu", row.get("unidad", ""))): row for level in dea["niveles"].values() for row in level["dmus"]
     }
     export_rows = alerts["unidades"] + harmonization
     for row in export_rows:
         source = by_dmu.get(str(row.get("dmu", "")), row)
-        b_refs = _fmt_benchmarks(
-            row.get("benchmarks_referencia", source.get("benchmarks_referencia", []))
-        )
+        b_refs = _fmt_benchmarks(row.get("benchmarks_referencia", source.get("benchmarks_referencia", [])))
         writer.writerow(
             {
                 "nivel": row.get("nivel", source.get("nivel", source.get("nivel_dmu", ""))),
@@ -557,9 +505,7 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
                     "holgura_presupuestal_s_minus_cop",
                     row.get(
                         "presupuesto_total_reasignable_cop",
-                        source.get(
-                            "holgura_presupuestal_s_minus_cop", source.get("s_minus_cop", "")
-                        ),
+                        source.get("holgura_presupuestal_s_minus_cop", source.get("s_minus_cop", "")),
                     ),
                 ),
                 "benchmarks_referencia": ";".join(b_refs),
@@ -583,9 +529,7 @@ async def generar_informe_integral_spd_cartagena(
     slack_total = 0.0
     for row in alerts_rows:
         try:
-            slack_total += float(
-                row.get("holgura_presupuestal_s_minus_cop", row.get("s_minus_cop", 0)) or 0
-            )
+            slack_total += float(row.get("holgura_presupuestal_s_minus_cop", row.get("s_minus_cop", 0)) or 0)
         except (TypeError, ValueError):
             continue
     alerts = {
@@ -596,13 +540,9 @@ async def generar_informe_integral_spd_cartagena(
     }
     revision["dictamenes_y_subsanaciones"] = {
         "estado": dictamens.get("estado", "DISPONIBLE"),
-        "total_dictamenes": dictamens.get(
-            "total_dictamenes", len(dictamens.get("dictamenes_hallazgos", []))
-        ),
+        "total_dictamenes": dictamens.get("total_dictamenes", len(dictamens.get("dictamenes_hallazgos", []))),
         "dictamenes": _rows(dictamens.get("dictamenes_hallazgos")),
-        "conteo_estados": _count_values(
-            _rows(dictamens.get("dictamenes_hallazgos")), "estado_revision"
-        ),
+        "conteo_estados": _count_values(_rows(dictamens.get("dictamenes_hallazgos")), "estado_revision"),
     }
     sispt_synthesis = _sintesis_sispt_dnp_cuipo_piip(revision)
     sections = {
@@ -614,15 +554,11 @@ async def generar_informe_integral_spd_cartagena(
         "tablero_alcalde_alertas_desperdicio": alerts,
         "tabla_armonizacion_presupuestal_spd": harmonization,
     }
-    canonical = json.dumps(
-        sections, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str
-    )
+    canonical = json.dumps(sections, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str)
     fingerprint = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     result = {
         "encabezado_institucional": {
-            "entidad": (
-                "Alcaldía Mayor de Cartagena de Indias — Secretaría de Planeación Distrital (SPD)"
-            ),
+            "entidad": ("Alcaldía Mayor de Cartagena de Indias — Secretaría de Planeación Distrital (SPD)"),
             "plan_codigo": plan_codigo,
             "orientacion_dea": orientacion_dea,
             "version_metodologica": "PDT-AI-EVALUATOR-SPD-v2026.10",

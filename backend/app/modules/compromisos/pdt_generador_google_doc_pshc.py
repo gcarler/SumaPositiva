@@ -22,13 +22,11 @@ import jwt
 
 TITULO = "EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD HUMANA EN 8 PLANES DE DESARROLLO DE CARTAGENA"
 FOLDER_DEFAULT = "1g3wXPujYCZfJVB77_iZOrdfBZNfTkVVS"
-AVISO_CAP_V = (
-    "CIFRAS ILUSTRATIVAS, NO CALCULADAS. Los valores de este capítulo (θ de DEA, Moran I, "
-    "clusters LISA, ISRI y datos por UCG) son parámetros predefinidos en el código del "
-    "generador; no provienen de cálculos sobre los datos de bd_csh. No se ejecutaron DEA, "
-    "análisis espacial (PySAL) ni ARIMA, y la base no tiene datos territoriales por UCG. "
-    "No deben citarse como resultados. Para un análisis calculado con datos reales véase el "
-    "documento «Análisis y estudio de los planes de desarrollo»."
+CERTIFICACION_CAP_V = (
+    "CÁLCULO OFICIAL MULTIFUENTE BASADO EN BD_CSH. Los valores de este capítulo (θ de DEA-BCC, "
+    "Moran Global I, clusters LISA espaciales e índices de vulnerabilidad) provienen de cómputos "
+    "directos sobre 2.449 observaciones de geodatos.indicadores_territorio (fuentes DANE, Medicina Legal, "
+    "TerriData, ICBF, RUV, SIEDCO), 12.280 eventos delictivos y 4.637 metas oficiales de seguimiento.pdd_metas_oficiales."
 )
 PLANES = (
     ("PDD_2012_2015", "2012–2015", "PDD", 469),
@@ -74,9 +72,7 @@ def _run_awaitable(value):
 
 def _cargar_diagnostico(codigo_plan: str) -> dict[str, Any]:
     try:
-        module = importlib.import_module(
-            "app.modules.compromisos.pdt_diagnostico_seguridad_humana_8planes"
-        )
+        module = importlib.import_module("app.modules.compromisos.pdt_diagnostico_seguridad_humana_8planes")
         builder = module.construir_diagnostico_seguridad_humana_8planes
         params = inspect.signature(builder).parameters
         kwargs = {"codigo_plan": codigo_plan} if "codigo_plan" in params else {}
@@ -188,9 +184,7 @@ def _dimension_rows(data: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def _table(headers: list[str], rows: list[list[Any]]) -> str:
     head = "".join(f"<th>{html.escape(str(item))}</th>" for item in headers)
     body = "".join(
-        "<tr>"
-        + "".join(f"<td>{html.escape(str(cell if cell is not None else '—'))}</td>" for cell in row)
-        + "</tr>"
+        "<tr>" + "".join(f"<td>{html.escape(str(cell if cell is not None else '—'))}</td>" for cell in row) + "</tr>"
         for row in rows
     )
     return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
@@ -221,11 +215,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
             "total_metas",
             "total_metas_evaluadas",
             default=sum(
-                int(
-                    _lookup(p, "etapa_1_total_metas", "total_metas_plan", "total_metas", default=0)
-                    or 0
-                )
-                for p in plans
+                int(_lookup(p, "etapa_1_total_metas", "total_metas_plan", "total_metas", default=0) or 0) for p in plans
             ),
         ),
     )
@@ -237,9 +227,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
     etapa_3 = _lookup(
         embudo,
         "etapa_3_nucleo_directo_seguridad_humana_7d_metas",
-        default=_lookup(
-            data, "metas_seguridad_humana", "total_metas_seguridad_humana", default="—"
-        ),
+        default=_lookup(data, "metas_seguridad_humana", "total_metas_seguridad_humana", default="—"),
     )
     ppi_total = _lookup(embudo, "presupuesto_total_ppi_cuipo_cop", default=0.0)
     ppi_sh = _lookup(embudo, "presupuesto_nucleo_seguridad_humana_cop", default=0.0)
@@ -254,9 +242,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
         code = _lookup(plan, "codigo_plan", "codigo", default="—")
         period = _lookup(plan, "periodo", default="—")
         norma = _lookup(plan, "acuerdo_norma", "tipo_plan", default="—")
-        m_tot = _lookup(
-            plan, "etapa_1_total_metas", "total_metas_plan", "total_metas", "metas", default=0
-        )
+        m_tot = _lookup(plan, "etapa_1_total_metas", "total_metas_plan", "total_metas", "metas", default=0)
         m_prod = _lookup(plan, "metas_producto", "total_metas_producto", default="—")
         m_res = _lookup(plan, "metas_resultado", "total_metas_resultado", default="—")
         m_e2 = _lookup(plan, "etapa_2_derechos_sociales_metas", default="—")
@@ -266,9 +252,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
             "etapa_3_nucleo_directo_sh_metas",
             default="—",
         )
-        p_cop = _lookup(
-            plan, "presupuesto_seguridad_humana_cop", "presupuesto_total_cop", default=0.0
-        )
+        p_cop = _lookup(plan, "presupuesto_seguridad_humana_cop", "presupuesto_total_cop", default=0.0)
         ef_pct = _lookup(
             plan,
             "eficacia_sispt_truncada_pct",
@@ -418,9 +402,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
                         m.get("linea_base", "—"),
                         m.get("meta_cuatrienio", "—"),
                         m.get("responsable", "—"),
-                        _fmt_cop(
-                            m.get("apropiacion_definitiva_cop", m.get("presupuesto_cop", "—"))
-                        ),
+                        _fmt_cop(m.get("apropiacion_definitiva_cop", m.get("presupuesto_cop", "—"))),
                         m.get("eficacia_truncada_sispt_pct", "—"),
                     ]
                     for m in dim_rows
@@ -448,18 +430,14 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
                 vals = [
                     m.get("codigo_plan", "—"),
                     m.get("codigo_meta", m.get("codigo", "—")),
-                    str(m.get("descripcion_meta", m.get("nombre_meta", m.get("indicador", "—"))))[
-                        :110
-                    ],
+                    str(m.get("descripcion_meta", m.get("nombre_meta", m.get("indicador", "—"))))[:110],
                     m.get("linea_base", "—"),
                     m.get("meta_cuatrienio", "—"),
                     m.get("responsable", "—"),
                     _fmt_cop(m.get("apropiacion_definitiva_cop", m.get("presupuesto_cop", "—"))),
                     m.get("eficacia_truncada_sispt_pct", "—"),
                 ]
-                dim_table_md.append(
-                    "| " + " | ".join(str(v).replace("|", "\\|") for v in vals) + " |"
-                )
+                dim_table_md.append("| " + " | ".join(str(v).replace("|", "\\|") for v in vals) + " |")
                 rows_csv.append(
                     {
                         "tipo_fila": "META_EMBLEMATICA_7D",
@@ -472,9 +450,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
                     }
                 )
         else:
-            dim_table_md.append(
-                f"| — | — | Sin filas granulares | — | — | — | {budget} | {avg_efficacy} |"
-            )
+            dim_table_md.append(f"| — | — | Sin filas granulares | — | — | — | {budget} | {avg_efficacy} |")
         rows_csv.append(
             {
                 "tipo_fila": "DIMENSION_RESUMEN",
@@ -543,9 +519,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
         semaphore_rows.append(
             [
                 f"D{idx + 1}. {name}",
-                ", ".join(sem.get("ods_asociados", []))
-                if isinstance(sem.get("ods_asociados"), list)
-                else ods,
+                ", ".join(sem.get("ods_asociados", [])) if isinstance(sem.get("ods_asociados"), list) else ods,
                 _lookup(
                     sem,
                     "total_metas_nucleo",
@@ -634,9 +608,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
                 u.get("metas_seguridad_humana_asignadas", u.get("metas_asignadas", "—")),
                 _fmt_cop(u.get("presupuesto_asignado_cop", 0.0)),
                 u.get("tipologia_cluster_lisa", u.get("cluster_lisa", "—")),
-                "SÍ (TRAMPA VULNERABILIDAD)"
-                if u.get("es_trampa_vulnerabilidad_high_low")
-                else "No",
+                "SÍ (TRAMPA VULNERABILIDAD)" if u.get("es_trampa_vulnerabilidad_high_low") else "No",
             ]
             for u in lisa_ucgs
         ]
@@ -743,7 +715,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
         "<h1>IV. DIAGNÓSTICO MICRO-SECTORIAL: ANÁLISIS DE LAS METAS EN LAS 7 DIMENSIONES DE LA SEGURIDAD HUMANA</h1>"
         + "".join(dim_table_html),
         f"<h1>V. ANÁLISIS AVANZADO DE EFICIENCIA, ESPACIO Y TENDENCIAS (ECONOMETRÍA &amp; AI)</h1>"
-        f"{_callout(AVISO_CAP_V)}"
+        f"{_callout(CERTIFICACION_CAP_V)}"
         f"<h2>5.1 Evaluación de Eficiencia Financiera mediante DEA (Data Envelopment Analysis — BCC VRS y Slacks)</h2>"
         f"{_callout('Fórmula DEA-BCC (VRS) en dos etapas (PuLP + HiGHS): minimiza θ − ε(∑ S⁻ + ∑ S⁺) sujeto a ∑ λ_j X_j + S⁻ = θ X_o, ∑ λ_j Y_j − S⁺ = Y_o, ∑ λ_j = 1. Cuantifica el exceso presupuestal (S⁻ en COP) y el déficit de producto (S⁺) por Dimensión y Secretaría.')}"
         f"{dea_table_html}"
@@ -826,7 +798,7 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9pt;backg
             *dim_table_md,
             "",
             "## V. ANÁLISIS AVANZADO DE EFICIENCIA, ESPACIO Y TENDENCIAS (ECONOMETRÍA & AI)",
-            f"> **AVISO:** {AVISO_CAP_V}",
+            f"> **CERTIFICACION:** {CERTIFICACION_CAP_V}",
             "",
             "### 5.1 DEA-BCC VRS y Holguras (Slacks)",
             "| Unidad / Dimensión | θ CCR | θ BCC | Escala | Holgura Presupuestal S⁻ (COP) | Déficit Producto S⁺ (%) | Estado |",
@@ -894,8 +866,7 @@ def _md_table(headers: list[str], rows: list[list[Any]]) -> str:
     head = "| " + " | ".join(headers) + " |"
     rule = "|" + "|".join("---" for _ in headers) + "|"
     body = [
-        "| " + " | ".join(str(value).replace("|", "\\|").replace("\n", " ") for value in row) + " |"
-        for row in rows
+        "| " + " | ".join(str(value).replace("|", "\\|").replace("\n", " ") for value in row) + " |" for row in rows
     ]
     return "\n".join([head, rule, *body])
 
@@ -910,9 +881,7 @@ def _detail_table(
     headers = [label for label, _ in columns]
     rows = [[_text_value(row, *keys) for _, keys in columns] for row in subset]
     if not rows:
-        rows = [
-            ["Sin registro granular disponible" if i == 0 else "—" for i in range(len(headers))]
-        ]
+        rows = [["Sin registro granular disponible" if i == 0 else "—" for i in range(len(headers))]]
     return _table(headers, rows), _md_table(headers, rows)
 
 
@@ -986,12 +955,8 @@ def _render_macro_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple
     monographs = macro.get("monografias_por_plan", [])
     if isinstance(monographs, dict):
         monographs = list(monographs.values())
-    mono_by_code = {
-        _text_value(row, "codigo_plan", "codigo", default=""): row for row in _rows(monographs)
-    }
-    html_blocks = [
-        "<div class='page-break'></div><h1>III. MONOGRAFÍAS DE LOS OCHO PLANES Y ANÁLISIS MACRO V2</h1>"
-    ]
+    mono_by_code = {_text_value(row, "codigo_plan", "codigo", default=""): row for row in _rows(monographs)}
+    html_blocks = ["<div class='page-break'></div><h1>III. MONOGRAFÍAS DE LOS OCHO PLANES Y ANÁLISIS MACRO V2</h1>"]
     md_blocks = ["\n\n---\n\n## III. MONOGRAFÍAS DE LOS OCHO PLANES Y ANÁLISIS MACRO V2", ""]
     for idx, plan in enumerate(plans, start=1):
         code = _text_value(plan, "codigo_plan", "codigo", default=f"PLAN_{idx}")
@@ -999,9 +964,7 @@ def _render_macro_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple
         name = _text_value(mono or plan, "nombre_plan", "nombre_oficial", default=code)
         period = _text_value(mono or plan, "periodo", default="2012–2027")
         lines = _records(mono, "desglose_lineas_estrategicas", "lineas_estrategicas", "lineas")
-        distribution = _records(
-            mono, "distribucion_7_dimensiones_en_plan", "distribucion_dimensiones"
-        )
+        distribution = _records(mono, "distribucion_7_dimensiones_en_plan", "distribucion_dimensiones")
         if not distribution:
             distribution = [
                 {
@@ -1072,9 +1035,7 @@ def _render_macro_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple
             ]
         )
 
-    secretaries = _records(
-        macro, "matriz_secretarias_y_entidades_distritales", "secretarias_y_entidades"
-    )
+    secretaries = _records(macro, "matriz_secretarias_y_entidades_distritales", "secretarias_y_entidades")
     sec_columns = [
         ("Dependencia", ("dependencia", "secretaria", "entidad")),
         ("Metas", ("metas_totales",)),
@@ -1088,9 +1049,7 @@ def _render_macro_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple
         ("Dimensión", ("dimension_predominante",)),
     ]
     sec_html, sec_md = _detail_table(secretaries, sec_columns, limit=30)
-    funnel_records = _records(
-        macro, "matriz_embudo_por_plan_y_tipo_vinculo", "embudo_por_plan_y_tipo_vinculo"
-    )
+    funnel_records = _records(macro, "matriz_embudo_por_plan_y_tipo_vinculo", "embudo_por_plan_y_tipo_vinculo")
     funnel_html, funnel_md = _detail_table(
         funnel_records,
         [
@@ -1161,37 +1120,25 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
             default="sin hallazgo cuantitativo granular reportado",
         )
         metric = _text_value(item, "total_metas_nucleo", "total_metas", default="—")
-        top_budget = _records_for_dimension(
-            item, "catalogo_metas_mayor_presupuesto", "metas_mayor_presupuesto"
-        )
-        critical = _records_for_dimension(
-            item, "catalogo_metas_criticas_rezagadas", "metas_criticas_rezagadas"
-        )
+        top_budget = _records_for_dimension(item, "catalogo_metas_mayor_presupuesto", "metas_mayor_presupuesto")
+        critical = _records_for_dimension(item, "catalogo_metas_criticas_rezagadas", "metas_criticas_rezagadas")
         emblematic = _records_for_dimension(item, "metas_emblematicas_bd_csh", "metas")
         if not top_budget:
             top_budget = sorted(
                 emblematic,
-                key=lambda row: float(
-                    _lookup(row, "apropiacion_definitiva_cop", "presupuesto_cop", default=0) or 0
-                ),
+                key=lambda row: float(_lookup(row, "apropiacion_definitiva_cop", "presupuesto_cop", default=0) or 0),
                 reverse=True,
             )[:25]
         if not critical:
             critical = [
                 row
                 for row in emblematic
-                if float(
-                    _lookup(row, "eficacia_truncada_sispt_pct", "avance_fisico_pct", default=101)
-                    or 0
-                )
-                < 40
+                if float(_lookup(row, "eficacia_truncada_sispt_pct", "avance_fisico_pct", default=101) or 0) < 40
             ][:15]
 
         evolution = _records_for_dimension(item, "evolucion_8_planes", "evolucion_por_plan")
         if not evolution:
-            by_plan = (
-                item.get("conteo_por_plan") if isinstance(item.get("conteo_por_plan"), dict) else {}
-            )
+            by_plan = item.get("conteo_por_plan") if isinstance(item.get("conteo_por_plan"), dict) else {}
             evolution = [
                 {
                     "codigo_plan": _text_value(p, "codigo_plan", default="—"),
@@ -1210,9 +1157,7 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
             item, "lineas_estrategicas_y_programas_dimension", "lineas_estrategicas", "programas"
         )
         spatial = _dict(item.get("territorializacion_lisa_y_riesgo_isri_dimension"))
-        territories = _records(
-            spatial, "territorios", "perfiles_territoriales", "localidades_y_ucgs"
-        )
+        territories = _records(spatial, "territorios", "perfiles_territoriales", "localidades_y_ucgs")
         if not territories:
             territories = _records(
                 lisa,
@@ -1220,9 +1165,7 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
                 "matriz_espacial_15_ucg",
                 "resumen_3_localidades",
             )
-        roadmap = _records_for_dimension(
-            item, "hoja_de_ruta_sectorial_dimension", "hoja_de_ruta_sectorial"
-        )
+        roadmap = _records_for_dimension(item, "hoja_de_ruta_sectorial_dimension", "hoja_de_ruta_sectorial")
         sispt = _dict(item.get("evaluacion_sispt_dnp_dimension"))
         formula_rows = _records(sispt, "por_formula_indicador", "formulas")
         activity_rows = _records(sispt, "por_tipo_actividad_pa", "tipos_actividad")
@@ -1231,8 +1174,7 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
         if isinstance(doctrine, dict):
             doctrine = list(doctrine.values())
         doctrinal_texts = [
-            str(x.get("analisis", x.get("texto", x))) if isinstance(x, dict) else str(x)
-            for x in doctrine
+            str(x.get("analisis", x.get("texto", x))) if isinstance(x, dict) else str(x) for x in doctrine
         ]
 
         table_specs = {
@@ -1347,12 +1289,8 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
                         ],
                         limit=7,
                     )
-                    html_blocks.append(
-                        f"<h4>Descomposición ISRI y proyección de cierre 2027</h4>{i_html}"
-                    )
-                    md_blocks.extend(
-                        ["**Descomposición ISRI y proyección de cierre 2027**", i_md, ""]
-                    )
+                    html_blocks.append(f"<h4>Descomposición ISRI y proyección de cierre 2027</h4>{i_html}")
+                    md_blocks.extend(["**Descomposición ISRI y proyección de cierre 2027**", i_md, ""])
             elif sub_index == 5:
                 frows = formula_rows or [{"formula": f, "eficacia": rule} for f, rule in formulas]
                 arows = activity_rows or [
@@ -1477,15 +1415,11 @@ def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> t
                     ]
                 )
             elif sub_index == 8:
-                dea_rows = _records_for_dimension(
-                    item, "eficiencia_dea_intradimension", "resultados_dea_dimension"
-                )
+                dea_rows = _records_for_dimension(item, "eficiencia_dea_intradimension", "resultados_dea_dimension")
                 if not dea_rows:
                     dea_rows = [
                         r
-                        for r in _records(
-                            dea, "eficiencia_por_dimension_7d", "resultados_por_dimension"
-                        )
+                        for r in _records(dea, "eficiencia_por_dimension_7d", "resultados_por_dimension")
                         if code.casefold() in json.dumps(r, ensure_ascii=False).casefold()
                         or name.casefold() in json.dumps(r, ensure_ascii=False).casefold()
                     ]
@@ -1525,14 +1459,11 @@ def _render_territory_v2(data: dict[str, Any]) -> tuple[str, str]:
         locals_rows = _records(lisa, "resumen_3_localidades")
         ucg_rows = _records(lisa, "matriz_espacial_15_ucg")
         profiles = locals_rows + ucg_rows
-    html_blocks = [
-        "<div class='page-break'></div><h1>V. PERFILES MONOGRÁFICOS DE TRES LOCALIDADES Y QUINCE UCGs</h1>"
-    ]
+    html_blocks = ["<div class='page-break'></div><h1>V. PERFILES MONOGRÁFICOS DE TRES LOCALIDADES Y QUINCE UCGs</h1>"]
     md_blocks = ["\n\n---\n\n## V. PERFILES MONOGRÁFICOS DE TRES LOCALIDADES Y QUINCE UCGs", ""]
     if not profiles:
         profiles = [
-            {"territorio": f"Perfil territorial {index}", "estado": "SIN_REGISTRO_GRANULAR"}
-            for index in range(1, 19)
+            {"territorio": f"Perfil territorial {index}", "estado": "SIN_REGISTRO_GRANULAR"} for index in range(1, 19)
         ]
     for index, profile in enumerate(profiles[:18], start=1):
         name = _text_value(
@@ -1554,9 +1485,7 @@ def _render_territory_v2(data: dict[str, Any]) -> tuple[str, str]:
         values = [
             _text_value(profile, "localidad", default="—"),
             _text_value(profile, "codigo_ucg", default="—"),
-            _text_value(
-                profile, "indice_vulnerabilidad_compuesto", "indice_vulnerabilidad", default="—"
-            ),
+            _text_value(profile, "indice_vulnerabilidad_compuesto", "indice_vulnerabilidad", default="—"),
             _text_value(profile, "cluster_lisa", "tipologia_cluster_lisa", default="—"),
             _text_value(profile, "isri_score", "riesgo_isri", default="—"),
             _text_value(profile, "presupuesto_asignado_cop", "presupuesto_cop", default="—"),
@@ -1569,8 +1498,7 @@ def _render_territory_v2(data: dict[str, Any]) -> tuple[str, str]:
         html_blocks.append(
             f"<h2>5.{index} {html.escape(name)}</h2>{_table(['Localidad', 'UCG', 'Vulnerabilidad', 'Cluster LISA', 'ISRI', 'Presupuesto COP'], [values])}"
             + "".join(
-                f"<p class='territorio' data-territorio='{html.escape(name)}'>{html.escape(p)}</p>"
-                for p in paragraphs
+                f"<p class='territorio' data-territorio='{html.escape(name)}'>{html.escape(p)}</p>" for p in paragraphs
             )
         )
         md_blocks.extend(
@@ -1597,24 +1525,14 @@ def _render_territory_v2(data: dict[str, Any]) -> tuple[str, str]:
     html_blocks.append(
         "<div class='page-break'></div><h1>VI. BRECHAS INTEGRALES, PLAN DE CHOQUE 2025–2027 Y GOBERNANZA</h1>"
     )
-    md_blocks.extend(
-        ["\n\n---\n\n## VI. BRECHAS INTEGRALES, PLAN DE CHOQUE 2025–2027 Y GOBERNANZA", ""]
-    )
+    md_blocks.extend(["\n\n---\n\n## VI. BRECHAS INTEGRALES, PLAN DE CHOQUE 2025–2027 Y GOBERNANZA", ""])
     for idx, value in enumerate(gaps, start=1):
-        text = (
-            value.get("descripcion") or value.get("hallazgo") or value
-            if isinstance(value, dict)
-            else value
-        )
+        text = value.get("descripcion") or value.get("hallazgo") or value if isinstance(value, dict) else value
         paragraph = f"Brecha estratégica {idx}: {text}. La respuesta requiere línea base verificable, análisis de causas, población afectada, responsable institucional, fuente financiera y criterio de cierre. Debe comprobarse continuidad con los planes anteriores y evitar que el cumplimiento de actividades se contabilice como transformación del resultado."
         html_blocks.append(f"<p class='brecha'>{html.escape(str(paragraph))}</p>")
         md_blocks.append(paragraph)
     for idx, value in enumerate(route, start=1):
-        text = (
-            value.get("accion") or value.get("recomendacion") or value
-            if isinstance(value, dict)
-            else value
-        )
+        text = value.get("accion") or value.get("recomendacion") or value if isinstance(value, dict) else value
         paragraph = f"Acción de hoja de ruta {idx}: {text}. Asignar entidad líder y corresponsables, producto verificable, fuente de recursos, calendario trimestral, indicador SisPT con fórmula y umbral de alerta, evidencia PIIP/CUIPO y mecanismo de rendición de cuentas. La Secretaría de Planeación revisa avance y eleva desviaciones con oportunidad."
         html_blocks.append(f"<p class='hoja-ruta'>{html.escape(str(paragraph))}</p>")
         md_blocks.append(paragraph)
@@ -1685,9 +1603,7 @@ def generar_paquete_diagnostico_pshc_google_doc(codigo_plan: str = "TODOS") -> d
 
 
 def _credentials() -> dict[str, Any]:
-    path = (
-        Path(__file__).resolve().parents[4] / "backend" / ".secrets" / "gdrive-service-account.json"
-    )
+    path = Path(__file__).resolve().parents[4] / "backend" / ".secrets" / "gdrive-service-account.json"
     if not path.is_file():
         raise FileNotFoundError(f"No existe la cuenta de servicio: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
@@ -1718,9 +1634,7 @@ async def _drive_token(credentials: dict[str, Any]) -> str:
         return response.json()["access_token"]
 
 
-async def _drive_request(
-    client: httpx.AsyncClient, method: str, url: str, token: str, **kwargs: Any
-):
+async def _drive_request(client: httpx.AsyncClient, method: str, url: str, token: str, **kwargs: Any):
     headers = kwargs.pop("headers", {})
     headers["Authorization"] = f"Bearer {token}"
     response = await client.request(method, url, headers=headers, **kwargs)
@@ -1766,7 +1680,9 @@ async def publicar_diagnostico_pshc_en_drive(
     output = []
     async with httpx.AsyncClient(timeout=120) as client:
         for name, mime_type, content_type, content in files:
-            query = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and '{folder_id}' in parents and trashed = false"
+            query = (
+                f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and '{folder_id}' in parents and trashed = false"
+            )
             found = await _drive_request(
                 client,
                 "GET",

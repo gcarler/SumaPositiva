@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
@@ -16,8 +17,6 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import conv
-
-from typing import TYPE_CHECKING
 
 from app.core.database import Base
 
@@ -104,7 +103,10 @@ class FotoMesa(Base):
         ),
         {
             "schema": "mesas_trabajo",
-            "comment": "Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.",
+            "comment": (
+                "Relación de evidencias fotográficas sanitizadas de mesas; "
+                "solo imágenes aprobadas se exponen públicamente."
+            ),
         },
     )
 

@@ -16,24 +16,16 @@ class IndicadoresRepository:
         return res.scalars().all()
 
     async def obtener_ficha(self, id: uuid.UUID) -> FichaTecnicaIndicador | None:
+        res = await self.session.execute(select(FichaTecnicaIndicador).where(FichaTecnicaIndicador.id == id))
+        return res.scalar_one_or_none()
+
+    async def obtener_ficha_para_actualizar(self, id: uuid.UUID) -> FichaTecnicaIndicador | None:
         res = await self.session.execute(
-            select(FichaTecnicaIndicador).where(FichaTecnicaIndicador.id == id)
+            select(FichaTecnicaIndicador).where(FichaTecnicaIndicador.id == id).with_for_update()
         )
         return res.scalar_one_or_none()
 
-    async def obtener_ficha_para_actualizar(
-        self, id: uuid.UUID
-    ) -> FichaTecnicaIndicador | None:
-        res = await self.session.execute(
-            select(FichaTecnicaIndicador)
-            .where(FichaTecnicaIndicador.id == id)
-            .with_for_update()
-        )
-        return res.scalar_one_or_none()
-
-    async def actualizar_ficha(
-        self, ficha: FichaTecnicaIndicador
-    ) -> FichaTecnicaIndicador:
+    async def actualizar_ficha(self, ficha: FichaTecnicaIndicador) -> FichaTecnicaIndicador:
         self.session.add(ficha)
         await self.session.flush()
         await self.session.refresh(ficha)
@@ -45,9 +37,7 @@ class IndicadoresRepository:
         await self.session.refresh(ficha)
         return ficha
 
-    async def registrar_medicion(
-        self, medicion: MedicionIndicador, ficha: FichaTecnicaIndicador
-    ) -> MedicionIndicador:
+    async def registrar_medicion(self, medicion: MedicionIndicador, ficha: FichaTecnicaIndicador) -> MedicionIndicador:
         self.session.add(medicion)
         self.session.add(ficha)
         await self.session.flush()

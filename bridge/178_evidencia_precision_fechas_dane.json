@@ -1,0 +1,76 @@
+{
+  "tarea": "COORD-DEMO-PRECISION-178",
+  "ejecutado_utc": "2026-10-26T04:32:39.023399+00:00",
+  "original": "bridge/165_evidencia_linaje_demografico/originales/proyecciones_de_poblacion.html",
+  "sha256_original": "e8e96e490b0cbd99acd6d889127669ae1163dc58dc897d4b63fad38ac1e2f534",
+  "bytes_original": 92399,
+  "sha256_guion": "1eb845bc12fb7807b1d930cdadb1702018cefbfeb90bbf87e756ebe4099bdb8b",
+  "metodo": "HTMLParser excluye script/style; espacios normalizados; regex re.IGNORECASE",
+  "metadatos_datePublished_dateModified": false,
+  "fechas_cuerpo": [
+    {
+      "literal": "18-Julio-2025",
+      "offset_texto_normalizado": 2934
+    },
+    {
+      "literal": "18-Julio-2025",
+      "offset_texto_normalizado": 3034
+    },
+    {
+      "literal": "18-Julio-2025",
+      "offset_texto_normalizado": 3123
+    },
+    {
+      "literal": "18-Julio-2025",
+      "offset_texto_normalizado": 3223
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 4246
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 4351
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 4445
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 4550
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 5719
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 5820
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 5910
+    },
+    {
+      "literal": "8-Agosto-2025",
+      "offset_texto_normalizado": 6011
+    }
+  ],
+  "conteo_fechas": {
+    "18-Julio-2025": 4,
+    "8-Agosto-2025": 8
+  },
+  "total_fechas": 12,
+  "perfil_141": {
+    "sha256": "1a55b987c71a367947c37cb706c9c6a5af13e5477957d5ec0a0cf03e3846f31c",
+    "series": 354,
+    "filas": 5835,
+    "etiquetas_literales": 19,
+    "variantes_observatorio_migraciones": [
+      "DNP (Observatorio Nacional de Migraciones)",
+      "DNP (Observatorio Nacional de Migraciones) "
+    ]
+  },
+  "limite": "Las fechas visibles de productos no acreditan la edición de cada serie TerriData ni la fecha de toda la página."
+}

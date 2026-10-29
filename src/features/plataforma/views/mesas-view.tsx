@@ -9,6 +9,8 @@ import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
 import { Badge } from "@/shared/ui/badge";
 import { Input } from "@/shared/ui/input";
 import { Notice } from "@/shared/ui/notice";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { usePanels } from "@/core/panels/panel-store";
@@ -47,9 +49,12 @@ function mapearToneEstado(estado: EstadoMesa | string): {
   return { tone: "info", label: "Programada" };
 }
 
-function formatearFecha(fechaStr: string): string {
+function formatearFecha(fechaStr?: string | null): string {
+  if (!fechaStr || fechaStr === "Por definir" || fechaStr.trim() === "") {
+    return "Por definir";
+  }
   try {
-    const f = new Date(fechaStr);
+    const f = new Date(fechaStr.includes("T") ? fechaStr : `${fechaStr.slice(0, 10)}T12:00:00`);
     if (isNaN(f.getTime())) return fechaStr;
     return f.toLocaleDateString("es-CO", {
       year: "numeric",
@@ -62,6 +67,7 @@ function formatearFecha(fechaStr: string): string {
 }
 
 export function MesasGestionView() {
+  const [vista, setVista] = useCollectionView("mesas");
   const mesasStore = useMesasStore((s) => s.mesas);
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
@@ -164,7 +170,7 @@ export function MesasGestionView() {
 
       // Filtro por fecha
       if (filtroFecha) {
-        if (!m.fecha.startsWith(filtroFecha)) {
+        if (!m.fecha || !m.fecha.startsWith(filtroFecha)) {
           return false;
         }
       }
@@ -394,10 +400,11 @@ export function MesasGestionView() {
       </div>
 
       {/* Conteo de resultados */}
-      <div className="flex items-center justify-between text-xs text-text-secondary">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-text-secondary">
         <span>
           Mostrando {mesasFiltradas.length} de {mesas.length} mesas
         </span>
+        <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de las mesas de trabajo" />
       </div>
 
       {/* Listado de tarjetas de mesas */}
@@ -429,15 +436,15 @@ export function MesasGestionView() {
           />
         )
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <CollectionLayout view={vista} className="xl:grid-cols-2">
           {mesasFiltradas.map((m: MesaDeTrabajo) => {
             const estadoInfo = mapearToneEstado(m.estado);
             return (
               <section
                 key={m.id}
-                className="group flex flex-col justify-between rounded-xl border border-border bg-surface-1 p-5 transition-all hover:border-border-strong hover:bg-surface-2"
+                className={`group flex flex-col justify-between gap-4 rounded-xl border border-border bg-surface-1 p-5 transition-all hover:border-border-strong hover:bg-surface-2 ${vista === "lista" ? "lg:flex-row lg:items-center" : ""}`}
               >
-                <div className="space-y-3">
+                <div className="min-w-0 flex-1 space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <StatusBadge tone={estadoInfo.tone}>
                       {estadoInfo.label}
@@ -476,7 +483,7 @@ export function MesasGestionView() {
                     <p className="flex items-center gap-2">
                       <CalendarDays className="size-3.5 shrink-0 text-text-tertiary" />
                       <span>{formatearFecha(m.fecha)}</span>
-                      {m.horario && (
+                      {m.horario && m.horario !== "Por definir" && (
                         <>
                           <span className="text-text-tertiary">·</span>
                           <Clock className="size-3.5 shrink-0 text-text-tertiary" />
@@ -486,7 +493,7 @@ export function MesasGestionView() {
                     </p>
                     <p className="flex items-center gap-2">
                       <MapPin className="size-3.5 shrink-0 text-text-tertiary" />
-                      <span className="truncate">{m.lugar}</span>
+                      <span className="truncate">{m.lugar || "Por definir"}</span>
                     </p>
                     <div className="flex flex-wrap items-center gap-3 pt-1 text-text-tertiary">
                       <span className="flex items-center gap-1 text-text-secondary">
@@ -509,7 +516,7 @@ export function MesasGestionView() {
                   </div>
                 </div>
 
-                <div className="mt-5 flex items-center justify-between gap-2 border-t border-border pt-4">
+                <div className={`flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border pt-4 ${vista === "lista" ? "lg:border-0 lg:pt-0" : "mt-1"}`}>
                   <Button
                     variant="outline"
                     size="sm"
@@ -543,7 +550,7 @@ export function MesasGestionView() {
               </section>
             );
           })}
-        </div>
+        </CollectionLayout>
       )}
     </div>
   );

@@ -45,7 +45,17 @@ describe("Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07
       expect(resultado.participacionWeb).toBe(209);
       expect(resultado.participacionMesas).toBe(189);
       expect(resultado.participacionEscenarios).toBe(570);
-      expect(resultado.desglose?.hombres).toBeGreaterThan(0);
+      expect(resultado.desglose).toBeUndefined();
+    });
+
+    test("normalizarConsolidado preserva desglose demográfico real cuando viene en payload", () => {
+      const raw: Parameters<typeof normalizarConsolidado>[0] = {
+        gran_total_participantes_distrital: 100,
+        desglose: { mujeres: 53, hombres: 46, noBinario: 1 },
+      };
+      const resultado = normalizarConsolidado(raw);
+      expect(resultado.desglose?.hombres).toBe(46);
+      expect(resultado.desglose?.mujeres).toBe(53);
     });
 
     test("normalizarDesgloseWeb mapea los 179 aportes reales y genera mapa por línea", () => {
@@ -150,6 +160,7 @@ describe("Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07
 
     beforeEach(() => {
       fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockClear();
     });
 
     afterEach(() => {
@@ -170,6 +181,7 @@ describe("Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07
         fecha_corte: "2026-10-04T08:19:26.304934Z",
       };
 
+      fetchSpy.mockClear();
       fetchSpy.mockResolvedValueOnce(
         new Response(JSON.stringify(mockBackend), {
           status: 200,
@@ -180,7 +192,7 @@ describe("Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07
       const data = await obtenerConsolidado();
 
       expect(fetchSpy).toHaveBeenCalled();
-      const calledUrl = fetchSpy.mock.calls[0][0] as string;
+      const calledUrl = (fetchSpy.mock.calls.find(([u]) => String(u).includes("/participacion/"))?.[0] ?? fetchSpy.mock.calls[0][0]) as string;
       expect(calledUrl).toContain("/participacion/consolidado");
       expect(data.gran_total_participantes_distrital).toBe(968);
     });

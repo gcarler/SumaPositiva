@@ -1,15 +1,14 @@
 """Pruebas periciales para CIERRE-02: Runbook, scripts operativos y herramientas de identidad."""
 
-import os
 import uuid
 from pathlib import Path
 
 import pytest
-from sqlalchemy import delete, select, text
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import Settings
-from app.modules.identidad.models import EventoIdentidad, Rol, Usuario
+from app.modules.identidad.models import EventoIdentidad
 from scripts.auditar_cuentas_institucionales import auditar_cuentas
 from scripts.bootstrap_identidad_admin import ejecutar_bootstrap
 from scripts.verificar_configuracion_smtp import (
@@ -22,7 +21,7 @@ pytestmark = pytest.mark.anyio
 
 def test_runbook_despliegue_identidad_documentacion_completa():
     """Valida la existencia y rigurosidad normativa del runbook docs/despliegue-identidad.md."""
-    runbook_path = Path("docs/despliegue-identidad.md")
+    runbook_path = Path(__file__).resolve().parents[2] / "docs" / "despliegue-identidad.md"
     assert runbook_path.exists(), "El runbook docs/despliegue-identidad.md debe existir"
 
     contenido = runbook_path.read_text(encoding="utf-8")
@@ -333,19 +332,9 @@ def test_cli_ejecucion_herramientas(database_url: str):
     assert data_boot["accion"] == "check_only"
 
     # 4. bootstrap_identidad_admin con --contrasena por CLI emite advertencia pericial en stderr
-    cmd_warn = [
-        sys.executable,
-        "-m",
-        "scripts.bootstrap_identidad_admin",
-        "--database-url",
-        database_url,
-        "--correo",
-        f"cli-audit-warn-{uuid.uuid4().hex[:6]}@example.org",
-        "--contrasena",
-        "ClavePorCLIAdvertencia2026*",
-        "--check-only",
-    ]
-    # Comprobar cuando no es check-only para disparar la advertencia
+    # AUD-2026-10-21 T2: el original construía una variante --check-only (cmd_warn)
+    # que nunca se ejecutaba; el comportamiento aquí probado es la advertencia con
+    # ejecución activa, que es lo que valida el assert posterior.
     cmd_warn_activa = [
         sys.executable,
         "-m",
@@ -362,15 +351,14 @@ def test_cli_ejecucion_herramientas(database_url: str):
         assert "[ADVERTENCIA DE SEGURIDAD OPERATIVA]" in proc_warn.stderr
     finally:
         import asyncio
+
         from sqlalchemy.ext.asyncio import create_async_engine
 
         async def _cleanup():
             eng = create_async_engine(database_url, hide_parameters=True)
             try:
                 async with eng.begin() as conn:
-                    await conn.execute(
-                        text("DELETE FROM autenticacion.usuarios WHERE correo LIKE 'cli-audit-warn-%'")
-                    )
+                    await conn.execute(text("DELETE FROM autenticacion.usuarios WHERE correo LIKE 'cli-audit-warn-%'"))
             finally:
                 await eng.dispose()
 

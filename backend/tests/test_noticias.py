@@ -45,20 +45,14 @@ def test_gestion_noticias_persiste_y_separa_borradores(clients):
 
     borrador = gestor.post(
         "/api/v1/noticias/gestion",
-        json=payload(
-            titulo="Borrador reservado de la plataforma", estado="borrador", destacada=False
-        ),
+        json=payload(titulo="Borrador reservado de la plataforma", estado="borrador", destacada=False),
     )
     assert borrador.status_code == 201, borrador.text
-    assert all(
-        item["id"] != borrador.json()["id"] for item in publico.get("/api/v1/noticias").json()
-    )
+    assert all(item["id"] != borrador.json()["id"] for item in publico.get("/api/v1/noticias").json())
 
     actualizada = gestor.put(
         f"/api/v1/noticias/gestion/{creada['id']}",
-        json=payload(
-            titulo="Noticia revisada para producción", estado="archivada", destacada=False
-        ),
+        json=payload(titulo="Noticia revisada para producción", estado="archivada", destacada=False),
     )
     assert actualizada.status_code == 200, actualizada.text
     assert actualizada.json()["estado"] == "archivada"

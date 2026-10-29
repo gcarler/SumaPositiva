@@ -55,9 +55,7 @@ class ServicioIA:
         """Ejecuta sincrónicamente el ciclo completo determinista con LangGraph StateGraph."""
         return self.orquestador_ciclo.ejecutar_ciclo(entrada)
 
-    async def ejecutar_ciclo_politica_async(
-        self, entrada: EntradaCicloPolitica
-    ) -> RespuestaCicloPolitica:
+    async def ejecutar_ciclo_politica_async(self, entrada: EntradaCicloPolitica) -> RespuestaCicloPolitica:
         """Ejecuta asincrónicamente el ciclo completo determinista con LangGraph StateGraph."""
         return await self.orquestador_ciclo.ejecutar_ciclo_async(entrada)
 

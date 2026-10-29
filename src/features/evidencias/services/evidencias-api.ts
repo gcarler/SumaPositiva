@@ -96,7 +96,7 @@ export async function moderarFotoMesa(
   await asegurarSesionActiva();
   return apiFetch<FotoMesaModeradaRespuesta>(`/mesas/fotos/${fotoId}/revision`, {
     method: "POST",
-    body: JSON.stringify(datos),
+    body: datos,
   });
 }
 

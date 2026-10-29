@@ -100,67 +100,12 @@ class IdentidadService:
                 usuario.hash_contrasena if usuario else _HASH_FICTICIO,
             )
             if not usuario or not valido:
-                raise HTTPException(
-                    401, "Correo o contraseña incorrectos", headers={"WWW-Authenticate": "Bearer"}
-                )
+                raise HTTPException(401, "Correo o contraseña incorrectos", headers={"WWW-Authenticate": "Bearer"})
             usuario = await self.repo.obtener_usuario_por_id(usuario.id, bloquear=True)
             if not usuario.activo:
                 raise HTTPException(403, "Usuario inactivo")
 
-            mfa_obj = usuario.mfa
-            if mfa_obj and mfa_obj.activo:
-                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
-                    minutos = max(
-                        1,
-                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
-                    )
-                    raise HTTPException(
-                        429,
-                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
-                    )
-                token_desafio = crear_token_desafio_mfa(
-                    usuario.id,
-                    expira_minutos=self.settings.mfa_token_expira_minutos,
-                    settings=self.settings,
-                )
-                await self.repo.registrar_evento(
-                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "login"}
-                )
-                return TokenRespuesta(
-                    token_acceso="",
-                    rol=usuario.rol.codigo,
-                    nivel_identidad=usuario.nivel_identidad,
-                    permisos=[],
-                    expira_en=datetime.now(UTC)
-                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
-                    usuario=UsuarioLectura.model_validate(usuario),
-                    mfa_requerido=True,
-                    token_desafio_mfa=token_desafio,
-                )
-
-            expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
-            huella = hmac.new(
-                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
-            ).hexdigest()
-            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
-            token = crear_token_acceso(
-                usuario.id,
-                usuario.rol.codigo,
-                usuario.nivel_identidad,
-                usuario.rol.permisos,
-                sesion_id=sesion.id,
-                settings=self.settings,
-            )
-            await self.repo.registrar_evento("login", usuario.id, usuario.id)
-            return TokenRespuesta(
-                token_acceso=token,
-                rol=usuario.rol.codigo,
-                nivel_identidad=usuario.nivel_identidad,
-                permisos=usuario.rol.permisos,
-                expira_en=expira,
-                usuario=UsuarioLectura.model_validate(usuario),
-                mfa_requerido=False,
-            )
+            return await self._emitir_acceso(usuario, "login")
 
     def _verificar_google_token(self, id_token: str) -> dict:
         """Verificar firma, emisor, caducidad y audiencia; nunca decodificar sin firma."""
@@ -221,81 +166,76 @@ class IdentidadService:
                     else "Google"
                 )
 
-                usuario = await self.repo.crear_usuario_oauth(
+                usuario = await self.repo.crear_usuario_externo(
                     correo=correo,
                     nombres=nombres,
                     apellidos=apellidos,
                     rol_id=rol.id,
                     nivel_identidad=nivel_identidad,
-                    hash_contrasena=await asyncio.to_thread(
-                        obtener_hash_contrasena, uuid.uuid4().hex
-                    ),
+                    hash_contrasena=await asyncio.to_thread(obtener_hash_contrasena, uuid.uuid4().hex),
+                    correo_verificado=True,
                     metadatos={"origen": "google_oauth", "google_sub": claims.get("sub")},
                 )
 
-            mfa_obj = usuario.mfa
-            if mfa_obj and mfa_obj.activo:
-                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
-                    minutos = max(
-                        1,
-                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
-                    )
-                    raise HTTPException(
-                        429,
-                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
-                    )
-                token_desafio = crear_token_desafio_mfa(
-                    usuario.id,
-                    expira_minutos=self.settings.mfa_token_expira_minutos,
-                    settings=self.settings,
-                )
-                await self.repo.registrar_evento(
-                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "google_oauth"}
-                )
-                return TokenRespuesta(
-                    token_acceso="",
-                    rol=usuario.rol.codigo,
-                    nivel_identidad=usuario.nivel_identidad,
-                    permisos=[],
-                    expira_en=datetime.now(UTC)
-                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
-                    usuario=UsuarioLectura.model_validate(usuario),
-                    mfa_requerido=True,
-                    token_desafio_mfa=token_desafio,
-                )
+            return await self._emitir_acceso(usuario, "google_oauth")
 
-            expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
-            huella = hmac.new(
-                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
-            ).hexdigest()
-            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
-            token = crear_token_acceso(
+    async def _emitir_acceso(self, usuario, metodo: str) -> TokenRespuesta:
+        """Componer autenticación dentro de la transacción del método de acceso."""
+        factor = usuario.mfa
+        ahora = datetime.now(UTC)
+        if factor and factor.activo:
+            if factor.bloqueado_hasta and factor.bloqueado_hasta > ahora:
+                raise HTTPException(429, "Cuenta temporalmente bloqueada por intentos fallidos de MFA")
+            expira = ahora + timedelta(minutes=self.settings.mfa_token_expira_minutos)
+            desafio = crear_token_desafio_mfa(
                 usuario.id,
-                usuario.rol.codigo,
-                usuario.nivel_identidad,
-                usuario.rol.permisos,
-                sesion_id=sesion.id,
+                expira_minutos=self.settings.mfa_token_expira_minutos,
                 settings=self.settings,
             )
-            await self.repo.registrar_evento(
-                "login_oauth_google",
-                usuario.id,
-                usuario.id,
-                {"email": correo, "rol": usuario.rol.codigo, "nivel": usuario.nivel_identidad},
-            )
-
+            await self.repo.registrar_evento("mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": metodo})
             return TokenRespuesta(
-                token_acceso=token,
+                token_acceso="",
                 rol=usuario.rol.codigo,
                 nivel_identidad=usuario.nivel_identidad,
-                permisos=usuario.rol.permisos,
+                permisos=[],
                 expira_en=expira,
                 usuario=UsuarioLectura.model_validate(usuario),
-                mfa_requerido=False,
+                mfa_requerido=True,
+                token_desafio_mfa=desafio,
             )
 
-    async def obtener_perfil(self, usuario_id: uuid.UUID) -> UsuarioLectura:
-        return UsuarioLectura.model_validate(await self._usuario(usuario_id))
+        enrolamiento = self._rol_exige_mfa(usuario.rol.codigo)
+        permisos = [] if enrolamiento else usuario.rol.permisos
+        perfil = UsuarioLectura.model_validate(usuario)
+        perfil.permisos = permisos
+        expira = ahora + timedelta(hours=self.settings.jwt_expiracion_horas)
+        huella = hmac.new(self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256).hexdigest()
+        sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
+        token = crear_token_acceso(
+            usuario.id,
+            usuario.rol.codigo,
+            usuario.nivel_identidad,
+            permisos,
+            sesion_id=sesion.id,
+            settings=self.settings,
+        )
+        accion = {"login": "login", "google_oauth": "login_oauth_google", "magic_link": "login_magic_link"}[metodo]
+        await self.repo.registrar_evento(accion, usuario.id, usuario.id, {"mfa_enrolamiento_requerido": enrolamiento})
+        return TokenRespuesta(
+            token_acceso=token,
+            rol=usuario.rol.codigo,
+            nivel_identidad=usuario.nivel_identidad,
+            permisos=permisos,
+            expira_en=expira,
+            usuario=perfil,
+            mfa_enrolamiento_requerido=enrolamiento,
+        )
+
+    async def obtener_perfil(self, usuario_id: uuid.UUID, *, mfa_pendiente=False) -> UsuarioLectura:
+        perfil = UsuarioLectura.model_validate(await self._usuario(usuario_id))
+        if mfa_pendiente:
+            perfil.permisos = []
+        return perfil
 
     async def _usuario(self, usuario_id, *, bloquear=False):
         usuario = await self.repo.obtener_usuario_por_id(usuario_id, bloquear=bloquear)
@@ -336,9 +276,7 @@ class IdentidadService:
     async def cambiar_contrasena(self, datos: CambiarContrasena, actor):
         async with transaction(self.repo.session):
             usuario = await self._usuario(actor.sujeto_id, bloquear=True)
-            if not await asyncio.to_thread(
-                verificar_contrasena, datos.contrasena_actual, usuario.hash_contrasena
-            ):
+            if not await asyncio.to_thread(verificar_contrasena, datos.contrasena_actual, usuario.hash_contrasena):
                 raise HTTPException(400, "La contraseña actual no es correcta")
             await self._actualizar_contrasena(usuario, datos.contrasena, actor.sujeto_id)
             return MensajeRespuesta(mensaje="Contraseña actualizada. Inicia sesión de nuevo")
@@ -361,11 +299,7 @@ class IdentidadService:
                 if actor
                 else await self.repo.obtener_usuario_por_correo(str(correo))
             )
-            if (
-                usuario
-                and usuario.activo
-                and (proposito != "verificar" or usuario.correo_verificado_en is None)
-            ):
+            if usuario and usuario.activo and (proposito != "verificar" or usuario.correo_verificado_en is None):
                 await self.repo.crear_token(
                     hashlib.sha256(token.encode()).hexdigest(),
                     usuario.id,
@@ -381,15 +315,11 @@ class IdentidadService:
                 )
             # El worker entrega después del commit. La respuesta pública no incluye token,
             # existencia de cuenta ni depende del tiempo de entrega SMTP.
-            return MensajeRespuesta(
-                mensaje=("Si la cuenta cumple los requisitos, recibirás un enlace por correo")
-            )
+            return MensajeRespuesta(mensaje=("Si la cuenta cumple los requisitos, recibirás un enlace por correo"))
 
     async def consumir_token(self, token, proposito, contrasena=None):
         async with transaction(self.repo.session):
-            registro = await self.repo.obtener_token(
-                hashlib.sha256(token.encode()).hexdigest(), proposito
-            )
+            registro = await self.repo.obtener_token(hashlib.sha256(token.encode()).hexdigest(), proposito)
             if not registro or registro.usado_en or registro.expira_en <= datetime.now(UTC):
                 raise HTTPException(400, "Enlace inválido, utilizado o caducado")
             usuario = await self._usuario(registro.usuario_id, bloquear=True)
@@ -409,9 +339,7 @@ class IdentidadService:
                 await self.repo.registrar_evento("correo_verificado", usuario.id, usuario.id)
             return MensajeRespuesta(mensaje="Solicitud completada. Puedes iniciar sesión")
 
-    async def solicitar_magic_link(
-        self, correo: str, transporte: CorreoIdentidad
-    ) -> MensajeRespuesta:
+    async def solicitar_magic_link(self, correo: str, transporte: CorreoIdentidad) -> MensajeRespuesta:
         transporte.comprobar_configuracion()
         correo_norm = str(correo).strip().lower()
         nonce = uuid.uuid4()
@@ -423,38 +351,36 @@ class IdentidadService:
                 if not rol:
                     raise HTTPException(500, "Rol ciudadano no configurado")
                 nombre_base = correo_norm.split("@")[0].replace(".", " ").title()
-                usuario = await self.repo.crear_usuario_oauth(
+                usuario = await self.repo.crear_usuario_externo(
                     correo=correo_norm,
                     nombres=nombre_base or "Ciudadano",
                     apellidos="Cartagena",
                     rol_id=rol.id,
                     nivel_identidad="declarada",
-                    hash_contrasena=await asyncio.to_thread(
-                        obtener_hash_contrasena, uuid.uuid4().hex
-                    ),
+                    hash_contrasena=await asyncio.to_thread(obtener_hash_contrasena, uuid.uuid4().hex),
+                    correo_verificado=False,
                     metadatos={"origen": "magic_link"},
                 )
-            elif not usuario.activo:
-                raise HTTPException(403, "Usuario inactivo")
-
-            expira_token = datetime.now(UTC) + timedelta(minutes=15)
-            await self.repo.crear_token(
-                hashlib.sha256(token.encode()).hexdigest(),
-                usuario.id,
-                "magic_link",
-                expira_token,
-                nonce,
+            if usuario.activo:
+                expira_token = datetime.now(UTC) + timedelta(minutes=15)
+                await self.repo.crear_token(
+                    hashlib.sha256(token.encode()).hexdigest(),
+                    usuario.id,
+                    "magic_link",
+                    expira_token,
+                    nonce,
+                )
+                await self.repo.registrar_evento(
+                    "magic_link_solicitado",
+                    None,
+                    usuario.id,
+                    {"proposito": "magic_link"},
+                )
+            return MensajeRespuesta(
+                mensaje=(
+                    "Si la cuenta cumple los requisitos, recibirás un enlace de acceso por correo válido por 15 minutos"
+                )
             )
-            await self.repo.registrar_evento(
-                "magic_link_solicitado",
-                None,
-                usuario.id,
-                {"proposito": "magic_link"},
-            )
-
-        return MensajeRespuesta(
-            mensaje="Si la cuenta cumple los requisitos, recibirás un enlace de acceso por correo válido por 15 minutos"
-        )
 
     async def consumir_magic_link(self, token: str) -> TokenRespuesta:
         async with transaction(self.repo.session):
@@ -476,72 +402,11 @@ class IdentidadService:
             await self.repo.invalidar_tokens(usuario.id, "magic_link")
             await self.repo.guardar()
 
-            mfa_obj = usuario.mfa
-            if mfa_obj and mfa_obj.activo:
-                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
-                    minutos = max(
-                        1,
-                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
-                    )
-                    raise HTTPException(
-                        429,
-                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
-                    )
-                token_desafio = crear_token_desafio_mfa(
-                    usuario.id,
-                    expira_minutos=self.settings.mfa_token_expira_minutos,
-                    settings=self.settings,
-                )
-                await self.repo.registrar_evento(
-                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "magic_link"}
-                )
-                return TokenRespuesta(
-                    token_acceso="",
-                    rol=usuario.rol.codigo,
-                    nivel_identidad=usuario.nivel_identidad,
-                    permisos=[],
-                    expira_en=datetime.now(UTC)
-                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
-                    usuario=UsuarioLectura.model_validate(usuario),
-                    mfa_requerido=True,
-                    token_desafio_mfa=token_desafio,
-                )
-
-            expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
-            huella = hmac.new(
-                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
-            ).hexdigest()
-            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
-            jwt_token = crear_token_acceso(
-                usuario.id,
-                usuario.rol.codigo,
-                usuario.nivel_identidad,
-                usuario.rol.permisos,
-                sesion_id=sesion.id,
-                settings=self.settings,
-            )
-            await self.repo.registrar_evento(
-                "login_magic_link",
-                usuario.id,
-                usuario.id,
-                {"email": usuario.correo, "rol": usuario.rol.codigo, "nivel": usuario.nivel_identidad},
-            )
-
-            return TokenRespuesta(
-                token_acceso=jwt_token,
-                rol=usuario.rol.codigo,
-                nivel_identidad=usuario.nivel_identidad,
-                permisos=usuario.rol.permisos,
-                expira_en=expira,
-                usuario=UsuarioLectura.model_validate(usuario),
-                mfa_requerido=False,
-            )
+            return await self._emitir_acceso(usuario, "magic_link")
 
     async def listar_usuarios(self, busqueda, limite, desplazamiento):
         total, usuarios = await self.repo.listar_usuarios(busqueda, limite, desplazamiento)
-        return UsuariosPagina(
-            total=total, elementos=[UsuarioLectura.model_validate(u) for u in usuarios]
-        )
+        return UsuariosPagina(total=total, elementos=[UsuarioLectura.model_validate(u) for u in usuarios])
 
     async def editar_usuario(self, usuario_id, datos: UsuarioAdministrado, actor):
         async with transaction(self.repo.session):
@@ -557,10 +422,7 @@ class IdentidadService:
             ):
                 raise HTTPException(409, "Debe permanecer al menos un administrador activo")
             self._validar_permisos(rol.permisos, actor)
-            if (
-                usuario.rol.codigo == "administrador_identidades"
-                and actor.rol != usuario.rol.codigo
-            ):
+            if usuario.rol.codigo == "administrador_identidades" and actor.rol != usuario.rol.codigo:
                 raise HTTPException(403, "Solo un administrador puede modificar otro administrador")
             anterior = {"rol": usuario.rol.codigo, "activo": usuario.activo}
             usuario.rol_id, usuario.rol = rol.id, rol
@@ -585,18 +447,13 @@ class IdentidadService:
         async with transaction(self.repo.session):
             await self._usuario(usuario_id, bloquear=True)
             await self.repo.revocar_sesiones(usuario_id)
-            await self.repo.registrar_evento(
-                "sesiones_revocadas_admin", actor.sujeto_id, usuario_id
-            )
+            await self.repo.registrar_evento("sesiones_revocadas_admin", actor.sujeto_id, usuario_id)
             return MensajeRespuesta(mensaje="Sesiones del usuario revocadas")
 
     async def listar_eventos(self, limite, desplazamiento):
         from app.modules.identidad.schemas import EventoLectura
 
-        return [
-            EventoLectura.model_validate(e)
-            for e in await self.repo.listar_eventos(limite, desplazamiento)
-        ]
+        return [EventoLectura.model_validate(e) for e in await self.repo.listar_eventos(limite, desplazamiento)]
 
     def _rol_lectura(self, rol):
         return RolLectura(
@@ -689,9 +546,7 @@ class IdentidadService:
                     f"{accion}:{tipo}:{valor}".encode(),
                     hashlib.sha256,
                 ).hexdigest()
-                intentos = await self.repo.consumir_limite(
-                    clave, self.settings.identidad_ventana_segundos
-                )
+                intentos = await self.repo.consumir_limite(clave, self.settings.identidad_ventana_segundos)
                 excedido = excedido or intentos > maximo
         if excedido:
             raise HTTPException(
@@ -701,22 +556,13 @@ class IdentidadService:
             )
 
     def _rol_exige_mfa(self, codigo_rol: str) -> bool:
-        if not self.settings.mfa_roles_exigidos:
-            return False
-        roles = [
-            r.strip().lower()
-            for r in self.settings.mfa_roles_exigidos.split(",")
-            if r.strip()
-        ]
-        return codigo_rol.lower() in roles
+        return mfa_utils.rol_exige_mfa(codigo_rol, self.settings)
 
     async def obtener_estado_mfa(self, actor) -> MfaEstadoLectura:
         usuario = await self._usuario(actor.sujeto_id)
         mfa_obj = usuario.mfa
         activo = bool(mfa_obj and mfa_obj.activo)
-        codigos_restantes = (
-            len(mfa_obj.codigos_recuperacion) if mfa_obj and mfa_obj.activo else 0
-        )
+        codigos_restantes = len(mfa_obj.codigos_recuperacion) if mfa_obj and mfa_obj.activo else 0
         activado_en = mfa_obj.activado_en if mfa_obj else None
         exigido_por_rol = self._rol_exige_mfa(usuario.rol.codigo)
         return MfaEstadoLectura(
@@ -724,11 +570,14 @@ class IdentidadService:
             codigos_restantes=codigos_restantes,
             activado_en=activado_en,
             exigido_por_rol=exigido_por_rol,
+            sesion_verificada=actor.mfa_verificada,
         )
 
     async def iniciar_mfa(self, actor) -> MfaIniciarRespuesta:
         async with transaction(self.repo.session):
             usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            if usuario.mfa and usuario.mfa.activo:
+                raise HTTPException(409, "MFA ya está activo; no se puede reiniciar el enrolamiento")
             secreto_b32 = mfa_utils.generar_secreto_totp()
             secreto_cifrado = mfa_utils.cifrar_secreto_totp(secreto_b32, self.settings)
             await self.repo.guardar_mfa_usuario(usuario.id, secreto_cifrado, [])
@@ -747,16 +596,15 @@ class IdentidadService:
             mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
             if not mfa_obj:
                 raise HTTPException(400, "Debe iniciar la configuración de MFA antes de activarla")
+            if mfa_obj.activo:
+                raise HTTPException(409, "MFA ya está activo")
             secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
             valido, paso = mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo)
             if not valido:
                 raise HTTPException(400, "Código TOTP inválido. Verifique la sincronización horaria.")
 
             codigos_recuperacion = mfa_utils.generar_codigos_recuperacion(8)
-            hashes = [
-                mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt)
-                for c in codigos_recuperacion
-            ]
+            hashes = [mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt) for c in codigos_recuperacion]
             mfa_obj.codigos_recuperacion = hashes
             mfa_obj.activo = True
             mfa_obj.activado_en = datetime.now(UTC)
@@ -764,7 +612,9 @@ class IdentidadService:
             mfa_obj.intentos_fallidos = 0
             mfa_obj.bloqueado_hasta = None
             mfa_obj.actualizado_en = datetime.now(UTC)
+            mfa_obj.ultimo_uso_en = mfa_obj.actualizado_en
             await self.repo.guardar()
+            await self._acreditar_mfa_sesion(usuario.id, mfa_obj, actor.sesion_id)
             await self.repo.registrar_evento("mfa_activado", actor.sujeto_id, usuario.id)
             return MfaActivarRespuesta(
                 mensaje="Autenticación en dos pasos (TOTP) activada exitosamente.",
@@ -777,10 +627,10 @@ class IdentidadService:
             mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
             if not mfa_obj or not mfa_obj.activo:
                 raise HTTPException(400, "MFA no está activo")
+            if self._rol_exige_mfa(usuario.rol.codigo):
+                raise HTTPException(403, "El rol actual exige mantener MFA activo")
 
-            valido = await asyncio.to_thread(
-                verificar_contrasena, datos.contrasena, usuario.hash_contrasena
-            )
+            valido = await asyncio.to_thread(verificar_contrasena, datos.contrasena, usuario.hash_contrasena)
             if not valido:
                 raise HTTPException(401, "Contraseña incorrecta para confirmar la desactivación de MFA")
 
@@ -788,9 +638,12 @@ class IdentidadService:
             await self.repo.registrar_evento("mfa_desactivado", actor.sujeto_id, usuario.id)
             return MensajeRespuesta(mensaje="MFA desactivado exitosamente")
 
-    async def regenerar_codigos_recuperacion(
-        self, datos: MfaCodigoPeticion, actor
-    ) -> MfaActivarRespuesta:
+    async def _acreditar_mfa_sesion(self, usuario_id, factor, sesion_id):
+        acreditacion = mfa_utils.acreditacion_sesion_mfa(factor, sesion_id, self.settings)
+        if not await self.repo.acreditar_mfa_sesion(usuario_id, sesion_id, acreditacion):
+            raise HTTPException(401, "Sesión inválida o revocada")
+
+    async def regenerar_codigos_recuperacion(self, datos: MfaCodigoPeticion, actor) -> MfaActivarRespuesta:
         async with transaction(self.repo.session):
             usuario = await self._usuario(actor.sujeto_id, bloquear=True)
             mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
@@ -805,16 +658,12 @@ class IdentidadService:
                 raise HTTPException(400, "Código TOTP inválido o ya utilizado")
 
             codigos = mfa_utils.generar_codigos_recuperacion(8)
-            hashes = [
-                mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt) for c in codigos
-            ]
+            hashes = [mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt) for c in codigos]
             mfa_obj.codigos_recuperacion = hashes
             mfa_obj.ultimo_paso_totp = paso
             mfa_obj.actualizado_en = datetime.now(UTC)
             await self.repo.guardar()
-            await self.repo.registrar_evento(
-                "mfa_codigos_regenerados", actor.sujeto_id, usuario.id
-            )
+            await self.repo.registrar_evento("mfa_codigos_regenerados", actor.sujeto_id, usuario.id)
             return MfaActivarRespuesta(
                 mensaje="Nuevos códigos de recuperación generados exitosamente.",
                 codigos_recuperacion=codigos,
@@ -826,116 +675,116 @@ class IdentidadService:
             raise HTTPException(401, "Token de desafío MFA inválido o expirado")
 
         async with transaction(self.repo.session):
-            usuario = await self.repo.obtener_usuario_por_id(usuario_id, bloquear=True)
-            if not usuario or not usuario.activo:
-                raise HTTPException(403, "Usuario inactivo")
+            resultado = await self._resolver_desafio_mfa(usuario_id, datos.codigo)
+        # La denegación también es una unidad durable: no revertir sus contadores
+        # al comunicar el HTTP. Los fallos de SQL/commit siguen propagándose desde
+        # transaction y revierten la unidad completa, incluidos sus eventos.
+        if isinstance(resultado, HTTPException):
+            raise resultado
+        return resultado
 
-            mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
-            if not mfa_obj or not mfa_obj.activo:
-                raise HTTPException(400, "MFA no está activo para este usuario")
+    async def _resolver_desafio_mfa(self, usuario_id, codigo: str) -> TokenRespuesta | HTTPException:
+        usuario = await self.repo.obtener_usuario_por_id(usuario_id, bloquear=True)
+        if not usuario or not usuario.activo:
+            raise HTTPException(403, "Usuario inactivo")
 
-            ahora = datetime.now(UTC)
-            if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > ahora:
-                minutos = max(
-                    1, int((mfa_obj.bloqueado_hasta - ahora).total_seconds() / 60)
-                )
-                raise HTTPException(
-                    429,
-                    f"Cuenta bloqueada temporalmente por intentos fallidos de MFA. Reintente en {minutos} minutos.",
-                )
+        mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
+        if not mfa_obj or not mfa_obj.activo:
+            raise HTTPException(400, "MFA no está activo para este usuario")
 
-            es_valido = False
-            es_codigo_recuperacion = False
-            paso_exitoso = None
-            secreto_b32 = mfa_utils.descifrar_secreto_totp(
-                mfa_obj.secreto_cifrado, self.settings
+        ahora = datetime.now(UTC)
+        if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > ahora:
+            minutos = max(1, int((mfa_obj.bloqueado_hasta - ahora).total_seconds() / 60))
+            raise HTTPException(
+                429,
+                f"Cuenta bloqueada temporalmente por intentos fallidos de MFA. Reintente en {minutos} minutos.",
             )
 
-            valido_totp, paso_totp = mfa_utils.verificar_codigo_totp(
-                secreto_b32, datos.codigo, ultimo_paso=mfa_obj.ultimo_paso_totp
+        es_valido = False
+        es_codigo_recuperacion = False
+        paso_exitoso = None
+        secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
+
+        valido_totp, paso_totp = mfa_utils.verificar_codigo_totp(
+            secreto_b32, codigo, ultimo_paso=mfa_obj.ultimo_paso_totp
+        )
+        if valido_totp:
+            es_valido = True
+            paso_exitoso = paso_totp
+        else:
+            ok_rec, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
+                codigo, mfa_obj.codigos_recuperacion, self.settings.ip_salt
             )
-            if valido_totp:
+            if ok_rec:
                 es_valido = True
-                paso_exitoso = paso_totp
-            else:
-                ok_rec, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
-                    datos.codigo, mfa_obj.codigos_recuperacion, self.settings.ip_salt
-                )
-                if ok_rec:
-                    es_valido = True
-                    es_codigo_recuperacion = True
-                    mfa_obj.codigos_recuperacion = restantes
+                es_codigo_recuperacion = True
+                mfa_obj.codigos_recuperacion = restantes
 
-            if not es_valido:
-                mfa_obj.intentos_fallidos += 1
-                if mfa_obj.intentos_fallidos >= self.settings.mfa_max_intentos:
-                    mfa_obj.bloqueado_hasta = ahora + timedelta(
-                        minutes=self.settings.mfa_bloqueo_minutos
-                    )
-                    mfa_obj.intentos_fallidos = 0
-                    await self.repo.registrar_evento(
-                        "mfa_bloqueo_activado",
-                        usuario.id,
-                        usuario.id,
-                        {"motivo": "exceso_intentos_mfa"},
-                    )
-                    await self.repo.guardar()
-                    raise HTTPException(
-                        429,
-                        "Demasiados intentos fallidos. Cuenta temporalmente bloqueada.",
-                    )
+        if not es_valido:
+            mfa_obj.intentos_fallidos += 1
+            if mfa_obj.intentos_fallidos >= self.settings.mfa_max_intentos:
+                mfa_obj.bloqueado_hasta = ahora + timedelta(minutes=self.settings.mfa_bloqueo_minutos)
+                mfa_obj.intentos_fallidos = 0
                 await self.repo.registrar_evento(
-                    "mfa_fallido",
+                    "mfa_bloqueo_activado",
                     usuario.id,
                     usuario.id,
-                    {"intentos": mfa_obj.intentos_fallidos},
+                    {"motivo": "exceso_intentos_mfa"},
                 )
                 await self.repo.guardar()
-                raise HTTPException(401, "Código de verificación inválido")
-
-            mfa_obj.intentos_fallidos = 0
-            mfa_obj.bloqueado_hasta = None
-            mfa_obj.ultimo_uso_en = ahora
-            if paso_exitoso is not None:
-                mfa_obj.ultimo_paso_totp = paso_exitoso
-            await self.repo.guardar()
-
-            if es_codigo_recuperacion:
-                await self.repo.registrar_evento(
-                    "mfa_codigo_recuperacion_usado",
-                    usuario.id,
-                    usuario.id,
-                    {"restantes": len(mfa_obj.codigos_recuperacion)},
+                return HTTPException(
+                    429,
+                    "Demasiados intentos fallidos. Cuenta temporalmente bloqueada.",
                 )
-            else:
-                await self.repo.registrar_evento("mfa_verificado", usuario.id, usuario.id)
-
-            expira = ahora + timedelta(hours=self.settings.jwt_expiracion_horas)
-            huella = hmac.new(
-                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
-            ).hexdigest()
-            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
-            token = crear_token_acceso(
+            await self.repo.registrar_evento(
+                "mfa_fallido",
                 usuario.id,
-                usuario.rol.codigo,
-                usuario.nivel_identidad,
-                usuario.rol.permisos,
-                sesion_id=sesion.id,
-                settings=self.settings,
+                usuario.id,
+                {"intentos": mfa_obj.intentos_fallidos},
             )
-            return TokenRespuesta(
-                token_acceso=token,
-                rol=usuario.rol.codigo,
-                nivel_identidad=usuario.nivel_identidad,
-                permisos=usuario.rol.permisos,
-                expira_en=expira,
-                usuario=UsuarioLectura.model_validate(usuario),
-                mfa_requerido=False,
-            )
+            await self.repo.guardar()
+            return HTTPException(401, "Código de verificación inválido")
 
-    async def listar_ambitos_usuario(
-        self, usuario_id: uuid.UUID
-    ) -> list[AmbitoTerritorialLectura]:
+        mfa_obj.intentos_fallidos = 0
+        mfa_obj.bloqueado_hasta = None
+        mfa_obj.ultimo_uso_en = ahora
+        if paso_exitoso is not None:
+            mfa_obj.ultimo_paso_totp = paso_exitoso
+        await self.repo.guardar()
+
+        if es_codigo_recuperacion:
+            await self.repo.registrar_evento(
+                "mfa_codigo_recuperacion_usado",
+                usuario.id,
+                usuario.id,
+                {"restantes": len(mfa_obj.codigos_recuperacion)},
+            )
+        else:
+            await self.repo.registrar_evento("mfa_verificado", usuario.id, usuario.id)
+
+        expira = ahora + timedelta(hours=self.settings.jwt_expiracion_horas)
+        huella = hmac.new(self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256).hexdigest()
+        sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
+        await self._acreditar_mfa_sesion(usuario.id, mfa_obj, sesion.id)
+        token = crear_token_acceso(
+            usuario.id,
+            usuario.rol.codigo,
+            usuario.nivel_identidad,
+            usuario.rol.permisos,
+            sesion_id=sesion.id,
+            settings=self.settings,
+        )
+        return TokenRespuesta(
+            token_acceso=token,
+            rol=usuario.rol.codigo,
+            nivel_identidad=usuario.nivel_identidad,
+            permisos=usuario.rol.permisos,
+            expira_en=expira,
+            usuario=UsuarioLectura.model_validate(usuario),
+            mfa_requerido=False,
+        )
+
+    async def listar_ambitos_usuario(self, usuario_id: uuid.UUID) -> list[AmbitoTerritorialLectura]:
         usuario = await self.repo.obtener_usuario_por_id(usuario_id)
         if not usuario:
             raise HTTPException(404, "Usuario no encontrado")
@@ -999,5 +848,3 @@ class IdentidadService:
                 },
             )
             return MensajeRespuesta(mensaje="Ámbito territorial revocado exitosamente")
-
-

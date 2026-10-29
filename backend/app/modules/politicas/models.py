@@ -32,8 +32,7 @@ class DimensionSeguridadHumana(Base):
         {
             ("schema"): ("motor_politicas"),
             ("comment"): (
-                "Las 7 dimensiones de la Seguridad Humana (ONU/DNP) que estructur"
-                "an el diagnóstico y metas de Cartagena"
+                "Las 7 dimensiones de la Seguridad Humana (ONU/DNP) que estructuran el diagnóstico y metas de Cartagena"
             ),
         },
     )
@@ -48,8 +47,7 @@ class DimensionSeguridadHumana(Base):
         unique=True,
         nullable=False,
         comment=(
-            "Identificador textual corto: economica, alimentaria, "
-            "salud, ambiental, personal, comunitaria, politica"
+            "Identificador textual corto: economica, alimentaria, salud, ambiental, personal, comunitaria, politica"
         ),
     )
     nombre: Mapped[str] = mapped_column(String(150), nullable=False)
@@ -93,10 +91,7 @@ class FasePolitica(Base):
         ),
         {
             ("schema"): ("motor_politicas"),
-            ("comment"): (
-                "Fases dinámicas del ciclo de vida de la Política Pública de Segu"
-                "ridad Humana de Cartagena"
-            ),
+            ("comment"): ("Fases dinámicas del ciclo de vida de la Política Pública de Seguridad Humana de Cartagena"),
         },
     )
 
@@ -110,9 +105,7 @@ class FasePolitica(Base):
     nombre: Mapped[str] = mapped_column(String(200), nullable=False)
     descripcion: Mapped[str | None] = mapped_column(Text, nullable=True)
     estado: Mapped[str] = mapped_column(String(50), default="preparatoria", nullable=False)
-    progreso_porcentaje: Mapped[Decimal] = mapped_column(
-        Numeric(5, 2), default=Decimal("0.00"), nullable=False
-    )
+    progreso_porcentaje: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal("0.00"), nullable=False)
     fecha_inicio: Mapped[date | None] = mapped_column(Date, nullable=True)
     fecha_cierre: Mapped[date | None] = mapped_column(Date, nullable=True)
     reglas_participacion: Mapped[dict[str, Any]] = mapped_column(
@@ -123,8 +116,7 @@ class FasePolitica(Base):
             "limite_aportes_por_usuario": 10,
         },
         server_default=text(
-            '\'{"permite_anonimo": true, "permite_fotos": true, '
-            '"limite_aportes_por_usuario": 10}\'::jsonb'
+            '\'{"permite_anonimo": true, "permite_fotos": true, "limite_aportes_por_usuario": 10}\'::jsonb'
         ),
         nullable=False,
         comment=("Reglas de negocio parametrizables para la participación ciudadana en cada fase"),
@@ -167,8 +159,7 @@ class LineaEstrategica(Base):
         {
             ("schema"): ("motor_politicas"),
             ("comment"): (
-                "Líneas estratégicas asociadas a fases, dimensiones de seguridad "
-                "humana y fuentes de financiación"
+                "Líneas estratégicas asociadas a fases, dimensiones de seguridad humana y fuentes de financiación"
             ),
         },
     )
@@ -193,9 +184,7 @@ class LineaEstrategica(Base):
     descripcion: Mapped[str] = mapped_column(Text, nullable=False)
     problema_abordado: Mapped[str | None] = mapped_column(Text, nullable=True)
     objetivo_especifico: Mapped[str | None] = mapped_column(Text, nullable=True)
-    costo_estimado: Mapped[Decimal] = mapped_column(
-        Numeric(18, 2), default=Decimal("0.00"), nullable=False
-    )
+    costo_estimado: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal("0.00"), nullable=False)
     fuentes_financiacion: Mapped[list[str]] = mapped_column(
         ARRAY(Text),
         default=lambda: ["FONSET"],
@@ -247,4 +236,3 @@ class LineaEstrategica(Base):
 
 # Registro de modelos de formulación relacionados (EDIT-09)
 from app.modules.alternativas.models import BancoAlternativas  # noqa: E402, F401
-

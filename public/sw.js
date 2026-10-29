@@ -3,7 +3,10 @@
  * Diseñado para facilitadores en zonas insulares y rurales sin cobertura celular.
  */
 
-const CACHE_NAME = "polis-pwa-v2";
+// v3: se invalida la caché acumulada por builds anteriores y ya no se
+// guarda HTML de navegación (fuente de los 500 tras un rebuild: el HTML viejo
+// referencia chunks con nombres que el build nuevo ya no produce).
+const CACHE_NAME = "polis-pwa-v3";
 const STATIC_ASSETS = [
   "/",
   "/barrio",
@@ -61,20 +64,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Navegación (HTML): Network-First con fallback a cache
+  // Navegación (HTML): Network-First con fallback al precache de instalación.
+  // El HTML de navegación jamás se re-cachea aquí: sería un HTML vibrado que
+  // puede referenciar chunks de otra build y dejar la pantalla en blanco.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.status === 200) {
-            const responseClone = response.clone();
-            caches
-              .open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(request, responseClone).catch(() => {});
-              })
-              .catch(() => {});
-          }
           return response;
         })
         .catch(async () => {

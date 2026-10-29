@@ -1,0 +1,87 @@
+{
+  "naturaleza": "cotejo_local_parser_no_aceptacion_semantica",
+  "resultados": [
+    {
+      "codigo": "13001",
+      "filas": 12899,
+      "identidad_solo_codigos": {
+        "concordante_declarada": 12899
+      },
+      "estado_fila_solo_codigos": {
+        "retiene": 667,
+        "aceptada": 12230,
+        "rechazada": 2
+      },
+      "literales_departamento": {
+        "Bolívar": 12899
+      },
+      "literales_entidad": {
+        "Cartagena": 12899
+      },
+      "departamento_catalogo": "BOLÍVAR",
+      "entidad_catalogo": "CARTAGENA DE INDIAS"
+    },
+    {
+      "codigo": "13673",
+      "filas": 12733,
+      "identidad_solo_codigos": {
+        "concordante_declarada": 12733
+      },
+      "estado_fila_solo_codigos": {
+        "retiene": 1339,
+        "aceptada": 11392,
+        "rechazada": 2
+      },
+      "literales_departamento": {
+        "Bolívar": 12733
+      },
+      "literales_entidad": {
+        "Santa Catalina": 12733
+      },
+      "departamento_catalogo": "BOLÍVAR",
+      "entidad_catalogo": "SANTA CATALINA"
+    },
+    {
+      "codigo": "23660",
+      "filas": 12885,
+      "identidad_solo_codigos": {
+        "concordante_declarada": 12885
+      },
+      "estado_fila_solo_codigos": {
+        "retiene": 1404,
+        "aceptada": 11479,
+        "rechazada": 2
+      },
+      "literales_departamento": {
+        "Córdoba": 12885
+      },
+      "literales_entidad": {
+        "Sahagún": 12885
+      },
+      "departamento_catalogo": "CÓRDOBA",
+      "entidad_catalogo": "SAHAGÚN"
+    },
+    {
+      "codigo": "11001",
+      "filas": 13410,
+      "identidad_solo_codigos": {
+        "concordante_declarada": 13410
+      },
+      "estado_fila_solo_codigos": {
+        "retiene": 790,
+        "aceptada": 12618,
+        "rechazada": 2
+      },
+      "literales_departamento": {
+        "Bogotá": 13410
+      },
+      "literales_entidad": {
+        "Bogotá": 13410
+      },
+      "departamento_catalogo": "BOGOTÁ, D.C.",
+      "entidad_catalogo": "BOGOTÁ, D.C."
+    }
+  ],
+  "filas_total": 51927,
+  "estado": "codigos_concordantes_en_cuatro_capturas_nombres_literales_preservados"
+}

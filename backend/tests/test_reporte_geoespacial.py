@@ -45,8 +45,7 @@ def datos(fotos=None):
 def filas(url):
     return consultar(
         url,
-        "SELECT id, datos_respuesta FROM participacion_ciudadana.respuestas_formulario "
-        "WHERE formulario_id=:id",
+        "SELECT id, datos_respuesta FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
         {"id": ID},
     )
 

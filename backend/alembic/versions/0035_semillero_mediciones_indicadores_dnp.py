@@ -7,8 +7,10 @@ Create Date: 2026-10-04 00:00:00.000000
 
 import json
 from datetime import date
-from alembic import op
+
 from sqlalchemy import text
+
+from alembic import op
 
 revision = "0035_mediciones_indicadores_seed"
 down_revision = "0034_compromisos_pas"

@@ -75,9 +75,7 @@ def upgrade() -> None:
             server_default=sa.text("clock_timestamp()"),
             nullable=False,
         ),
-        sa.CheckConstraint(
-            "estado IN ('publicada', 'borrador', 'archivada')", name="ck_noticias_estado_valido"
-        ),
+        sa.CheckConstraint("estado IN ('publicada', 'borrador', 'archivada')", name="ck_noticias_estado_valido"),
         sa.CheckConstraint(
             "categoria IN ('avance_politica', 'mesa_realizada', 'acuerdo_distrital', 'convocatoria', 'informe', 'logro')",
             name="ck_noticias_categoria_valida",

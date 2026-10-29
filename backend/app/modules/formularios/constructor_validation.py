@@ -39,12 +39,7 @@ def efectivas(documento, respuestas):
     preguntas = sorted(documento["preguntas"], key=lambda p: p["orden"])
     visibles, valores = [], {}
     for p in preguntas:
-        reglas = [
-            r
-            for q in preguntas
-            for r in q.get("logica", [])
-            if r.get("preguntaDestinoId", q["id"]) == p["id"]
-        ]
+        reglas = [r for q in preguntas for r in q.get("logica", []) if r.get("preguntaDestinoId", q["id"]) == p["id"]]
         if all(cumple(r, valores) for r in reglas if r["accion"] == "mostrar") and not any(
             cumple(r, valores) for r in reglas if r["accion"] == "ocultar"
         ):
@@ -60,20 +55,12 @@ def efectivas(documento, respuestas):
             if p.get("seccionId") != seccion:
                 continue
             salto = next(
-                (
-                    r
-                    for r in p.get("logica", [])
-                    if r["accion"] == "ir_a_seccion" and cumple(r, valores)
-                ),
+                (r for r in p.get("logica", []) if r["accion"] == "ir_a_seccion" and cumple(r, valores)),
                 None,
             )
             if salto:
                 destino = next(
-                    (
-                        j
-                        for j, s in enumerate(secciones)
-                        if s["id"] == salto.get("seccionDestinoId")
-                    ),
+                    (j for j, s in enumerate(secciones) if s["id"] == salto.get("seccionDestinoId")),
                     -1,
                 )
                 if destino > i:
@@ -81,9 +68,7 @@ def efectivas(documento, respuestas):
                     break
         i += 1
     preguntas = [
-        p
-        for p in visibles
-        if p.get("seccionId") in accesibles and p["tipo"] not in ("seccion", "descripcion")
+        p for p in visibles if p.get("seccionId") in accesibles and p["tipo"] not in ("seccion", "descripcion")
     ]
     return preguntas, {p["id"]: valores[p["id"]] for p in preguntas if p["id"] in valores}
 
@@ -94,11 +79,7 @@ def validar_respuestas(documento, respuestas):
         respuestas = dict(respuestas)
         for p in documento["preguntas"]:
             dato = respuestas.get(p["id"])
-            if (
-                p["tipo"] == "ubicacion_geografica"
-                and p.get("permitirFotos")
-                and isinstance(dato, dict)
-            ):
+            if p["tipo"] == "ubicacion_geografica" and p.get("permitirFotos") and isinstance(dato, dict):
                 try:
                     if dato["tipo"] != "ubicacion_geografica":
                         raise ValueError("Tipo incorrecto")
@@ -114,8 +95,7 @@ def validar_respuestas(documento, respuestas):
                 except (KeyError, TypeError, ValueError) as error:
                     raise HTTPException(422, "Punto geográfico inválido") from error
     if not isinstance(respuestas, dict) or any(
-        not isinstance(v, (str, list))
-        or (isinstance(v, list) and any(not isinstance(item, str) for item in v))
+        not isinstance(v, (str, list)) or (isinstance(v, list) and any(not isinstance(item, str) for item in v))
         for v in respuestas.values()
     ):
         raise HTTPException(422, "Las respuestas deben ser texto o listas de texto")
@@ -144,21 +124,14 @@ def validar_respuestas(documento, respuestas):
                 error("Opciones incorrectas o repetidas")
             for v in lista:
                 if not any(
-                    o["id"] == v
-                    or (
-                        o.get("esOtro")
-                        and v.startswith(o["id"] + ":")
-                        and v.split(":", 1)[1].strip()
-                    )
+                    o["id"] == v or (o.get("esOtro") and v.startswith(o["id"] + ":") and v.split(":", 1)[1].strip())
                     for o in opciones
                 ):
                     error("Opción inválida")
         if tipo in ("texto_corto", "texto_largo"):
             if (p.get("obligatoria") or validacion.get("obligatoria")) and not valor.strip():
                 error("Esta pregunta es obligatoria")
-            if len(valor) < validacion.get("minLongitud", 0) or len(valor) > validacion.get(
-                "maxLongitud", 100000
-            ):
+            if len(valor) < validacion.get("minLongitud", 0) or len(valor) > validacion.get("maxLongitud", 100000):
                 error("Longitud de texto fuera de rango")
             patron = validacion.get("patron")
             if patron and not re.search(patron, valor):
@@ -168,12 +141,8 @@ def validar_respuestas(documento, respuestas):
                 numero = Decimal(valor)
                 if not numero.is_finite():
                     error("Número inválido")
-                minimo = validacion.get(
-                    "minValor", p.get("escalaMin", 1) if tipo != "numero" else None
-                )
-                maximo = validacion.get(
-                    "maxValor", p.get("escalaMax", 5) if tipo != "numero" else None
-                )
+                minimo = validacion.get("minValor", p.get("escalaMin", 1) if tipo != "numero" else None)
+                maximo = validacion.get("maxValor", p.get("escalaMax", 5) if tipo != "numero" else None)
                 if minimo is not None and numero < Decimal(str(minimo)):
                     error("Número por debajo del mínimo")
                 if maximo is not None and numero > Decimal(str(maximo)):
@@ -200,19 +169,13 @@ def validar_respuestas(documento, respuestas):
                     punto["type"] != "Point"
                     or len(coords) != 2
                     or any(
-                        isinstance(n, bool)
-                        or not isinstance(n, (int, float))
-                        or not math.isfinite(n)
-                        for n in coords
+                        isinstance(n, bool) or not isinstance(n, (int, float)) or not math.isfinite(n) for n in coords
                     )
                     or not (-180 <= coords[0] <= 180 and -90 <= coords[1] <= 90)
                     or ("origen" in punto and punto["origen"] not in ("mapa", "coordenadas", "gps"))
                     or (
                         "referencia" in punto
-                        and (
-                            not isinstance(punto["referencia"], str)
-                            or len(punto["referencia"]) > 240
-                        )
+                        and (not isinstance(punto["referencia"], str) or len(punto["referencia"]) > 240)
                     )
                     or (
                         "precisionMetros" in punto
@@ -255,11 +218,7 @@ def validar_respuestas(documento, respuestas):
                     error("Archivo inválido")
                 contenido = archivo["contenido"].split(",", 1)[1]
                 datos_archivo = base64.b64decode(contenido, validate=True)
-                if (
-                    not datos_archivo
-                    or len(datos_archivo) > 2 * 1024 * 1024
-                    or len(datos_archivo) != archivo["bytes"]
-                ):
+                if not datos_archivo or len(datos_archivo) > 2 * 1024 * 1024 or len(datos_archivo) != archivo["bytes"]:
                     error("Archivo inválido o superior a 2 MB")
                 filtro = p.get("tiposArchivo", "imagen")
                 if filtro == "pdf" and mime != "application/pdf":

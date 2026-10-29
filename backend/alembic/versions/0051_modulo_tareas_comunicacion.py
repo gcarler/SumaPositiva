@@ -5,14 +5,16 @@ Revises: 0050_lineas_alim_salud_pol
 Create Date: 2026-10-06 04:50:00.000000
 """
 
-from typing import Sequence, Union
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
 
+from alembic import op
+
 revision: str = "0051_modulo_tareas_comunicacion"
-down_revision: Union[str, None] = "0050_lineas_alim_salud_pol"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "0050_lineas_alim_salud_pol"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 TAREAS_SEEDED = [
     (

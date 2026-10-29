@@ -1,0 +1,2171 @@
+[
+  {
+    "id": "F-001",
+    "category": "guia",
+    "name": "DANE · Pobreza monetaria y multidimensional (referencia de la guía: 2016)",
+    "detail": "Pobreza y factores económicos; comprobar edición y cobertura adecuadas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/pobreza-y-desigualdad/pobreza-monetaria-y-multidimensional-en-colombia-2016",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-002",
+    "category": "guia",
+    "name": "INS / Ministerio de Salud · Boletín Epidemiológico",
+    "detail": "Desnutrición y riesgos de salud pública.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.ins.gov.co/buscador-eventos/Paginas/Vista-Boletin-Epidemilogico.aspx",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-003",
+    "category": "guia",
+    "name": "Ministerio de Salud · Observatorio de Convivencia y Salud Mental",
+    "detail": "Salud mental y convivencia; la mención no trae URL propia.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-004",
+    "category": "guia",
+    "name": "SISPRO · Sistema Integrado de Información de la Protección Social",
+    "detail": "Indicadores del sector salud.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.sispro.gov.co/Pages/Home.aspx",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-005",
+    "category": "guia",
+    "name": "Encuesta Nacional de Consumo de Sustancias Psicoactivas",
+    "detail": "Consumo de alcohol y SPA.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/salud/encuesta-nacional-de-consumo-de-sustancias-psicoactivas-encspa",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-006",
+    "category": "guia",
+    "name": "Medicina Legal · Boletines estadísticos y registros forenses",
+    "detail": "Muertes, lesiones y violencias; distinguir hechos, personas y exámenes.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.medicinalegal.gov.co/cifras-estadisticas/boletines-estadisticos-mensuales",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-007",
+    "category": "guia",
+    "name": "ICBF · Sistema Nacional de Coordinación de Responsabilidad Penal para Adolescentes",
+    "detail": "Información SRPA/SNCRPA; no equivale a tener todos los datos ICBF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.icbf.gov.co/programas-y-estrategias/proteccion/sistema-de-responsabilidad-penal-para-adolescentes-srpa/sistema",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-008",
+    "category": "guia",
+    "name": "IDEAM · Sistema de Monitoreo de Bosques y Carbono (SMByC)",
+    "detail": "Bosques, deforestación y contexto ambiental.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://www.ideam.gov.co/web/siac/smbyc",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-009",
+    "category": "guia",
+    "name": "Ministerio de Defensa · Observatorio de Derechos Humanos y Defensa Nacional",
+    "detail": "Estadísticas y contexto de violencia y seguridad.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-010",
+    "category": "guia",
+    "name": "Defensoría del Pueblo · Sistema de Alertas Tempranas (SAT)",
+    "detail": "Alertas, riesgos y notas de seguimiento.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://alertastempranas.defensoria.gov.co/Alerta/Tablero",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-011",
+    "category": "guia",
+    "name": "Ministerio de Justicia · Índice de Acceso Efectivo a la Justicia",
+    "detail": "Acceso a justicia y barreras.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://minjusticia.gov.co/transparencia/Paginas/SEJ-Acceso-a-la-Justicia-indice-acceso-efectivo-a-la-justicia.aspx",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-012",
+    "category": "guia",
+    "name": "Ministerio del Interior · Sistema Nacional de Información de Trata de Personas",
+    "detail": "Trata de personas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mininterior.gov.co/grupo-de-lucha-contra-la-trata-de-personas/sistema-nacional-de-informacion-de-trata-de-personas-snitp/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-013",
+    "category": "guia",
+    "name": "Ministerio de Justicia · SUIN-JURISCOL",
+    "detail": "Consulta normativa; fuente documental, no serie de casos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.suin-juriscol.gov.co/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-014",
+    "category": "guia",
+    "name": "Ministerio de Justicia · Observatorio de Drogas de Colombia (ODC)",
+    "detail": "Drogas y sus dinámicas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.minjusticia.gov.co/programas-co/ODC",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-015",
+    "category": "guia",
+    "name": "Ministerio de Justicia · Observatorio de Política Criminal",
+    "detail": "Información de política criminal.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-016",
+    "category": "guia",
+    "name": "ARN / UNODC · Sistema de Análisis de Grupos Armados (SAGA)",
+    "detail": "Información sobre grupos armados y contexto.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://saga.unodc.org.co/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-017",
+    "category": "guia",
+    "name": "Ministerio de Educación · Sistema de Información Unificado de Convivencia Escolar (SIUCE)",
+    "detail": "Convivencia y violencias escolares.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mineducacion.gov.co/portal/salaprensa/Noticias/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-018",
+    "category": "guia",
+    "name": "Migración Colombia · Portal institucional",
+    "detail": "Contexto de población migrante.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.migracioncolombia.gov.co/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-019",
+    "category": "guia",
+    "name": "Consejería para la Equidad de la Mujer · Observatorio Colombiano de Mujeres",
+    "detail": "Brechas, violencias y enfoque de género.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://observatoriomujeres.gov.co/es/OAG",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-020",
+    "category": "guia",
+    "name": "JEP · Mecanismo Unificado de Monitoreo de Riesgos",
+    "detail": "Riesgos del Sistema Integral para la Paz.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-021",
+    "category": "guia",
+    "name": "ART · Indicadores de los Planes de Acción para la Transformación Regional (PATR)",
+    "detail": "Avance PATR y contexto PDET.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://centralpdet.renovacionterritorio.gov.co/avance-patr/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-022",
+    "category": "guia",
+    "name": "DNP · Índice de Desarrollo de Municipios Costeros (IDMC)",
+    "detail": "Contexto de municipios costeros.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://portalterritorial.dnp.gov.co/AdmCPBioceanica/iGrupoCMunicipios",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-023",
+    "category": "guia",
+    "name": "DNP · TerriData, seguridad integral marítima y fluvial",
+    "detail": "Indicadores territoriales; verificar variables específicas disponibles.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-024",
+    "category": "guia",
+    "name": "Policía · Análisis Integral de Seguridad y Convivencia Ciudadana (AISEC)",
+    "detail": "Diagnóstico local y riesgos integrados.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-025",
+    "category": "guia",
+    "name": "Policía · Comprensión contextual del territorio",
+    "detail": "Memoria local, características y capacidades.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-026",
+    "category": "guia",
+    "name": "Ministerio de Justicia · Diagnóstico y matriz de conflictividades",
+    "detail": "Conflictos, barreras de acceso y mapeo de actores.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-027",
+    "category": "guia",
+    "name": "Universidad Nacional · Observatorio de Conflictos Ambientales (OCA)",
+    "detail": "Conflictos ambientales.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://conflictosambientales.unal.edu.co/oca/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-028",
+    "category": "guia",
+    "name": "Indepaz · Informe de conflictos socioambientales (2022)",
+    "detail": "Conflictos socioambientales; referencia no gubernamental.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://indepaz.org.co/conflictos-socioambientales-en-colombia/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-029",
+    "category": "guia",
+    "name": "Ministerio del Trabajo · Observatorio de Conflictos Sociolaborales",
+    "detail": "Conflictividades sociolaborales.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mintrabajo.gov.co/relaciones-laborales/derechos-fundamentales-del-trabajo/observatorios",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-030",
+    "category": "guia",
+    "name": "Policía · Registro Nacional de Medidas Correctivas (RNMC)",
+    "detail": "Comportamientos y medidas correctivas, fecha/lugar y características.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.policia.gov.co/contenido/estadistica-comportamientos-contrarios-convivencia-ley-1801-2016",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-031",
+    "category": "guia",
+    "name": "DNP · Informe municipal/departamental del Observatorio del Sistema de Ciudades",
+    "detail": "Diagnóstico comparado con departamento y nación.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://osc.dnp.gov.co/",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-032",
+    "category": "guia",
+    "name": "DNP · SisPT, módulo PISCC",
+    "detail": "Diagnóstico y seguimiento físico/financiero.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://sispt.dnp.gov.co/piscc",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-033",
+    "category": "guia",
+    "name": "Policía · SIEDCO / estadística delictiva",
+    "detail": "Delitos de alto impacto; verificar unidades y periodos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-034",
+    "category": "guia",
+    "name": "Fiscalía General de la Nación · Registros y estadísticas",
+    "detail": "Delitos y procesos; la tabla no identifica un único dataset ni usa la sigla SPOA en esa mención.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-035",
+    "category": "guia",
+    "name": "Inspecciones de Policía",
+    "detail": "Registros locales de conflictos y conductas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-036",
+    "category": "guia",
+    "name": "Personería",
+    "detail": "Registros y atención de vulneraciones de derechos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-037",
+    "category": "guia",
+    "name": "Defensoría del Pueblo · registros locales",
+    "detail": "Registros complementarios distintos del tablero SAT.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-038",
+    "category": "guia",
+    "name": "Comisarías de Familia",
+    "detail": "Registros de violencias y atención familiar.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-039",
+    "category": "guia",
+    "name": "Registros de medidas de protección decretadas y vigentes",
+    "detail": "Medidas frente a violencia intrafamiliar; custodio/dataset específico por precisar.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-040",
+    "category": "guia",
+    "name": "Sistema Nacional de Registro, Monitoreo y Seguimiento de las Violencias Basadas en Género",
+    "detail": "Registros VBG; la tabla no da URL específica.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-041",
+    "category": "guia",
+    "name": "DANE · Encuesta de Convivencia y Seguridad Ciudadana (ECSC)",
+    "detail": "Victimización, percepción, denuncia y problemas justiciables.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-042",
+    "category": "guia",
+    "name": "Ejercicios y encuestas de percepción ¿Cómo Vamos?",
+    "detail": "Percepción y victimización; alcance local específico.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-043",
+    "category": "guia",
+    "name": "Centros Automáticos de Despacho · CAD / SECAD",
+    "detail": "Registros de emergencias y atención institucional.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-044",
+    "category": "guia",
+    "name": "Línea de Emergencias 123",
+    "detail": "Emergencias, llamadas y respuesta institucional.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "A · Fuentes de diagnóstico, registros y sistemas"
+  },
+  {
+    "id": "F-045",
+    "category": "guia",
+    "name": "Caracterización geográfica local",
+    "detail": "Topografía, clima, hidrografía, vegetación y fauna.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-046",
+    "category": "guia",
+    "name": "Caracterización demográfica local",
+    "detail": "Población, distribución, edades, género y pertenencia étnica.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-047",
+    "category": "guia",
+    "name": "Caracterización de actividades económicas",
+    "detail": "Agricultura, ganadería, comercio, industria, turismo y evolución.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-048",
+    "category": "guia",
+    "name": "Inventario de infraestructura y servicios",
+    "detail": "Agua, acueducto, alcantarillado, transporte, vías, energía y conectividad.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-049",
+    "category": "guia",
+    "name": "Inventario de instituciones y oferta territorial",
+    "detail": "Salud, educación, cultura, deporte y calidad de servicios.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-050",
+    "category": "guia",
+    "name": "Inventario de capacidades de seguridad",
+    "detail": "Personal, vehículos, equipos, instalaciones y relación con comunidad.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-051",
+    "category": "guia",
+    "name": "Inventario de capacidades y oferta de justicia",
+    "detail": "Comisarías, equipamientos, servicios y protección de poblaciones.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-052",
+    "category": "guia",
+    "name": "Grupos focales",
+    "detail": "Percepciones y experiencias por grupos poblacionales.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-053",
+    "category": "guia",
+    "name": "Encuestas propias de percepción",
+    "detail": "Percepción y experiencia local con metodología documentada.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-054",
+    "category": "guia",
+    "name": "Cartografía social",
+    "detail": "Territorios, riesgos y lugares identificados participativamente.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-055",
+    "category": "guia",
+    "name": "Entrevistas semiestructuradas / en profundidad",
+    "detail": "Experiencias y explicaciones cualitativas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-056",
+    "category": "guia",
+    "name": "Mesas de trabajo y aportes comunitarios",
+    "detail": "JAC, organizaciones, academia, sector privado, grupos étnicos, mujeres y juventudes.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "B · Insumos territoriales y recolección local"
+  },
+  {
+    "id": "F-057",
+    "category": "guia",
+    "name": "Plan de Desarrollo Territorial y plan de inversiones",
+    "detail": "Objetivos, metas, inversiones y articulación con PISCC.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-058",
+    "category": "guia",
+    "name": "POAI del PISCC y de la entidad territorial",
+    "detail": "Programación anual física y financiera por proyecto y fuente.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-059",
+    "category": "guia",
+    "name": "Secretaría de Hacienda · Recursos y ejecución FONSET",
+    "detail": "Disponibilidad, saldos, compromisos y ejecución.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-060",
+    "category": "guia",
+    "name": "Formato Único Territorial (FUT)",
+    "detail": "Cargue periódico de ejecución referido por la guía; comprobar sistema/versión aplicable.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-061",
+    "category": "guia",
+    "name": "Actas y matrices de seguimiento de compromisos",
+    "detail": "Decisiones, responsables, plazos y seguimiento.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-062",
+    "category": "guia",
+    "name": "FONSET · Fondo territorial de seguridad",
+    "detail": "Fuente financiera e información presupuestal, no una API asumida.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-063",
+    "category": "guia",
+    "name": "FONSECON · Fondo Nacional de Seguridad y Convivencia Ciudadana",
+    "detail": "Financiación y manual de proyectos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mininterior.gov.co/wp-content/uploads/2023/04/manual-fonsecon_v06.pdf",
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-064",
+    "category": "guia",
+    "name": "Sistema General de Regalías / OCAD Paz",
+    "detail": "Fuentes potenciales de financiación; verificar aplicabilidad territorial.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-065",
+    "category": "guia",
+    "name": "Fondo de Programas Especiales para la Paz",
+    "detail": "Fuente potencial de financiación mencionada.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-066",
+    "category": "guia",
+    "name": "Recursos propios, tasas y sobretasas",
+    "detail": "Financiación territorial mencionada; requiere verificación jurídica y presupuestal actual.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-067",
+    "category": "guia",
+    "name": "Cooperación internacional, aportes y financiación",
+    "detail": "Instrumentos de financiación mencionados; identificar operaciones efectivas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-068",
+    "category": "guia",
+    "name": "Sector privado y particulares: inversión y donaciones",
+    "detail": "Instrumentos de financiación y aportes efectivos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-069",
+    "category": "guia",
+    "name": "Convenios interadministrativos",
+    "detail": "Acuerdos y financiación entre entidades.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-070",
+    "category": "guia",
+    "name": "BPIM / SUIFP Territorio / PIIP",
+    "detail": "Programas y proyectos de inversión y transición referida por la guía2024.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-071",
+    "category": "guia",
+    "name": "Planes y registros de seguimiento físico-financiero SisPT",
+    "detail": "Metas, productos, actividades y ejecución por fuente y vigencia.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://sispt.dnp.gov.co/piscc",
+    "group": "C · Fuentes de planeación, financiación y ejecución"
+  },
+  {
+    "id": "F-072",
+    "category": "guia",
+    "name": "DANE · Boletín ECSC2021",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2021/Bol_ECSC_2021.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-073",
+    "category": "guia",
+    "name": "Bogotá · percepción (MPDL)",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://www.mpdl.org/sites/default/files/220704-percepcion-seguridad-colombia.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-074",
+    "category": "guia",
+    "name": "Bogotá · percepción/victimización (CCB)",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://bibliotecadigital.ccb.org.co/items/94d96ed3-f99e-4b79-a529-8046e65ca73f",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-075",
+    "category": "guia",
+    "name": "Medellín · percepción/convivencia/victimización2018",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/10/Encuesta-de-Percepcion-de-Seguridad-Convivencia-y-Victimizacion-para-Medellin-2018_AnalisisSISC-1.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-076",
+    "category": "guia",
+    "name": "Medellín · percepción/victimización2014",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/10/Encuesta-de-Percepcion-y-Victimizacion-2014.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-077",
+    "category": "guia",
+    "name": "Barranquilla · referencia Asocapitales",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Atlantico-Barranquilla.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-078",
+    "category": "guia",
+    "name": "Cali · percepción2005–2014",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://red.uao.edu.co/bitstream/handle/10614/13193/00353_Percepci%C3%B3n%20de%20la%20seguridad%2C%20Cali%20-%20%202005-2014.pdf?sequence=1&isAllowed=y",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-079",
+    "category": "guia",
+    "name": "Cartagena · percepción (MPDL)",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://www.mpdl.org/sites/default/files/220704-percepcion-seguridad-colombia.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-080",
+    "category": "guia",
+    "name": "Cartagena Cómo Vamos · EPCC2017",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cartagenacomovamos.org/wp-content/uploads/2018/05/RCCV_EPCC-2017_Mayo-2018-FINAL2.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-081",
+    "category": "guia",
+    "name": "Montería · percepciones (Universidad del Norte)",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://manglar.uninorte.edu.co/bitstream/handle/10584/7396/percepciones%20de%20seguridad.pdf?sequence=1&isAllowed=y",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-082",
+    "category": "guia",
+    "name": "Buenaventura · referencia CESED",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cesed.uniandes.edu.co/wp-content/uploads/2021/07/Graficaci%C3%B3n-Buenaventura-20210702.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-083",
+    "category": "guia",
+    "name": "Ibagué · PISCC2020–2023",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Ibagu%C3%A9%202020%20-%202023.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-084",
+    "category": "guia",
+    "name": "Santa Marta · enlace a informe Cartagena2017",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cartagenacomovamos.org/wp-content/uploads/2018/05/RCCV_EPCC-2017_Mayo-2018-FINAL2.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-085",
+    "category": "guia",
+    "name": "Santa Marta · ECSC2013",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2013/ECSC_Santa_Marta.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-086",
+    "category": "guia",
+    "name": "Cúcuta · referencia Asocapitales",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Norte-de-Santander-Cucuta.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-087",
+    "category": "guia",
+    "name": "Bucaramanga · PISCC2020–2023",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Bucaramanga%202020%20-%202023.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-088",
+    "category": "guia",
+    "name": "Villavicencio · referencia Asocapitales",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Meta-Villavicencio.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-089",
+    "category": "guia",
+    "name": "Villavicencio · referencia CEJ",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-090",
+    "category": "guia",
+    "name": "Pereira · referencia Asocapitales",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Risaralda-Pereira.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-091",
+    "category": "guia",
+    "name": "Valledupar · PISCC",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC-Valledupar.-1.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-092",
+    "category": "guia",
+    "name": "Valledupar · victimización2017",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://ccvalledupar.org.co/vitimizacion-y-percepcion-de-inseguridad-2017/",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-093",
+    "category": "guia",
+    "name": "Pasto · encuesta2008",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.pasto.gov.co/phocadownload/documentos2013/obsdelito/encuesta_victimizacion_pasto_2008.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-094",
+    "category": "guia",
+    "name": "Pasto · referencia Universidad del Valle",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://uvsalud.univalle.edu.co/pdf/simpsios/onceavo/salon_3023/victimizacion_percepcion_de_seguridad_confianza_y_temor_ciudadano.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-095",
+    "category": "guia",
+    "name": "Manizales · referencia CEJ",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-096",
+    "category": "guia",
+    "name": "Neiva · PISCC2020–2023",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Neiva%202020%20-%202023.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-097",
+    "category": "guia",
+    "name": "Popayán · PISCC2020–2023",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/PISCC-Popayan-2020-2023.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-098",
+    "category": "guia",
+    "name": "Popayán · referencia CEJ",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-099",
+    "category": "guia",
+    "name": "Palmira · ECSC2012 Cali/Palmira",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/ECSC2012_Cali_Palmira.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-100",
+    "category": "guia",
+    "name": "Yopal · encuesta2018",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://cccasanare.co/wp-content/uploads/2023/03/2.-EPV-2018-I-1_compressed.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-101",
+    "category": "guia",
+    "name": "Sincelejo · ECSC2013",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2013/ECSC_Sincelejo.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-102",
+    "category": "guia",
+    "name": "Sincelejo · PISCC2020–2023",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/PISCC-Sincelejo-2020-2023.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-103",
+    "category": "guia",
+    "name": "Riohacha · percepción de seguridad La Guajira2021",
+    "detail": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.camaraguajira.org/publicaciones/informes/encuesta-percepcion-de-seguridad-de-la-guajira-2021-1.pdf",
+    "group": "D · Encuestas y referencias por ciudad del anexo4"
+  },
+  {
+    "id": "F-104",
+    "category": "guia",
+    "name": "Agencia de Renovación del Territorio (ART)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-105",
+    "category": "guia",
+    "name": "Agencia para la Reincorporación y la Normalización (ARN)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-106",
+    "category": "guia",
+    "name": "Agencia Nacional de Seguridad Vial (ANSV)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-107",
+    "category": "guia",
+    "name": "Armada Nacional de Colombia (ARC)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-108",
+    "category": "guia",
+    "name": "Asociación Colombiana de Ciudades Capitales (Asocapitales)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-109",
+    "category": "guia",
+    "name": "Asociación Colombiana de Ciudades Intermedias (Asointermedias)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-110",
+    "category": "guia",
+    "name": "Comando General de las Fuerzas Militares",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-111",
+    "category": "guia",
+    "name": "Consejería Presidencial para la Juventud",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-112",
+    "category": "guia",
+    "name": "Consejería Presidencial para la Equidad de la Mujer",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-113",
+    "category": "guia",
+    "name": "Consejería Presidencial para la Reconciliación Nacional",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-114",
+    "category": "guia",
+    "name": "Contraloría General de la República",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-115",
+    "category": "guia",
+    "name": "Defensoría del Pueblo",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-116",
+    "category": "guia",
+    "name": "Departamento Administrativo de la Función Pública",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-117",
+    "category": "guia",
+    "name": "Departamento Administrativo Nacional de Estadística (DANE)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-118",
+    "category": "guia",
+    "name": "Departamento Nacional de Planeación (DNP)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-119",
+    "category": "guia",
+    "name": "Ejército Nacional de Colombia",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-120",
+    "category": "guia",
+    "name": "Federación Colombiana de Municipios (Fedemunicipios)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-121",
+    "category": "guia",
+    "name": "Federación Nacional de Departamentos",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-122",
+    "category": "guia",
+    "name": "Fiscalía General de la Nación",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-123",
+    "category": "guia",
+    "name": "Fondo Colombia en Paz",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-124",
+    "category": "guia",
+    "name": "Fuerza Aeroespacial Colombiana (FAC)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-125",
+    "category": "guia",
+    "name": "Instituto Colombiano de Bienestar Familiar (ICBF)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-126",
+    "category": "guia",
+    "name": "Migración Colombia",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-127",
+    "category": "guia",
+    "name": "Ministerio de Ambiente y Desarrollo Sostenible",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-128",
+    "category": "guia",
+    "name": "Ministerio de Defensa Nacional",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-129",
+    "category": "guia",
+    "name": "Ministerio de Educación Nacional",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-130",
+    "category": "guia",
+    "name": "Ministerio del Interior",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-131",
+    "category": "guia",
+    "name": "Ministerio de Justicia y del Derecho",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-132",
+    "category": "guia",
+    "name": "Ministerio de Salud y Protección Social",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-133",
+    "category": "guia",
+    "name": "Ministerio del Deporte",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-134",
+    "category": "guia",
+    "name": "Policía Nacional de Colombia",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-135",
+    "category": "guia",
+    "name": "Procuraduría General de la Nación",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-136",
+    "category": "guia",
+    "name": "Superintendencia de Vigilancia y Seguridad Privada",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-137",
+    "category": "guia",
+    "name": "Unidad de Implementación del Acuerdo de Paz",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-138",
+    "category": "guia",
+    "name": "Unidad Nacional de Protección (UNP)",
+    "detail": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "E · Directorio institucional del anexo5"
+  },
+  {
+    "id": "F-139",
+    "category": "guia",
+    "name": "PNUD · Informe sobre Desarrollo Humano1994",
+    "detail": "Marco conceptual de seguridad humana.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://hdr.undp.org/system/files/documents/hdr1994escompletonostatspdf.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-140",
+    "category": "guia",
+    "name": "DANE · Guía de enfoque diferencial e interseccional",
+    "detail": "Producción estadística con enfoque diferencial.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.dane.gov.co/files/investigaciones/genero/guia-inclusion-enfoque-difencias-intersecciones-produccion-estadistica-SEN.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-141",
+    "category": "guia",
+    "name": "Bennett, Holloway y Farrington2006 · Neighborhood watch",
+    "detail": "Revisión sistemática/metaanálisis; no serie local.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://doi.org/10.1007/s11292-006-9018-5",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-142",
+    "category": "guia",
+    "name": "Donnelly y Ward2015 · Oxford Textbook of Violence Prevention",
+    "detail": "Referencia bibliográfica, sin URL explícita en la guía.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-143",
+    "category": "guia",
+    "name": "Leach et al.2019 · Reading cities",
+    "detail": "Diagnóstico urbano; la URL impresa termina con punto.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://doi.org/10.1016/j.cities.2018.09.012.",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-144",
+    "category": "guia",
+    "name": "Vivo Delgadoa y Castro Toledo2020 · Urban security and crime prevention",
+    "detail": "Revisión sistemática citada, sin URL propia explícita.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-145",
+    "category": "guia",
+    "name": "Fiscalía · Guía de buenas prácticas sobre violencias por orientación sexual/identidad de género",
+    "detail": "Orientación metodológica de investigación y registro.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.fiscalia.gov.co/colombia/guia-de-buenas-practicas-para-la-investigacion-y-judicializacion-de-violencias-fundadas-en-la-orientacion-sexual-y-o-identidad-de-genero-real-o-percibida-de-la-victima/",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-146",
+    "category": "guia",
+    "name": "Centro de Estudios en Seguridad Ciudadana · Banco de buenas prácticas",
+    "detail": "Referencia de experiencias; no datos de Cartagena.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-147",
+    "category": "guia",
+    "name": "Aulas en Paz · caso citado",
+    "detail": "Documento de experiencia preventiva.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://cesc.uchile.cl/buenaspracticasenprevencion/bbp_docs/08_aulas_en_paz_colombia.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-148",
+    "category": "guia",
+    "name": "Fuerza Joven · caso citado",
+    "detail": "Documento de experiencia preventiva.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "http://cesc.uchile.cl/buenaspracticasenprevencion/bbp_docs/10_fuerza_joven_colombia.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-149",
+    "category": "guia",
+    "name": "Franco et al.2020 · ¿Cómo prevenir el delito?",
+    "detail": "Referencia de estrategias basadas en evidencia.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-150",
+    "category": "guia",
+    "name": "DNP · Guía para construcción/análisis de indicadores",
+    "detail": "Definición de indicadores y fichas técnicas.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Guia_para_elaborar_Indicadores.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-151",
+    "category": "guia",
+    "name": "Función Pública · Guía de indicadores de gestión",
+    "detail": "Indicadores y medición de gestión.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/documents/418548/34150781/Gu%C3%ADa+para+la+construcci%C3%B3n+y+an%C3%A1lisis+de+Indicadores+de+Gesti%C3%B3n+-+Versi%C3%B3n+4+-+Mayo+2018.pdf/0e0d10e4-0ec0-6781-21e9-f2bedfd0e18a?t=1533038939417&download=true",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-152",
+    "category": "guia",
+    "name": "DNP · Catálogo de Productos MGA",
+    "detail": "Productos/indicadores de inversión.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://mgaayuda.dnp.gov.co/Recursos/CATALOGO_DE_PRODUCTOS.xlsx",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-153",
+    "category": "guia",
+    "name": "DNP · Documento conceptual MGA2023",
+    "detail": "Metodología de formulación de proyectos.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://mgaayuda.dnp.gov.co/Recursos/Documento_conceptual_2023.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-154",
+    "category": "guia",
+    "name": "Ministerio del Interior · Manual FONSECON versión6",
+    "detail": "Proyectos y financiación.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.mininterior.gov.co/wp-content/uploads/2023/04/manual-fonsecon_v06.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-155",
+    "category": "guia",
+    "name": "Fuentes de financiación/cofinanciación para cárceles territoriales",
+    "detail": "Referencia financiera específica.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.politicacriminal.gov.co/Portals/0/32566/Fuentes%20de%20financiacio%C2%B4n%20y%20cofinanciacio%C2%B4n%20para%20ca%C2%B4rceles%20a%20cargo%20de%20entidades%20territoriales-comprimido.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-156",
+    "category": "guia",
+    "name": "DNP · Guía seguimiento y evaluación2013",
+    "detail": "Tipos y métodos de evaluación.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Cartilla%20Guia%20para%20Seguimiento%20y%20Evaluaci%C3%B3n%20Ago%2013.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-157",
+    "category": "guia",
+    "name": "United Nations Development Group2005 · Indicators for Policy Management",
+    "detail": "Guía de indicadores.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.undp.org/sites/g/files/zskgke326/files/publications/Indicators_for_Policy_Management.pdf",
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-158",
+    "category": "guia",
+    "name": "Ortegón et al.2005 · Marco lógico",
+    "detail": "Referencia metodológica citada sin URL específica.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-159",
+    "category": "guia",
+    "name": "Gertler et al.2011 · referencia sobre evaluación",
+    "detail": "Referencia citada para cadena de valor/evaluación; sin URL específica.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": null,
+    "group": "F · Referencias metodológicas, catálogos y literatura"
+  },
+  {
+    "id": "F-160",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=1572",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-161",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=80538",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-162",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=176406",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-163",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=6372",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-164",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=197883",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-165",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=329",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-166",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=48267",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-167",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41004",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "F-168",
+    "category": "guia",
+    "name": "Referencia normativa en Función Pública",
+    "detail": "Referencia de consulta tal como está enlazada en el PDF.",
+    "status": "Referencia identificada · disponibilidad por verificar",
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41658",
+    "group": "G · Otros enlaces normativos originales del PDF"
+  },
+  {
+    "id": "local:dane_ecsc_2024",
+    "category": "locales",
+    "name": "DANE · dane ecsc 2024",
+    "detail": "percepcion_inseguridad_barrio; percepcion_inseguridad_ciudad; victimas_que_denunciaron; victimas_que_no_denunciaron; victimizacion_algun_delito; victimizacion_extorsion_o_intento; victimizacion_hurto_personas · Años inventariados: 2023, 2024. · Unidades: %.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_geih_cartagena",
+    "category": "locales",
+    "name": "DANE · dane geih cartagena",
+    "detail": "tasa_desocupacion; tasa_global_participacion; tasa_ocupacion · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: %.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIH-ago2026.xlsx",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_geih_informalidad_cartagena",
+    "category": "locales",
+    "name": "DANE · dane geih informalidad cartagena",
+    "detail": "proporcion_informalidad · Años inventariados: 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: %.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_nbi_cnpv2018",
+    "category": "locales",
+    "name": "DANE · dane nbi cnpv2018",
+    "detail": "nbi_dependencia_economica; nbi_hacinamiento; nbi_inasistencia_escolar; nbi_personas_miseria; nbi_personas_nbi; nbi_servicios; nbi_vivienda · Años inventariados: 2018. · Unidades: %.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/necesidades-basicas-insatisfechas-nbi",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_poblacion_municipal",
+    "category": "locales",
+    "name": "DANE · dane poblacion municipal",
+    "detail": "poblacion_cabecera; poblacion_centros_rural; poblacion_total · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027. · Unidades: personas.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_poblacion_vigencia_censal",
+    "category": "locales",
+    "name": "DANE · dane poblacion vigencia censal",
+    "detail": "poblacion_cabecera; poblacion_centros_rural; poblacion_total · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: personas.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_pobreza_monetaria",
+    "category": "locales",
+    "name": "DANE · dane pobreza monetaria",
+    "detail": "incidencia_pobreza_monetaria · Años inventariados: 2023, 2024, 2025. · Unidades: %.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://www.dane.gov.co/files/operaciones/PM/pres-PM-2025.pdf",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dane_sae_fies_pobreza_cartagena",
+    "category": "locales",
+    "name": "DANE · dane sae fies pobreza cartagena",
+    "detail": "inseguridad_alimentaria_moderada_grave_sae; pobreza_monetaria_sae; pobreza_multidimensional_sae · Años inventariados: 2022, 2024. · Unidades: %.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://sitios.dane.gov.co/EstimacionesModeloSAE/",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:dnp_terridata_13001",
+    "category": "locales",
+    "name": "DNP / custodios originales · dnp terridata 13001",
+    "detail": "area_deforestada; eventos_inundacion; homicidio_intencional_tasa; incidencia_dengue; incidencia_pobreza_monetaria_terridata; indice_participacion_institucional; indice_transparencia_institucional; mortalidad_desnutricion_menores_5; victimas_desplazamiento_ubicadas; violencia_intrafamiliar_tasa · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025. · Unidades: Casos por cada 1.000 nacidos vivos, Casos por cada 100.000 habitantes en riesgo, Eventos, Hectáreas, Personas, Porcentaje (el valor esta multiplicado por 100), Puntos, Tasa por cada 100.000 habitantes.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_delito_sexual",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive delito sexual",
+    "detail": "casos_reportados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_excel_policial_11_delitos",
+    "category": "locales",
+    "name": "archivo compartido atribuido a Policía Nacional; sin acreditar · drive excel policial 11 delitos",
+    "detail": "amenaza; extorsion; homicidio_intencional; homicidio_transito; hurtos_total; lesiones_personales; lesiones_transito; secuestro; terrorismo; violencia_intrafamiliar; violencia_sexual · Años inventariados: 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_extorsion",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive extorsion",
+    "detail": "casos_reportados · Años inventariados: 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_homicidios",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive homicidios",
+    "detail": "casos_reportados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_muertes_transporte",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive muertes transporte",
+    "detail": "casos_reportados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_suicidios",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive suicidios",
+    "detail": "casos_reportados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:drive_violencia_intrafamiliar",
+    "category": "locales",
+    "name": "archivo_compartido_origen_pendiente · drive violencia intrafamiliar",
+    "detail": "casos_reportados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos_reportados.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:fiscalia_spoa_busquedas_por_anio_hecho",
+    "category": "locales",
+    "name": "Fiscalía General de la Nación · fiscalia spoa busquedas por anio hecho",
+    "detail": "procesos_coincidentes_con_termino · Años inventariados: 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: procesos.",
+    "status": "En banco histórico · pendiente de validación",
+    "url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:fiscalia_spoa_procesos_por_anio_hecho",
+    "category": "locales",
+    "name": "Fiscalía General de la Nación · fiscalia spoa procesos por anio hecho",
+    "detail": "procesos_penales_registrados · Años inventariados: 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: procesos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:icbf_bienestarina",
+    "category": "locales",
+    "name": "ICBF · icbf bienestarina",
+    "detail": "bienestarina · Años inventariados: 2019, 2020, 2021, 2022, 2023. · Unidades: puntos_distintos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/crxh-as6c",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:icbf_prevencion",
+    "category": "locales",
+    "name": "ICBF · icbf prevencion",
+    "detail": "prevencion · Años inventariados: 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025. · Unidades: beneficiarios_reportados.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/g58z-k6f6",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:icbf_primera_infancia",
+    "category": "locales",
+    "name": "ICBF · icbf primera infancia",
+    "detail": "primera_infancia · Años inventariados: 2025. · Unidades: beneficiarios_reportados.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/5akr-u7t8",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:icbf_rpc_cartagena",
+    "category": "locales",
+    "name": "DANE, ICBF, INMLyCF, INS, MEN, MSPS, RNEC, SSPD, UARIV · icbf rpc cartagena",
+    "detail": "Calidad de agua; Cobertura de inmunización contra el triple viral (tv) de un año; Cobertura de vacunación con BCG en nacidos vivos; Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año; Cobertura escolar bruta en educación básica secundaria; Cobertura escolar bruta en transición; Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación; Número de niños y niñas menores de 1 año con registro civil por lugar de residencia; Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.; Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado; Porcentaje de atención institucional al parto por personal calificado; Porcentaje de cobertura del servicio de acueducto; Porcentaje de nacidos vivos con 4 o más controles prenatales; Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado; Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS; Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS; Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS; Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado; Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención Integral que cuentan con seis o más atenciones.; Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.; Razón de mortalidad materna por 100.000 nacidos vivos; Tasa de Cobertura escolar bruta en educación básica primaria; Tasa de Cobertura escolar bruta en educación media; Tasa de deserción en educación básica primaria; Tasa de deserción en educación básica secundaria; Tasa de deserción en educación media; Tasa de exámenes médico legales por presunto delito sexual contra adolescentes; Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años; Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años; Tasa de fecundidad especifica en niños y niñas de 10 a 14 años; Tasa de homicidios en adolescentes (12 a 17 años); Tasa de homicidios en niños y niñas de 0 a 5 años; Tasa de homicidios en niños y niñas de 6 a 11 años; Tasa de mortalidad en menores de 1 año (por mil nacidos vivos); Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años; Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años; Tasa de mortalidad por desnutrición en menores de 5 años.; Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años); Tasa de muertes por eventos de transporte en niños y niñas de 0 a 5 años; Tasa de muertes por eventos de transporte en niños y niñas de 6 a 11 años; Tasa de repitencia en educación básica primaria; Tasa de repitencia en educación básica secundaria; Tasa de repitencia en educación media; Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años); Tasa de violencia contra adolescentes 12 a 17 años.; Tasa de violencia contra niños y niñas de 6 a 11 años; Tasa de violencia contra niños y niñas de primera infancia; Tasa de violencia de pareja cuando la víctima es menor de 18 años; Tasa de violencia intrafamiliar en adolescentes (12 a 17 años); Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años; Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años · Años inventariados: 2017, 2018, 2019, 2020, 2021, 2022, 2023. · Unidades: Número, Porcentaje, Tasa, Tasa por 1.000, Tasa por 100.000, Tasa por 100.000 habitantes.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/v9qk-hdcc",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:icbf_uds",
+    "category": "locales",
+    "name": "ICBF · icbf uds",
+    "detail": "uds · Años inventariados: 2024, 2025, 2026. · Unidades: puntos_distintos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/i8ww-5mcf",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:ideam_calidad_aire",
+    "category": "locales",
+    "name": "IDEAM / SISAIRE · ideam calidad aire",
+    "detail": "concentracion_media_estacion · Años inventariados: 2014, 2015, 2016, 2017, 2018, 2022, 2023, 2024, 2025. · Unidades: Celsius, mmHg, ugm3.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/kekd-7v7h",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:ins_calidad_agua",
+    "category": "locales",
+    "name": "INS / SIVICAP · ins calidad agua",
+    "detail": "irca · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024. · Unidades: %.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/nxt2-39c3",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_examenes_sexuales",
+    "category": "locales",
+    "name": "Medicina Legal · medicina examenes sexuales",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/hyqu-diue",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_homicidios",
+    "category": "locales",
+    "name": "Medicina Legal · medicina homicidios",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/vtub-3de2",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_lesiones_accidentales",
+    "category": "locales",
+    "name": "Medicina Legal · medicina lesiones accidentales",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/6cjn-eevd",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_lesiones_transporte",
+    "category": "locales",
+    "name": "Medicina Legal · medicina lesiones transporte",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/ezhf-hscf",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_suicidios",
+    "category": "locales",
+    "name": "Medicina Legal · medicina suicidios",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/f75u-mirk",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_violencia_interpersonal",
+    "category": "locales",
+    "name": "Medicina Legal · medicina violencia interpersonal",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/e3xi-4zq5",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:medicina_violencia_intrafamiliar",
+    "category": "locales",
+    "name": "Medicina Legal · medicina violencia intrafamiliar",
+    "detail": "casos_registrados · Años inventariados: 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/ers2-kerr",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_amenazas",
+    "category": "locales",
+    "name": "Policía Nacional · policia amenazas",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/meew-mguv",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_delitos_sexuales",
+    "category": "locales",
+    "name": "Policía Nacional · policia delitos sexuales",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/fpe5-yrmw",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_homicidios",
+    "category": "locales",
+    "name": "Policía Nacional / MinDefensa · policia homicidios",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/m8fd-ahd9",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_hurto_vehiculos",
+    "category": "locales",
+    "name": "Policía Nacional · policia hurto vehiculos",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/9vha-vh9n",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_hurto_vivienda_comercio",
+    "category": "locales",
+    "name": "Policía Nacional · policia hurto vivienda comercio",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/6sqw-8cg5",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_lesiones",
+    "category": "locales",
+    "name": "Policía Nacional · policia lesiones",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/72sg-cybi",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:policia_violencia_intrafamiliar",
+    "category": "locales",
+    "name": "Policía Nacional · policia violencia intrafamiliar",
+    "detail": "casos_registrados · Años inventariados: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: casos.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.datos.gov.co/d/vuyt-mqpw",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:procuraduria_pqrsdf_cartagena",
+    "category": "locales",
+    "name": "Procuraduría General de la Nación · procuraduria pqrsdf cartagena",
+    "detail": "pqrsdf_radicadas · Años inventariados: 2024. · Unidades: solicitudes.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://www.procuraduria.gov.co/Pages/datos-abiertos.aspx",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:unidad_victimas_indemnizaciones_cartagena",
+    "category": "locales",
+    "name": "Unidad para las Víctimas / RNI · unidad victimas indemnizaciones cartagena",
+    "detail": "giros_indemnizacion; personas_indemnizadas; valor_indemnizaciones · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023. · Unidades: giros, millones COP, personas.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://datospaz.unidadvictimas.gov.co/mapa-indemnizacion/",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:unidad_victimas_irv_cartagena",
+    "category": "locales",
+    "name": "Unidad para las Víctimas / RNI · unidad victimas irv cartagena",
+    "detail": "indice_riesgo_victimizacion · Años inventariados: 2012, 2013, 2014, 2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025. · Unidades: índice 0–1.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://datospaz.unidadvictimas.gov.co/indice-de-riesgo-de-victimizacion/",
+    "group": "Series locales"
+  },
+  {
+    "id": "local:unidad_victimas_ruv_cartagena",
+    "category": "locales",
+    "name": "Unidad para las Víctimas / RNI · unidad victimas ruv cartagena",
+    "detail": "eventos_reportados; personas_por_declaracion; personas_por_ocurrencia · Años inventariados: 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026. · Unidades: eventos, personas.",
+    "status": "Capturado · pendiente de validación",
+    "url": "https://datospaz.unidadvictimas.gov.co/registro-unico-de-victimas/",
+    "group": "Series locales"
+  },
+  {
+    "id": "geo-0",
+    "category": "geografia",
+    "name": "ANMProyectado2040.zip",
+    "detail": "51 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, fid_1, nom_barrio, shape_leng, ucg, playa_m, m2. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-1",
+    "category": "geografia",
+    "name": "Dane_Manzanas_Censo_2018.zip",
+    "detail": "10057 registros declarados · CRS EPSG:4326. Columnas: gid, cod_dane_a, dpto_ccdgo, mpio_ccdgo, mpio_cdpmp, clas_ccdgo, setr_ccdgo, setr_ccnct. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-2",
+    "category": "geografia",
+    "name": "Distriseguridad_Cuadrantes_Policia.zip",
+    "detail": "106 registros declarados · CRS EPSG:4326. Columnas: gid, id, unidad, distrito, telefono_d, estacion, telefono_e, tipo_unida. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-3",
+    "category": "geografia",
+    "name": "Distriseguridad_Estaciones_Policia.zip",
+    "detail": "13 registros declarados · CRS EPSG:4326. Columnas: gid, id, unidad, distrito, telefono_d, estacion, telefono, tipo_unida. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-4",
+    "category": "geografia",
+    "name": "Distriseguridad_Sistema_Video_Vigilancia.zip",
+    "detail": "475 registros declarados · CRS EPSG:4326. Columnas: gid, no, direccion, lat, lon, observacio, loc, ucg. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-5",
+    "category": "geografia",
+    "name": "Division_Politica_Corregimientos.zip",
+    "detail": "15 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, localidad, corregimie, shape_leng, shape_area, fuente, area_ha. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-6",
+    "category": "geografia",
+    "name": "Division_Politica_Limite_Distrital.zip",
+    "detail": "94 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, mpnombre, area_ha, mpnorma, nombre_ent, observacio, tipo_limit. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-7",
+    "category": "geografia",
+    "name": "Division_Politica_Perimetro_Urbano.zip",
+    "detail": "1 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, area_ha, shape_leng, shape_le_1, shape_area, fuente. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-8",
+    "category": "geografia",
+    "name": "Division_Politica_UCG (1).zip",
+    "detail": "19 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, ucg, cod_ucg, localidad, area_ha, shape_leng, shape_area. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-9",
+    "category": "geografia",
+    "name": "Division_Politica_UCG.zip",
+    "detail": "19 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, ucg, cod_ucg, localidad, area_ha, shape_leng, shape_area. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-10",
+    "category": "geografia",
+    "name": "Inspecciones.zip",
+    "detail": "34 registros declarados · CRS EPSG:4326. Columnas: gid, refcatas, drnpredial, barrio, ucg, loc, inspeccion, inspector. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-11",
+    "category": "geografia",
+    "name": "VulBioEscOpt2040.zip",
+    "detail": "1043 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, cla_fh, caract_fis, coberturas, etiqueta, fid_mangla, oc. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-12",
+    "category": "geografia",
+    "name": "VulBioEscPes2040.zip",
+    "detail": "909 registros declarados · CRS EPSG:4326. Columnas: gid, objectid, cla_fh, caract_fis, coberturas, etiqueta, fid_mangla, oc. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "geo-13",
+    "category": "geografia",
+    "name": "VulPes2040.zip",
+    "detail": "464 registros declarados · CRS EPSG:4326. Columnas: gid, objectid_1, fid_barrio, fid_1, nom_barrio, shape_leng, ucg, playa_m. El nombre del archivo no acredita su significado o vigencia.",
+    "status": "Archivo cartográfico inventariado · aptitud por verificar",
+    "url": "",
+    "group": "Cartografía recibida"
+  },
+  {
+    "id": "planes-ppi",
+    "category": "planeacion",
+    "name": "Ocho planes de desarrollo · catálogo y PPI congelados",
+    "detail": "PDD y PDL: 1.573 nodos y 4.637 metas en el inventario de referencia. Persisten incertidumbres por importes float legados. No acredita comparabilidad financiera universal.",
+    "status": "Inventario de planeación existente",
+    "url": "",
+    "group": "Planeación"
+  },
+  {
+    "id": "planes-accion",
+    "category": "planeacion",
+    "name": "Planes de acción · documentos y extracciones",
+    "detail": "El inventario registra 1.421 artefactos del paquete de planes de acción. Son archivos/componentes, no 1.421 planes independientes. Cobertura y vigencia requieren revisión.",
+    "status": "Paquete local inventariado",
+    "url": "",
+    "group": "Planeación"
+  },
+  {
+    "id": "entrega-0",
+    "category": "entregas",
+    "name": "Drive · insumos adicionales",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-1",
+    "category": "entregas",
+    "name": "Drive · cartografía compartida",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-2",
+    "category": "entregas",
+    "name": "Drive · shape UCG",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://drive.google.com/file/d/19OXB7TdLOaheGolqbgVec8AjtW_Yoy2Q/view",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-3",
+    "category": "entregas",
+    "name": "Drive · carpeta de entregas",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://drive.google.com/drive/folders/1up0D5Z1t61owfybfViSlSviGGYSLoltZ",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-4",
+    "category": "entregas",
+    "name": "Guía PISCC compartida",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://drive.google.com/file/d/1Vq3IpA4BgiVd0g4NzfVuBLxgqK9pHbVf/view",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-5",
+    "category": "entregas",
+    "name": "Documento diagnóstico compartido",
+    "detail": "Enlace proporcionado en la conversación. Puede coincidir con insumos ya inventariados; este registro no acredita descarga íntegra de la carpeta ni representa un dataset adicional.",
+    "status": "Entrega o documento compartido · cotejo por archivo",
+    "url": "https://docs.google.com/document/d/1mMwBVkdL95yahJfBt1iFxYtowN3J4QW4u7uY3VoVAS4/edit",
+    "group": "Enlaces compartidos"
+  },
+  {
+    "id": "entrega-geojson-casos",
+    "category": "entregas",
+    "name": "GeoJSON de casos compartido",
+    "detail": "Insumo mencionado en la conversación. Falta cotejar aquí el archivo exacto, su versión, campos, procedencia y cobertura; no se acredita contenido completo a partir de la mención.",
+    "status": "Entrega mencionada · cotejo de archivo pendiente",
+    "url": "",
+    "group": "Entregas compartidas"
+  },
+  {
+    "id": "sectorial-0",
+    "category": "sectoriales",
+    "name": "EPA Cartagena",
+    "detail": "Registros ambientales, residuos, manglar y contaminación. Producto, acceso y cobertura por acreditar.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-1",
+    "category": "sectoriales",
+    "name": "CARDIQUE",
+    "detail": "Información ambiental, ecosistemas y riesgos de su jurisdicción. Cobertura específica de Cartagena por comprobar.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-2",
+    "category": "sectoriales",
+    "name": "DADIS Cartagena",
+    "detail": "Salud pública, nutrición, epidemiología y atención. Identificar series y restricciones antes de usar.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-3",
+    "category": "sectoriales",
+    "name": "IGAC",
+    "detail": "Cartografía y referencias espaciales oficiales. La presencia de capas compartidas no acredita descarga desde IGAC.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-4",
+    "category": "sectoriales",
+    "name": "ICDE",
+    "detail": "Catálogo e interoperabilidad de datos espaciales. Verificar custodio, servicio y vigencia por capa.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-5",
+    "category": "sectoriales",
+    "name": "Distriseguridad Cartagena",
+    "detail": "Infraestructura de seguridad y registros locales. Hay capas inventariadas con este nombre; no acredita conexión completa a registros institucionales.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  },
+  {
+    "id": "sectorial-6",
+    "category": "sectoriales",
+    "name": "Alcaldía de Cartagena · Secretaría del Interior · Observatorio del Delito",
+    "detail": "Registros locales de convivencia, seguridad y FONSET. Productos y disponibilidad por acreditar.",
+    "status": "Fuente mencionada · producto adicional por acreditar",
+    "url": "",
+    "group": "Fuentes adicionales de la conversación"
+  }
+]

@@ -47,9 +47,7 @@ async def close() -> dict[str, int]:
                 data = dict(row["datos_oficiales"] or {})
                 audit = dict(data.get("_auditoria_forense", {}))
                 is_duplicate = audit.get("estado_cobertura") == "DUPLICADA_ENTRE_FUENTES_PDD"
-                primary = audit.get("fuente_primaria_id") or data.get("_vinculo_triada", {}).get(
-                    "fila_primaria_id"
-                )
+                primary = audit.get("fuente_primaria_id") or data.get("_vinculo_triada", {}).get("fila_primaria_id")
                 if is_duplicate:
                     duplicate_count += 1
                     canonical_id = canonical.get(str(primary)) if primary else None
@@ -74,9 +72,7 @@ async def close() -> dict[str, int]:
                         second_pass += 1
                     elif audit.get("estado_cobertura") == "CANDIDATO_BAJA_CONFIANZA":
                         audit["segunda_pasada"] = "REVISADA_SIN_EVIDENCIA_SUFICIENTE"
-                        audit["segunda_pasada_resultado"] = (
-                            "SIN_COINCIDENCIA_VERIFICADA_ENTIDAD_INDICADOR"
-                        )
+                        audit["segunda_pasada_resultado"] = "SIN_COINCIDENCIA_VERIFICADA_ENTIDAD_INDICADOR"
                         audit["segunda_pasada_umbral_similitud"] = 0.82
                         audit["segunda_pasada_corpus"] = {
                             "actividades_motor_pa_real": 169,

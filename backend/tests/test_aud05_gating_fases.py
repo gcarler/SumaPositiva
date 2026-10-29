@@ -9,13 +9,8 @@ Verifica:
 
 import asyncio
 from decimal import Decimal
-import pytest
-from fastapi import HTTPException
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-
-import asyncio
-from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -132,12 +127,8 @@ def test_recalculo_dinamico_progreso_fases_integracion(database_url: str):
 
                 assert isinstance(progresos["FASE_1_DIAGNOSTICO"], Decimal)
                 assert isinstance(progresos["FASE_2_FORMULACION"], Decimal)
-                assert (
-                    progresos["FASE_3_PLAN_ACCION"] is None
-                    or isinstance(progresos["FASE_3_PLAN_ACCION"], Decimal)
-                )
+                assert progresos["FASE_3_PLAN_ACCION"] is None or isinstance(progresos["FASE_3_PLAN_ACCION"], Decimal)
         finally:
             await engine.dispose()
 
     asyncio.run(_test())
-

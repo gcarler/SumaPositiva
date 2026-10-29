@@ -1,18 +1,17 @@
 """Pruebas de certificación pericial para CIERRE-01: Migración 0023 e integridad de Escenarios Especiales."""
 
+import asyncio
 import uuid
 from datetime import date
+from pathlib import Path
 
 import pytest
+from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-import asyncio
-from pathlib import Path
-
 from alembic import command
-from alembic.config import Config
-from alembic.script import ScriptDirectory
 from app.core.database import Base
 from app.modules.participacion.models import EscenarioEspecial
 
@@ -54,7 +53,7 @@ def test_modelo_escenario_especial_registrado_en_metadata():
 
 def test_lineaje_alembic_0023_linear_y_cabeza_unica():
     """Certifica que 0023_asistencia_multicanal encadene tras 0022 sin bifurcaciones y bajo cabeza única."""
-    alembic_cfg = Config("backend/alembic.ini")
+    alembic_cfg = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     script = ScriptDirectory.from_config(alembic_cfg)
 
     # 1. Obtener la revisión 0023
@@ -76,8 +75,10 @@ def test_lineaje_alembic_0023_linear_y_cabeza_unica():
     assert "0023_asistencia_multicanal" in revs
 
 
+@pytest.mark.migration
 def test_migracion_0023_no_modifica_permisos_auditor_forense(database_url, monkeypatch):
-    """Verifica que el ciclo upgrade/downgrade de 0023 en base aislada preserve intactos los permisos de auditor_forense."""
+    """Verifica que el ciclo upgrade/downgrade de 0023 en base aislada preserve
+    intactos los permisos de auditor_forense."""
     monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
     config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
 

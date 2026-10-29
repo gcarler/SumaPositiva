@@ -79,9 +79,7 @@ def init_sentry(settings: Settings) -> bool:
         logger.info("Observabilidad Sentry/GlitchTip inicializada exitosamente")
         return True
     except ImportError:
-        logger.info(
-            "POLIS_SENTRY_DSN configurado pero sentry_sdk no está instalado; telemetría externa en espera"
-        )
+        logger.info("POLIS_SENTRY_DSN configurado pero sentry_sdk no está instalado; telemetría externa en espera")
         return False
     except Exception as e:
         logger.warning("Fallo al inicializar sentry_sdk: %s", e)

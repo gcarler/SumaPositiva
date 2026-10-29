@@ -129,9 +129,7 @@ def _cabecera_mapeo(hojas: list[HojaExcelEntrada]) -> dict[str, str]:
     return resultado
 
 
-def _mapear_encabezados(
-    encabezados: list[str], existentes: dict[str, str] | None = None
-) -> dict[str, str]:
+def _mapear_encabezados(encabezados: list[str], existentes: dict[str, str] | None = None) -> dict[str, str]:
     resultado: dict[str, str] = {}
     existentes = existentes or {}
     for campo, opciones in SINONIMOS.items():
@@ -139,18 +137,13 @@ def _mapear_encabezados(
             continue
         for cabecera in encabezados:
             normalizada = _normalizar(cabecera)
-            if any(
-                _normalizar(opcion) == normalizada or _normalizar(opcion) in normalizada
-                for opcion in opciones
-            ):
+            if any(_normalizar(opcion) == normalizada or _normalizar(opcion) in normalizada for opcion in opciones):
                 resultado[campo] = cabecera
                 break
     return resultado
 
 
-def _detectar_perfil(
-    solicitud: DetectarFormatoPlanAccionSolicitud, mapeo: dict[str, str]
-) -> tuple[str, float]:
+def _detectar_perfil(solicitud: DetectarFormatoPlanAccionSolicitud, mapeo: dict[str, str]) -> tuple[str, float]:
     hojas = [_normalizar(h.nombre_hoja) for h in solicitud.hojas]
     nombre = _normalizar(solicitud.nombre_archivo)
     anio = solicitud.vigencia_declarada
@@ -173,13 +166,11 @@ def _detectar_perfil(
         match = re.search(r"20(?:1[6-9]|2[0-6])", solicitud.nombre_archivo)
         anio = int(match.group()) if match else None
     if (anio is not None and 2020 <= anio <= 2023) or any(
-        x in " ".join(hojas)
-        for x in ("cartagena incluyente", "resiliente", "contingente", "transparente")
+        x in " ".join(hojas) for x in ("cartagena incluyente", "resiliente", "contingente", "transparente")
     ):
         return PERFILES[1], min(0.95, 0.68 + len(mapeo) * 0.02)
     if len(solicitud.hojas) >= 3 or any(
-        x in " ".join(hojas)
-        for x in ("identificacion", "ejecucion presupuestal", "plan indicativo")
+        x in " ".join(hojas) for x in ("identificacion", "ejecucion presupuestal", "plan indicativo")
     ):
         return PERFILES[2], min(0.98, 0.72 + len(mapeo) * 0.02)
     if len(solicitud.hojas) == 1 and anio is not None and 2016 <= anio <= 2019:
@@ -240,18 +231,10 @@ def detectar_y_normalizar_formato(
         group = [r for r in registros if r.vigencia == year]
         por_vigencia[str(year)] = {
             "registros": len(group),
-            "meta_programada_anual": sum(r.meta_programada_anual or 0 for r in group)
-            if group
-            else None,
-            "meta_ejecutada_anual": sum(r.meta_ejecutada_anual or 0 for r in group)
-            if group
-            else None,
-            "presupuesto_apropiado": sum(r.presupuesto_apropiado or 0 for r in group)
-            if group
-            else None,
-            "presupuesto_ejecutado": sum(r.presupuesto_ejecutado or 0 for r in group)
-            if group
-            else None,
+            "meta_programada_anual": sum(r.meta_programada_anual or 0 for r in group) if group else None,
+            "meta_ejecutada_anual": sum(r.meta_ejecutada_anual or 0 for r in group) if group else None,
+            "presupuesto_apropiado": sum(r.presupuesto_apropiado or 0 for r in group) if group else None,
+            "presupuesto_ejecutado": sum(r.presupuesto_ejecutado or 0 for r in group) if group else None,
             "dato_disponible": bool(group),
         }
     return DetectarFormatoPlanAccionRespuesta(
@@ -266,9 +249,7 @@ def detectar_y_normalizar_formato(
             "actividades_evaluadas": len(verbs),
             "actividades_con_verbo_fuerte": fuertes,
             "porcentaje_verbos_fuertes": round(100 * fuertes / len(verbs), 2) if verbs else None,
-            "verbos_detectados": dict(
-                Counter(r.verbo_detectado for r in verbs if r.verbo_detectado)
-            ),
+            "verbos_detectados": dict(Counter(r.verbo_detectado for r in verbs if r.verbo_detectado)),
         },
         comparativa_interanual={
             "unidad_comparable": "campos canónicos normalizados; sin imputación",

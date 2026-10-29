@@ -1,13 +1,18 @@
 import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import HTTPException, status
 
 from app.core.transactions import transaction
 from app.modules.alternativas.models import BancoAlternativas
 from app.modules.alternativas.repository import AlternativasRepository
-from app.modules.alternativas.schemas import AlternativaActualizar, AlternativaCrear
+from app.modules.alternativas.schemas import (
+    AlternativaActualizar,
+    AlternativaCrear,
+    AlternativaRead,
+)
 
 
 class AlternativasService:
@@ -41,9 +46,7 @@ class AlternativasService:
             )
         return alt
 
-    async def crear_alternativa(
-        self, datos: AlternativaCrear, actor_id: uuid.UUID | None = None
-    ) -> BancoAlternativas:
+    async def crear_alternativa(self, datos: AlternativaCrear, actor_id: uuid.UUID | None = None) -> BancoAlternativas:
         existente = await self.repo.obtener_por_codigo(datos.codigo)
         if existente:
             raise HTTPException(
@@ -93,6 +96,7 @@ class AlternativasService:
                     "costo_estimado_cop": str(creado.costo_estimado_cop),
                 },
             )
+            AlternativaRead.model_validate(creado)
 
         return creado
 
@@ -184,12 +188,11 @@ class AlternativasService:
                     "cambios": cambios_detectados,
                 },
             )
+            AlternativaRead.model_validate(actualizado)
 
         return actualizado
 
-    async def eliminar_alternativa(
-        self, id_o_codigo: str | uuid.UUID, actor_id: uuid.UUID | None = None
-    ) -> None:
+    async def eliminar_alternativa(self, id_o_codigo: str | uuid.UUID, actor_id: uuid.UUID | None = None) -> None:
         alt = await self.obtener_alternativa(id_o_codigo)
 
         # Regla de Integridad Referencial de Dominio: No eliminar si hay compromisos vinculados

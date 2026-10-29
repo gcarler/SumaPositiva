@@ -25,9 +25,7 @@ async def liveness() -> LivenessResponse:
     return LivenessResponse()
 
 
-@router.get(
-    "/ready", response_model=ReadinessResponse, responses={503: {"model": ReadinessResponse}}
-)
+@router.get("/ready", response_model=ReadinessResponse, responses={503: {"model": ReadinessResponse}})
 async def readiness(
     response: Response, service: Annotated[HealthService, Depends(get_health_service)]
 ) -> ReadinessResponse:
@@ -49,12 +47,9 @@ async def system_health(
 @router.get("/database/queries", response_model=DatabaseTelemetryResponse)
 async def database_queries(
     service: Annotated[HealthService, Depends(get_health_service)],
-    limite: int = Query(
-        default=10, ge=1, le=50, description="Cantidad máxima de consultas a retornar"
-    ),
+    limite: int = Query(default=10, ge=1, le=50, description="Cantidad máxima de consultas a retornar"),
     ordenar_por: Literal["tiempo_total", "tiempo_medio", "llamadas"] = Query(
         default="tiempo_total", description="Criterio de ordenación"
     ),
 ) -> DatabaseTelemetryResponse:
     return await service.database_queries_telemetry(limite=limite, ordenar_por=ordenar_por)
-

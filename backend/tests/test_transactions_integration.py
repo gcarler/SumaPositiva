@@ -72,9 +72,7 @@ async def crear_arbol(session):
     )
     await service.agregar_nodo(
         origen.id,
-        NodoInstrumentoCrear(
-            tipo_nodo="CAUSA_DIRECTA", contenido="Falta de mantenimiento", nodo_padre_id=central.id
-        ),
+        NodoInstrumentoCrear(tipo_nodo="CAUSA_DIRECTA", contenido="Falta de mantenimiento", nodo_padre_id=central.id),
     )
     return service, origen
 
@@ -91,9 +89,7 @@ async def crear_mesa(session):
 async def test_repositorio_flush_no_confirma_y_rollback_descarta(sessions):
     async with sessions() as session:
         repo = InstrumentoRepository(session)
-        nuevo = await repo.crear_instrumento(
-            Instrumento(tipo_instrumento="ARBOL_PROBLEMAS", nombre="Sin confirmar")
-        )
+        nuevo = await repo.crear_instrumento(Instrumento(tipo_instrumento="ARBOL_PROBLEMAS", nombre="Sin confirmar"))
         nuevo_id = nuevo.id
         async with sessions() as observer:
             assert await observer.get(Instrumento, nuevo_id) is None
@@ -121,11 +117,7 @@ async def test_error_real_de_commit_revierte_todas_las_escrituras(sessions):
     # Restricción diferida: los INSERT pasan y PostgreSQL rechaza el COMMIT.
     table = f"test_commit_{uuid.uuid4().hex}"
     async with sessions() as setup, setup.begin():
-        await setup.execute(
-            text(
-                f"CREATE TABLE public.{table} (valor integer UNIQUE DEFERRABLE INITIALLY DEFERRED)"
-            )
-        )
+        await setup.execute(text(f"CREATE TABLE public.{table} (valor integer UNIQUE DEFERRABLE INITIALLY DEFERRED)"))
     try:
         async with sessions() as session:
             with pytest.raises(IntegrityError):
@@ -164,9 +156,7 @@ async def test_conversion_confirma_arbol_nodos_y_origen_juntos(sessions):
 
 
 @pytest.mark.parametrize("etapa", ["nodos", "origen", "respuesta"])
-async def test_conversion_fallida_no_deja_arbol_nodos_ni_estado_parcial(
-    sessions, monkeypatch, etapa
-):
+async def test_conversion_fallida_no_deja_arbol_nodos_ni_estado_parcial(sessions, monkeypatch, etapa):
     async with sessions() as session:
         service, origen = await crear_arbol(session)
         original = {
@@ -193,9 +183,7 @@ async def test_conversion_fallida_no_deja_arbol_nodos_ni_estado_parcial(
         assert (await observer.get(Instrumento, origen.id)).estado == "EN_CONSTRUCCION"
         assert (
             await observer.scalar(
-                select(func.count())
-                .select_from(Instrumento)
-                .where(Instrumento.instrumento_origen_id == origen.id)
+                select(func.count()).select_from(Instrumento).where(Instrumento.instrumento_origen_id == origen.id)
             )
             == 0
         )
@@ -232,9 +220,7 @@ async def test_participante_y_contador_se_revierten_juntos(sessions, monkeypatch
         assert (await observer.get(Mesa, mesa.id)).total_asistentes == 0
         assert (
             await observer.scalar(
-                select(func.count())
-                .select_from(ParticipanteMesa)
-                .where(ParticipanteMesa.mesa_id == mesa.id)
+                select(func.count()).select_from(ParticipanteMesa).where(ParticipanteMesa.mesa_id == mesa.id)
             )
             == 0
         )
@@ -257,9 +243,7 @@ async def test_participantes_concurrentes_conservan_contador(sessions):
         assert (await observer.get(Mesa, mesa.id)).total_asistentes == 3
         assert (
             await observer.scalar(
-                select(func.count())
-                .select_from(ParticipanteMesa)
-                .where(ParticipanteMesa.mesa_id == mesa.id)
+                select(func.count()).select_from(ParticipanteMesa).where(ParticipanteMesa.mesa_id == mesa.id)
             )
             == 3
         )
@@ -293,9 +277,7 @@ async def test_devolucion_fallida_no_rechaza_propuesta_ni_persiste_auditoria(ses
         assert linea_id is not None, "La base de pruebas requiere una línea de contexto"
         service = AporteService(AporteRepository(session))
         propuesta = await service.crear_propuesta(
-            PropuestaCiudadanaCreate(
-                linea_id=linea_id, titulo="Prueba de devolución", descripcion="Caso transaccional"
-            )
+            PropuestaCiudadanaCreate(linea_id=linea_id, titulo="Prueba de devolución", descripcion="Caso transaccional")
         )
 
         def fallar_validacion(*args, **kwargs):
@@ -312,18 +294,14 @@ async def test_devolucion_fallida_no_rechaza_propuesta_ni_persiste_auditoria(ses
         with pytest.raises(ValueError, match="respuesta inválida"):
             await service.registrar_devolucion_motivada(
                 propuesta.id,
-                DevolucionRazonCrear(
-                    causal="tecnica", justificacion_motivada="Justificación técnica de prueba"
-                ),
+                DevolucionRazonCrear(causal="tecnica", justificacion_motivada="Justificación técnica de prueba"),
                 sujeto,
             )
     async with sessions() as observer:
         assert (await observer.get(PropuestaCiudadana, propuesta.id)).estado == "publicado"
         assert (
             await observer.scalar(
-                select(func.count())
-                .select_from(RegistroAuditoria)
-                .where(RegistroAuditoria.registro_id == propuesta.id)
+                select(func.count()).select_from(RegistroAuditoria).where(RegistroAuditoria.registro_id == propuesta.id)
             )
             == 0
         )
@@ -332,9 +310,7 @@ async def test_devolucion_fallida_no_rechaza_propuesta_ni_persiste_auditoria(ses
 @pytest.mark.parametrize("fallo", ["restriccion", "commit"])
 async def test_evidencia_fallida_limpia_archivo_y_registro(sessions, monkeypatch, tmp_path, fallo):
     async with sessions() as session:
-        service = EvidenciaService(
-            session, Settings(_env_file=None, environment="test", directorio_subidas=tmp_path)
-        )
+        service = EvidenciaService(session, Settings(_env_file=None, environment="test", directorio_subidas=tmp_path))
         if fallo == "commit":
 
             async def fallar_commit():
@@ -344,9 +320,7 @@ async def test_evidencia_fallida_limpia_archivo_y_registro(sessions, monkeypatch
         image_bytes = io.BytesIO()
         Image.new("RGB", (8, 8)).save(image_bytes, format="PNG")
         image_bytes.seek(0)
-        archivo = UploadFile(
-            file=image_bytes, filename="prueba.png", headers=Headers({"content-type": "image/png"})
-        )
+        archivo = UploadFile(file=image_bytes, filename="prueba.png", headers=Headers({"content-type": "image/png"}))
         sujeto = SujetoAutenticadoContexto(
             sujeto_id=uuid.uuid4(),
             rol="ciudadano_anonimo",
@@ -392,9 +366,7 @@ async def test_nuevos_modulos_revierten_si_falla_la_respuesta(sessions, monkeypa
     from app.modules.presupuesto.service import PresupuestoService
 
     async with sessions() as session:
-        ficha = await session.scalar(
-            select(FichaTecnicaIndicador).where(FichaTecnicaIndicador.codigo == "IND-INS-01")
-        )
+        ficha = await session.scalar(select(FichaTecnicaIndicador).where(FichaTecnicaIndicador.codigo == "IND-INS-01"))
         assert ficha is not None
         ficha_id = ficha.id
         valor_anterior = ficha.valor_actual
@@ -477,9 +449,231 @@ async def test_nuevos_modulos_revierten_si_falla_la_respuesta(sessions, monkeypa
             await operacion()
 
     async with sessions() as observador:
-        assert (
-            await observador.scalar(select(func.count()).select_from(modelo)) == cantidad_anterior
-        )
+        assert await observador.scalar(select(func.count()).select_from(modelo)) == cantidad_anterior
         ficha_persistida = await observador.get(FichaTecnicaIndicador, ficha_id)
         assert ficha_persistida.valor_actual == valor_anterior
         assert ficha_persistida.porcentaje_avance == avance_anterior
+
+
+# --- T5 / CA-5.3: evidencia desde una sesión nueva (otra conexión) ---
+
+
+async def test_radicacion_whatsapp_confirmada_y_sin_restos_tras_fallo_post_flush(sessions, monkeypatch):
+    """Radicación WhatsApp: éxito íntegro confirmado desde otra conexión y rollback completo
+    ante un fallo posterior al primer flush (sin restos)."""
+    from app.modules.canales.service import CanalWhatsAppService
+
+    async def radicar(session):
+        servicio = CanalWhatsAppService(session)
+        return await servicio.registrar_mensaje_comunitario(
+            telefono_remitente="+573001112233",
+            nombre_remitente="Líder Comunitario CA53",
+            texto_mensaje="Sector Bocagrande: necesitamos luminarias y vigilancia comunitaria permanente.",
+            tipo_mensaje="text",
+        )
+
+    # Éxito: confirmación íntegra visible desde otra conexión
+    async with sessions() as session:
+        resultado = await radicar(session)
+    async with sessions() as observador:
+        radicado = resultado.codigo_radicado
+        fila = await observador.execute(
+            text(
+                "SELECT codigo_radicado FROM participacion_ciudadana.propuestas_ciudadanas WHERE codigo_radicado = :rad"
+            ),
+            {"rad": radicado},
+        )
+        assert fila.first() is not None
+        constancia = await observador.execute(
+            text("SELECT id FROM participacion_ciudadana.notificaciones_transaccionales WHERE codigo_radicado = :rad"),
+            {"rad": radicado},
+        )
+        assert constancia.first() is not None
+
+    # Fallo posterior al primer flush: la propuesta existe y luego el caso de uso revierte
+    crear_original = AporteRepository.crear
+
+    async def crear_y_fallar(self, datos):
+        await crear_original(self, datos)
+        raise RuntimeError("fallo inyectado después del primer flush")
+
+    async with sessions() as observador:
+        linea_base = (
+            await observador.execute(
+                text(
+                    "SELECT count(*) FROM participacion_ciudadana.propuestas_ciudadanas"
+                    " WHERE autor_nombre = 'Líder Comunitario CA53'"
+                )
+            )
+        ).scalar_one()
+        constancia_exito = (
+            await observador.execute(
+                text(
+                    "SELECT count(*) FROM participacion_ciudadana.notificaciones_transaccionales"
+                    " WHERE codigo_radicado = :rad"
+                ),
+                {"rad": radicado},
+            )
+        ).scalar_one()
+    assert constancia_exito == 1
+
+    monkeypatch.setattr(AporteRepository, "crear", crear_y_fallar)
+    async with sessions() as session:
+        with pytest.raises(RuntimeError, match="fallo inyectado"):
+            await radicar(session)
+    async with sessions() as observador:
+        propuestas = await observador.execute(
+            text(
+                "SELECT count(*) FROM participacion_ciudadana.propuestas_ciudadanas"
+                " WHERE autor_nombre = 'Líder Comunitario CA53'"
+            )
+        )
+        assert propuestas.scalar_one() == linea_base  # la propuesta fallida no dejó restos
+
+
+async def test_dictamen_hallazgo_confirmado_y_rollback_completo_tras_fallo_post_flush(sessions, monkeypatch):
+    """Dictamen de hallazgo PDT: éxito confirmado desde otra conexión; antes de la confirmación
+    del límite, un fallo inyectado deja el caso de uso sin restos."""
+    from app.modules.compromisos.pdt_persistencia_pg import (
+        dictaminar_hallazgo_pdt_pg,
+        registrar_dictamen_hallazgo_pdt_pg,
+    )
+
+    id_exito = f"PDT-HALL-CA53-{uuid.uuid4().hex[:10]}"
+    id_fallo = f"PDT-HALL-CA53-FAIL-{uuid.uuid4().hex[:10]}"
+
+    async with sessions() as session:
+        await dictaminar_hallazgo_pdt_pg(
+            id_hallazgo=id_exito,
+            codigo_meta="M-CA53-01",
+            estado_revision="VERIFICADO",
+            responsable="Dependencia CA53",
+            accion_correctiva_pdca="Ajuste documentado del criterio de medición",
+            auditor="Auditor CA53",
+            db=session,
+        )
+    async with sessions() as observador:
+        fila = await observador.execute(
+            text(
+                "SELECT id_hallazgo FROM seguimiento.pdt_ai_hallazgos_revision"
+                " WHERE id_hallazgo = :hid AND codigo_meta = 'M-CA53-01'"
+            ),
+            {"hid": id_exito},
+        )
+        assert fila.first() is not None
+
+    async def registrar_y_fallar(**kwargs):
+        await registrar_dictamen_hallazgo_pdt_pg(**kwargs)
+        raise RuntimeError("fallo inyectado tras el INSERT del dictamen")
+
+    monkeypatch.setattr(
+        "app.modules.compromisos.pdt_persistencia_pg.registrar_dictamen_hallazgo_pdt_pg",
+        registrar_y_fallar,
+    )
+    async with sessions() as session:
+        with pytest.raises(RuntimeError, match="fallo inyectado"):
+            await dictaminar_hallazgo_pdt_pg(
+                id_hallazgo=id_fallo,
+                codigo_meta="M-CA53-02",
+                estado_revision="VERIFICADO",
+                responsable="Dependencia CA53",
+                accion_correctiva_pdca="Acción que debe revertirse",
+                auditor="Auditor CA53",
+                db=session,
+            )
+    async with sessions() as observador:
+        fila = await observador.execute(
+            text("SELECT count(*) FROM seguimiento.pdt_ai_hallazgos_revision WHERE id_hallazgo = :hid"),
+            {"hid": id_fallo},
+        )
+        assert fila.scalar_one() == 0
+
+
+async def test_denegacion_territorial_persiste_evento_en_transaccion_separada(sessions):
+    """T5.5: el evento de acceso territorial denegado sobrevive al 403 gracias a la
+    transacción separada, comproble desde otra conexión a pesar del fallo del caso de uso."""
+    from datetime import UTC, datetime
+
+    from fastapi import HTTPException
+
+    from app.modules.identidad import models as id_models
+    from app.modules.identidad.ambito_territorial import verificar_ambito_territorial
+    from app.modules.identidad.schemas import SujetoAutenticadoContexto
+    from app.modules.mesas.models import Mesa
+
+    async with sessions() as setup:
+        (await setup.execute(text("SELECT id FROM geodatos.territorios WHERE codigo='LOC-1'"))).scalar_one()
+        loc2 = (await setup.execute(text("SELECT id FROM geodatos.territorios WHERE codigo='LOC-2'"))).scalar_one()
+        rol = (
+            await setup.execute(text("SELECT id FROM autenticacion.roles WHERE codigo='facilitador_mesa'"))
+        ).scalar_one()
+        u_id = uuid.uuid4()
+        setup.add(
+            id_models.Usuario(
+                id=u_id,
+                correo=f"ca53-{uuid.uuid4().hex[:8]}@cartagena.gov.co",
+                hash_contrasena="hash_dummy",
+                nombres="CA53",
+                apellidos="Denegación",
+                rol_id=rol,
+                activo=True,
+                correo_verificado_en=datetime.now(UTC),
+            )
+        )
+        setup.add(
+            id_models.AmbitoTerritorialUsuario(
+                usuario_id=u_id,
+                tipo_ambito="localidad",
+                identificador_territorial="LOC-1",
+                activo=True,
+            )
+        )
+        sufijo = uuid.uuid4().hex[:6]
+        m2 = Mesa(
+            tipo_mesa="TERRITORIAL",
+            codigo_oficial=f"CA53-D2-{sufijo}",
+            shortcode_ciudadano=f"CA53D2-{sufijo}",
+            slug=f"ca53d2_{sufijo}",
+            ruta_jerarquica=f"csh.ca53d2_{sufijo}",
+            nombre=f"Mesa LOC2 CA53 {sufijo}",
+            territorio_id=loc2,
+            aforo_maximo=50,
+        )
+        setup.add(m2)
+        await setup.commit()
+        mesa2_id = m2.id
+
+    # Caso de uso con su propia sesión; el 403 y la reversión del caso de uso de la
+    # petición no pueden tocar el evento ya confirmado en su transacción separada.
+    sujeto = SujetoAutenticadoContexto(
+        sujeto_id=u_id,
+        rol="facilitador_mesa",
+        permisos={"mesas:abrir"},
+        nivel_identidad="declarada",
+        es_anonimo=False,
+    )
+    async with sessions() as peticion:
+        with pytest.raises(HTTPException) as exc_info:
+            await verificar_ambito_territorial(
+                peticion,
+                sujeto,
+                mesa_id=mesa2_id,
+                recurso_tipo="mesa",
+                recurso_id=mesa2_id,
+                metodo_http="PATCH",
+                ruta_http=f"/api/v1/mesas/{mesa2_id}",
+            )
+            # Reproducir además un escape del caso de uso: tras el evento denegado el
+            # rol del límite de la petición revierte, y el evento debe conservarse.
+        assert exc_info.value.status_code == 403
+        await peticion.rollback()
+
+    async with sessions() as observador:
+        total = await observador.execute(
+            text(
+                "SELECT count(*) FROM autenticacion.eventos_identidad"
+                " WHERE actor_id = :actor AND accion = 'acceso_territorial_denegado'"
+            ),
+            {"actor": str(u_id)},
+        )
+        assert total.scalar_one() >= 1

@@ -48,9 +48,7 @@ def upgrade():
         sa.Column("revocada_en", sa.DateTime(timezone=True)),
         schema="autenticacion",
     )
-    op.create_index(
-        "idx_sesiones_usuario_usuario", "sesiones_usuario", ["usuario_id"], schema="autenticacion"
-    )
+    op.create_index("idx_sesiones_usuario_usuario", "sesiones_usuario", ["usuario_id"], schema="autenticacion")
     op.create_table(
         "tokens_accion",
         sa.Column("hash_token", sa.String(64), primary_key=True),
@@ -68,9 +66,7 @@ def upgrade():
         sa.Column("usado_en", sa.DateTime(timezone=True)),
         schema="autenticacion",
     )
-    op.create_index(
-        "idx_tokens_accion_usuario", "tokens_accion", ["usuario_id"], schema="autenticacion"
-    )
+    op.create_index("idx_tokens_accion_usuario", "tokens_accion", ["usuario_id"], schema="autenticacion")
     op.create_table(
         "eventos_identidad",
         sa.Column(

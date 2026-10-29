@@ -1,0 +1,66 @@
+{
+  "estado": "propuesta_documental_no_resolutor_implementado",
+  "ejemplo": "Cartagena",
+  "roles": [
+    {
+      "rol": "Gobierno territorial",
+      "alias_ejemplo": "Cartagena: Alcaldía Distrital",
+      "regla": "Alcaldía o gobernación según el nivel; no son intercambiables."
+    },
+    {
+      "rol": "Planeación territorial",
+      "alias_ejemplo": "Cartagena: alias por verificar",
+      "regla": "PDD/PDM, POT y seguimiento; registrar nombre y competencia reales."
+    },
+    {
+      "rol": "Autoridad de salud territorial",
+      "alias_ejemplo": "Cartagena: DADIS",
+      "regla": "Datos sanitarios según competencia, producto y cobertura."
+    },
+    {
+      "rol": "Seguridad y convivencia",
+      "alias_ejemplo": "Cartagena: Interior / Distriseguridad",
+      "regla": "Un rol puede requerir varias entidades; un alias no acredita equivalencia jurídica."
+    },
+    {
+      "rol": "Autoridad ambiental urbana",
+      "alias_ejemplo": "Cartagena: EPA",
+      "regla": "Solo donde exista y tenga competencia; no crear una entidad ficticia para otro municipio."
+    },
+    {
+      "rol": "Autoridad ambiental regional",
+      "alias_ejemplo": "Cartagena: CARDIQUE; ámbito a verificar",
+      "regla": "Entidad de jurisdicción regional; resolver competencia territorial por producto."
+    },
+    {
+      "rol": "Protección social e infancia",
+      "alias_ejemplo": "Cartagena: alias por configurar",
+      "regla": "Separar dependencia territorial de la regional nacional del ICBF."
+    },
+    {
+      "rol": "Educación territorial",
+      "alias_ejemplo": "Cartagena: alias por verificar",
+      "regla": "Identificar autoridad competente y condición de certificación."
+    },
+    {
+      "rol": "Gestión territorial del riesgo",
+      "alias_ejemplo": "Cartagena: alias por configurar",
+      "regla": "Oficina, unidad o entidad competente; no inferir nombre oficial."
+    },
+    {
+      "rol": "Cartografía y catastro",
+      "alias_ejemplo": "Cartagena: custodio por producto",
+      "regla": "Geoportal, planeación o gestor catastral; la capa puede tener otro custodio."
+    },
+    {
+      "rol": "Control territorial",
+      "alias_ejemplo": "Cartagena: entidad por competencia",
+      "regla": "Personería y contraloría no son sinónimos; conservar roles separados al vincular productos."
+    },
+    {
+      "rol": "Información y observatorios",
+      "alias_ejemplo": "Cartagena: alias por configurar",
+      "regla": "Observatorios, registros y entregas; mantener procedencia por archivo."
+    }
+  ]
+}

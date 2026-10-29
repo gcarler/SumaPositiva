@@ -86,9 +86,7 @@ def upgrade() -> None:
             ["seguimiento.planes_desarrollo_distrital.codigo_plan"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(
-            ["parent_id"], ["seguimiento.pdd_lineas_y_programas.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["parent_id"], ["seguimiento.pdd_lineas_y_programas.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id", name="pk_pdd_lineas_y_programas"),
         schema="seguimiento",
     )
@@ -98,9 +96,7 @@ def upgrade() -> None:
         ["codigo_plan"],
         schema="seguimiento",
     )
-    op.create_index(
-        "idx_pdd_lineas_parent", "pdd_lineas_y_programas", ["parent_id"], schema="seguimiento"
-    )
+    op.create_index("idx_pdd_lineas_parent", "pdd_lineas_y_programas", ["parent_id"], schema="seguimiento")
     op.create_table(
         "pdd_metas_oficiales",
         sa.Column(
@@ -130,29 +126,19 @@ def upgrade() -> None:
             ["seguimiento.planes_desarrollo_distrital.codigo_plan"],
             ondelete="CASCADE",
         ),
-        sa.ForeignKeyConstraint(
-            ["linea_id"], ["seguimiento.pdd_lineas_y_programas.id"], ondelete="SET NULL"
-        ),
+        sa.ForeignKeyConstraint(["linea_id"], ["seguimiento.pdd_lineas_y_programas.id"], ondelete="SET NULL"),
         sa.PrimaryKeyConstraint("id", name="pk_pdd_metas_oficiales"),
         schema="seguimiento",
     )
-    op.create_index(
-        "idx_pdd_metas_plan", "pdd_metas_oficiales", ["codigo_plan"], schema="seguimiento"
-    )
-    op.create_index(
-        "idx_pdd_metas_linea", "pdd_metas_oficiales", ["linea_id"], schema="seguimiento"
-    )
+    op.create_index("idx_pdd_metas_plan", "pdd_metas_oficiales", ["codigo_plan"], schema="seguimiento")
+    op.create_index("idx_pdd_metas_linea", "pdd_metas_oficiales", ["linea_id"], schema="seguimiento")
 
 
 def downgrade() -> None:
     op.drop_index("idx_pdd_metas_linea", table_name="pdd_metas_oficiales", schema="seguimiento")
     op.drop_index("idx_pdd_metas_plan", table_name="pdd_metas_oficiales", schema="seguimiento")
     op.drop_table("pdd_metas_oficiales", schema="seguimiento")
-    op.drop_index(
-        "idx_pdd_lineas_parent", table_name="pdd_lineas_y_programas", schema="seguimiento"
-    )
-    op.drop_index(
-        "idx_pdd_lineas_codigo_plan", table_name="pdd_lineas_y_programas", schema="seguimiento"
-    )
+    op.drop_index("idx_pdd_lineas_parent", table_name="pdd_lineas_y_programas", schema="seguimiento")
+    op.drop_index("idx_pdd_lineas_codigo_plan", table_name="pdd_lineas_y_programas", schema="seguimiento")
     op.drop_table("pdd_lineas_y_programas", schema="seguimiento")
     op.drop_table("planes_desarrollo_distrital", schema="seguimiento")

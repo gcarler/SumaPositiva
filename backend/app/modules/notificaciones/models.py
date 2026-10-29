@@ -7,32 +7,35 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     Index,
+    Integer,
     String,
     Text,
     text,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.schema import conv
 
 from app.core.database import Base
 
 
 class NotificacionTransaccional(Base):
-    """Registro inmutable de constancias, radicados y avisos transaccionales al ciudadano."""
+    """Intención durable de entrega, reclamada después del commit por un consumidor."""
 
     __tablename__ = "notificaciones_transaccionales"
     __table_args__ = (
         CheckConstraint(
             "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion')",
-            name="chk_notificaciones_tipo_evento",
+            name=conv("chk_notificaciones_tipo_evento"),
         ),
         CheckConstraint(
-            "estado_envio IN ('enviado', 'simulado', 'fallido')",
-            name="chk_notificaciones_estado_envio",
+            "estado_envio IN ('pendiente', 'procesando', 'enviado', 'simulado', 'fallido')",
+            name=conv("chk_notificaciones_estado_envio"),
         ),
         Index("idx_notif_codigo_radicado", "codigo_radicado"),
         Index("idx_notif_destinatario", "destinatario_correo"),
         Index("idx_notif_creado_en", "creado_en"),
+        Index("idx_notif_cola", "estado_envio", "proximo_intento_en"),
         {
             "schema": "participacion_ciudadana",
             "comment": (
@@ -54,6 +57,10 @@ class NotificacionTransaccional(Base):
     cuerpo_html: Mapped[str] = mapped_column(Text, nullable=False)
     estado_envio: Mapped[str] = mapped_column(String(30), nullable=False)
     error_detalle: Mapped[str | None] = mapped_column(Text, nullable=True)
+    intentos: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"), default=0)
+    proximo_intento_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reclamo_token: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    reclamo_vence_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("clock_timestamp()"),
@@ -63,3 +70,4 @@ class NotificacionTransaccional(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    simulado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

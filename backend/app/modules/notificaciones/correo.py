@@ -1,12 +1,12 @@
 """Plantillas HTML institucionales y despacho resiliente de correos transaccionales."""
 
 import asyncio
-from datetime import UTC, datetime
-from email.message import EmailMessage
 import html
 import logging
 import smtplib
 import ssl
+from datetime import UTC, datetime
+from email.message import EmailMessage
 
 from app.core.config import Settings
 
@@ -231,6 +231,7 @@ async def despachar_correo(
     asunto: str,
     cuerpo_html: str,
     settings: Settings,
+    identificador_mensaje: str | None = None,
 ) -> tuple[str, str | None, datetime | None]:
     """
     Despacha un correo electrónico de forma resiliente.
@@ -238,9 +239,8 @@ async def despachar_correo(
     """
     if not settings.smtp_host:
         logger.info(
-            "SMTP no configurado en entorno %s; notificación para %s simulada exitosamente",
+            "SMTP no configurado en entorno %s; entrega simulada",
             settings.environment,
-            destinatario,
         )
         return "simulado", None, None
 
@@ -248,6 +248,8 @@ async def despachar_correo(
     mensaje["From"] = settings.smtp_remitente
     mensaje["To"] = destinatario
     mensaje["Subject"] = asunto
+    if identificador_mensaje:
+        mensaje["Message-ID"] = identificador_mensaje
     mensaje.set_content(
         "Su cliente de correo no soporta visualización HTML. Por favor acceda a la plataforma POLIS para consultar su radicado."
     )
@@ -265,7 +267,5 @@ async def despachar_correo(
         await asyncio.to_thread(entregar)
         return "enviado", None, datetime.now(UTC)
     except Exception as err:
-        logger.warning(
-            "Fallo al despachar correo transaccional a %s: %s", destinatario, str(err)
-        )
-        return "fallido", str(err), None
+        logger.warning("Fallo de transporte de correo transaccional: %s", type(err).__name__)
+        return "fallido", type(err).__name__, None

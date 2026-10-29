@@ -1,0 +1,118 @@
+{
+  "tarea": "OL-FUENTES-SHA-01",
+  "fecha_utc": "2026-10-26",
+  "algoritmo": "SHA-256",
+  "hashes_antes": {
+    "inventario": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "resumen": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "fallos_183": "c38ceb8e2f92d82dac7371271cdb9d5af577c7ee94e89ee50d54135d5d8aa38f",
+    "fallos_171": "5b9ce57dd6cd7689f6da4a523e2d301cf030be7a656a5fccac42b1c57faa99c8"
+  },
+  "hashes_despues": {
+    "inventario": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "resumen": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "fallos_183": "c38ceb8e2f92d82dac7371271cdb9d5af577c7ee94e89ee50d54135d5d8aa38f",
+    "fallos_171": "5b9ce57dd6cd7689f6da4a523e2d301cf030be7a656a5fccac42b1c57faa99c8"
+  },
+  "inventario_activo": {
+    "ruta": "data/banco_fuentes_oficiales/inventario_pipeline_2026.json",
+    "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "bytes": 1638638,
+    "mtime_ns": 1792727328633810387,
+    "mtime_utc": "2026-10-23T03:48:48.633811+00:00",
+    "esquema": "polis.inventario_fuentes.v1",
+    "generado_utc": "2026-10-23T03:48:48.585974+00:00",
+    "fuentes_clave": 43,
+    "artefactos_declarados": 1829,
+    "archivos_en_lista": 1829,
+    "linea_declaracion_discrepante": 36056
+  },
+  "resumen_discrepante_actual": {
+    "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+    "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "bytes": 4815,
+    "mtime_ns": 1792803921999383434,
+    "mtime_utc": "2026-10-24T01:05:21.999383+00:00",
+    "es_inventario_activo": false,
+    "rol_inventario": "insumo_o_evidencia",
+    "paquete_clave": "planes_accion"
+  },
+  "errores_hash_en_183": [
+    {
+      "test": "tests.test_catalogo_fuentes_versionado::test_carga_real_no_duplica_y_no_promueve",
+      "categoria": "datos_fuera_alcance",
+      "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json"
+    },
+    {
+      "test": "tests.test_catalogo_fuentes_versionado::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion",
+      "categoria": "datos_fuera_alcance",
+      "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json"
+    },
+    {
+      "test": "tests.test_inventario_fuentes_polis::test_inventario_publicado_coincide_con_archivos_actuales",
+      "categoria": "datos_fuera_alcance",
+      "mensaje": "AssertionError: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json\nassert '7dfb91e3942e...a771be8c02f38' == 'a7443aa121b2...005037aa6dc7a'\n  \n  - a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a\n  + 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+    }
+  ],
+  "errores_hash_en_171": [],
+  "cotejo_completo": {
+    "archivos_comprobados": 1829,
+    "coinciden": 1828,
+    "discrepancias": 1,
+    "ausentes": 0,
+    "estrategia": "recorrido completo data/banco_fuentes_oficiales/inventario_pipeline_2026.json -> archivos[] -> lectura + hash por archivo"
+  },
+  "discrepancias": [
+    {
+      "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+      "declarado": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+      "real": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+      "coincide": false,
+      "bytes_esperados": 51693,
+      "bytes_reales": 4815,
+      "mtime_ns": 1792803921999383434,
+      "mtime_utc": "2026-10-24T01:05:21.999383+00:00",
+      "paquete_clave": "planes_accion",
+      "rol": "insumo_o_evidencia",
+      "indice": 1648
+    }
+  ],
+  "busqueda_original": {
+    "rutas_exploradas": [
+      "/root",
+      "/tmp",
+      "/home"
+    ],
+    "resultado": "No se encontro archivo con SHA esperado a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+    "original_conservado": false
+  },
+  "referencias_clave": [
+    "backend/tests/test_inventario_fuentes_polis.py:81",
+    "backend/scripts/cargar_catalogo_fuentes.py:85",
+    "backend/scripts/sincronizar_drive_planes_accion.py:37,400,412,416,432,441",
+    "data/planes_accion/drive_sector_seguridad/.gitignore:2",
+    "bridge/183_evidencia_edd_aportes/backend_check_fallos_clasificados.json"
+  ],
+  "semantica": {
+    "diferencia_comprobada": "Tamaño y hash difieren; el inventario activo declara 51693 bytes y el archivo actual tiene 4815 bytes.",
+    "diferencia_semantica_demostrada": "No se conserva el archivo previo con SHA esperado, por lo que no se puede demostrar diferencias de contenido ni de significado.",
+    "causa_conocida": "No se prueba la causa exacta del cambio; lo mas consistente con mtime es sobreescritura del resumen mutable después de generar el inventario, pero no se acredita."
+  },
+  "propuesta_versionado": {
+    "dato_oficial": "Congelar artefactos originales por SHA en data/fuentes_versiones/ con manifiesto que preserve ruta, SHA, bytes y UTC.",
+    "archivo_derivado": "resumen_sincronizacion.json es producto derivado de sincronizacion, no dato oficial.",
+    "resumen_mutable": "Excluirlo del inventario de fuentes o versionarlo aparte; nunca reutilizar su ruta mutable para acreditar procedencia.",
+    "version_nueva": "Si se requiere evidencia, escribir data/fuentes_versiones/planes_accion/drive_sector_seguridad/<timestamp>-<sha>/resumen_sincronizacion.json con manifiesto y conservar la copia previa.",
+    "inventario_anterior": "No reescribir inventario activo; crear nueva version y mantener el hash del inventario anterior como historia."
+  },
+  "limites": {
+    "sin_sql": true,
+    "sin_red": true,
+    "sin_pytest": true,
+    "sin_commit": true,
+    "sin_push": true,
+    "sin_despliegue": true,
+    "sin_banco": true,
+    "sin_cambios_aplicacion": true
+  }
+}

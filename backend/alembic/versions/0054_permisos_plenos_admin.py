@@ -5,14 +5,14 @@ Revises: 0053_permiso_testimonios_admin
 Create Date: 2026-10-09 04:06:00.000000
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+
 from alembic import op
 
-
 revision: str = "0054_permisos_plenos_admin"
-down_revision: Union[str, Sequence[str], None] = "0053_permiso_testimonios_admin"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0053_permiso_testimonios_admin"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

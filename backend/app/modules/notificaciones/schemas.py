@@ -19,13 +19,9 @@ class ConsultaRadicadoRespuesta(BaseModel):
     tipo_aporte: str = Field(..., description="Tipo de aporte participativo")
     autor_nombre: str = Field(..., description="Autor o 'Ciudadano Anónimo'")
     estado: str = Field(..., description="Estado de tramitación de la propuesta")
-    territorio_nombre: str | None = Field(
-        default=None, description="Territorio distrital de anclaje"
-    )
+    territorio_nombre: str | None = Field(default=None, description="Territorio distrital de anclaje")
     creado_en: datetime = Field(..., description="Fecha y hora de radicación oficial")
-    actualizado_en: datetime = Field(
-        ..., description="Última actualización de tramitación"
-    )
+    actualizado_en: datetime = Field(..., description="Última actualización de tramitación")
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -52,6 +48,4 @@ class HistorialNotificacionesPaginado(BaseModel):
     total: int = Field(..., description="Total de notificaciones coincidentes")
     limite: int = Field(..., description="Límite por página")
     desplazamiento: int = Field(..., description="Desplazamiento u offset")
-    elementos: list[NotificacionLectura] = Field(
-        ..., description="Registros de notificaciones"
-    )
+    elementos: list[NotificacionLectura] = Field(..., description="Registros de notificaciones")

@@ -8,15 +8,16 @@ Revises: 0054_permisos_plenos_admin
 Create Date: 2026-10-11 04:26:00.000000
 """
 
-from typing import Sequence, Union
-from alembic import op
+from collections.abc import Sequence
+
 from sqlalchemy import text
 
+from alembic import op
 
 revision: str = "0055_ingesta_indicadores_reales"
-down_revision: Union[str, Sequence[str], None] = "0054_permisos_plenos_admin"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0054_permisos_plenos_admin"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 MEDICIONES_DATA = [
@@ -147,16 +148,22 @@ def upgrade() -> None:
     for item in MEDICIONES_DATA:
         codigo = item["codigo"]
         # Obtener ficha
-        fila = conn.execute(
-            text("SELECT id, metadatos FROM indicadores.fichas_tecnicas_indicadores WHERE codigo = :c"),
-            {"c": codigo},
-        ).mappings().first()
+        fila = (
+            conn.execute(
+                text("SELECT id, metadatos FROM indicadores.fichas_tecnicas_indicadores WHERE codigo = :c"),
+                {"c": codigo},
+            )
+            .mappings()
+            .first()
+        )
 
         if fila:
             ficha_id = fila["id"]
             # Limpiar mediciones no demostrativas previas
             conn.execute(
-                text("DELETE FROM indicadores.mediciones_indicador WHERE indicador_id = :fid AND es_demostracion IS NOT TRUE"),
+                text(
+                    "DELETE FROM indicadores.mediciones_indicador WHERE indicador_id = :fid AND es_demostracion IS NOT TRUE"
+                ),
                 {"fid": ficha_id},
             )
 
@@ -185,15 +192,18 @@ def upgrade() -> None:
 
             # Metadatos actualizados
             metadatos = dict(fila["metadatos"] or {})
-            metadatos.update({
-                "tiene_mediciones": True,
-                "fecha_corte_ultimo_reporte": "2024-12-31",
-                "periodo_ultimo_reporte": "2024-ANUAL",
-                "fuente_oficial": item["fuente"],
-                "certificacion_eaf": "2026-10-11T04:22:00Z",
-            })
+            metadatos.update(
+                {
+                    "tiene_mediciones": True,
+                    "fecha_corte_ultimo_reporte": "2024-12-31",
+                    "periodo_ultimo_reporte": "2024-ANUAL",
+                    "fuente_oficial": item["fuente"],
+                    "certificacion_eaf": "2026-10-11T04:22:00Z",
+                }
+            )
 
             import json
+
             conn.execute(
                 text("""
                     UPDATE indicadores.fichas_tecnicas_indicadores

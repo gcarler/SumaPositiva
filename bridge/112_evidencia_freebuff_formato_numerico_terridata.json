@@ -1,0 +1,294 @@
+{
+  "tarea": "FB-TERR-FORMATO-01",
+  "fecha_utc": "2026-10-25",
+  "agente": "Freebuff",
+  "estado": "perfilado_determinista_completado_gramatica_propuesta_congelada",
+  "insumos_verificados_esta_ronda": {
+    "zip": {
+      "ruta": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+      "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+      "bytes": 114090,
+      "miembro_unico": "TerriData13001.txt",
+      "cifrado": false,
+      "sin_extraccion_al_filesystem": true
+    },
+    "txt": {
+      "sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+      "bytes": 2853390,
+      "codificacion": "utf-8-sig",
+      "delimitador": "|"
+    },
+    "jsonl": {
+      "ruta": "bridge/106_piloto_terridata/filas.jsonl",
+      "sha256": "77b358fcb06aa675cd4871eaed29acffac065d340236079b12689c3b4459ef4a",
+      "bytes": 13191372
+    }
+  },
+  "conciliacion_con_106": {
+    "filas_total": 12899,
+    "estados_fila": {
+      "retiene": 12739,
+      "aceptada": 158,
+      "rechazada": 2
+    },
+    "estado_valor_numerico": {
+      "formato_no_regla": 12077,
+      "no_presente": 822
+    },
+    "nota": "12899 = 158 + 12739 + 2; coincide con resumen de 106 y con el manifiesto de ejecución; recuento reproducido esta ronda",
+    "no_presente_desglose": {
+      "aceptada": 158,
+      "retiene": 664,
+      "con_dato_cualitativo": 163,
+      "ejemplos": [
+        {
+          "orden": 1,
+          "linea_final": 2,
+          "estado_fila": "retiene",
+          "indicador": "Código DANE",
+          "dato_cualitativo": "13001"
+        },
+        {
+          "orden": 2,
+          "linea_final": 3,
+          "estado_fila": "retiene",
+          "indicador": "Región",
+          "dato_cualitativo": "Caribe"
+        },
+        {
+          "orden": 3,
+          "linea_final": 4,
+          "estado_fila": "retiene",
+          "indicador": "Subregión (SGR)",
+          "dato_cualitativo": "Dique Bolivarense"
+        }
+      ]
+    }
+  },
+  "perfilado_excluyente_12077_no_vacios": {
+    "coma_decimal_simple": 7582,
+    "coma_decimal_miles_punto": 4495,
+    "suma": 12077,
+    "cero_en_resto": {
+      "entero_punto_decimal_simple": 0,
+      "exponente": 0,
+      "unicode_otros_simbolos": 0,
+      "espacios_no_separables": 0,
+      "signo_mas": 0,
+      "menos_unicode_otro_guion": 0,
+      "coma_malformada": 0,
+      "punto_unico_tam3_ambiguo": 0,
+      "punto_desconocido": 0,
+      "desconocido": 0
+    },
+    "signos": {
+      "sin_signo": 12045,
+      "menos_ascii": 32,
+      "negativos_ejemplos": [
+        {
+          "orden": 5584,
+          "linea_final": 5585,
+          "texto": "-58.011,00",
+          "campo": "dato_numerico",
+          "indicador": "Déficit o superávit total",
+          "unidad_medida": "Millones de pesos corrientes"
+        },
+        {
+          "orden": 5585,
+          "linea_final": 5586,
+          "texto": "-86.529,00",
+          "campo": "dato_numerico",
+          "indicador": "Déficit o superávit total",
+          "unidad_medida": "Millones de pesos corrientes"
+        },
+        {
+          "orden": 5589,
+          "linea_final": 5590,
+          "texto": "-128.705,00",
+          "campo": "dato_numerico",
+          "indicador": "Déficit o superávit total",
+          "unidad_medida": "Millones de pesos corrientes"
+        }
+      ]
+    },
+    "valores_unicos": 7913,
+    "longitud_texto": {
+      "min": 4,
+      "max": 20,
+      "ejemplo_max": "1.192.200.042.072,00"
+    },
+    "modo_decimal": "excluyente: los 12077 valores tienen exactamente 2 dígitos tras la coma",
+    "prefijo_digito_1_3": {
+      "1": 4832,
+      "2": 5574,
+      "3": 1671
+    },
+    "digitos_entera_sin_separadores": {
+      "1": 4111,
+      "2": 2995,
+      "3": 476,
+      "5": 427,
+      "6": 2375,
+      "7": 1063,
+      "9": 137,
+      "10": 45,
+      "11": 37,
+      "13": 156,
+      "14": 159,
+      "15": 95,
+      "17": 1
+    },
+    "grupos_de_miles_por_parte_entera": {
+      "0": 7582,
+      "1": 3865,
+      "2": 219,
+      "3": 410,
+      "4": 1
+    },
+    "decimal_min": "-328521.84",
+    "decimal_max": "1192200042072.00",
+    "ejemplos_fila_campo_exactos": [
+      {
+        "orden": 13,
+        "linea_final": 14,
+        "campo": "dato_numerico",
+        "texto": "598,10",
+        "indicador": "Extensión",
+        "unidad_medida": "Kilómetros cuadrados",
+        "categoria": "coma_decimal_simple"
+      },
+      {
+        "orden": 14,
+        "linea_final": 15,
+        "campo": "dato_numerico",
+        "texto": "567,03",
+        "indicador": "Extensión",
+        "unidad_medida": "Kilómetros cuadrados",
+        "categoria": "coma_decimal_simple"
+      },
+      {
+        "orden": 101,
+        "linea_final": 102,
+        "campo": "dato_numerico",
+        "texto": "9,02",
+        "indicador": "Variación porcentual intercensal 2005 - 2018",
+        "unidad_medida": "Porcentaje",
+        "categoria": "coma_decimal_simple"
+      },
+      {
+        "orden": 15,
+        "linea_final": 16,
+        "campo": "dato_numerico",
+        "texto": "773.653,00",
+        "indicador": "Población total",
+        "unidad_medida": "Personas",
+        "categoria": "coma_decimal_miles_punto"
+      },
+      {
+        "orden": 16,
+        "linea_final": 17,
+        "campo": "dato_numerico",
+        "texto": "787.731,00",
+        "indicador": "Población total",
+        "unidad_medida": "Personas",
+        "categoria": "coma_decimal_miles_punto"
+      },
+      {
+        "orden": 17,
+        "linea_final": 18,
+        "campo": "dato_numerico",
+        "texto": "801.358,00",
+        "indicador": "Población total",
+        "unidad_medida": "Personas",
+        "categoria": "coma_decimal_miles_punto"
+      }
+    ]
+  },
+  "gramatica_propuesta": {
+    "nombre_regla": "decimal_coma_miles_terridata.v1",
+    "alcance": "lectura_sintactica_del_campo_dato_numerico_en_captura_TerriData_de_este_piloto",
+    "excluyente_sin_ambiguedad": true,
+    "dos_subformas": {
+      "a_sin_separadores_de_miles": "^[+-]?\\d+,\\d{2}$",
+      "b_con_separadores_de_miles": "^[+-]?\\d{1,3}(\\.\\d{3})+,\\d{2}$"
+    },
+    "sin_ambiguedad": "cada texto cumple exactamente una subforma: si aparece '.', solo puede ser separador de miles en grupos de tres con prefijo de 1 a 3 dígitos; la coma es siempre decimal y siempre deja exactamente 2 dígitos.",
+    "conversion_exacta": "Decimal(t) construida como Decimal(part_entera_sin_puntos + '.' + parte_decimal) desde el texto original, sin float y sin depender de contexto decimal: no se usa float() ni copia()/",
+    "limites_observados": {
+      "escala": "exactamente 2 decimales en 12077/12077",
+      "coeficiente_max_observado": "enteros de hasta 17 dígitos sin separadores; con separadores hasta 13 dígitos enteros + 2 decimales",
+      "limite_propuesto": "escala fija 2; coeficiente total <= 19 dígitos; textos fuera de estos límites o si no cumplen la forma quedarian en decimal_no_acreditado y siguen retenidos",
+      "longitud_celda": "máximo de texto observado 20 caracteres; límite celdas MAXIMO_CELDA 2048 del parser queda intacto"
+    },
+    "conservacion_texto": "el parser mantiene el texto original declarado de la celda; la gramática es complemento de lectura no una reescritura",
+    "casos_que_sigue_retenidos": [
+      "exponente (0 observados en esta captura)",
+      "simbolos tipo '$' o '%' o espacios no separables (0 observados)",
+      "menos Unicode U+2212 u otro guion distinto de '(' (0 observados)",
+      "punto de miles no agrupado en tres (0 observados, ejemplo hipotético '12.34567,00')",
+      "decimal con coma distinta de 2 cifras (ejemplo hipotético '1,234' en-US) (0 observados)"
+    ],
+    "coexistencia_con_decimal_simple_v1": "la regla propuesta es complementaria: decimal_simple_v1 (punto decimal del parser actual) sigue aplicando a textos con punto decimal sin coma; solo los textos con coma se leen bajo decimal_coma_miles_terridata.v1 si el contrato se versiona",
+    "no_se_cambia_nada_del_parser": true
+  },
+  "distincion_sintaxis_vs_semantica": {
+    "la_regla_acredita": "unicamente formato syntactico del texto de la celda dato_numerico",
+    "la_regla_no_acredita": [
+      "validez del indicador, poblacion o proyeccion",
+      "unidades de medida",
+      "temporalidad (aquio/mes declarados sin regla del proveedor)",
+      "calidad/publicacion del proveedor (DNP/DANE u otro)"
+    ],
+    "no_atribucion_a_DNP": "la coma decimal con punto de miles se observa solo en esta captura de TerriData 13001; no se atribuye a DNP regla documentada oficialmente",
+    "dictamen_EAF": false,
+    "aprobacion_ingesta": false
+  },
+  "filas_rechazadas": [
+    {
+      "orden": 7583,
+      "linea_final": 7584,
+      "campo_obligatorio_vacio": "Unidad de Medida",
+      "dato_numerico": "164,00",
+      "indicador": "Toneladas producidas por otros cultivos transitorios",
+      "dato_cualitativo": "Otros",
+      "fuente": "Evaluación Agropecuaria Municipal, MinAgricultura"
+    },
+    {
+      "orden": 7591,
+      "linea_final": 7592,
+      "campo_obligatorio_vacio": "Unidad de Medida",
+      "dato_numerico": "455,00",
+      "indicador": "Toneladas producidas por otros cultivos permanentes",
+      "dato_cualitativo": "Otros",
+      "fuente": "Evaluación Agropecuaria Municipal, MinAgricultura"
+    }
+  ],
+  "hallazgo_rechazadas": "ambas rechazadas por CAMPOS_CELDA_OBLIGATORIOS conteniendo Unidad de Medida vacio; el texto numerico 164,00 y 455,00 es compatible con la gramatica propuesta; puede faltar ajustar el contrato para ese producto, no se declara automaticamente corrupcion",
+  "reproducibilidad": {
+    "guion_ruta_temporal": "/tmp/fb_terra_perfil.py",
+    "guion_sha256": "7311528b57407bbd82e649c4e0b235b439e0af758580639b3dd06c88c40be1fe",
+    "guion_contenido": "\"\"\"FB-TERR-FORMATO-01 · Perfilado determinista de sintaxis numerica del piloto 106.\"\"\"\nimport hashlib, json, re\nfrom collections import Counter\nfrom decimal import Decimal\n\nCORPUS = \"bridge/106_piloto_terridata/filas.jsonl\"\nRE_VACIA = re.compile(r\"^\\s*$\")\nRE_COMA = re.compile(r\"^[+-]?\\d+(?:\\.\\d{3})*,\\d+$\")\nRE_COMA_MILLES = re.compile(r\"^[+-]?\\d{1,3}(?:\\.\\d{3})*,\\d+$\")\nRE_PUNTO_SIMPLE = re.compile(r\"^[+-]?\\d+(?:\\.\\d+)?$\")\nRE_EXPONENTE = re.compile(r\"^[\\s]*[+-]?\\d[\\d.,]*[eE][+-]?\\d+[\\s]*$\")\nESPACIOS = re.compile(r\"[\\s\\u00a0\\u202f\\u2007\\u2009]\")\nUNICODE_NUM = set(\"−‐‑–—,;·'%†§$€BS\\\\caso\")\n\n\ndef clasifica(t: str) -> str:\n    if RE_VACIA.fullmatch(t):\n        return \"vacia\"\n    if RE_COMA.fullmatch(t):\n        return \"coma_decimal_miles_punto\" if \".\" in t.split(\",\")[0] else \"coma_decimal_simple\"\n    if not t.split(\",\")[0] and \",\" in t:\n        return \"coma_malformada\"\n    if RE_EXPONENTE.fullmatch(t):\n        return \"exponente\"\n    if ESPACIOS.search(t) or any(ch in UNICODE_NUM for ch in t):\n        return \"unicode_otros_simbolos\"\n    if \".\" in t:\n        if len(t.rsplit(\".\", 1)[-1]) == 3 and \",\" not in t and t.count(\".\") == 1:\n            return \"punto_unico_tam3_ambiguo\"\n        return \"punto_desconocido\"\n    if RE_PUNTO_SIMPLE.fullmatch(t):\n        return \"entero_punto_decimal_simple\"\n    return \"desconocido\"\n\n\ndef main() -> None:\n    total = Counter()\n    ejemplos: dict[str, list[dict]] = {}\n    unicos = set(); maxlen = 0; maxlen_txt = \"\"; minlen = 10**9\n    decimal_min = None; decimal_max = None\n    longitudes_decimales = Counter(); grupos_punto = Counter()\n    signo = Counter(); negativos = []\n    filas = 0; estados_fila = Counter(); estado_valor = Counter()\n    rechazadas_con_campo = []\n    for linea in open(CORPUS, encoding=\"utf-8\"):\n        rec = json.loads(linea)\n        filas += 1\n        estados_fila[rec[\"estado_fila\"]] += 1\n        estado_valor[rec[\"estado_valor_numerico\"]] += 1\n        t = rec[\"dato_numerico\"]\n        if rec[\"estado_fila\"] != \"aceptada_conservada\" and rec[\"estado_fila\"] is None:\n            pass\n        cat = clasifica(t) if t else \"vacia\"\n        if t:\n            total[cat] += 1\n            unicos.add(t)\n            if len(t) > maxlen:\n                maxlen, maxlen_txt = len(t), t\n            minlen = min(minlen, len(t))\n            entera, _, dec = t.partition(\",\")\n            if cat.startswith(\"coma\"):\n                longitudes_decimales[len(dec)] += 1\n                grupos_punto[entera.count(\".\") if not entera.startswith(\"-\") else entera[1:].count(\".\")] += 1\n                signo[\"-\" if entera.startswith(\"-\") else (\"+\" if entera.startswith(\"+\") else \"sin_signo\")] += 1\n                if entera.startswith(\"-\"):\n                    negativos.append(t)\n                valor = Decimal(t.replace(\".\", \"\").replace(\",\", \".\"))\n                if decimal_min is None or valor < decimal_min:\n                    decimal_min = valor\n                if decimal_max is None or valor > decimal_max:\n                    decimal_max = valor\n            ejemplos.setdefault(cat, []).append({\n                \"orden\": rec[\"orden\"], \"linea_final\": rec[\"linea_final\"],\n                \"texto\": t, \"indicador\": rec.get(\"indicador\", None),\n                \"unidad\": rec.get(\"unidad_medida\", None),\n            })\n        if rec[\"estado_fila\"] == \"rechazada\":\n            rechazadas_con_campo.append({\n                \"orden\": rec[\"orden\"], \"linea_final\": rec[\"linea_final\"], \"estado\": rec[\"estado_valor_numerico\"],\n                \"advertencias\": rec.get(\"advertencias\", []), \"dato_numerico\": t,\n            })\n    salida = {\n        \"filas_total\": filas,\n        \"estados_fila\": dict(estados_fila),\n        \"estado_valor_numerico\": dict(estado_valor),\n        \"categorias_no_vacios\": dict(total),\n        \"suma_categorias\": sum(total.values()),\n        \"valores_unicos\": len(unicos),\n        \"longitud_min\": minlen, \"longitud_max\": maxlen, \"ejemplo_max\": maxlen_txt,\n        \"longitudes_decimales\": dict(longitudes_decimales),\n        \"grupos_punto_entera\": dict(grupos_punto),\n        \"signos\": dict(signo),\n        \"negativos\": len(negativos), \"negativos_ejemplos\": sorted(set(negativos))[:6],\n        \"decimal_min\": str(decimal_min), \"decimal_max\": str(decimal_max),\n        \"ejemplos_por_categoria\": {k: v[:3] for k, v in ejemplos.items()},\n        \"rechazadas\": rechazadas_con_campo,\n        \"sha256_corpus\": hashlib.sha256(open(CORPUS, \"rb\").read()).hexdigest(),\n    }\n    print(json.dumps(salida, ensure_ascii=False, indent=2))\n\n\nif __name__ == \"__main__\":\n    main()\n",
+    "nota": "contenido completo incrustado para reproducibilidad; no depender solo del /tmp"
+  },
+  "resultados_reproducidos": {
+    "command": "python3 /tmp/fb_terra_perfil.py > /tmp/fb_terra_perfil_salida.json",
+    "conciliacion": "12899 filas; estados y conteos coinciden con 106 sin diferencias reales",
+    "resultado": "categorias {7582 coma_decimal_simple, 4495 coma_decimal_miles_punto} sumando 12077; categorias excluyentes con 0 casos a excepcion de las dos ya definidas"
+  },
+  "limites": {
+    "SQL": false,
+    "red": false,
+    "instalaciones": false,
+    "cambios_parser": false,
+    "cambios_pruebas": false,
+    "cambios_datos_originales": false,
+    "cambios_106": false,
+    "promocion_banco": false,
+    "dictamen_EAF": false,
+    "commit_push_despliegue": false
+  },
+  "escrituras": [
+    "bridge/112_revision_freebuff_formato_numerico_terridata.md",
+    "bridge/112_evidencia_freebuff_formato_numerico_terridata.json"
+  ]
+}

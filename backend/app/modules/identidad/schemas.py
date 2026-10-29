@@ -46,6 +46,7 @@ class TokenRespuesta(BaseModel):
     usuario: "UsuarioLectura"
     mfa_requerido: bool = False
     token_desafio_mfa: str | None = None
+    mfa_enrolamiento_requerido: bool = False
 
 
 class UsuarioLectura(BaseModel):
@@ -69,6 +70,7 @@ class MfaEstadoLectura(BaseModel):
     codigos_restantes: int
     activado_en: datetime | None
     exigido_por_rol: bool
+    sesion_verificada: bool = False
 
 
 class MfaIniciarRespuesta(BaseModel):
@@ -103,6 +105,8 @@ class SujetoAutenticadoContexto(BaseModel):
     nivel_identidad: NivelIdentidadLiteral
     permisos: list[str]
     es_anonimo: bool
+    mfa_pendiente: bool = False
+    mfa_verificada: bool = False
 
 
 class MensajeRespuesta(BaseModel):
@@ -185,9 +189,7 @@ class EventoLectura(BaseModel):
 
 
 class GoogleOAuthPeticion(BaseModel):
-    id_token: str = Field(
-        ..., min_length=10, description="Google ID Token JWT emitido por Google Identity Services"
-    )
+    id_token: str = Field(..., min_length=10, description="Google ID Token JWT emitido por Google Identity Services")
 
 
 class AmbitoTerritorialLectura(BaseModel):
@@ -205,4 +207,3 @@ class AmbitoTerritorialCreacion(BaseModel):
     tipo_ambito: Literal["distrital", "localidad", "mesa"]
     identificador_territorial: str = Field(..., min_length=1, max_length=100)
     motivo: str = Field(..., min_length=10, max_length=500)
-

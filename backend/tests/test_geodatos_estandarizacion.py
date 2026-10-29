@@ -110,9 +110,7 @@ def test_estandarizar_direccion_limpieza_caracteres_especiales(sync_client):
 def test_estandarizar_direccion_validacion_payload(sync_client):
     """Verifica que payloads inválidos sean rechazados con 422 Unprocessable Entity."""
     # Texto demasiado corto
-    resp_corta = sync_client.post(
-        "/api/v1/geodatos/estandarizar-direccion", json={"direccion_raw": "a"}
-    )
+    resp_corta = sync_client.post("/api/v1/geodatos/estandarizar-direccion", json={"direccion_raw": "a"})
     assert resp_corta.status_code == 422
 
     # Objeto vacío

@@ -1,0 +1,11 @@
+# OP-DEMO-QA-01 · Precisiones verificables de165
+
+26-oct-2026. Recibida165; Freebuff retomó el frontend/GO-LIVE autorizado por el usuario. Revisar evidencia local sin modificar165 ni interrumpir su alcance. Dos evaluadores nuevos auditan identidad y aportes en168/170; esta tarea continúa con fuentes.
+
+Únicas escrituras: `bridge/173_precision_opencode_linaje_dane.md` y `bridge/173_evidencia_opencode_linaje_dane.json`. Sin red/SQL/pytest/aplicación/tests/frontend/banco/commit/push. Leer141,165 y los dos HTML originales de `165_evidencia_linaje_demografico/originales/`, cotejando SHA con manifiesto165. JSON nativo validado como objeto tras escribir.
+
+1. Distinguir ausencia de `datePublished/dateModified` de ausencia de fechas en el cuerpo HTML. La página de proyecciones consultada por coordinación presenta fechas junto a los productos, incluidas18-julio-2025 y8-agosto-2025. Localizarlas en el original capturado165, con vínculo del producto y fragmento/puntero reproducible. Solo afirmar lo que conste en ese original; no asignar por ello una misma edición a todas las series de TerriData ni a la página entera. El literal2025 de un nombre de archivo es evidencia distinta.
+2. El perfil141 tiene **19 etiquetas de fuente literales** y19 pares dimensión/fuente. La tabla165 tiene18 filas porque agrupa dos variantes del Observatorio Nacional de Migraciones. Documentar exacto ese agrupamiento, sin llamarlo18 literales ni perder la segunda etiqueta;354 series/5.835 filas permanecen como universo.
+3. La frase de165 según la cual coincidir un valor basta para cerrar qué edición sirvió es insuficiente. Una coincidencia es corroboración candidata, no prueba completa de linaje. Enumerar las verificaciones adicionales mínimas: identidad territorial, indicador/definición/unidad/universo, periodo, base/edición, transformaciones DNP y evidencia de vínculo con el producto. No inventar que ya están satisfechas.
+
+Entregar fe de precisiones con hechos y comandos realmente ejecutados. Citas literales muy cortas, enlaces oficiales próximos al hecho; no copiar extensamente el portal. Conservar165 y la evidencia primaria. No emitir EAF ni reabrir134/143. Congelar y avisar `OP-DEMO-QA-01 entregado` a =codex:0.0.

@@ -190,7 +190,7 @@ export function ParticipacionMulticanalPanel({
                 )}
 
                 {/* Desglose Demográfico */}
-                {consolidado.desglose && (
+                {consolidado.desglose ? (
                   <section className="space-y-4">
                     <SectionLabel>Desglose Demográfico Global</SectionLabel>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -234,6 +234,13 @@ export function ParticipacionMulticanalPanel({
                           </div>
                         ))}
                       </div>
+                    </div>
+                  </section>
+                ) : (
+                  <section className="space-y-2">
+                    <SectionLabel>Desglose Demográfico Global</SectionLabel>
+                    <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)]">
+                      Información demográfica desagregada en proceso de consolidación por las mesas territoriales.
                     </div>
                   </section>
                 )}

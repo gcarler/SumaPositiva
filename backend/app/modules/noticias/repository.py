@@ -15,11 +15,7 @@ class NoticiasRepository:
         if publicadas:
             stmt = stmt.where(Noticia.estado == "publicada")
         return list(
-            (
-                await self.session.execute(
-                    stmt.order_by(Noticia.orden_prioridad, Noticia.publicada_en.desc())
-                )
-            )
+            (await self.session.execute(stmt.order_by(Noticia.orden_prioridad, Noticia.publicada_en.desc())))
             .scalars()
             .all()
         )

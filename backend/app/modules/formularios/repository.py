@@ -27,9 +27,7 @@ class FormularioRepository:
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
-    async def obtener_por_id(
-        self, formulario_id: uuid.UUID, *, bloquear: bool = False
-    ) -> FormularioConsulta | None:
+    async def obtener_por_id(self, formulario_id: uuid.UUID, *, bloquear: bool = False) -> FormularioConsulta | None:
         stmt = select(FormularioConsulta).where(FormularioConsulta.id == formulario_id)
         if bloquear:
             stmt = stmt.with_for_update().execution_options(populate_existing=True)
@@ -75,9 +73,7 @@ class FormularioRepository:
         return list(result.scalars().all())
 
     async def contar_respuestas(self, formulario_id: uuid.UUID) -> int:
-        stmt = select(func.count(RespuestaFormulario.id)).where(
-            RespuestaFormulario.formulario_id == formulario_id
-        )
+        stmt = select(func.count(RespuestaFormulario.id)).where(RespuestaFormulario.formulario_id == formulario_id)
         result = await self.session.execute(stmt)
         return result.scalar_one() or 0
 

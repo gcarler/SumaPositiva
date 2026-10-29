@@ -14,6 +14,7 @@ import { GeovisorFichaMesa } from "../components/geovisor-ficha-mesa";
 import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
 import { GeovisorCharts } from "../components/geovisor-charts";
 import { GeovisorHurtosPanel } from "../components/geovisor-hurtos-panel";
+import { GeovisorMultifuentePanel } from "../components/geovisor-multifuente-panel";
 import { MesasDataGrid } from "../components/mesas-datagrid/mesas-datagrid";
 import type { ModoVistaMesas } from "../components/mesas-datagrid/datagrid-toolbar";
 import type { VariableMapa } from "../data/estadisticas.data";
@@ -71,7 +72,7 @@ export function GeovisorView() {
   });
 
   useEffect(() => {
-    useGeovisorLayoutStore.getState().openView("hurtos");
+    useGeovisorLayoutStore.getState().openView("fuentes");
   }, []);
 
   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {
@@ -221,6 +222,7 @@ export function GeovisorView() {
               anioHurto={anioHurto}
               onAnioHurtoChange={setAnioHurto}
               onAbrirTableroHurtos={() => useGeovisorLayoutStore.getState().openView("hurtos")}
+              onAbrirBancoMultifuente={() => useGeovisorLayoutStore.getState().openView("fuentes")}
             />
           </div>
         );
@@ -308,6 +310,13 @@ export function GeovisorView() {
             onCargarGeojsonPersonalizado={(geojson, nombreCapa, color) => {
               setCapaPersonalizada({ geojson, nombre: nombreCapa, color });
             }}
+          />
+        );
+      case "fuentes":
+        return (
+          <GeovisorMultifuentePanel
+            territorioId={territorioId}
+            onSelectTerritorio={handleSelectTerritorio}
           />
         );
     }

@@ -1,0 +1,100 @@
+{
+  "tarea": "FB-CONCILIA-01-R5",
+  "accion": "revalidacion_independiente_estatica_de_ROL-CONCILIA-01-R5",
+  "fecha": "2026-10-25",
+  "solicitada_por": "coordinacion (=codex:0.0)",
+  "veredicto": "H1_resuelto_N1_a_N5_documentados_sin_nuevo_defecto_estatico",
+  "no_dictamen_eaf": true,
+  "aceptacion_funcional": false,
+  "soporte": "solo_lectura_hashes_ruff_json; sin pytest_backend_check_nucleo_cli_pruebas_SQL_red_commit",
+  "objeto_revalidado_sha256": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": "236070c2489887be9e6cf966af70f18d5c6a89b2fbf050a3cb4bfc764482698c",
+    "backend/scripts/contrastar_fuentes_por_periodo.py": "15634cdedec70b20a75a6349a104b63e1031b62008c87708f3bad06d888bdd5e",
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": "071d8bc79be61df64925c768485102890f771a6fca35371d4636b83df386b008",
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": "36e05476efe0d7dacf517aaf4f3e50841fe86da918a7b5ee77fa5e4a47f95f92"
+  },
+  "hashes_previos_86_como_base_de_contraste": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": "79001ee3ceee9699541ec1bb9284a7d419faa8f630dca2ed30bda47f46e75e15",
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": "11599382afd61a5170642fa25bef808c60ca08eba08612a27c2796d572feca95",
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": "04699525b394569d8900354f88dcc7a0ac404ce14a224997a2c23d85877a516f",
+    "cli_sin_cambios_en_R5": true
+  },
+  "hashes_coinciden_con_informe_R5": {
+    "nucleo": true,
+    "cli": true,
+    "contrato": true
+  },
+  "comandos_ejecutados": [
+    {
+      "comando": "cd backend && .venv/bin/ruff check app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py scripts/contrastar_fuentes_por_periodo.py",
+      "salida": "All checks passed!",
+      "exit_code": 0
+    },
+    {
+      "comando": "cd backend && .venv/bin/ruff format --check app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py scripts/contrastar_fuentes_por_periodo.py",
+      "salida": "2 files already formatted",
+      "exit_code": 0
+    },
+    {
+      "comando": "python3 json.load del contrato 74 actualizado",
+      "salida": "contrato JSON valido",
+      "exit_code": 0
+    },
+    {
+      "comando": "sha256sum de los cuatro archivos del objeto de revalidacion",
+      "exit_code": 0
+    }
+  ],
+  "hallazgos": {
+    "H1": {
+      "veredicto": "resuelto",
+      "evidencia_lectura": "regla compartida: _estado_fecha_referencia -> _estado_comparativo -> _estado_comparacion_opcional; usada por _diferencias_metodicas (detalle por fecha_referencia.tipo/.fecha/.precision con bloquea_comparabilidad=estado=='distinto') y por _celda_identica via _diferencia_metodica (informativo->coincidente, la celda no se separa por opcionales ausentes)",
+      "semantica_verificada": {
+        "tipo_ausente_en_cualquier_lado": "pendiente y sin resta",
+        "tipos_declarados_distintos": "distinto y no_comparable",
+        "opcionales_ausentes_unilateral_o_bilateral": "informativo, sin bloqueo, valores originales conservados",
+        "opcionales_declarados_en_ambos_y_distintos": "distinto blocked conservador, sin imputacion",
+        "sin_imputar_fecha_proceso": true
+      },
+      "casos_contrato_verificados": [
+        "fecha_referencia_tipo_ausente",
+        "fecha_referencia_tipos_distintos",
+        "fecha_referencia_opcionales_ausentes_bilateral",
+        "fecha_referencia_opcionales_ausentes_unilateral",
+        "fecha_referencia_opcionales_iguales",
+        "fecha_referencia_opcionales_distintas",
+        "revision_interna_fecha_referencia_informativa",
+        "revision_interna_fecha_referencia_distinta",
+        "periodo_completo_opcionales_ausentes"
+      ]
+    },
+    "N1": {
+      "veredicto": "documentado en informe R5 y el codigo conserva razones de todos los campos coexistentes en _estado_por_diferencias",
+      "nota": "incompatibilidad conocida precede a incompletitud"
+    },
+    "N2": {
+      "veredicto": "documentado",
+      "evidencia": "contrato: precedencia_tipo_par con identidad version_id acotada a fuente/producto y caso version_id_reutilizado_entre_productos; codigo _tipo_par sin propagar conflictos fuera del espacio de identidad"
+    },
+    "N3": {
+      "veredicto": "documentado",
+      "evidencia": "contrato: estado_revision_identificada no valida definicion ni habilita comparacion numerica; casos revision_interna_fecha_referencia_*; la resta sigue dado por estado_comparabilidad y permiso de resta"
+    },
+    "N4": {
+      "veredicto": "documentado",
+      "evidencia": "contrato: diferencia_numerica_texto = coeficienteEexponente exacto de A menos B; sin notacion normalizada ni redondeo"
+    },
+    "N5": {
+      "veredicto": "documentado y aritmetica intacta",
+      "evidencia": "informe R5 declara el limite como guardia de recursos; MAXIMO_DIGITOS_DIFERENCIA y _diferencia_valor_exacta sin cambios"
+    }
+  },
+  "d1_pendiente": {
+    "descripcion": "serializacion Decimal como texto en model_dump(mode='json') de pydantic v2",
+    "estado": "fresh solo declarado como verificación funcional pendiente; no ejecutada por Freebuff ni acreditada por Ollamacodex",
+    "toca_a": "corrida funcional de aceptación de coordinación"
+  },
+  "sin_nuevo_defecto_estatico": true,
+  "archivos_86_congelados_intactos": true,
+  "archivo_esta_evidencia": "bridge/90_revalidacion_freebuff_r5_conciliacion.json"
+}

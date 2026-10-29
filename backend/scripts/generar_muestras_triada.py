@@ -126,9 +126,7 @@ def main() -> None:
         downloaded[filename] = content
         (OUT / filename).write_bytes(content)
 
-    workbook = load_workbook(
-        io.BytesIO(downloaded["PA_2024_DADIS.xlsx"]), data_only=True, read_only=True
-    )
+    workbook = load_workbook(io.BytesIO(downloaded["PA_2024_DADIS.xlsx"]), data_only=True, read_only=True)
     try:
         sheet = workbook["ENERO 2024"]
         csv_buffer = io.StringIO(newline="")
@@ -152,10 +150,8 @@ def main() -> None:
     lines = [
         "# Corpus oficial multiformato de Cartagena",
         "",
-        "Los libros Excel de esta carpeta son adjuntos descargados del portal oficial "
-        "de la Alcaldía.",
-        "El CSV y el ZIP se derivan byte a byte de los mismos libros oficiales; "
-        "no se cargaron filas inventadas.",
+        "Los libros Excel de esta carpeta son adjuntos descargados del portal oficial de la Alcaldía.",
+        "El CSV y el ZIP se derivan byte a byte de los mismos libros oficiales; no se cargaron filas inventadas.",
         "El ZIP usa fechas internas fijas para poder reproducir su SHA-256.",
         "",
         "| Archivo | SHA-256 | Fuente oficial |",
@@ -165,8 +161,7 @@ def main() -> None:
         lines.append(f"| `{filename}` | `{_sha(content)}` | {FUENTES[filename][2]} |")
     lines.extend(
         [
-            f"| `{CSV_NAME}` | `{_sha(csv_payload)}` | Derivado de `PA_2024_DADIS.xlsx`, "
-            "hoja `ENERO 2024` |",
+            f"| `{CSV_NAME}` | `{_sha(csv_payload)}` | Derivado de `PA_2024_DADIS.xlsx`, hoja `ENERO 2024` |",
             f"| `{ZIP_NAME}` | `{_sha((OUT / ZIP_NAME).read_bytes())}` | "
             f"ZIP determinístico de los {len(downloaded)} libros y el CSV |",
             "",

@@ -6,8 +6,8 @@ completo gobernado por LangGraph y PydanticAI.
 
 from __future__ import annotations
 
-from collections import defaultdict
 import time
+from collections import defaultdict
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status

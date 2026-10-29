@@ -1,7 +1,7 @@
 """Rutas FastAPI para la emisión y verificación de sesiones anónimas con firma digital."""
 
-from collections import defaultdict
 import time
+from collections import defaultdict
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status

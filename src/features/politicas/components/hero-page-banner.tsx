@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import {
@@ -54,13 +54,14 @@ export function HeroPageBanner({
   const clientStore = useHeroConfigStore();
   const isServer = typeof window === "undefined";
   const store = isServer ? useHeroConfigStore.getState() : clientStore;
-  const { opacidad, heroImageId, pageImages } = store;
+  const { opacidad, heroImageId, pageImages, imagenesCatalogo, sincronizarConServidor } = store;
+  useEffect(() => { void sincronizarConServidor(); }, [sincronizarConServidor]);
 
   /* Resolución de imagen considerando personalización desde /plataforma */
   const customImageKey = pageImages?.[pageKey] || pageImages?.[config.id];
   const imagenFondo = customImageKey
-    ? resolverImagenHero(customImageKey)
-    : config.imagenFondo;
+    ? resolverImagenHero(customImageKey, imagenesCatalogo)
+    : resolverImagenHero(config.imagenFondo, imagenesCatalogo);
   const esModoMinimalista =
     customImageKey === "ninguna" || (heroImageId === "ninguna" && !customImageKey);
 

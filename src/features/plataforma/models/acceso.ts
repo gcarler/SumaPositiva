@@ -81,6 +81,12 @@ export const MODULOS = [
     descripcion: "Plan de Acción y Seguimiento de compromisos institucionales y metas cuatrienales.",
   },
   {
+    id: "proyectos",
+    ruta: "/plataforma/proyectos",
+    titulo: "Proyectos",
+    descripcion: "Gestión agregada read-only de comunicaciones, mesas, formularios y Plan de Acción.",
+  },
+  {
     id: "comunicaciones",
     ruta: "/plataforma/comunicaciones",
     titulo: "Comunicaciones",
@@ -103,6 +109,7 @@ export const ROLES: Record<string, string> = {
 const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
   autoridad_distrital: [
     "dashboard",
+    "proyectos",
     "formularios",
     "geovisor",
     "mesas",
@@ -118,6 +125,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
   ],
   facilitador_mesa: [
     "dashboard",
+    "proyectos",
     "formularios",
     "mesas",
     "testimonios",
@@ -126,6 +134,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
   ],
   auditor_forense: [
     "dashboard",
+    "proyectos",
     "formularios",
     "geovisor",
     "mesas",
@@ -172,11 +181,12 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
   noticias: ["contenido:leer", "politicas:gestionar"],
   testimonios: ["testimonios:moderar"],
   fuentes: ["fuentes:leer", "fuentes:gestionar"],
-  actores: ["actores:leer", "actores:gestionar"],
+  actores: ["politicas:gestionar"],
   diagnostico: ["diagnostico:leer", "diagnostico:gestionar"],
   alternativas: ["alternativas:leer", "alternativas:gestionar"],
   seguimiento: ["seguimiento:leer", "seguimiento:gestionar"],
   comunicaciones: ["comunicaciones:leer", "comunicaciones:gestionar"],
+  proyectos: ["proyectos:leer"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -189,9 +199,10 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   contenido: ["politicas:gestionar"],
   noticias: ["politicas:gestionar"],
   comunicaciones: ["comunicaciones:gestionar"],
+  proyectos: [],
   testimonios: ["testimonios:moderar"],
   fuentes: ["fuentes:gestionar"],
-  actores: ["actores:gestionar"],
+  actores: ["politicas:gestionar"],
   diagnostico: ["diagnostico:gestionar"],
   alternativas: ["alternativas:gestionar"],
   seguimiento: ["seguimiento:gestionar"],
@@ -255,7 +266,7 @@ export function puedeEditar(
       comunicaciones: ["autoridad_distrital", "administrador_identidades"],
       testimonios: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       fuentes: ["autoridad_distrital", "administrador_identidades"],
-      actores: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
+      actores: ["autoridad_distrital", "administrador_identidades"],
       diagnostico: ["autoridad_distrital", "administrador_identidades"],
       alternativas: ["autoridad_distrital", "administrador_identidades"],
       seguimiento: ["autoridad_distrital", "administrador_identidades"],
@@ -281,8 +292,10 @@ export function panelPermitido(
     case "formulario-respuesta":
       return puedeEditar(sesion, "formularios");
     case "mesa":
+    case "mesa-acta":
       return puedeVer(sesion, "mesas");
     case "mesa-editor":
+    case "agenda-editor":
       return puedeEditar(sesion, "mesas");
     case "papelografo":
       return puedeEditar(sesion, "mesas");
@@ -303,13 +316,16 @@ export function panelPermitido(
       return puedeVer(sesion, "noticias");
     case "noticia-editor":
       return puedeEditar(sesion, "noticias");
+    case "testimonios-galeria":
+      return puedeVer(sesion, "testimonios");
+    case "testimonio-editor":
+    case "testimonio-nuevo":
     case "testimonios-moderacion":
       return puedeEditar(sesion, "testimonios");
     case "auditoria-consola":
       return (
         puedeEntrar(sesion) &&
-        !!sesion?.permisos?.includes("auditoria:leer") &&
-        sesion.rol !== "auditor_forense"
+        !!sesion?.permisos?.includes("auditoria:leer")
       );
     case "fuente-editor":
       return puedeEditar(sesion, "fuentes");
@@ -318,6 +334,10 @@ export function panelPermitido(
     case "medicion-editor":
     case "ficha-editor":
       return puedeEditar(sesion, "diagnostico");
+    case "ficha-territorial":
+    case "validacion-mga":
+      // Proyecciones read-only del diagnóstico: lectura de la línea base
+      return puedeVer(sesion, "diagnostico");
     case "alternativa-editor":
       return puedeEditar(sesion, "alternativas");
     case "evaluacion-viabilidad":
@@ -327,6 +347,12 @@ export function panelPermitido(
     case "indicador-detalle":
     case "devolucion-detalle":
       return puedeVer(sesion, "seguimiento");
+    case "tarea-comunicacion-editor":
+      return puedeEditar(sesion, "comunicaciones");
+    case "ficha-actividad-proyecto":
+      // La ficha es una proyección read-only del agregado: basta con el
+      // permiso de lectura de proyectos ((editar lo decide el módulo dueño).
+      return puedeVer(sesion, "proyectos");
     default:
       return false;
   }

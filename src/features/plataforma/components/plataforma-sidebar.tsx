@@ -19,12 +19,14 @@ import {
   ArrowLeft,
   Menu,
   Megaphone,
+  KanbanSquare,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { modulosPermitidos, type ModuloPlataforma } from "../models/acceso";
 export const ICONOS = {
   dashboard: Home,
+  proyectos: KanbanSquare,
   formularios: ClipboardList,
   geovisor: Map,
   mesas: Handshake,

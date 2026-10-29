@@ -32,14 +32,13 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import Settings
 from app.modules.compromisos.pdt_normalizador_canonico_metas import (
     PLANES_8_CARTAGENA,
     normalizar_meta_oficial_ocr,
 )
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
 PLANES_OBJETIVO_2024_2027: tuple[str, ...] = (
     "PDD_2024_2027",
@@ -58,6 +57,16 @@ MAPA_PLAN_A_PERIODO_TRIADA: dict[str, str] = {
     "PDL_2_2024_2027": "2024_2027",
     "PDL_3_2024_2027": "2024_2027",
 }
+RANGOS_PLAN: dict[str, tuple[int, int]] = {
+    "PDD_2012_2015": (2012, 2015),
+    "PDD_2013_2015": (2013, 2015),
+    "PDD_2016_2019": (2016, 2019),
+    "PDD_2020_2023": (2020, 2023),
+    "PDD_2024_2027": (2024, 2027),
+    "PDL_1_2024_2027": (2024, 2027),
+    "PDL_2_2024_2027": (2024, 2027),
+    "PDL_3_2024_2027": (2024, 2027),
+}
 
 TIPOS_VINCULO_CANONICOS: dict[str, float] = {
     "EXACTO_CODIGO_META": 1.0000,
@@ -66,44 +75,6 @@ TIPOS_VINCULO_CANONICOS: dict[str, float] = {
     "VINCULO_SECTORIAL_INFERIDO": 0.5500,
     "SIN_VINCULO_HUERFANO": 0.0000,
 }
-
-DDL_TABLA_VINCULOS = """
-CREATE TABLE IF NOT EXISTS seguimiento.pdd_vinculos_meta_pa_triada (
-    id UUID PRIMARY KEY,
-    codigo_plan VARCHAR(64) NOT NULL,
-    meta_id UUID NOT NULL,
-    codigo_meta VARCHAR(128) NOT NULL,
-    linea_estrategica TEXT,
-    dependencia_responsable VARCHAR(255),
-    actividad_pa_id UUID,
-    registro_triada_id UUID,
-    vigencia INTEGER,
-    codigo_bpim VARCHAR(128),
-    tipo_vinculo VARCHAR(64) NOT NULL,
-    score_confianza NUMERIC(6, 4) NOT NULL,
-    apropiacion_definitiva_cop NUMERIC(20, 2),
-    compromisos_rp_cop NUMERIC(20, 2),
-    obligaciones_cop NUMERIC(20, 2),
-    pagos_tesoreria_cop NUMERIC(20, 2),
-    meta_programada_anual NUMERIC(20, 4),
-    meta_ejecutada_anual NUMERIC(20, 4),
-    avance_fisico_pct NUMERIC(10, 4),
-    ceros_observados_preservados BOOLEAN NOT NULL DEFAULT FALSE,
-    evidencia_cruce JSONB NOT NULL DEFAULT '{}'::jsonb,
-    actualizado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
-)
-"""
-
-DDL_INDICES_VINCULOS = (
-    """
-    CREATE UNIQUE INDEX IF NOT EXISTS uq_pdd_vinculos_meta_pa_triada_meta_id
-    ON seguimiento.pdd_vinculos_meta_pa_triada (meta_id)
-    """,
-    """
-    CREATE INDEX IF NOT EXISTS idx_pdd_vinculos_meta_pa_triada_plan_tipo
-    ON seguimiento.pdd_vinculos_meta_pa_triada (codigo_plan, tipo_vinculo)
-    """,
-)
 
 STOPWORDS_ES = {
     "para",
@@ -137,17 +108,90 @@ STOPWORDS_ES = {
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def _normalizar_texto(valor: Any) -> str:
     texto = unicodedata.normalize("NFKD", str(valor or ""))
     texto = "".join(ch for ch in texto if not unicodedata.combining(ch))
     return re.sub(r"\s+", " ", texto).strip().casefold()
+
+
+def _vigencia_compatible(registro: dict[str, Any] | None, codigo_plan: str) -> bool:
+    if not registro or codigo_plan not in RANGOS_PLAN:
+        return False
+    try:
+        anio = int(registro.get("vigencia"))
+    except (TypeError, ValueError):
+        return False
+    desde, hasta = RANGOS_PLAN[codigo_plan]
+    return desde <= anio <= hasta
+
+
+def _candidato_vigente(
+    candidatos: list[dict[str, Any]] | dict[str, Any] | None,
+    codigo_plan: str,
+) -> dict[str, Any] | None:
+    if isinstance(candidatos, dict):
+        candidatos = [candidatos]
+    for candidato in candidatos or []:
+        if _vigencia_compatible(candidato, codigo_plan):
+            return candidato
+    return None
+
+
+async def _bloquear_cifras_de_referencias_compartidas(conn: Any) -> int:
+    """Impide sumar una observación financiera/física en varias metas sin reparto acreditado."""
+    resultado = await conn.execute(
+        text(
+            """
+            WITH triada_repetida AS (
+                SELECT registro_triada_id AS clave
+                FROM seguimiento.pdd_vinculos_meta_pa_triada
+                WHERE registro_triada_id IS NOT NULL
+                GROUP BY registro_triada_id HAVING COUNT(*) > 1
+            ), pa_repetida AS (
+                SELECT actividad_pa_id AS clave
+                FROM seguimiento.pdd_vinculos_meta_pa_triada
+                WHERE actividad_pa_id IS NOT NULL
+                GROUP BY actividad_pa_id HAVING COUNT(*) > 1
+            ), bpim_repetido AS (
+                SELECT lower(trim(codigo_bpim)) AS clave, vigencia
+                FROM seguimiento.pdd_vinculos_meta_pa_triada
+                WHERE codigo_bpim IS NOT NULL AND trim(codigo_bpim) <> '' AND vigencia IS NOT NULL
+                GROUP BY lower(trim(codigo_bpim)), vigencia HAVING COUNT(*) > 1
+            )
+            UPDATE seguimiento.pdd_vinculos_meta_pa_triada AS vinculo
+            SET apropiacion_definitiva_cop = NULL,
+                compromisos_rp_cop = NULL,
+                obligaciones_cop = NULL,
+                pagos_tesoreria_cop = NULL,
+                meta_programada_anual = NULL,
+                meta_ejecutada_anual = NULL,
+                avance_fisico_pct = NULL,
+                ceros_observados_preservados = FALSE,
+                evidencia_cruce = evidencia_cruce ||
+                    '{"cifras_bloqueadas_por_fuente_compartida": true}'::jsonb,
+                actualizado_en = NOW()
+            WHERE (
+                apropiacion_definitiva_cop IS NOT NULL OR compromisos_rp_cop IS NOT NULL
+                OR obligaciones_cop IS NOT NULL OR pagos_tesoreria_cop IS NOT NULL
+                OR meta_programada_anual IS NOT NULL OR meta_ejecutada_anual IS NOT NULL
+                OR avance_fisico_pct IS NOT NULL
+            ) AND (
+                EXISTS (SELECT 1 FROM triada_repetida t WHERE t.clave = vinculo.registro_triada_id)
+                OR EXISTS (SELECT 1 FROM pa_repetida p WHERE p.clave = vinculo.actividad_pa_id)
+                OR EXISTS (
+                    SELECT 1 FROM bpim_repetido b
+                    WHERE b.clave = lower(trim(vinculo.codigo_bpim)) AND b.vigencia = vinculo.vigencia
+                )
+            )
+            RETURNING id
+            """
+        )
+    )
+    return len(resultado.scalars().all())
 
 
 def _tokens_significativos(valor: Any) -> set[str]:
@@ -213,36 +257,25 @@ def _extraer_campo_dict(datos: dict[str, Any], candidatos: tuple[str, ...]) -> A
 def _buscar_hermano_en_lista(
     candidatos: list[dict[str, Any]],
     tokens_meta: set[str],
-    idx_meta: int,
 ) -> dict[str, Any] | None:
-    if not candidatos:
+    if not candidatos or not tokens_meta:
         return None
     mejor: dict[str, Any] | None = None
-    mejor_score = -1.0
+    mejor_score = 0.0
     for c in candidatos[:80]:
         af = _afinidad_lexica(tokens_meta, c["_tokens"])
-        tiene_ambos = (
-            1.0
-            if (
-                c.get("apropiacion_definitiva_cop") is not None
-                and c.get("avance_fisico_pct") is not None
-            )
-            else 0.0
-        )
-        score = af * 10.0 + tiene_ambos
-        if score > mejor_score:
-            mejor_score = score
+        if af > mejor_score:
+            mejor_score = af
             mejor = c
-    if mejor is not None and mejor_score > 0.0:
+    if mejor is not None and mejor_score >= 0.45:
         return mejor
-    return candidatos[idx_meta % len(candidatos)]
+    return None
 
 
 def _resolver_cruce_hermano_motores(
     periodo_gob: str,
     entidad_candidata: str,
     tokens_meta: set[str],
-    idx_meta: int,
     hermanos_por_periodo_entidad: dict[tuple[str, str], list[dict[str, Any]]],
     hermanos_por_periodo: dict[str, list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
@@ -253,18 +286,18 @@ def _resolver_cruce_hermano_motores(
     if norm_ent and norm_ent != "sin_atribucion":
         exact_list = hermanos_por_periodo_entidad.get((periodo_gob, norm_ent))
         if exact_list:
-            return _buscar_hermano_en_lista(exact_list, tokens_meta, idx_meta)
+            return _buscar_hermano_en_lista(exact_list, tokens_meta)
         # Coincidencia parcial de nombre de Secretaría / Alcaldía Local
         partial_candidates: list[dict[str, Any]] = []
         for (per_k, ent_k), rows_h in hermanos_por_periodo_entidad.items():
             if per_k == periodo_gob and (norm_ent in ent_k or ent_k in norm_ent):
                 partial_candidates.extend(rows_h[:25])
         if partial_candidates:
-            return _buscar_hermano_en_lista(partial_candidates, tokens_meta, idx_meta)
+            return _buscar_hermano_en_lista(partial_candidates, tokens_meta)
 
     period_list = hermanos_por_periodo.get(periodo_gob) or []
     if period_list:
-        return _buscar_hermano_en_lista(period_list, tokens_meta, idx_meta)
+        return _buscar_hermano_en_lista(period_list, tokens_meta)
     return None
 
 
@@ -272,13 +305,13 @@ def _emparejar_meta_determinista(
     meta: dict[str, Any],
     idx_meta: int,
     lineas_por_id: dict[str, dict[str, Any]],
-    pa_por_codigo_meta: dict[str, dict[str, Any]],
-    pa_por_bpim: dict[str, dict[str, Any]],
+    pa_por_codigo_meta: dict[str, list[dict[str, Any]]],
+    pa_por_bpim: dict[str, list[dict[str, Any]]],
     pa_por_dep: dict[str, list[dict[str, Any]]],
     pa_todas: list[dict[str, Any]],
     triada_por_id: dict[str, dict[str, Any]],
-    triada_por_codigo_meta: dict[str, dict[str, Any]],
-    triada_por_bpim: dict[str, dict[str, Any]],
+    triada_por_codigo_meta: dict[str, list[dict[str, Any]]],
+    triada_por_bpim: dict[str, list[dict[str, Any]]],
     triada_por_dep: dict[str, list[dict[str, Any]]],
     triada_muestra_global: list[dict[str, Any]],
     hermanos_por_periodo_entidad: dict[tuple[str, str], list[dict[str, Any]]],
@@ -289,9 +322,7 @@ def _emparejar_meta_determinista(
     periodo_gob = MAPA_PLAN_A_PERIODO_TRIADA.get(codigo_plan, "2024_2027")
     datos_of = meta.get("datos_oficiales") if isinstance(meta.get("datos_oficiales"), dict) else {}
     canonico = (
-        datos_of.get("_canonico_normalizado")
-        if isinstance(datos_of.get("_canonico_normalizado"), dict)
-        else None
+        datos_of.get("_canonico_normalizado") if isinstance(datos_of.get("_canonico_normalizado"), dict) else None
     )
     if canonico is None:
         norm_meta = normalizar_meta_oficial_ocr(meta, idx_en_plan=idx_meta)
@@ -331,9 +362,7 @@ def _emparejar_meta_determinista(
         meta.get("dependencia")
         or (canonico or {}).get("responsable_canonico")
         or datos_of.get("responsable")
-        or _extraer_campo_dict(
-            datos_of, ("Responsable", "Responsabl e", "Entidad responsable", "Secretaría")
-        )
+        or _extraer_campo_dict(datos_of, ("Responsable", "Responsabl e", "Entidad responsable", "Secretaría"))
     )
     if not resp_raw and codigo_plan.startswith("PDL_"):
         num_loc = codigo_plan.split("_")[1] if "_" in codigo_plan else "1"
@@ -349,14 +378,10 @@ def _emparejar_meta_determinista(
     ).strip()
     indicador_texto = str(
         meta.get("indicador")
-        or _extraer_campo_dict(
-            datos_of, ("Indicador de producto", "Indicador de resultado", "Indicador")
-        )
+        or _extraer_campo_dict(datos_of, ("Indicador de producto", "Indicador de resultado", "Indicador"))
         or ""
     ).strip()
-    bpim_meta = str(
-        _extraer_campo_dict(datos_of, ("codigo_bpim", "BPIM", "Código BPIN", "BPIN")) or ""
-    ).strip()
+    bpim_meta = str(_extraer_campo_dict(datos_of, ("codigo_bpim", "BPIM", "Código BPIN", "BPIN")) or "").strip()
 
     tokens_meta = _tokens_significativos(f"{nombre_meta} {indicador_texto} {linea_nombre}")
     tokens_ind = _tokens_significativos(f"{nombre_meta} {indicador_texto}")
@@ -367,9 +392,7 @@ def _emparejar_meta_determinista(
         if isinstance(vinc_previo, dict) and vinc_previo.get("registro_triada_id")
         else None
     )
-    metodo_previo = (
-        str(vinc_previo.get("metodo_emparejamiento") or "") if isinstance(vinc_previo, dict) else ""
-    )
+    metodo_previo = str(vinc_previo.get("metodo_emparejamiento") or "") if isinstance(vinc_previo, dict) else ""
     score_previo = (
         float(vinc_previo.get("score") or 0.0)
         if isinstance(vinc_previo, dict) and vinc_previo.get("score") is not None
@@ -385,14 +408,16 @@ def _emparejar_meta_determinista(
 
     # 1. EXACTO_CODIGO_META (1.0000)
     norm_cod = _normalizar_texto(cod_meta)
-    if norm_cod in pa_por_codigo_meta:
-        act_match = pa_por_codigo_meta[norm_cod]
+    cand_pa_codigo = _candidato_vigente(pa_por_codigo_meta.get(norm_cod), codigo_plan)
+    cand_tri_codigo = _candidato_vigente(triada_por_codigo_meta.get(norm_cod), codigo_plan)
+    if cand_pa_codigo is not None:
+        act_match = cand_pa_codigo
         tipo_vinculo = "EXACTO_CODIGO_META"
         score_confianza = TIPOS_VINCULO_CANONICOS["EXACTO_CODIGO_META"]
         afinidad_calc = 1.0
         regla_detalle = "COINCIDENCIA_EXACTA_COMPROMISO_PAS_CODIGO"
-    elif norm_cod in triada_por_codigo_meta:
-        tri_match = triada_por_codigo_meta[norm_cod]
+    elif cand_tri_codigo is not None:
+        tri_match = cand_tri_codigo
         tipo_vinculo = "EXACTO_CODIGO_META"
         score_confianza = TIPOS_VINCULO_CANONICOS["EXACTO_CODIGO_META"]
         afinidad_calc = 1.0
@@ -401,14 +426,16 @@ def _emparejar_meta_determinista(
     # 2. EXACTO_BPIM_PROYECTO (0.9000)
     if tipo_vinculo == "SIN_VINCULO_HUERFANO" and bpim_meta:
         norm_bpim = _normalizar_texto(bpim_meta)
-        if norm_bpim in pa_por_bpim:
-            act_match = pa_por_bpim[norm_bpim]
+        cand_pa_bpim = _candidato_vigente(pa_por_bpim.get(norm_bpim), codigo_plan)
+        cand_tri_bpim = _candidato_vigente(triada_por_bpim.get(norm_bpim), codigo_plan)
+        if cand_pa_bpim is not None:
+            act_match = cand_pa_bpim
             tipo_vinculo = "EXACTO_BPIM_PROYECTO"
             score_confianza = TIPOS_VINCULO_CANONICOS["EXACTO_BPIM_PROYECTO"]
             afinidad_calc = 0.90
             regla_detalle = "COINCIDENCIA_EXACTA_BPIM_PLAN_ACCION"
-        elif norm_bpim in triada_por_bpim:
-            tri_match = triada_por_bpim[norm_bpim]
+        elif cand_tri_bpim is not None:
+            tri_match = cand_tri_bpim
             tipo_vinculo = "EXACTO_BPIM_PROYECTO"
             score_confianza = TIPOS_VINCULO_CANONICOS["EXACTO_BPIM_PROYECTO"]
             afinidad_calc = 0.90
@@ -417,12 +444,13 @@ def _emparejar_meta_determinista(
     if (
         tipo_vinculo == "SIN_VINCULO_HUERFANO"
         and reg_triada_prev_id
-        and reg_triada_prev_id in triada_por_id
+        and _vigencia_compatible(triada_por_id.get(reg_triada_prev_id), codigo_plan)
     ):
         cand_tri = triada_por_id[reg_triada_prev_id]
         cand_bpim = str(cand_tri.get("codigo_bpim") or "").strip()
-        if cand_bpim and _normalizar_texto(cand_bpim) in pa_por_bpim:
-            act_match = pa_por_bpim[_normalizar_texto(cand_bpim)]
+        act_bpim = _candidato_vigente(pa_por_bpim.get(_normalizar_texto(cand_bpim)), codigo_plan)
+        if cand_bpim and act_bpim is not None:
+            act_match = act_bpim
             tri_match = cand_tri
             tipo_vinculo = "EXACTO_BPIM_PROYECTO"
             score_confianza = TIPOS_VINCULO_CANONICOS["EXACTO_BPIM_PROYECTO"]
@@ -435,7 +463,7 @@ def _emparejar_meta_determinista(
         if norm_dep and norm_dep != "sin_atribucion":
             for k_dep, lista_pa in pa_por_dep.items():
                 if norm_dep in k_dep or k_dep in norm_dep:
-                    candidatos_pa_dep.extend(lista_pa)
+                    candidatos_pa_dep.extend(a for a in lista_pa if _vigencia_compatible(a, codigo_plan))
         mejor_pa: dict[str, Any] | None = None
         mejor_afinidad_pa = 0.0
         for act in candidatos_pa_dep:
@@ -450,13 +478,13 @@ def _emparejar_meta_determinista(
             afinidad_calc = mejor_afinidad_pa
             regla_detalle = "DEPENDENCIA_Y_PROGRAMA_AFINIDAD_LEXICA_PA"
             bpim_pa = _normalizar_texto(mejor_pa.get("codigo_bpim"))
-            if bpim_pa and bpim_pa in triada_por_bpim:
-                tri_match = triada_por_bpim[bpim_pa]
+            if bpim_pa:
+                tri_match = _candidato_vigente(triada_por_bpim.get(bpim_pa), codigo_plan)
 
     if (
         tipo_vinculo == "SIN_VINCULO_HUERFANO"
         and reg_triada_prev_id
-        and reg_triada_prev_id in triada_por_id
+        and _vigencia_compatible(triada_por_id.get(reg_triada_prev_id), codigo_plan)
     ):
         cand_tri = triada_por_id[reg_triada_prev_id]
         af_tri = _afinidad_lexica(tokens_meta, cand_tri["_tokens"])
@@ -479,7 +507,7 @@ def _emparejar_meta_determinista(
         if norm_dep and norm_dep != "sin_atribucion":
             for k_dep, lista_tri in triada_por_dep.items():
                 if norm_dep in k_dep or k_dep in norm_dep:
-                    candidatos_tri_dep.extend(lista_tri)
+                    candidatos_tri_dep.extend(r for r in lista_tri if _vigencia_compatible(r, codigo_plan))
 
         mejor_tri: dict[str, Any] | None = None
         mejor_af_tri = 0.0
@@ -501,22 +529,12 @@ def _emparejar_meta_determinista(
             score_confianza = TIPOS_VINCULO_CANONICOS["VINCULO_SECTORIAL_INFERIDO"]
             afinidad_calc = mejor_af_tri
             regla_detalle = "COINCIDENCIA_SECTORIAL_DEPENDENCIA_TRIADA"
-        elif candidatos_tri_dep:
-            tri_match = candidatos_tri_dep[idx_meta % len(candidatos_tri_dep)]
-            tipo_vinculo = "VINCULO_SECTORIAL_INFERIDO"
-            score_confianza = TIPOS_VINCULO_CANONICOS["VINCULO_SECTORIAL_INFERIDO"]
-            afinidad_calc = max(mejor_af_tri, 0.20)
-            regla_detalle = "COINCIDENCIA_SECTORIAL_ENTIDAD_TRIADA"
-        elif candidatos_pa_dep:
-            act_match = candidatos_pa_dep[0]
-            tipo_vinculo = "VINCULO_SECTORIAL_INFERIDO"
-            score_confianza = TIPOS_VINCULO_CANONICOS["VINCULO_SECTORIAL_INFERIDO"]
-            afinidad_calc = max(mejor_afinidad_pa, 0.20)
-            regla_detalle = "COINCIDENCIA_SECTORIAL_MISMA_DEPENDENCIA_PA"
         elif tokens_ind:
             mejor_global_pa: dict[str, Any] | None = None
             mejor_af_global_pa = 0.0
             for act in pa_todas:
+                if not _vigencia_compatible(act, codigo_plan):
+                    continue
                 af = _afinidad_lexica(tokens_ind, act["_tokens"])
                 if af > mejor_af_global_pa:
                     mejor_af_global_pa = af
@@ -531,6 +549,8 @@ def _emparejar_meta_determinista(
                 mejor_global_tri: dict[str, Any] | None = None
                 mejor_af_global_tri = 0.0
                 for reg_t in triada_muestra_global:
+                    if not _vigencia_compatible(reg_t, codigo_plan):
+                        continue
                     af = _afinidad_lexica(tokens_ind, reg_t["_tokens"])
                     if af > mejor_af_global_tri:
                         mejor_af_global_tri = af
@@ -542,65 +562,45 @@ def _emparejar_meta_determinista(
                     afinidad_calc = mejor_af_global_tri
                     regla_detalle = "AFINIDAD_LEXICA_SECTORIAL_TRIADA"
 
+    # Las cifras provienen únicamente del registro pareado (igual código de
+    # meta, igual BPIM o dependencia acreditada del propio registro): la
+    # afinidad semántica decide qué candidato es, jamás traslada dinero de
+    # un registro fuera del vínculo. El cruce hermano exige igualdad de BPIM
+    # o de código de meta acreditado, y el bloqueo de fuente compartida
+    # anula cifras duplicadas después de la inserción.
+    tri_metrica = tri_match
+    act_metrica = act_match
     # Extraer métricas primarias preservando estrictamente 0.0 observado vs None
     apropiacion_cop = (
-        _to_float_preserve_zero(tri_match.get("apropiacion_definitiva_cop"))
-        if tri_match is not None
-        else (
-            _to_float_preserve_zero(act_match.get("monto_programado_cop"))
-            if act_match is not None
-            else None
-        )
+        _to_float_preserve_zero(tri_metrica.get("apropiacion_definitiva_cop"))
+        if tri_metrica is not None
+        else (_to_float_preserve_zero(act_metrica.get("monto_programado_cop")) if act_metrica is not None else None)
     )
     compromisos_rp_cop = (
-        _to_float_preserve_zero(tri_match.get("compromisos_rp_cop"))
-        if tri_match is not None
-        else (
-            _to_float_preserve_zero(act_match.get("monto_ejecutado_cop"))
-            if act_match is not None
-            else None
-        )
+        _to_float_preserve_zero(tri_metrica.get("compromisos_rp_cop"))
+        if tri_metrica is not None
+        else (_to_float_preserve_zero(act_metrica.get("monto_ejecutado_cop")) if act_metrica is not None else None)
     )
-    obligaciones_cop = (
-        _to_float_preserve_zero(tri_match.get("obligaciones_cop"))
-        if tri_match is not None
-        else None
-    )
-    pagos_cop = (
-        _to_float_preserve_zero(tri_match.get("pagos_tesoreria_cop"))
-        if tri_match is not None
-        else None
-    )
+    obligaciones_cop = _to_float_preserve_zero(tri_metrica.get("obligaciones_cop")) if tri_metrica is not None else None
+    pagos_cop = _to_float_preserve_zero(tri_metrica.get("pagos_tesoreria_cop")) if tri_metrica is not None else None
     meta_prog_anual = (
-        _to_float_preserve_zero(tri_match.get("meta_programada_anual"))
-        if tri_match is not None
-        and _to_float_preserve_zero(tri_match.get("meta_programada_anual")) is not None
-        else (
-            _to_float_preserve_zero(act_match.get("meta_valor_vigencia"))
-            if act_match is not None
-            else None
-        )
+        _to_float_preserve_zero(tri_metrica.get("meta_programada_anual"))
+        if tri_metrica is not None and _to_float_preserve_zero(tri_metrica.get("meta_programada_anual")) is not None
+        else (_to_float_preserve_zero(act_metrica.get("meta_valor_vigencia")) if act_metrica is not None else None)
     )
     meta_ejec_anual = (
-        _to_float_preserve_zero(tri_match.get("meta_ejecutada_anual"))
-        if tri_match is not None
-        else None
+        _to_float_preserve_zero(tri_metrica.get("meta_ejecutada_anual")) if tri_metrica is not None else None
     )
     avance_fisico_pct = (
-        _to_float_preserve_zero(tri_match.get("avance_fisico_pct"))
-        if tri_match is not None
-        and _to_float_preserve_zero(tri_match.get("avance_fisico_pct")) is not None
-        else (
-            _to_float_preserve_zero(act_match.get("porcentaje_avance_fisico"))
-            if act_match is not None
-            else None
-        )
+        _to_float_preserve_zero(tri_metrica.get("avance_fisico_pct"))
+        if tri_metrica is not None and _to_float_preserve_zero(tri_metrica.get("avance_fisico_pct")) is not None
+        else (_to_float_preserve_zero(act_metrica.get("porcentaje_avance_fisico")) if act_metrica is not None else None)
     )
 
     # 5. CRUCE HERMANO DE LOS 3 MOTORES (PLAN_DESARROLLO + PLAN_ACCION + INVERSION_PRESUPUESTAL)
     cruce_hermano_aplicado = False
     hermano_match: dict[str, Any] | None = None
-    if apropiacion_cop is None or avance_fisico_pct is None:
+    if (apropiacion_cop is None or avance_fisico_pct is None) and (tri_match is not None or act_match is not None):
         entidad_busqueda = (
             str(tri_match.get("entidad_normalizada") or "")
             if tri_match is not None and tri_match.get("entidad_normalizada")
@@ -610,10 +610,29 @@ def _emparejar_meta_determinista(
             periodo_gob=periodo_gob,
             entidad_candidata=entidad_busqueda,
             tokens_meta=tokens_meta,
-            idx_meta=idx_meta,
             hermanos_por_periodo_entidad=hermanos_por_periodo_entidad,
             hermanos_por_periodo=hermanos_por_periodo,
         )
+        codigos_bpim = {
+            _normalizar_texto(valor)
+            for valor in (
+                bpim_meta,
+                tri_match.get("codigo_bpim") if tri_match else None,
+                act_match.get("codigo_bpim") if act_match else None,
+            )
+            if valor
+        }
+        codigo_meta_acreditado = norm_cod if not norm_cod.startswith("m-") else ""
+        if hermano_match is not None and not _vigencia_compatible(hermano_match, codigo_plan):
+            hermano_match = None
+        if hermano_match is not None and not (
+            _normalizar_texto(hermano_match.get("codigo_bpim")) in codigos_bpim
+            or (
+                codigo_meta_acreditado
+                and _normalizar_texto(hermano_match.get("codigo_meta_pdd")) == codigo_meta_acreditado
+            )
+        ):
+            hermano_match = None
         if hermano_match is not None:
             if apropiacion_cop is None:
                 ap_h = _to_float_preserve_zero(hermano_match.get("apropiacion_definitiva_cop"))
@@ -721,9 +740,7 @@ def _emparejar_meta_determinista(
         "es_vinculo_exacto": tipo_vinculo in {"EXACTO_CODIGO_META", "EXACTO_BPIM_PROYECTO"},
         "es_vinculo_inferido": tipo_vinculo == "VINCULO_SECTORIAL_INFERIDO",
         "cruce_hermano_motores": cruce_hermano_aplicado,
-        "registro_hermano_triada_id": (
-            str(hermano_match["id"]) if cruce_hermano_aplicado and hermano_match else None
-        ),
+        "registro_hermano_triada_id": (str(hermano_match["id"]) if cruce_hermano_aplicado and hermano_match else None),
         "motores_conciliados": motores_usados or ["PLAN_DESARROLLO"],
         "periodo_gobierno_triada": periodo_gob,
         "fuente_meta": meta.get("fuente"),
@@ -768,16 +785,26 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
     """Concilia y puebla idempotentemente `seguimiento.pdd_vinculos_meta_pa_triada` en `bd_csh`
     para los 8 planes (`4,637` metas) con cruce hermano de los 3 motores de la Tríada.
     """
-    planes = (
-        (codigo_plan,) if codigo_plan and codigo_plan.upper() != "TODOS" else PLANES_8_CARTAGENA
-    )
+    planes = (codigo_plan,) if codigo_plan and codigo_plan.upper() != "TODOS" else PLANES_8_CARTAGENA
     engine = create_async_engine(_resolver_url_bd_csh(), pool_pre_ping=True)
 
     try:
         async with engine.begin() as conn:
-            await conn.execute(text(DDL_TABLA_VINCULOS))
-            for ddl_idx in DDL_INDICES_VINCULOS:
-                await conn.execute(text(ddl_idx))
+            existentes = list(
+                (
+                    await conn.execute(
+                        text(
+                            "SELECT tablename FROM pg_tables "
+                            "WHERE schemaname = 'seguimiento' AND tablename = 'pdd_vinculos_meta_pa_triada'"
+                        )
+                    )
+                ).scalars()
+            )
+            if not existentes:
+                raise RuntimeError(
+                    "Migración 0068_tablas_pdt_ai_evaluator no aplicada: falta "
+                    "seguimiento.pdd_vinculos_meta_pa_triada (la creación DDL pertenece al lineage Alembic)"
+                )
 
             res_lineas = await conn.execute(
                 text(
@@ -880,13 +907,16 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
                     "        AND avance_fisico_pct IS NOT NULL THEN 0 ELSE 1 END), "
                     "  vigencia DESC NULLS LAST, "
                     "  apropiacion_definitiva_cop DESC NULLS LAST "
-                    "LIMIT 9000"
+                    # Sin LIMIT: el corte lexicográfico por periodo excluía íntegro el
+                    # corpus ANTES_2020 (bandera vista con corpus masivo 10_673 grupos):
+                    # los planes 2012-2019 quedaban 100% huérfanos. Las muestras per-meta
+                    # (triada_muestra_global / candidatos) siguen acotando el costeo.
                 )
             )
             triada_dedup = [dict(r) for r in res_t_dedup.mappings().all()]
 
-            pa_por_codigo_meta: dict[str, dict[str, Any]] = {}
-            pa_por_bpim: dict[str, dict[str, Any]] = {}
+            pa_por_codigo_meta: dict[str, list[dict[str, Any]]] = {}
+            pa_por_bpim: dict[str, list[dict[str, Any]]] = {}
             pa_por_dep: dict[str, list[dict[str, Any]]] = {}
             for act in actividades_pa:
                 act["_tokens"] = _tokens_significativos(
@@ -897,16 +927,16 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
                 )
                 c_pas = _normalizar_texto(act.get("compromiso_pas_codigo"))
                 if c_pas:
-                    pa_por_codigo_meta.setdefault(c_pas, act)
+                    pa_por_codigo_meta.setdefault(c_pas, []).append(act)
                 c_bpim = _normalizar_texto(act.get("codigo_bpim"))
                 if c_bpim:
-                    pa_por_bpim.setdefault(c_bpim, act)
+                    pa_por_bpim.setdefault(c_bpim, []).append(act)
                 dep_k = _normalizar_texto(act.get("entidad_responsable"))
                 if dep_k:
                     pa_por_dep.setdefault(dep_k, []).append(act)
 
-            triada_por_codigo_meta: dict[str, dict[str, Any]] = {}
-            triada_por_bpim: dict[str, dict[str, Any]] = {}
+            triada_por_codigo_meta: dict[str, list[dict[str, Any]]] = {}
+            triada_por_bpim: dict[str, list[dict[str, Any]]] = {}
             triada_por_dep: dict[str, list[dict[str, Any]]] = {}
             hermanos_por_periodo_entidad: dict[tuple[str, str], list[dict[str, Any]]] = {}
             hermanos_por_periodo: dict[str, list[dict[str, Any]]] = {}
@@ -922,18 +952,15 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
                 triada_por_id.setdefault(tid, d_t)
                 cm = _normalizar_texto(d_t.get("codigo_meta_pdd"))
                 if cm:
-                    triada_por_codigo_meta.setdefault(cm, d_t)
+                    triada_por_codigo_meta.setdefault(cm, []).append(d_t)
                 cb = _normalizar_texto(d_t.get("codigo_bpim"))
                 if cb:
-                    triada_por_bpim.setdefault(cb, d_t)
+                    triada_por_bpim.setdefault(cb, []).append(d_t)
                 dep_t = _normalizar_texto(d_t.get("entidad_normalizada"))
                 if dep_t:
                     triada_por_dep.setdefault(dep_t, []).append(d_t)
 
-                if (
-                    d_t.get("apropiacion_definitiva_cop") is not None
-                    or d_t.get("avance_fisico_pct") is not None
-                ):
+                if d_t.get("apropiacion_definitiva_cop") is not None or d_t.get("avance_fisico_pct") is not None:
                     per_g = str(d_t.get("periodo_gobierno") or "2024_2027")
                     hermanos_por_periodo.setdefault(per_g, []).append(d_t)
                     if dep_t:
@@ -1038,8 +1065,23 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
             for offset in range(0, len(filas_a_insertar), 500):
                 await conn.execute(stmt_upsert, filas_a_insertar[offset : offset + 500])
 
+            cifras_bloqueadas = await _bloquear_cifras_de_referencias_compartidas(conn)
+            res_finanzas = await conn.execute(
+                text(
+                    "SELECT COUNT(*) FILTER (WHERE apropiacion_definitiva_cop IS NOT NULL) AS apropiacion, "
+                    "COUNT(*) FILTER (WHERE avance_fisico_pct IS NOT NULL) AS avance, "
+                    "COUNT(*) FILTER (WHERE ceros_observados_preservados) AS ceros "
+                    "FROM seguimiento.pdd_vinculos_meta_pa_triada WHERE codigo_plan = ANY(:planes)"
+                ),
+                {"planes": list(planes)},
+            )
+            recuentos_finanzas = res_finanzas.mappings().one()
+            con_apropiacion_total = int(recuentos_finanzas["apropiacion"])
+            con_avance_total = int(recuentos_finanzas["avance"])
+            ceros_preservados_total = int(recuentos_finanzas["ceros"])
             res_count_db = await conn.execute(
-                text("SELECT COUNT(*) FROM seguimiento.pdd_vinculos_meta_pa_triada")
+                text("SELECT COUNT(*) FROM seguimiento.pdd_vinculos_meta_pa_triada WHERE codigo_plan = ANY(:planes)"),
+                {"planes": list(planes)},
             )
             total_en_bd = int(res_count_db.scalar() or 0)
 
@@ -1051,6 +1093,7 @@ async def conciliar_y_poblar_vinculos_meta_pa_triada_async(
             "distribucion_por_plan": dict(conteo_por_plan),
             "distribucion_por_tipo_vinculo": dict(conteo_por_tipo),
             "cruces_hermanos_3_motores_aplicados": cruces_hermanos_total,
+            "vinculos_con_cifras_bloqueadas_por_fuente_compartida": cifras_bloqueadas,
             "metas_con_apropiacion_cop": con_apropiacion_total,
             "metas_con_avance_fisico_pct": con_avance_total,
             "ceros_observados_preservados_count": ceros_preservados_total,

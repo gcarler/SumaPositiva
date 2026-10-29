@@ -95,6 +95,13 @@ const TerritorioPanel = dynamic(
   () => import("@/features/geovisor/panels/territorio-panel").then((m) => m.TerritorioPanel),
   { ssr: false }
 );
+const TareaComunicacionPanel = dynamic(
+  () =>
+    import(
+      "@/features/comunicaciones/panels/tarea-comunicacion-panel"
+    ).then((m) => m.TareaComunicacionPanel),
+  { ssr: false }
+);
 
 const FormulariosPanel = dynamic(
   () => import("@/features/formularios/panels/formularios-panel").then((m) => m.FormulariosPanel),
@@ -211,6 +218,10 @@ const DimensionDetallePanel = dynamic(
   () => import("@/features/politicas/panels/dimension-detalle-panel").then((m) => m.DimensionDetallePanel),
   { ssr: false }
 );
+const FichaActividadPanel = dynamic(
+  () => import("@/features/proyectos/panels/ficha-actividad-panel").then((m) => m.FichaActividadPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY = {
   politica: PoliticaPanel,
@@ -265,6 +276,18 @@ export const PANEL_REGISTRY = {
   "ficha-editor": FichaEditorPanel,
   "dimension-detalle": ({ entryKey, props }: PanelComponentProps<"dimension-detalle">) => (
     <DimensionDetallePanel entryKey={entryKey} props={props} />
+  ),
+  "tarea-comunicacion-editor": ({
+    entryKey,
+    props,
+  }: PanelComponentProps<"tarea-comunicacion-editor">) => (
+    <TareaComunicacionPanel entryKey={entryKey} props={props} />
+  ),
+  "ficha-actividad-proyecto": ({
+    entryKey,
+    props,
+  }: PanelComponentProps<"ficha-actividad-proyecto">) => (
+    <FichaActividadPanel entryKey={entryKey} props={props} />
   ),
 } satisfies PanelComponentRegistry;
 
@@ -336,4 +359,6 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "devolucion-detalle": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "ficha-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "dimension-detalle": "min(clamp(760px, 54vw, 1120px), 100vw)",
+  "tarea-comunicacion-editor": "min(clamp(640px, 44vw, 920px), 100vw)",
+  "ficha-actividad-proyecto": "min(clamp(640px, 44vw, 920px), 100vw)",
 };

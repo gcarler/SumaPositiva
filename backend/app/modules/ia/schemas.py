@@ -65,9 +65,7 @@ class TipoVigenciaFutura(StrEnum):
 
     NO_REQUIERE = "no_requiere"
     ORDINARIA_LEY_819 = "ordinaria_ley_819"  # Aprobadas por CONFIS dentro del cuatrienio
-    EXCEPCIONAL_LEY_1483 = (
-        "excepcional_ley_1483"  # Trasciende período de gobierno, requiere Concejo
-    )
+    EXCEPCIONAL_LEY_1483 = "excepcional_ley_1483"  # Trasciende período de gobierno, requiere Concejo
 
 
 class RiesgoFiscal(StrEnum):
@@ -111,12 +109,8 @@ class ValidacionSintaxisNodo(BaseModel):
         ...,
         description="Sustantivo negativo para problemas, verbo en infinitivo para objetivos",
     )
-    texto_corregido_sugerido: str = Field(
-        ..., description="Reescritura sintáctica correcta conforme a metodología DNP"
-    )
-    observacion_metodologica: str = Field(
-        ..., description="Explicación técnica del ajuste sintáctico o causal"
-    )
+    texto_corregido_sugerido: str = Field(..., description="Reescritura sintáctica correcta conforme a metodología DNP")
+    observacion_metodologica: str = Field(..., description="Explicación técnica del ajuste sintáctico o causal")
 
 
 class EntradaDiagnostico(BaseModel):
@@ -129,15 +123,9 @@ class EntradaDiagnostico(BaseModel):
         description="Identificador UUIDv7 de la política o instrumento",
     )
     titulo: str = Field(..., min_length=5, max_length=300, description="Título de la iniciativa")
-    problema_central: str = Field(
-        ..., min_length=10, description="Enunciado crudo o preliminar del problema central"
-    )
-    causas_directas: list[str] = Field(
-        default_factory=list, description="Listado de causas directas identificadas"
-    )
-    causas_indirectas: list[str] = Field(
-        default_factory=list, description="Listado de causas indirectas estructurales"
-    )
+    problema_central: str = Field(..., min_length=10, description="Enunciado crudo o preliminar del problema central")
+    causas_directas: list[str] = Field(default_factory=list, description="Listado de causas directas identificadas")
+    causas_indirectas: list[str] = Field(default_factory=list, description="Listado de causas indirectas estructurales")
     efectos_directos: list[str] = Field(
         default_factory=list, description="Consecuencias directas sobre la población afectada"
     )
@@ -169,9 +157,7 @@ class ResultadoDiagnostico(BaseModel):
         default_factory=generar_uuidv7, description="Identificador UUIDv7 de la evaluación"
     )
     politica_id: uuid.UUID = Field(..., description="ID de la política analizada")
-    es_valido: bool = Field(
-        ..., description="Indica si la estructura causal cumple los estándares DNP mínimos"
-    )
+    es_valido: bool = Field(..., description="Indica si la estructura causal cumple los estándares DNP mínimos")
     puntaje_coherencia: float = Field(
         ..., ge=0.0, le=100.0, description="Puntaje de consistencia metodológica de 0 a 100"
     )
@@ -195,9 +181,7 @@ class ResultadoDiagnostico(BaseModel):
     recomendaciones_dnp: list[str] = Field(
         default_factory=list, description="Directrices metodológicas para el equipo formulador"
     )
-    resumen_ejecutivo: str = Field(
-        ..., description="Concepto técnico del diagnóstico y coherencia causal"
-    )
+    resumen_ejecutivo: str = Field(..., description="Concepto técnico del diagnóstico y coherencia causal")
 
 
 # -----------------------------------------------------------------------------
@@ -210,9 +194,7 @@ class AlertaConsultaPrevia(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    requiere_consulta_previa: bool = Field(
-        ..., description="Determina si es imperativa la Consulta Previa"
-    )
+    requiere_consulta_previa: bool = Field(..., description="Determina si es imperativa la Consulta Previa")
     comunidades_etnicas_identificadas: list[str] = Field(
         default_factory=list,
         description="Comunidades negras, afrodescendientes, raizales, palenqueras o indígenas",
@@ -223,9 +205,7 @@ class AlertaConsultaPrevia(BaseModel):
     )
     criterio_afectacion_directa: str = Field(
         ...,
-        description=(
-            "Justificación según criterio de afectación directa fijado en Sentencia C-030/08"
-        ),
+        description=("Justificación según criterio de afectación directa fijado en Sentencia C-030/08"),
     )
     requiere_clpi: bool = Field(
         ...,
@@ -252,9 +232,7 @@ class ControlRegresividadDESCA(BaseModel):
         ...,
         description="True si la medida justifica plenamente la no afectación del núcleo esencial",
     )
-    fundamento_jurisprudencial: str = Field(
-        ..., description="Línea jurisprudencial C-038/04, C-503/14, C-046/18"
-    )
+    fundamento_jurisprudencial: str = Field(..., description="Línea jurisprudencial C-038/04, C-503/14, C-046/18")
     advertencias_constitucionales: list[str] = Field(
         default_factory=list, description="Puntos de alerta para salvaguardar el núcleo esencial"
     )
@@ -265,9 +243,7 @@ class EntradaJuridica(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    politica_id: uuid.UUID = Field(
-        default_factory=generar_uuidv7, description="ID de la política pública"
-    )
+    politica_id: uuid.UUID = Field(default_factory=generar_uuidv7, description="ID de la política pública")
     titulo: str = Field(..., min_length=5, max_length=300)
     descripcion: str = Field(..., min_length=10)
     lineas_accion: list[str] = Field(..., min_length=1)
@@ -275,9 +251,7 @@ class EntradaJuridica(BaseModel):
         default_factory=list,
         description="Localidades, corregimientos o barrios de Cartagena involucrados",
     )
-    es_territorio_etnico: bool = Field(
-        default=False, description="Bandera territorial de comunidades étnicas"
-    )
+    es_territorio_etnico: bool = Field(default=False, description="Bandera territorial de comunidades étnicas")
     poblacion_objetivo: str = Field(..., description="Caracterización de la población beneficiaria")
     modifica_beneficios_existentes: bool = Field(
         default=False, description="Indica si modifica programas sociales o subsidios previos"
@@ -296,14 +270,10 @@ class ResultadoJuridico(BaseModel):
     evaluacion_id: uuid.UUID = Field(default_factory=generar_uuidv7)
     politica_id: uuid.UUID
     es_viable: bool = Field(..., description="Indica si la política es jurídicamente viable")
-    nivel_competencia: NivelCompetencia = Field(
-        ..., description="Nivel de gobierno titular de la competencia"
-    )
+    nivel_competencia: NivelCompetencia = Field(..., description="Nivel de gobierno titular de la competencia")
     fundamento_competencia: str = Field(
         ...,
-        description=(
-            "Normas aplicables: Ley 1454/11 (LOOT), Ley 715/01 (SGP), Ley 1617/13 (Distritos)"
-        ),
+        description=("Normas aplicables: Ley 1454/11 (LOOT), Ley 715/01 (SGP), Ley 1617/13 (Distritos)"),
     )
     es_competencia_distrital_cartagena: bool = Field(
         ...,
@@ -313,9 +283,7 @@ class ResultadoJuridico(BaseModel):
     control_regresividad: ControlRegresividadDESCA
     instrumento_adopcion_recomendado: str = Field(
         ...,
-        description=(
-            "Tipo de acto normativo requerido: Acuerdo Distrital (Concejo) o Decreto Alcaldicio"
-        ),
+        description=("Tipo de acto normativo requerido: Acuerdo Distrital (Concejo) o Decreto Alcaldicio"),
     )
     recomendaciones_juridicas: list[str] = Field(default_factory=list)
     concepto_juridico_motivado: str = Field(..., description="Dictamen jurídico motivado integral")
@@ -335,9 +303,7 @@ class DesgloseFuente(BaseModel):
     porcentaje: Decimal = Field(..., ge=Decimal("0.0"), le=Decimal("100.0"))
     monto_estimado_cop: Decimal = Field(..., ge=Decimal("0.0"))
     base_legal: str = Field(..., description="Sustento normativo de la fuente presupuestal")
-    destinacion_permitida: str = Field(
-        ..., description="Restricciones legales de gasto de esta fuente"
-    )
+    destinacion_permitida: str = Field(..., description="Restricciones legales de gasto de esta fuente")
 
 
 class AlertaVigenciasFuturas(BaseModel):
@@ -359,9 +325,7 @@ class AlertaVigenciasFuturas(BaseModel):
         ...,
         description="Plazo legal de autorización (primer o segundo año del período de gobierno)",
     )
-    fundamento_legal: str = Field(
-        ..., description="Artículos aplicables de Ley 819/03 y Ley 1483/11"
-    )
+    fundamento_legal: str = Field(..., description="Artículos aplicables de Ley 819/03 y Ley 1483/11")
     condiciones_excepcionales_cumplidas: list[str] = Field(default_factory=list)
 
 
@@ -370,21 +334,15 @@ class EntradaFiscal(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    politica_id: uuid.UUID = Field(
-        default_factory=generar_uuidv7, description="ID de la política pública"
-    )
+    politica_id: uuid.UUID = Field(default_factory=generar_uuidv7, description="ID de la política pública")
     titulo: str = Field(..., min_length=5, max_length=300)
     costo_estimado_total_cop: Decimal = Field(
         ..., ge=Decimal("0.0"), description="Presupuesto total proyectado en pesos colombianos"
     )
-    horizonte_anos: int = Field(
-        default=4, ge=1, le=20, description="Horizonte temporal de la política en años"
-    )
+    horizonte_anos: int = Field(default=4, ge=1, le=20, description="Horizonte temporal de la política en años")
     sector_inversion: str = Field(
         default="seguridad_y_convivencia",
-        description=(
-            "Sector: seguridad_y_convivencia, educacion, salud, infraestructura, desarrollo_social"
-        ),
+        description=("Sector: seguridad_y_convivencia, educacion, salud, infraestructura, desarrollo_social"),
     )
     fuentes_propuestas: list[str] = Field(
         default_factory=list, description="Fuentes preliminares propuestas por el formulador"
@@ -415,9 +373,7 @@ class ResultadoFiscal(BaseModel):
         description="Obligatoriedad de registro en Banco de Proyectos Distrital/Nacional",
     )
     recomendaciones_presupuestales: list[str] = Field(default_factory=list)
-    dictamen_fiscal_motivado: str = Field(
-        ..., description="Concepto presupuestal integral motivado"
-    )
+    dictamen_fiscal_motivado: str = Field(..., description="Concepto presupuestal integral motivado")
 
 
 # -----------------------------------------------------------------------------
@@ -430,17 +386,13 @@ class PropuestaParaDevolucion(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    propuesta_id: uuid.UUID = Field(
-        default_factory=generar_uuidv7, description="ID del aporte ciudadano"
-    )
+    propuesta_id: uuid.UUID = Field(default_factory=generar_uuidv7, description="ID del aporte ciudadano")
     titulo: str = Field(..., min_length=3)
     descripcion: str = Field(..., min_length=5)
     autor_nombre: str = Field(default="Ciudadano Anónimo")
     es_anonimo: bool = Field(default=True)
     territorio_nombre: str | None = Field(default=None)
-    motivo_descarte_preliminar: str | None = Field(
-        default=None, description="Apunte informal del formulador"
-    )
+    motivo_descarte_preliminar: str | None = Field(default=None, description="Apunte informal del formulador")
 
 
 class ItemDevolucionMotivada(BaseModel):
@@ -489,9 +441,7 @@ class EntradaDevolucion(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    politica_id: uuid.UUID = Field(
-        default_factory=generar_uuidv7, description="ID de la política pública"
-    )
+    politica_id: uuid.UUID = Field(default_factory=generar_uuidv7, description="ID de la política pública")
     titulo_politica: str = Field(..., min_length=5)
     propuestas_no_incorporadas: list[PropuestaParaDevolucion] = Field(
         ..., min_length=1, description="Listado de propuestas ciudadanas excluidas o no priorizadas"
@@ -507,9 +457,7 @@ class ResultadoDevolucion(BaseModel):
     politica_id: uuid.UUID
     cumplimiento_c150_garantizado: bool = Field(
         default=True,
-        description=(
-            "Certifica que todas las propuestas cuentan con motivación sustancial y causal taxativa"
-        ),
+        description=("Certifica que todas las propuestas cuentan con motivación sustancial y causal taxativa"),
     )
     total_propuestas_evaluadas: int = Field(..., ge=0)
     total_devoluciones_emitidas: int = Field(..., ge=0)
@@ -520,10 +468,7 @@ class ResultadoDevolucion(BaseModel):
     )
     publicacion_obligatoria_ley_1712: bool = Field(
         default=True,
-        description=(
-            "Publicación preceptiva bajo Ley de Transparencia y del Derecho d"
-            "e Acceso a la Información"
-        ),
+        description=("Publicación preceptiva bajo Ley de Transparencia y del Derecho de Acceso a la Información"),
     )
 
 
@@ -554,9 +499,7 @@ class EntradaCicloPolitica(BaseModel):
     horizonte_anos: int = Field(default=4, ge=1, le=20)
     fuentes_propuestas: list[str] = Field(default_factory=lambda: ["FONSET", "ICLD"])
     propuestas_ciudadanas: list[PropuestaParaDevolucion] = Field(default_factory=list)
-    max_iteraciones: int = Field(
-        default=3, ge=1, le=5, description="Tope de refinamiento para evitar ciclos infinitos"
-    )
+    max_iteraciones: int = Field(default=3, ge=1, le=5, description="Tope de refinamiento para evitar ciclos infinitos")
 
 
 class RespuestaCicloPolitica(BaseModel):
@@ -565,6 +508,9 @@ class RespuestaCicloPolitica(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     politica_id: uuid.UUID
+    run_id: uuid.UUID | None = None
+    corte: dict[str, str] | None = None
+    alcance_corte: str = "EVALUACION_DE_PROPUESTA_INDEPENDIENTE"
     titulo: str
     fase_final: str
     ciclo_completado_exitosamente: bool

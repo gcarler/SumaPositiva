@@ -2,10 +2,6 @@
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-
-from app.modules.comunicaciones.models import TareaComunicacion
-from app.modules.comunicaciones.repository import ComunicacionesRepository
 
 
 @pytest.fixture

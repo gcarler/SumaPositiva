@@ -28,8 +28,12 @@ externo. Seguir [README](../README.md) para arranque y variables. Usar `uv run -
 Antes de aplicar una nueva revisión en un entorno operativo, comprobar cabeza de
 Alembic, respaldos/restauración correspondientes al cambio y configuración. Ejecutar
 `bun run backend:migrate` con el DSN de ese entorno solo cuando esté autorizado.
-Las pruebas destructivas de downgrade/reconstrucción usan exclusivamente
-`POLIS_TEST_DATABASE_URL` en una base `polis_test*`.
+Las pruebas de integración requieren `POLIS_TEST_DATABASE_URL` explícita en una
+base `polis_test*`; las destructivas de downgrade/reconstrucción llevan marcador
+`migration` y usan `POLIS_TEST_MIGRATIONS_DATABASE_URL`, otra base `polis_test*`
+con nombre distinto. La fixture selecciona ese destino también para el contexto
+y la provisión del caso. Sin variable explícita las pruebas correspondientes se
+omiten con causa; no se obtiene un DSN de trabajo como respaldo.
 
 La revisión `0019_permisos_gestion` agrega permisos a los roles institucionales y
 conserva los demás permisos. Desde `0021_identidad_completa`, cada petición consulta
@@ -51,6 +55,71 @@ credenciales ni habilitar autorregistro privilegiado para facilitar el bootstrap
 La asignación de rol no acredita por sí misma un nivel de identidad verificado.
 Las cuentas institucionales existentes requieren revisión de procedencia: esta
 corrección no elimina ni reclasifica cuentas o tokens históricos en producción.
+
+## Colas de aportes y recepción WhatsApp
+
+Contrato de 0084, revisado el 26-oct-2026. Crear o editar un aporte confirma el
+cambio y su intención de correo en la misma transacción. La entrega posterior
+usa la outbox existente de notificaciones. El webhook confirma la recepción
+durable de todo el lote en inbox; HTTP200 no acredita radicación de cada mensaje.
+Un consumidor procesa cada mensaje por separado, de modo que un rechazo no pierda
+los mensajes válidos posteriores.
+
+El comando finito de consumo es `python -m scripts.procesar_colas_aportes` dentro
+del entorno backend. Desde la raíz y con el DSN del entorno autorizado ya
+establecido, las dos variantes son:
+
+```bash
+PYTHONPATH=backend uv run --project backend python -m scripts.procesar_colas_aportes inbox --limite 50
+PYTHONPATH=backend uv run --project backend python -m scripts.procesar_colas_aportes outbox --limite 50
+```
+
+El límite admite de 1 a 1000 elementos. Cada invocación termina al agotar ese máximo o
+no encontrar trabajo reclamable. Los UUID técnicos, estados e intentos del
+resultado sirven para correlación; no publicar payload, correo o teléfono. La
+programación periódica y la identidad de ejecución se deben configurar y validar
+por entorno después de la revisión de despliegue. La existencia del CLI no
+significa que haya un scheduler activo. Supervisar pendientes, fallos,
+rechazados, antigüedad, intentos y reclamaciones vencidas; conservar las causas
+para revisión autorizada.
+
+La outbox reclama una intención confirmada con lease/token y confirma la
+reclamación antes del transporte. Reintenta fallos con espera exponencial y
+recupera reclamaciones vencidas. El Message-ID es estable para correlación, pero
+si el proveedor acepta y el proceso cae antes de confirmar el resultado puede
+haber un reenvío: la garantía es al menos una vez, sin deduplicación garantizada
+por el proveedor. Sin SMTP configurado el resultado es `simulado`, con
+`enviado_en=NULL` y fecha `simulado_en` separada. No equivale a entrega real.
+
+WhatsApp está deshabilitado por defecto. Para habilitar recepción hacen falta
+`POLIS_WHATSAPP_HABILITADO`, `POLIS_WHATSAPP_VERIFY_TOKEN` y
+`POLIS_WHATSAPP_APP_SECRET`, definidos como secretos del entorno. No incluir sus
+valores en logs o documentos. GET verifica el token y POST exige HMAC SHA-256 del
+cuerpo original. La clave de repetición combina cuenta receptora e ID externo;
+una reentrega idéntica reutiliza la recepción y una colisión distinta aborta el
+lote. La simulación está denegada en producción. Las pruebas con transporte
+capturado no acreditan configuración ni entrega de Meta/SMTP reales.
+
+### Migración y retorno desde 0084
+
+Antes del upgrade, provisionar las extensiones requeridas y revisar apoyos
+legados sin equivalencia única demostrable con una cuenta. La revisión 0084 rechaza esas
+equivalencias ausentes/ambiguas y el contacto legado no textual o mayor de 255
+caracteres antes de modificar el esquema. No trunca, convierte o inventa una
+persona para completar la migración. Conservar respaldo y journal de filas,
+contadores y equivalencias demostradas.
+
+El downgrade es condicionado: bloquea antes de mutación si hay inbox durable,
+contacto solo privado o apoyos nuevos sin origen compatible. En los casos
+compatibles solo reexpande apoyos consolidados que todavía existen, sin
+resucitar retirados; el journal privado queda en auditoría institucional, fuera
+de la devolución pública. No forzar un downgrade eliminando esos datos ni
+suponer que cambiar al binario anterior sea un retorno aprobado. Los ensayos de
+reconstrucción se realizan en la segunda base aislada indicada arriba.
+
+La entrega 183 documenta pruebas del implementador. La evaluación independiente
+de los criterios de aportes se registra separadamente en 203; estos comandos y
+reglas no constituyen aprobación GO-LIVE, activación de proveedores ni despliegue.
 
 ## Perfil histórico de hardware y ajuste
 
@@ -108,5 +177,3 @@ Los controles de tasa por IP implementados en memoria de proceso (como `verifica
    - Las ventanas en memoria quedan particionadas entre los workers locales (el tráfico balanceado por round-robin distribuye el contador entre procesos independientes).
    - Para garantizar un tope global sincronizado en despliegues con alta concurrencia o múltiples réplicas, debe activarse la persistencia de control de tasa en base de datos PostgreSQL (`LimiteAcceso` gestionado por SQLAlchemy) o integrarse un almacén compartido de baja latencia como Redis (`redis-py` con algoritmos de token bucket o sliding log).
    - Los encabezados estándar `Retry-After` informan al cliente la ventana de espera requerida ante respuestas `429 Too Many Requests`.
-
-

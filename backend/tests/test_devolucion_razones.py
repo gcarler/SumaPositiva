@@ -72,9 +72,7 @@ async def test_devolucion_razones_flujo_completo(database_url: str, provisionar_
             f"/api/v1/aportes/{aporte_id}/devolucion-razon",
             json={
                 "causal": "tecnica",
-                "justificacion_motivada": (
-                    "Esta es una justificacion motivada que tiene al menos veinte caracteres"
-                ),
+                "justificacion_motivada": ("Esta es una justificacion motivada que tiene al menos veinte caracteres"),
             },
             headers=headers_ciudadano,
         )
@@ -85,9 +83,7 @@ async def test_devolucion_razones_flujo_completo(database_url: str, provisionar_
             f"/api/v1/aportes/{aporte_id}/devolucion-razon",
             json={
                 "causal": "antojadiza",
-                "justificacion_motivada": (
-                    "Justificación con longitud suficiente pero causal no permitida por C-150"
-                ),
+                "justificacion_motivada": ("Justificación con longitud suficiente pero causal no permitida por C-150"),
             },
             headers=headers_autoridad,
         )
@@ -107,8 +103,7 @@ async def test_devolucion_razones_flujo_completo(database_url: str, provisionar_
             json={
                 "causal": "tecnica",
                 "justificacion_motivada": (
-                    "Esta propuesta presenta inconsistencias met"
-                    "odologicas graves y por lo tanto se rechaza."
+                    "Esta propuesta presenta inconsistencias metodologicas graves y por lo tanto se rechaza."
                 ),
             },
             headers=headers_autoridad,
@@ -125,9 +120,7 @@ async def test_devolucion_razones_flujo_completo(database_url: str, provisionar_
             f"/api/v1/aportes/{aporte_id}/devolucion-razon",
             json={
                 "causal": "presupuestal",
-                "justificacion_motivada": (
-                    "Intento de sobreescribir rechazo constitucional ya establecido."
-                ),
+                "justificacion_motivada": ("Intento de sobreescribir rechazo constitucional ya establecido."),
             },
             headers=headers_autoridad,
         )
@@ -145,13 +138,7 @@ async def test_devolucion_razones_flujo_completo(database_url: str, provisionar_
         async with engine.begin() as conn:
             # Intentar borrar el registro
             try:
-                await conn.execute(
-                    text(
-                        "DELETE FROM auditoria.registros_auditoria WHERE registro_id = '"
-                        f"{aporte_id}"
-                        "'"
-                    )
-                )
+                await conn.execute(text(f"DELETE FROM auditoria.registros_auditoria WHERE registro_id = '{aporte_id}'"))
                 raise AssertionError("Debería haber fallado por inmutabilidad")
             except Exception as e:
                 assert "inmutable" in str(e).lower()

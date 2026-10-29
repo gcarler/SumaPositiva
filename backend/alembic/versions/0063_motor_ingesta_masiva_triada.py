@@ -100,9 +100,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name="pk_archivos_plan_ingeridos"),
         schema="seguimiento",
     )
-    op.create_index(
-        "idx_archivos_plan_hash", "archivos_plan_ingeridos", ["hash_sha256"], schema="seguimiento"
-    )
+    op.create_index("idx_archivos_plan_hash", "archivos_plan_ingeridos", ["hash_sha256"], schema="seguimiento")
     op.create_index(
         "idx_archivos_plan_entidad",
         "archivos_plan_ingeridos",
@@ -192,11 +190,7 @@ def downgrade() -> None:
     ):
         op.drop_index(nombre, table_name="registros_triada_normalizados", schema="seguimiento")
     op.drop_table("registros_triada_normalizados", schema="seguimiento")
-    op.drop_index(
-        "idx_archivos_plan_entidad", table_name="archivos_plan_ingeridos", schema="seguimiento"
-    )
-    op.drop_index(
-        "idx_archivos_plan_hash", table_name="archivos_plan_ingeridos", schema="seguimiento"
-    )
+    op.drop_index("idx_archivos_plan_entidad", table_name="archivos_plan_ingeridos", schema="seguimiento")
+    op.drop_index("idx_archivos_plan_hash", table_name="archivos_plan_ingeridos", schema="seguimiento")
     op.drop_table("archivos_plan_ingeridos", schema="seguimiento")
     op.drop_table("lotes_ingesta_planes", schema="seguimiento")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from "react";
 import {
   Check,
   RotateCcw,
@@ -9,17 +9,26 @@ import {
   MapPin,
   Play,
   Pause,
-  Link as LinkIcon,
+  Plus,
+  Trash2,
   ShieldCheck,
+  Upload,
+  Save,
+  Loader2,
+  ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { apiFetch } from "@/core/http/api-client";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+import { FormField } from "@/shared/ui/form-field";
 import { Switch } from "@/shared/ui/switch";
 import {
   useHeroConfigStore,
-  HERO_IMAGE_OPTIONS,
+  esRutaImagenHero,
+  obtenerDiapositivasHero,
   HERO_DEFAULT_IMAGE_ID,
   resolverImagenHero,
   type HeroImageOption,
@@ -47,7 +56,7 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     key: "home",
     nombre: "Portada Principal",
     ruta: "/",
-    descripcion: "Carrusel cinematográfico inmersivo de los 5 frentes cívicos de Cartagena.",
+    descripcion: "Carrusel territorial de las imágenes habilitadas en la biblioteca.",
     configDefecto: HERO_PAGES_CONFIG.home,
   },
   {
@@ -61,7 +70,7 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     key: "mesas",
     nombre: "Mesas de Diálogo",
     ruta: "/mesas",
-    descripcion: "Cabecera territorial de concertación cívica para las 37 mesas distritales.",
+    descripcion: "Cabecera territorial de concertación cívica para las 35 mesas distritales.",
     configDefecto: HERO_PAGES_CONFIG.mesas,
   },
   {
@@ -106,15 +115,38 @@ export function GestorHerosPlataforma({
   className,
 }: GestorHerosPlataformaProps) {
   const [espacioActivoKey, setEspacioActivoKey] = useState<string>("home");
-  const [urlPersonalizada, setUrlPersonalizada] = useState<string>("");
+  const [formularioAbierto, setFormularioAbierto] = useState(false);
+  const [nuevaImagen, setNuevaImagen] = useState({
+    titulo: "",
+    descripcion: "",
+    enfoque: "",
+    archivo: "",
+    thumbnail: "",
+  });
+  const [errores, setErrores] = useState<Partial<Record<keyof typeof nuevaImagen, string>>>({});
+  const [errorFormulario, setErrorFormulario] = useState("");
+  const [subiendoArchivo, setSubiendoArchivo] = useState(false);
+  const [confirmacion, setConfirmacion] = useState<
+    | { tipo: "eliminar"; id: string; titulo: string }
+    | { tipo: "restaurar" }
+    | null
+  >(null);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const clientStore = useHeroConfigStore();
+  const store = typeof window === "undefined" ? useHeroConfigStore.getState() : clientStore;
   const {
+    imagenesCatalogo,
+    slides,
     heroImageId,
     opacidad,
     modoCarrusel,
     intervaloSegundos,
     pausado,
     pageImages,
+    guardandoServidor,
+    cambiosPendientes,
     setHeroImageId,
     setOpacidad,
     setModoCarrusel,
@@ -122,12 +154,26 @@ export function GestorHerosPlataforma({
     togglePausa,
     setPageImage,
     resetPageImage,
-    resetAllPageImages,
-  } = useHeroConfigStore();
+    toggleHabilitarImagen,
+    agregarImagen,
+    eliminarImagen,
+    eliminarSlide,
+    sincronizarConServidor,
+    guardarEnServidor,
+    restaurarCatalogoOficial,
+  } = store;
+
+  /* Sincronización inicial con la configuración persistida en el servidor */
+  useEffect(() => {
+    void sincronizarConServidor?.();
+  }, [sincronizarConServidor]);
 
   const espacioActivo =
     ESPACIOS_PUBLICOS.find((e) => e.key === espacioActivoKey) ??
     ESPACIOS_PUBLICOS[0];
+
+  /* Diapositivas activas para la portada */
+  const slidesPortada = obtenerDiapositivasHero(imagenesCatalogo, slides);
 
   /* Imagen actualmente asignada al espacio seleccionado */
   const customKey =
@@ -136,8 +182,8 @@ export function GestorHerosPlataforma({
       : pageImages[espacioActivo.key];
 
   const imagenActivaSrc = customKey
-    ? resolverImagenHero(customKey)
-    : espacioActivo.configDefecto.imagenFondo;
+    ? resolverImagenHero(customKey, imagenesCatalogo)
+    : resolverImagenHero(espacioActivo.configDefecto.imagenFondo, imagenesCatalogo);
 
   const esPersonalizada =
     espacioActivo.key === "home"
@@ -147,9 +193,43 @@ export function GestorHerosPlataforma({
   const esMinimalista =
     customKey === "ninguna" || (heroImageId === "ninguna" && espacioActivo.key === "home");
 
+  /* El archivo se aloja en la plataforma; el catálogo conserva su ruta. */
+  const handleSeleccionarArchivo = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!editar) return;
+    const archivo = event.target.files?.[0];
+    if (!archivo) return;
+    event.target.value = "";
+    if (!["image/png", "image/jpeg", "image/webp"].includes(archivo.type) || !/\.(png|jpe?g|webp)$/i.test(archivo.name)) {
+      toast.error("Selecciona una imagen JPG, PNG o WebP.");
+      return;
+    }
+    if (archivo.size > 8 * 1024 * 1024) {
+      toast.error("La fotografía supera los 8 MB permitidos.");
+      return;
+    }
+    setSubiendoArchivo(true);
+    const datos = new FormData();
+    datos.append("archivo", archivo);
+    try {
+      const respuesta = await apiFetch<unknown>("/politicas/heros/subir-imagen", {
+        method: "POST", body: datos, retry: { retries: 0 },
+      });
+      if (!respuesta || typeof respuesta !== "object" || !("url" in respuesta) ||
+        typeof respuesta.url !== "string" || !esRutaImagenHero(respuesta.url)) {
+        throw new Error("El servidor no devolvió una ruta de imagen válida.");
+      }
+      const ruta = respuesta.url;
+      setNuevaImagen((previa) => ({ ...previa, archivo: ruta, thumbnail: ruta,
+        titulo: previa.titulo || archivo.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") }));
+      toast.success("Fotografía cargada. Completa sus datos y guárdala en la biblioteca.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo cargar la fotografía.");
+    } finally { setSubiendoArchivo(false); }
+  };
+
   /* Manejadores de acción */
   const handleSeleccionarImagen = (opcion: HeroImageOption) => {
-    if (!editar) return;
+    if (!editar || !imagenesCatalogo.some((imagen) => imagen.id === opcion.id && imagen.habilitada)) return;
 
     if (espacioActivo.key === "home") {
       setHeroImageId(opcion.id);
@@ -165,19 +245,55 @@ export function GestorHerosPlataforma({
     );
   };
 
-  const handleAplicarUrlPersonalizada = () => {
-    if (!editar || !urlPersonalizada.trim()) return;
-    const url = urlPersonalizada.trim();
-
-    if (espacioActivo.key === "home") {
-      setHeroImageId(url);
-      setPageImage("home", url);
-    } else {
-      setPageImage(espacioActivo.key, url);
+  const handleGuardarImagen = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!editar) return;
+    const problemas: typeof errores = {};
+    if (!nuevaImagen.titulo.trim()) problemas.titulo = "Escribe el título de la imagen.";
+    if (!nuevaImagen.descripcion.trim()) problemas.descripcion = "Escribe una descripción.";
+    if (!nuevaImagen.enfoque.trim()) problemas.enfoque = "Escribe el enfoque o ubicación territorial.";
+    if (!nuevaImagen.archivo.trim()) {
+      problemas.archivo = "Carga un archivo de imagen o escribe una URL / ruta.";
+    } else if (!esRutaImagenHero(nuevaImagen.archivo.trim())) {
+      problemas.archivo = "Introduce una imagen válida (URL HTTPS, ruta /images/... o sube un archivo).";
     }
+    if (nuevaImagen.thumbnail.trim() && !esRutaImagenHero(nuevaImagen.thumbnail.trim())) {
+      problemas.thumbnail = "Introduce una miniatura válida o deja el campo vacío.";
+    }
+    setErrores(problemas);
+    setErrorFormulario("");
+    if (Object.keys(problemas).length) return;
 
-    setUrlPersonalizada("");
-    toast.success(`Imagen personalizada aplicada a ${espacioActivo.nombre}`);
+    try {
+      const imagen = agregarImagen(nuevaImagen);
+      setNuevaImagen({ titulo: "", descripcion: "", enfoque: "", archivo: "", thumbnail: "" });
+      setFormularioAbierto(false);
+      toast.success(`Fotografía "${imagen.titulo}" agregada a la biblioteca`);
+    } catch (error) {
+      setErrorFormulario(error instanceof Error ? error.message : "No se pudo agregar la imagen.");
+    }
+  };
+
+  const handleQuitarSlide = (slideId: string, titulo: string) => {
+    if (!editar) return;
+    try {
+      eliminarSlide(slideId);
+      toast.success(`Diapositiva "${titulo}" deshabilitada en el carrusel de portada`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se pudo quitar la diapositiva.");
+    }
+  };
+
+  const handleConfirmar = () => {
+    if (!editar || !confirmacion) return;
+    if (confirmacion.tipo === "restaurar") {
+      restaurarCatalogoOficial();
+      toast.success("Las seis imágenes del catálogo oficial se han restaurado.");
+    } else {
+      eliminarImagen(confirmacion.id);
+      toast.success(`Fotografía "${confirmacion.titulo}" retirada de la biblioteca.`);
+    }
+    setConfirmacion(null);
   };
 
   const handleRestaurarEspacio = () => {
@@ -193,17 +309,63 @@ export function GestorHerosPlataforma({
 
   const handleRestablecerTodo = () => {
     if (!editar) return;
-    if (confirm("¿Restablecer la configuración de todas las imágenes a sus valores iniciales?")) {
-      resetAllPageImages();
-      setOpacidad(60);
-      setModoCarrusel(true);
-      setIntervaloSegundos(7);
-      toast.success("Todos los Heros territoriales han sido restablecidos a sus valores de fábrica");
+    setConfirmacion({ tipo: "restaurar" });
+  };
+
+  const handleGuardarServidor = async () => {
+    if (!editar) return;
+    const ok = await guardarEnServidor();
+    if (ok) {
+      if (useHeroConfigStore.getState().cambiosPendientes) {
+        toast.success("Se guardó la versión enviada. Quedan cambios locales por guardar.");
+      } else {
+        toast.success("Configuración de imágenes guardada en la plataforma.");
+      }
+    } else {
+      toast.error("No se pudo conectar con el servidor. Los cambios se conservan en tu navegador.");
     }
   };
 
   return (
     <div className={`space-y-6 ${className ?? ""}`} data-testid="gestor-heros-plataforma">
+      {/* ================= BARRA SUPERIOR CON BOTÓN GUARDAR ================= */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-0)] p-3">
+        <div className="flex items-center gap-2">
+          <ImageIcon className="size-4 text-[var(--ember)]" />
+          <span className="text-xs font-bold text-[var(--text-primary)]">
+            Gestor de Identidad Visual y Heros Públicos
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="default"
+            size="sm"
+            disabled={!editar || guardandoServidor}
+            onClick={handleGuardarServidor}
+            className="h-auto min-h-8 max-w-full gap-1.5 whitespace-normal text-xs font-semibold"
+          >
+            {guardandoServidor ? (
+              <>
+                <Loader2 className="size-3.5 animate-spin" />
+                Guardando en Servidor...
+              </>
+            ) : (
+              <>
+                <Save className="size-3.5" />
+                Guardar Cambios en la Plataforma
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      <p role="status" className="text-xs text-text-secondary">
+        {cambiosPendientes
+          ? "Tienes cambios locales. Guarda los cambios en la plataforma para compartirlos con los visitantes."
+          : "Las imágenes de la biblioteca se utilizan en la portada y en los espacios públicos."}
+      </p>
+
       {/* ================= 1. NAVEGACIÓN ENTRE ESPACIOS PÚBLICOS ================= */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -274,7 +436,7 @@ export function GestorHerosPlataforma({
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] p-4 sm:p-5 space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)] pb-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-base font-bold text-[var(--text-primary)]">
                 {espacioActivo.nombre}
               </h3>
@@ -296,7 +458,7 @@ export function GestorHerosPlataforma({
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {esPersonalizada && (
               <Button
                 type="button"
@@ -381,16 +543,16 @@ export function GestorHerosPlataforma({
           </div>
         </div>
 
-        {/* ================= 4. CONTROLES DEL CARRUSEL (SOLO HOME) ================= */}
+        {/* ================= 4. CONTROLES DEL CARRUSEL Y GESTIÓN DE DIAPOSITIVAS (SOLO HOME) ================= */}
         {espacioActivo.key === "home" && (
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-3">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <span className="text-xs font-bold text-[var(--text-primary)]">
                   Rotación Automática del Carrusel (Portada)
                 </span>
                 <p className="text-[11px] text-[var(--text-secondary)]">
-                  Alterna automáticamente las 5 fotografías territoriales de Cartagena en la portada.
+                  Alterna automáticamente las fotografías territoriales activas de Cartagena en la portada.
                 </p>
               </div>
               <Switch
@@ -411,9 +573,9 @@ export function GestorHerosPlataforma({
 
             {modoCarrusel && (
               <div className="pt-2 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)]">
                   <span>Velocidad de cambio:</span>
-                  <div className="flex items-center gap-1">
+                  <div className="flex flex-wrap items-center gap-1">
                     {[
                       { seg: 3, label: "3s" },
                       { seg: 5, label: "5s" },
@@ -429,7 +591,7 @@ export function GestorHerosPlataforma({
                         disabled={!editar}
                         onClick={() => {
                           setIntervaloSegundos(item.seg);
-                          toast.success(`Intervalo de rotación fijado en ${item.seg} segundos`);
+                          toast.success(`Intervalo fijado en ${item.seg} segundos`);
                         }}
                         className="h-6 px-2 text-[11px]"
                       >
@@ -461,135 +623,413 @@ export function GestorHerosPlataforma({
                 </Button>
               </div>
             )}
+
+            {/* LISTADO DE DIAPOSITIVAS ACTIVAS DEL CARRUSEL (QUITAR / GESTIONAR) */}
+            <div className="pt-3 border-t border-[var(--border)] space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--text-primary)]">
+                    Diapositivas Activas en el Carrusel Público ({slidesPortada.length})
+                  </h4>
+                  <p className="text-[11px] text-[var(--text-secondary)]">
+                    Las fotografías habilitadas se incluyen en la rotación. Puedes deshabilitarlas o agregar nuevas desde la biblioteca.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
+                {slidesPortada.map((slide, idx) => (
+                  <div
+                    key={slide.id}
+                    className="flex min-w-0 items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                      <span className="font-mono text-[10px] font-bold text-[var(--ember)] bg-[var(--surface-2)] px-1.5 py-0.5 rounded">
+                        {String(idx + 1).padStart(2, "0")}
+                      </span>
+                      <div className="size-10 shrink-0 overflow-hidden rounded border border-[var(--border)] bg-[var(--surface-2)]">
+                        <img
+                          src={slide.imagenFondo}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[var(--text-primary)] truncate">
+                          {slide.titulo}
+                        </p>
+                        <p className="text-[10px] text-[var(--text-secondary)] truncate">
+                          {slide.ubicacionReal || slide.enfoque}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={!editar}
+                      onClick={() => handleQuitarSlide(slide.id, slide.titulo)}
+                      aria-label={`Deshabilitar ${slide.titulo} en el carrusel`}
+                      title="Deshabilitar esta imagen en el carrusel"
+                      className="h-7 px-2 text-[11px] text-[var(--danger)] hover:bg-[var(--danger)]/10 shrink-0 gap-1"
+                    >
+                      <Trash2 className="size-3" />
+                      <span className="hidden sm:inline">Deshabilitar</span>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ================= 5. CATÁLOGO DE FOTOGRAFÍAS TERRITORIALES ================= */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-              Biblioteca de Fotografías Territoriales Oficiales
-            </span>
-            <span className="text-[11px] text-[var(--text-secondary)]">
-              Haz clic sobre una imagen para asignarla a {espacioActivo.nombre}
-            </span>
+        {/* ================= 5. BIBLIOTECA DE FOTOGRAFÍAS TERRITORIALES ================= */}
+        <section className="space-y-3" aria-label="Biblioteca de imágenes hero">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-text-primary">
+                Biblioteca de imágenes hero
+              </h3>
+              <p className="mt-1 text-xs text-text-secondary">
+                Asigna una imagen habilitada a {espacioActivo.nombre} o agrega nuevas fotos desde tu equipo.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!editar}
+                onClick={() => setConfirmacion({ tipo: "restaurar" })}
+              >
+                <RotateCcw className="size-3.5" aria-hidden="true" />
+                Restaurar catálogo oficial
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={!editar}
+                aria-expanded={formularioAbierto}
+                onClick={() => setFormularioAbierto((abierto) => !abierto)}
+              >
+                <Plus className="size-3.5" aria-hidden="true" />
+                Nueva imagen hero
+              </Button>
+            </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {HERO_IMAGE_OPTIONS.map((opcion) => {
-              const esActiva = customKey === opcion.id;
-              const esNinguna = opcion.id === "ninguna";
-
-              return (
-                <div
-                  key={opcion.id}
-                  onClick={() => handleSeleccionarImagen(opcion)}
-                  className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 transition-all cursor-pointer ${
-                    esActiva
-                      ? "border-[var(--ember)] bg-[var(--surface-2)] ring-1 ring-[var(--ember)] shadow-xs"
-                      : "border-[var(--border)] bg-[var(--surface-1)] hover:border-[var(--ember)]/50 hover:bg-[var(--surface-2)]/50"
-                  } ${!editar ? "cursor-not-allowed opacity-75" : ""}`}
+          {confirmacion && (
+            <div
+              role="group"
+              aria-label="Confirmación de cambios del catálogo"
+              className="space-y-3 rounded-xl border border-border bg-surface-2 p-4"
+            >
+              <p className="break-words text-sm text-text-primary">
+                {confirmacion.tipo === "eliminar"
+                  ? `¿Retirar "${confirmacion.titulo}" de la biblioteca? Los espacios que la utilizan pasarán a una imagen de respaldo.`
+                  : "¿Restaurar las seis imágenes oficiales? Las imágenes agregadas se retirarán del catálogo."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  disabled={!editar}
+                  onClick={handleConfirmar}
                 >
-                  <div className="space-y-2.5">
-                    {/* Thumbnail */}
-                    <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-2)]">
-                      {esNinguna ? (
-                        <div className="flex h-full w-full items-center justify-center bg-dotgrid p-3 text-center">
-                          <span className="text-xs font-medium text-[var(--text-tertiary)]">
-                            Solo retícula institucional
-                          </span>
-                        </div>
-                      ) : (
-                        <img
-                          src={opcion.thumbnail || opcion.archivo}
-                          alt={opcion.titulo}
-                          className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                        />
-                      )}
+                  {confirmacion.tipo === "eliminar" ? "Confirmar retiro" : "Confirmar restauración"}
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setConfirmacion(null)}>
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          )}
 
-                      {esActiva && (
-                        <div className="absolute right-2 top-2">
-                          <Badge variant="success" className="shadow-xs font-medium text-[10px]">
-                            <Check className="mr-1 size-3" />
-                            Activa en {espacioActivo.nombre}
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
+          {/* FORMULARIO PARA AGREGAR NUEVA IMAGEN / FOTOGRAFÍA */}
+          {formularioAbierto && (
+            <form
+              onSubmit={handleGuardarImagen}
+              noValidate
+              aria-label="Nueva imagen hero"
+              className="space-y-4 rounded-xl border border-border bg-surface-1 p-4"
+            >
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                <h4 className="text-sm font-semibold text-text-primary">
+                  Agregar Nueva Fotografía al Hero
+                </h4>
+                <Badge variant="outline" className="text-[10px]">
+                  Soporta Subida de Archivo o URL
+                </Badge>
+              </div>
 
-                    {/* Metadatos */}
-                    <div>
-                      <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
-                        {opcion.titulo}
-                      </h4>
-                      <Badge variant="outline" className="mt-1 text-[9px] uppercase tracking-wider">
-                        {opcion.enfoque}
-                      </Badge>
-                      <p className="mt-1 text-[11px] text-[var(--text-secondary)] line-clamp-2">
-                        {opcion.descripcion}
-                      </p>
+              {/* Botón para subir archivo desde el equipo */}
+              <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-0)] p-4 text-center space-y-2">
+                <Input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label="Archivo de fotografía hero"
+                  disabled={!editar || subiendoArchivo}
+                  className="hidden"
+                  onChange={handleSeleccionarArchivo}
+                />
+                <div className="flex flex-col items-center justify-center gap-1.5">
+                  <div className="p-2 rounded-full bg-[var(--surface-2)]">
+                    <Upload className="size-5 text-[var(--ember)]" />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={!editar || subiendoArchivo}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="h-auto min-h-9 max-w-full gap-1.5 whitespace-normal text-xs"
+                  >
+                    {subiendoArchivo ? (
+                      <>
+                        <Loader2 className="size-3.5 animate-spin" />
+                        Cargando...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="size-3.5" />
+                        Seleccionar Foto desde tu Equipo (JPG, PNG, WebP)
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-[11px] text-[var(--text-tertiary)]">
+                    Hasta 8MB. O si prefieres, escribe la URL o ruta abajo.
+                  </p>
+                </div>
+
+                {esRutaImagenHero(nuevaImagen.archivo.trim()) && (
+                  <div className="mt-2 flex min-w-0 items-center justify-center gap-2 rounded-lg bg-[var(--surface-2)] p-2">
+                    <img
+                      src={esRutaImagenHero(nuevaImagen.thumbnail.trim()) ? nuevaImagen.thumbnail : nuevaImagen.archivo}
+                      alt="Vista previa"
+                      className="size-12 object-cover rounded border border-[var(--border)]"
+                    />
+                    <div className="min-w-0 text-left text-xs">
+                      <span className="font-semibold text-[var(--success)] flex items-center gap-1">
+                        <Check className="size-3" /> Imagen lista para guardar
+                      </span>
+                      <span className="text-[10px] text-[var(--text-tertiary)] block break-all">
+                        {nuevaImagen.archivo.startsWith("data:") ? "Archivo local listo" : nuevaImagen.archivo}
+                      </span>
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Botón de selección al pie */}
-                  <div className="mt-3 pt-2.5 border-t border-[var(--border)] flex items-center justify-between">
-                    <span className="text-[10px] text-[var(--text-tertiary)]">
-                      {esActiva ? "Asignada actualmente" : "Clic para asignar"}
-                    </span>
+              <FormField label="Título de la imagen" required error={errores.titulo}>
+                {(campo) => (
+                  <Input
+                    {...campo}
+                    value={nuevaImagen.titulo}
+                    maxLength={160}
+                    disabled={!editar}
+                    placeholder="Ej: Diálogo Territorial en Olaya Herrera"
+                    onChange={(event) =>
+                      setNuevaImagen({ ...nuevaImagen, titulo: event.target.value })
+                    }
+                  />
+                )}
+              </FormField>
+
+              <FormField label="Descripción de la imagen" required error={errores.descripcion}>
+                {(campo) => (
+                  <Textarea
+                    {...campo}
+                    value={nuevaImagen.descripcion}
+                    maxLength={1200}
+                    disabled={!editar}
+                    placeholder="Describe el encuentro ciudadano, los participantes o el propósito cívico..."
+                    onChange={(event) =>
+                      setNuevaImagen({ ...nuevaImagen, descripcion: event.target.value })
+                    }
+                  />
+                )}
+              </FormField>
+
+              <FormField label="Enfoque o tema territorial" required error={errores.enfoque}>
+                {(campo) => (
+                  <Input
+                    {...campo}
+                    value={nuevaImagen.enfoque}
+                    maxLength={200}
+                    disabled={!editar}
+                    placeholder="Ej: Sector Rafael Núñez — Localidad 2"
+                    onChange={(event) =>
+                      setNuevaImagen({ ...nuevaImagen, enfoque: event.target.value })
+                    }
+                  />
+                )}
+              </FormField>
+
+              <FormField
+                label="URL o ruta de la imagen"
+                required
+                error={errores.archivo}
+                description="Dirección HTTPS, ruta local /images/... o archivo cargado."
+              >
+                {(campo) => (
+                  <Input
+                    {...campo}
+                    value={nuevaImagen.archivo}
+                    disabled={!editar}
+                    placeholder="https://ejemplo.gov.co/foto.webp o /images/foto.webp"
+                    onChange={(event) =>
+                      setNuevaImagen({ ...nuevaImagen, archivo: event.target.value })
+                    }
+                  />
+                )}
+              </FormField>
+
+              <FormField
+                label="URL o ruta de la miniatura (opcional)"
+                error={errores.thumbnail}
+                description="Si dejas este campo vacío se utilizará la misma imagen."
+              >
+                {(campo) => (
+                  <Input
+                    {...campo}
+                    value={nuevaImagen.thumbnail}
+                    disabled={!editar}
+                    onChange={(event) =>
+                      setNuevaImagen({ ...nuevaImagen, thumbnail: event.target.value })
+                    }
+                  />
+                )}
+              </FormField>
+
+              {errorFormulario && (
+                <p role="alert" className="text-sm text-danger">
+                  {errorFormulario}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--border)]">
+                <Button type="submit" size="sm" disabled={!editar || subiendoArchivo} className="gap-1.5">
+                  <Plus className="size-3.5" />
+                  Guardar imagen
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFormularioAbierto(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {!imagenesCatalogo.length && (
+            <p role="status" className="rounded-xl border border-border p-4 text-sm text-text-secondary">
+              No hay imágenes en la biblioteca. Agrega una nueva o restaura el catálogo oficial.
+            </p>
+          )}
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {imagenesCatalogo.map((opcion) => {
+              const esActiva = customKey === opcion.id && opcion.habilitada;
+              return (
+                <article
+                  key={opcion.id}
+                  aria-label={opcion.titulo}
+                  data-testid={`imagen-hero-${opcion.id}`}
+                  className={`min-w-0 space-y-3 rounded-xl border p-3 ${
+                    esActiva ? "border-primary bg-surface-2" : "border-border bg-surface-1"
+                  }`}
+                >
+                  <div
+                    className={`relative aspect-video overflow-hidden rounded-lg border border-border bg-surface-2 ${
+                      !opcion.habilitada ? "opacity-50" : ""
+                    }`}
+                  >
+                    {opcion.archivo ? (
+                      <img
+                        src={opcion.thumbnail || opcion.archivo}
+                        alt={opcion.titulo}
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-dotgrid flex h-full items-center justify-center p-3 text-center text-xs text-text-secondary">
+                        Solo retícula institucional
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <Badge variant={opcion.habilitada ? "success" : "outline"}>
+                      {opcion.habilitada ? "Habilitada" : "Deshabilitada"}
+                    </Badge>
+                    <Switch
+                      checked={opcion.habilitada}
+                      disabled={!editar}
+                      aria-label={`Habilitar ${opcion.titulo}`}
+                      onCheckedChange={() => {
+                        if (!editar) return;
+                        toggleHabilitarImagen(opcion.id);
+                        toast.success(
+                          `Imagen ${opcion.habilitada ? "deshabilitada" : "habilitada"}: ${opcion.titulo}`
+                        );
+                                        }}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="break-words text-sm font-semibold text-text-primary">
+                      {opcion.titulo}
+                    </h4>
+                    <p className="break-words text-xs font-medium text-text-secondary">
+                      {opcion.enfoque}
+                    </p>
+                    <p className="break-words text-xs text-text-secondary line-clamp-2">
+                      {opcion.descripcion}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
                     <Button
                       type="button"
                       variant={esActiva ? "default" : "outline"}
                       size="sm"
-                      disabled={!editar}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSeleccionarImagen(opcion);
-                      }}
-                      className="h-6 text-[10px] px-2 font-medium"
+                      disabled={!editar || !opcion.habilitada}
+                      aria-label={`Asignar ${opcion.titulo}`}
+                      onClick={() => handleSeleccionarImagen(opcion)}
                     >
                       {esActiva ? "Asignada" : "Asignar"}
                     </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={!editar}
+                      aria-label={`Eliminar ${opcion.titulo}`}
+                      onClick={() =>
+                        setConfirmacion({
+                          tipo: "eliminar",
+                          id: opcion.id,
+                          titulo: opcion.titulo,
+                        })
+                      }
+                      className="text-xs text-[var(--text-tertiary)] hover:text-[var(--danger)]"
+                    >
+                      <Trash2 className="size-3.5" aria-hidden="true" />
+                      Eliminar
+                    </Button>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
-        </div>
+        </section>
 
-        {/* ================= 6. ASIGNACIÓN DE IMAGEN EXTERNA / URL ================= */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-2.5">
-          <div className="flex items-center gap-2">
-            <LinkIcon className="size-4 text-[var(--ember)]" />
-            <span className="text-xs font-bold text-[var(--text-primary)]">
-              Asignar Imagen Personalizada vía URL o Ruta Local
-            </span>
-          </div>
-          <p className="text-[11px] text-[var(--text-secondary)]">
-            Puedes vincular una fotografía externa o alojada en la plataforma (ej. `/images/...` o `https://...`) para {espacioActivo.nombre}.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              type="text"
-              value={urlPersonalizada}
-              onChange={(e) => setUrlPersonalizada(e.target.value)}
-              placeholder="https://ejemplo.gov.co/foto-comunitaria.webp o /images/..."
-              disabled={!editar}
-              className="text-xs flex-1"
-            />
-            <Button
-              type="button"
-              variant="default"
-              size="sm"
-              disabled={!editar || !urlPersonalizada.trim()}
-              onClick={handleAplicarUrlPersonalizada}
-              className="text-xs h-9 shrink-0 gap-1.5"
-            >
-              <Check className="size-3.5" />
-              Aplicar a {espacioActivo.nombre}
-            </Button>
-          </div>
-        </div>
       </div>
 
       {/* ================= 7. CALIBRACIÓN GLOBAL DE INTENSIDAD (OPACIDAD) ================= */}
@@ -630,7 +1070,7 @@ export function GestorHerosPlataforma({
               onClick={() => {
                 setOpacidad(preset.valor);
                 toast.success(`Intensidad ambiental calibrada al ${preset.valor}%`);
-              }}
+                        }}
               className="h-8 text-xs font-medium"
             >
               {preset.etiqueta}

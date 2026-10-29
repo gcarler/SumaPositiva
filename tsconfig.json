@@ -44,6 +44,7 @@
     "examples",
     "backend",
     "venv",
-    "docs"
+    "docs",
+    "bridge"
   ]
 }

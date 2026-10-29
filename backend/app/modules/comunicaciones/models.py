@@ -47,9 +47,7 @@ class TareaComunicacion(Base):
     entregables: Mapped[str] = mapped_column(Text, nullable=False, default="")
     fecha_inicio: Mapped[date] = mapped_column(Date, nullable=False)
     fecha_fin: Mapped[date] = mapped_column(Date, nullable=False)
-    estado: Mapped[str] = mapped_column(
-        String(50), nullable=False, default="pendiente", server_default="pendiente"
-    )
+    estado: Mapped[str] = mapped_column(String(50), nullable=False, default="pendiente", server_default="pendiente")
     responsable: Mapped[str] = mapped_column(
         String(150),
         nullable=False,
@@ -57,9 +55,7 @@ class TareaComunicacion(Base):
         server_default="Equipo de Comunicaciones",
     )
     orden: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
-    creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
-    )
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
     actualizado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

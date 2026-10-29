@@ -104,9 +104,7 @@ async def descargar(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
             out.append(
                 {
                     **entry,
-                    "estado_descarga": "error_formato_excel"
-                    if es_excel_catalogo
-                    else "formato_no_excel",
+                    "estado_descarga": "error_formato_excel" if es_excel_catalogo else "formato_no_excel",
                     "sha256": hashlib.sha256(data).hexdigest(),
                     "bytes": len(data),
                 }
@@ -153,9 +151,7 @@ def agrupar_por_sha256(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 ]
             )
         )
-        primary["rutas_drive"] = list(
-            dict.fromkeys([*primary.get("rutas_drive", []), *entry.get("rutas_drive", [])])
-        )
+        primary["rutas_drive"] = list(dict.fromkeys([*primary.get("rutas_drive", []), *entry.get("rutas_drive", [])]))
         primary["drive_file_ids"] = list(
             dict.fromkeys([*primary.get("drive_file_ids", []), *entry.get("drive_file_ids", [])])
         )
@@ -194,15 +190,11 @@ async def ingerir_bd(entries: list[dict[str, Any]]) -> dict[str, Any]:
                             )
                         )
                         metadata["rutas_drive"] = list(
-                            dict.fromkeys(
-                                [*metadata.get("rutas_drive", []), *entry.get("rutas_drive", [])]
-                            )
+                            dict.fromkeys([*metadata.get("rutas_drive", []), *entry.get("rutas_drive", [])])
                         )
                         dimensions = list(entry.get("dimensiones_seguridad_humana", []))
                         archive.dimensiones_seguridad_humana = dimensions
-                        archive.periodo_gobierno = archive.periodo_gobierno or entry.get(
-                            "periodo_gobierno"
-                        )
+                        archive.periodo_gobierno = archive.periodo_gobierno or entry.get("periodo_gobierno")
                         archive.vigencia = archive.vigencia or entry.get("vigencia_drive")
                         metadata.update(
                             {
@@ -270,9 +262,7 @@ async def ingerir_bd(entries: list[dict[str, Any]]) -> dict[str, Any]:
                         resumen["hojas"] += result["resumen"]["hojas"]
                         resumen["lotes"] += 1
                     if result["archivos_con_error"]:
-                        errores.extend(
-                            {"id": entry["id"], **error} for error in result["archivos_con_error"]
-                        )
+                        errores.extend({"id": entry["id"], **error} for error in result["archivos_con_error"])
                     if result["archivos_procesados"]:
                         existentes.add(entry["sha256"])
                 except Exception as exc:  # keep ingesting unrelated source files
@@ -307,8 +297,7 @@ async def sincronizar_metadatos_bd(entries: list[dict[str, Any]]) -> dict[str, i
                     {
                         "origen_drive": "GOOGLE_DRIVE_SECTOR_SEGURIDAD",
                         "dimensiones_seguridad_humana": dimensions,
-                        "periodo_gobierno": archive.periodo_gobierno
-                        or entry.get("periodo_gobierno"),
+                        "periodo_gobierno": archive.periodo_gobierno or entry.get("periodo_gobierno"),
                         "vigencia_drive": archive.vigencia or entry.get("vigencia_drive"),
                         "drive_file_ids": list(
                             dict.fromkeys(
@@ -319,9 +308,7 @@ async def sincronizar_metadatos_bd(entries: list[dict[str, Any]]) -> dict[str, i
                             )
                         ),
                         "rutas_drive": list(
-                            dict.fromkeys(
-                                [*metadata.get("rutas_drive", []), *entry.get("rutas_drive", [])]
-                            )
+                            dict.fromkeys([*metadata.get("rutas_drive", []), *entry.get("rutas_drive", [])])
                         ),
                     }
                 )
@@ -332,9 +319,7 @@ async def sincronizar_metadatos_bd(entries: list[dict[str, Any]]) -> dict[str, i
                 rows = list(
                     (
                         await session.scalars(
-                            select(RegistroTriadaNormalizado).where(
-                                RegistroTriadaNormalizado.archivo_id == archive.id
-                            )
+                            select(RegistroTriadaNormalizado).where(RegistroTriadaNormalizado.archivo_id == archive.id)
                         )
                     ).all()
                 )
@@ -381,9 +366,7 @@ async def main() -> None:
         raise SystemExit(f"Se esperaba catálogo de 1.383 entradas; hay {len(catalog)}")
     enriched = [enriquecer_entrada_catalogo(item) for item in catalog]
     books = [item for item in enriched if not item.get("is_folder")]
-    LOG.info(
-        "Descargando %s archivos del catálogo con hasta %s trabajadores", len(books), MAX_WORKERS
-    )
+    LOG.info("Descargando %s archivos del catálogo con hasta %s trabajadores", len(books), MAX_WORKERS)
     result = await descargar(books)
     grouped = agrupar_por_sha256(result)
     by_id = {item["id"]: item for item in result}
@@ -401,19 +384,13 @@ async def main() -> None:
                     "bytes": None,
                 }
             )
-    args.catalogo.write_text(
-        json.dumps(full_catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    args.catalogo.write_text(json.dumps(full_catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     summary: dict[str, Any] = {
         "catalogo_entradas": len(full_catalog),
         "archivos_intentados": len(books),
         "descargas": dict(Counter(item["estado_descarga"] for item in result)),
         "magic_bytes": dict(
-            Counter(
-                item.get("extension_detectada")
-                for item in result
-                if item.get("extension_detectada")
-            )
+            Counter(item.get("extension_detectada") for item in result if item.get("extension_detectada"))
         ),
         "archivos_locales": len(list(ARCHIVOS.glob("*"))),
         "bytes_locales": sum(p.stat().st_size for p in ARCHIVOS.glob("*") if p.is_file()),
@@ -432,9 +409,7 @@ async def main() -> None:
                     "sincronizacion_metadatos_bd": await sincronizar_metadatos_bd(grouped),
                 }
             )
-            RESUMEN.write_text(
-                json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-            )
+            RESUMEN.write_text(json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print(json.dumps(prior["sincronizacion_metadatos_bd"], ensure_ascii=False, indent=2))
             return
         elif args.reintentar_fallos_bd:
@@ -454,9 +429,7 @@ async def main() -> None:
             retry = [item for item in grouped if set(item.get("drive_file_ids", [])) & failed_ids]
             summary["reintento_bd"] = await ingerir_bd(retry)
             prior.update(summary)
-            RESUMEN.write_text(
-                json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-            )
+            RESUMEN.write_text(json.dumps(prior, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             print(json.dumps(summary, ensure_ascii=False, indent=2))
             return
         else:

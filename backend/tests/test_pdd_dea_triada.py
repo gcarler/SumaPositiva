@@ -9,9 +9,12 @@ import pytest
 
 from app.modules.compromisos import pdd_dea_service as pdd_dea_module
 from app.modules.compromisos.dea_econometria_service import _bh, _lp
+from app.modules.compromisos.ipc_deflactor_polis import factor_desde_diciembre_2019
 from app.modules.compromisos.pdd_dea_service import (
     CANONICAL_2016,
     PPI_2020_2019_COP,
+    PPI_2020_PILLARS,
+    PPI_2020_TABLA_TOTAL_2019_COP,
     PPI_2020_TOTAL_2019_COP,
     PPI_2024,
     PddDeaService,
@@ -19,11 +22,13 @@ from app.modules.compromisos.pdd_dea_service import (
     _build_state,
     _gini,
     _hhi,
+    _line_frontier,
     _line_key,
     _macroprojects,
     _malmquist_interplan,
     _money_factor,
     _parse_cop,
+    _pdl_locality_frontier,
     _rank_entities,
 )
 from app.modules.compromisos.router import router
@@ -58,9 +63,13 @@ def test_ppi_2024_total_oficial():
     assert sum(PPI_2024.values()) == 12_800_853_474_855
 
 
-def test_ppi_2020_total_oficial_en_pesos_constantes_2019():
+def test_ppi_2020_conserva_tres_totales_documentales_en_conflicto():
     assert PPI_2020_TOTAL_2019_COP == 6_022_982_600_000
+    assert PPI_2020_TABLA_TOTAL_2019_COP == 6_022_982_660_000
     assert sum(PPI_2020_2019_COP.values()) == 6_022_982_500_000
+    assert sum(PPI_2020_PILLARS.values()) == PPI_2020_TOTAL_2019_COP
+    assert PddDeaService._plan_ppi_constant("PDD_2020_2023") is None
+    assert PddDeaService._plan_ppi_nominal("PDD_2020_2023") is None
 
 
 def test_parse_cop_colombiano_miles_y_decimal():
@@ -72,9 +81,32 @@ def test_parse_cop_colombiano_miles_y_decimal():
 def test_factor_ipc_a_base_2025_y_anio_base():
     assert _money_factor(2025) == 1
     assert _money_factor(2024) > 1
+    assert _money_factor(2026) is None
+    assert _money_factor(2027) is None
+    assert PddDeaService._plan_ppi_constant("PDD_2024_2027") is None
+    assert PddDeaService._plan_ppi_constant("PDL_1_2024_2027") is None
 
 
-def test_pdd_cache_v11_persists_payload_and_serialized_bytes(tmp_path, monkeypatch):
+def test_fronteras_no_usen_ppi_futuro_como_gasto_observado():
+    rows = [
+        {
+            "entidad": "Alcaldía Local Histórica y del Caribe Norte",
+            "vigencia": 2026,
+            "avance_norm": 80,
+            "linea_norm": "Seguridad Humana",
+            "indicador": "Homicidios",
+        }
+    ]
+    state = {"financial": {}, "goals_by_plan": {"PDD_2024_2027": rows}}
+    lineas = _line_frontier(rows, state, "conciliado_ppi")
+    assert lineas[0]["insumo_cop"] is None
+    assert lineas[0]["estado"] == "SIN_IPC_ANUAL_COMPLETO"
+    localidades = _pdl_locality_frontier(state)
+    assert localidades["estado_dea"] == "NO_ESTIMABLE_PPI_2026_2027_SIN_IPC_OBSERVADO"
+    assert all("theta_bcc" not in item for item in localidades["dmus"])
+
+
+def test_pdd_cache_v12_persists_payload_and_serialized_bytes(tmp_path, monkeypatch):
     cache_file = tmp_path / "pdd-cache.json"
     monkeypatch.setattr(pdd_dea_module, "CACHE_V11", cache_file)
     monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", {})
@@ -88,19 +120,30 @@ def test_pdd_cache_v11_persists_payload_and_serialized_bytes(tmp_path, monkeypat
     assert pdd_dea_module._cached(key) == payload
     assert pdd_dea_module._DISK_CACHE == {pdd_dea_module._disk_key(key): payload}
     assert cache_file.exists()
-    assert '"version":11' in cache_file.read_text()
+    assert '"version":12' in cache_file.read_text()
     assert pdd_dea_module._disk_key(key) in pdd_dea_module._RAW_JSON_BYTES
+
+
+def test_cache_financiero_v11_no_reutiliza_factores_obsoletos(tmp_path, monkeypatch):
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text(json.dumps({"version": 11, "payloads": {"obsoleto": {"valor": 1}}}))
+    monkeypatch.setattr(pdd_dea_module, "CACHE_V11", cache_file)
+    monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", None)
+    assert pdd_dea_module._read_disk_cache() == {}
 
 
 def test_pesos_constantes_base_2024_usa_indices_y_variaciones_reales():
     series = PddDeaService._comparativa_pesos_constantes_base_2024()
     by_plan = {row["codigo_plan"]: row for row in series}
     assert len(series) == 5
-    assert by_plan["PDD_2012_2015"]["indice_ipc_base_2024"] == 53.4
-    assert by_plan["PDD_2016_2019"]["indice_ipc_base_2024"] == 65.8
-    assert by_plan["PDD_2020_2023"]["indice_ipc_base_2024"] == 81.2
-    assert by_plan["PDD_2024_2027"]["indice_ipc_base_2024"] == 100.0
-    assert by_plan["PDD_2024_2027"]["ppi_constante_base_2024_cop"] == sum(PPI_2024.values())
+    assert by_plan["PDD_2012_2015"]["indice_ipc_base_2024"] != 53.4
+    assert by_plan["PDD_2013_2015"]["estado_comparabilidad"] == "FLUJOS_ANUALES_DEFLACTADOS"
+    assert by_plan["PDD_2020_2023"]["estado_comparabilidad"] == "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+    assert by_plan["PDD_2020_2023"]["ppi_constante_base_2024_cop"] is None
+    assert by_plan["PDD_2020_2023"]["suma_anual_convertida_base_2024_cop"] > 0
+    assert by_plan["PDD_2024_2027"]["indice_ipc_base_2024"] is None
+    assert by_plan["PDD_2024_2027"]["ppi_constante_base_2024_cop"] is None
+    assert by_plan["PDD_2024_2027"]["ppi_corriente_cop"] == sum(PPI_2024.values())
     assert by_plan["PDD_2012_2015"]["variacion_real_vs_plan_anterior_pct"] is None
     assert by_plan["PDD_2016_2019"]["variacion_real_vs_plan_anterior_pct"] is not None
 
@@ -243,10 +286,7 @@ def test_line_alias_normalization():
     }
     assert _line_key("0.82", "PDD_2020_2023") == "Eje Transversal: Finanzas y Gobernanza"
     assert _line_key("# DE VIVIENDAS ENTREGADAS 2018 Junio", "PDD_2024_2027") == "2. Vida Digna"
-    assert (
-        _line_key("FORMATO PLAN ACCION / PLAN ACCION IPCC 2019", "PDD_2016_2019")
-        == CANONICAL_2016[7]
-    )
+    assert _line_key("FORMATO PLAN ACCION / PLAN ACCION IPCC 2019", "PDD_2016_2019") == CANONICAL_2016[7]
 
 
 def test_tripartite_progress_imputes_verified_sister_rows():
@@ -352,41 +392,37 @@ def test_official_catalog_extraction_preserves_2024_ppi_rows_and_eight_plans():
         "PDD_2016_2019": 4_331_941_000_000,
     }
     for plan in plans:
-        assert plan["ppi_total_corriente_cop"] > 0
-        assert plan["ppi_total_constante_2025_cop"] > 0
-        assert plan["metadatos"]["ppi_estado"] == "OFICIAL_EXTRAIDO"
+        if plan["codigo_plan"] == "PDD_2020_2023":
+            assert plan["ppi_total_corriente_cop"] is None
+            assert plan["metadatos"]["suma_anual_convertida_corriente_cop"] > 0
+        else:
+            assert plan["ppi_total_corriente_cop"] > 0
+        if plan["codigo_plan"].endswith("2024_2027") or plan["codigo_plan"] == "PDD_2020_2023":
+            assert plan["ppi_total_constante_2025_cop"] is None
+        else:
+            assert plan["ppi_total_constante_2025_cop"] > 0
+        assert plan["metadatos"]["ppi_estado"] == (
+            "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+            if plan["codigo_plan"] == "PDD_2020_2023"
+            else "OFICIAL_EXTRAIDO"
+        )
     assert {
-        p["codigo_plan"]: p["ppi_total_corriente_cop"]
-        for p in plans
-        if p["codigo_plan"] in expected_ppi
+        p["codigo_plan"]: p["ppi_total_corriente_cop"] for p in plans if p["codigo_plan"] in expected_ppi
     } == expected_ppi
-    assert (
-        sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "LINEA" for row in hierarchy)
-        == 6
+    plan_2020 = next(p for p in plans if p["codigo_plan"] == "PDD_2020_2023")
+    assert plan_2020["metadatos"]["suma_anual_convertida_promedio_2025_cop"] == pytest.approx(
+        sum(PPI_2020_2019_COP.values()) * float(factor_desde_diciembre_2019(2025))
     )
-    assert (
-        sum(
-            row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "IMPULSOR"
-            for row in hierarchy
-        )
-        == 42
-    )
-    assert (
-        sum(
-            row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "PROGRAMA"
-            for row in hierarchy
-        )
-        == 188
-    )
+    assert plan_2020["metadatos"]["total_tabla_base_diciembre_2019_cop"] == PPI_2020_TABLA_TOTAL_2019_COP
+    assert sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "LINEA" for row in hierarchy) == 6
+    assert sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "IMPULSOR" for row in hierarchy) == 42
+    assert sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "PROGRAMA" for row in hierarchy) == 188
     assert len(metas) > 0
 
 
 def test_quantified_ocr_extraction_covers_2012_and_2016_plans():
     _, _, metas = extract_catalog()
-    counts = {
-        plan: sum(row["codigo_plan"] == plan for row in metas)
-        for plan in ("PDD_2012_2015", "PDD_2016_2019")
-    }
+    counts = {plan: sum(row["codigo_plan"] == plan for row in metas) for plan in ("PDD_2012_2015", "PDD_2016_2019")}
     assert counts["PDD_2012_2015"] > 0
     assert counts["PDD_2016_2019"] > 0
     old_ocr_rows = [
@@ -527,9 +563,7 @@ def test_pdt_ai_summary_is_included_in_lab_and_executive_payloads(tmp_path, monk
         "generado_en": "2026-01-01T00:00:00+00:00",
         "dea_scores": {
             "modelo": "DEA CCR/BCC",
-            "resultados_dmu": [
-                {"dmu": "Secretaría de Salud|2024", "theta_ccr": 0.8, "theta_bcc": 0.9}
-            ],
+            "resultados_dmu": [{"dmu": "Secretaría de Salud|2024", "theta_ccr": 0.8, "theta_bcc": 0.9}],
             "malmquist": {"pares": [{"MPI": 1.1}]},
         },
         "nlp_coherence": {

@@ -1,0 +1,257 @@
+{
+  "esquema": "polis.evidencia_integracion_fuentes_ollamacodex.v1",
+  "tarea": "OL-FUENTES-03",
+  "estado": "especificacion_pendiente_revision_e_implementacion",
+  "fecha": "2026-10-25",
+  "agente": "Ollamacodex (sesion =codex:0.0)",
+  "entradas_leidas": [
+    {
+      "ruta": "bridge/65_schema_clasificacion_fuentes_ollamacodex.json",
+      "sha256": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+      "bytes": 30068,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+      "sha256": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+      "bytes": 414201,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/65_contrato_ciclo_fuentes_ollamacodex.md",
+      "sha256": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+      "bytes": 10275,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/65_entrega_ollamacodex_clasificacion_fuentes.md",
+      "sha256": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+      "bytes": 6745,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/70_revision_final_clasificacion_fuentes.json",
+      "sha256": "2583c59f5ec558551e7e2ff950955c66e94c73c3d6a6f80b1c8933e6c5da44fc",
+      "bytes": 3385,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/70_revision_final_clasificacion_fuentes.md",
+      "sha256": "838d4ef5bcb3ff26b457c7d7ae606b741df8baf66fa83af0330048f9dc61f9fe",
+      "bytes": 3759,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/71_tarea_opencode_integracion_catalogo_fuentes.md",
+      "sha256": "8ba59f39b8f560da855f629450db91dc9a441d608b1e13e21fc5b4aed8f45306",
+      "bytes": 6679,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/72_revision_preventiva_integracion_fuentes_opencode.md",
+      "sha256": "dc132c84c5cc095cc3c4cf2f05d4f09b69c39c832d0a94a7f7080874d23358ff",
+      "bytes": 24236,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/72_matriz_correspondencia_catalogo_planificador.json",
+      "sha256": "03c77c754a179d2b2531542aee3c4d341079a6017d4caa0ba2f312b1e30eee67",
+      "bytes": 44450,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/72_evidencia_revision_fuentes_opencode.json",
+      "sha256": "ec1ab27a44064382b92bb9082916efa0b086361d31aa2231e4c217e75a86ea15",
+      "bytes": 12483,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/78_revision_opencode_integracion_fuentes_r1.md",
+      "sha256": "7ca5b13d8d3727a90b00cff8df1e4eb9d1f44023fde694d7a9f5d3efd7a76e6c",
+      "bytes": 7448,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/58_evidencia_adquisicion_fuentes.json",
+      "sha256": "c5861d20a618de5376cb5489e274876d4a22a671dee900b17e0c950a9b172e7e",
+      "bytes": 65987,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "bridge/58_resultados_descargas.csv",
+      "sha256": "4f1ec29ab5bffe45c9a14ca1fca88fc53d057ced63a655e622efe3e156a2def1",
+      "bytes": 5622,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/planificador_fuentes_politica.py",
+      "sha256": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+      "bytes": 12240,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/registro_descargas_polis.py",
+      "sha256": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd",
+      "bytes": 8427,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/adquisicion_fuentes_polis.py",
+      "sha256": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3",
+      "bytes": 21172,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/scripts/planificar_fuentes_politica.py",
+      "sha256": "b1423ed6eda1b36a0fb38c48366476bddba5da5ff64d9ea7138eea8cd135b0a4",
+      "bytes": 2359,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/scripts/adquirir_fuentes_politica.py",
+      "sha256": "a8986ada9a6f7a2d7a93838608b153d29fe63d8e7e348fc9595886656cb83184",
+      "bytes": 3051,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/corte_datos_polis.py",
+      "sha256": "16cc4fd6b3aecf423f24e4bcea236728aa56f21f16ce6e14ad44012bb8be5f0f",
+      "bytes": 4809,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/contexto_corte_polis.py",
+      "sha256": "3daa460376e0b0fa3bb005445513c557e388dbdeb8209a0648e2fc1c94261a58",
+      "bytes": 850,
+      "leido_localmente": true
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/orquestador_grafo.py",
+      "sha256": "58a2e6daecc382825fa51e7ef0315b5a675aef3042dcedac737550e9bc3855f5",
+      "bytes": 39006,
+      "leido_localmente": true
+    }
+  ],
+  "catalogo": {
+    "fichas_total": 63,
+    "fichas_pr": 20,
+    "fichas_locales": 43,
+    "clases_registro": {
+      "institucion": 2,
+      "sistema": 13,
+      "portal": 2,
+      "indicador": 2,
+      "encuesta": 1,
+      "serie": 43
+    },
+    "campos_primer_nivel_exactos": [
+      "id_ficha",
+      "producto_id",
+      "nombre",
+      "clase_registro",
+      "custodio_declarado",
+      "naturaleza",
+      "pais_jurisdiccion_institucion",
+      "evidencia_atribucion",
+      "ambito_institucional",
+      "cobertura_dato",
+      "territorios",
+      "poblaciones",
+      "unidades",
+      "anios",
+      "alias",
+      "vigencia",
+      "verificacion",
+      "urls",
+      "procedencia",
+      "sha_entrada",
+      "estado",
+      "relaciones_candidatas",
+      "conciliacion",
+      "retrospectiva",
+      "vinculos_rol",
+      "origen_id",
+      "origen_url",
+      "origen_sha256",
+      "ambitos_originales",
+      "indicadores_originales",
+      "unidades_originales",
+      "anios_originales",
+      "revisiones",
+      "atribucion",
+      "referencia_captura",
+      "temporalidad",
+      "producto_estadistico",
+      "mision_institucional",
+      "coberturas",
+      "sha_contenido_declarado"
+    ],
+    "campos_primer_nivel_count": 40,
+    "producto_estadistico_subcampos": [
+      "proposito",
+      "definicion_indicador",
+      "unidad_observacion",
+      "universo",
+      "poblacion_referencia",
+      "reglas_inclusion_exclusion",
+      "tipificacion",
+      "documentacion",
+      "estado",
+      "unidades_medida_declaradas"
+    ],
+    "producto_estadistico_subcampos_count": 10,
+    "capturas_58_count": 28,
+    "capturas_58_verificadas": false,
+    "capturas_58_nivel_verificacion": "metadatos_sin_lectura_de_bytes_analiticos"
+  },
+  "58_reconciliado": {
+    "archivos_http_y_resultados_verificados": 163,
+    "discrepancias_sha": [],
+    "productos_capturados": 28,
+    "estado_analitico": "PENDIENTE_VALIDACION_SEMANTICA_COBERTURA_Y_CONDICIONES_USO",
+    "promocion": "NO_EJECUTADA",
+    "nota": "Integridad tecnica previa registrada por 58. No acredita validacion semantica, licencia, cobertura ni uso analytico."
+  },
+  "codigo_real": {
+    "planificador_ruta": "backend/app/modules/compromisos/planificador_fuentes_politica.py",
+    "planificador_sha256": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+    "registro_sha256": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd",
+    "adquisicion_sha256": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3",
+    "registro_keys_count": 28,
+    "planificador_importador": "backend/scripts/planificar_fuentes_politica.py",
+    "adquisicion_consumidor": "backend/scripts/adquirir_fuentes_politica.py",
+    "corte_real_usa_manifiesto_y_no_catalogo_65": true
+  },
+  "correccion_78": [
+    "poblacion no existe; solo poblaciones.",
+    "separacion fiel/parcial/sin_destino y guardia de contexto.",
+    "estado pendiente no es defecto automatico.",
+    "adquisicion para validar no exige haber validado antes.",
+    "acceso/adaptador y URL/hosts separados del campo de plan.",
+    "agregados compatibles permiten contraste; no identifican personas individuales.",
+    "unidad/universo se verifica por producto; no se presumen por institucion.",
+    "identidad territorial y alias institucional se separan.",
+    "interfaz ejecutable sin inventar datos ni APIs.",
+    "producto_estadistico se trata como subestructura con 10 subcampos."
+  ],
+  "no_ejecutado": [
+    "planificador",
+    "adquisicion",
+    "adaptadores",
+    "motores",
+    "grafo",
+    "pytest",
+    "SQL",
+    "migraciones",
+    "red",
+    "commit",
+    "push",
+    "despliegue"
+  ],
+  "no_modificado": [],
+  "saludas": [
+    "bridge/92_especificacion_ollamacodex_integracion_catalogo_planificador.md",
+    "bridge/92_matriz_ollamacodex_catalogo_planificador.json",
+    "bridge/92_evidencia_ollamacodex_integracion_fuentes.json"
+  ]
+}

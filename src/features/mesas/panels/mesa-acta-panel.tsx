@@ -52,12 +52,12 @@ export function MesaActaPanel({
   const mesa = mesaStore ?? {
     id: props.mesaId,
     nombre: mesaAgenda?.nombre || `Mesa ${props.mesaId}`,
-    fecha: mesaAgenda?.fecha || "2026-10-15",
-    lugar: mesaAgenda?.lugar || "Cartagena de Indias",
+    fecha: mesaAgenda?.fecha || "Por definir",
+    lugar: mesaAgenda?.lugar || "Por definir",
     entidad: mesaAgenda?.responsable || "Secretaría de Planeación Distrital",
     facilitador: "Equipo de Facilitación Distrital",
     totalAsistentes: 0,
-    horario: mesaAgenda ? `${mesaAgenda.horaInicio} – ${mesaAgenda.horaFin}` : "08:30 – 12:00",
+    horario: mesaAgenda && mesaAgenda.horaInicio !== "Por definir" ? `${mesaAgenda.horaInicio} – ${mesaAgenda.horaFin}` : "Por definir",
     descripcion: mesaAgenda?.observaciones || "",
     dimensionOnu: mesaAgenda?.dimensionesONU[0] || "Seguridad Personal",
     tipoMesa: mesaAgenda?.tipo || "territorial",
@@ -161,8 +161,11 @@ export function MesaActaPanel({
   };
 
   const fechaFormateada = useMemo(() => {
+    if (!mesa.fecha || mesa.fecha === "Por definir") return "Por definir";
     try {
-      return format(new Date(`${mesa.fecha}T12:00:00`), "EEEE, d 'de' MMMM 'de' yyyy", {
+      const d = new Date(mesa.fecha.includes("T") ? mesa.fecha : `${mesa.fecha.slice(0, 10)}T12:00:00`);
+      if (isNaN(d.getTime())) return "Por definir";
+      return format(d, "EEEE, d 'de' MMMM 'de' yyyy", {
         locale: es,
       });
     } catch {
@@ -847,8 +850,10 @@ export function MesaActaPanel({
               </div>
             </div>
 
-            {/* Sello Criptográfico Oficial SHA-256 (AUD-SYNC-01) */}
-            {(actaDisponible || mesa.sha256Acta) && (
+            {/* Sello Criptográfico Oficial SHA-256 — solo el hash real de la
+                BD. TCA-07: si el acta aún no está certificada, no se muestra
+                ninguna firma de respaldo; se informa el estado real. */}
+            {mesa.sha256Acta ? (
               <div className="mt-6 rounded-xl border border-success/30 bg-success-soft/20 p-4 space-y-1.5 font-mono text-2xs">
                 <div className="flex items-center gap-2 text-success font-semibold text-xs font-sans">
                   <ShieldCheck className="size-4" />
@@ -856,11 +861,23 @@ export function MesaActaPanel({
                 </div>
                 <div className="text-text-secondary break-all">
                   <span className="font-semibold text-text-primary">Firma Criptográfica SHA-256: </span>
-                  {mesa.sha256Acta || "d9a712f5a6b8c4e0987654321fedcba0123456789abcdef0123456789abcdef0"}
+                  {mesa.sha256Acta}
                 </div>
                 <div className="text-text-tertiary font-sans text-3xs">
                   Sellado institucional digital permanente registrado en la pista forense distrital de Cartagena.
                 </div>
+              </div>
+            ) : (
+              <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 space-y-1">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)] font-sans">
+                  <ShieldCheck className="size-4 text-[var(--text-tertiary)]" />
+                  <span>Sello criptográfico pendiente de certificación</span>
+                </div>
+                <p className="text-[var(--text-tertiary)] font-sans text-xs">
+                  El documento muestra el borrador en concertación; la firma SHA-256
+                  y el radicado oficiales se generan al cerrar y certificar el acta
+                  de la mesa.
+                </p>
               </div>
             )}
           </section>

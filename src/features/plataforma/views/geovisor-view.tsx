@@ -11,6 +11,8 @@ import { Notice } from "@/shared/ui/notice";
 import { plataformaApi } from "../services/plataforma-api";
 import { EstadoConsulta } from "../components/estado-consulta";
 import { GeovisorHurtosPanel } from "@/features/geovisor/components/geovisor-hurtos-panel";
+import { CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 const MapaApi = dynamic(
   () =>
@@ -21,6 +23,7 @@ const MapaApi = dynamic(
 );
 
 export function GeovisorAdministrativoView() {
+  const [vista, setVista] = useCollectionView("geovisor");
   const [seleccion, setSeleccion] = useState<string>("");
   const territorios = useQuery({
     queryKey: ["plataforma", "territorios"],
@@ -60,8 +63,7 @@ export function GeovisorAdministrativoView() {
         <GeovisorHurtosPanel />
       </section>
 
-      {/* Sección legacy de territorios conservada de manera accesible para tests automatizados */}
-      <section className="sr-only">
+      <section className="space-y-4" aria-label="División territorial registrada">
         <EstadoConsulta
           cargando={geometria.isPending}
           error={geometria.error}
@@ -76,12 +78,13 @@ export function GeovisorAdministrativoView() {
             </Notice>
           ))}
         <h2 className="text-lg font-semibold">Territorios registrados</h2>
+        <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del catálogo territorial" />
         <EstadoConsulta
           cargando={territorios.isPending}
           error={territorios.error}
           reintentar={territorios.refetch}
         />
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className={vista === "tarjetas" ? "grid gap-3 sm:grid-cols-2 xl:grid-cols-3" : "space-y-3"}>
           {territorios.data?.map((t) => (
             <li key={t.id} className="min-w-0">
               <Button
@@ -90,7 +93,10 @@ export function GeovisorAdministrativoView() {
                 onClick={() => setSeleccion(t.id)}
                 aria-pressed={seleccion === t.id}
               >
-                {t.nombre} · {t.tipo_territorio}
+                <span className="min-w-0 space-y-1">
+                  <span className="block font-semibold">{t.nombre}</span>
+                  <span className="block text-xs text-text-secondary">{t.codigo} · {t.tipo_territorio}</span>
+                </span>
               </Button>
             </li>
           ))}

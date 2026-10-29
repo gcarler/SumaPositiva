@@ -152,3 +152,27 @@ describe("HeroPageBanner Component (HERO-PAGES-03)", () => {
     expect(html).toContain('src="/images/hero/hero-dialogo-comunitario.webp"');
   });
 });
+
+
+describe("Banners y disponibilidad del catálogo (243)", () => {
+  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
+  test("deshabilitar la imagen temática por defecto también retira su fotografía de páginas sin override", () => {
+    const estado = useHeroConfigStore.getState();
+    const imagen = estado.imagenesCatalogo.find((fila) => fila.archivo === HERO_PAGES_CONFIG.barrio.imagenFondo);
+    expect(imagen).toBeDefined();
+    if (!imagen) throw new Error("Falta la imagen temática de prueba");
+    estado.toggleHabilitarImagen(imagen.id);
+    const html = renderToString(<HeroPageBanner pageKey="barrio" />);
+    expect(html).not.toContain(imagen.archivo);
+  });
+  test("una imagen personalizada retirada deja de mostrarse en la página que la utilizaba", () => {
+    const imagen = useHeroConfigStore.getState().agregarImagen({
+      titulo: "Foto local", descripcion: "Encuentro comunitario.", enfoque: "Barrio",
+      archivo: "/images/nueva-banner-243.webp", thumbnail: "",
+    });
+    useHeroConfigStore.getState().setPageImage("barrio", imagen.id);
+    expect(renderToString(<HeroPageBanner pageKey="barrio" />)).toContain(imagen.archivo);
+    useHeroConfigStore.getState().eliminarImagen(imagen.id);
+    expect(renderToString(<HeroPageBanner pageKey="barrio" />)).not.toContain(imagen.archivo);
+  });
+});

@@ -235,11 +235,11 @@ export function MesasGeovisor({
   const mesasStore = useMesasStore((s) => s.mesas);
   const [modoVista, setModoVista] = useState<ModoVistaMesas>("tabla");
 
-  // Si el backend no tiene mesas persistidas, enriquecer con las 37 mesas de la agenda oficial
+  // Si el backend no tiene mesas persistidas, enriquecer con las 35 mesas de la agenda oficial
   const mesasEfectivas: MesaGeovisor[] = useMemo(() => {
     if (mesas && mesas.length > 0) return mesas;
 
-    // Respaldo inteligente con las 37 mesas oficiales de POLIS
+    // Respaldo inteligente con las 35 mesas oficiales de POLIS
     return mesasStore.map((m) => {
       // Buscar coordenadas de referencia por territorio
       const t = TERRITORIOS_CARTAGENA.find(
@@ -261,8 +261,8 @@ export function MesasGeovisor({
       return {
         id: m.id,
         nombre: m.nombre,
-        fecha: m.fecha,
-        horario: m.horario ?? "08:30 – 12:00",
+        fecha: m.fecha ?? null,
+        horario: m.horario ?? "Por definir",
         estado: estadoGeovisor,
         realizada: m.estado === "cerrada" || m.estado === "en_curso",
         total_asistentes: calcularTotalAsistentes(m),

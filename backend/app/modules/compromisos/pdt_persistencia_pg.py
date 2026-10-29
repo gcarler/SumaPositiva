@@ -21,6 +21,8 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.core.transactions import transaction
+
 ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = ROOT / "data" / "planes_desarrollo"
 CACHE_PATH = DATA_DIR / "cache_pdt_ai_evaluator.json"
@@ -118,11 +120,7 @@ def _obtener_resumen_hoshin_fair(run_data: dict[str, Any]) -> dict[str, Any]:
         fair = hoshin.get("evaluacion_fair") or {}
         bowling = hoshin.get("bowling_charts") or []
         catchball = hoshin.get("catchball_sesiones") or []
-        rojos = sum(
-            1
-            for bc in bowling
-            if isinstance(bc, dict) and bc.get("color_semaforo") == SEMAFORO_ROJO
-        )
+        rojos = sum(1 for bc in bowling if isinstance(bc, dict) and bc.get("color_semaforo") == SEMAFORO_ROJO)
         return {
             "fair_global_index": float(fair.get("fair_global_index") or 0.0),
             "focus_score": float(fair.get("focus_score") or 0.0),
@@ -195,14 +193,10 @@ def _construir_resumen_ejecutivo(run_data: dict[str, Any]) -> dict[str, Any]:
     mission_creep = nlp.get("alertas_mission_creep") or []
     traps = spatial.get("trampas_territoriales_gestion_publica") or []
     high_risk_series = forecast.get("alto_riesgo_indicadores") or [
-        item.get("indicador")
-        for item in (forecast.get("series") or [])
-        if (item.get("ISRI") or 0.0) > 0.40
+        item.get("indicador") for item in (forecast.get("series") or []) if (item.get("ISRI") or 0.0) > 0.40
     ]
     fuentes = run_data.get("trazabilidad_fuentes") or run_data.get("source_counts") or {}
-    version_metodologica = str(
-        run_data.get("version_metodologica") or "PDT-AI-EVALUATOR-2026.10-EAF"
-    )
+    version_metodologica = str(run_data.get("version_metodologica") or "PDT-AI-EVALUATOR-2026.10-EAF")
     fingerprint_fuentes_sha256 = str(
         run_data.get("fingerprint_fuentes_sha256")
         or run_data.get("fingerprint_sources_sha256")
@@ -255,115 +249,60 @@ async def _run_with_session(
     db: AsyncSession | None,
     fn,
 ) -> Any:
-    """Ejecuta una corrutina sobre la sesión entregada o abre una sesión propia."""
+    """Ejecuta la operación sobre la sesión entregada o dentro de un límite propio.
+
+    Con sesión inyectada, el límite transaccional pertenece al caso de uso que
+    llamó: aquí no se confirma ni se revierte. Con sesión propia, la operación
+    se delimita con `core.transactions.transaction` (éxito → commit; fallo o
+    cancelación → rollback completo). El llamador nunca cede la propiedad.
+    """
     if db is not None:
-        return await fn(db, False)
+        return await fn(db)
     from app.core.config import Settings
 
     engine = create_async_engine(Settings().async_database_url, pool_pre_ping=True)
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     try:
         async with sessions() as session:
-            return await fn(session, True)
+            async with transaction(session):
+                return await fn(session)
     finally:
         await engine.dispose()
 
 
 async def asegurar_tablas_pdt_ai_pg(db: AsyncSession | None = None) -> None:
-    """Crea de forma idempotente las tablas seguimiento.pdt_ai_evaluaciones y
-    seguimiento.pdt_ai_checkpoints_hitl en PostgreSQL.
+    """Verifica que las tablas de persistencia PDT-AI existan en el esquema seguimiento.
+
+    La creación de tablas e índices pertenece al lineage de migraciones Alembic
+    (revisión `0068_tablas_pdt_ai_evaluator`); el runtime solo comprueba el
+    catálogo. Si la migración no se aplicó, la operación falla de inmediato y no
+    crea artefactos DDL fuera del lineage (hallazgo BD-1 / T4 del plan de
+    remediación 2026-10-20).
     """
 
-    async def _op(session: AsyncSession, owns_session: bool) -> None:
-        await session.execute(text("CREATE SCHEMA IF NOT EXISTS seguimiento"))
-        await session.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS seguimiento.pdt_ai_evaluaciones (
-                    id UUID PRIMARY KEY,
-                    thread_id VARCHAR(120) UNIQUE NOT NULL,
-                    jurisdiction VARCHAR(255) NOT NULL,
-                    time_horizon VARCHAR(64) NOT NULL,
-                    total_budget NUMERIC(20, 2) NOT NULL,
-                    total_dmus INTEGER NOT NULL,
-                    pares_malmquist INTEGER NOT NULL,
-                    alertas_mission_creep INTEGER NOT NULL,
-                    trampas_territoriales INTEGER NOT NULL,
-                    series_alto_riesgo_isri INTEGER NOT NULL,
-                    estado_checkpointer VARCHAR(80) NOT NULL,
-                    is_valid_human BOOLEAN NOT NULL DEFAULT FALSE,
-                    sha256_payload VARCHAR(64) NOT NULL,
-                    payload_resumen JSONB NOT NULL,
-                    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    actualizado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    TABLAS_REQUERIDAS = (
+        "pdt_ai_evaluaciones",
+        "pdt_ai_checkpoints_hitl",
+        "pdt_ai_hallazgos_revision",
+    )
+
+    async def _op(session: AsyncSession) -> None:
+        faltantes = list(
+            (
+                await session.execute(
+                    text(
+                        "SELECT unnest(CAST(:tablas AS text[])) AS tabla "
+                        "EXCEPT ALL SELECT tablename FROM pg_tables WHERE schemaname = 'seguimiento'"
+                    ),
+                    {"tablas": list(TABLAS_REQUERIDAS)},
                 )
-                """
-            )
+            ).scalars()
         )
-        await session.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS seguimiento.pdt_ai_checkpoints_hitl (
-                    id UUID PRIMARY KEY,
-                    thread_id VARCHAR(120) NOT NULL,
-                    estado_checkpointer VARCHAR(80) NOT NULL,
-                    aprobado BOOLEAN,
-                    auditor VARCHAR(160),
-                    observaciones TEXT,
-                    patrones_criticos JSONB NOT NULL DEFAULT '[]'::jsonb,
-                    recomendaciones JSONB NOT NULL DEFAULT '[]'::jsonb,
-                    sha256_checkpoint VARCHAR(64) NOT NULL,
-                    registrado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-                """
+        if faltantes:
+            raise RuntimeError(
+                "Migración 0068_tablas_pdt_ai_evaluator no aplicada: faltan tablas de seguimiento: "
+                + ", ".join(sorted(faltantes))
             )
-        )
-        await session.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS seguimiento.pdt_ai_hallazgos_revision (
-                    id UUID PRIMARY KEY,
-                    id_hallazgo VARCHAR(160) NOT NULL,
-                    codigo_plan VARCHAR(64) NOT NULL DEFAULT 'PDD_2024_2027',
-                    codigo_meta VARCHAR(128) NOT NULL,
-                    dependencia VARCHAR(255),
-                    estado_revision VARCHAR(64) NOT NULL,
-                    responsable VARCHAR(255) NOT NULL,
-                    accion_correctiva_pdca TEXT NOT NULL,
-                    evidencia_subsanacion TEXT,
-                    auditor VARCHAR(160) NOT NULL,
-                    sha256_dictamen VARCHAR(64) NOT NULL,
-                    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-                """
-            )
-        )
-        await session.execute(
-            text(
-                """
-                CREATE INDEX IF NOT EXISTS idx_pdt_ai_hallazgos_revision_plan_meta
-                ON seguimiento.pdt_ai_hallazgos_revision (codigo_plan,codigo_meta,creado_en DESC)
-                """
-            )
-        )
-        await session.execute(
-            text(
-                """
-                CREATE INDEX IF NOT EXISTS idx_pdt_ai_checkpoints_hitl_thread
-                ON seguimiento.pdt_ai_checkpoints_hitl (thread_id, registrado_en DESC)
-                """
-            )
-        )
-        await session.execute(
-            text(
-                """
-                CREATE UNIQUE INDEX IF NOT EXISTS ux_pdt_ai_checkpoints_hitl_thread_sha
-                ON seguimiento.pdt_ai_checkpoints_hitl (thread_id, sha256_checkpoint)
-                """
-            )
-        )
-        if owns_session:
-            await session.commit()
 
     await _run_with_session(db, _op)
 
@@ -391,7 +330,7 @@ async def guardar_evaluacion_pdt_pg(
     record_id = uuid.uuid5(uuid.NAMESPACE_URL, f"pdt-ai-eval:{thread_id}")
     resumen_json = json.dumps(resumen, ensure_ascii=False)
 
-    async def _op(session: AsyncSession, owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         row = (
             await session.execute(
@@ -469,10 +408,6 @@ async def guardar_evaluacion_pdt_pg(
                 },
             )
         ).fetchone()
-        if owns_session:
-            await session.commit()
-        else:
-            await session.flush()
         return {
             "id": str(row.id) if row else str(record_id),
             "thread_id": thread_id,
@@ -490,9 +425,7 @@ async def guardar_evaluacion_pdt_pg(
             "payload_resumen": resumen,
             "resumen_ejecutivo": resumen,
             "creado_en": row.creado_en.isoformat() if row and row.creado_en else None,
-            "actualizado_en": (
-                row.actualizado_en.isoformat() if row and row.actualizado_en else None
-            ),
+            "actualizado_en": (row.actualizado_en.isoformat() if row and row.actualizado_en else None),
         }
 
     return await _run_with_session(db, _op)
@@ -530,7 +463,7 @@ async def registrar_checkpoint_hitl_pdt_pg(
     sha256_ckpt = _canonical_sha256(ckpt_envelope)
     ckpt_id = uuid.uuid5(uuid.NAMESPACE_URL, f"pdt-ai-ckpt:{clean_thread}:{sha256_ckpt}")
 
-    async def _op(session: AsyncSession, owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         row = (
             await session.execute(
@@ -585,10 +518,6 @@ async def registrar_checkpoint_hitl_pdt_pg(
                 },
             )
         ).fetchone()
-        if owns_session:
-            await session.commit()
-        else:
-            await session.flush()
         return {
             "id": str(row.id) if row else str(ckpt_id),
             "thread_id": clean_thread,
@@ -616,7 +545,7 @@ async def obtener_historial_auditoria_pdt_pg(
     safe_limit = max(1, min(int(limit or 50), 200))
     clean_thread = thread_id.strip() if thread_id and thread_id.strip() else None
 
-    async def _op(session: AsyncSession, _owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         eval_query = """
             SELECT id, thread_id, jurisdiction, time_horizon,
@@ -665,18 +594,12 @@ async def obtener_historial_auditoria_pdt_pg(
             )
         ).fetchall()
         hallazgo_count = (
-            await session.execute(
-                text("SELECT count(*)::int FROM seguimiento.pdt_ai_hallazgos_revision")
-            )
+            await session.execute(text("SELECT count(*)::int FROM seguimiento.pdt_ai_hallazgos_revision"))
         ).scalar_one()
 
         evaluaciones = []
         for r in eval_rows:
-            parsed_resumen = (
-                json.loads(r.payload_resumen)
-                if isinstance(r.payload_resumen, str)
-                else r.payload_resumen
-            )
+            parsed_resumen = json.loads(r.payload_resumen) if isinstance(r.payload_resumen, str) else r.payload_resumen
             evaluaciones.append(
                 {
                     "id": str(r.id),
@@ -713,9 +636,7 @@ async def obtener_historial_auditoria_pdt_pg(
                     else (r.patrones_criticos or [])
                 ),
                 "recomendaciones": (
-                    json.loads(r.recomendaciones)
-                    if isinstance(r.recomendaciones, str)
-                    else (r.recomendaciones or [])
+                    json.loads(r.recomendaciones) if isinstance(r.recomendaciones, str) else (r.recomendaciones or [])
                 ),
                 "sha256_checkpoint": str(r.sha256_checkpoint),
                 "registrado_en": (r.registrado_en.isoformat() if r.registrado_en else None),
@@ -762,6 +683,102 @@ def _dictamen_hallazgo_dict(row) -> dict[str, Any]:
     }
 
 
+async def persistir_evaluacion_y_checkpoint_pdt_pg(
+    *,
+    payload_resumen: dict[str, Any],
+    thread_id: str,
+    estado: str,
+    aprobado: bool | None,
+    auditor: str | None,
+    observaciones: str | None,
+    patrones_criticos: list[Any],
+    recomendaciones: list[Any],
+    db: AsyncSession | None = None,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Caso de uso: persiste la evaluación y su checkpoint HITL en un solo límite.
+
+    Éxito → commit único de ambas escrituras; fallo o cancelación → rollback
+    completo del conjunto (CA-5.3). Con sesión de petición inyectada, el límite
+    se delimita sobre ella; sin sesión, se abre y delimita una propia.
+    """
+
+    async def _dml(sesion: AsyncSession) -> tuple[dict[str, Any], dict[str, Any]]:
+        evaluacion = await guardar_evaluacion_pdt_pg(payload_resumen, db=sesion)
+        checkpoint = await registrar_checkpoint_hitl_pdt_pg(
+            thread_id=thread_id,
+            estado=estado,
+            aprobado=aprobado,
+            auditor=auditor,
+            observaciones=observaciones,
+            patrones_criticos=patrones_criticos,
+            recomendaciones=recomendaciones,
+            db=sesion,
+        )
+        return evaluacion, checkpoint
+
+    if db is not None:
+        async with transaction(db):
+            return await _dml(db)
+
+    from app.core.config import Settings
+
+    engine = create_async_engine(Settings().async_database_url, pool_pre_ping=True)
+    sessions = async_sessionmaker(engine, expire_on_commit=False)
+    try:
+        async with sessions() as session:
+            async with transaction(session):
+                return await _dml(session)
+    finally:
+        await engine.dispose()
+
+
+async def dictaminar_hallazgo_pdt_pg(
+    id_hallazgo: str,
+    codigo_meta: str,
+    estado_revision: str,
+    responsable: str,
+    accion_correctiva_pdca: str,
+    auditor: str,
+    codigo_plan: str = "PDD_2024_2027",
+    dependencia: str | None = None,
+    evidencia_subsanacion: str | None = None,
+    db: AsyncSession | None = None,
+) -> dict[str, Any]:
+    """Caso de uso: dictamina un hallazgo dentro del límite transaccional.
+
+    Con sesión de petición inyectada, delimita el caso de uso con
+    `core.transactions.transaction` (éxito → commit; fallo o cancelación →
+    rollback completo). Sin sesión, `_run_with_session` abre y delimita la
+    propia. La delegación interna mantiene el servicio a cargo del límite y el
+    router sin gestión de sesión.
+    """
+    if db is None:
+        return await registrar_dictamen_hallazgo_pdt_pg(
+            id_hallazgo=id_hallazgo,
+            codigo_meta=codigo_meta,
+            estado_revision=estado_revision,
+            responsable=responsable,
+            accion_correctiva_pdca=accion_correctiva_pdca,
+            auditor=auditor,
+            codigo_plan=codigo_plan,
+            dependencia=dependencia,
+            evidencia_subsanacion=evidencia_subsanacion,
+        )
+    async with transaction(db):
+        return await registrar_dictamen_hallazgo_pdt_pg(
+            id_hallazgo=id_hallazgo,
+            codigo_meta=codigo_meta,
+            estado_revision=estado_revision,
+            responsable=responsable,
+            accion_correctiva_pdca=accion_correctiva_pdca,
+            auditor=auditor,
+            codigo_plan=codigo_plan,
+            dependencia=dependencia,
+            evidencia_subsanacion=evidencia_subsanacion,
+            db=db,
+        )
+
+
 async def registrar_dictamen_hallazgo_pdt_pg(
     id_hallazgo: str,
     codigo_meta: str,
@@ -783,9 +800,7 @@ async def registrar_dictamen_hallazgo_pdt_pg(
         "estado_revision": str(estado_revision or "").strip(),
         "responsable": str(responsable or "").strip()[:255],
         "accion_correctiva_pdca": str(accion_correctiva_pdca or "").strip(),
-        "evidencia_subsanacion": str(evidencia_subsanacion).strip()
-        if evidencia_subsanacion
-        else None,
+        "evidencia_subsanacion": str(evidencia_subsanacion).strip() if evidencia_subsanacion else None,
         "auditor": str(auditor or "").strip()[:160],
     }
     for required in (
@@ -802,7 +817,7 @@ async def registrar_dictamen_hallazgo_pdt_pg(
     sha256 = _canonical_sha256(clean)
     record_id = uuid.uuid4()
 
-    async def _op(session: AsyncSession, owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         row = (
             await session.execute(
@@ -823,10 +838,6 @@ async def registrar_dictamen_hallazgo_pdt_pg(
                 {"id": record_id, **clean, "sha256_dictamen": sha256},
             )
         ).fetchone()
-        if owns_session:
-            await session.commit()
-        else:
-            await session.flush()
         return (
             _dictamen_hallazgo_dict(row)
             if row
@@ -851,7 +862,7 @@ async def listar_dictamenes_hallazgos_pdt_pg(
         "estado_revision": estado_revision.strip() if estado_revision else None,
     }
 
-    async def _op(session: AsyncSession, _owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         where = """WHERE (CAST(:codigo_plan AS varchar) IS NULL OR codigo_plan=:codigo_plan)
                     AND (CAST(:codigo_meta AS varchar) IS NULL OR codigo_meta=:codigo_meta)
@@ -900,7 +911,7 @@ async def sincronizar_cache_y_checkpoints_a_pg(
     target_cache = cache_path or CACHE_PATH
     target_ckpt = checkpoint_path or CHECKPOINT_PATH
 
-    async def _op(session: AsyncSession, owns_session: bool) -> dict[str, Any]:
+    async def _op(session: AsyncSession) -> dict[str, Any]:
         await asegurar_tablas_pdt_ai_pg(session)
         evals_synced = 0
         ckpts_synced = 0
@@ -927,24 +938,19 @@ async def sincronizar_cache_y_checkpoints_a_pg(
                             continue
                         state = entry.get("state") or {}
                         status = str(
-                            entry.get("status")
-                            or state.get("estado_checkpointer")
-                            or "COMPLETADO_SIN_BLOQUEO"
+                            entry.get("status") or state.get("estado_checkpointer") or "COMPLETADO_SIN_BLOQUEO"
                         )
                         is_valid = state.get("is_valid_human")
                         auditor = state.get("auditor") or None
                         observaciones = state.get("observaciones_auditor") or None
-                        patrones = (state.get("time_series_forecast") or {}).get(
-                            "patrones_compuestos_criticos"
-                        ) or []
+                        patrones = (state.get("time_series_forecast") or {}).get("patrones_compuestos_criticos") or []
                         recs = state.get("recommendations") or []
                         await registrar_checkpoint_hitl_pdt_pg(
                             thread_id=str(entry.get("thread_id") or t_id),
                             estado=status,
                             aprobado=(
                                 bool(is_valid)
-                                if auditor
-                                or status in {"APROBADO_POR_AUDITOR", "RECHAZADO_POR_AUDITOR"}
+                                if auditor or status in {"APROBADO_POR_AUDITOR", "RECHAZADO_POR_AUDITOR"}
                                 else None
                             ),
                             auditor=auditor,
@@ -965,11 +971,6 @@ async def sincronizar_cache_y_checkpoints_a_pg(
                             evals_synced += 1
             except (OSError, json.JSONDecodeError):
                 pass
-
-        if owns_session:
-            await session.commit()
-        else:
-            await session.flush()
 
         return {
             "evaluaciones_sincronizadas": evals_synced,

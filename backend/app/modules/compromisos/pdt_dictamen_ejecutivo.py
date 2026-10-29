@@ -105,33 +105,23 @@ def generar_dictamen_ejecutivo_pdt(
 
     normalized_filter = _normalizar(dependencia)
     dependency_names = sorted(
-        (
-            name
-            for name in by_dependency
-            if not normalized_filter or normalized_filter in _normalizar(name)
-        ),
+        (name for name in by_dependency if not normalized_filter or normalized_filter in _normalizar(name)),
         key=_normalizar,
     )
-    bootstrap_by_dmu = dea.get("bias_corrected", dea.get("bootstrap_suavizado", {})).get(
-        "por_dmu", {}
-    )
+    bootstrap_by_dmu = dea.get("bias_corrected", dea.get("bootstrap_suavizado", {})).get("por_dmu", {})
     malmquist_rows = dea.get("malmquist", {}).get("pares", [])
     traps = dea.get("spatial_lisa", diagnostico.get("spatial_lisa", {})).get(
         "trampas_territoriales_gestion_publica", []
     )
     trap_names = [
-        str(item.get("unidad_dmu") or item.get("unidad") or item)
-        if isinstance(item, dict)
-        else str(item)
+        str(item.get("unidad_dmu") or item.get("unidad") or item) if isinstance(item, dict) else str(item)
         for item in traps
     ]
     alerts = diagnostico.get("nlp_coherence", {}).get("alertas_mission_creep", [])
     similarity = diagnostico.get("nlp_coherence", {}).get("similaridad_coseno", {})
     forecast = diagnostico.get("time_series_forecast", {})
     critical_series = [
-        item
-        for item in forecast.get("series", [])
-        if item.get("ISRI") is not None and float(item["ISRI"]) > 0.40
+        item for item in forecast.get("series", []) if item.get("ISRI") is not None and float(item["ISRI"]) > 0.40
     ]
 
     def _explicitly_attributed(item: dict[str, Any], dependency: str) -> bool:
@@ -147,9 +137,7 @@ def generar_dictamen_ejecutivo_pdt(
         return False
 
     unattributed_critical = [
-        item
-        for item in critical_series
-        if not any(_explicitly_attributed(item, name) for name in dependency_names)
+        item for item in critical_series if not any(_explicitly_attributed(item, name) for name in dependency_names)
     ]
 
     briefs = []
@@ -160,19 +148,12 @@ def generar_dictamen_ejecutivo_pdt(
         dep_traps = [
             territory
             for territory in trap_names
-            if _normalizar(name) in _normalizar(territory)
-            or _normalizar(territory) in _normalizar(name)
+            if _normalizar(name) in _normalizar(territory) or _normalizar(territory) in _normalizar(name)
         ]
-        dep_malmquist = [
-            item for item in malmquist_rows if _normalizar(item.get("unidad")) == _normalizar(name)
-        ]
+        dep_malmquist = [item for item in malmquist_rows if _normalizar(item.get("unidad")) == _normalizar(name)]
         dep_critical = [item for item in critical_series if _explicitly_attributed(item, name)]
-        inefficient = any(
-            row.get("theta_bcc") is not None and float(row["theta_bcc"]) < 1 - 1e-6 for row in rows
-        )
-        bootstrap_intervals = {
-            label: bootstrap_by_dmu[label] for label in row_labels if label in bootstrap_by_dmu
-        }
+        inefficient = any(row.get("theta_bcc") is not None and float(row["theta_bcc"]) < 1 - 1e-6 for row in rows)
+        bootstrap_intervals = {label: bootstrap_by_dmu[label] for label in row_labels if label in bootstrap_by_dmu}
         briefs.append(
             {
                 "dependencia": name,
@@ -182,8 +163,7 @@ def generar_dictamen_ejecutivo_pdt(
                 "theta_bcc_promedio": _round(_mean(rows, "theta_bcc")),
                 "SE_o_promedio": _round(_mean(rows, "SE_o")),
                 "rendimientos_escala": {
-                    code: sum(row.get("rendimientos_escala") == code for row in rows)
-                    for code in ("CRS", "IRS", "DRS")
+                    code: sum(row.get("rendimientos_escala") == code for row in rows) for code in ("CRS", "IRS", "DRS")
                 },
                 "slacks": {str(row.get("dmu")): row.get("slacks", {}) for row in rows},
                 "bootstrap_simar_wilson": bootstrap_intervals,
@@ -197,32 +177,23 @@ def generar_dictamen_ejecutivo_pdt(
                 "trampas_territoriales": dep_traps,
                 "indicadores_isri_mayor_040": dep_critical,
                 "prueba_chow_2024": [
-                    {"indicador": item.get("indicador"), **(item.get("chow") or {})}
-                    for item in dep_critical
+                    {"indicador": item.get("indicador"), **(item.get("chow") or {})} for item in dep_critical
                 ],
-                "dictamen_prescriptivo": _prescription(
-                    inefficient, bool(dep_alerts), dep_traps, dep_critical
-                ),
+                "dictamen_prescriptivo": _prescription(inefficient, bool(dep_alerts), dep_traps, dep_critical),
             }
         )
 
     nlp_sectors = diagnostico.get("nlp_coherence", {}).get("sectores", [])
     multisector_rows = diagnostico.get("evaluacion_multisectorial", [])
     sector_rows_by_name = {
-        _normalizar(row.get("sector")): row
-        for row in multisector_rows
-        if isinstance(row, dict) and row.get("sector")
+        _normalizar(row.get("sector")): row for row in multisector_rows if isinstance(row, dict) and row.get("sector")
     }
     nlp_sector_by_name = {
-        _normalizar(row.get("sector")): row
-        for row in nlp_sectors
-        if isinstance(row, dict) and row.get("sector")
+        _normalizar(row.get("sector")): row for row in nlp_sectors if isinstance(row, dict) and row.get("sector")
     }
     normalized_sector = _normalizar(sector)
     selected_sectors = [
-        name
-        for name in SECTORES_GBR
-        if not normalized_sector or normalized_sector in _normalizar(name)
+        name for name in SECTORES_GBR if not normalized_sector or normalized_sector in _normalizar(name)
     ]
     sector_summaries = []
     for name in selected_sectors:
@@ -248,9 +219,7 @@ def generar_dictamen_ejecutivo_pdt(
 
     fecha = datetime.now(UTC)
     high_risk_count = sum(len(item["indicadores_isri_mayor_040"]) for item in briefs)
-    audit_count = sum(
-        bool(item["dictamen_prescriptivo"]["requiere_auditoria_focalizada"]) for item in briefs
-    )
+    audit_count = sum(bool(item["dictamen_prescriptivo"]["requiere_auditoria_focalizada"]) for item in briefs)
     summary = (
         f"Dictamen PDT para {diagnostico.get('jurisdiction', 'jurisdicción no especificada')}: "
         f"{len(briefs)} dependencia(s), {len(sector_summaries)} sector(es), "
@@ -273,9 +242,7 @@ def generar_dictamen_ejecutivo_pdt(
         "",
     ]
     if not briefs:
-        markdown_lines.append(
-            "No hay dependencias que coincidan con el filtro o con observaciones DEA disponibles."
-        )
+        markdown_lines.append("No hay dependencias que coincidan con el filtro o con observaciones DEA disponibles.")
     for item in briefs:
         markdown_lines.extend(
             [
@@ -288,8 +255,7 @@ def generar_dictamen_ejecutivo_pdt(
                 f"- Alertas NLP vinculadas: {item['nlp']['alertas_vinculadas_total']}; "
                 f"trampas territoriales: {len(item['trampas_territoriales'])}; "
                 f"indicadores ISRI críticos: {len(item['indicadores_isri_mayor_040'])}",
-                "- **Prescripción:** "
-                + " ".join(item["dictamen_prescriptivo"]["acciones_recomendadas"]),
+                "- **Prescripción:** " + " ".join(item["dictamen_prescriptivo"]["acciones_recomendadas"]),
                 "",
             ]
         )
@@ -333,9 +299,7 @@ def generar_dictamen_ejecutivo_pdt(
             "motor": diagnostico.get("motor", "PDT-AI-EVALUATOR"),
             "fuentes": diagnostico.get("trazabilidad_fuentes", {}),
             "dea_solver": dea.get("modelo"),
-            "bootstrap": dea.get("bias_corrected", dea.get("bootstrap_suavizado", {})).get(
-                "metodo"
-            ),
+            "bootstrap": dea.get("bias_corrected", dea.get("bootstrap_suavizado", {})).get("metodo"),
             "generado_en": fecha.isoformat(),
         },
     }

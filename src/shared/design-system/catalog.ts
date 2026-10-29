@@ -20,6 +20,7 @@ export const componentCatalog = [
   { name: "checkbox", source: "@/shared/ui/checkbox", status: "ready" },
   { name: "choice-group", source: "@/shared/ui/choice-group", status: "ready" },
   { name: "collapsible", source: "@/shared/ui/collapsible", status: "ready" },
+  { name: "collection-view", source: "@/shared/ui/collection-view", status: "ready" },
   { name: "command", source: "@/shared/ui/command", status: "ready" },
   { name: "context-menu", source: "@/shared/ui/context-menu", status: "ready" },
   { name: "dialog", source: "@/shared/ui/dialog", status: "ready" },

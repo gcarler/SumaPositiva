@@ -32,9 +32,7 @@ def test_roles_canonicos_sembrados(test_client: TestClient, provisionar_usuario_
                 "codigo_rol": rol_codigo,
             },
         )
-        assert resp.status_code == 201, (
-            f"Fallo al registrar usuario con rol {rol_codigo}: {resp.text}"
-        )
+        assert resp.status_code == 201, f"Fallo al registrar usuario con rol {rol_codigo}: {resp.text}"
         data = resp.json()
         assert data["correo"] == correo
         assert data["activo"] is True
@@ -176,9 +174,7 @@ async def test_registro_publico_no_concede_roles_institucionales(test_client, da
     )
     assert response.status_code == 422
     assert any(error["loc"][-1] == "codigo_rol" for error in response.json()["detail"])
-    login = test_client.post(
-        "/api/v1/identidad/login", json={"correo": correo, "contrasena": "ClaveSegura2026*"}
-    )
+    login = test_client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": "ClaveSegura2026*"})
     assert login.status_code == 401
     engine = create_async_engine(database_url, hide_parameters=True)
     try:

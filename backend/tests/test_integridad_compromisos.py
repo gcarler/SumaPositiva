@@ -3,7 +3,8 @@
 Mandato EAF:
 - Proscripción absoluta de avances, observaciones cualitativas y BPINs fabricados en compromisos PAS.
 - Las filas sin reporte real deben tener avance=NULL, porcentaje=NULL, fecha_corte=NULL y estado='sin_reporte'.
-- KPIs y gating de Fase 3 deben calcularse SOLO sobre compromisos con reporte verificado; ante ausencia de reportes deben devolver None (null en JSON).
+- KPIs y gating de Fase 3 deben calcularse SOLO sobre compromisos con reporte
+- verificado; ante ausencia de reportes deben devolver None (null en JSON).
 - Prohibición de siembra de datos fabricados en migraciones de producción.
 """
 
@@ -11,7 +12,7 @@ import asyncio
 from decimal import Decimal
 from pathlib import Path
 from unittest.mock import AsyncMock
-import pytest
+
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -22,6 +23,7 @@ from app.modules.politicas.gating import calcular_progreso_real_fases
 
 def test_base_de_datos_compromisos_sin_avances_fabricados(database_url: str):
     """Verifica que la base de datos no contenga compromisos con avances o BPINs ficticios sembrados."""
+
     async def verificar():
         engine = create_async_engine(database_url)
         try:
@@ -44,18 +46,30 @@ def test_base_de_datos_compromisos_sin_avances_fabricados(database_url: str):
                         # 1. Cero avances ni porcentajes fabricados
                         assert avance is None, f"Compromiso {cod} tiene avance no verificado: {avance}"
                         assert pct is None, f"Compromiso {cod} tiene porcentaje cumplimiento no verificado: {pct}"
-                        assert fecha_corte is None, f"Compromiso {cod} tiene fecha corte sin reporte real: {fecha_corte}"
-                        assert estado == "sin_reporte", f"Compromiso {cod} tiene estado '{estado}', debe ser 'sin_reporte'"
+                        assert fecha_corte is None, (
+                            f"Compromiso {cod} tiene fecha corte sin reporte real: {fecha_corte}"
+                        )
+                        assert estado == "sin_reporte", (
+                            f"Compromiso {cod} tiene estado '{estado}', debe ser 'sin_reporte'"
+                        )
 
                         # 2. Cero BPINs o relatos ficticios en metadatos
                         assert "bpin_relacionado" not in (meta or {}), f"Compromiso {cod} contiene BPIN ficticio"
-                        assert "observacion_cualitativa" not in (meta or {}), f"Compromiso {cod} contiene observación inventada"
+                        assert "observacion_cualitativa" not in (meta or {}), (
+                            f"Compromiso {cod} contiene observación inventada"
+                        )
 
                         # 3. Metadatos deben contener cita honesta de catálogo propuesto (OBS-11)
                         fuente = (meta or {}).get("fuente", "")
-                        assert "Catálogo propuesto por el equipo" in fuente, f"Compromiso {cod} debe citar catálogo propuesto"
-                        assert "no proviene del Decreto 037" in fuente, f"Compromiso {cod} debe aclarar que no proviene del Decreto 037"
-                        assert (meta or {}).get("meta_validada") is False, f"Compromiso {cod} debe marcar meta_validada=False"
+                        assert "Catálogo propuesto por el equipo" in fuente, (
+                            f"Compromiso {cod} debe citar catálogo propuesto"
+                        )
+                        assert "no proviene del Decreto 037" in fuente, (
+                            f"Compromiso {cod} debe aclarar que no proviene del Decreto 037"
+                        )
+                        assert (meta or {}).get("meta_validada") is False, (
+                            f"Compromiso {cod} debe marcar meta_validada=False"
+                        )
                     else:
                         assert meta.get("observacion_cualitativa", "").startswith("DEMOSTRACIÓN:"), (
                             f"Compromiso demo {cod} debe marcar su observación como DEMOSTRACIÓN"
@@ -67,7 +81,8 @@ def test_base_de_datos_compromisos_sin_avances_fabricados(database_url: str):
 
 
 def test_escaneo_migraciones_no_siembran_avances_o_bpin_sin_fuente():
-    """Escanea las migraciones de Alembic garantizando que ninguna migración posterior a 0036 introduzca BPINs ficticios."""
+    """Escanea las migraciones de Alembic garantizando que ninguna migración posterior
+    a 0036 introduzca BPINs ficticios."""
     versiones_dir = Path(__file__).resolve().parent.parent / "alembic" / "versions"
     archivos = sorted(versiones_dir.glob("*.py"))
 
@@ -77,7 +92,9 @@ def test_escaneo_migraciones_no_siembran_avances_o_bpin_sin_fuente():
         if nombre.startswith("0037_restituir_compromisos"):
             contenido = arch.read_text(encoding="utf-8")
             assert "BPIN-2026-CTG" not in contenido, f"La migración {nombre} reintroduce BPINs ficticios"
-            assert "observacion_cualitativa" not in contenido or "DROP" in contenido or "jsonb_build_object" in contenido
+            assert (
+                "observacion_cualitativa" not in contenido or "DROP" in contenido or "jsonb_build_object" in contenido
+            )
 
 
 def test_kpis_compromisos_sin_reporte_muestran_null():

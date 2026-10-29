@@ -84,8 +84,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             status_code=500,
             content={
                 "detail": (
-                    "Error interno del servidor. La incidencia ha sido registrada para "
-                    "revisión técnica institucional."
+                    "Error interno del servidor. La incidencia ha sido registrada para revisión técnica institucional."
                 )
             },
         )
@@ -93,27 +92,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @application.middleware("http")
     async def security_headers_and_cookies_middleware(request: Request, call_next):
         response = await call_next(request)
-        is_https = (
-            request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https"
-        )
+        is_https = request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https"
         is_prod = settings.environment == "production"
 
         # Cabeceras universales de protección perimetral en todos los entornos
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("X-Frame-Options", "DENY")
         response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-        response.headers.setdefault(
-            "Permissions-Policy", "camera=(), microphone=(), geolocation=(self)"
-        )
+        response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=(self)")
         # CSP restrictiva propia de endpoints API.
-        response.headers.setdefault(
-            "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
-        )
+        response.headers.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
 
         if is_prod or is_https:
-            response.headers.setdefault(
-                "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
-            )
+            response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 
         if "set-cookie" in response.headers:
             raw_headers = response.raw_headers

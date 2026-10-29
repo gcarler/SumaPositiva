@@ -1,0 +1,10 @@
+# OL-BUILD-01-R1 · Completar la entrada CLI y guardas de ensamblado
+
+27 de octubre de 2026. 241 permanece congelado como antecedente. La revisión preventiva de coordinación detectó defectos concretos no cubiertos por las 15 sintéticas. Mantener los mismos tres archivos autorizados en 240; nueva entrega `bridge/246_entrega_ollamacodex_build_r1.md` y `bridge/246_evidencia_ollamacodex_build_r1/`. Sin src/Next config/backend/data, red/SQL/Next real/commit/push/despliegue.
+
+1. La comparación `path.resolve(process.argv[1]) === path.resolve(import.meta.url)` es falsa para una URL file:. El comando real puede terminar 0 sin compilar. Usar `fileURLToPath` correctamente y añadir prueba real de CLI en fixture temporal con fake Next, comprobando su invocación, salida y ensamblado. No basta importar construir directamente.
+2. Verificar todos los componentes de destino de standalone/estáticos/public antes de copiar. Hoy un symlink en standalone o en el árbol destino permite escribir fuera del área permitida. Probar enlaces intermedios y archivo destino enlazado, y comprobar que el exterior queda intacto.
+3. Rechazar solapamientos que copian public dentro de sí mismo: por ejemplo distDir public/build. No iniciar recursión ni crear artefactos parciales fuera del área válida. Mantener destino por defecto y alternativo relativo con rutas literales correctas; probar explícitamente standalone/.next/static en default y ruta propia de alternativo, no solo los campos devueltos por la misma función.
+4. Corregir las dos fixtures negativas que pasan argumentos absolutos pero esperan error de raíz/escape sin coherencia con el contrato. No borrar casos ni debilitar las aserciones positivas. Probar fallo de compilador mediante invocación CLI y verificar retorno real y ausencia de ensamblado.
+
+Conservar intentos fallidos con nombres distintos. Ejecutar node --test y lint de los dos scripts, sin excluirlos del lint del producto: son código activo. Entregar hashes finales y congelar antes de la evaluación real EAF 233.

@@ -32,9 +32,7 @@ class Rol(Base):
     )
     codigo: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
-    permisos: Mapped[list[str]] = mapped_column(
-        JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
-    )
+    permisos: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False)
 
     usuarios: Mapped[list["Usuario"]] = relationship("Usuario", back_populates="rol")
 
@@ -46,9 +44,7 @@ class Usuario(Base):
         Index("idx_usuarios_rol", "rol_id", postgresql_include=[]),
         {
             ("schema"): ("autenticacion"),
-            ("comment"): (
-                "Directorio de participantes con credenciales y niveles de identidad cívica"
-            ),
+            ("comment"): ("Directorio de participantes con credenciales y niveles de identidad cívica"),
         },
     )
 
@@ -73,9 +69,7 @@ class Usuario(Base):
     )
     nombres: Mapped[str] = mapped_column(String(100), nullable=False)
     apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
-    activo: Mapped[bool] = mapped_column(
-        Boolean, default=True, server_default=text("true"), nullable=False
-    )
+    activo: Mapped[bool] = mapped_column(Boolean, default=True, server_default=text("true"), nullable=False)
     metadatos: Mapped[dict[str, Any]] = mapped_column(
         JSONB, default=dict, server_default=text("'{}'::jsonb"), nullable=False
     )
@@ -137,9 +131,7 @@ class UsuarioMfa(Base):
         nullable=False,
     )
     secreto_cifrado: Mapped[str] = mapped_column(String(512), nullable=False)
-    activo: Mapped[bool] = mapped_column(
-        Boolean, default=False, server_default=text("false"), nullable=False
-    )
+    activo: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"), nullable=False)
     codigos_recuperacion: Mapped[list[str]] = mapped_column(
         JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
     )
@@ -150,9 +142,7 @@ class UsuarioMfa(Base):
         nullable=True,
         comment="Último paso de tiempo TOTP (RFC 6238 §5.2) aceptado para prevenir reutilización",
     )
-    intentos_fallidos: Mapped[int] = mapped_column(
-        Integer, default=0, server_default=text("0"), nullable=False
-    )
+    intentos_fallidos: Mapped[int] = mapped_column(Integer, default=0, server_default=text("0"), nullable=False)
     bloqueado_hasta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -248,9 +238,7 @@ class AmbitoTerritorialUsuario(Base):
     )
     tipo_ambito: Mapped[str] = mapped_column(String(20), nullable=False)
     identificador_territorial: Mapped[str] = mapped_column(String(100), nullable=False)
-    activo: Mapped[bool] = mapped_column(
-        Boolean, default=True, server_default=text("true"), nullable=False
-    )
+    activo: Mapped[bool] = mapped_column(Boolean, default=True, server_default=text("true"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("clock_timestamp()"),

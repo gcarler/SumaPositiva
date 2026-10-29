@@ -47,7 +47,7 @@ export interface PuertaCalidadMultiagente {
   codigo: CodigoPuertaCalidadMultiagente;
   titulo: string;
   descripcion_corta: string;
-  estado: "APROBADA" | "APROBADA_CON_BRECHAS" | "EN_REVISION" | "RECHAZADA";
+  estado: "APROBADA" | "APROBADA_CON_BRECHAS" | "EN_REVISION" | "RECHAZADA" | "NO_EJECUTADO";
   criterio_verificacion: string;
   metrica_principal: string;
   agente_responsable: string;
@@ -67,7 +67,7 @@ export interface ResultadoAgenteMultiagente {
 
 export interface EstadoSistemaMultiagentePddRespuesta {
   run_id: string;
-  estado: "COMPLETADO" | "SINCRONIZADO_PDD_ONLY" | "SIN_EJECUCIONES" | "VALIDADO_SIN_PERSISTENCIA";
+  estado: "COMPLETADO" | "SINCRONIZADO_PDD_ONLY" | "SIN_EJECUCIONES" | "VALIDADO_SIN_PERSISTENCIA" | "FALLO";
   estado_publicacion_workspace: "SINCRONIZADO_PDD_ONLY" | "PENDIENTE";
   iniciado_en: string;
   actualizado_en: string;

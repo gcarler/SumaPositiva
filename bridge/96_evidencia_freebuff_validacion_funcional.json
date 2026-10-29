@@ -1,0 +1,101 @@
+{
+  "tarea": "FB-CONCILIA-02",
+  "fecha_utc": null,
+  "agente": "Freebuff",
+  "estado": "aceptacion_dirigida_constatada",
+  "objetos_verificados": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd",
+      "coincide_con_consigna_95": true,
+      "bytes": 31061
+    },
+    "backend/scripts/contrastar_fuentes_por_periodo.py": {
+      "sha256": "15634cdedec70b20a75a6349a104b63e1031b62008c87708f3bad06d888bdd5e",
+      "bytes": 5414
+    },
+    "backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "8e789b73f3408d103391d1412b5ed49b81231e8861bf65485a44562598e66b9f",
+      "bytes": 15099
+    },
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": {
+      "sha256": "071d8bc79be61df64925c768485102890f771a6fca35371d4636b83df386b008",
+      "bytes": 1126
+    },
+    "bridge/93_pytest_conciliacion_retrospectiva.xml": {
+      "sha256": "622fbc8b3e898131b910539372b80d82909ad1abdb0bdf4b64f89d539555eab2",
+      "bytes": 11449
+    },
+    "bridge/93_pytest_conciliacion_antes_correccion.xml": {
+      "sha256": "ef67766661b29a575f20fda78c83b2e66f1e67470450e154d5d559eb5d2bf06a",
+      "bytes": 15702
+    }
+  },
+  "artefactos_generados": {
+    "bridge/96_pytest_freebuff_conciliador.xml": {
+      "sha256": "8c64e5fab94285107b937d036c2c946ad6a9cd30ca62fc6001e29c73996b41fa"
+    },
+    "bridge/96_revision_freebuff_validacion_funcional.md": {
+      "nota": "hash a consolidar tras congelacion de la propia evidencia"
+    }
+  },
+  "corrida_reproducida": {
+    "comando": ".venv/bin/python -m pytest --noconftest tests/test_conciliacion_retrospectiva_fuentes_polis.py -q --junitxml=/root/polis/bridge/96_pytest_freebuff_conciliador.xml",
+    "cwd": "backend",
+    "tests": 72,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "time_segundos": 1.25,
+    "exit_code": 0
+  },
+  "corrida_intermedia_freebuff": {
+    "tests": 66,
+    "failures": 0,
+    "exit_code": 0,
+    "nota": "reproduccion rapida durante la revision del diff de coordinacion; antes de la corrida final de 72"
+  },
+  "D1": {
+    "tema": "serializacion_decimal_como_texto",
+    "pruebas_ejecutadas": [
+      "test_d1_decimal_json_and_distinct_products",
+      "test_decimal_exact_with_reduced_ambient_context",
+      "test_cli_real_subprocess_and_hashes",
+      "test_cli_uses_single_read_hash_even_if_input_changes"
+    ],
+    "comprobacion_separada_de": "semantica_fuentes_oficiales_licencias_cobertura_geografica_trazabilidad_series",
+    "veredicto": "resuelto_por_ejecucion_en_nucleo_y_CLI"
+  },
+  "revision_codigo": {
+    "estado_por_diferencias_pendiente_bloquea": true,
+    "obligatorios_criterios_bloquea_comparabilidad_true": true,
+    "fecha_referencia_tipo_obligatorio": true,
+    "fecha_referencia_fecha_precision_opcionales_sin_bloqueo": true,
+    "cli_y_alfa_decimal_sin_cambios_detectados": true
+  },
+  "ruff": {
+    "check_exit": 0,
+    "format_check_exit": 0,
+    "archivos": [
+      "app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py",
+      "scripts/contrastar_fuentes_por_periodo.py",
+      "tests/test_conciliacion_retrospectiva_fuentes_polis.py"
+    ]
+  },
+  "90_revalidacion_conservada_intacta": true,
+  "limites": {
+    "SQL": false,
+    "conftest_general": false,
+    "suite_general": false,
+    "red": false,
+    "instalaciones": false,
+    "cambios_aplicacion": false,
+    "cambios_pruebas": false,
+    "cambios_74": false,
+    "cambios_84_86_90_94": false,
+    "integracion_productiva": false,
+    "dictamen_EAF": false,
+    "commit_push": false,
+    "despliegue": false
+  },
+  "alcance": "nucleo_y_CLI_aislados_y_suites_dirigidas_72_casos; no_cobertura_exhaustiva_no_validacion_semantica_de_datos_oficiales"
+}

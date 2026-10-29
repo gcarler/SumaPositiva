@@ -1579,10 +1579,10 @@ export async function validarRedaccionDnpApi(
       "/api/v1/compromisos/plan-accion/validar-redaccion",
       {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           descripcion_actividad: descripcion,
           tipo_actividad: tipoActividad,
-        }),
+        },
       }
     );
   } catch {
@@ -1690,7 +1690,7 @@ export async function crearActividadPlanAccionApi(
     "/api/v1/compromisos/plan-accion/actividades",
     {
       method: "POST",
-      body: JSON.stringify(datos),
+      body: datos,
     }
   );
 }
@@ -1711,7 +1711,7 @@ export async function actualizarSeguimientoActividadApi(
     `/api/v1/compromisos/plan-accion/actividades/${idOcodigo}/seguimiento`,
     {
       method: "PATCH",
-      body: JSON.stringify(datos),
+      body: datos,
     }
   );
 }
@@ -2015,7 +2015,7 @@ export async function procesarLotePlanAccionApi(
       "/api/v1/compromisos/plan-accion/procesar-lote",
       {
         method: "POST",
-        body: JSON.stringify(solicitud),
+        body: solicitud,
       }
     );
   } catch (error) {
@@ -2429,7 +2429,7 @@ export async function cruzarTresLecturasApi(
 ): Promise<CruzarTresLecturasRespuesta> {
   try {
     const raw = await apiFetch<CruzarTresLecturasRespuesta>(
-      "/compromisos/triada/cruzar-lecturas",
+      "/api/v1/compromisos/triada/cruzar-lecturas",
       {
         method: "POST",
         body: solicitud || {},
@@ -3348,11 +3348,13 @@ function normalizarEstadoMultiagente(raw: unknown): EstadoSistemaMultiagentePddR
     ...canonico,
     run_id: runId,
     estado:
-      estadoRaw === "COMPLETADO" ||
-      estadoRaw === "SINCRONIZADO_PDD_ONLY" ||
-      estadoRaw === "VALIDADO_SIN_PERSISTENCIA"
-        ? estadoRaw
-        : "COMPLETADO",
+      estadoRaw === "FALLO"
+        ? "FALLO"
+        : estadoRaw === "COMPLETADO" ||
+          estadoRaw === "SINCRONIZADO_PDD_ONLY" ||
+          estadoRaw === "VALIDADO_SIN_PERSISTENCIA"
+          ? estadoRaw
+          : "SIN_EJECUCIONES",
     iniciado_en: iniciadoEn,
     puertas_calidad: puertasCalidad,
     archivos_cobertura_pdf: archivosCobertura,
@@ -3392,8 +3394,22 @@ export async function ejecutarSistemaMultiagentePdd(params?: {
     });
     return normalizarEstadoMultiagente(res);
   } catch (error) {
-    console.warn("Fallo ejecutarSistemaMultiagentePdd, retornando estado verificado:", error);
-    return obtenerEstadoSistemaMultiagentePddLocal();
+    console.warn("Fallo ejecutarSistemaMultiagentePdd, retornando estado de fallo:", error);
+    const local = obtenerEstadoSistemaMultiagentePddLocal();
+    return {
+      ...local,
+      estado: "FALLO",
+      puertas_calidad: local.puertas_calidad.map((p) => ({
+        ...p,
+        estado: "NO_EJECUTADO" as const,
+        criterio_verificacion: `No ejecutado: ${error instanceof Error ? error.message : "Error de comunicación o autorización"}`,
+      })),
+      auditoria_agentes: local.auditoria_agentes.map((a) => ({
+        ...a,
+        estado: "SINCRONIZADO_PDD_ONLY" as const,
+        hallazgos: [`Fallo en ejecución: ${error instanceof Error ? error.message : "Error desconocido"}`],
+      })),
+    };
   }
 }
 
@@ -3406,6 +3422,18 @@ export async function obtenerComparativoSeguridadHumanaPdd(): Promise<Comparativ
     );
     if (!esObjetoRegistro(res) || !Array.isArray(res.planes_pdd)) {
       return canonico;
+    }
+
+    if (res.planes_pdd.length === 0) {
+      return {
+        ...canonico,
+        planes_pdd: [],
+        resumen_global: {
+          ...canonico.resumen_global,
+          total_planes_pdd: 0,
+          total_metas_pdd: 0,
+        },
+      };
     }
 
     const planesApiPorCodigo = new Map<string, Record<string, unknown>>();

@@ -1,0 +1,92 @@
+{
+  "corte": {
+    "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+    "manifiesto": "/root/polis/data/capas_analiticas/cortes/e5aea3ea-86e8-486e-9c56-2dfe6e250455.json",
+    "sha256": "27be1632cbd3d5fd84d37c3a85935d22a53b4bf524da73465b2edf5f86a749b9",
+    "estado_calidad": "ambar",
+    "estado_publicacion": "no_publicable"
+  },
+  "comparacion": {
+    "ruta": "bridge/42_evidencias_ppi_corte/comparaciones/c9858f0e9311fcbcc9a6d2e1186729e674ad67f8af92e5294c7bccbbd203d164.json",
+    "sha256": "c9858f0e9311fcbcc9a6d2e1186729e674ad67f8af92e5294c7bccbbd203d164",
+    "resumen": {
+      "base_origen_distinta": false,
+      "planes_compartidos": 8,
+      "planes_faltantes_en_ppi": 0,
+      "planes_sobrantes_en_ppi": 0,
+      "nodos_compartidos": 1573,
+      "nodos_iguales_estructuralmente": 1573,
+      "nodos_faltantes_en_ppi": 0,
+      "nodos_sobrantes_en_ppi": 0,
+      "nodos_con_cambios_estructurales": 0,
+      "cobertura_planes_nodos_con_cambios": 0,
+      "cobertura_planes_metas_con_cambios": 0,
+      "nodos_fuente_iguales": 1573,
+      "nodos_fuente_cambio": 0,
+      "campos_jsonb_iguales": 1595,
+      "campos_jsonb_cambio": 0,
+      "campos_jsonb_precision_no_verificable": 1551,
+      "nodos_jsonb_iguales_estructuralmente": 574,
+      "nodos_jsonb_con_cambios": 0,
+      "nodos_jsonb_precision_no_verificable": 999
+    }
+  },
+  "consulta": {
+    "ruta": "bridge/42_evidencias_ppi_corte/10f6590f14d3c8949c1206e55eddc05113ca4d9b7f9cf0a66b6caed7370f8787.consulta_ppi.json",
+    "sha256": "10f6590f14d3c8949c1206e55eddc05113ca4d9b7f9cf0a66b6caed7370f8787",
+    "planes": 8,
+    "requests": 2,
+    "repetible": true,
+    "cobertura": {
+      "origen": "PPI_FORMULADO_CONGELADO",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "catalogo_sha256": "0ccf1867a4dedb045a627a5da0e9b3cd553f9b1d8819e74f92daaf1f1ace5c11",
+      "planes_capturados": 8,
+      "planes_filtrados": 8,
+      "conteos_por_plan": {
+        "PDD_2012_2015": {
+          "nodos": 146,
+          "metas": 469
+        },
+        "PDD_2013_2015": {
+          "nodos": 283,
+          "metas": 676
+        },
+        "PDD_2016_2019": {
+          "nodos": 472,
+          "metas": 898
+        },
+        "PDD_2020_2023": {
+          "nodos": 313,
+          "metas": 947
+        },
+        "PDD_2024_2027": {
+          "nodos": 236,
+          "metas": 1246
+        },
+        "PDL_1_2024_2027": {
+          "nodos": 41,
+          "metas": 110
+        },
+        "PDL_2_2024_2027": {
+          "nodos": 23,
+          "metas": 89
+        },
+        "PDL_3_2024_2027": {
+          "nodos": 59,
+          "metas": 202
+        }
+      },
+      "filtro_textual_aplicado": false,
+      "filtros_aplicados": {
+        "codigo_plan": "TODOS"
+      },
+      "comparabilidad_financiera_acreditada": false,
+      "estado_publicacion": "no_publicable",
+      "limite": "Numeric copiado y JSONB crudo; sin ejecución, agregación jerárquica, deflación ni ranking."
+    }
+  },
+  "estado_publicacion": "no_publicable",
+  "comparabilidad_financiera_acreditada": false
+}

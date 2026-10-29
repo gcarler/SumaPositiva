@@ -1,0 +1,1239 @@
+{
+  "esquema": "polis.evidencia_cierre_adquisicion.v1",
+  "generado_utc": "2026-10-23T23:46:06.516647+00:00",
+  "run_final": "f31ed27f-58b6-4591-a840-414802a44d53",
+  "manifiesto": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/manifiesto.json",
+  "manifiesto_sha256": "08596bc6e7ce55f4a3404332dbe40fbf972a403555f7e1bbb4e827b4563a809b",
+  "estado": "captura_completa_pendiente_validacion",
+  "productos_capturados": 28,
+  "estado_analitico": "PENDIENTE_VALIDACION_SEMANTICA_COBERTURA_Y_CONDICIONES_USO",
+  "promocion": "NO_EJECUTADA",
+  "codigo_sha256": {
+    "backend/app/modules/compromisos/registro_descargas_polis.py": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd",
+    "backend/app/modules/compromisos/adquisicion_fuentes_polis.py": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3",
+    "backend/app/modules/compromisos/descarga_anexos_oficiales_polis.py": "f252d0855d571b90a7953bf961b093a069ccd188cfebbbbb9e9f28ea2b731f17",
+    "backend/app/modules/compromisos/captura_fiscalia_supervisada_polis.py": "5f9b35f3d983c9258fe4c176d33671aef60f7d79b9b1f8a1513f12350870a9b9",
+    "backend/scripts/adquirir_fuentes_politica.py": "a8986ada9a6f7a2d7a93838608b153d29fe63d8e7e348fc9595886656cb83184",
+    "backend/scripts/capturar_fiscalia_supervisada.mjs": "95952637610388d3d7fb7963ee67cf4bbcd91e8f6e16348f0f3688e3be757890"
+  },
+  "cambios_codigo_desde_run_final": [],
+  "archivos_http_y_resultados_verificados": 163,
+  "discrepancias_sha": [],
+  "banco_antes": {
+    "data/banco_fuentes_oficiales/inventario_pipeline_2026.json": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": "935d6d13a162466d1636a58dceacefb127db4bdf10eb25cbcce54a983fa4c9b9",
+    "data/banco_fuentes_oficiales/catalogo.csv": "70cf3fd30aa22a561fc40a916affa47a79b3ed86412430b7d1482ae0ffba5add",
+    "data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d"
+  },
+  "banco_despues": {
+    "data/banco_fuentes_oficiales/inventario_pipeline_2026.json": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": "935d6d13a162466d1636a58dceacefb127db4bdf10eb25cbcce54a983fa4c9b9",
+    "data/banco_fuentes_oficiales/catalogo.csv": "70cf3fd30aa22a561fc40a916affa47a79b3ed86412430b7d1482ae0ffba5add",
+    "data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d"
+  },
+  "cambios_banco": [],
+  "comprobaciones": {
+    "ruff_check": "exit0",
+    "ruff_format_check": "exit0;5archivosPython",
+    "node_check": "exit0",
+    "pytest": "no_ejecutado",
+    "backend_check": "no_ejecutado_incluye_pytest",
+    "codigo_sintaxis_python": "5archivos_correctos",
+    "EAF": "no_es_dictamen_independiente"
+  },
+  "productos": [
+    {
+      "producto_id": "local:dane_ecsc_2024",
+      "metodo": "anexo",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": null,
+      "filas_origen_filtradas": null,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/dane_ecsc_2024/captura.json"
+    },
+    {
+      "producto_id": "local:dnp_terridata_13001",
+      "metodo": "anexo",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": null,
+      "filas_origen_filtradas": null,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/dnp_terridata_13001/captura.json"
+    },
+    {
+      "producto_id": "local:fiscalia_spoa_procesos_por_anio_hecho",
+      "metodo": "fiscalia_supervisada",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 23,
+      "filas_origen_filtradas": null,
+      "corte_fuente": "30/09/2026",
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/fiscalia_spoa_procesos_por_anio_hecho/captura.json"
+    },
+    {
+      "producto_id": "local:icbf_bienestarina",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 5,
+      "filas_origen_filtradas": 1016,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/captura.json"
+    },
+    {
+      "producto_id": "local:icbf_prevencion",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 35,
+      "filas_origen_filtradas": 17368,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/captura.json"
+    },
+    {
+      "producto_id": "local:icbf_primera_infancia",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 6,
+      "filas_origen_filtradas": 7931,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/captura.json"
+    },
+    {
+      "producto_id": "local:icbf_rpc_cartagena",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 230,
+      "filas_origen_filtradas": 230,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/captura.json"
+    },
+    {
+      "producto_id": "local:icbf_uds",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 3,
+      "filas_origen_filtradas": 1681,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/captura.json"
+    },
+    {
+      "producto_id": "local:ideam_calidad_aire",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 156,
+      "filas_origen_filtradas": 156,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/captura.json"
+    },
+    {
+      "producto_id": "local:ins_calidad_agua",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 17,
+      "filas_origen_filtradas": 17,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_examenes_sexuales",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 5254,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_homicidios",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 2949,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_lesiones_accidentales",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 202,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_lesiones_transporte",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 6532,
+      "corte_fuente": null,
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:medicina_lesiones_transporte"
+      ],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_suicidios",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 383,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_violencia_interpersonal",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 20070,
+      "corte_fuente": null,
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:medicina_violencia_interpersonal"
+      ],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/captura.json"
+    },
+    {
+      "producto_id": "local:medicina_violencia_intrafamiliar",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10,
+      "filas_origen_filtradas": 3868,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/captura.json"
+    },
+    {
+      "producto_id": "local:policia_amenazas",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 4792,
+      "filas_origen_filtradas": 14066,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/captura.json"
+    },
+    {
+      "producto_id": "local:policia_delitos_sexuales",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 5625,
+      "filas_origen_filtradas": 6910,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/captura.json"
+    },
+    {
+      "producto_id": "local:policia_homicidios",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 33,
+      "filas_origen_filtradas": 5938,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/captura.json"
+    },
+    {
+      "producto_id": "local:policia_hurto_vehiculos",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 4638,
+      "filas_origen_filtradas": 8267,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/captura.json"
+    },
+    {
+      "producto_id": "local:policia_hurto_vivienda_comercio",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 5005,
+      "filas_origen_filtradas": 12683,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/captura.json"
+    },
+    {
+      "producto_id": "local:policia_lesiones",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 10344,
+      "filas_origen_filtradas": 24549,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/captura.json"
+    },
+    {
+      "producto_id": "local:policia_violencia_intrafamiliar",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 5238,
+      "filas_origen_filtradas": 12133,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/captura.json"
+    },
+    {
+      "producto_id": "local:procuraduria_pqrsdf_cartagena",
+      "metodo": "socrata",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 5,
+      "filas_origen_filtradas": 323,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/captura.json"
+    },
+    {
+      "producto_id": "local:unidad_victimas_indemnizaciones_cartagena",
+      "metodo": "indemnizaciones",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 14,
+      "filas_origen_filtradas": null,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_indemnizaciones_cartagena/captura.json"
+    },
+    {
+      "producto_id": "local:unidad_victimas_irv_cartagena",
+      "metodo": "irv",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": null,
+      "filas_origen_filtradas": null,
+      "corte_fuente": null,
+      "alertas_atribucion": [],
+      "anios_sin_capa": [
+        2026
+      ],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/captura.json"
+    },
+    {
+      "producto_id": "local:unidad_victimas_ruv_cartagena",
+      "metodo": "ruv",
+      "estado": "capturado_pendiente_validacion",
+      "filas_resultado": 11184,
+      "filas_origen_filtradas": null,
+      "corte_fuente": "2026-09-30",
+      "alertas_atribucion": [],
+      "anios_sin_capa": [],
+      "evidencia": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_ruv_cartagena/captura.json"
+    }
+  ],
+  "historial": [
+    {
+      "run_id": "052e3859-43ef-4ea8-a6a2-ff72343482c5",
+      "estado": "captura_completa_pendiente_validacion",
+      "productos": 2,
+      "capturas_cuarentena": []
+    },
+    {
+      "run_id": "31767bb7-acc1-4235-abf7-b5b62b67a321",
+      "estado": "captura_parcial",
+      "productos": 22,
+      "capturas_cuarentena": [
+        "local:policia_lesiones",
+        "local:policia_violencia_intrafamiliar"
+      ]
+    },
+    {
+      "run_id": "8a8022b1-0358-4020-a61a-8ea57bd69bc2",
+      "estado": "captura_parcial",
+      "productos": 22,
+      "capturas_cuarentena": [
+        "local:policia_amenazas",
+        "local:policia_delitos_sexuales",
+        "local:policia_hurto_vehiculos",
+        "local:policia_hurto_vivienda_comercio",
+        "local:policia_lesiones",
+        "local:policia_violencia_intrafamiliar"
+      ]
+    },
+    {
+      "run_id": "a0159411-7ad6-498c-a3d0-0646df00f729",
+      "estado": "captura_completa_pendiente_validacion",
+      "productos": 22,
+      "capturas_cuarentena": []
+    },
+    {
+      "run_id": "a517dbf0-41e6-4a54-b3fc-a99772b1b18b",
+      "estado": "captura_completa_pendiente_validacion",
+      "productos": 3,
+      "capturas_cuarentena": []
+    },
+    {
+      "run_id": "d82db359-964a-4117-9f2d-952163a870d0",
+      "estado": "captura_completa_pendiente_validacion",
+      "productos": 1,
+      "capturas_cuarentena": []
+    },
+    {
+      "run_id": "f31ed27f-58b6-4591-a840-414802a44d53",
+      "estado": "captura_completa_pendiente_validacion",
+      "productos": 28,
+      "capturas_cuarentena": []
+    },
+    {
+      "run_id": "f92081b9-a9c0-4890-88b3-47beaaedd0fb",
+      "estado": "captura_parcial",
+      "productos": 1,
+      "capturas_cuarentena": [
+        "local:fiscalia_spoa_procesos_por_anio_hecho"
+      ]
+    }
+  ],
+  "archivos_verificados": [
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/dane_ecsc_2024/0000-9bed1cd4e9d9fb4ee9e770f977ffec1adee48dfea4bc3ab2d2f882d635fab06e.bin",
+      "sha256": "9bed1cd4e9d9fb4ee9e770f977ffec1adee48dfea4bc3ab2d2f882d635fab06e",
+      "bytes": 543732
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/dnp_terridata_13001/0000-f89e2b5110347f1d7b59d0debe067ba915efcc5e373322169c5f675af10d50a6.bin",
+      "sha256": "f89e2b5110347f1d7b59d0debe067ba915efcc5e373322169c5f675af10d50a6",
+      "bytes": 305031
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/fiscalia_spoa_procesos_por_anio_hecho/fiscalia_spoa_cartagena_procesos_por_anio.csv",
+      "sha256": "1c59435025ea0ce712b4f4dd14ee327307c66d3abd3995544521052c7bdddcde",
+      "bytes": 1879
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/fiscalia_spoa_procesos_por_anio_hecho/fiscalia_spoa_top5_municipios.csv",
+      "sha256": "d7bd80766f4d7d28809b6a5097e1f0e34f3b862045a34063980be93f952391fc",
+      "bytes": 415
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/fiscalia_spoa_procesos_por_anio_hecho/fiscalia_powerbi_cartagena.manifest.json",
+      "sha256": "c5394411b7aff75b58e52069f1dc35c8e48ef527d78b5eb1e1f18957c2758c30",
+      "bytes": 1572
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/0000-5cc23b96d3a016b670dc05a9be38d0bf30bc79d1765c183d204f44dbbe738ac5.bin",
+      "sha256": "5cc23b96d3a016b670dc05a9be38d0bf30bc79d1765c183d204f44dbbe738ac5",
+      "bytes": 24672
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/0001-a3ccefa04c1daa8ccbd5b78ebbd88f8cf3bc0c6bff6835a72cfa27d9cca5d9de.bin",
+      "sha256": "a3ccefa04c1daa8ccbd5b78ebbd88f8cf3bc0c6bff6835a72cfa27d9cca5d9de",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/0002-5bf8fd4a194f9755d9c4a72eef85913fe05ea4c3d18783b0143f535521d9f399.bin",
+      "sha256": "5bf8fd4a194f9755d9c4a72eef85913fe05ea4c3d18783b0143f535521d9f399",
+      "bytes": 281
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/0003-5cc23b96d3a016b670dc05a9be38d0bf30bc79d1765c183d204f44dbbe738ac5.bin",
+      "sha256": "5cc23b96d3a016b670dc05a9be38d0bf30bc79d1765c183d204f44dbbe738ac5",
+      "bytes": 24672
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_bienestarina/0004-a3ccefa04c1daa8ccbd5b78ebbd88f8cf3bc0c6bff6835a72cfa27d9cca5d9de.bin",
+      "sha256": "a3ccefa04c1daa8ccbd5b78ebbd88f8cf3bc0c6bff6835a72cfa27d9cca5d9de",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/0000-17af4e1f3466456a12e0de5c6d7cacdb752884d31a7db71e00e73bde15ff694a.bin",
+      "sha256": "17af4e1f3466456a12e0de5c6d7cacdb752884d31a7db71e00e73bde15ff694a",
+      "bytes": 28320
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/0001-eae4dadc62f688df6389e9eae41ec11de42d0628fe2f554c4d31808a5b5b484b.bin",
+      "sha256": "eae4dadc62f688df6389e9eae41ec11de42d0628fe2f554c4d31808a5b5b484b",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/0002-6379823a39a11e4ae5ce67aecbdd3b864a2438ee4a6447f8c88a7dc6b9d7c605.bin",
+      "sha256": "6379823a39a11e4ae5ce67aecbdd3b864a2438ee4a6447f8c88a7dc6b9d7c605",
+      "bytes": 3431
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/0003-17af4e1f3466456a12e0de5c6d7cacdb752884d31a7db71e00e73bde15ff694a.bin",
+      "sha256": "17af4e1f3466456a12e0de5c6d7cacdb752884d31a7db71e00e73bde15ff694a",
+      "bytes": 28320
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_prevencion/0004-eae4dadc62f688df6389e9eae41ec11de42d0628fe2f554c4d31808a5b5b484b.bin",
+      "sha256": "eae4dadc62f688df6389e9eae41ec11de42d0628fe2f554c4d31808a5b5b484b",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/0000-387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6.bin",
+      "sha256": "387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6",
+      "bytes": 34814
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/0001-f2ad2a1552401f33509b7cf3587a0a6f00ebf0c6046794a9a3d7b2308955aa78.bin",
+      "sha256": "f2ad2a1552401f33509b7cf3587a0a6f00ebf0c6046794a9a3d7b2308955aa78",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/0002-ef1199da36e1eb721950997419318fdd3bbfe8be7ce3f603330274f6d743c385.bin",
+      "sha256": "ef1199da36e1eb721950997419318fdd3bbfe8be7ce3f603330274f6d743c385",
+      "bytes": 897
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/0003-387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6.bin",
+      "sha256": "387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6",
+      "bytes": 34814
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_primera_infancia/0004-f2ad2a1552401f33509b7cf3587a0a6f00ebf0c6046794a9a3d7b2308955aa78.bin",
+      "sha256": "f2ad2a1552401f33509b7cf3587a0a6f00ebf0c6046794a9a3d7b2308955aa78",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/0000-fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f.bin",
+      "sha256": "fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f",
+      "bytes": 19507
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/0001-4da1b9d795b3864ae1e6965def03f19d4bf080494e46127a7ce768e4c83b0031.bin",
+      "sha256": "4da1b9d795b3864ae1e6965def03f19d4bf080494e46127a7ce768e4c83b0031",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/0002-e9c311acd0645685d2c6c0913c567b745d4139bd76edcbcae05a81476f2c788d.bin",
+      "sha256": "e9c311acd0645685d2c6c0913c567b745d4139bd76edcbcae05a81476f2c788d",
+      "bytes": 68530
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/0003-fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f.bin",
+      "sha256": "fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f",
+      "bytes": 19507
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_rpc_cartagena/0004-4da1b9d795b3864ae1e6965def03f19d4bf080494e46127a7ce768e4c83b0031.bin",
+      "sha256": "4da1b9d795b3864ae1e6965def03f19d4bf080494e46127a7ce768e4c83b0031",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/0000-995a5423d6ef588d6d6ffefa45c5604519bd8c1ddf35aea28b6f4ffee533adf1.bin",
+      "sha256": "995a5423d6ef588d6d6ffefa45c5604519bd8c1ddf35aea28b6f4ffee533adf1",
+      "bytes": 31364
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/0001-2f6a2f39b8fb47440144b965a98288b77ec9dfad3e6fb2b427d78a9b17bdb134.bin",
+      "sha256": "2f6a2f39b8fb47440144b965a98288b77ec9dfad3e6fb2b427d78a9b17bdb134",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/0002-2a8dd3e29aabf07c267895226ac1dc0b174d23624b445f1528af4f8928649384.bin",
+      "sha256": "2a8dd3e29aabf07c267895226ac1dc0b174d23624b445f1528af4f8928649384",
+      "bytes": 179
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/0003-995a5423d6ef588d6d6ffefa45c5604519bd8c1ddf35aea28b6f4ffee533adf1.bin",
+      "sha256": "995a5423d6ef588d6d6ffefa45c5604519bd8c1ddf35aea28b6f4ffee533adf1",
+      "bytes": 31364
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/icbf_uds/0004-2f6a2f39b8fb47440144b965a98288b77ec9dfad3e6fb2b427d78a9b17bdb134.bin",
+      "sha256": "2f6a2f39b8fb47440144b965a98288b77ec9dfad3e6fb2b427d78a9b17bdb134",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/0000-6428e083f01b61fbddb26d88563b7af25f510358e6c281684ab8d80c0c9aaed3.bin",
+      "sha256": "6428e083f01b61fbddb26d88563b7af25f510358e6c281684ab8d80c0c9aaed3",
+      "bytes": 61397
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/0001-04ee2042cce0fd5602169dfe85b7fa24c9cd9071d3d02d55c4459eea54ba4116.bin",
+      "sha256": "04ee2042cce0fd5602169dfe85b7fa24c9cd9071d3d02d55c4459eea54ba4116",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/0002-10041c6050230983978dd1dd2a10485ddbb33b6be1ea4a687904135cf5430726.bin",
+      "sha256": "10041c6050230983978dd1dd2a10485ddbb33b6be1ea4a687904135cf5430726",
+      "bytes": 36735
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/0003-6428e083f01b61fbddb26d88563b7af25f510358e6c281684ab8d80c0c9aaed3.bin",
+      "sha256": "6428e083f01b61fbddb26d88563b7af25f510358e6c281684ab8d80c0c9aaed3",
+      "bytes": 61397
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ideam_calidad_aire/0004-04ee2042cce0fd5602169dfe85b7fa24c9cd9071d3d02d55c4459eea54ba4116.bin",
+      "sha256": "04ee2042cce0fd5602169dfe85b7fa24c9cd9071d3d02d55c4459eea54ba4116",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/0000-9eefadc9f7e198a2e7d44a5863cc1dd47f6d4332f096da768e9116b2cb1b1489.bin",
+      "sha256": "9eefadc9f7e198a2e7d44a5863cc1dd47f6d4332f096da768e9116b2cb1b1489",
+      "bytes": 22485
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/0001-af4c60151b76a3119d0a5c6b94621af66363b7eea4798a35175b03bfb18306bf.bin",
+      "sha256": "af4c60151b76a3119d0a5c6b94621af66363b7eea4798a35175b03bfb18306bf",
+      "bytes": 17
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/0002-eaad9c9e46370b2899b008b305b7c8aedf8ad5236dc07a98bb6e289df14f0956.bin",
+      "sha256": "eaad9c9e46370b2899b008b305b7c8aedf8ad5236dc07a98bb6e289df14f0956",
+      "bytes": 1649
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/0003-9eefadc9f7e198a2e7d44a5863cc1dd47f6d4332f096da768e9116b2cb1b1489.bin",
+      "sha256": "9eefadc9f7e198a2e7d44a5863cc1dd47f6d4332f096da768e9116b2cb1b1489",
+      "bytes": 22485
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/ins_calidad_agua/0004-af4c60151b76a3119d0a5c6b94621af66363b7eea4798a35175b03bfb18306bf.bin",
+      "sha256": "af4c60151b76a3119d0a5c6b94621af66363b7eea4798a35175b03bfb18306bf",
+      "bytes": 17
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/0000-9c890f2f6d20a555813da0e9d5211cf8ebbee013c56f766ad83cabfe266c0e93.bin",
+      "sha256": "9c890f2f6d20a555813da0e9d5211cf8ebbee013c56f766ad83cabfe266c0e93",
+      "bytes": 64696
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/0001-f25f2dfbb9610c6720f16e9ae1e98a086502fae5fbe335fa78ebd39f2cc9e207.bin",
+      "sha256": "f25f2dfbb9610c6720f16e9ae1e98a086502fae5fbe335fa78ebd39f2cc9e207",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/0002-79161df823124df6db77a10ba73f8e799cbba3c9dff6d50247dbe80ad68786fb.bin",
+      "sha256": "79161df823124df6db77a10ba73f8e799cbba3c9dff6d50247dbe80ad68786fb",
+      "bytes": 401
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/0003-9c890f2f6d20a555813da0e9d5211cf8ebbee013c56f766ad83cabfe266c0e93.bin",
+      "sha256": "9c890f2f6d20a555813da0e9d5211cf8ebbee013c56f766ad83cabfe266c0e93",
+      "bytes": 64696
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_examenes_sexuales/0004-f25f2dfbb9610c6720f16e9ae1e98a086502fae5fbe335fa78ebd39f2cc9e207.bin",
+      "sha256": "f25f2dfbb9610c6720f16e9ae1e98a086502fae5fbe335fa78ebd39f2cc9e207",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/0000-d0dd3e64810c9c729828f54df4a76f8d3c7426a43f1bd931d2a671f691ccd254.bin",
+      "sha256": "d0dd3e64810c9c729828f54df4a76f8d3c7426a43f1bd931d2a671f691ccd254",
+      "bytes": 68859
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/0001-0cfa03c20df99247638e248a5fedec27aecaa0f2853f50244a6707b50a6accd2.bin",
+      "sha256": "0cfa03c20df99247638e248a5fedec27aecaa0f2853f50244a6707b50a6accd2",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/0002-e1e977fcddec9b1562b2ee0b4401436c48c412b453cca548234d55e413c3e4af.bin",
+      "sha256": "e1e977fcddec9b1562b2ee0b4401436c48c412b453cca548234d55e413c3e4af",
+      "bytes": 401
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/0003-d0dd3e64810c9c729828f54df4a76f8d3c7426a43f1bd931d2a671f691ccd254.bin",
+      "sha256": "d0dd3e64810c9c729828f54df4a76f8d3c7426a43f1bd931d2a671f691ccd254",
+      "bytes": 68859
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_homicidios/0004-0cfa03c20df99247638e248a5fedec27aecaa0f2853f50244a6707b50a6accd2.bin",
+      "sha256": "0cfa03c20df99247638e248a5fedec27aecaa0f2853f50244a6707b50a6accd2",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/0000-55afbe902fa0a3aec7ddb9aa10a5b3bb272bc3f192f221fce6aa397eb26a1196.bin",
+      "sha256": "55afbe902fa0a3aec7ddb9aa10a5b3bb272bc3f192f221fce6aa397eb26a1196",
+      "bytes": 65077
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/0001-d05e335ced3e9fb8ab38abb7c1a97328a0c9a73044b6cb293946de032dd18a46.bin",
+      "sha256": "d05e335ced3e9fb8ab38abb7c1a97328a0c9a73044b6cb293946de032dd18a46",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/0002-7e763291709514efe2d71e5f43395f71d4d7385892b5e199c7f1e194b142653b.bin",
+      "sha256": "7e763291709514efe2d71e5f43395f71d4d7385892b5e199c7f1e194b142653b",
+      "bytes": 389
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/0003-55afbe902fa0a3aec7ddb9aa10a5b3bb272bc3f192f221fce6aa397eb26a1196.bin",
+      "sha256": "55afbe902fa0a3aec7ddb9aa10a5b3bb272bc3f192f221fce6aa397eb26a1196",
+      "bytes": 65077
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_accidentales/0004-d05e335ced3e9fb8ab38abb7c1a97328a0c9a73044b6cb293946de032dd18a46.bin",
+      "sha256": "d05e335ced3e9fb8ab38abb7c1a97328a0c9a73044b6cb293946de032dd18a46",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/0000-a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c.bin",
+      "sha256": "a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c",
+      "bytes": 75455
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/0001-5e1419a7c54dba57ca13aa0c6ae0dd1a465cf3310e7fab78b8c20626d4635a2d.bin",
+      "sha256": "5e1419a7c54dba57ca13aa0c6ae0dd1a465cf3310e7fab78b8c20626d4635a2d",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/0002-b3a22c1ee1f756bf87b03187334d62dc363f1665e8b20b6df0957ff4e927360d.bin",
+      "sha256": "b3a22c1ee1f756bf87b03187334d62dc363f1665e8b20b6df0957ff4e927360d",
+      "bytes": 401
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/0003-a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c.bin",
+      "sha256": "a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c",
+      "bytes": 75455
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_lesiones_transporte/0004-5e1419a7c54dba57ca13aa0c6ae0dd1a465cf3310e7fab78b8c20626d4635a2d.bin",
+      "sha256": "5e1419a7c54dba57ca13aa0c6ae0dd1a465cf3310e7fab78b8c20626d4635a2d",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/0000-3e75b7cb45d8917ad982c018d6dd9b5945d42700607f8f9c1948bb5652e65930.bin",
+      "sha256": "3e75b7cb45d8917ad982c018d6dd9b5945d42700607f8f9c1948bb5652e65930",
+      "bytes": 60292
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/0001-7e7f51b9deff8afb0eb0e39af5c52e363b71bf43e2f403071cf846c15ca7e470.bin",
+      "sha256": "7e7f51b9deff8afb0eb0e39af5c52e363b71bf43e2f403071cf846c15ca7e470",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/0002-b9514884fffe868aa8aef3e9c4abb7841b471911000916acdbe635e0b7b9bb8b.bin",
+      "sha256": "b9514884fffe868aa8aef3e9c4abb7841b471911000916acdbe635e0b7b9bb8b",
+      "bytes": 391
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/0003-3e75b7cb45d8917ad982c018d6dd9b5945d42700607f8f9c1948bb5652e65930.bin",
+      "sha256": "3e75b7cb45d8917ad982c018d6dd9b5945d42700607f8f9c1948bb5652e65930",
+      "bytes": 60292
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_suicidios/0004-7e7f51b9deff8afb0eb0e39af5c52e363b71bf43e2f403071cf846c15ca7e470.bin",
+      "sha256": "7e7f51b9deff8afb0eb0e39af5c52e363b71bf43e2f403071cf846c15ca7e470",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/0000-43e703cc478ba95fb6855e7d9f638c60c9a652a3733fcbf7b850423ea6f5e2b8.bin",
+      "sha256": "43e703cc478ba95fb6855e7d9f638c60c9a652a3733fcbf7b850423ea6f5e2b8",
+      "bytes": 69817
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/0001-efe35cd50a3ec0313ccb0e3cad31848359c1ae2871ca63e2f81b179d8ebe6873.bin",
+      "sha256": "efe35cd50a3ec0313ccb0e3cad31848359c1ae2871ca63e2f81b179d8ebe6873",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/0002-574de1b8cf8421de6d7843394e96fa282267b980893b8a12c7efe84feb5df3e2.bin",
+      "sha256": "574de1b8cf8421de6d7843394e96fa282267b980893b8a12c7efe84feb5df3e2",
+      "bytes": 411
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/0003-43e703cc478ba95fb6855e7d9f638c60c9a652a3733fcbf7b850423ea6f5e2b8.bin",
+      "sha256": "43e703cc478ba95fb6855e7d9f638c60c9a652a3733fcbf7b850423ea6f5e2b8",
+      "bytes": 69817
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_interpersonal/0004-efe35cd50a3ec0313ccb0e3cad31848359c1ae2871ca63e2f81b179d8ebe6873.bin",
+      "sha256": "efe35cd50a3ec0313ccb0e3cad31848359c1ae2871ca63e2f81b179d8ebe6873",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/0000-0909a2578ff4f975417fec5e7a19d3973bba5f3bc1adc064627d5c155d989063.bin",
+      "sha256": "0909a2578ff4f975417fec5e7a19d3973bba5f3bc1adc064627d5c155d989063",
+      "bytes": 71863
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/0001-75d4d6cdcef52fa2972b4451f03331235aecf1c60fc0a93e6e5dd2bde4787d52.bin",
+      "sha256": "75d4d6cdcef52fa2972b4451f03331235aecf1c60fc0a93e6e5dd2bde4787d52",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/0002-8d306caa5400ce20b4b2b4748c676b35b97f9df223846501954d6dfbc68efe83.bin",
+      "sha256": "8d306caa5400ce20b4b2b4748c676b35b97f9df223846501954d6dfbc68efe83",
+      "bytes": 401
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/0003-0909a2578ff4f975417fec5e7a19d3973bba5f3bc1adc064627d5c155d989063.bin",
+      "sha256": "0909a2578ff4f975417fec5e7a19d3973bba5f3bc1adc064627d5c155d989063",
+      "bytes": 71863
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/medicina_violencia_intrafamiliar/0004-75d4d6cdcef52fa2972b4451f03331235aecf1c60fc0a93e6e5dd2bde4787d52.bin",
+      "sha256": "75d4d6cdcef52fa2972b4451f03331235aecf1c60fc0a93e6e5dd2bde4787d52",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0000-0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61.bin",
+      "sha256": "0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61",
+      "bytes": 14773
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0001-17bd978cacf8491b28615b076b70b315a3d94b6aa7a18752978dc13c5eb70003.bin",
+      "sha256": "17bd978cacf8491b28615b076b70b315a3d94b6aa7a18752978dc13c5eb70003",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0002-647d3156756f3f802c4a07c4c7c03bde03a74d86aeefac3db4b62fc760cf8a7e.bin",
+      "sha256": "647d3156756f3f802c4a07c4c7c03bde03a74d86aeefac3db4b62fc760cf8a7e",
+      "bytes": 67039
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0003-e15807222f5a48ab90b45f61166a966eb27ea2d30a9797a1fc5de778d235be80.bin",
+      "sha256": "e15807222f5a48ab90b45f61166a966eb27ea2d30a9797a1fc5de778d235be80",
+      "bytes": 67031
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0004-86832b4224eef231832e1813930a5a37f2e7d00d28937c9ea9acb1240328ab34.bin",
+      "sha256": "86832b4224eef231832e1813930a5a37f2e7d00d28937c9ea9acb1240328ab34",
+      "bytes": 67035
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0005-f34f0011b1adbf1df5273fe97c8a7e64c467397418ac4ce6d04bb317b09b0e97.bin",
+      "sha256": "f34f0011b1adbf1df5273fe97c8a7e64c467397418ac4ce6d04bb317b09b0e97",
+      "bytes": 67025
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0006-dd6a490d1bb09e8381dde829edfbd691707139101614d2a60d5e28592914274a.bin",
+      "sha256": "dd6a490d1bb09e8381dde829edfbd691707139101614d2a60d5e28592914274a",
+      "bytes": 53081
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0007-0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61.bin",
+      "sha256": "0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61",
+      "bytes": 14773
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_amenazas/0008-17bd978cacf8491b28615b076b70b315a3d94b6aa7a18752978dc13c5eb70003.bin",
+      "sha256": "17bd978cacf8491b28615b076b70b315a3d94b6aa7a18752978dc13c5eb70003",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0000-baa8a31e5e043f691fed6bc48eea37d7f589356ec340da27ebbe76f8d6c5a836.bin",
+      "sha256": "baa8a31e5e043f691fed6bc48eea37d7f589356ec340da27ebbe76f8d6c5a836",
+      "bytes": 18091
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0001-372f830d6513972c400f09f29c0d27f5fa720b80e6bbaefd82ec81ddf2c9aa2b.bin",
+      "sha256": "372f830d6513972c400f09f29c0d27f5fa720b80e6bbaefd82ec81ddf2c9aa2b",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0002-b1b4047ff7ee633257f7284afaa7f0234f66f4f6e0e413aafbe7382721bbf65d.bin",
+      "sha256": "b1b4047ff7ee633257f7284afaa7f0234f66f4f6e0e413aafbe7382721bbf65d",
+      "bytes": 127492
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0003-96e0ca57702c1ec67f022efa2e9da87387b69d435d401b84cb8699e580f333ae.bin",
+      "sha256": "96e0ca57702c1ec67f022efa2e9da87387b69d435d401b84cb8699e580f333ae",
+      "bytes": 127665
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0004-f918ff730cba5675e41ced5dea91f2412ef60d73520d4b4538889844fb30d47a.bin",
+      "sha256": "f918ff730cba5675e41ced5dea91f2412ef60d73520d4b4538889844fb30d47a",
+      "bytes": 127737
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0005-8ffefde48e2c3bece671257fef9ec0a6d06bb8a6a7f985ed4bc143964d67e404.bin",
+      "sha256": "8ffefde48e2c3bece671257fef9ec0a6d06bb8a6a7f985ed4bc143964d67e404",
+      "bytes": 127619
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0006-4e3c16690b5956f772ad259912471d343763de5b82feeda13e0b9b9d9a1b8822.bin",
+      "sha256": "4e3c16690b5956f772ad259912471d343763de5b82feeda13e0b9b9d9a1b8822",
+      "bytes": 127121
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0007-51d9a41a8811e8c220c3c710e869e5e3effc0187a1c8644bb2a9acd8731713be.bin",
+      "sha256": "51d9a41a8811e8c220c3c710e869e5e3effc0187a1c8644bb2a9acd8731713be",
+      "bytes": 79727
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0008-baa8a31e5e043f691fed6bc48eea37d7f589356ec340da27ebbe76f8d6c5a836.bin",
+      "sha256": "baa8a31e5e043f691fed6bc48eea37d7f589356ec340da27ebbe76f8d6c5a836",
+      "bytes": 18091
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_delitos_sexuales/0009-372f830d6513972c400f09f29c0d27f5fa720b80e6bbaefd82ec81ddf2c9aa2b.bin",
+      "sha256": "372f830d6513972c400f09f29c0d27f5fa720b80e6bbaefd82ec81ddf2c9aa2b",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/0000-6b89a097ffb57e324c17686ace0ebee6be06386f96aec990f725f4cbb159f2ef.bin",
+      "sha256": "6b89a097ffb57e324c17686ace0ebee6be06386f96aec990f725f4cbb159f2ef",
+      "bytes": 19509
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/0001-0d44468abdf179e5396e7d22cef50de9e0bf16b34b175b68943ba5fd828fbb99.bin",
+      "sha256": "0d44468abdf179e5396e7d22cef50de9e0bf16b34b175b68943ba5fd828fbb99",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/0002-6e30271b17bb0352e833831c38f0dec695c072af4f641986add67999306bd379.bin",
+      "sha256": "6e30271b17bb0352e833831c38f0dec695c072af4f641986add67999306bd379",
+      "bytes": 3604
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/0003-6b89a097ffb57e324c17686ace0ebee6be06386f96aec990f725f4cbb159f2ef.bin",
+      "sha256": "6b89a097ffb57e324c17686ace0ebee6be06386f96aec990f725f4cbb159f2ef",
+      "bytes": 19509
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_homicidios/0004-0d44468abdf179e5396e7d22cef50de9e0bf16b34b175b68943ba5fd828fbb99.bin",
+      "sha256": "0d44468abdf179e5396e7d22cef50de9e0bf16b34b175b68943ba5fd828fbb99",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0000-88ddbd10aabfe8deb28228bc357dccbcb769096ff35eca7b45e453ca2bbf3e61.bin",
+      "sha256": "88ddbd10aabfe8deb28228bc357dccbcb769096ff35eca7b45e453ca2bbf3e61",
+      "bytes": 15930
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0001-4b1334597be966c3eb65ef2e2ae2aa200c591fac140299f718aaff1a80c3a41d.bin",
+      "sha256": "4b1334597be966c3eb65ef2e2ae2aa200c591fac140299f718aaff1a80c3a41d",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0002-f0ff4adfe6f777b5bc206a04be45c53e61769a481e3c14207b746956d25c9c23.bin",
+      "sha256": "f0ff4adfe6f777b5bc206a04be45c53e61769a481e3c14207b746956d25c9c23",
+      "bytes": 118842
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0003-d915cc4d68628e7abbcbc12a556c48d2a66e8f6b80da8bba527ddbe0a28564f3.bin",
+      "sha256": "d915cc4d68628e7abbcbc12a556c48d2a66e8f6b80da8bba527ddbe0a28564f3",
+      "bytes": 118822
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0004-49d74c42973edd62fbd0f7f10d4fab3d817a123667a3314f505882cdef571adc.bin",
+      "sha256": "49d74c42973edd62fbd0f7f10d4fab3d817a123667a3314f505882cdef571adc",
+      "bytes": 118841
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0005-b89681f8efcfd69f22acc198ec786cb620847d2b9d3ce6d89f7b0483d7dbfc37.bin",
+      "sha256": "b89681f8efcfd69f22acc198ec786cb620847d2b9d3ce6d89f7b0483d7dbfc37",
+      "bytes": 118840
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0006-c14e42ea910f5150d5548e73e92dcd63e2036f4da3358eb603babf040a26137c.bin",
+      "sha256": "c14e42ea910f5150d5548e73e92dcd63e2036f4da3358eb603babf040a26137c",
+      "bytes": 75813
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0007-88ddbd10aabfe8deb28228bc357dccbcb769096ff35eca7b45e453ca2bbf3e61.bin",
+      "sha256": "88ddbd10aabfe8deb28228bc357dccbcb769096ff35eca7b45e453ca2bbf3e61",
+      "bytes": 15930
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vehiculos/0008-4b1334597be966c3eb65ef2e2ae2aa200c591fac140299f718aaff1a80c3a41d.bin",
+      "sha256": "4b1334597be966c3eb65ef2e2ae2aa200c591fac140299f718aaff1a80c3a41d",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0000-ed8dd4238abe1f9ff106524d7bd3cb58d35776980d0e42bb33a19eb388fe3363.bin",
+      "sha256": "ed8dd4238abe1f9ff106524d7bd3cb58d35776980d0e42bb33a19eb388fe3363",
+      "bytes": 15801
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0001-bfd7eb673228304ecde2276d666f95a2db38dc59ce44178ba74cccc589c433f2.bin",
+      "sha256": "bfd7eb673228304ecde2276d666f95a2db38dc59ce44178ba74cccc589c433f2",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0002-84e70a3be9d2dc172a3e22ab5684672ef0e2c8edefc5370e29b6d6a824f9255e.bin",
+      "sha256": "84e70a3be9d2dc172a3e22ab5684672ef0e2c8edefc5370e29b6d6a824f9255e",
+      "bytes": 126853
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0003-1ff897634c5e05472d3b7be3065b019540100c38d327c4713b8fbacf09b5faf2.bin",
+      "sha256": "1ff897634c5e05472d3b7be3065b019540100c38d327c4713b8fbacf09b5faf2",
+      "bytes": 126721
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0004-a47af98321e1ae2972c5ce3fece5742b94833f14ae5373b8d7ed0278d1ad4da3.bin",
+      "sha256": "a47af98321e1ae2972c5ce3fece5742b94833f14ae5373b8d7ed0278d1ad4da3",
+      "bytes": 126763
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0005-9c586031e6348ab7ae22d22787d154387dd59e6f935d86fcc52f514317735eb5.bin",
+      "sha256": "9c586031e6348ab7ae22d22787d154387dd59e6f935d86fcc52f514317735eb5",
+      "bytes": 126743
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0006-c19f1928281eafff87a4e7a3721423c190edb9566c387afd1ed6ce1da4818e46.bin",
+      "sha256": "c19f1928281eafff87a4e7a3721423c190edb9566c387afd1ed6ce1da4818e46",
+      "bytes": 126701
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0007-c83e93af28468a54e9d6ae3cc83f2d9dd5b842e5684b3440a777f08758b87302.bin",
+      "sha256": "c83e93af28468a54e9d6ae3cc83f2d9dd5b842e5684b3440a777f08758b87302",
+      "bytes": 631
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0008-ed8dd4238abe1f9ff106524d7bd3cb58d35776980d0e42bb33a19eb388fe3363.bin",
+      "sha256": "ed8dd4238abe1f9ff106524d7bd3cb58d35776980d0e42bb33a19eb388fe3363",
+      "bytes": 15801
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_hurto_vivienda_comercio/0009-bfd7eb673228304ecde2276d666f95a2db38dc59ce44178ba74cccc589c433f2.bin",
+      "sha256": "bfd7eb673228304ecde2276d666f95a2db38dc59ce44178ba74cccc589c433f2",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0000-8a34b2ef458a3e9931ff17ca63f0180dc816c6f27b72e4f4f7d51cde576da33a.bin",
+      "sha256": "8a34b2ef458a3e9931ff17ca63f0180dc816c6f27b72e4f4f7d51cde576da33a",
+      "bytes": 18556
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0001-51f34e8967d0ec38eeab83b301a59fc832e626e5f9ebd7892e603c574b67f521.bin",
+      "sha256": "51f34e8967d0ec38eeab83b301a59fc832e626e5f9ebd7892e603c574b67f521",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0002-aa3d187c4d9b925164544ddb2ace7e80c17ff1d9bc683c7acfed12080ffaea3d.bin",
+      "sha256": "aa3d187c4d9b925164544ddb2ace7e80c17ff1d9bc683c7acfed12080ffaea3d",
+      "bytes": 138442
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0003-3d9c0d324c9f8ef4af85eb9c6480bab0436e93e158ec3bf67035c699d0d20477.bin",
+      "sha256": "3d9c0d324c9f8ef4af85eb9c6480bab0436e93e158ec3bf67035c699d0d20477",
+      "bytes": 138780
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0004-7b828f319517a3c2fed826824e3ca9e7e5119e10958b806efb7c122ece018202.bin",
+      "sha256": "7b828f319517a3c2fed826824e3ca9e7e5119e10958b806efb7c122ece018202",
+      "bytes": 138567
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0005-fac48d9fb47066dc5a35b8a19de7182c382fcc4a88a9024ecee70f7b6ffe92c6.bin",
+      "sha256": "fac48d9fb47066dc5a35b8a19de7182c382fcc4a88a9024ecee70f7b6ffe92c6",
+      "bytes": 138518
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0006-437b4f8bf4f01abd1ef5c861bdcd6940c0238e7c23ad094dca5dd85d4e6cdaca.bin",
+      "sha256": "437b4f8bf4f01abd1ef5c861bdcd6940c0238e7c23ad094dca5dd85d4e6cdaca",
+      "bytes": 138624
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0007-ac2c1a0481e9e67bff2bc9ec9c6d3217cca7f9022462bea0366e572c1e5e4bae.bin",
+      "sha256": "ac2c1a0481e9e67bff2bc9ec9c6d3217cca7f9022462bea0366e572c1e5e4bae",
+      "bytes": 138661
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0008-da94499020163b46976228ac534c7c19132e2063e99d4b9e3e3fed7ed9800cae.bin",
+      "sha256": "da94499020163b46976228ac534c7c19132e2063e99d4b9e3e3fed7ed9800cae",
+      "bytes": 138798
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0009-0f65737b7cfbcad145c0962a679a96c09c81e2ae1f51a08e9441e68a8503df44.bin",
+      "sha256": "0f65737b7cfbcad145c0962a679a96c09c81e2ae1f51a08e9441e68a8503df44",
+      "bytes": 138428
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0010-a4f86fb5afe1417d8f39f68c390f9b1cb8b61201063332a0c55dc09c7149c51f.bin",
+      "sha256": "a4f86fb5afe1417d8f39f68c390f9b1cb8b61201063332a0c55dc09c7149c51f",
+      "bytes": 138297
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0011-bdca19f9697ad372033a8e08093a82e5b854f94c5c1d4937ca2d708e1368c75b.bin",
+      "sha256": "bdca19f9697ad372033a8e08093a82e5b854f94c5c1d4937ca2d708e1368c75b",
+      "bytes": 137990
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0012-252bab55dc9479c1bcfa7f95b8db6b7e884d43be9ba646e48db3ba37b1099212.bin",
+      "sha256": "252bab55dc9479c1bcfa7f95b8db6b7e884d43be9ba646e48db3ba37b1099212",
+      "bytes": 47210
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0013-8a34b2ef458a3e9931ff17ca63f0180dc816c6f27b72e4f4f7d51cde576da33a.bin",
+      "sha256": "8a34b2ef458a3e9931ff17ca63f0180dc816c6f27b72e4f4f7d51cde576da33a",
+      "bytes": 18556
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_lesiones/0014-51f34e8967d0ec38eeab83b301a59fc832e626e5f9ebd7892e603c574b67f521.bin",
+      "sha256": "51f34e8967d0ec38eeab83b301a59fc832e626e5f9ebd7892e603c574b67f521",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0000-f9e0ab077cf7f17e8b38c7a3d7981f0e3e6d399e96fb7312acfc57ba383f362d.bin",
+      "sha256": "f9e0ab077cf7f17e8b38c7a3d7981f0e3e6d399e96fb7312acfc57ba383f362d",
+      "bytes": 15759
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0001-a01b295ec089132f5f2674c866e3f269c390a62fe149c9e5e910e92d0275c31a.bin",
+      "sha256": "a01b295ec089132f5f2674c866e3f269c390a62fe149c9e5e910e92d0275c31a",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0002-25170ccdb846eaeb38d29cbbd946fdddf75ffd77e8cd7ddec2701405ef884a87.bin",
+      "sha256": "25170ccdb846eaeb38d29cbbd946fdddf75ffd77e8cd7ddec2701405ef884a87",
+      "bytes": 67218
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0003-64c57521fdf6bc27a3aed64885a2e2cbbb45a28181c7f098a982293123fd586a.bin",
+      "sha256": "64c57521fdf6bc27a3aed64885a2e2cbbb45a28181c7f098a982293123fd586a",
+      "bytes": 67187
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0004-9def23fcc4499d256e0d281250342a5c202cda893f7e137129dfbd509ed90548.bin",
+      "sha256": "9def23fcc4499d256e0d281250342a5c202cda893f7e137129dfbd509ed90548",
+      "bytes": 67186
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0005-cff5e2d769af069824714d593c51cb4de8fb00dfae4d0c6b21d0f9108cd78d3c.bin",
+      "sha256": "cff5e2d769af069824714d593c51cb4de8fb00dfae4d0c6b21d0f9108cd78d3c",
+      "bytes": 67192
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0006-aad4e2887df3695570c1b9fc6cb8fb30c8c511807752f30855df7284399f288a.bin",
+      "sha256": "aad4e2887df3695570c1b9fc6cb8fb30c8c511807752f30855df7284399f288a",
+      "bytes": 67174
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0007-f4413e39c1ce1f7721175539fb25f9a5b99c830a554f765a572cb7abcb06427b.bin",
+      "sha256": "f4413e39c1ce1f7721175539fb25f9a5b99c830a554f765a572cb7abcb06427b",
+      "bytes": 15983
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0008-f9e0ab077cf7f17e8b38c7a3d7981f0e3e6d399e96fb7312acfc57ba383f362d.bin",
+      "sha256": "f9e0ab077cf7f17e8b38c7a3d7981f0e3e6d399e96fb7312acfc57ba383f362d",
+      "bytes": 15759
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/policia_violencia_intrafamiliar/0009-a01b295ec089132f5f2674c866e3f269c390a62fe149c9e5e910e92d0275c31a.bin",
+      "sha256": "a01b295ec089132f5f2674c866e3f269c390a62fe149c9e5e910e92d0275c31a",
+      "bytes": 20
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/0000-ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687.bin",
+      "sha256": "ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687",
+      "bytes": 17828
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/0001-bab800c8c7cf8cb2ba642ec0f65d70cc20cd255e4e0eb9501505c4e009fac472.bin",
+      "sha256": "bab800c8c7cf8cb2ba642ec0f65d70cc20cd255e4e0eb9501505c4e009fac472",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/0002-0e205d0d6084182441919a793b7bfb9e6f8a713da11b515f8a7c3ac0724aea93.bin",
+      "sha256": "0e205d0d6084182441919a793b7bfb9e6f8a713da11b515f8a7c3ac0724aea93",
+      "bytes": 366
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/0003-ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687.bin",
+      "sha256": "ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687",
+      "bytes": 17828
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/procuraduria_pqrsdf_cartagena/0004-bab800c8c7cf8cb2ba642ec0f65d70cc20cd255e4e0eb9501505c4e009fac472.bin",
+      "sha256": "bab800c8c7cf8cb2ba642ec0f65d70cc20cd255e4e0eb9501505c4e009fac472",
+      "bytes": 18
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_indemnizaciones_cartagena/0000-e396c9a993badb8cd0ef55bc04957c26168c6e22988d2ba303935c941c6fe17e.bin",
+      "sha256": "e396c9a993badb8cd0ef55bc04957c26168c6e22988d2ba303935c941c6fe17e",
+      "bytes": 7652
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_indemnizaciones_cartagena/0001-d086d346fbb21cce7fd033131dbc339e86fd2416ddc29c726c6708825c13f382.bin",
+      "sha256": "d086d346fbb21cce7fd033131dbc339e86fd2416ddc29c726c6708825c13f382",
+      "bytes": 12
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_indemnizaciones_cartagena/0002-d1272707edb0175de4d437647889858d9bb72ae770479848eeeb028654e522e6.bin",
+      "sha256": "d1272707edb0175de4d437647889858d9bb72ae770479848eeeb028654e522e6",
+      "bytes": 2574
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_indemnizaciones_cartagena/0003-d086d346fbb21cce7fd033131dbc339e86fd2416ddc29c726c6708825c13f382.bin",
+      "sha256": "d086d346fbb21cce7fd033131dbc339e86fd2416ddc29c726c6708825c13f382",
+      "bytes": 12
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0000-2103eb00aa09fc881b93a55a5403ca08990e3ab533f13df98f968e84cbd5595b.bin",
+      "sha256": "2103eb00aa09fc881b93a55a5403ca08990e3ab533f13df98f968e84cbd5595b",
+      "bytes": 5472
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0001-8d3657882455a1ba18749a988bd5ee4e572a3244b506ac9061d628825d74926a.bin",
+      "sha256": "8d3657882455a1ba18749a988bd5ee4e572a3244b506ac9061d628825d74926a",
+      "bytes": 786
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0002-2b299ddd525c1c0fe86766f332e93b4bb2830b5db3197172e7d99910d4f35ecd.bin",
+      "sha256": "2b299ddd525c1c0fe86766f332e93b4bb2830b5db3197172e7d99910d4f35ecd",
+      "bytes": 786
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0003-af2e312fc771277b96a95fb6a5cb808bc58a4cbde93b2c859ed7230cec6d4785.bin",
+      "sha256": "af2e312fc771277b96a95fb6a5cb808bc58a4cbde93b2c859ed7230cec6d4785",
+      "bytes": 792
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0004-8066ae76f7e3936bb04fe9ea27e55de8d616de27fa3ea53253f2d315e73aacca.bin",
+      "sha256": "8066ae76f7e3936bb04fe9ea27e55de8d616de27fa3ea53253f2d315e73aacca",
+      "bytes": 773
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0005-6fad0ec96f419652ff9a18cc0c1e206b3bc2d46cda51e00a0a13e49a97a4ba6f.bin",
+      "sha256": "6fad0ec96f419652ff9a18cc0c1e206b3bc2d46cda51e00a0a13e49a97a4ba6f",
+      "bytes": 774
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0006-9cafaa4c7e499c44bcc44e17a84621343080a6c6b4b8ebf7a09778a2b86a9799.bin",
+      "sha256": "9cafaa4c7e499c44bcc44e17a84621343080a6c6b4b8ebf7a09778a2b86a9799",
+      "bytes": 774
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0007-4de46c40020ef9ac40a837d75ee1310d6f226f7a960820a612728752fd9c2c34.bin",
+      "sha256": "4de46c40020ef9ac40a837d75ee1310d6f226f7a960820a612728752fd9c2c34",
+      "bytes": 774
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_irv_cartagena/0008-89569a795cabc6bdbb512220399493479d7e534555683d0a534291318516c72c.bin",
+      "sha256": "89569a795cabc6bdbb512220399493479d7e534555683d0a534291318516c72c",
+      "bytes": 773
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_ruv_cartagena/0000-5e0cacd6f5c653043deb73dcd8e186293d7be561f960184661ac5e0e441fb99a.bin",
+      "sha256": "5e0cacd6f5c653043deb73dcd8e186293d7be561f960184661ac5e0e441fb99a",
+      "bytes": 1171
+    },
+    {
+      "ruta": "bridge/58_adquisiciones_fuentes/f31ed27f-58b6-4591-a840-414802a44d53/unidad_victimas_ruv_cartagena/0001-bdb7bdddf61bc59df6cdc0c7e2c35345d939da80996491bda4f06b955fe8f85f.bin",
+      "sha256": "bdb7bdddf61bc59df6cdc0c7e2c35345d939da80996491bda4f06b955fe8f85f",
+      "bytes": 6465728
+    }
+  ]
+}

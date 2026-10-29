@@ -27,6 +27,16 @@ revierte; ninguna etapa puede quedar persistida por separado.
   primero la misma fila de mesa (`SELECT ... FOR UPDATE`), evitando recuentos
   perdidos y cambios simultáneos mientras se cierra el acta.
 
+Desde 0084, alta/edición de aportes y la intención de correo se confirman juntos;
+el transporte se ejecuta después de la reclamación confirmada de la outbox.
+Recepción de un lote WhatsApp y procesamiento individual son casos distintos:
+el acuse HTTP200 acredita inbox durable, y cada mensaje se radica o rechaza en
+su propia transacción. Una reentrega no repite la radicación. Apoyos y devolución
+bloquean la propuesta y refrescan su estado antes de decidir. La identidad de
+apoyo registrada es la cuenta persistida vigente, estable entre sesiones.
+Consultar [operación](operacion.md#colas-de-aportes-y-recepcion-whatsapp) para
+reintentos, posible reenvío tras caída y downgrade condicionado.
+
 ```python
 async def ejecutar(self, datos):
     async with transaction(self.repository.session):

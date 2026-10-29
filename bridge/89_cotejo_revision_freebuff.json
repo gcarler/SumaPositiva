@@ -1,0 +1,17 @@
+{
+  "fecha_utc": "2026-10-24T17:14:28.682350+00:00",
+  "origen": "bridge/86_revision_freebuff_conciliacion_retrospectiva.md",
+  "hashes_objeto_revisado_vigentes": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": true,
+    "backend/scripts/contrastar_fuentes_por_periodo.py": true,
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": true,
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": true
+  },
+  "H1": "confirmado_por_lectura_igualdad_total_modelo_fecha_referencia",
+  "N2": "identidad_version_acotada_a_fuente_producto_no_extender_conflictos",
+  "N3": "revision_identificada_no_equivale_comparabilidad_metodologica",
+  "aceptacion_funcional": false,
+  "ejecucion_funcional": false,
+  "accion": "OL-CONCILIA-01-R5",
+  "tarea": "bridge/89_tarea_ollamacodex_conciliacion_r5_freebuff.md"
+}

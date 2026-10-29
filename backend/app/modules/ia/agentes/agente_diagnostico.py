@@ -122,23 +122,16 @@ class AgenteDiagnostico:
 
         # Detección de falsa causa / solución disfrazada
         es_solucion_disfrazada = any(
-            re.search(patron, texto_limpio, re.IGNORECASE)
-            for patron in PREFIJOS_SOLUCION_DISFRAZADA
+            re.search(patron, texto_limpio, re.IGNORECASE) for patron in PREFIJOS_SOLUCION_DISFRAZADA
         )
 
-        if (
-            "PROBLEMA" in tipo_nodo.value
-            or "CAUSA" in tipo_nodo.value
-            or "EFECTO" in tipo_nodo.value
-        ):
+        if "PROBLEMA" in tipo_nodo.value or "CAUSA" in tipo_nodo.value or "EFECTO" in tipo_nodo.value:
             sintaxis_esperada = "Sustantivo negativo o situación deficitaria (DNP)"
             es_infinitivo = any(
                 primera_palabra.startswith(v[:4]) and primera_palabra.endswith(("ar", "er", "ir"))
                 for v in VERBOS_INFINITIVO
             )
-            tiene_sustantivo_negativo = any(
-                neg in texto_limpio.lower() for neg in SUSTANTIVOS_NEGATIVOS_VALIDOS
-            )
+            tiene_sustantivo_negativo = any(neg in texto_limpio.lower() for neg in SUSTANTIVOS_NEGATIVOS_VALIDOS)
 
             if es_solucion_disfrazada:
                 cumple = False
@@ -148,8 +141,7 @@ class AgenteDiagnostico:
                     f"{texto_limpio}"
                 )
                 obs = (
-                    "Violación metodológica DNP: Redactado como ausencia de solución "
-                    "en vez de situación negativa real."
+                    "Violación metodológica DNP: Redactado como ausencia de solución en vez de situación negativa real."
                 )
             elif es_infinitivo:
                 cumple = False
@@ -166,8 +158,7 @@ class AgenteDiagnostico:
                 cumple = True
                 texto_sugerido = f"Precaria condición de: {texto_limpio}"
                 obs = (
-                    "Aceptable, pero se sugiere reforzar la condición deficitaria con"
-                    " un sustantivo negativo explícito."
+                    "Aceptable, pero se sugiere reforzar la condición deficitaria con un sustantivo negativo explícito."
                 )
 
             return ValidacionSintaxisNodo(
@@ -192,10 +183,7 @@ class AgenteDiagnostico:
             else:
                 cumple = False
                 texto_sugerido = f"Fortalecer y garantizar {texto_limpio.lower()}"
-                obs = (
-                    "Error sintáctico DNP: Los objetivos deben "
-                    "iniciar con un verbo activo en infinitivo."
-                )
+                obs = "Error sintáctico DNP: Los objetivos deben iniciar con un verbo activo en infinitivo."
             return ValidacionSintaxisNodo(
                 texto_original=texto_limpio,
                 cumple_sintaxis=cumple,
@@ -216,9 +204,7 @@ class AgenteDiagnostico:
                 problema,
                 flags=re.IGNORECASE,
             )
-        if re.search(
-            r"^(precari[oa]|deficiente|inadecuad[oa]|baja?) (acceso|cobertura|calidad)", p_lower
-        ):
+        if re.search(r"^(precari[oa]|deficiente|inadecuad[oa]|baja?) (acceso|cobertura|calidad)", p_lower):
             return re.sub(
                 r"^(precari[oa]|deficiente|inadecuad[oa]|baja?)",
                 "Optimizar y ampliar el",
@@ -249,9 +235,7 @@ class AgenteDiagnostico:
         recomendaciones: list[str] = []
 
         # 1. Validar problema central
-        val_central = self.evaluar_sintaxis_texto(
-            entrada.problema_central, TipoNodoMGA.PROBLEMA_CENTRAL
-        )
+        val_central = self.evaluar_sintaxis_texto(entrada.problema_central, TipoNodoMGA.PROBLEMA_CENTRAL)
         analisis_nodos.append(val_central)
         if not val_central.cumple_sintaxis:
             penalizaciones += 25.0
@@ -264,9 +248,7 @@ class AgenteDiagnostico:
             )
 
         prob_central_opt = (
-            val_central.texto_corregido_sugerido
-            if not val_central.cumple_sintaxis
-            else entrada.problema_central
+            val_central.texto_corregido_sugerido if not val_central.cumple_sintaxis else entrada.problema_central
         )
         obj_central_derivado = self.derivar_objetivo_desde_problema(prob_central_opt)
 
@@ -276,8 +258,7 @@ class AgenteDiagnostico:
         if not entrada.causas_directas:
             penalizaciones += 20.0
             recomendaciones.append(
-                "Metodología DNP exige al menos una Causa D"
-                "irecta sustentada en el Árbol de Problemas."
+                "Metodología DNP exige al menos una Causa Directa sustentada en el Árbol de Problemas."
             )
         for cd in entrada.causas_directas:
             val_cd = self.evaluar_sintaxis_texto(cd, TipoNodoMGA.CAUSA_DIRECTA)

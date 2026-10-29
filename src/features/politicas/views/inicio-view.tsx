@@ -196,7 +196,9 @@ export function InicioView() {
                     </div>
 
                     <h3 className="mt-4 text-base font-semibold text-[var(--text-primary)]">
-                      {fase.nombre}
+                      {/* TCA-05: sin prefijo "Fase N:" duplicado; la tarjeta ya
+                          identifica la fase con el rótulo "Fase 0{orden}". */}
+                      {fase.nombre.replace(/^Fase\s*\d+\s*[:·-]\s*/, "")}
                     </h3>
                     <p className="mt-2.5 text-[13px] leading-relaxed text-[var(--text-secondary)]">
                       {fase.descripcion}
@@ -302,7 +304,7 @@ export function InicioView() {
                 Últimas Noticias de la Política Pública
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
-                Seguimiento continuo al cronograma, decisiones concertadas y avances de las 37 mesas de trabajo.
+                Seguimiento continuo al cronograma, decisiones concertadas y avances de las 35 mesas de trabajo.
               </p>
             </div>
             <Button
@@ -494,11 +496,11 @@ export function InicioView() {
                 <span className="uppercase tracking-wider">Mandato Constitucional Vinculante</span>
               </div>
               <h2 className="mt-3 text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
-                Garantía de Devolución de Razones — Sentencia C-150 de 2015
+                Garantía de Devolución de Razones
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                 Cada propuesta ciudadana recibe respuesta oficial con sustentación técnica antes del cierre de
-                la consulta pública. El Estado distrital no puede descartar aportes de forma silenciosa ni arbitraria.
+                la consulta pública. Tu voz es fundamental y cada aporte es valorado con total transparencia para construir juntos las soluciones de nuestra ciudad.
               </p>
             </div>
 

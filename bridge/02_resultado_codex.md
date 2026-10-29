@@ -109,3 +109,44 @@ No modifiqué `src/**`, `pdt_conciliador_vinculos_pa_triada.py` ni `poblar_vincu
 - No ejecuté pytest sobre el repositorio completo.
 
 No modifiqué `src/**` ni `pdt_sispt_dnp_evaluador.py` / `test_pdt_sispt_dnp_evaluador.py`.
+
+---
+
+# Resultado Codex — Fase [34A]
+
+**Fecha:** 2026-10-19
+**Alcance:** Generación del diagnóstico PSHC de seis capítulos y preparación de publicación nativa en Google Drive.
+
+## Implementación
+
+- Se creó `backend/app/modules/compromisos/pdt_generador_google_doc_pshc.py`. Produce HTML para Google Docs con los estilos Montserrat/Roboto, paleta solicitada, tablas con filas alternadas y cajas de destacado; además genera Markdown completo, CSV por plan/dimensión y huella SHA-256.
+- El documento contiene capítulos I–VI, embudo de tres etapas, tabla del universo por plan, semáforo de las siete dimensiones, tablas microsectoriales, apartados DEA-BCC, LISA/Moran, ARIMA/ISRI y recomendaciones de continuidad.
+- El generador intenta cargar `pdt_diagnostico_seguridad_humana_8planes` y conserva un fallback determinista con los ocho planes y el total oficial de 4,637 metas. En esta ejecución el módulo 34B todavía no estaba disponible; por ello, las métricas microsectoriales y econométricas se identifican como pendientes y no se presentan como mediciones.
+- Se implementó `publicar_diagnostico_pshc_en_drive` con credenciales de servicio, búsqueda idempotente por nombre en la carpeta solicitada y creación/actualización de Doc nativo, Sheet nativa y respaldo Markdown. El endpoint solo publica cuando se pide `publicar_drive=true`; no se realizó ninguna escritura externa durante las pruebas.
+- Se expuso `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes`, su esquema de respuesta y su registro público en `access_policy.py` y `docs/permisos-api.md`.
+- Se probaron HTTP 200, los seis capítulos, los cinco colores requeridos, los tres formatos de salida y el registro público de la ruta.
+
+## Verificación
+
+- Ruff sobre los seis archivos indicados: **All checks passed!**
+- `pytest tests/test_pdt_ai_evaluator.py tests/test_access_policy.py -q`: **126 passed**.
+- No ejecuté pytest sobre el repositorio completo ni publiqué archivos en Google Drive.
+
+No modifiqué `src/**` ni `pdt_diagnostico_seguridad_humana_8planes.py` / `test_pdt_diagnostico_seguridad_humana_8planes.py`.
+
+## Fase EAF [35A] — Generador PSHC V2
+
+**Alcance:** ampliación exclusiva del generador editorial y su prueba de aceptación. No se modificó `src/**` ni el motor diagnóstico que está ampliando agy2.
+
+**Implementación:** `backend/app/modules/compromisos/pdt_generador_google_doc_pshc.py` ahora renderiza los capítulos I–VI en Markdown y HTML de Google Docs, con monografías para los ocho planes, siete secciones dimensionales con diez subsecciones cada una, tablas de SisPT/CUIPO-PIIP/DEA-BCC, perfiles territoriales y hoja de ruta. Consume los desgloses granulares que proporciona el motor diagnóstico cuando estén presentes. Para datos ausentes marca la disponibilidad en vez de inventar registros.
+
+**Volumen generado con los datos disponibles en esta ejecución:** Markdown 375,073 caracteres; HTML 477,293 caracteres; 56,717 palabras. Se cumplen las cotas de 340,000 / 460,000 caracteres y 48,000 palabras. Se añadieron aserciones de volumen y estructura en `backend/tests/test_pdt_ai_evaluator.py`.
+
+**Validación:** Ruff pasó en los dos archivos modificados. `pytest tests/test_pdt_ai_evaluator.py tests/test_access_policy.py -q`: 126 passed.
+
+**Publicación en Google Drive:**
+- 01 actualizado: [Diagnóstico PSHC 8 planes 2012–2027](https://docs.google.com/document/d/1mMwBVkdL95yahJfBt1iFxYtowN3J4QW4u7uY3VoVAS4/edit?usp=drivesdk)
+- 04 creado: [V2 Monografía de 100 páginas](https://docs.google.com/document/d/1pDdl9CKFqnFC7qX9pNq8LYQfZ_wX2jsbuKxcPf0EdTA/edit?usp=drivesdk)
+- También se sincronizaron los artefactos 02 (Sheet) y 03 (Markdown) del paquete.
+
+**Límite de los datos de origen al momento de esta ejecución:** el motor 35B todavía no exponía en la respuesta los catálogos granulares completos Top 25 + 15 por dimensión, la matriz íntegra de 30 dependencias ni los perfiles monográficos enriquecidos de 18 territorios. El generador está conectado a esos campos y conserva los registros disponibles, pero esta publicación no debe interpretarse como 280 fichas reales completas mientras esos datos no estén disponibles.

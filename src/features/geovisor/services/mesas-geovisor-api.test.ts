@@ -57,35 +57,35 @@ describe("Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05)"
       expect(geo?.lng).toBe(-75.5506);
     });
 
-    test("resuelve correctamente las mesas de Barú e insulares (mr-007, mr-012, mr-013, mr-014, mr-015)", () => {
+    test("resuelve correctamente las mesas rurales e insulares y nuevas mesas oficiales (mr-007, mr-010, mr-011, mp-009, ms-012)", () => {
       const geo007 = buscarCoordenadasMesa({ id: "mr-007" });
-      const geo012 = buscarCoordenadasMesa({ id: "mr-012" });
-      const geo013 = buscarCoordenadasMesa({ id: "mr-013" });
-      const geo014 = buscarCoordenadasMesa({ id: "mr-014" });
-      const geo015 = buscarCoordenadasMesa({ id: "mr-015" });
+      const geo010 = buscarCoordenadasMesa({ id: "mr-010" });
+      const geo011 = buscarCoordenadasMesa({ id: "mr-011" });
+      const geoPob09 = buscarCoordenadasMesa({ id: "mp-009" });
+      const geoSec12 = buscarCoordenadasMesa({ id: "ms-012" });
 
       expect(geo007).toBeDefined();
-      expect(geo012).toBeDefined();
-      expect(geo013).toBeDefined();
-      expect(geo014).toBeDefined();
-      expect(geo015).toBeDefined();
+      expect(geo010).toBeDefined();
+      expect(geo011).toBeDefined();
+      expect(geoPob09).toBeDefined();
+      expect(geoSec12).toBeDefined();
 
       expect(geo007?.territorioNombre).toContain("Santa Ana");
-      expect(geo012?.territorioNombre).toContain("Barú");
-      expect(geo013?.territorioNombre).toContain("Ararca");
-      expect(geo014?.territorioNombre).toContain("Caño del Oro");
-      expect(geo015?.territorioNombre).toContain("Pontezuela");
+      expect(geo010?.territorioNombre).toContain("Islas del Rosario");
+      expect(geo011?.territorioNombre).toContain("Isla Fuerte");
+      expect(geoPob09?.territorioNombre).toContain("Cartagena");
+      expect(geoSec12?.territorioNombre).toContain("Cartagena");
     });
 
-    test("mapeo cubre exactamente las 37 mesas canónicas oficiales", () => {
+    test("mapeo cubre exactamente las 35 mesas canónicas oficiales", () => {
       const codigosOficiales = Object.keys(MAPA_CODIGO_OFICIAL_A_AGENDA);
-      expect(codigosOficiales.length).toBe(37);
+      expect(codigosOficiales.length).toBe(35);
 
       const shortcodes = Object.keys(MAPA_SHORTCODE_A_AGENDA);
-      expect(shortcodes.length).toBe(37);
+      expect(shortcodes.length).toBe(35);
 
       const uuids = Object.keys(MAPA_UUID_A_AGENDA);
-      expect(uuids.length).toBe(37);
+      expect(uuids.length).toBe(35);
     });
   });
 

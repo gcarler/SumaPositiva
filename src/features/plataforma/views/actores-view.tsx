@@ -34,7 +34,7 @@ import type {
 } from "@/features/actores/models/actor";
 
 export function ActoresView() {
-  const [modoVista, setModoVista] = useState<"matriz" | "datagrid">("matriz");
+  const [modoVista, setModoVista] = useState<"matriz" | "datagrid">("datagrid");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const editable = puedeEditar(sesion, "actores");

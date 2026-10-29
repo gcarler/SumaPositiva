@@ -12,6 +12,7 @@ import {
   TableRow
 } from "@/shared/ui/table";
 import {usePanels} from "@/core/panels/panel-store";
+import { CollectionLayout, type CollectionViewMode } from "@/shared/ui/collection-view";
 import type {AlternativaSolucion} from "../models/alternativa";
 import {
   ESTADOS_ALTERNATIVA,
@@ -21,6 +22,7 @@ import {
 } from "../models/alternativa";
 
 interface AlternativasTablaProps {
+  vista?: CollectionViewMode;
   alternativas: AlternativaSolucion[];
   puedeEditar: boolean;
 }
@@ -31,6 +33,7 @@ export function formatCop(cop: number): string {
 }
 
 export function AlternativasTabla({
+  vista = "lista",
   alternativas,
   puedeEditar,
 }: AlternativasTablaProps) {
@@ -62,6 +65,30 @@ export function AlternativasTabla({
           No hay iniciativas que coincidan con los criterios de búsqueda o filtros seleccionados.
         </p>
       </div>
+    );
+  }
+
+  if (vista === "tarjetas") {
+    return (
+      <CollectionLayout view={vista} aria-label="Tarjetas de alternativas de solución">
+        {alternativas.map((alt) => (
+          <article key={alt.id} className="flex flex-col gap-4 rounded-xl border border-border bg-surface-1 p-5">
+            <div className="space-y-2"><p className="font-mono text-xs text-text-tertiary">{alt.codigo}</p><h2 className="break-words font-semibold">{alt.nombre}</h2><p className="text-sm text-text-secondary">{alt.descripcion}</p></div>
+            <span className={`self-start rounded-full border px-2.5 py-1 text-xs font-semibold ${ESTADOS_ALTERNATIVA[alt.estado].toneClass}`}>{ESTADOS_ALTERNATIVA[alt.estado].label}</span>
+            <dl className="space-y-3 text-sm">
+              <div><dt className="text-xs text-text-tertiary">Territorio</dt><dd>{alt.territorio_cobertura}</dd></div>
+              <div><dt className="text-xs text-text-tertiary">Sector / Dimensión</dt><dd>{SECTORES_MGA[alt.sector]?.label ?? alt.sector} · {DIMENSIONES_ONU_MAP[alt.dimension_id] ?? alt.dimension_id}</dd></div>
+              <div><dt className="text-xs text-text-tertiary">Línea estratégica</dt><dd>{LINEAS_ESTRATEGICAS_MAP[alt.linea_estrategica_codigo] ?? alt.linea_estrategica_codigo}</dd></div>
+              <div><dt className="text-xs text-text-tertiary">Costo estimado / Plazo</dt><dd>{formatCop(alt.costo_estimado_cop)} · {alt.horizonte_anios} año(s)</dd><dd className="text-xs text-text-secondary">{alt.fuentes_financiacion_sugeridas?.join(", ") || "Por asignar"}</dd></div>
+            </dl>
+            {alt.requiere_consulta_previa && <Badge variant="warning">Enfoque étnico / Concertación</Badge>}
+            <div className="mt-auto flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => handleEvaluarViabilidad(alt)} aria-label={`Evaluar viabilidad con IA para ${alt.codigo}`}>Evaluar IA</Button>
+              <Button variant="outline" size="sm" onClick={() => handleAbrirPanel(alt)} aria-label={`${puedeEditar ? "Editar" : "Ver"} alternativa ${alt.codigo}`}>{puedeEditar ? "Editar" : "Ficha"}</Button>
+            </div>
+          </article>
+        ))}
+      </CollectionLayout>
     );
   }
 

@@ -1,0 +1,37 @@
+{
+  "catalogo": {
+    "ruta": "/root/polis/data/capas_analiticas/catalogos_planeacion/0ccf1867a4dedb045a627a5da0e9b3cd553f9b1d8819e74f92daaf1f1ace5c11.json",
+    "sha256": "0ccf1867a4dedb045a627a5da0e9b3cd553f9b1d8819e74f92daaf1f1ace5c11",
+    "total_metas": 4637
+  },
+  "esquema_salida": "polis.trazador_indicadores_planeacion.v1",
+  "inventario": {
+    "artefactos": 1822,
+    "ruta": "/root/polis/data/fuentes_versiones/inventarios/19e5b8901c7aa088904c4d1964c5c58584c26b57e1a088970dbd1697d0741824.json",
+    "sha256": "19e5b8901c7aa088904c4d1964c5c58584c26b57e1a088970dbd1697d0741824"
+  },
+  "lista": {
+    "rows": 140,
+    "ruta": "/root/polis/bridge/18_metas_indicador_pendiente.csv",
+    "sha256": "5e6cf11e0109c3bf6615d2b9649c84617d998be6974278e77235c351e83494ef"
+  },
+  "resumen": {
+    "estado_salida": "PENDIENTE_COTEJO_HUMANO",
+    "por_estado_coincidencia": {
+      "COINCIDENCIA_MULTIPLE": 20,
+      "COINCIDENCIA_UNICA": 8,
+      "SIN_COINCIDENCIA": 112
+    },
+    "por_estado_resolucion_documento": {
+      "RESUELTO_DUPLICADO_IDEMPOTENTE": 140
+    },
+    "por_plan": {
+      "PDD_2013_2015": 3,
+      "PDD_2020_2023": 52,
+      "PDD_2024_2027": 80,
+      "PDL_1_2024_2027": 1,
+      "PDL_3_2024_2027": 4
+    },
+    "total_registros": 140
+  }
+}

@@ -173,7 +173,7 @@ def downgrade() -> None:
     op.get_bind().exec_driver_sql(
         """
         UPDATE mesas_trabajo.agendas SET
-            mesa_id = '01a0f5fe-86e2-7ebb-90f1-7268653ea79d',
+            mesa_id = (SELECT id FROM mesas_trabajo.mesas WHERE codigo_oficial = 'MR-ISL-07' LIMIT 1),
             nombre = 'Mesa Rural e Insular — Barú', territorio = 'Corregimiento de Barú',
             lugar = 'Institución Educativa de Barú', fecha = DATE '2026-10-24',
             hora_inicio = '09:00', hora_fin = '12:00',
@@ -190,7 +190,7 @@ def downgrade() -> None:
             id, mesa_id, tipo, nombre, territorio, lugar, fecha, hora_inicio, hora_fin,
             estado, dimensiones_onu, responsable, observaciones
         ) VALUES (
-            'mr-007b', '01a0f5fe-86e2-7ebb-90f1-7268653ea79d', 'rural_insular',
+            'mr-007b', (SELECT id FROM mesas_trabajo.mesas WHERE codigo_oficial = 'MR-ISL-07' LIMIT 1), 'rural_insular',
             'Mesa Insular — Barú y Comunidades del Archipiélago', 'Isla de Barú',
             'Institución Educativa de Barú', DATE '2026-10-22', '07:30', '10:00', 'programada',
             '["Seguridad Alimentaria", "Seguridad Ambiental", "Seguridad Comunitaria"]'::jsonb,

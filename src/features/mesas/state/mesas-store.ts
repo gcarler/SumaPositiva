@@ -26,7 +26,7 @@ import { uidNodo, calcularTotalAsistentes } from "@/features/mesas/models/mesas"
 export interface MesaInput {
   id?: string;
   nombre: string;
-  fecha: string;
+  fecha?: string | null;
   lugar: string;
   entidad?: string;
   facilitador?: string;

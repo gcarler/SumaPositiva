@@ -45,9 +45,7 @@ class AgenteDevolucionMotivada:
                 output_type=ResultadoDevolucion,
             )
 
-    def clasificar_causal(
-        self, propuesta: PropuestaParaDevolucion
-    ) -> tuple[CausalDevolucionTaxativa, str, str, str]:
+    def clasificar_causal(self, propuesta: PropuestaParaDevolucion) -> tuple[CausalDevolucionTaxativa, str, str, str]:
         """Clasifica la causal taxativa y redacta la motivación sustancial conforme a C-150/15."""
         texto_evaluar = f"{propuesta.titulo} {propuesta.descripcion} {
             propuesta.motivo_descarte_preliminar or ('')
@@ -79,14 +77,8 @@ class AgenteDevolucionMotivada:
             ]
         ):
             causal = CausalDevolucionTaxativa.JURIDICA
-            norma = (
-                "Artículos 286 y 287 de la Constitución Política y Ley Orgánica 1"
-                "454 de 2011 (LOOT)."
-            )
-            ruta = (
-                "Congreso de la República / Ministerio de Justicia y del Derecho "
-                "(trámite legislativo nacional)."
-            )
+            norma = "Artículos 286 y 287 de la Constitución Política y Ley Orgánica 1454 de 2011 (LOOT)."
+            ruta = "Congreso de la República / Ministerio de Justicia y del Derecho (trámite legislativo nacional)."
             motivacion = (
                 "La propuesta '"
                 f"{propuesta.titulo}"
@@ -119,8 +111,7 @@ class AgenteDevolucionMotivada:
                 " 1996 (Estatuto Orgánico del Presupuesto)."
             )
             ruta = (
-                "Secretaría de Hacienda Distrital / Mesa Sectorial de Presupuesto"
-                " Participativo del próximo cuatrienio."
+                "Secretaría de Hacienda Distrital / Mesa Sectorial de Presupuesto Participativo del próximo cuatrienio."
             )
             motivacion = (
                 "La propuesta '"
@@ -139,10 +130,7 @@ class AgenteDevolucionMotivada:
                 "Metodología General Ajustada (MGA) del DNP y principios de coher"
                 "encia causal de la Sentencia T-025 de 2004."
             )
-            ruta = (
-                "Comité Técnico de Formulación de la Secretaría del Interior / Es"
-                "pacios de Co-diseño Metodológico."
-            )
+            ruta = "Comité Técnico de Formulación de la Secretaría del Interior / Espacios de Co-diseño Metodológico."
             motivacion = (
                 "La propuesta '"
                 f"{propuesta.titulo}"
@@ -155,15 +143,8 @@ class AgenteDevolucionMotivada:
 
         # Si el usuario incluyó una motivación preliminar válida de al menos 20 caracteres,
         # enriquecerla
-        if (
-            propuesta.motivo_descarte_preliminar
-            and len(propuesta.motivo_descarte_preliminar.strip()) >= 20
-        ):
-            motivacion = (
-                f"{motivacion}"
-                " Detalle técnico específico: "
-                f"{propuesta.motivo_descarte_preliminar.strip()}"
-            )
+        if propuesta.motivo_descarte_preliminar and len(propuesta.motivo_descarte_preliminar.strip()) >= 20:
+            motivacion = f"{motivacion} Detalle técnico específico: {propuesta.motivo_descarte_preliminar.strip()}"
 
         return causal, norma, ruta, motivacion
 

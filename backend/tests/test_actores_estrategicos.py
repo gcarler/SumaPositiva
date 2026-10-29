@@ -8,14 +8,15 @@ Verifica:
 """
 
 import uuid
-import pytest
-from starlette.testclient import TestClient
 
-from app.main import create_app
-from app.core.config import Settings
-from app.modules.identidad.security import crear_token_acceso
+import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
+from starlette.testclient import TestClient
+
+from app.core.config import Settings
+from app.main import create_app
+from app.modules.identidad.security import crear_token_acceso
 
 
 def test_actores_crud_y_auditoria(database_url: str, monkeypatch):
@@ -37,8 +38,31 @@ def test_actores_crud_y_auditoria(database_url: str, monkeypatch):
     )
     app = create_app(settings)
 
+    import asyncio
+
+    async def _obtener_o_crear_usuario():
+        engine = create_async_engine(database_url)
+        async with engine.begin() as conn:
+            res = await conn.execute(text("SELECT id FROM autenticacion.usuarios LIMIT 1"))
+            row = res.first()
+            if row:
+                uid = row[0]
+            else:
+                uid = uuid.uuid4()
+                await conn.execute(
+                    text(
+                        "INSERT INTO autenticacion.usuarios (id, correo, nivel_identidad, activo, creado_en) "
+                        "VALUES (:id, :correo, 'declarada', true, now())"
+                    ),
+                    {"id": uid, "correo": f"test_{uid.hex[:8]}@cartagena.gov.co"},
+                )
+        await engine.dispose()
+        return uid
+
+    usuario_test_id = asyncio.run(_obtener_o_crear_usuario())
+
     token = crear_token_acceso(
-        sujeto_id=uuid.uuid4(),
+        sujeto_id=usuario_test_id,
         rol="autoridad_distrital",
         nivel_identidad="declarada",
         permisos=["politicas:gestionar"],
@@ -122,7 +146,7 @@ def test_auditoria_inmutable_registrada(database_url: str):
             res = await conn.execute(
                 text(
                     """
-                    SELECT accion, tabla_afectada, causal
+                    SELECT accion, tabla_afectada, causal, usuario_id
                     FROM auditoria.registros_auditoria
                     WHERE tabla_afectada = 'participacion_ciudadana.actores_estrategicos'
                     ORDER BY creado_en DESC
@@ -134,6 +158,8 @@ def test_auditoria_inmutable_registrada(database_url: str):
             assert len(filas) > 0, "No se registraron trazas de auditoría para actores"
             acciones = [f[0] for f in filas]
             assert "CREAR_ACTOR" in acciones or "ACTUALIZAR_ACTOR" in acciones or "ELIMINAR_ACTOR" in acciones
+            usuarios = [f[3] for f in filas if f[3] is not None]
+            assert len(usuarios) > 0, "usuario_id debe quedar registrado en las trazas de auditoría"
         await engine.dispose()
 
     asyncio.run(_verificar())

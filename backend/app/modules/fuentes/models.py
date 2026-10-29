@@ -26,21 +26,15 @@ class FuenteInformacion(Base):
     nombre_fuente: Mapped[str] = mapped_column(String(250), nullable=False)
     tipo: Mapped[str] = mapped_column(String(20), nullable=False, default="secundaria")
     ambito: Mapped[str] = mapped_column(String(20), nullable=False, default="local")
-    dimension_seguridad: Mapped[str] = mapped_column(
-        String(50), nullable=False, default="personal"
-    )
-    periodicidad: Mapped[str] = mapped_column(
-        String(50), nullable=False, default="mensual"
-    )
+    dimension_seguridad: Mapped[str] = mapped_column(String(50), nullable=False, default="personal")
+    periodicidad: Mapped[str] = mapped_column(String(50), nullable=False, default="mensual")
     radicado_solicitud: Mapped[str | None] = mapped_column(String(100), nullable=True)
     fecha_solicitud: Mapped[date | None] = mapped_column(Date, nullable=True)
     fecha_limite_respuesta: Mapped[date | None] = mapped_column(Date, nullable=True)
     estado_entrega: Mapped[str] = mapped_column(
         String(30), nullable=False, server_default=text("'por_solicitar'"), default="por_solicitar"
     )
-    variables_solicitadas: Mapped[list[str]] = mapped_column(
-        JSONB, nullable=False, server_default=text("'[]'::jsonb")
-    )
+    variables_solicitadas: Mapped[list[str]] = mapped_column(JSONB, nullable=False, server_default=text("'[]'::jsonb"))
     resumen_datos: Mapped[str | None] = mapped_column(Text, nullable=True)
     archivo_adjunto_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     responsable_contacto: Mapped[dict[str, Any]] = mapped_column(
@@ -48,9 +42,7 @@ class FuenteInformacion(Base):
     )
     observaciones_calidad: Mapped[str | None] = mapped_column(Text, nullable=True)
     actualizado_por: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("now()")
-    )
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
     actualizado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("now()")
     )

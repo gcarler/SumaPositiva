@@ -9,6 +9,8 @@ import { Button } from "@/shared/ui/button";
 import { Plus, BarChart2, Edit2 } from "lucide-react";
 import { useFormulariosStore } from "../state/formularios-store";
 import { useState } from "react";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 import { SectionLabel } from "@/shared/components/participation-ui";
 
 export function FormulariosPanel({
@@ -40,6 +42,7 @@ export function FormulariosContenido({
   soloRespuesta?: boolean;
   soloLectura?: boolean;
 }) {
+  const [vista, setVista] = useCollectionView("formularios", "lista");
   const { openPanel } = usePanels();
   const { data: formularios, isLoading, error } = useFormularios();
   const [eliminarId, setEliminarId] = useState<string>();
@@ -56,6 +59,7 @@ export function FormulariosContenido({
       )}
       <div className="flex flex-wrap gap-3 justify-between items-center">
         <SectionLabel>Formularios Disponibles</SectionLabel>
+        <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del catálogo de formularios" />
         {!soloRespuesta && !soloLectura && (
           <Button size="sm" onClick={() => openPanel("formulario-editor", {})}>
             <Plus className="mr-2 size-4" />
@@ -67,13 +71,18 @@ export function FormulariosContenido({
       {isLoading ? (
         <div className="text-sm text-[var(--text-secondary)]">Cargando...</div>
       ) : (
-        <div className="space-y-4">
+        <CollectionLayout view={vista}>
+          {!error && formularios?.filter((form) => !soloRespuesta || form.estado !== "borrador").length === 0 && (
+            <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-text-secondary sm:col-span-2 xl:col-span-3">No hay formularios disponibles para esta consulta.</p>
+          )}
           {formularios
             ?.filter((form) => !soloRespuesta || form.estado !== "borrador")
             .map((form) => (
               <div
                 key={form.id}
-                className="flex flex-wrap gap-3 justify-between items-center p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]"
+                className={vista === "tarjetas"
+                  ? "flex flex-col items-start gap-4 rounded-xl border border-border bg-surface-1 p-5"
+                  : "flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface-1 p-4"}
               >
                 <div>
                   <h3 className="font-medium text-sm text-[var(--text-primary)]">
@@ -226,7 +235,7 @@ export function FormulariosContenido({
                 )}
               </div>
             ))}
-        </div>
+        </CollectionLayout>
       )}
     </div>
   );

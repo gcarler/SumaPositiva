@@ -136,9 +136,7 @@ def test_csp_report_tamano_maximo_413():
 
 def test_csp_report_rate_limit_429():
     """Aplica limitación de tasa por IP retornando 429 con cabecera Retry-After."""
-    settings = Settings(
-        _env_file=None, environment="test", jwt_secret_key="a" * 32, csp_report_limite_ip=3
-    )
+    settings = Settings(_env_file=None, environment="test", jwt_secret_key="a" * 32, csp_report_limite_ip=3)
     app = create_app(settings)
 
     headers = {"X-Forwarded-For": "198.51.100.42"}
@@ -155,3 +153,73 @@ def test_csp_report_rate_limit_429():
         assert r_excedido.status_code == 429
         assert "Límite de reportes de seguridad excedido" in r_excedido.json()["detail"]
         assert r_excedido.headers.get("retry-after") == "60"
+
+
+def test_csp_report_recientes_y_resumen_autorizacion():
+    """Valida control de acceso (401/403/200) en la consulta y resumen perimetral de CSP."""
+    import uuid
+
+    from app.modules.identidad.deps import obtener_sujeto_autenticado
+    from app.modules.identidad.schemas import SujetoAutenticadoContexto
+
+    settings = Settings(_env_file=None, environment="test", jwt_secret_key="a" * 32)
+    app = create_app(settings)
+
+    # 1. Sembrar un reporte CSP de prueba
+    payload = {
+        "csp-report": {
+            "document-uri": "https://seguridadhumanaintegral.org/plataforma",
+            "effective-directive": "script-src",
+            "blocked-uri": "https://evil-analytics.org/tracker.js",
+            "disposition": "enforce",
+        }
+    }
+
+    with TestClient(app) as client:
+        # Ingesta pública anónima
+        resp_post = client.post("/api/v1/seguridad/csp-report", json=payload)
+        assert resp_post.status_code == 204
+
+        # 2. Consulta anónima rechazada con 401
+        r_anon = client.get("/api/v1/seguridad/csp-report/recientes")
+        assert r_anon.status_code == 401
+
+        # 3. Usuario sin permiso auditoria:leer rechazado con 403
+        sujeto_ciudadano = SujetoAutenticadoContexto(
+            sujeto_id=uuid.uuid4(),
+            rol="ciudadano",
+            nivel_identidad="declarada",
+            permisos=["propuestas:crear"],
+            es_anonimo=False,
+        )
+        app.dependency_overrides[obtener_sujeto_autenticado] = lambda: sujeto_ciudadano
+        r_ciudadano = client.get("/api/v1/seguridad/csp-report/recientes")
+        assert r_ciudadano.status_code == 403
+        assert "Permiso 'auditoria:leer' denegado" in r_ciudadano.json()["detail"]
+
+        # 4. Auditor forense con permiso auditoria:leer accede con 200
+        sujeto_auditor = SujetoAutenticadoContexto(
+            sujeto_id=uuid.uuid4(),
+            rol="auditor_forense",
+            nivel_identidad="declarada",
+            permisos=["auditoria:leer"],
+            es_anonimo=False,
+        )
+        app.dependency_overrides[obtener_sujeto_autenticado] = lambda: sujeto_auditor
+
+        r_recientes = client.get("/api/v1/seguridad/csp-report/recientes")
+        assert r_recientes.status_code == 200
+        recientes = r_recientes.json()
+        assert len(recientes) == 1
+        assert recientes[0]["directiva_violada"] == "script-src"
+        assert recientes[0]["uri_bloqueada"] == "https://evil-analytics.org/tracker.js"
+
+        # 5. Resumen estadístico
+        r_resumen = client.get("/api/v1/seguridad/csp-report/resumen")
+        assert r_resumen.status_code == 200
+        resumen = r_resumen.json()
+        assert resumen["total_reportes"] == 1
+        assert resumen["directivas_afectadas"]["script-src"] == 1
+        assert any(d["dominio"] == "evil-analytics.org" for d in resumen["dominios_bloqueados_frecuentes"])
+
+        app.dependency_overrides.clear()

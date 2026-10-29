@@ -1,0 +1,63 @@
+{
+  "esquema": "polis.evidencia_opencode_cli_ficha.v1",
+  "tarea": "OP-TERR-CLI-01",
+  "fecha_utc": "2026-10-26T03:35:18Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "revision_estatica_completada",
+  "alcance": "Solo construccion_ficha_territorial_polis.py congelado 139. Sin pytest/red/SQL/modificaciones. Ruff check permitido.",
+  "cli": {
+    "ruta": "backend/scripts/construir_ficha_territorial_polis.py",
+    "sha256_antes": "65776615e2d32d985a8730b7f76664142e2ab9cb0f514b43a196f9da8c08070c",
+    "sha256_despues": "65776615e2d32d985a8730b7f76664142e2ab9cb0f514b43a196f9da8c08070c",
+    "cambios": false
+  },
+  "consultados": [
+    "bridge/152_tarea_opencode_revision_cli_ficha.md",
+    "backend/scripts/construir_ficha_territorial_polis.py",
+    "bridge/139_entrega_ollamacodex_ficha_r2.md",
+    "backend/app/modules/compromisos/ficha_territorial_polis.py",
+    "backend/app/modules/compromisos/parser_terridata_polis.py",
+    "backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py",
+    "bridge/128_catalogo_identidad_territorial/manifiesto_entrega_128.json",
+    "bridge/130_cotejo_catalogo_identidad.json"
+  ],
+  "comandos_ejecutados": [
+    "sha256sum backend/scripts/construir_ficha_territorial_polis.py",
+    "cd backend && PYTHONPATH=. .venv/bin/ruff check scripts/construir_ficha_territorial_polis.py"
+  ],
+  "ruff": {
+    "check": "All checks passed!"
+  },
+  "hallazgos": {
+    "lecturas_acotadas": true,
+    "sha_zip_miembro_unico_crc": true,
+    "json_estricto_seleccion_catalogo": true,
+    "mismos_bytes_serializacion": true,
+    "publicacion_atomica_sin_sobreescritura": true,
+    "hashes_separados_ficha_parser_cli": true,
+    "catalogo_opcional_delegado_a_cargar_catalogo_identidad": true,
+    "identidad_evidencia_declaracion": true,
+    "guardas_ruta_symlink": true,
+    "validacion_version_ficha": true,
+    "distingue_seleccion_sha_vs_ficha_serializada_sha": false,
+    "seleccion_sha_es_canonico_model_dump": true,
+    "no_pytest_ejecutado": true
+  },
+  "defectos": [],
+  "observaciones": [
+    "fecha_elaboracion_utc usa datetime.now().astimezone()",
+    "sys.path para ejecucion directa",
+    "SHA_CATALOGO por defecto delega a validador estricto",
+    "ficha.seleccion_sha256 = SHA JSON canonico de seleccion.model_dump(), no SHA bytes archivo"
+  ],
+  "limites": [
+    "Sin ejecutar suite (Ollamacodex R3 en curso)",
+    "Solo lectura estática",
+    "No modifica artefactos 139/143/146/149/150/151"
+  ],
+  "salidas": [
+    "bridge/153_revision_opencode_cli_ficha.md",
+    "bridge/153_evidencia_opencode_cli_ficha.json",
+    "bridge/153_precision_hash_seleccion.md"
+  ]
+}

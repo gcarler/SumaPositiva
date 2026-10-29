@@ -1,0 +1,38 @@
+id,codigo_oficial,nombre,estado,sha256_acta_presente,http_detalle,url_verificada
+01a0f5fe-86df-717b-a4d0-5b6605bdf993,MT-L01-01,Mesa Territorial Localidad Histórica y del Caribe Norte,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993
+01a0f5fe-86e1-7175-8932-3799c59182c4,MT-L02-01,Mesa Territorial Localidad De La Virgen y Turística,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e1-7175-8932-3799c59182c4
+01a0f5fe-86e1-7e78-a8e2-401657b07e30,MT-L03-01,Mesa Territorial Localidad Industrial y de la Bahía,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e1-7e78-a8e2-401657b07e30
+01a0f5fe-86e2-7b56-b70b-aa6b3c6feb08,MR-RUR-01,Mesa Rural La Boquilla,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7b56-b70b-aa6b3c6feb08
+01a0f5fe-86e2-7eb8-85f0-7f8edbd8d441,MR-RUR-02,Mesa Rural Arroyo de Piedra,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7eb8-85f0-7f8edbd8d441
+01a0f5fe-86e2-7b3a-99ca-973a388ae602,MR-RUR-03,Mesa Rural Punta Canoa,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7b3a-99ca-973a388ae602
+01a0f5fe-86e2-76ca-8fb4-8c2403144877,MR-RUR-04,Mesa Rural Bayunca,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-76ca-8fb4-8c2403144877
+01a0f5fe-86e2-71eb-98b5-16f61f5a3b80,MR-RUR-05,Mesa Rural Pasacaballos,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-71eb-98b5-16f61f5a3b80
+01a0f5fe-86e2-7e7d-b043-8b61c7c913e0,MR-RUR-06,Mesa Rural Arroyo Grande,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7e7d-b043-8b61c7c913e0
+01a0f5fe-86e2-7ebb-90f1-7268653ea79d,MR-ISL-07,Mesa Insular Santa Ana (Barú),PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7ebb-90f1-7268653ea79d
+01a0f5fe-86e2-77ec-aa3f-d52f9fbb8125,MR-ISL-08,Mesa Insular Tierra Bomba,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-77ec-aa3f-d52f9fbb8125
+01a0f5fe-86e2-70f0-84de-854dae52dc89,MR-ISL-09,Mesa Insular Bocachica,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-70f0-84de-854dae52dc89
+01a0f5fe-86e2-7c68-a9f7-4ecbfa5236b5,MR-ISL-10,Mesa Insular Archipiélago del Rosario,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e2-7c68-a9f7-4ecbfa5236b5
+01a0f5fe-86e3-7288-8425-1317a98eebd4,MR-ISL-11,Mesa Insular Isla Fuerte,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7288-8425-1317a98eebd4
+01a0f5fe-86e3-7282-a54b-f042f85fa1bc,MP-POB-01,Mesa Poblacional de Adulto Mayor,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7282-a54b-f042f85fa1bc
+01a0f5fe-86e3-7cc2-8436-ebc34e6acbc4,MP-POB-02,Mesa Poblacional de Infancia y Adolescencia (Prevención ESCNNA),PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7cc2-8436-ebc34e6acbc4
+01a0f5fe-86e3-773b-9bbb-287eb0a475c4,MP-POB-03,Mesa Poblacional LGTBIQ+,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-773b-9bbb-287eb0a475c4
+01a0f5fe-86e3-71a2-a832-83a2b8757f4a,MP-POB-04,Mesa Poblacional de Personas con Discapacidad y Cuidadores,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-71a2-a832-83a2b8757f4a
+01a0f5fe-86e3-7cc0-9494-9b43b0de02b0,MP-POB-05,Mesa Poblacional de Juventudes,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7cc0-9494-9b43b0de02b0
+01a0f5fe-86e3-7ece-aa45-f734eaf5d4dd,MP-POB-06,Mesa Poblacional de Mujeres y Equidad de Género,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7ece-aa45-f734eaf5d4dd
+01a0f5fe-86e3-7e68-89c5-7cc6c9cc4ce8,MP-POB-07,Mesa Poblacional de Víctimas del Conflicto Armado (Ley 1448),PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7e68-89c5-7cc6c9cc4ce8
+01a0f5fe-86e3-7bca-a222-69ddd0da41f4,MP-ETN-08,Mesa Étnica: Consejos Comunitarios y Cabildos Indígenas,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7bca-a222-69ddd0da41f4
+01a0f5fe-86e4-7462-9bf4-7fba713251dd,MS-SEC-01,Mesa Sectorial de Cultura y Patrimonio Histórico,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e4-7462-9bf4-7fba713251dd
+01a0f5fe-86e4-7a89-a279-abfbadfa1e91,MS-SEC-02,Mesa Sectorial de Deporte y Recreación Comunitaria,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e4-7a89-a279-abfbadfa1e91
+01a0f5fe-86e5-7ff9-a971-27375ae9f301,MS-SEC-03,Mesa Sectorial de Salud Pública y Red Hospitalaria,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7ff9-a971-27375ae9f301
+01a0f5fe-86e5-7883-9644-8c7a2dac9923,MS-SEC-04,Mesa Sectorial de Educación y Cobertura,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7883-9644-8c7a2dac9923
+01a0f5fe-86e5-7e28-8bd7-4a18a3ea9c19,MS-SEC-05,"Mesa Sectorial de Movilidad, Transporte y Espacio Público",PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7e28-8bd7-4a18a3ea9c19
+01a0f5fe-86e5-7d19-a547-3edee16440b1,MS-SEC-06,"Mesa Sectorial de Servicios Públicos, Infraestructura y Vivienda Digna",PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7d19-a547-3edee16440b1
+01a0f5fe-86e5-752b-bf52-fa98aeb8406a,MS-SEC-07,Mesa Sectorial de Seguridad Integral y Convivencia Ciudadana,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-752b-bf52-fa98aeb8406a
+01a0f5fe-86e5-7e6f-bf6c-9e7b9837816f,MS-SEC-08,"Mesa Sectorial de Medio Ambiente, Ciénaga de la Virgen y Gestión del Riesgo",PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7e6f-bf6c-9e7b9837816f
+01a0f5fe-86e5-7d46-8bfb-527585d6d433,MS-SEC-09,"Mesa Sectorial de Desarrollo Económico, Turismo Sostenible y Competitividad",PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7d46-8bfb-527585d6d433
+01a0f5fe-86e5-7322-953d-72489185aead,MS-SEC-10,"Mesa Sectorial de Transparencia, Veeduría y Cultura Ciudadana",PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-7322-953d-72489185aead
+01a0f5fe-86e5-767a-8851-6b6a5eb052e6,MS-SEC-11,Mesa Sectorial de Construcción de Paz y Reconciliación,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e5-767a-8851-6b6a5eb052e6
+01a0f5fe-86e3-7312-9001-000000000012,MR-ISL-12,Mesa Insular Barú (Pueblo),PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7312-9001-000000000012
+01a0f5fe-86e3-7313-9001-000000000013,MR-ISL-13,Mesa Insular Ararca (Barú),PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7313-9001-000000000013
+01a0f5fe-86e3-7314-9001-000000000014,MR-ISL-14,Mesa Insular Caño del Oro,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7314-9001-000000000014
+01a0f5fe-86e3-7315-9001-000000000015,MR-RUR-15,Mesa Rural Pontezuela,PROGRAMADA,False,200,https://seguridadhumanaintegral.org/api/v1/mesas/01a0f5fe-86e3-7315-9001-000000000015

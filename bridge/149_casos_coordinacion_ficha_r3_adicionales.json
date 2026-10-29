@@ -1,0 +1,64 @@
+{
+  "sha_nucleo": "cb43a8e99bdcf73740fc866f59b3c53ebcc60b7ba8490915f729c63575033c63",
+  "tipo": "datos_sinteticos_coordinacion",
+  "casos": [
+    {
+      "caso": "observacion_declara_otra_serie_que_si_existe",
+      "inconsistencia_aceptada": true
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "²",
+      "con_filtro_2020": false,
+      "construida": false,
+      "error": "ValueError",
+      "detalle": "invalid literal for int() with base 10: '²'"
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "²",
+      "con_filtro_2020": true,
+      "construida": false,
+      "error": "ValueError",
+      "detalle": "invalid literal for int() with base 10: '²'"
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "٢٠٢٠",
+      "con_filtro_2020": false,
+      "construida": true,
+      "observaciones": 1,
+      "anios_resumidos": [
+        2020
+      ]
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "٢٠٢٠",
+      "con_filtro_2020": true,
+      "construida": true,
+      "observaciones": 1,
+      "anios_resumidos": [
+        2020
+      ]
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "20200",
+      "con_filtro_2020": false,
+      "construida": true,
+      "observaciones": 1,
+      "anios_resumidos": [
+        20200
+      ]
+    },
+    {
+      "caso": "anio_no_conforme",
+      "anio": "20200",
+      "con_filtro_2020": true,
+      "construida": true,
+      "observaciones": 0,
+      "anios_resumidos": []
+    }
+  ]
+}

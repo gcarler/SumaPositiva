@@ -168,11 +168,11 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
 
   const nombreMesa =
     mesaStore?.nombre || mesaAgenda?.nombre || `Mesa de Trabajo (${codigoMesa || mesaId})`;
-  const lugarMesa = mesaStore?.lugar || mesaAgenda?.lugar || "Cartagena de Indias";
-  const fechaMesa = mesaStore?.fecha || mesaAgenda?.fecha || "2026-10-15";
+  const lugarMesa = (mesaStore?.lugar && mesaStore.lugar !== "Por definir") ? mesaStore.lugar : (mesaAgenda?.lugar && mesaAgenda.lugar !== "Por definir" ? mesaAgenda.lugar : "Por definir");
+  const fechaMesa = (mesaStore?.fecha && mesaStore.fecha !== "Por definir") ? mesaStore.fecha : (mesaAgenda?.fecha && mesaAgenda.fecha !== "Por definir" ? mesaAgenda.fecha : "Por definir");
   const horarioMesa =
-    mesaStore?.horario ||
-    (mesaAgenda ? `${mesaAgenda.horaInicio} – ${mesaAgenda.horaFin}` : "08:30 – 12:00");
+    (mesaStore?.horario && mesaStore.horario !== "Por definir") ? mesaStore.horario :
+    (mesaAgenda && mesaAgenda.horaInicio !== "Por definir" ? `${mesaAgenda.horaInicio} – ${mesaAgenda.horaFin}` : "Por definir");
   const territorioMesa =
     mesaAgenda?.territorio ||
     "Distrito Turístico y Cultural de Cartagena de Indias";

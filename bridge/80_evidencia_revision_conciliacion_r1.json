@@ -1,0 +1,30 @@
+{
+  "fecha_utc": "2026-10-24T16:38:13.840122+00:00",
+  "estado": "R1_devuelta_para_R2",
+  "metodo": "revision_estatica_sin_ejecucion_funcional",
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "pruebas_funcionales_ejecutadas": false,
+  "archivos": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "cde4ea45f7236334cb068c035f7d3b3f52eec1941aa56ba95f96a756b90572a1",
+      "bytes": 26483,
+      "ast": "ok"
+    },
+    "backend/scripts/contrastar_fuentes_por_periodo.py": {
+      "sha256": "c9d257e6d193cac731091177912c0d55e22cda0aeb9bd33144c010288ddfdd31",
+      "bytes": 4779,
+      "ast": "ok"
+    },
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": {
+      "sha256": "ece95f12307a2487480611c6ba766c9088dc4507e18fa48edd7b1b0a35c526a5",
+      "bytes": 3534
+    },
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": {
+      "sha256": "65eebc65e5d81c80f1e1e1ce007c944384870585eec3d3c2c287c48fbd3633f5",
+      "bytes": 41907,
+      "json": "ok"
+    }
+  },
+  "revision": "bridge/80_revision_ollamacodex_conciliacion_r2.md"
+}

@@ -1,0 +1,72 @@
+{
+  "fecha_cotejo_utc": "2026-10-26T00:53:37.013713+00:00",
+  "archivos_verificados": 20,
+  "discrepancias_hash": [],
+  "catalogo_sha256": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+  "nivel_municipal_registros": 1122,
+  "nivel_departamental_registros": 33,
+  "codigos_unicos": true,
+  "jerarquia_departamento_concatenacion": true,
+  "tipos_segun_fuente": {
+    "MUNICIPIO": 1103,
+    "ISLA": 1,
+    "ÁREA NO MUNICIPALIZADA": 18
+  },
+  "vintages_municipales": {
+    "2025": 168,
+    "2024": 954
+  },
+  "vintages_departamentales": {
+    "2025": 21,
+    "2024": 12
+  },
+  "cotejos_por_codigo": {
+    "13001": {
+      "dpto": "13",
+      "dpto_nombre": "BOLÍVAR",
+      "mpio": "001",
+      "concat": "13001",
+      "tipo": "MUNICIPIO",
+      "nombre": "CARTAGENA DE INDIAS",
+      "anio_version": 2025,
+      "anio_creacion": "1599"
+    },
+    "13673": {
+      "dpto": "13",
+      "dpto_nombre": "BOLÍVAR",
+      "mpio": "673",
+      "concat": "13673",
+      "tipo": "MUNICIPIO",
+      "nombre": "SANTA CATALINA",
+      "anio_version": 2025,
+      "anio_creacion": "1772"
+    },
+    "23660": {
+      "dpto": "23",
+      "dpto_nombre": "CÓRDOBA",
+      "mpio": "660",
+      "concat": "23660",
+      "tipo": "MUNICIPIO",
+      "nombre": "SAHAGÚN",
+      "anio_version": 2025,
+      "anio_creacion": "1834"
+    },
+    "11001": {
+      "dpto": "11",
+      "dpto_nombre": "BOGOTÁ, D.C.",
+      "mpio": "001",
+      "concat": "11001",
+      "tipo": "MUNICIPIO",
+      "nombre": "BOGOTÁ, D.C.",
+      "anio_version": 2025,
+      "anio_creacion": "1538"
+    }
+  },
+  "nivel_centros_poblados_consultado": false,
+  "sin_promocion_banco": true,
+  "catalogo_contra_atributos_crudos_campo_a_campo": {
+    "municipal": 1122,
+    "departamental": 33,
+    "discrepancias": 0
+  }
+}

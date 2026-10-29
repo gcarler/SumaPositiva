@@ -67,9 +67,7 @@ def test_evidencia_segura_rechazo_tipo_mime(database_url: str):
         token = resp_sesion.json()["token_acceso"]
         headers = {"Authorization": f"Bearer {token}"}
 
-        files = {
-            "archivo": ("script_malicioso.sh", b"#!/bin/bash\necho 'hola'", "text/x-shellscript")
-        }
+        files = {"archivo": ("script_malicioso.sh", b"#!/bin/bash\necho 'hola'", "text/x-shellscript")}
         resp_subida = client.post("/api/v1/evidencias/subir", files=files, headers=headers)
 
         assert resp_subida.status_code == 415

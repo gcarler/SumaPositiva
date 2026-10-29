@@ -12,9 +12,7 @@ from app.modules.identidad.service import IdentidadService
 
 
 def servicio(client_id="cliente-google-pruebas"):
-    return IdentidadService(
-        AsyncSession(), Settings(_env_file=None, environment="test", google_client_id=client_id)
-    )
+    return IdentidadService(AsyncSession(), Settings(_env_file=None, environment="test", google_client_id=client_id))
 
 
 def test_google_sin_configuracion_no_autentica():
@@ -40,9 +38,7 @@ def test_google_rechaza_tokens_no_verificados(monkeypatch, token):
     assert verificar.call_args.kwargs["audience"] == "cliente-google-pruebas"
 
 
-@pytest.mark.parametrize(
-    "claims", [{"sub": "123", "email_verified": False}, {"sub": "123"}, {"email_verified": True}]
-)
+@pytest.mark.parametrize("claims", [{"sub": "123", "email_verified": False}, {"sub": "123"}, {"email_verified": True}])
 def test_google_requiere_sujeto_y_correo_verificado(monkeypatch, claims):
     monkeypatch.setattr(google_id_token, "verify_oauth2_token", Mock(return_value=claims))
     with pytest.raises(HTTPException) as error:

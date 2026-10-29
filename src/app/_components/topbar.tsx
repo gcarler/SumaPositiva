@@ -107,8 +107,11 @@ export function Topbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md">
-      <div className="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0">
-        <div className="flex items-center gap-3">
+      {/* min-h en lugar de altura fija: al envolver la navegación en anchos
+          intermedios (TCA-01) la banda crece sin superponer el wordmark ni
+          desbordar el contenido bajo la cabecera pegajosa. */}
+      <div className="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:min-h-20 md:flex-wrap md:justify-between md:gap-x-4 md:py-0">
+        <div className="flex min-w-0 shrink-0 items-center gap-3">
           {/* Wordmark Institucional */}
           <Button
             variant="unstyled"
@@ -153,10 +156,10 @@ export function Topbar() {
                   size="unstyled"
                   key={item.id}
                   asChild
-                  className={`rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 ${
+                  className={`rounded-full border px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 ${
                     active
-                      ? "bg-[var(--surface-3)] text-[var(--text-primary)]"
-                      : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                      ? "border-[var(--ember)] bg-[var(--surface-3)] text-[var(--text-primary)]"
+                      : "border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--ember)] hover:text-[var(--text-primary)]"
                   }`}
                   aria-current={active ? "page" : undefined}
                 >

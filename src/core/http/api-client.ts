@@ -98,7 +98,9 @@ async function once<T>(
         body !== undefined
           ? esMultipart
             ? body
-            : JSON.stringify(body)
+            : typeof body === "string"
+              ? body
+              : JSON.stringify(body)
           : undefined,
     });
 

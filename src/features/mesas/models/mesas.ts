@@ -151,7 +151,7 @@ export interface PersonaResponsable {
 export interface MesaDeTrabajo {
   id: string;
   nombre: string;
-  fecha: string; // ISO (yyyy-mm-dd)
+  fecha?: string | null; // ISO (yyyy-mm-dd) o 'Por definir'
   lugar: string;
   /** Entidad / dependencia que convoca (funcionarios responsables) - legacy */
   entidad: string;

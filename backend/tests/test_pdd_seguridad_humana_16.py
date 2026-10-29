@@ -20,10 +20,7 @@ def test_2012_reemplaza_ocr_contaminado_con_siete_compromisos_de_la_vision():
 
 
 def test_ppi_2012_ejes_reconcilia_con_total_oficial_hasta_redondeo_de_1000_cop():
-    annual_totals = {
-        str(year): sum(values[str(year)] for values in PPI_2012.values())
-        for year in range(2012, 2016)
-    }
+    annual_totals = {str(year): sum(values[str(year)] for values in PPI_2012.values()) for year in range(2012, 2016)}
     assert annual_totals == {
         "2012": 718_910_383_000,
         "2013": 712_219_308_000,
@@ -39,9 +36,7 @@ def test_tabla_209_2016_recupera_subtotales_y_11_lineas_fuente():
     line_sum = sum(sum(values.values()) for values in source.values())
     assert line_sum == 4_328_520_000_000
     assert 4_331_941_000_000 - line_sum == 3_421_000_000
-    security_line = source[
-        "3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)"
-    ]
+    security_line = source["3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)"]
     assert sum(security_line.values()) == 70_157_000_000
 
 
@@ -58,9 +53,7 @@ def test_vector_de_dimensiones_suma_uno_y_clasificacion_mixta_no_duplica():
     assert primary == "Seguridad Personal"
     assert set(weights) == set(DIMENSIONS)
     assert sum(weights.values()) == 1.0
-    grade, dimension, mixed_weights = _classify(
-        "Seguridad Humana y Buen Gobierno", "LINEA_ESTRATEGICA", {}
-    )
+    grade, dimension, mixed_weights = _classify("Seguridad Humana y Buen Gobierno", "LINEA_ESTRATEGICA", {})
     assert grade == "C_CONTEXTUAL_HABILITANTE"
     assert dimension is None
     assert mixed_weights == {}
@@ -70,15 +63,9 @@ def test_amenazas_de_vision_2012_se_clasifican_en_su_dimension_directa():
     employment_grade, employment_dimension, employment_weights = _classify(
         VISION_METAS_2012[2]["nombre"], "RESULTADO", {}
     )
-    water_grade, water_dimension, water_weights = _classify(
-        VISION_METAS_2012[3]["nombre"], "RESULTADO", {}
-    )
-    flood_grade, flood_dimension, flood_weights = _classify(
-        VISION_METAS_2012[4]["nombre"], "RESULTADO", {}
-    )
-    homicide_grade, homicide_dimension, homicide_weights = _classify(
-        VISION_METAS_2012[5]["nombre"], "RESULTADO", {}
-    )
+    water_grade, water_dimension, water_weights = _classify(VISION_METAS_2012[3]["nombre"], "RESULTADO", {})
+    flood_grade, flood_dimension, flood_weights = _classify(VISION_METAS_2012[4]["nombre"], "RESULTADO", {})
+    homicide_grade, homicide_dimension, homicide_weights = _classify(VISION_METAS_2012[5]["nombre"], "RESULTADO", {})
     assert water_grade == "B_DETERMINANTE_DIRECTO"
     assert water_dimension == "Seguridad Ambiental"
     assert sum(water_weights.values()) == 1.0

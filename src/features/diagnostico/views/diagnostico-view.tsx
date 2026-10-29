@@ -41,8 +41,11 @@ import { GeodiagnosticoTerritorialView } from "../components/geodiagnostico-terr
 import { listarFichasIndicadores } from "../services/indicadores-api";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 import { sanitizarCsv } from "@/shared/lib/csv";
+import { CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function DiagnosticoView() {
+  const [vista, setVista] = useCollectionView("diagnostico", "lista");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeGestionarIndicadores =
@@ -410,7 +413,9 @@ export function DiagnosticoView() {
           </div>
 
           {/* Tabla de indicadores de línea base */}
+          <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de los indicadores de diagnóstico" />
           <LineaBaseTabla
+            vista={vista}
             indicadores={indicadoresFiltrados}
             onMedicionRegistrada={cargarDatos}
             onFichaActualizada={cargarDatos}

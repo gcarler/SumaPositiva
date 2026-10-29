@@ -153,6 +153,11 @@ export function FasePanel({
 
   const totalAportesFase = fase.lineas.reduce((a, l) => a + l.aportes.length, 0);
 
+  /* TCA-04: el total anunciado debe ser el ciclo real de la API, no el
+     catálogo cargado del store (que en el respaldo llega vacío y
+     producía "Fase N de 0"). */
+  const totalFasesCiclo = fasesQuery.data?.length ?? 0;
+
   return (
     <PanelShell
       entryKey={entryKey}
@@ -160,7 +165,11 @@ export function FasePanel({
         { label: politica.titulo, targetKey: parentKey },
         { label: `Fase ${fase.orden}` },
       ]}
-      kicker={`Fase ${fase.orden} de ${politica.fases.length}`}
+      kicker={
+        totalFasesCiclo > 0
+          ? `Fase ${fase.orden} de ${totalFasesCiclo}`
+          : `Fase ${fase.orden}`
+      }
       title={fase.nombre}
       onClose={closeTop}
       onCloseToKey={closeToKey}

@@ -32,8 +32,9 @@ import {
   descargarMatriz,
 } from "../services/lineas-export";
 import { dimensionMeta } from "./dimensiones-meta";
+import { CollectionLayout, type CollectionViewMode } from "@/shared/ui/collection-view";
 
-export function ArquitecturaPolitica() {
+export function ArquitecturaPolitica({ vista = "lista" }: { vista?: CollectionViewMode }) {
   const sesion = useSesionStore((s) => s.sesion);
   const editable =
     !!sesion?.permisos?.includes("politicas:gestionar") &&
@@ -256,6 +257,7 @@ export function ArquitecturaPolitica() {
           Exportar JSON
         </Button>
       </div>
+      <CollectionLayout view={vista} className="xl:grid-cols-2">
       {dims.data.map((d) => {
         const { Icon, color } = dimensionMeta(d.codigo);
         const ls = lineas.data.filter((l) => l.dimension_id === d.id);
@@ -279,6 +281,7 @@ export function ArquitecturaPolitica() {
           </section>
         );
       })}
+      </CollectionLayout>
       {!!sinDimension.length && (
         <section className="rounded-xl border border-border p-4">
           <h3 className="font-semibold">

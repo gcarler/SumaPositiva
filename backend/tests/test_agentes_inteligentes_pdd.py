@@ -15,6 +15,7 @@ from app.modules.compromisos.agentes_inteligentes_pdd import (
     ToolContext,
     _query_actividades,
     _query_metas,
+    _query_ppi,
     arquitectura_agentes_ia,
     ejecutar_consulta_pdd,
     interpretar_fragmento,
@@ -132,9 +133,7 @@ class FakeSession:
     async def execute(self, statement, params=None):
         query = str(statement)
         if "count(*) FROM seguimiento.pdd_evidencia_paginas" in query:
-            return FakeResult(
-                [{"evidencias_paginas": 1, "nodos_mga": 1, "metas_pdd": 1, "metas_pdl": 0}]
-            )
+            return FakeResult([{"evidencias_paginas": 1, "nodos_mga": 1, "metas_pdd": 1, "metas_pdl": 0}])
         if "FROM seguimiento.pdd_evidencia_paginas" in query:
             return FakeResult([self.evidence])
         if "FROM seguimiento.pdd_lineas_y_programas" in query:
@@ -186,6 +185,49 @@ class FakeSession:
         return FakeResult([])
 
 
+def test_ppi_agente_no_convierte_a_cero_totales_sin_ipc_observado():
+    ctx = ToolContext(
+        session=FakeSession(),
+        consulta=ConsultaAgentesPDD(pregunta="¿Cuál es el PPI de seguridad humana?"),
+    )
+    plans = asyncio.run(_query_ppi(ctx))
+    assert plans[0]["ppi_total_constante_2025_cop"] is None
+    assert plans[0]["desglose_abcn_constante_2025_cop"] is None
+    assert plans[0]["desglose_7d_constante_2025_cop"] is None
+    assert plans[0]["estado_financiero"] == "SIN_IPC_ANUAL_COMPLETO_2026_2027"
+
+
+def test_ppi_agente_no_presenta_como_total_la_suma_2020_en_conflicto():
+    class SesionConTotalHeredado(FakeSession):
+        async def execute(self, statement, params=None):
+            if "FROM seguimiento.planes_desarrollo_distrital" in str(statement):
+                return FakeResult(
+                    [
+                        {
+                            "codigo_plan": "PDD_2020_2023",
+                            "periodo": "2020-2023",
+                            "nombre_oficial": "Salvemos Juntos a Cartagena",
+                            "ppi_total_corriente_cop": 9_000_000_000_000,
+                            "ppi_total_constante_2025_cop": 9_000_000_000_000,
+                            "ppi_anual_cop": {"2020": 1_437_205_700_000},
+                            "fuentes": [],
+                            "metadatos": {"estado_total": "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"},
+                        }
+                    ]
+                )
+            return await super().execute(statement, params)
+
+    ctx = ToolContext(
+        session=SesionConTotalHeredado(),
+        consulta=ConsultaAgentesPDD(pregunta="¿Cuál es el PPI 2020?", codigo_plan="PDD_2020_2023"),
+    )
+    plan = asyncio.run(_query_ppi(ctx))[0]
+    assert plan["ppi_total_corriente_cop"] is None
+    assert plan["ppi_total_constante_2025_cop"] is None
+    assert plan["ppi_anual_cop"]["2020"] == 1_437_205_700_000
+    assert plan["estado_financiero"] == "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+
+
 def test_arquitectura_expone_seis_agentes_y_pdt_ai_evaluator(tmp_path, monkeypatch):
     monkeypatch.setattr(agents_module, "PDT_CACHE_PATH", _pdt_cache(tmp_path))
     architecture = asyncio.run(arquitectura_agentes_ia(FakeSession()))
@@ -196,16 +238,12 @@ def test_arquitectura_expone_seis_agentes_y_pdt_ai_evaluator(tmp_path, monkeypat
     assert {tool["nombre"] for tool in architecture["herramientas_registradas"]} == {
         tool["nombre"] for tool in TOOL_SPECS
     }
-    assert {node["id_nodo"] for node in architecture["nodos_langgraph"]} == {
-        node["id_nodo"] for node in AGENT_SPECS
-    }
+    assert {node["id_nodo"] for node in architecture["nodos_langgraph"]} == {node["id_nodo"] for node in AGENT_SPECS}
     integration = architecture["integracion_pdt_ai_evaluator"]
     assert integration["total_dmus"] == 2
     assert integration["pares_malmquist"] == 1
     assert integration["poligonos_postgis_lisa"] == 1
-    assert "tool_consultar_evaluador_pdt_gbr" in {
-        item["nombre"] for item in architecture["herramientas_registradas"]
-    }
+    assert "tool_consultar_evaluador_pdt_gbr" in {item["nombre"] for item in architecture["herramientas_registradas"]}
 
 
 def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
@@ -251,19 +289,12 @@ def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
 
     assert result["motor"] == "POLIS_NEUROSIMBOLICO_LANGGRAPH_PYDANTIC_AI_V2"
     assert len(result["traza_langgraph"]) == 6
-    assert {step["nodo_langgraph"] for step in result["traza_langgraph"]} == {
-        node["id_nodo"] for node in AGENT_SPECS
+    assert {step["nodo_langgraph"] for step in result["traza_langgraph"]} == {node["id_nodo"] for node in AGENT_SPECS}
+    assert {tool["herramienta"] for step in result["traza_langgraph"] for tool in step["herramientas_invocadas"]} == {
+        tool["nombre"] for tool in TOOL_SPECS
     }
-    assert {
-        tool["herramienta"]
-        for step in result["traza_langgraph"]
-        for tool in step["herramientas_invocadas"]
-    } == {tool["nombre"] for tool in TOOL_SPECS}
     citation = result["citas_evidencia_documental"][0]
-    assert (
-        citation["sha256_contenido"]
-        == hashlib.sha256(FakeSession().evidence["contenido"].encode()).hexdigest()
-    )
+    assert citation["sha256_contenido"] == hashlib.sha256(FakeSession().evidence["contenido"].encode()).hexdigest()
     assert result["verificacion_critica"]["aprobado"] is True
     assert result["verificacion_critica"]["cero_alucinacion_financiera"] is True
     assert result["evidencia_financiera_y_metas"]["planes_analizados"]
@@ -273,15 +304,8 @@ def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
     assert evaluation["trampas_territoriales"]
     assert evaluation["indicadores_isri_alto_riesgo"][0]["chow"]["anio_ruptura"] == 2024
     assert evaluation["hoshin_kanri_fair"]["fair_global_index"] == 0.65
-    assert (
-        evaluation["hoshin_kanri_fair"]["bowling_charts_pdca"]["conteo_estados"][
-            "ROJO_CONTENCION_PDCA"
-        ]
-        == 1
-    )
-    assert evaluation["revision_10d_resumen"]["resumen_ejecutivo_revision"] == {
-        "hallazgos_criticos": 2
-    }
+    assert evaluation["hoshin_kanri_fair"]["bowling_charts_pdca"]["conteo_estados"]["ROJO_CONTENCION_PDCA"] == 1
+    assert evaluation["revision_10d_resumen"]["resumen_ejecutivo_revision"] == {"hallazgos_criticos": 2}
     assert result["evidencia_financiera_y_metas"]["evaluacion_pdt_gbr"] == evaluation
 
 
@@ -417,8 +441,7 @@ def test_consejo_multiagente_incluye_resumen_dea_cartagena(monkeypatch):
         return {
             "estado": "OK",
             "niveles": {
-                f"nivel_{number}": {"total_dmus": 2, "eficientes": 1, "ineficientes": 1}
-                for number in range(1, 5)
+                f"nivel_{number}": {"total_dmus": 2, "eficientes": 1, "ineficientes": 1} for number in range(1, 5)
             },
         }
 

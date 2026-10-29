@@ -13,6 +13,8 @@ import {
   ChevronRight,
   RefreshCw,
 } from "lucide-react";
+import { CollectionLayout, CollectionViewToggle, type CollectionViewMode } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -43,6 +45,7 @@ const rolMeta: Record<string, { label: string; style: string; token?: "authority
 const LIMITE_POR_PAGINA = 20;
 
 export function UsuariosGestionView() {
+  const [vista, setVista] = useCollectionView("usuarios", "lista");
   const sesion = useSesionStore((state) => state.sesion);
   const { openPanel } = usePanels();
   const [busqueda, setBusqueda] = useState("");
@@ -241,15 +244,16 @@ export function UsuariosGestionView() {
               </Notice>
             )}
 
-            <div className="hidden grid-cols-[minmax(200px,1.4fr)_minmax(220px,1.5fr)_minmax(140px,1fr)_minmax(135px,.8fr)_auto] gap-4 border-b border-border px-3 pb-3 text-xs font-medium uppercase tracking-wide text-text-tertiary md:grid">
+            <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del directorio de usuarios" />
+            {vista === "lista" && <div className="hidden grid-cols-[minmax(0,1.4fr)_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,.8fr)_auto] gap-4 border-b border-border px-3 pb-3 text-xs font-medium uppercase tracking-wide text-text-tertiary md:grid">
               <span>Usuario</span>
               <span>Correo electrónico</span>
               <span>Rol</span>
               <span>Verificación</span>
               <span className="sr-only">Acciones</span>
-            </div>
+            </div>}
 
-            <div className="space-y-3 md:space-y-0">
+            <CollectionLayout view={vista} className={vista === "lista" ? "md:gap-0" : undefined}>
               {usuariosQuery.isLoading ? (
                 <div className="p-8 text-center text-sm text-text-secondary" role="status">
                   Cargando directorio de usuarios desde PostgreSQL…
@@ -266,12 +270,13 @@ export function UsuariosGestionView() {
                   <FilaUsuario
                     key={usuario.id}
                     usuario={usuario}
+                    vista={vista}
                     abrirDetalle={() => openPanel("usuario-detalle", { usuarioId: usuario.id })}
                     editar={puedeGestionar ? () => openPanel("usuario-editor", { usuarioId: usuario.id }) : undefined}
                   />
                 ))
               )}
-            </div>
+            </CollectionLayout>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-border pt-4 text-sm text-text-secondary">
               <span>
@@ -309,10 +314,12 @@ export function UsuariosGestionView() {
 }
 
 function FilaUsuario({
+  vista,
   usuario,
   abrirDetalle,
   editar,
 }: {
+  vista: CollectionViewMode;
   usuario: Usuario;
   abrirDetalle: () => void;
   editar?: () => void;
@@ -327,7 +334,7 @@ function FilaUsuario({
   ).toLocaleUpperCase("es");
 
   return (
-    <article className="grid gap-3 rounded-xl border border-border bg-surface-0 p-4 md:grid-cols-[minmax(200px,1.4fr)_minmax(220px,1.5fr)_minmax(140px,1fr)_minmax(135px,.8fr)_auto] md:items-center md:gap-4 md:rounded-none md:border-0 md:border-b md:bg-transparent md:px-3 md:py-3">
+    <article className={vista === "tarjetas" ? "flex flex-col gap-4 rounded-xl border border-border bg-surface-0 p-5" : "grid gap-3 rounded-xl border border-border bg-surface-0 p-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,.8fr)_auto] md:items-center md:gap-4 md:rounded-none md:border-0 md:border-b md:bg-transparent md:px-3 md:py-3"}>
       <Button
         type="button"
         variant="unstyled"
@@ -356,11 +363,11 @@ function FilaUsuario({
         <span className="sr-only">Ver detalle de {nombreCompleto}</span>
       </Button>
 
-      <p className="hidden min-w-0 truncate text-sm text-text-secondary md:block">{usuario.correo}</p>
+      <p className={vista === "tarjetas" ? "break-all text-sm text-text-secondary" : "hidden min-w-0 truncate text-sm text-text-secondary md:block"}>{usuario.correo}</p>
 
       <div className="flex items-center justify-between gap-2 md:justify-start">
         <Badge
-          className={meta.style}
+          className={`${meta.style} max-w-full whitespace-normal`}
           style={
             meta.token
               ? {
@@ -373,20 +380,20 @@ function FilaUsuario({
         >
           {meta.label}
         </Badge>
-        <span className="text-xs text-text-tertiary md:hidden">
+        <span className={vista === "tarjetas" ? "text-xs text-text-tertiary" : "text-xs text-text-tertiary md:hidden"}>
           {usuario.activo ? "Activa" : "Inactiva"}
         </span>
       </div>
 
       <div>
-        <p className="text-xs text-text-tertiary md:hidden">Estado de verificación</p>
+        <p className={vista === "tarjetas" ? "text-xs text-text-tertiary" : "text-xs text-text-tertiary md:hidden"}>Estado de verificación</p>
         <p className="text-sm text-text-secondary">
           {usuario.correo_verificado_en ? "Verificado" : "Sin verificar"}
         </p>
       </div>
 
-      <div className="flex justify-end gap-2 border-t border-border pt-3 md:border-0 md:pt-0">
-        <Button variant="outline" size="sm" className="md:hidden" onClick={abrirDetalle}>
+      <div className={vista === "tarjetas" ? "mt-auto flex flex-wrap justify-end gap-2 border-t border-border pt-3" : "flex justify-end gap-2 border-t border-border pt-3 md:border-0 md:pt-0"}>
+        <Button variant="outline" size="sm" className={vista === "lista" ? "md:hidden" : undefined} onClick={abrirDetalle}>
           Ver perfil
           <ChevronRight className="size-4" aria-hidden="true" />
         </Button>

@@ -1,0 +1,93 @@
+{
+  "tarea": "revision_independiente_validacion_funcional_parser_territorial (100)",
+  "fecha_utc": "2026-10-25",
+  "agente": "Freebuff",
+  "designacion": "sin_tarea_designada_previa; numeros_100_101_102_elegidos_por_freebuff_por_estar_libres",
+  "estado": "validacion_reproducida_independiente_sin_integracion",
+  "objetos_verificados": {
+    "backend/app/modules/compromisos/parser_terridata_polis.py": {
+      "sha256": "747ff3443ce03812ad3ce0ea31c35a322eddaaa7114345911aee7dbf04583de3",
+      "bytes": 21253,
+      "igual_a_revision_estatica_88": true
+    },
+    "backend/tests/test_parser_terridata_polis.py": {
+      "sha256": "28e4e56d1b91b3fa900d9147bdeb900e911fb5b9de592790e9de7917b485db66",
+      "bytes": 7602
+    },
+    "bridge/84_contrato_parser_territorial.json": {
+      "sha256": "afff629b65948919a01fec0716e459096c6e5dedef7f14ba2498b63610678039",
+      "bytes": 25331
+    },
+    "bridge/97_pytest_parser_territorial.xml": {
+      "sha256": "443dde146e680766041dde51670c72958fba0d4f7597a529982adbdfe77fae7c",
+      "tests": 35
+    },
+    "bridge/99_pytest_conciliador_parser.xml": {
+      "sha256": "e504aadbdf3e6f73399370a6d91760d2734db3d0fbf495f59172616885255a1c",
+      "tests": 107
+    },
+    "bridge/98_validacion_funcional_parser_territorial.md": {
+      "sha256": "7ee8fdf9b42bd1f4301a11be1b16a6df1e48f2405c3ac58acf1c193b76df27fc",
+      "bytes": 2955
+    }
+  },
+  "artefactos_generados": {
+    "bridge/101_pytest_freebuff_parser_territorial.xml": {
+      "sha256": "44291c859732d18f580c1395143f68ee6a68f8e2a84d9ad1dabf082fc4989c04",
+      "tests": 35,
+      "failures": 0,
+      "time_segundos": 0.07
+    },
+    "bridge/102_pytest_freebuff_conciliador_parser.xml": {
+      "sha256": "62fcd2db68933f3a84dc2483486bfca2204476dd6fa89d3979325fc4dd7003b8",
+      "tests": 107,
+      "failures": 0,
+      "time_segundos": 1.28
+    }
+  },
+  "comandos_ejecutados": [
+    "cd backend && .venv/bin/python -m pytest --noconftest tests/test_parser_terridata_polis.py -q --junitxml=/root/polis/bridge/101_pytest_freebuff_parser_territorial.xml  (exit 0, 35 passed)",
+    "cd backend && .venv/bin/python -m pytest --noconftest tests/test_conciliacion_retrospectiva_fuentes_polis.py tests/test_parser_terridata_polis.py -q --junitxml=/root/polis/bridge/102_pytest_freebuff_conciliador_parser.xml  (exit 0, 107 passed)",
+    "cd backend && .venv/bin/ruff check app/modules/compromisos/parser_terridata_polis.py tests/test_parser_terridata_polis.py  (exit 0)",
+    "cd backend && .venv/bin/ruff format --check app/modules/compromisos/parser_terridata_polis.py tests/test_parser_terridata_polis.py  (exit 0)",
+    "sha256sum parser, pruebas, contrato, XML 97/98/99 y XML propios"
+  ],
+  "revision_pruebas": {
+    "cobertura_confirmada": [
+      "13_columnas_originales_orden_linea_sha_bytes_serializacion_decimal_no_certificacion",
+      "ancho_incorrecto_inicio_y_tras_valida_sin_herencia_de_estado",
+      "anio_mes_no_conformes_y_mes_0_con_original_retenido",
+      "cualitativa_sin_numero_y_descripcion_general_no_serie",
+      "formatos_numericos_no_acreditados_retenidos_cero_es_valor_ausencia_no_es_cero",
+      "identidad_discordante_vs_no_contrastable_reconciliacion_de_conteos",
+      "campos_obligatorios_vacios_rechazan_parametrizados_contra_codigo",
+      "celda_sobrelimite_sin_conversion_decimal_exacto_contexto_reducido",
+      "encabezado_duplicado_desconocido_incompleto_limites_bytes_filas_identidad_vacia"
+    ],
+    "carencias_declaradas_no_defectos": [
+      "sin_piloto_sobre_captura_oficial_zip_75",
+      "sin_cobertura_de_codificaciones_validas_alternativas_amplia",
+      "csv_field_size_limit_ambiental_y_reglas_temporales_del_proveedor_pendientes_de_ingesta_real"
+    ]
+  },
+  "nucleo_conciliador_incluido_en_conjunta": {
+    "sha256": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd",
+    "pruebas_conciliador_en_conjunta": 72
+  },
+  "limites": {
+    "SQL": false,
+    "conftest_general": false,
+    "suite_general": false,
+    "red": false,
+    "corpus_oficial_procesado": false,
+    "cambios_parser": false,
+    "cambios_pruebas": false,
+    "cambios_74_a_98": false,
+    "instalaciones": false,
+    "commit_push": false,
+    "despliegue": false,
+    "integracion_productiva": false,
+    "dictamen_EAF": false
+  },
+  "alcance": "parser_puro_y_suites_dirigidas_35_mas_conjunta_107_con_datos_sinteticos; no_credita_cobertura_nacional_reglas_proveedor_ni_ingesta_real"
+}

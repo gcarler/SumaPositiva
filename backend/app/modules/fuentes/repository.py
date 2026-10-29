@@ -1,4 +1,5 @@
-from typing import Sequence
+from collections.abc import Sequence
+
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -53,11 +54,7 @@ class FuentesRepository:
         return result.scalar_one_or_none()
 
     async def obtener_para_actualizar(self, id: str) -> FuenteInformacion | None:
-        query = (
-            select(FuenteInformacion)
-            .where(FuenteInformacion.id == id)
-            .with_for_update()
-        )
+        query = select(FuenteInformacion).where(FuenteInformacion.id == id).with_for_update()
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 

@@ -14,6 +14,8 @@ from app.modules.geodatos.schemas import (
     DireccionEstandarizadaResponse,
     ExploradorHurtosResponse,
     HurtosFeatureCollection,
+    IndicadoresTerritorioResponse,
+    IndicadorTerritorioDetalladoRead,
     IsocronaFeature,
     IsocronaProperties,
     IsocronasFeatureCollection,
@@ -54,7 +56,12 @@ BARRIOS_COORD_MAP: dict[str, dict] = {
     "baru": {"lat": 10.1815, "lon": -75.6400, "codigo": "INS-BARU", "nombre": "Isla de Barú"},
     "isla de baru": {"lat": 10.1815, "lon": -75.6400, "codigo": "INS-BARU", "nombre": "Isla de Barú"},
     "tierra bomba": {"lat": 10.3634, "lon": -75.5640, "codigo": "INS-TIERRABOMBA", "nombre": "Isla de Tierra Bomba"},
-    "islas del rosario": {"lat": 10.1738, "lon": -75.7543, "codigo": "INS-ROSARIO", "nombre": "Archipiélago de Nuestra Señora del Rosario"},
+    "islas del rosario": {
+        "lat": 10.1738,
+        "lon": -75.7543,
+        "codigo": "INS-ROSARIO",
+        "nombre": "Archipiélago de Nuestra Señora del Rosario",
+    },
 }
 
 NODOS_SEGURIDAD_HUMANA: list[dict[str, Any]] = [
@@ -253,26 +260,19 @@ NODOS_SEGURIDAD_HUMANA: list[dict[str, Any]] = [
 ]
 
 
-def calcular_distancia_geodesica_metros(
-    lat1: float, lon1: float, lat2: float, lon2: float
-) -> float:
+def calcular_distancia_geodesica_metros(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Calcula la distancia geodésica en metros entre dos puntos WGS84 usando fórmula de Haversine."""
     r = 6371000.0
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     delta_phi = math.radians(lat2 - lat1)
     delta_lambda = math.radians(lon2 - lon1)
-    a = (
-        math.sin(delta_phi / 2.0) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
-    )
+    a = math.sin(delta_phi / 2.0) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
     c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(max(0.0, 1.0 - a)))
     return round(r * c, 1)
 
 
-def generar_circulo_geodesico(
-    lon: float, lat: float, radio_metros: float, num_puntos: int = 32
-) -> dict[str, Any]:
+def generar_circulo_geodesico(lon: float, lat: float, radio_metros: float, num_puntos: int = 32) -> dict[str, Any]:
     """Genera un polígono de aproximación circular geodésica en formato GeoJSON."""
     coords = []
     lat_rad = math.radians(lat)
@@ -321,14 +321,57 @@ class GeodatosService:
     async def obtener_territorio(self, id: uuid.UUID) -> Territorio | None:
         return await self.repository.obtener_territorio(id)
 
-    async def obtener_territorios_geojson(self) -> dict:
-        return await self.repository.obtener_territorios_geojson()
+    async def obtener_territorios_geojson(
+        self,
+        tipo_territorio: str | None = None,
+        busqueda: str | None = None,
+        es_zona_sat: bool | None = None,
+        es_zona_etnica: bool | None = None,
+    ) -> dict:
+        return await self.repository.obtener_territorios_geojson(
+            tipo_territorio=tipo_territorio,
+            busqueda=busqueda,
+            es_zona_sat=es_zona_sat,
+            es_zona_etnica=es_zona_etnica,
+        )
 
     async def buscar_por_coordenada(self, lon: float, lat: float) -> Sequence[Territorio]:
         return await self.repository.buscar_por_coordenada(lon, lat)
 
     async def listar_capas(self) -> Sequence[CapaGeovisor]:
         return await self.repository.listar_capas()
+
+    async def listar_indicadores(
+        self,
+        territorio_id: uuid.UUID | None = None,
+        codigo_territorio: str | None = None,
+        dimension_id: uuid.UUID | None = None,
+        dimension: str | None = None,
+        fuente_datos: str | None = None,
+        anio_corte: int | None = None,
+        codigo_indicador: str | None = None,
+        busqueda: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> IndicadoresTerritorioResponse:
+        total, items = await self.repository.listar_indicadores_territorio(
+            territorio_id=territorio_id,
+            codigo_territorio=codigo_territorio,
+            dimension_id=dimension_id,
+            dimension=dimension,
+            fuente_datos=fuente_datos,
+            anio_corte=anio_corte,
+            codigo_indicador=codigo_indicador,
+            busqueda=busqueda,
+            limit=limit,
+            offset=offset,
+        )
+        return IndicadoresTerritorioResponse(
+            total=total,
+            limit=limit,
+            offset=offset,
+            indicadores=[IndicadorTerritorioDetalladoRead.model_validate(it) for it in items],
+        )
 
     async def estandarizar_direccion(self, direccion_raw: str) -> DireccionEstandarizadaResponse:
         """Estandariza direcciones formales y populares de Cartagena con PostGIS address_standardizer."""
@@ -528,9 +571,7 @@ class GeodatosService:
         # 4. Localización del nodo de seguridad humana más cercano
         nodos_con_distancia = []
         for nodo in NODOS_SEGURIDAD_HUMANA:
-            dist = calcular_distancia_geodesica_metros(
-                lat, lon, nodo["latitud"], nodo["longitud"]
-            )
+            dist = calcular_distancia_geodesica_metros(lat, lon, nodo["latitud"], nodo["longitud"])
             nodos_con_distancia.append({**nodo, "distancia_metros": dist})
 
         nodos_con_distancia.sort(key=lambda n: n["distancia_metros"])
@@ -597,9 +638,7 @@ class GeodatosService:
     ) -> ResumenHurtosResponse:
         """Obtiene el resumen analítico de hurtos con filtros opcionales."""
         delito_norm = self.normalizar_delito(delito)
-        raw = await self.repository.obtener_resumen_hurtos(
-            delito=delito_norm, anio=anio, zona=zona
-        )
+        raw = await self.repository.obtener_resumen_hurtos(delito=delito_norm, anio=anio, zona=zona)
         return ResumenHurtosResponse.model_validate(raw)
 
     async def obtener_poligonos_hurtos_geojson(
@@ -610,9 +649,7 @@ class GeodatosService:
     ) -> HurtosFeatureCollection:
         """Obtiene FeatureCollection GeoJSON con polígonos analíticos y estadísticas asociadas."""
         delito_norm = self.normalizar_delito(delito)
-        raw = await self.repository.obtener_poligonos_hurtos_geojson(
-            delito=delito_norm, anio=anio, zona=zona
-        )
+        raw = await self.repository.obtener_poligonos_hurtos_geojson(delito=delito_norm, anio=anio, zona=zona)
         return HurtosFeatureCollection.model_validate(raw)
 
     async def explorar_registros_hurtos(
@@ -645,4 +682,3 @@ class GeodatosService:
             offset=offset,
         )
         return ExploradorHurtosResponse.model_validate(raw)
-

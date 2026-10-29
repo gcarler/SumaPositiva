@@ -1,6 +1,6 @@
-from datetime import UTC, datetime
-from typing import Sequence
 import uuid
+from collections.abc import Sequence
+from datetime import UTC, datetime
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ from app.modules.fuentes.repository import FuentesRepository
 from app.modules.fuentes.schemas import (
     FuenteInformacionActualizar,
     FuenteInformacionCrear,
+    FuenteInformacionRespuesta,
     KpisFuentesRespuesta,
 )
 
@@ -116,15 +117,16 @@ class FuentesService:
             )
             self.session.add(auditoria)
             await self.session.flush()
+            respuesta = FuenteInformacionRespuesta.model_validate(creada)
 
-        return creada
+        return respuesta
 
     async def actualizar_fuente(
         self,
         fuente_id: str,
         cambios: FuenteInformacionActualizar,
         usuario_id: uuid.UUID | None = None,
-    ) -> FuenteInformacion:
+    ) -> FuenteInformacionRespuesta:
         async with transaction(self.session):
             fuente = await self.repo.obtener_para_actualizar(fuente_id)
             if not fuente:
@@ -172,8 +174,9 @@ class FuentesService:
             )
             self.session.add(auditoria)
             await self.session.flush()
+            respuesta = FuenteInformacionRespuesta.model_validate(actualizada)
 
-        return actualizada
+        return respuesta
 
     async def eliminar_fuente(
         self,
@@ -195,9 +198,7 @@ class FuentesService:
                 accion="ELIMINAR_FUENTE_INFORMACION",
                 usuario_id=usuario_id,
                 causal="tecnica",
-                justificacion_motivada=(
-                    f"Eliminación de fuente de información {fuente.codigo} ({fuente.entidad})"
-                ),
+                justificacion_motivada=(f"Eliminación de fuente de información {fuente.codigo} ({fuente.entidad})"),
                 metadatos={"fuente_id": fuente.id, "codigo": fuente.codigo},
             )
             self.session.add(auditoria)

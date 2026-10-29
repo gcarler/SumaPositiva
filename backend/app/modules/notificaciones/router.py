@@ -17,9 +17,7 @@ from app.modules.notificaciones.service import NotificacionService
 router = APIRouter(prefix="/notificaciones", tags=["notificaciones"])
 
 
-def get_notificacion_service(
-    session: SessionDependency, request: Request
-) -> NotificacionService:
+def get_notificacion_service(session: SessionDependency, request: Request) -> NotificacionService:
     settings = getattr(request.app.state, "settings", None) or Settings()
     return NotificacionService(session, settings=settings)
 

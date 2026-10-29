@@ -5,16 +5,17 @@ seguimiento.pdt_ai_checkpoints_hitl) y del endpoint /historial-auditoria [Fase 2
 from __future__ import annotations
 
 import asyncio
+import os
 import uuid
 from typing import Any
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.core.config import Settings
 from app.core.database import get_session
 from app.modules.compromisos.pdt_persistencia_pg import (
     asegurar_tablas_pdt_ai_pg,
@@ -29,11 +30,17 @@ from app.modules.compromisos.router import router as compromisos_router
 
 
 def _bd_csh_url() -> str:
-    return (
-        make_url(Settings().async_database_url)
-        .set(database="bd_csh")
-        .render_as_string(hide_password=False)
-    )
+    """URL de la base de análisis para pruebas: SIEMPRE polis_test* cuando esté
+    definida (T6 del plan de remediación; nunca bd_csh en pruebas). Sin base de
+    pruebas la llamada se omite con causa explícita: JAMÁS caer a bd_csh
+    (hallazgo HALL-03 / docs/transacciones.md)."""
+    url_pruebas = os.getenv("POLIS_TEST_DATABASE_URL")
+    if not url_pruebas:
+        pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+    base_pruebas = make_url(url_pruebas).database or ""
+    if not base_pruebas.startswith("polis_test"):
+        raise RuntimeError("POLIS_TEST_DATABASE_URL debe apuntar a una base exclusiva polis_test*")
+    return url_pruebas
 
 
 async def _delete_hallazgo_for_test(hallazgo_id: str) -> None:
@@ -63,9 +70,7 @@ def test_tablas_y_sincronizacion_inicial_en_bd_csh() -> None:
                 await asegurar_tablas_pdt_ai_pg(session)
                 sync_res = await sincronizar_cache_y_checkpoints_a_pg(session)
                 await session.commit()
-                hist = await obtener_historial_auditoria_pdt_pg(
-                    session, thread_id="pdt-cartagena-2024-2027", limit=10
-                )
+                hist = await obtener_historial_auditoria_pdt_pg(session, thread_id="pdt-cartagena-2024-2027", limit=10)
                 return {"sync": sync_res, "hist": hist}
         finally:
             await engine.dispose()
@@ -106,26 +111,18 @@ def test_guardar_evaluacion_y_checkpoint_hitl_sha256_transaccional() -> None:
                         "unidades_ineficientes": ["Secretaría de Educación"],
                         "malmquist": {"pares": [{"unidad": "DADIS Salud", "MPI": 1.04}]},
                     },
-                    "nlp_coherence": {
-                        "alertas_mission_creep": [
-                            {"codigo_meta": "M-01", "alerta": "Mission Creep"}
-                        ]
-                    },
+                    "nlp_coherence": {"alertas_mission_creep": [{"codigo_meta": "M-01", "alerta": "Mission Creep"}]},
                     "spatial_lisa": {
                         "moran_global_i": 0.412,
                         "coldspots": ["UCG 6"],
-                        "trampas_territoriales_gestion_publica": [
-                            {"unidad_dmu": "Secretaría de Educación"}
-                        ],
+                        "trampas_territoriales_gestion_publica": [{"unidad_dmu": "Secretaría de Educación"}],
                     },
                     "time_series_forecast": {
                         "alto_riesgo_indicadores": ["Cobertura Saneamiento"],
                     },
                     "estado_checkpointer": "CONGELADO_PARA_AUDITORIA_HUMANA",
                     "is_valid_human": False,
-                    "recommendations": [
-                        {"dmu": "Secretaría de Educación", "accion": "Reasignar rubros"}
-                    ],
+                    "recommendations": [{"dmu": "Secretaría de Educación", "accion": "Reasignar rubros"}],
                 }
                 eval_saved = await guardar_evaluacion_pdt_pg(payload, db=session)
                 ckpt_saved = await registrar_checkpoint_hitl_pdt_pg(
@@ -139,9 +136,7 @@ def test_guardar_evaluacion_y_checkpoint_hitl_sha256_transaccional() -> None:
                     db=session,
                 )
                 await session.commit()
-                hist = await obtener_historial_auditoria_pdt_pg(
-                    session, thread_id=test_thread, limit=10
-                )
+                hist = await obtener_historial_auditoria_pdt_pg(session, thread_id=test_thread, limit=10)
                 # Limpiar el hilo sintético de prueba tras verificar para no contaminar bd_csh
                 await session.execute(
                     text("DELETE FROM seguimiento.pdt_ai_evaluaciones WHERE thread_id = :tid"),
@@ -259,8 +254,17 @@ def test_registrar_y_listar_dictamen_hallazgo_sha256():
     assert any(row["id_hallazgo"] == hallazgo_id for row in history["dictamenes_hallazgos"])
 
 
-def test_endpoints_dictaminar_y_listar_hallazgo():
+def test_endpoints_dictaminar_y_listar_hallazgo(monkeypatch):
+    from app.modules.identidad import deps
+    from app.modules.identidad.security import crear_token_acceso
+
+    async def sujeto_controlado(request, contexto):
+        return contexto
+
+    monkeypatch.setattr(deps, "cargar_sujeto_vigente", sujeto_controlado)
+
     hallazgo_id = f"HTTP-{uuid.uuid4()}"
+    test_sujeto_id = uuid.uuid4()
     app = FastAPI()
     app.include_router(compromisos_router, prefix="/api/v1")
 
@@ -276,6 +280,31 @@ def test_endpoints_dictaminar_y_listar_hallazgo():
     app.dependency_overrides[get_session] = _override_db
     client = TestClient(app)
     base = "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta"
+
+    # 1. Sin autenticación debe responder 401 (257-H01)
+    unauth = client.post(
+        f"{base}/dictaminar-hallazgo",
+        json={
+            "id_hallazgo": hallazgo_id,
+            "codigo_plan": "PDD_2024_2027",
+            "codigo_meta": "M-HTTP-29A",
+            "estado_revision": "VERIFICADO",
+            "responsable": "Secretaría de Salud",
+            "accion_correctiva_pdca": "Verificar evidencia y cerrar ciclo PDCA.",
+            "auditor": "Auditor Suplantado",
+        },
+    )
+    assert unauth.status_code == 401, unauth.text
+
+    # 2. Con autenticación y permiso seguimiento:gestionar
+    token = crear_token_acceso(
+        sujeto_id=test_sujeto_id,
+        rol="autoridad_distrital",
+        nivel_identidad="declarada",
+        permisos=["seguimiento:gestionar"],
+    )
+    auth_headers = {"Authorization": f"Bearer {token}"}
+
     response = client.post(
         f"{base}/dictaminar-hallazgo",
         json={
@@ -285,13 +314,16 @@ def test_endpoints_dictaminar_y_listar_hallazgo():
             "estado_revision": "VERIFICADO",
             "responsable": "Secretaría de Salud",
             "accion_correctiva_pdca": "Verificar evidencia y cerrar ciclo PDCA.",
-            "auditor": "Auditor EAF",
+            "auditor": "Auditor Intentado",
         },
+        headers=auth_headers,
     )
     assert response.status_code == 200, response.text
     body = response.json()
     assert body["id_hallazgo"] == hallazgo_id
     assert len(body["sha256_dictamen"]) == 64
+    # El auditor fue derivado del sujeto autenticado, no del JSON del cliente (257-H01)
+    assert body["auditor"] == f"autoridad_distrital:{test_sujeto_id}"
 
     listed = client.get(
         f"{base}/dictamenes-hallazgos",
@@ -303,7 +335,7 @@ def test_endpoints_dictaminar_y_listar_hallazgo():
     asyncio.run(_delete_hallazgo_for_test(hallazgo_id))
 
 
-def test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d() -> None:
+def test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d(corpus_analitica) -> None:
     """Verifica que _construir_resumen_ejecutivo calcula determinísticamente H11, H1,
     Hoshin Kanri FAIR y Revisión 10D.
     """
@@ -374,7 +406,7 @@ def test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d() -> None:
     assert rev10d["total_metas_plan"] == 1246
 
 
-def test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d() -> None:
+def test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d(corpus_analitica) -> None:
     """Verifica que guardar_evaluacion_pdt_pg y obtener_historial_auditoria_pdt_pg
     persisten y recuperan en PostgreSQL (bd_csh) los bloques H11, H1, hoshin_kanri_fair
     y revision_10d_resumen dentro del JSONB payload_resumen / resumen_ejecutivo.
@@ -410,9 +442,7 @@ def test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d() -> None:
                 }
                 await guardar_evaluacion_pdt_pg(payload, db=session)
                 await session.commit()
-                hist = await obtener_historial_auditoria_pdt_pg(
-                    session, thread_id=test_thread, limit=5
-                )
+                hist = await obtener_historial_auditoria_pdt_pg(session, thread_id=test_thread, limit=5)
                 await session.execute(
                     text("DELETE FROM seguimiento.pdt_ai_evaluaciones WHERE thread_id = :tid"),
                     {"tid": test_thread},

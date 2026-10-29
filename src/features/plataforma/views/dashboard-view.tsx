@@ -12,7 +12,10 @@ import { modulosPermitidos } from "../models/acceso";
 import { ICONOS } from "../components/plataforma-sidebar";
 import { EstadoConsulta } from "../components/estado-consulta";
 import { plataformaApi } from "../services/plataforma-api";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 export function DashboardView() {
+  const [vista, setVista] = useCollectionView("dashboard");
   const sesion = useSesionStore((s) => s.sesion);
   const puedeLeerUsuarios = tienePermiso(sesion, "usuarios:leer");
   const usuariosQuery = useQuery({
@@ -28,9 +31,11 @@ export function DashboardView() {
   });
   const proximas = mesas
     .filter(
-      (m) => m.estado === "programada" && Date.parse(m.fecha) >= Date.now(),
+      (m) =>
+        m.estado === "programada" &&
+        Boolean(m.fecha && m.fecha !== "Por definir" && !isNaN(Date.parse(m.fecha)) && Date.parse(m.fecha) >= Date.now()),
     )
-    .sort((a, b) => Date.parse(a.fecha) - Date.parse(b.fecha));
+    .sort((a, b) => Date.parse(a.fecha ?? "") - Date.parse(b.fecha ?? ""));
   const territorio = [...TERRITORIOS_CARTAGENA].sort(
     (a, b) => b.aportesCiudadanos - a.aportesCiudadanos,
   )[0];
@@ -74,11 +79,12 @@ export function DashboardView() {
         title="Dashboard"
         description="Resumen de actividad y accesos disponibles para tu rol."
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del dashboard" />
+      <CollectionLayout view={vista} className="xl:grid-cols-4">
         {tarjetas.map((t) => (
           <section
             key={t.titulo}
-            className="min-w-0 space-y-3 rounded-xl border border-border bg-surface-1 p-5"
+            className={`min-w-0 rounded-xl border border-border bg-surface-1 p-5 ${vista === "lista" ? "grid items-center gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]" : "space-y-3"}`}
           >
             <h2 className="text-sm font-medium text-text-secondary">
               {t.titulo}
@@ -89,12 +95,12 @@ export function DashboardView() {
             <p className="text-xs text-text-secondary">{t.detalle}</p>
           </section>
         ))}
-      </div>
+      </CollectionLayout>
       <section className="space-y-4">
         <h2 className="text-lg font-semibold text-text-primary">
           Accesos rápidos
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <CollectionLayout view={vista}>
           {modulosPermitidos(sesion)
             .filter((m) => m.id !== "dashboard")
             .map((m) => {
@@ -118,7 +124,7 @@ export function DashboardView() {
                 </Button>
               );
             })}
-        </div>
+        </CollectionLayout>
       </section>
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-text-primary">
@@ -131,7 +137,7 @@ export function DashboardView() {
         />
         {alertas.data &&
           (alertas.data.elementos.length ? (
-            <ul className="space-y-2">
+            <ul className={vista === "tarjetas" ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3" : "space-y-2"}>
               {[...alertas.data.elementos]
                 .sort(
                   (a, b) => Date.parse(b.creado_en) - Date.parse(a.creado_en),
@@ -160,12 +166,15 @@ export function DashboardView() {
           Agenda próxima
         </h2>
         {proximas.length ? (
-          <ul className="space-y-2">
+          <ul className={vista === "tarjetas" ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3" : "space-y-2"}>
             {proximas.slice(0, 5).map((m) => (
               <li key={m.id} className="rounded-xl border border-border p-4">
                 <p>{m.nombre}</p>
                 <p className="text-sm text-text-secondary">
-                  {new Date(m.fecha).toLocaleDateString("es")} · {m.lugar}
+                  {m.fecha && m.fecha !== "Por definir" && !isNaN(Date.parse(m.fecha))
+                    ? new Date(m.fecha).toLocaleDateString("es")
+                    : "Por definir"}{" "}
+                  · {m.lugar}
                 </p>
               </li>
             ))}

@@ -1,6 +1,7 @@
 # Usuarios, acceso y permisos
 
-Implementación del alcance solicitado el 2026-10-01. El cierre se determina por
+Contrato actualizado al 2026-10-26, incluyendo acceso por enlace, MFA y ámbitos
+territoriales de usuarios. El cierre se determina por
 los comportamientos y pruebas de este documento; no equivale a garantía universal
 sin defectos, despliegue o dictamen independiente de EAF.
 
@@ -21,18 +22,23 @@ sin defectos, despliegue o dictamen independiente de EAF.
 | Protección administrativa | No desactivar ni degradar al último administrador activo, incluso con cambios concurrentes. |
 | Trazabilidad | Eventos sin credenciales, motivos administrativos y trigger SQL contra UPDATE/DELETE. |
 | Protección de intentos | Contadores compartidos en PostgreSQL por IP y cuenta, claves HMAC, ventanas y respuesta 429. |
+| MFA TOTP | Enrolamiento inicial, desafío de login, recuperación de uso único y exigencia por rol y sesión vigente. |
+| Ámbitos de usuario | Asignación/revocación administrativa con justificación y auditoría; aplicación PBAC según la matriz de cada recurso. |
 | Interfaz | Paneles de acceso, registro, perfil, sesiones, recuperación, verificación, usuarios, roles y eventos; sin acceso institucional simulado. |
 
 Los roles del sistema son `ciudadano`, `facilitador_mesa`, `autoridad_distrital`,
 `auditor_forense` y `administrador_identidades`. Los cambios de sus permisos pasan
 por migraciones para conservar el contrato normativo. Los roles personalizados
 agrupan permisos del [catálogo y matriz](permisos-api.md); su alcance actual es
-global. No existe delegación por mesa o territorio en este alcance.
+global. Los ámbitos territoriales de usuarios se administran mediante las rutas
+de ámbitos; los recursos sometidos a PBAC están definidos en la matriz de acceso.
 
 El administrador de identidades recibe administración de cuentas/roles e historial.
 Desde `0028_formularios_admin` también recibe lectura y gestión de formularios,
-conforme al área interna solicitada. No recibe automáticamente gestión de
-presupuestos, mesas u otros dominios.
+conforme al área interna solicitada. Desde `0054_permisos_plenos_admin` también
+recibe gestión de presupuesto, indicadores e instrumentos y los permisos de
+mesas, asistencia e IA establecidos por esa migración. El catálogo vigente de
+la [matriz](permisos-api.md) determina el conjunto de permisos de cada rol.
 El auditor forense puede leer usuarios, roles y eventos, sin modificarlos.
 Verificar un correo no acredita identidad personal o nombramiento institucional;
 se conserva la distinción con el nivel de identidad.
@@ -70,6 +76,47 @@ El login de una cuenta inexistente realiza comprobación bcrypt con un hash
 ficticio; la recuperación pública devuelve el mismo mensaje para cuentas
 existentes e inexistentes. No bloquea permanentemente cuentas por intentos fallidos.
 Los límites de prueba amplios no alteran los valores por defecto de operación.
+
+Solicitar un magic link no verifica el correo. El usuario nuevo permanece con
+`correo_verificado_en=NULL` hasta consumir correctamente el enlace de acceso;
+propósito, vigencia y uso único se comprueban en esa operación. La solicitud,
+su cola/evento y la validación de la respuesta pertenecen al mismo límite
+transaccional. La respuesta genérica no acredita entrega del correo.
+
+## MFA y sesiones limitadas
+
+`POLIS_MFA_ROLES_EXIGIDOS` define los roles que requieren segundo factor;
+configurarlo exige una clave Fernet válida en `POLIS_MFA_ENCRYPTION_KEY`. La API
+consulta el rol, factor y sesión persistidos en cada petición. Una prueba HMAC
+liga la acreditación a la cuenta, sesión y versión del factor; los flags del
+cliente o claims anteriores no acreditan el segundo factor.
+
+Sin factor enrolado, un rol exigido recibe token limitado, permisos vacíos y
+`mfa_enrolamiento_requerido=true`. `mfa_requerido=false` en ese caso: el campo
+`mfa_requerido` conserva el significado del desafío de login cuando ya existe un
+factor activo. Ese desafío no entrega acceso pleno hasta verificar TOTP o un
+código de recuperación válido. Contraseña, magic link y Google aplican la misma
+exigencia de sesión.
+
+Una sesión pendiente solo puede ejecutar `GET /identidad/perfil`,
+`GET /identidad/mfa/estado`, `POST /identidad/mfa/iniciar`,
+`POST /identidad/mfa/activar` y `POST /identidad/logout`, bajo el prefijo
+`/api/v1`. El perfil devuelve permisos efectivos vacíos y las demás operaciones
+protegidas responden 403. La activación acredita exclusivamente la sesión que
+presentó el código; las otras sesiones requieren un nuevo login y desafío.
+`sesion_verificada` en el estado MFA informa la acreditación de la sesión actual.
+
+Iniciar o reactivar un factor activo devuelve 409 y conserva secreto y códigos.
+Un rol que exige MFA no puede desactivarlo. El cambio de versión del factor o
+la rotación del secreto usado para la acreditación exige autenticarse de nuevo.
+Los fallos de código confirman contador, bloqueo y evento como unidad durable
+antes de propagar 401/429; si esa unidad falla o se cancela, se revierte completa.
+No se confirman parcialmente los casos de autenticación exitosa.
+
+El inicio de enrolamiento devuelve `otpauth_uri`; el estado no declara un
+`ultimo_uso_en`. Los ámbitos exponen `creado_en` y `actualizado_en`. El consumidor
+debe validar esos contratos reales y representar el enrolamiento pendiente antes
+de ofrecer operaciones institucionales.
 
 ## Cola durable y SMTP
 
@@ -151,18 +198,20 @@ La preparación de metadatos de actas utiliza el default al añadir la columna,
 sin actualizar actas inmutables ni desactivar su trigger. El borrador conserva
 el snapshot de participantes con una variable definida antes de persistir.
 
-La entrega concurrente posterior `0023_asistencia_multicanal` queda fuera de este
-snapshot: durante el cierre añadió una tabla sin modelo registrado y un permiso
-al auditor que contradice la matriz vigente. El resultado aprobado hasta 0022
-no certifica ese trabajo ni la suite del workspace mientras continúa cambiando.
+El snapshot aprobado hasta 0022 fue evidencia histórica del cierre de octubre 1.
+El alcance actual incluye las revisiones posteriores de identidad/MFA/ámbitos;
+su validación debe identificar la cabeza y los hashes efectivamente revisados.
+Los dictámenes 169/171 y la remediación 181 se conservan en `bridge/`; una entrega
+EDD y un check favorable no sustituyen la reinspección independiente posterior.
 
 La entrega no activa un proveedor SMTP, tareas periódicas ni cuentas en producción.
 Revisar procedencia de cuentas institucionales históricas antes de habilitar gestión.
 Configurar proxy de confianza para los límites de IP, monitorización del worker,
 retención de sesiones/enlaces/eventos y custodia de secretos según operación.
 El trigger append-only no protege frente al propietario/superusuario capaz de
-alterar la base. MFA, SSO y restricciones por territorio no forman parte del alcance
-solicitado y aquí no se declaran implementados.
+alterar la base. La configuración y disponibilidad de proveedores reales, la
+operación periódica de colas y la revisión de cuentas históricas requieren su
+evidencia de operación; las pruebas aisladas no las acreditan.
 
 Referencias de diseño:
 [recuperación de contraseñas OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)

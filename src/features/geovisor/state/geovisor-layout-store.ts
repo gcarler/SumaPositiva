@@ -16,7 +16,8 @@ export type GeovisorViewId =
   | "territorio"
   | "datagrid"
   | "graficos"
-  | "hurtos";
+  | "hurtos"
+  | "fuentes";
 
 export const GEOVISOR_VIEW_IDS: readonly GeovisorViewId[] = [
   "filtros",
@@ -27,6 +28,7 @@ export const GEOVISOR_VIEW_IDS: readonly GeovisorViewId[] = [
   "datagrid",
   "graficos",
   "hurtos",
+  "fuentes",
 ];
 
 export type DockTabs = Record<DockPanelId, GeovisorViewId[]>;
@@ -98,7 +100,7 @@ export function findViewDock(tabs: DockTabs, viewId: GeovisorViewId): DockPanelI
 }
 
 export function defaultDockForView(viewId: GeovisorViewId): DockPanelId {
-  if (viewId === "hurtos" || viewId === "datagrid" || viewId === "graficos") return "bottom";
+  if (viewId === "hurtos" || viewId === "datagrid" || viewId === "graficos" || viewId === "fuentes") return "bottom";
   if (viewId === "ficha" || viewId === "territorio") return "right";
   if (viewId === "capas" || viewId === "mesas") return "left";
   return "top";

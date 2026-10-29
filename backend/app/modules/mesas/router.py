@@ -23,8 +23,8 @@ from app.modules.mesas.schemas import (
     FotoMesaRevision,
     FotoMesaSubidaRespuesta,
     MesaActualizar,
-    MesaGeovisorRespuesta,
     MesaCrear,
+    MesaGeovisorRespuesta,
     MesaRespuesta,
     ParticipanteCrear,
     ParticipanteRespuesta,
@@ -138,7 +138,6 @@ async def actualizar_agenda(
     return await service.actualizar_agenda(agenda_id, datos, sujeto=sujeto)
 
 
-
 @router.post(
     "/{mesa_id}/fotos",
     response_model=FotoMesaSubidaRespuesta,
@@ -150,7 +149,9 @@ async def subir_foto_mesa(
     sujeto: SujetoAutenticadoDep,
     service: EvidenciaServiceDep,
     archivo: Annotated[UploadFile, File(description="Imagen JPEG, PNG o WebP")],
-    autorizacion_imagen: Annotated[bool, Form(description="Confirma que cuenta con autorización para publicar esta imagen")],
+    autorizacion_imagen: Annotated[
+        bool, Form(description="Confirma que cuenta con autorización para publicar esta imagen")
+    ],
 ):
     return await service.guardar_foto_mesa(mesa_id, archivo, sujeto, autorizacion_imagen)
 

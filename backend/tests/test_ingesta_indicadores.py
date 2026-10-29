@@ -26,10 +26,17 @@ def test_catalogo_fichas_con_mediciones_reales(client_indicadores):
     assert len(fichas) == 11, f"Se esperaban 11 fichas técnicas, se obtuvieron {len(fichas)}"
 
     codigos_esperados = {
-        "IND-INS-01", "IND-INS-02",
-        "IND-PROD-01", "IND-PROD-02", "IND-PROD-03",
-        "IND-RES-01", "IND-RES-02", "IND-RES-03",
-        "IND-IMP-01", "IND-IMP-02", "IND-IMP-03"
+        "IND-INS-01",
+        "IND-INS-02",
+        "IND-PROD-01",
+        "IND-PROD-02",
+        "IND-PROD-03",
+        "IND-RES-01",
+        "IND-RES-02",
+        "IND-RES-03",
+        "IND-IMP-01",
+        "IND-IMP-02",
+        "IND-IMP-03",
     }
     codigos_obtenidos = {f["codigo"] for f in fichas}
     assert codigos_obtenidos == codigos_esperados

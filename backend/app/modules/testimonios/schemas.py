@@ -15,10 +15,11 @@ class TestimonioCrear(BaseModel):
     url_foto: str | None = Field(None, max_length=500)
     url_audio_video: str | None = Field(None, max_length=500)
     metadatos_enfoque: dict[str, Any] = Field(default_factory=dict)
+    estado: str | None = Field(None, description="BORRADOR, PENDIENTE, APROBADO")
 
 
 class TestimonioModeracion(BaseModel):
-    estado: str = Field(..., description="APROBADO, DESTACADO, RECHAZADO")
+    estado: str = Field(..., description="BORRADOR, PENDIENTE, APROBADO, DESTACADO, RECHAZADO")
     motivo_moderacion: str | None = Field(None, max_length=500)
 
 
@@ -32,6 +33,7 @@ class TestimonioEdicion(BaseModel):
     url_foto: str | None = Field(None, max_length=500)
     url_audio_video: str | None = Field(None, max_length=500)
     metadatos_enfoque: dict[str, Any] = Field(default_factory=dict)
+    estado: str | None = Field(None, description="BORRADOR, PENDIENTE, APROBADO, DESTACADO, RECHAZADO")
 
 
 class TestimonioLectura(BaseModel):
@@ -58,6 +60,7 @@ class TestimonioLectura(BaseModel):
 
 class ResumenTestimonios(BaseModel):
     total_testimonios: int
+    borradores: int = 0
     aprobados: int
     destacados: int
     pendientes: int

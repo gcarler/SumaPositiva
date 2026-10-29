@@ -62,6 +62,8 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "storybook-static/**",
     "test-results/**",
     "playwright-report/**",
+    "bridge/**",
+    "data/**",
     "skills/**",
     "docs/**",
   ]

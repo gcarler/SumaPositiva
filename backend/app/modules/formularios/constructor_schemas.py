@@ -113,39 +113,26 @@ class DocumentoFormulario(BaseModel):
         if not self.titulo.strip():
             raise ValueError("Título vacío")
         for seccion in self.secciones:
-            if not isinstance(seccion.get("titulo"), str) or not isinstance(
-                seccion.get("orden"), int
-            ):
+            if not isinstance(seccion.get("titulo"), str) or not isinstance(seccion.get("orden"), int):
                 raise ValueError("Sección inválida")
         for pregunta in self.preguntas:
             if pregunta.tipo not in ("seccion", "descripcion") and not pregunta.texto.strip():
                 raise ValueError("Enunciado vacío")
-            if (
-                pregunta.tipo in ("opcion_unica", "opcion_multiple", "lista_desplegable")
-                and not pregunta.opciones
-            ):
+            if pregunta.tipo in ("opcion_unica", "opcion_multiple", "lista_desplegable") and not pregunta.opciones:
                 raise ValueError("La selección necesita opciones")
             if any("esOtro" in o and not isinstance(o["esOtro"], bool) for o in pregunta.opciones):
                 raise ValueError("esOtro debe ser booleano")
             ids_opciones = [o.get("id") for o in pregunta.opciones]
-            if any(not isinstance(i, str) or not i.strip() for i in ids_opciones) or len(
-                ids_opciones
-            ) != len(set(ids_opciones)):
+            if any(not isinstance(i, str) or not i.strip() for i in ids_opciones) or len(ids_opciones) != len(
+                set(ids_opciones)
+            ):
                 raise ValueError("Identificadores de opciones inválidos o repetidos")
             for opcion in pregunta.opciones:
-                if not isinstance(opcion.get("id"), str) or not isinstance(
-                    opcion.get("texto"), str
-                ):
+                if not isinstance(opcion.get("id"), str) or not isinstance(opcion.get("texto"), str):
                     raise ValueError("Opción inválida")
-            validacion = (
-                pregunta.validacion.model_dump(exclude_none=True) if pregunta.validacion else {}
-            )
+            validacion = pregunta.validacion.model_dump(exclude_none=True) if pregunta.validacion else {}
             for minimo, maximo in (("minLongitud", "maxLongitud"), ("minValor", "maxValor")):
-                if (
-                    minimo in validacion
-                    and maximo in validacion
-                    and validacion[minimo] > validacion[maximo]
-                ):
+                if minimo in validacion and maximo in validacion and validacion[minimo] > validacion[maximo]:
                     raise ValueError("El mínimo no puede superar el máximo")
             if (
                 pregunta.escalaMin is not None
@@ -161,8 +148,7 @@ class DocumentoFormulario(BaseModel):
             for regla in pregunta.logica:
                 if (
                     regla.get("accion") not in ("mostrar", "ocultar", "ir_a_seccion")
-                    or regla.get("operador")
-                    not in ("igual", "no_igual", "contiene", "mayor_que", "menor_que")
+                    or regla.get("operador") not in ("igual", "no_igual", "contiene", "mayor_que", "menor_que")
                     or not isinstance(regla.get("valor"), str)
                 ):
                     raise ValueError("Regla condicional inválida")
@@ -170,9 +156,7 @@ class DocumentoFormulario(BaseModel):
         for p in self.preguntas:
             if p.seccionId and p.seccionId not in secciones:
                 raise ValueError("Sección de pregunta inexistente")
-            if p.dimensionOrigenId and (
-                p.dimensionOrigenId not in orden or orden[p.dimensionOrigenId] >= orden[p.id]
-            ):
+            if p.dimensionOrigenId and (p.dimensionOrigenId not in orden or orden[p.dimensionOrigenId] >= orden[p.id]):
                 raise ValueError("La dimensión debe referenciar una pregunta anterior")
             if p.localidadDestinoId and p.localidadDestinoId not in orden:
                 raise ValueError("La localidad debe referenciar una pregunta existente")

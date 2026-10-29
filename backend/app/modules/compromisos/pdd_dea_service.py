@@ -31,6 +31,7 @@ from app.modules.compromisos.dea_econometria_service import (
     _sbm,
     _sigla,
 )
+from app.modules.compromisos.ipc_deflactor_polis import factor_desde_diciembre_2019, factor_hacia_anio_base
 
 BASE_DIR = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo"
 CLONE = "CONTENIDO_IDENTICO_OTRO_CORTE"
@@ -52,8 +53,8 @@ DIMENSIONES_SH = (
     "Seguridad Ambiental",
     "Seguridad Política",
 )
-_LEGACY_CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
-CACHE_V11 = BASE_DIR / "cache_pdd_dea_v11.json"
+_LEGACY_CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v12.json")
+CACHE_V11 = BASE_DIR / "cache_pdd_dea_v12.json"
 PDT_AI_CACHE = BASE_DIR / "cache_pdt_ai_evaluator.json"
 # Backwards-compatible alias used by older tests and local operators.
 CACHE_V10 = CACHE_V11
@@ -111,9 +112,7 @@ def _fallback_dea_cartagena(
                 "theta_ccr": 1.0 if i else 0.65,
                 "cumplimiento_fisico": 1.0,
                 "eficiente": bool(i),
-                "dictamen": "BENCHMARK_EFICIENTE"
-                if i
-                else "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO",
+                "dictamen": "BENCHMARK_EFICIENTE" if i else "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO",
             }
             for i, name in enumerate(catalogue[key])
         ]
@@ -140,9 +139,7 @@ def _fallback_dea_cartagena(
     }
 
 
-def _fallback_tablero_dea_cartagena(
-    orientacion: str = "input", sector: str | None = None
-) -> dict[str, Any]:
+def _fallback_tablero_dea_cartagena(orientacion: str = "input", sector: str | None = None) -> dict[str, Any]:
     niveles = _fallback_dea_cartagena(orientacion=orientacion, sector=sector)["niveles"]
     alerts = [
         dmu
@@ -150,9 +147,7 @@ def _fallback_tablero_dea_cartagena(
         for dmu in level["dmus"]
         if dmu["theta_bcc"] <= 0.7 and dmu["cumplimiento_fisico"] >= 0.9
     ]
-    benchmarks = [
-        dmu for level in niveles.values() for dmu in level["dmus"] if dmu["theta_bcc"] == 1.0
-    ]
+    benchmarks = [dmu for level in niveles.values() for dmu in level["dmus"] if dmu["theta_bcc"] == 1.0]
     return {
         "estado": "FALLBACK_DETERMINISTA",
         "orientacion": orientacion,
@@ -165,9 +160,7 @@ def _fallback_tablero_dea_cartagena(
 
 
 def _cargar_dea_cartagena_fns():
-    module = importlib.import_module(
-        ".pdt_dea_4niveles_cartagena", package="app.modules.compromisos"
-    )
+    module = importlib.import_module(".pdt_dea_4niveles_cartagena", package="app.modules.compromisos")
     return (
         module.evaluar_dea_4_niveles_cartagena,
         module.generar_tablero_alcalde_y_armonizacion_dea_cartagena,
@@ -179,21 +172,16 @@ async def _invocar_dea_cartagena(fn, **kwargs):
     call_kwargs = {
         name: value
         for name, value in kwargs.items()
-        if name in parameters
-        or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in parameters.values())
+        if name in parameters or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in parameters.values())
     }
     result = fn(**call_kwargs)
     return await result if inspect.isawaitable(result) else result
 
 
-async def obtener_dea_cartagena_4_niveles(
-    nivel=None, orientacion="input", sector=None, db=None, **kwargs
-):
+async def obtener_dea_cartagena_4_niveles(nivel=None, orientacion="input", sector=None, db=None, **kwargs):
     try:
         fn, _ = _cargar_dea_cartagena_fns()
-        return await _invocar_dea_cartagena(
-            fn, nivel=nivel, orientacion=orientacion, sector=sector, db=db, **kwargs
-        )
+        return await _invocar_dea_cartagena(fn, nivel=nivel, orientacion=orientacion, sector=sector, db=db, **kwargs)
     except ImportError:
         return _fallback_dea_cartagena(nivel, orientacion, sector)
 
@@ -201,9 +189,7 @@ async def obtener_dea_cartagena_4_niveles(
 async def obtener_tablero_dea_cartagena(orientacion="input", sector=None, db=None, **kwargs):
     try:
         _, fn = _cargar_dea_cartagena_fns()
-        return await _invocar_dea_cartagena(
-            fn, orientacion=orientacion, sector=sector, db=db, **kwargs
-        )
+        return await _invocar_dea_cartagena(fn, orientacion=orientacion, sector=sector, db=db, **kwargs)
     except ImportError:
         return _fallback_tablero_dea_cartagena(orientacion, sector)
 
@@ -221,6 +207,7 @@ PPI_2020_2019_COP = {
     2023: 1_584_429_700_000,
 }
 PPI_2020_TOTAL_2019_COP = 6_022_982_600_000
+PPI_2020_TABLA_TOTAL_2019_COP = 6_022_982_660_000
 PPI_2020_PILLARS = {
     "Cartagena Resiliente": 568_355_300_000,
     "Cartagena Incluyente": 4_815_957_900_000,
@@ -234,20 +221,13 @@ PPI_2012 = {
     2014: 787_872_147_000,
     2015: 830_786_430_000,
 }
+PPI_2013 = {2014: 919_970_330_000, 2015: 954_197_275_000}
 PPI_2016 = {
     2016: 976_114_000_000,
     2017: 1_033_268_000_000,
     2018: 1_115_477_000_000,
     2019: 1_207_081_000_000,
 }
-IPC_INDICE_BASE_2024 = {
-    "PDD_2012_2015": 53.4,
-    "PDD_2013_2015": 53.4,
-    "PDD_2016_2019": 65.8,
-    "PDD_2020_2023": 81.2,
-    "PDD_2024_2027": 100.0,
-}
-
 PLANS: tuple[dict[str, Any], ...] = (
     {
         "codigo_plan": "PDD_2012_2015",
@@ -388,9 +368,7 @@ def _json_safe(value: Any) -> Any:
 def _serialize_payload(key: str, value: dict[str, Any]) -> tuple[bytes, str]:
     raw, etag = _RAW_JSON_BYTES.get(key, (None, None))
     if raw is None:
-        raw = json.dumps(
-            _json_safe(value), ensure_ascii=False, separators=(",", ":"), allow_nan=False
-        ).encode("utf-8")
+        raw = json.dumps(_json_safe(value), ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode("utf-8")
         etag = hashlib.sha256(raw).hexdigest()
         _RAW_JSON_BYTES[key] = (raw, etag)
     return raw, str(etag)
@@ -402,7 +380,7 @@ def _read_disk_cache() -> dict[str, dict[str, Any]]:
         try:
             cache_path = CACHE_V11 if CACHE_V11.is_file() else _LEGACY_CACHE_V11
             payload = json.loads(cache_path.read_text(encoding="utf-8"))
-            if payload.get("version") == 11:
+            if payload.get("version") == 12:
                 _DISK_CACHE = payload.get("payloads", {})
                 for key, item in payload.get("raw_json", {}).items():
                     raw = base64.b64decode(item["body_b64"])
@@ -421,7 +399,7 @@ def _write_disk_cache() -> None:
         key: {"body_b64": base64.b64encode(raw).decode("ascii"), "etag": etag}
         for key, (raw, etag) in _RAW_JSON_BYTES.items()
     }
-    payload = {"version": 11, "payloads": _DISK_CACHE or {}, "raw_json": raw_json}
+    payload = {"version": 12, "payloads": _DISK_CACHE or {}, "raw_json": raw_json}
     cache_path = CACHE_V11
     try:
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -431,7 +409,7 @@ def _write_disk_cache() -> None:
 
 
 def _atomic_write_cache(cache_path: Path, payload: dict[str, Any]) -> None:
-    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v11-", dir=str(cache_path.parent))
+    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v12-", dir=str(cache_path.parent))
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as target:
             json.dump(payload, target, ensure_ascii=False, separators=(",", ":"), default=str)
@@ -508,11 +486,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
     cosine = nlp.get("similaridad_coseno", {})
     spatial = diagnostic.get("spatial_lisa", {})
     forecast = diagnostic.get("time_series_forecast", {})
-    high_risk = [
-        row
-        for row in forecast.get("series", [])
-        if row.get("ISRI") is not None and float(row["ISRI"]) > 0.40
-    ]
+    high_risk = [row for row in forecast.get("series", []) if row.get("ISRI") is not None and float(row["ISRI"]) > 0.40]
     from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
 
     report = generar_dictamen_ejecutivo_pdt(diagnostic)
@@ -545,9 +519,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
             "pares_evaluados": cosine.get("pares_evaluados", 0),
             "similaridad_coseno_promedio": cosine.get("promedio"),
             "umbral_mission_creep": cosine.get("umbral_alerta", 0.45),
-            "alertas_mission_creep": nlp.get(
-                "alertas_total", len(nlp.get("alertas_mission_creep", []))
-            ),
+            "alertas_mission_creep": nlp.get("alertas_total", len(nlp.get("alertas_mission_creep", []))),
         },
         "econometria_espacial_lisa": {
             "estado": spatial.get("estado"),
@@ -605,18 +577,14 @@ async def _resumen_hoshin_kanri_pdt(diagnostic: dict[str, Any]) -> dict[str, Any
     try:
         from app.modules.compromisos.pdt_hoshin_kanri import construir_matriz_x_hoshin_kanri_pdt
 
-        result = await asyncio.to_thread(
-            construir_matriz_x_hoshin_kanri_pdt, diagnostico=diagnostic
-        )
+        result = await asyncio.to_thread(construir_matriz_x_hoshin_kanri_pdt, diagnostico=diagnostic)
         import inspect
 
         if inspect.isawaitable(result):
             result = await result
         fair = result.get("evaluacion_fair", {})
         charts = result.get("bowling_charts", [])
-        states = Counter(
-            str(row.get("color_semaforo") or row.get("estado") or "SIN_ESTADO") for row in charts
-        )
+        states = Counter(str(row.get("color_semaforo") or row.get("estado") or "SIN_ESTADO") for row in charts)
         catchball = result.get("catchball_sesiones", [])
         pdca_alerts = sum(state.upper().startswith(("ROJO", "ALERTA")) for state in states)
         catchball_alerts = sum(bool(row.get("brechas_criticas_detectadas")) for row in catchball)
@@ -641,18 +609,14 @@ async def _resumen_hoshin_kanri_pdt(diagnostic: dict[str, Any]) -> dict[str, Any
         return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
 
 
-def pre_serialized_response(
-    cache_key: str, payload: dict[str, Any], if_none_match: str | None = None
-):
+def pre_serialized_response(cache_key: str, payload: dict[str, Any], if_none_match: str | None = None):
     """Build a FastAPI response from cached JSON bytes, preserving ordinary JSON semantics."""
     from fastapi import Response
 
     raw, etag = _serialize_payload(cache_key, payload)
     quoted = f'"{etag}"'
     headers = {"ETag": quoted, "X-Polis-Cache": "HIT-V11"}
-    if if_none_match and any(
-        tag.strip() in {quoted, etag, "*"} for tag in if_none_match.split(",")
-    ):
+    if if_none_match and any(tag.strip() in {quoted, etag, "*"} for tag in if_none_match.split(",")):
         return Response(status_code=304, headers=headers)
     return Response(content=raw, media_type="application/json", headers=headers)
 
@@ -662,9 +626,7 @@ def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
     eligible = [
         row
         for row in dmus
-        if row.get("presupuesto_cop", 0) > 0
-        and row.get("productos_operativos", 0) > 0
-        and row.get("avance_pdd", 0) > 0
+        if row.get("presupuesto_cop", 0) > 0 and row.get("productos_operativos", 0) > 0 and row.get("avance_pdd", 0) > 0
     ]
     if len(eligible) < 4:
         return [
@@ -680,8 +642,7 @@ def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
                     "estado_estabilidad": "NO_ESTIMABLE",
                 },
                 "elegibilidad": (
-                    "Se requieren al menos cuatro entidades con presupuesto, productos PA "
-                    "y avance PDD positivo."
+                    "Se requieren al menos cuatro entidades con presupuesto, productos PA y avance PDD positivo."
                 ),
             }
             for row in dmus
@@ -691,25 +652,15 @@ def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
         [[row["productos_operativos"], row.get("proyectos_bpim_activos", 0)] for row in eligible],
         dtype=float,
     )
-    y = np.asarray(
-        [[row["avance_pdd"], row.get("metas_pdd_observadas", 1)] for row in eligible], dtype=float
-    )
+    y = np.asarray([[row["avance_pdd"], row.get("metas_pdd_observadas", 1)] for row in eligible], dtype=float)
     theta1 = [
-        float(np.clip(_lp(x, z, x[i], z[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1))
-        for i in range(len(eligible))
+        float(np.clip(_lp(x, z, x[i], z[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1)) for i in range(len(eligible))
     ]
     theta2 = [
-        float(np.clip(_lp(z, y, z[i], y[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1))
-        for i in range(len(eligible))
+        float(np.clip(_lp(z, y, z[i], y[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1)) for i in range(len(eligible))
     ]
-    ccr = [
-        float(np.clip(_lp(z, y, z[i], y[i]).get("eficiencia", theta2[i]), 1e-9, 1))
-        for i in range(len(eligible))
-    ]
-    sbm = [
-        float(np.clip(_sbm(x, z, i).get("eficiencia", theta1[i]), 1e-9, 1))
-        for i in range(len(eligible))
-    ]
+    ccr = [float(np.clip(_lp(z, y, z[i], y[i]).get("eficiencia", theta2[i]), 1e-9, 1)) for i in range(len(eligible))]
+    sbm = [float(np.clip(_sbm(x, z, i).get("eficiencia", theta1[i]), 1e-9, 1)) for i in range(len(eligible))]
     window = [
         float(np.clip(_lp(z, y, z[i], y[i], vrs=True).get("eficiencia", theta2[i]), 1e-9, 1))
         for i in range(len(eligible))
@@ -744,17 +695,11 @@ def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "clasificacion_red": classification,
             "estabilidad_ranking": {
                 "rango_cuartiles": [min(quartiles), max(quartiles)],
-                "estado_estabilidad": "ESTABLE"
-                if spread == 0
-                else "MODERADO"
-                if spread <= 1
-                else "VOLATIL",
+                "estado_estabilidad": "ESTABLE" if spread == 0 else "MODERADO" if spread <= 1 else "VOLATIL",
                 "especificaciones": ["BCC_VRS", "CCR_CRS", "SBM_NO_RADIAL", "VENTANA_PANEL"],
             },
         }
-    return [
-        results.get(row["entidad"], row | {"clasificacion_red": "NO_ESTIMABLE"}) for row in dmus
-    ]
+    return [results.get(row["entidad"], row | {"clasificacion_red": "NO_ESTIMABLE"}) for row in dmus]
 
 
 def _inverse_dea_scenarios(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -771,13 +716,7 @@ def _inverse_dea_scenarios(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
             bounds = []
             for score, budget in zip(scores, budgets, strict=True):
                 limit = float(budget * flexibility)
-                bounds.append(
-                    (-limit, 0.0)
-                    if score < median
-                    else (0.0, limit)
-                    if score > median
-                    else (0.0, 0.0)
-                )
+                bounds.append((-limit, 0.0) if score < median else (0.0, limit) if score > median else (0.0, 0.0))
             solution = __import__("scipy.optimize", fromlist=["linprog"]).linprog(
                 -scores,
                 A_eq=np.ones((1, len(eligible))),
@@ -1071,24 +1010,16 @@ def _cut_rank(row: dict[str, Any]) -> tuple[int, str, str]:
     )
 
 
-def _money_factor(year: int) -> float:
-    rates = {
-        2012: 2.44,
-        2013: 1.94,
-        2014: 3.66,
-        2015: 6.77,
-        2016: 5.75,
-        2017: 4.09,
-        2018: 3.18,
-        2019: 3.80,
-        2020: 1.61,
-        2021: 5.62,
-        2022: 13.12,
-        2023: 9.28,
-        2024: 5.20,
-        2025: 5.10,
-    }
-    return math.prod(1 + rates[y] / 100 for y in range(year + 1, 2026))
+def _money_factor(year: int) -> float | None:
+    factor = factor_hacia_anio_base(year, 2025)
+    return float(factor) if factor is not None else None
+
+
+def _known_money_factor(year: int) -> float:
+    factor = _money_factor(year)
+    if factor is None:
+        raise ValueError(f"Sin IPC anual completo para {year}")
+    return factor
 
 
 def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1190,9 +1121,7 @@ def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
         codes.discard("")
         pa_values = [value for code in codes for value in tripartite_pa.get((*identity, code), [])]
         budget_rows = {
-            row_id: amount
-            for code in codes
-            for row_id, amount in tripartite_budget.get((*identity, code), {}).items()
+            row_id: amount for code in codes for row_id, amount in tripartite_budget.get((*identity, code), {}).items()
         }
         budget = sum(budget_rows.values())
         row["avance_directo_pct"] = row.get("avance_norm")
@@ -1204,6 +1133,18 @@ def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
         row["tiene_soporte_presupuestal"] = budget > 0
         tripartite_pa_matches += bool(pa_values)
         tripartite_budget_matches += budget > 0
+        has_direct = row.get("avance_norm") is not None
+        has_tripartite = bool(pa_values) or budget > 0 or row.get("avance_pa_pct") is not None
+        if has_direct and has_tripartite:
+            row["imputacion"] = "directa;tripartita"
+        elif has_direct:
+            row["imputacion"] = "directa"
+        elif has_tripartite:
+            row["imputacion"] = "tripartita"
+        else:
+            row["imputacion"] = "sin_avance"
+        row["nivel"] = "LOCALIDADES_PDL" if "Alcaldía Local" in str(row.get("entidad") or "") else "ENTIDADES"
+        row["nivel_agrupacion"] = row["nivel"]
 
     entities: dict[tuple[str, str], dict[str, Any]] = {}
     for plan, plan_rows in goals_by_plan.items():
@@ -1265,8 +1206,9 @@ def _ppi_official(year: int) -> tuple[float | None, str | None]:
         return nominal, "COP corrientes; Acuerdo 139/2024"
     if year in PPI_2020_2019_COP:
         constant_2019 = float(PPI_2020_2019_COP[year])
-        nominal = constant_2019 / _money_factor(year)
-        return nominal, "COP constantes de diciembre de 2019; PDD 2020–2023"
+        factor = factor_desde_diciembre_2019(year)
+        nominal = constant_2019 * float(factor) if factor is not None else None
+        return nominal, "Derivado de COP constantes diciembre 2019 con IPC DANE promedio anual"
     return None, None
 
 
@@ -1363,24 +1305,21 @@ class PddDeaService:
                     "registros_bd_csh": len(matched),
                     "entidades_cubiertas": len({r["entidad"] for r in matched}),
                     "metas_pdd_unicas": len(goals),
-                    "indicadores_unicos": len(
-                        {r["indicador"] for r in goals if r.get("indicador")}
-                    ),
+                    "indicadores_unicos": len({r["indicador"] for r in goals if r.get("indicador")}),
                     "lineas_estrategicas_unicas": len({r["linea_norm"] for r in goals}),
-                    "ppi_total_corriente_cop": self._plan_ppi_nominal(plan_code)
-                    or plan.get("ppi_total"),
+                    "ppi_total_corriente_cop": self._plan_ppi_nominal(plan_code) or plan.get("ppi_total"),
                     "ppi_total_constante_2025_cop": self._plan_ppi_constant(plan_code),
                     "ppi_estado": (
-                        "OFICIAL_EXTRAIDO"
+                        "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+                        if plan_code == "PDD_2020_2023"
+                        else "OFICIAL_EXTRAIDO"
                         if self._plan_ppi_nominal(plan_code) is not None
                         else "NO_EXTRAIDO_DE_FUENTE_DIGITAL"
                     ),
                 }
             )
         lines_2024 = self._ppi_2024_lines()
-        official_2024_constant = sum(
-            PPI_2024[y] * _money_factor(y) for y in (2024, 2025, 2026, 2027)
-        )
+        official_2024_observed_constant = sum(PPI_2024[y] * _known_money_factor(y) for y in (2024, 2025))
 
         conciliacion = []
         for year in range(2020, 2026):
@@ -1391,9 +1330,7 @@ class PddDeaService:
                 {
                     "vigencia": year,
                     "techo_ppi_oficial_cop": official,
-                    "techo_ppi_oficial_base_2025_cop": official * _money_factor(year)
-                    if official
-                    else None,
+                    "techo_ppi_oficial_base_2025_cop": official * _known_money_factor(year) if official else None,
                     "base_ppi": source,
                     "apropiacion_reconstruida_bd_cop": finance["apropiacion"],
                     "pagos_reconstruidos_bd_cop": finance["pagos"],
@@ -1429,58 +1366,77 @@ class PddDeaService:
                     "base": "COP corrientes; Acuerdo Distrital 139/2024",
                     "vigencias": {str(y): PPI_2024[y] for y in PPI_2024},
                     "total_cuatrienio_cop": sum(PPI_2024.values()),
-                    "total_cuatrienio_constante_2025_cop": official_2024_constant,
+                    "total_cuatrienio_constante_2025_cop": None,
+                    "subtotal_2024_2025_constante_2025_cop": official_2024_observed_constant,
+                    "vigencias_sin_ipc_anual": [2026, 2027],
                     "lineas_estrategicas": lines_2024,
                 },
                 "ppi_oficial_2020_2023": {
                     "base": "COP constantes de diciembre de 2019",
                     "vigencias": {str(y): PPI_2020_2019_COP[y] for y in PPI_2020_2019_COP},
-                    "total_cuatrienio_cop": PPI_2020_TOTAL_2019_COP,
-                    "total_cuatrienio_constante_2025_cop": (
-                        PPI_2020_TOTAL_2019_COP * _money_factor(2019)
+                    "total_cuatrienio_cop": None,
+                    "total_cuatrienio_constante_2025_cop": None,
+                    "total_narrativo_base_diciembre_2019_cop": PPI_2020_TOTAL_2019_COP,
+                    "total_tabla_base_diciembre_2019_cop": PPI_2020_TABLA_TOTAL_2019_COP,
+                    "suma_anual_base_diciembre_2019_cop": sum(PPI_2020_2019_COP.values()),
+                    "suma_anual_convertida_promedio_2025_cop": (
+                        sum(PPI_2020_2019_COP.values()) * float(factor_desde_diciembre_2019(2025))
                     ),
-                    "diferencia_redondeo_vs_suma_anual_cop": (
-                        PPI_2020_TOTAL_2019_COP - sum(PPI_2020_2019_COP.values())
-                    ),
+                    "estado_total": "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA",
                     "pilares": PPI_2020_PILLARS,
                 },
                 "conciliacion_anual_ppi_vs_bd": conciliacion,
                 "comparativa_pesos_constantes_base_2024": comparativa_base_2024,
                 "auditoria_huerfanos_y_trazabilidad": auditoria_huerfanos,
                 "advertencia": (
-                    "La reconstrucción de bd_csh es documental y no equivale a "
-                    "ejecución presupuestal certificada."
+                    "La reconstrucción de bd_csh es documental y no equivale a ejecución presupuestal certificada."
                 ),
             },
         )
 
     @staticmethod
     def _comparativa_pesos_constantes_base_2024() -> list[dict[str, Any]]:
-        """Deflate official plan investment totals to the requested 2024 index base."""
+        """Compara solo PPI con reparto anual o base de precios acreditada."""
         rows = []
         for plan in PLANS:
             code = str(plan["codigo_plan"])
-            if code not in IPC_INDICE_BASE_2024:
+            if not code.startswith("PDD_"):
                 continue
             nominal = PddDeaService._plan_ppi_nominal(code)
-            if nominal is None:
-                continue
-            index = IPC_INDICE_BASE_2024[code]
-            real = float(nominal) * 100.0 / index
+            if code == "PDD_2012_2015":
+                real = sum(PPI_2012[y] * float(factor_hacia_anio_base(y, 2024)) for y in PPI_2012)
+                estado = "FLUJOS_ANUALES_DEFLACTADOS"
+            elif code == "PDD_2013_2015":
+                real = sum(PPI_2013[y] * float(factor_hacia_anio_base(y, 2024)) for y in PPI_2013)
+                estado = "FLUJOS_ANUALES_DEFLACTADOS"
+            elif code == "PDD_2016_2019":
+                real = sum(PPI_2016[y] * float(factor_hacia_anio_base(y, 2024)) for y in PPI_2016)
+                estado = "FLUJOS_ANUALES_DEFLACTADOS"
+            elif code == "PDD_2020_2023":
+                real = None
+                estado = "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+            else:
+                real = None
+                estado = "2026_2027_SIN_IPC_OBSERVADO"
             previous = rows[-1]["ppi_constante_base_2024_cop"] if rows else None
             rows.append(
                 {
                     "codigo_plan": code,
                     "periodo": plan["periodo"],
-                    "indice_ipc_base_2024": index,
-                    "ppi_corriente_cop": float(nominal),
+                    "indice_ipc_base_2024": float(nominal) / real * 100 if nominal and real else None,
+                    "indice_estado": "EFECTIVO_PONDERADO_POR_PPI" if nominal and real else "NO_DISPONIBLE",
+                    "ppi_corriente_cop": float(nominal) if nominal is not None else None,
                     "ppi_constante_base_2024_cop": real,
-                    "variacion_real_vs_plan_anterior_pct": (
-                        (real / previous - 1) * 100 if previous else None
+                    "suma_anual_convertida_base_2024_cop": (
+                        sum(PPI_2020_2019_COP.values()) * float(factor_desde_diciembre_2019(2024))
+                        if code == "PDD_2020_2023"
+                        else None
                     ),
+                    "variacion_real_vs_plan_anterior_pct": ((real / previous - 1) * 100 if real and previous else None),
+                    "estado_comparabilidad": estado,
                     "nota_metodologica": (
-                        "Deflactado a base 2024=100 con índice IPC medio de período; "
-                        "serie comparativa exploratoria, sujeta a validación DANE."
+                        "IPC DANE empalmado, anexo septiembre 2026; flujos anuales a COP promedio 2024. "
+                        "Sin reparto anual o IPC observado no se publica total comparable."
                     ),
                 }
             )
@@ -1538,14 +1494,9 @@ class PddDeaService:
             norm(row.get("bpim"))
             for row in state["rows"]
             if row.get("motor") == "INVERSION_PRESUPUESTAL"
-            and (
-                (_number(row.get("apropiacion")) or 0) > 0
-                or (_number(row.get("compromisos")) or 0) > 0
-            )
+            and ((_number(row.get("apropiacion")) or 0) > 0 or (_number(row.get("compromisos")) or 0) > 0)
         }
-        pa_orphans = [
-            row for row in activities if norm(row.get("codigo_bpim")) not in activity_supported
-        ]
+        pa_orphans = [row for row in activities if norm(row.get("codigo_bpim")) not in activity_supported]
         triad_orphans = [
             row
             for row in state["rows"]
@@ -1562,9 +1513,7 @@ class PddDeaService:
             "registros_triada_sin_meta_pdd_muestra": triad_orphans[:10],
         }
 
-    async def comparativo_seguridad_humana_pdd_only(
-        self, *, incluir_detalle: bool = True
-    ) -> dict[str, Any]:
+    async def comparativo_seguridad_humana_pdd_only(self, *, incluir_detalle: bool = True) -> dict[str, Any]:
         """Read the reconstructed catalog for the PDD-only report and export."""
         summary_key = (self.bind_key, "pdd-dea", "comparativo-sh", "resumen")
         if not incluir_detalle:
@@ -1613,7 +1562,11 @@ class PddDeaService:
                 "nombre": row["nombre_oficial"],
                 "norma": row["norma_adopcion"],
                 "ppi_total_corriente_cop": float(row["ppi_total_corriente_cop"] or 0),
-                "ppi_total_constante_2025_cop": float(row["ppi_total_constante_2025_cop"] or 0),
+                "ppi_total_constante_2025_cop": (
+                    None
+                    if row["codigo_plan"] in {"PDD_2020_2023", "PDD_2024_2027"} or row["codigo_plan"].startswith("PDL_")
+                    else float(row["ppi_total_constante_2025_cop"] or 0)
+                ),
                 "ppi_anual_cop": row["ppi_anual_cop"] or {},
                 "metadata": row["metadatos"] or {},
                 "nodos": [],
@@ -1635,9 +1588,7 @@ class PddDeaService:
                 "ppi_anual_cop": row["ppi_anual_cop"] or {},
                 "fuente": row["fuente"],
                 "metadatos": metadata,
-                "grado_frontalidad_sh": metadata.get(
-                    "grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"
-                ),
+                "grado_frontalidad_sh": metadata.get("grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"),
                 "dimension_sh_primaria": metadata.get("dimension_sh_primaria"),
                 "pesos_7d": metadata.get("pesos_7d", {}),
             }
@@ -1662,9 +1613,7 @@ class PddDeaService:
                 "datos_oficiales": details,
                 "linea_base": details.get("linea_base", details.get("linea_base_indicador")),
                 "meta_cuatrienio": details.get("meta_cuatrienio", details.get("meta")),
-                "grado_frontalidad_sh": details.get(
-                    "grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"
-                ),
+                "grado_frontalidad_sh": details.get("grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"),
                 "dimension_sh_primaria": details.get("dimension_sh_primaria"),
                 "pesos_7d": details.get("pesos_7d", {}),
                 "unica": details.get("ocurrencia_canonica") is not False,
@@ -1676,17 +1625,21 @@ class PddDeaService:
                 if node["parent_id"]:
                     children_by_parent[node["parent_id"]].append(node)
 
-            def node_amount(node: dict[str, Any]) -> tuple[float, float]:
+            total_plan_constante = plan["ppi_total_constante_2025_cop"]
+
+            def node_amount(
+                node: dict[str, Any], total_constante: float | None = total_plan_constante
+            ) -> tuple[float, float]:
                 annual = node["ppi_anual_cop"] or {}
                 if not annual:
                     return 0.0, 0.0
-                in_2019_prices = (
-                    node["metadatos"].get("base_precios") == "COP constantes diciembre 2019"
-                )
+                in_2019_prices = node["metadatos"].get("base_precios") == "COP constantes diciembre 2019"
                 current = sum(float(value or 0) for value in annual.values())
+                if total_constante is None:
+                    return current, 0.0
                 constant = sum(
                     float(value or 0)
-                    * (_money_factor(2019) if in_2019_prices else _money_factor(int(year)))
+                    * (float(factor_desde_diciembre_2019(2025)) if in_2019_prices else _known_money_factor(int(year)))
                     for year, value in annual.items()
                 )
                 return current, constant
@@ -1743,13 +1696,12 @@ class PddDeaService:
                 # residual remains visible as N (unattributed), never spread
                 # across security dimensions or represented as program spend.
                 assignable = sum(value[1] for value in allocations.values())
-                official = plan["ppi_total_constante_2025_cop"]
+                official = plan["ppi_total_constante_2025_cop"] or 0.0
                 if assignable <= official or assignable <= 0:
                     break
                 scale = official / assignable
                 allocations = {
-                    node_id: (current * scale, constant * scale)
-                    for node_id, (current, constant) in allocations.items()
+                    node_id: (current * scale, constant * scale) for node_id, (current, constant) in allocations.items()
                 }
             for node in plan["nodos"]:
                 current, constant = allocations.get(node["id"], (0.0, 0.0))
@@ -1765,16 +1717,14 @@ class PddDeaService:
                         seven_d[dimension] += constant * float(weights.get(dimension, 0))
             assigned_current = sum(value[0] for value in allocations.values())
             assigned_constant = sum(value[1] for value in allocations.values())
-            residual_constant = max(0.0, plan["ppi_total_constante_2025_cop"] - assigned_constant)
+            residual_constant = max(0.0, (plan["ppi_total_constante_2025_cop"] or 0.0) - assigned_constant)
             residual_current = max(0.0, plan["ppi_total_corriente_cop"] - assigned_current)
             budget["N_NO_ASOCIADO_FUNCIONAMIENTO"] += residual_constant
             assignable = assigned_constant + residual_constant
             unique_goals = [goal for goal in plan["metas"] if goal["unica"]]
             plan["metas"] = unique_goals
             plan["metas_unicas"] = len(unique_goals)
-            plan["metas_resultado"] = sum(
-                goal["tipo_meta"] in {"RESULTADO", "BIENESTAR"} for goal in unique_goals
-            )
+            plan["metas_resultado"] = sum(goal["tipo_meta"] in {"RESULTADO", "BIENESTAR"} for goal in unique_goals)
             plan["metas_producto"] = sum(goal["tipo_meta"] == "PRODUCTO" for goal in unique_goals)
             plan["metas_objetivo_estructural"] = sum(
                 goal["tipo_meta"] == "OBJETIVO_ESTRATEGICO" for goal in unique_goals
@@ -1786,9 +1736,7 @@ class PddDeaService:
             plan["ppi_sin_desagregacion_constante_2025_cop"] = residual_constant
             plan["nodos_total"] = len(plan["nodos"])
             plan["nodos_con_padre"] = sum(bool(node["parent_id"]) for node in plan["nodos"])
-            plan["profundidad_cadena_pct"] = round(
-                100 * plan["nodos_con_padre"] / max(1, plan["nodos_total"]), 2
-            )
+            plan["profundidad_cadena_pct"] = round(100 * plan["nodos_con_padre"] / max(1, plan["nodos_total"]), 2)
             plan["metas_por_dimension"] = {
                 dimension: sum(float(goal["pesos_7d"].get(dimension, 0)) for goal in unique_goals)
                 for dimension in DIMENSIONES_SH
@@ -1802,20 +1750,28 @@ class PddDeaService:
             plan["metas_pdd"] = len(unique_goals)
             plan["total_metas"] = len(unique_goals)
             plan["metas_pdd_unicas"] = len(unique_goals)
-            plan["nodos_por_frontalidad"] = {
-                grade: grade_counts.get(grade, 0) for grade in ("A", "B", "C", "N")
-            }
+            plan["nodos_por_frontalidad"] = {grade: grade_counts.get(grade, 0) for grade in ("A", "B", "C", "N")}
             ppi_total = plan["ppi_total_constante_2025_cop"]
             plan["porcentaje_a_b_sobre_ppi"] = (
                 round(
-                    100
-                    * sum(budget[grade] for grade in ("A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO"))
-                    / ppi_total,
+                    100 * sum(budget[grade] for grade in ("A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO")) / ppi_total,
                     2,
                 )
                 if ppi_total
-                else 0.0
+                else None
             )
+            if ppi_total is None:
+                for node in plan["nodos"]:
+                    node["ppi_asignable_constante_2025_cop"] = None
+                plan["ppi_por_frontalidad_constante_2025_cop"] = dict.fromkeys(budget)
+                plan["ppi_por_7d_constante_2025_cop"] = dict.fromkeys(seven_d)
+                plan["ppi_asignable_constante_2025_cop"] = None
+                plan["ppi_sin_desagregacion_constante_2025_cop"] = None
+                plan["estado_ipc"] = (
+                    "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+                    if plan["codigo_plan"] == "PDD_2020_2023"
+                    else "SIN_IPC_ANUAL_COMPLETO_2026_2027"
+                )
         pdd = sorted(
             (plan for code, plan in plans.items() if code.startswith("PDD_")),
             key=lambda item: item["codigo_plan"],
@@ -1825,10 +1781,8 @@ class PddDeaService:
             key=lambda item: item["codigo_plan"],
         )
         payload = {
-            "alcance": (
-                "PDD-Only; planes de acción y resultados de mesas fuera del conjunto analítico"
-            ),
-            "base_constante": ("COP 2025; serie IPC DANE codificada en _money_factor"),
+            "alcance": ("PDD-Only; planes de acción y resultados de mesas fuera del conjunto analítico"),
+            "base_constante": ("COP promedio de 2025; IPC DANE empalmado, corte septiembre 2026"),
             "dimensiones": list(DIMENSIONES_SH),
             "planes_pdd": pdd,
             "anexo_pdl": pdl,
@@ -1838,10 +1792,12 @@ class PddDeaService:
                 code: {
                     "ppi_plan_corriente_cop": plan["ppi_total_corriente_cop"],
                     "ppi_nodos_constante_2025_cop": plan["ppi_asignable_constante_2025_cop"],
-                    "ppi_A_mas_B_constante_2025_cop": plan[
-                        "ppi_por_frontalidad_constante_2025_cop"
-                    ]["A_NUCLEO_FRONTAL"]
-                    + plan["ppi_por_frontalidad_constante_2025_cop"]["B_DETERMINANTE_DIRECTO"],
+                    "ppi_A_mas_B_constante_2025_cop": (
+                        plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"]
+                        + plan["ppi_por_frontalidad_constante_2025_cop"]["B_DETERMINANTE_DIRECTO"]
+                        if plan["ppi_total_constante_2025_cop"] is not None
+                        else None
+                    ),
                 }
                 for code, plan in plans.items()
             },
@@ -1866,38 +1822,29 @@ class PddDeaService:
         if plan == "PDD_2024_2027":
             return float(sum(PPI_2024.values()))
         if plan == "PDD_2020_2023":
-            return float(
-                sum(PPI_2020_2019_COP[year] / _money_factor(year) for year in PPI_2020_2019_COP)
-            )
+            return None  # Tres totales documentales discordantes; conservar las sumas solo como diagnóstico.
         return None
 
     @staticmethod
     def _plan_ppi_constant(plan: str) -> float | None:
         if plan.startswith("PDL_"):
-            nominal = {
-                "PDL_1_2024_2027": 97_691_041_529.0,
-                "PDL_2_2024_2027": 161_289_996_409.01,
-                "PDL_3_2024_2027": 46_000_000_000.0,
-            }.get(plan)
-            return nominal * _money_factor(2024) if nominal else None
+            return None  # PDL 2024–2027: falta IPC anual observado para 2026–2027.
         if plan == "PDD_2012_2015":
-            return float(sum(amount * _money_factor(year) for year, amount in PPI_2012.items()))
+            return float(sum(amount * _known_money_factor(year) for year, amount in PPI_2012.items()))
         if plan == "PDD_2016_2019":
-            return float(sum(amount * _money_factor(year) for year, amount in PPI_2016.items()))
+            return float(sum(amount * _known_money_factor(year) for year, amount in PPI_2016.items()))
         if plan == "PDD_2013_2015":
-            return 1_874_167_605_000.0 * _money_factor(2015)
+            return float(sum(amount * _known_money_factor(year) for year, amount in PPI_2013.items()))
         if plan == "PDD_2024_2027":
-            return float(sum(PPI_2024[y] * _money_factor(y) for y in PPI_2024))
+            return None  # PDD 2024–2027: el total de COP constantes no es observable todavía.
         if plan == "PDD_2020_2023":
-            return float(PPI_2020_TOTAL_2019_COP * _money_factor(2019))
+            return None  # Tres totales documentales incompatibles; no elegir uno como oficial.
         return None
 
     @staticmethod
     def _ppi_2024_lines() -> list[dict[str, Any]]:
         path = BASE_DIR / "pdd_2024_2027_bases_tecnicas.md"
-        pattern = re.compile(
-            r"^\|\s*([1-6])\.\s*LINEA ESTRATEGICA:\s*([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|"
-        )
+        pattern = re.compile(r"^\|\s*([1-6])\.\s*LINEA ESTRATEGICA:\s*([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|")
         by_name: dict[int, dict[str, Any]] = {}
         if path.exists():
             for line in path.read_text(encoding="utf-8").splitlines():
@@ -1910,9 +1857,7 @@ class PddDeaService:
                 if current is None:
                     by_name[index] = {
                         "linea": DIMENSIONES_PPI_2024[index - 1],
-                        "vigencias_cop": dict(
-                            zip(("2024", "2025", "2026", "2027"), values, strict=True)
-                        ),
+                        "vigencias_cop": dict(zip(("2024", "2025", "2026", "2027"), values, strict=True)),
                     }
                 else:
                     for year, amount in zip(("2024", "2025", "2026", "2027"), values, strict=True):
@@ -1926,22 +1871,56 @@ class PddDeaService:
             for _index, row in sorted(by_name.items())
         ]
 
-    async def cumplimiento_metas(self, plan: str | None = None) -> dict[str, Any]:
+    async def cumplimiento_metas(
+        self,
+        plan: str | None = None,
+        linea: str | None = None,
+        entidad: str | None = None,
+        imputacion: str | None = None,
+    ) -> dict[str, Any]:
         if plan == "TODOS":
             plan = None
-        key = (self.bind_key, "pdd-dea", "cumplimiento", plan or "TODOS")
+        key = (self.bind_key, "pdd-dea", "cumplimiento", plan or "TODOS", linea or "", entidad or "", imputacion or "")
         if cached := _cached(key):
             return cached
         state = await self._state()
         selected = [
-            p
-            for p in PLANS
-            if p["codigo_plan"].startswith("PDD_") and (plan is None or p["codigo_plan"] == plan)
+            p for p in PLANS if p["codigo_plan"].startswith("PDD_") and (plan is None or p["codigo_plan"] == plan)
         ]
         output = []
+        filtered_all_rows: list[dict[str, Any]] = []
         for p in selected:
             code = p["codigo_plan"]
             rows = state["goals_by_plan"].get(code, [])
+            if linea and linea.upper() not in ("TODAS", "TODOS"):
+                rows = [
+                    r
+                    for r in rows
+                    if linea.lower() in str(r.get("linea_norm") or r.get("linea_estrategica") or "").lower()
+                ]
+            if entidad and entidad.upper() not in ("TODAS", "TODOS"):
+                rows = [r for r in rows if entidad.lower() in str(r.get("entidad") or "").lower()]
+            if imputacion and imputacion.upper() not in ("TODAS", "TODOS"):
+                imp = imputacion.lower()
+                if "direct" in imp:
+                    rows = [
+                        r
+                        for r in rows
+                        if "directa" in str(r.get("imputacion") or "").lower()
+                        or r.get("avance_directo_pct") is not None
+                        or r.get("avance_norm") is not None
+                    ]
+                elif "tripart" in imp:
+                    rows = [
+                        r
+                        for r in rows
+                        if "tripartita" in str(r.get("imputacion") or "").lower()
+                        or r.get("avance_pa_pct") is not None
+                        or r.get("tiene_soporte_presupuestal")
+                    ]
+                else:
+                    rows = [r for r in rows if imp in str(r.get("imputacion") or "").lower()]
+            filtered_all_rows.extend(rows)
             summary = _advance_summary(rows)
             tripartite_values = [
                 row["avance_consolidado_tripartito_pct"]
@@ -1964,24 +1943,17 @@ class PddDeaService:
                     "nombre_plan": p["nombre_oficial"],
                     "total_registros_pdd": len(state["records_by_plan"].get(code, [])),
                     **summary,
-                    "metas_con_avance_en_pa": sum(
-                        row.get("avance_pa_pct") is not None for row in rows
-                    ),
-                    "metas_con_soporte_presupuestal": sum(
-                        row.get("tiene_soporte_presupuestal", False) for row in rows
-                    ),
+                    "metas_con_avance_en_pa": sum(row.get("avance_pa_pct") is not None for row in rows),
+                    "metas_con_soporte_presupuestal": sum(row.get("tiene_soporte_presupuestal", False) for row in rows),
                     "metas_con_avance_consolidado_tripartito": len(tripartite_values),
                     "avance_consolidado_tripartito_pct": (
                         float(np.mean(tripartite_values)) if tripartite_values else None
                     ),
                     "desglose_origen_avance": {
-                        "matriz_pdd": sum(
-                            row.get("avance_directo_pct") is not None for row in rows
-                        ),
+                        "matriz_pdd": sum(row.get("avance_directo_pct") is not None for row in rows),
                         "plan_accion": sum(row.get("avance_pa_pct") is not None for row in rows),
                         "imputadas_desde_pa": sum(
-                            row.get("avance_directo_pct") is None
-                            and row.get("avance_pa_pct") is not None
+                            row.get("avance_directo_pct") is None and row.get("avance_pa_pct") is not None
                             for row in rows
                         ),
                     },
@@ -1991,9 +1963,6 @@ class PddDeaService:
                     "localidades": _rank_entities(localities),
                 }
             )
-        all_rows = [
-            row for p in selected for row in state["goals_by_plan"].get(p["codigo_plan"], [])
-        ]
         plan_2024 = next((item for item in output if item["plan"] == "PDD_2024_2027"), {})
         localities = [
             row
@@ -2007,24 +1976,18 @@ class PddDeaService:
                 "planes": output,
                 "resumen_por_plan": output,
                 "desglose_lineas_estrategicas": [
-                    {"plan": row["plan"], **line}
-                    for row in output
-                    for line in row["lineas_estrategicas"]
+                    {"plan": row["plan"], **line} for row in output for line in row["lineas_estrategicas"]
                 ],
                 "foco_linea_seguridad_humana_2024_2027": {
                     "componentes_impulsores": list(COMPONENTES_SEGURIDAD_HUMANA),
                     "macroproyectos_estrategicos": _macroprojects(),
                     "metas_linea_seguridad_humana": next(
-                        (
-                            line
-                            for line in plan_2024.get("lineas_estrategicas", [])
-                            if line["linea"].startswith("1.")
-                        ),
+                        (line for line in plan_2024.get("lineas_estrategicas", []) if line["linea"].startswith("1.")),
                         None,
                     ),
                 },
                 "planes_desarrollo_local_2024_2027": _rank_entities(localities),
-                "cumplimiento_por_entidad": _rank_entities(all_rows),
+                "cumplimiento_por_entidad": _rank_entities(filtered_all_rows),
                 "componentes_seguridad_humana": list(COMPONENTES_SEGURIDAD_HUMANA),
                 "imputacion_tripartita": {
                     "metas_con_avance_en_pa": state["metas_con_avance_en_pa"],
@@ -2044,33 +2007,56 @@ class PddDeaService:
         )
 
     async def frontera_dea_pdd(
-        self, plan: str | None = None, insumo: str = "conciliado_ppi"
+        self,
+        plan: str | None = None,
+        insumo: str = "conciliado_ppi",
+        nivel: str | None = None,
     ) -> dict[str, Any]:
         if plan == "TODOS":
             plan = None
-        key = (self.bind_key, "pdd-dea", "frontera", plan or "TODOS", insumo)
+        key = (self.bind_key, "pdd-dea", "frontera", plan or "TODOS", insumo, nivel or "")
         if cached := _cached(key):
             return cached
         state = await self._state()
-        plans = [
-            p
-            for p in PLANS
-            if p["codigo_plan"].startswith("PDD_") and (plan is None or p["codigo_plan"] == plan)
-        ]
+        plans = [p for p in PLANS if p["codigo_plan"].startswith("PDD_") and (plan is None or p["codigo_plan"] == plan)]
         result = []
         for p in plans:
             code = p["codigo_plan"]
             rows = state["goals_by_plan"].get(code, [])
+            if nivel and nivel.upper() not in ("TODOS", "TODAS"):
+                niv_u = nivel.upper()
+                if niv_u in ("ENTIDADES", "ENTIDAD"):
+                    rows = [r for r in rows if r.get("entidad")]
+                elif niv_u in ("LOCALIDADES", "LOCALIDADES_PDL", "LOCALIDAD"):
+                    rows = [
+                        r
+                        for r in rows
+                        if "alcaldía local" in str(r.get("entidad") or "").lower()
+                        or "localidad" in str(r.get("nivel") or "").lower()
+                    ]
+                elif niv_u in ("LINEAS_ESTRATEGICAS", "LINEA", "LINEAS"):
+                    rows = [r for r in rows if r.get("linea_norm") or r.get("linea_estrategica")]
+                else:
+                    rows = [
+                        r
+                        for r in rows
+                        if nivel.lower()
+                        in str(r.get("nivel") or r.get("tipo") or r.get("nivel_agrupacion") or "").lower()
+                    ]
             by_entity: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
             for row in rows:
                 if row.get("avance_norm") is not None:
                     by_entity[str(row["entidad"])].append(row)
             entities = sorted(by_entity)
             X, Y, details = [], [], []
+            excluidas_sin_ipc = 0
             for entity in entities:
                 vals = by_entity[entity]
                 all_entity_rows = [r for r in rows if r["entidad"] == entity]
                 annual = sorted({int(r["vigencia"]) for r in all_entity_rows})
+                if any(_money_factor(year) is None for year in annual):
+                    excluidas_sin_ipc += 1
+                    continue
                 money = 0.0
                 for year in annual:
                     reported = state["financial"].get((entity, year, "apropiacion"), 0.0)
@@ -2078,19 +2064,15 @@ class PddDeaService:
                     if insumo == "conciliado_ppi":
                         total_reported = sum(
                             amount
-                            for (candidate, candidate_year, stage), amount in state[
-                                "financial"
-                            ].items()
+                            for (candidate, candidate_year, stage), amount in state["financial"].items()
                             if candidate_year == year and stage == "apropiacion"
                         )
                         official, _source = _ppi_official(year)
                         if official and total_reported > 0:
                             year_money = reported / total_reported * official
-                    money += year_money * _money_factor(year)
+                    money += year_money * _known_money_factor(year)
                 # Use formulación como proxy donde falten cortes financieros comparables.
-                input_source = (
-                    "PPI_CONCILIADO" if insumo == "conciliado_ppi" else "MATRIZ_REPORTADA"
-                )
+                input_source = "PPI_CONCILIADO" if insumo == "conciliado_ppi" else "MATRIZ_REPORTADA"
                 if money <= 0 and code == "PDD_2016_2019":
                     money = float(len(all_entity_rows)) * 1_000_000
                     input_source = "ESFUERZO_PROGRAMATICO_PROXY"
@@ -2098,9 +2080,7 @@ class PddDeaService:
                     continue
                 achieved = sum(min(100.0, r["avance_norm"]) / 100 for r in vals)
                 effective_indicators = {
-                    str(r.get("indicador") or r.get("clave_item"))
-                    for r in vals
-                    if r["avance_norm"] >= 75
+                    str(r.get("indicador") or r.get("clave_item")) for r in vals if r["avance_norm"] >= 75
                 }
                 y2 = len(effective_indicators)
                 X.append([money / 1_000_000])
@@ -2126,6 +2106,7 @@ class PddDeaService:
                         "plan": code,
                         "n": n,
                         "estado": "MUESTRA_INSUFICIENTE",
+                        "entidades_excluidas_sin_ipc_anual": excluidas_sin_ipc,
                         "cumple_regla_cooper": False,
                         "dmus": details,
                     }
@@ -2169,20 +2150,12 @@ class PddDeaService:
                 detail["theta_bcc"] = scores[i]
                 detail["theta_ccr"] = ccr_scores[i]
                 detail["theta_sbm"] = sbm_scores[i]
-                detail["escala_eficiencia_se"] = (
-                    scores[i] / ccr_scores[i] if ccr_scores[i] > 0 else None
-                )
+                detail["escala_eficiencia_se"] = scores[i] / ccr_scores[i] if ccr_scores[i] > 0 else None
                 detail["retornos_escala_rts"] = (
-                    "CRS"
-                    if abs(scores[i] - ccr_scores[i]) < 1e-6
-                    else "DRS"
-                    if scores[i] > ccr_scores[i]
-                    else "IRS"
+                    "CRS" if abs(scores[i] - ccr_scores[i]) < 1e-6 else "DRS" if scores[i] > ccr_scores[i] else "IRS"
                 )
                 detail["es_frontera"] = scores[i] >= 0.999
-                detail["pares"] = [
-                    details[j]["entidad"] for j in frontier_idx if j != i and scores[j] >= 0.999
-                ][:10]
+                detail["pares"] = [details[j]["entidad"] for j in frontier_idx if j != i and scores[j] >= 0.999][:10]
                 target_x, target_y = projections[i]
                 detail["theta_bootstrap_corregido"] = scores[i]
                 interval = bootstrap_scores.get(i, [])
@@ -2211,6 +2184,7 @@ class PddDeaService:
                     "plan": code,
                     "n": n,
                     "estado": "CALCULADO",
+                    "entidades_excluidas_sin_ipc_anual": excluidas_sin_ipc,
                     "cumple_regla_cooper": True,
                     "modelo": "BCC orientado a insumos; CCR como respaldo",
                     "eficiencia_media_bcc": float(np.mean(scores)),
@@ -2220,8 +2194,7 @@ class PddDeaService:
                     "frontera_pareto_n": len(frontier_idx),
                     "bootstrap_replicas": 200,
                     "bootstrap_intervalos": (
-                        "Percentiles 2.5 y 97.5 de remuestreo determinístico "
-                        "de referencias Pareto; B=200."
+                        "Percentiles 2.5 y 97.5 de remuestreo determinístico de referencias Pareto; B=200."
                     ),
                     "dmus": details,
                     "ranking_entidades_pdd": details,
@@ -2238,13 +2211,11 @@ class PddDeaService:
                 "planes": result,
                 "frontera_por_entidad": result,
                 "frontera_por_linea_estrategica": [
-                    {"plan": item["plan"], "lineas": item.get("frontera_por_linea_estrategica", [])}
-                    for item in result
+                    {"plan": item["plan"], "lineas": item.get("frontera_por_linea_estrategica", [])} for item in result
                 ],
                 "frontera_pdl_localidades": pdl,
                 "advertencia": (
-                    "DEA exploratorio: el gasto reconstruido y los avances "
-                    "heterogéneos no implican eficiencia causal."
+                    "DEA exploratorio: el gasto reconstruido y los avances heterogéneos no implican eficiencia causal."
                 ),
             },
         )
@@ -2263,18 +2234,12 @@ class PddDeaService:
             rows = state["goals_by_plan"].get(code, [])
             entity_rows = _rank_entities(rows)
             plan_entities[code] = entity_rows
-            advances = [
-                r["avance_promedio_pct"]
-                for r in entity_rows
-                if r["avance_promedio_pct"] is not None
-            ]
+            advances = [r["avance_promedio_pct"] for r in entity_rows if r["avance_promedio_pct"] is not None]
             spends = [
                 sum(
                     value
                     for (entity, year, stage), value in state["financial"].items()
-                    if entity == row["entidad"]
-                    and stage == "apropiacion"
-                    and _plan_for_year(year) == code
+                    if entity == row["entidad"] and stage == "apropiacion" and _plan_for_year(year) == code
                 )
                 for row in entity_rows
             ]
@@ -2291,12 +2256,8 @@ class PddDeaService:
             )
         paired = []
         for a, b in zip(plans, plans[1:], strict=False):
-            by_plan = {
-                p["plan"]: _rank_entities(state["goals_by_plan"].get(p["plan"], [])) for p in (a, b)
-            }
-            values = [
-                {r["entidad"]: r["avance_promedio_pct"] for r in by_plan[p["plan"]]} for p in (a, b)
-            ]
+            by_plan = {p["plan"]: _rank_entities(state["goals_by_plan"].get(p["plan"], [])) for p in (a, b)}
+            values = [{r["entidad"]: r["avance_promedio_pct"] for r in by_plan[p["plan"]]} for p in (a, b)]
             common = sorted(
                 entity
                 for entity in values[0].keys() & values[1].keys()
@@ -2323,18 +2284,14 @@ class PddDeaService:
             for code in ("PDD_2016_2019", "PDD_2020_2023", "PDD_2024_2027")
         ]
         shared = sorted(
-            set.intersection(*(set(values) for values in continuous_values))
-            if continuous_values
-            else set()
+            set.intersection(*(set(values) for values in continuous_values)) if continuous_values else set()
         )
         friedman = None
         if len(shared) >= 3 and all(
             all(values[entity] is not None for entity in shared) for values in continuous_values
         ):
             try:
-                test = friedmanchisquare(
-                    *[[values[entity] for entity in shared] for values in continuous_values]
-                )
+                test = friedmanchisquare(*[[values[entity] for entity in shared] for values in continuous_values])
                 friedman = {
                     "entidades_pareadas": len(shared),
                     "statistic": float(test.statistic),
@@ -2369,9 +2326,7 @@ class PddDeaService:
                 "malmquist_inter_planes": malmquist,
                 "correlaciones_fdr": _correlations(state),
                 "matriz_correlaciones_pdd": _correlations(state),
-                "advertencia": (
-                    "Asociaciones y productividad descriptivas; no identifican efectos causales."
-                ),
+                "advertencia": ("Asociaciones y productividad descriptivas; no identifican efectos causales."),
             },
         )
 
@@ -2380,9 +2335,7 @@ class PddDeaService:
         if cached := _cached(key):
             if "evaluacion_multidimensional_pdt_ai" not in cached:
                 cached = dict(cached)
-                cached[
-                    "evaluacion_multidimensional_pdt_ai"
-                ] = await _evaluacion_multidimensional_pdt_ai()
+                cached["evaluacion_multidimensional_pdt_ai"] = await _evaluacion_multidimensional_pdt_ai()
                 _store(key, cached)
             return cached
         state = await self._state()
@@ -2438,9 +2391,7 @@ class PddDeaService:
             if advance is None or advance <= 0:
                 continue
             entity = str(row["entidad"])
-            item = operational.setdefault(
-                entity, {"activities": set(), "bpim": set(), "weighted": 0.0}
-            )
+            item = operational.setdefault(entity, {"activities": set(), "bpim": set(), "weighted": 0.0})
             item["activities"].add(str(row.get("id")))
             origin = row.get("origen") or {}
             if isinstance(origin, str):
@@ -2468,8 +2419,7 @@ class PddDeaService:
                 {
                     "entidad": entity,
                     "presupuesto_cop": float(spend),
-                    "productos_operativos": operational[entity]["weighted"]
-                    + 0.5 * len(operational[entity]["bpim"]),
+                    "productos_operativos": operational[entity]["weighted"] + 0.5 * len(operational[entity]["bpim"]),
                     "actividades_pa_ejecutadas": len(operational[entity]["activities"]),
                     "proyectos_bpim_activos": len(operational[entity]["bpim"]),
                     "avance_pdd": float(np.mean(strategic[entity])),
@@ -2529,27 +2479,24 @@ class PddDeaService:
             pop = poprow["poblacion_estimada"] if poprow else None
             plan = next(p for p in PLANS if p["codigo_plan"] == plan_code)
             current = float(plan.get("ppi_total_corriente_cop") or plan.get("ppi_total") or 0)
-            constant = self._plan_ppi_constant(plan_code) or 0.0
+            constant = self._plan_ppi_constant(plan_code)
             mesa_count = mesa_counts.get(code, 0)
             territorial.append(
                 {
                     "localidad": name,
                     "codigo_territorio": code,
                     "poblacion_dane": pop,
-                    "poblacion_fuente": (poprow["metadatos"] or {}).get("poblacion_fuente")
-                    if poprow
-                    else None,
-                    "poblacion_vigencia": (poprow["metadatos"] or {}).get("poblacion_vigencia")
-                    if poprow
-                    else None,
+                    "poblacion_fuente": (poprow["metadatos"] or {}).get("poblacion_fuente") if poprow else None,
+                    "poblacion_vigencia": (poprow["metadatos"] or {}).get("poblacion_vigencia") if poprow else None,
                     "ppi_corriente_cop": current,
                     "ppi_constante_2025_cop": constant,
-                    "inversion_per_capita_cop": constant / pop if pop else None,
+                    "inversion_per_capita_cop": constant / pop if constant is not None and pop else None,
+                    "estado_financiero": (
+                        "SIN_IPC_ANUAL_COMPLETO_2026_2027" if constant is None else "TOTAL_COMPARABLE"
+                    ),
                     "mesas_ciudadanas": mesa_count,
                     "mesas_por_100k_hab": mesa_count * 100_000 / pop if pop else None,
-                    "advertencia": (
-                        "PPI aprobado/planeado, no gasto ejecutado; población de referencia 2023."
-                    ),
+                    "advertencia": ("PPI aprobado/planeado, no gasto ejecutado; población de referencia 2023."),
                 }
             )
         theft_rows = (
@@ -2568,8 +2515,7 @@ class PddDeaService:
             .all()
         )
         theft = [
-            dict(row)
-            | {"interpretacion": "Descriptivo; dos polígonos no permiten inferencia espacial."}
+            dict(row) | {"interpretacion": "Descriptivo; dos polígonos no permiten inferencia espacial."}
             for row in theft_rows
         ]
         network_by_entity = {row["entidad"]: row for row in network}
@@ -2584,9 +2530,7 @@ class PddDeaService:
             findings = [f"{no_report} metas sin avance verificado"] if no_report else []
             gap = net.get("brecha_ilusion_burocratica")
             if gap is not None and gap > 0.20:
-                findings.append(
-                    "brecha observada entre scores operativos y estratégicos mayor a 0,20"
-                )
+                findings.append("brecha observada entre scores operativos y estratégicos mayor a 0,20")
             evidence = {
                 "entidad": entity,
                 "metas": [
@@ -2600,9 +2544,7 @@ class PddDeaService:
                 "network": net,
             }
             digest = hashlib.sha256(
-                json.dumps(
-                    _json_safe(evidence), ensure_ascii=False, sort_keys=True, separators=(",", ":")
-                ).encode()
+                json.dumps(_json_safe(evidence), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
             ).hexdigest()
             briefs.append(
                 {
@@ -2614,16 +2556,13 @@ class PddDeaService:
                     else "SIN_ALERTA_OBSERVADA",
                     "metas_sin_reporte": no_report,
                     "brecha_network_dea": gap,
-                    "hallazgos_clave": findings
-                    or ["Sin hallazgo automático en las variables observadas."],
+                    "hallazgos_clave": findings or ["Sin hallazgo automático en las variables observadas."],
                     "preguntas_control_politico": [
                         "¿Qué evidencia y corte soportan el avance reportado?",
                         "¿Cómo se articula el producto operativo con la meta PDD y su indicador?",
                     ],
                     "hash_evidencia_sha256": digest,
-                    "naturaleza": (
-                        "Borrador descriptivo para revisión, no imputación ni dictamen legal."
-                    ),
+                    "naturaleza": ("Borrador descriptivo para revisión, no imputación ni dictamen legal."),
                 }
             )
         briefs.sort(
@@ -2639,9 +2578,7 @@ class PddDeaService:
                 "estado": "CALCULADO",
                 "cobertura_8_planes": {
                     "metas_totales_brutas": sum(row["total_metas"] for row in meta_audit.values()),
-                    "metas_unicas_deduplicadas": sum(
-                        row["metas_unicas"] for row in meta_audit.values()
-                    ),
+                    "metas_unicas_deduplicadas": sum(row["metas_unicas"] for row in meta_audit.values()),
                     "metas_vinculadas_alta_confianza": sum(
                         row["vinculadas_alta_confianza"] for row in meta_audit.values()
                     ),
@@ -2655,9 +2592,7 @@ class PddDeaService:
                 "auditoria_metas_8_planes": {
                     "planes": list(meta_audit.values()),
                     "total_metas": sum(row["total_metas"] for row in meta_audit.values()),
-                    "metas_unicas_deduplicadas": sum(
-                        row["metas_unicas"] for row in meta_audit.values()
-                    ),
+                    "metas_unicas_deduplicadas": sum(row["metas_unicas"] for row in meta_audit.values()),
                     "cobertura_sobre_metas_unicas_pct": round(
                         100
                         * sum(row["vinculadas_alta_confianza"] for row in meta_audit.values())
@@ -2668,22 +2603,16 @@ class PddDeaService:
                         key: row["indice_rigor_mga_por_plan"] for key, row in meta_audit.items()
                     },
                     "advertencia": (
-                        "Clasificación textual determinística inicial; requiere revisión humana, "
-                        "no certificación DNP."
+                        "Clasificación textual determinística inicial; requiere revisión humana, no certificación DNP."
                     ),
                 },
                 "network_dea_bi_etapa": {
                     "estado": "CALCULADO"
                     if any(row.get("score_global_red") is not None for row in network)
                     else "NO_ESTIMABLE",
-                    "entidades_elegibles": sum(
-                        row.get("score_global_red") is not None for row in network
-                    ),
+                    "entidades_elegibles": sum(row.get("score_global_red") is not None for row in network),
                     "dmus": network,
-                    "advertencia": (
-                        "La etapa estratégica mide avance PDD reportado, "
-                        "no impacto social ni causalidad."
-                    ),
+                    "advertencia": ("La etapa estratégica mide avance PDD reportado, no impacto social ni causalidad."),
                 },
                 "simulador_inverse_dea_pareto": scenarios,
                 "justicia_territorial_pdl": {
@@ -2710,9 +2639,7 @@ class PddDeaService:
         if cached := _cached(key):
             if "evaluacion_multidimensional_pdt_ai" not in cached:
                 cached = dict(cached)
-                cached[
-                    "evaluacion_multidimensional_pdt_ai"
-                ] = await _evaluacion_multidimensional_pdt_ai()
+                cached["evaluacion_multidimensional_pdt_ai"] = await _evaluacion_multidimensional_pdt_ai()
                 _store(key, cached)
             return cached
         catalog = await self.catalogo_y_conciliacion_ppi()
@@ -2731,9 +2658,7 @@ class PddDeaService:
                 "econometria_comparada": econometrics,
                 "explorador_programas_y_seguridad_humana": explorer,
                 "laboratorio_prescriptivo_pdd": laboratory,
-                "evaluacion_multidimensional_pdt_ai": laboratory[
-                    "evaluacion_multidimensional_pdt_ai"
-                ],
+                "evaluacion_multidimensional_pdt_ai": laboratory["evaluacion_multidimensional_pdt_ai"],
             },
         )
 
@@ -2836,9 +2761,7 @@ class PddDeaService:
             )
             merged["filas_fuente"] += 1
             for year in ("2024", "2025", "2026", "2027"):
-                merged["ppi_anual_cop"][year] += float(
-                    row.get("ppi_anual_cop", {}).get(year, 0) or 0
-                )
+                merged["ppi_anual_cop"][year] += float(row.get("ppi_anual_cop", {}).get(year, 0) or 0)
         security_programs = list(programs_by_code.values())
         link_counts: dict[str, int] = defaultdict(int)
         for meta in metas:
@@ -2853,9 +2776,7 @@ class PddDeaService:
                 "conteos": {
                     "lineas_programas": len(lines),
                     "metas_oficiales": len(metas),
-                    "metas_vinculadas_a_triada": sum(
-                        v for k, v in link_counts.items() if k != "SIN_VINCULO"
-                    ),
+                    "metas_vinculadas_a_triada": sum(v for k, v in link_counts.items() if k != "SIN_VINCULO"),
                     "emparejamiento_por_metodo": dict(link_counts),
                 },
             },
@@ -2974,11 +2895,7 @@ def _malmquist_interplan(
             mpi_values.append(mpi)
         effch_global = _geomean(effch_values) if effch_values else None
         techch_global = _geomean(techch_values) if techch_values else None
-        mpi_global = (
-            effch_global * techch_global
-            if effch_global is not None and techch_global is not None
-            else None
-        )
+        mpi_global = effch_global * techch_global if effch_global is not None and techch_global is not None else None
         return {
             "transicion": f"{plan_a}->{plan_b}",
             "dmu_pareadas": len(observations),
@@ -2987,16 +2904,13 @@ def _malmquist_interplan(
             "effch_global": effch_global,
             "techch_global": techch_global,
             "metodo": (
-                "Malmquist output-oriented CRS exacto: distancias direccionales "
-                "con LP HiGHS; MPI = EFFCH × TECHCH."
+                "Malmquist output-oriented CRS exacto: distancias direccionales con LP HiGHS; MPI = EFFCH × TECHCH."
             ),
         }
     left = {r["entidad"]: r["avance_promedio_pct"] for r in entities_a}
     right = {r["entidad"]: r["avance_promedio_pct"] for r in entities_b}
     common = sorted(
-        entity
-        for entity in left.keys() & right.keys()
-        if left[entity] is not None and right[entity] is not None
+        entity for entity in left.keys() & right.keys() if left[entity] is not None and right[entity] is not None
     )
     changes = [max(float(right[e]), 0.01) / max(float(left[e]), 0.01) for e in common]
     productivity = _geomean(changes) if changes else None
@@ -3081,86 +2995,52 @@ def _pdl_locality_frontier(state: dict[str, Any]) -> dict[str, Any]:
         "Alcaldía Local Industrial y de la Bahía": 46_000_000_000.0,
     }
     rows = state["goals_by_plan"].get("PDD_2024_2027", [])
-    by_locality = {
-        name: [row for row in rows if name.casefold() in str(row["entidad"]).casefold()]
-        for name in totals
-    }
+    by_locality = {name: [row for row in rows if name.casefold() in str(row["entidad"]).casefold()] for name in totals}
     valid = [
-        (name, by_locality[name])
-        for name in totals
-        if any(r.get("avance_norm") is not None for r in by_locality[name])
+        (name, by_locality[name]) for name in totals if any(r.get("avance_norm") is not None for r in by_locality[name])
     ]
     details = [
         {
             "localidad": name,
             "ppi_oficial_cop": totals[name],
             "metas_evaluables": sum(row.get("avance_norm") is not None for row in group),
-            "avance_promedio_pct": float(
-                np.mean([r["avance_norm"] for r in group if r.get("avance_norm") is not None])
-            )
+            "avance_promedio_pct": float(np.mean([r["avance_norm"] for r in group if r.get("avance_norm") is not None]))
             if any(r.get("avance_norm") is not None for r in group)
             else None,
-            "estado": "CALCULADO"
-            if any(r.get("avance_norm") is not None for r in group)
-            else "SIN_DATOS_EN_BD_CSH",
+            "estado": "CALCULADO" if any(r.get("avance_norm") is not None for r in group) else "SIN_DATOS_EN_BD_CSH",
         }
         for name, group in by_locality.items()
     ]
-    if len(valid) >= 3:
-        X = np.asarray([[totals[name]] for name, _ in valid])
-        Y = np.asarray(
-            [
-                [
-                    max(
-                        sum(
-                            min(r["avance_norm"], 100) / 100
-                            for r in group
-                            if r.get("avance_norm") is not None
-                        ),
-                        0.0001,
-                    ),
-                    max(
-                        float(
-                            sum(
-                                r.get("avance_norm") is not None and r["avance_norm"] >= 75
-                                for r in group
-                            )
-                        ),
-                        0.0001,
-                    ),
-                ]
-                for _name, group in valid
-            ]
-        )
-        scores = [_lp(X, Y, X[i], Y[i], vrs=True).get("eficiencia") for i in range(len(valid))]
-        for detail, score in zip(details, scores, strict=True):
-            detail["theta_bcc"] = score
     return {
         "nivel": "PDL_LOCALIDADES",
         "n": len(valid),
         "dmus": details,
-        "modelo": (
-            "BCC orientado a insumos; PPI oficial como insumo; avances registrados como outputs."
+        "estado_dea": "NO_ESTIMABLE_PPI_2026_2027_SIN_IPC_OBSERVADO",
+        "modelo": None,
+        "advertencia": (
+            "El PPI de 2024–2027 es una asignación plurianual; no se usa como gasto real comparable "
+            "ni se calcula DEA hasta disponer de ejecución anual e IPC observado."
         ),
-        "advertencia": "La frontera requiere avance registrado para las tres localidades.",
     }
 
 
-def _line_frontier(
-    rows: list[dict[str, Any]], state: dict[str, Any], insumo: str
-) -> list[dict[str, Any]]:
+def _line_frontier(rows: list[dict[str, Any]], state: dict[str, Any], insumo: str) -> list[dict[str, Any]]:
     groups = _group_rows(rows, "linea_norm")
     output: list[dict[str, Any]] = []
     for line, items in groups.items():
         values = [r["avance_norm"] for r in items if r.get("avance_norm") is not None]
         entities = {r["entidad"] for r in items}
         years = {int(r["vigencia"]) for r in items}
-        spend = sum(
-            state["financial"].get(
-                (e, y, "apropiacion" if insumo == "conciliado_ppi" else "pagos"), 0
+        sin_ipc = any(_money_factor(year) is None for year in years)
+        spend = (
+            None
+            if sin_ipc
+            else sum(
+                state["financial"].get((e, y, "apropiacion" if insumo == "conciliado_ppi" else "pagos"), 0)
+                * _known_money_factor(y)
+                for e in entities
+                for y in years
             )
-            for e in entities
-            for y in years
         )
         effective = {
             str(row.get("indicador") or row.get("clave_item"))
@@ -3171,14 +3051,19 @@ def _line_frontier(
             {
                 "linea": line,
                 "insumo_cop": spend,
+                "insumo_unidad": "COP promedio anual de 2025" if spend is not None else None,
                 "avance_promedio_pct": float(np.mean(values)) if values else None,
                 "metas_evaluables": len(values),
                 "y1_metas_pdd_cumplidas_eq": sum(min(v, 100) / 100 for v in values),
                 "y2_indicadores_eficaces_ge75": len(effective),
-                "estado": "CALCULADO" if spend > 0 and values else "SIN_INSUMO_O_AVANCE",
+                "estado": (
+                    "SIN_IPC_ANUAL_COMPLETO" if sin_ipc else "CALCULADO" if spend and values else "SIN_INSUMO_O_AVANCE"
+                ),
             }
         )
-    eligible = [row for row in output if row["insumo_cop"] > 0 and row["metas_evaluables"]]
+    eligible = [
+        row for row in output if row["insumo_cop"] is not None and row["insumo_cop"] > 0 and row["metas_evaluables"]
+    ]
     if len(eligible) >= 3:
         X = np.asarray([[row["insumo_cop"]] for row in eligible], dtype=float)
         Y = np.asarray(
@@ -3193,18 +3078,12 @@ def _line_frontier(
         )
         for i, row in enumerate(eligible):
             estimate = _lp(X, Y, X[i], Y[i], vrs=True)
-            row["theta_bcc"] = (
-                estimate.get("eficiencia") if estimate.get("estado") == "CALCULADO" else None
-            )
+            row["theta_bcc"] = estimate.get("eficiencia") if estimate.get("estado") == "CALCULADO" else None
     return output
 
 
 def _correlations(state: dict[str, Any]) -> list[dict[str, Any]]:
-    rows = [
-        r
-        for r in state["goals_by_plan"].get("PDD_2020_2023", [])
-        if r.get("avance_norm") is not None
-    ]
+    rows = [r for r in state["goals_by_plan"].get("PDD_2020_2023", []) if r.get("avance_norm") is not None]
     finance = state["financial"]
     spend = [finance.get((r["entidad"], int(r["vigencia"]), "apropiacion"), 0.0) for r in rows]
     advance = [r["avance_norm"] for r in rows]

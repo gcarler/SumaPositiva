@@ -4,7 +4,11 @@ Tarea: [CANAL-WHATSAPP-01]
 Plan Maestro: Fase 2 - Ingesta de Datos Vivos y Feedback Loop
 """
 
+import hashlib
+import hmac
+import json
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import text
@@ -12,8 +16,19 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.canales.service import CanalWhatsAppService
 
 pytestmark = pytest.mark.anyio
+
+
+def configuracion_whatsapp():
+    return Settings(
+        _env_file=None,
+        environment="test",
+        whatsapp_habilitado=True,
+        whatsapp_verify_token="token-local-pruebas",
+        whatsapp_app_secret="secreto-local-pruebas",
+    )
 
 
 @pytest.fixture
@@ -27,14 +42,14 @@ async def session(database_url: str):
 
 def test_handshake_verificacion_webhook_meta_exitoso():
     """Valida que el endpoint GET /webhook responda con el challenge ante token correcto."""
-    app = create_app(Settings(_env_file=None, environment="test"))
+    app = create_app(configuracion_whatsapp())
     with TestClient(app) as cliente:
         respuesta = cliente.get(
             "/api/v1/canales/whatsapp/webhook",
             params={
                 "hub.mode": "subscribe",
                 "hub.challenge": "1158201444",
-                "hub.verify_token": "polis_cartagena_2026",
+                "hub.verify_token": "token-local-pruebas",
             },
         )
         assert respuesta.status_code == 200
@@ -43,7 +58,7 @@ def test_handshake_verificacion_webhook_meta_exitoso():
 
 def test_handshake_verificacion_webhook_meta_token_invalido():
     """Valida que el endpoint GET /webhook rechace con 403 un token ilegítimo."""
-    app = create_app(Settings(_env_file=None, environment="test"))
+    app = create_app(configuracion_whatsapp())
     with TestClient(app) as cliente:
         respuesta = cliente.get(
             "/api/v1/canales/whatsapp/webhook",
@@ -59,7 +74,7 @@ def test_handshake_verificacion_webhook_meta_token_invalido():
 
 async def test_simular_ingesta_whatsapp_con_extraccion_barrio_y_radicacion(session):
     """Valida la recepción de un mensaje comunitario, detección de barrio y radicación oficial."""
-    app = create_app(Settings(_env_file=None, environment="test"))
+    app = create_app(configuracion_whatsapp())
     with TestClient(app) as cliente:
         payload = {
             "telefono_remitente": "+573001234567",
@@ -121,7 +136,7 @@ async def test_simular_ingesta_whatsapp_con_extraccion_barrio_y_radicacion(sessi
 
 async def test_webhook_meta_cloud_api_payload_completo(session):
     """Valida la ingesta a través de la estructura oficial de eventos de Meta Cloud API."""
-    app = create_app(Settings(_env_file=None, environment="test"))
+    app = create_app(configuracion_whatsapp())
     with TestClient(app) as cliente:
         meta_payload = {
             "object": "whatsapp_business_account",
@@ -151,8 +166,9 @@ async def test_webhook_meta_cloud_api_payload_completo(session):
                                         "type": "text",
                                         "text": {
                                             "body": (
-                                                "Reporte ciudadano desde El Pozón: solicitamos que se incluya "
-                                                "en el plan distrital la limpieza del caño y dragado antes de las lluvias."
+                                                "Reporte ciudadano desde El Pozón: solicitamos que se "
+                                                "incluya en el plan distrital la limpieza del caño "
+                                                "y dragado antes de las lluvias."
                                             )
                                         },
                                     }
@@ -164,18 +180,36 @@ async def test_webhook_meta_cloud_api_payload_completo(session):
             ],
         }
 
-        respuesta = cliente.post("/api/v1/canales/whatsapp/webhook", json=meta_payload)
+        mensaje = meta_payload["entry"][0]["changes"][0]["value"]["messages"][0]
+        mensaje["id"] = "wamid.prueba-" + uuid.uuid4().hex
+        cuerpo = json.dumps(meta_payload).encode()
+        firma = (
+            "sha256=" + hmac.new(app.state.settings.whatsapp_app_secret.encode(), cuerpo, hashlib.sha256).hexdigest()
+        )
+        respuesta = cliente.post(
+            "/api/v1/canales/whatsapp/webhook",
+            content=cuerpo,
+            headers={
+                "Content-Type": "application/json",
+                "X-Hub-Signature-256": firma,
+            },
+        )
         assert respuesta.status_code == 200
         data = respuesta.json()
         assert data["status"] == "received"
-        assert data["mensajes_procesados"] == 1
-        assert len(data["radicados"]) == 1
-        assert data["radicados"][0].startswith("POL-2026-")
+        assert data["mensajes_recibidos"] == data["mensajes_nuevos"] == 1
+        assert "radicados" not in data
+        recepcion_id = await session.scalar(
+            text("SELECT id FROM participacion_ciudadana.whatsapp_inbox WHERE mensaje_externo_id=:id"),
+            {"id": mensaje["id"]},
+        )
+        resultado = await CanalWhatsAppService(session).procesar_inbox_uno(recepcion_id=recepcion_id)
+        assert resultado.estado == "procesado" and resultado.codigo_radicado.startswith("POL-2026-")
 
 
 async def test_inferencia_tematica_linea_estrategica_ambiental(session):
     """Valida que una propuesta sobre la Ciénaga de la Virgen se asigne a LE-03."""
-    app = create_app(Settings(_env_file=None, environment="test"))
+    app = create_app(configuracion_whatsapp())
     with TestClient(app) as cliente:
         payload = {
             "telefono_remitente": "+573007654321",

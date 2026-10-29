@@ -102,14 +102,9 @@ def main() -> int:
 
     temporary = MARKDOWN.with_suffix(".md.tmp")
     with temporary.open("w", encoding="utf-8") as stream:
-        stream.write(
-            "# PDD 2016–2019: Acuerdo 006 de 2016 — OCR integral de 363 páginas\n"
-        )
+        stream.write("# PDD 2016–2019: Acuerdo 006 de 2016 — OCR integral de 363 páginas\n")
         for number in range(1, total_pages + 1):
-            stream.write(
-                f"\n\n## Página {number} (OCR oficial Acuerdo 006 de 2016)\n\n"
-                f"{pages[number]}\n"
-            )
+            stream.write(f"\n\n## Página {number} (OCR oficial Acuerdo 006 de 2016)\n\n{pages[number]}\n")
     os.replace(temporary, MARKDOWN)
     actual = _page_chunks(MARKDOWN.read_text(encoding="utf-8"))
     if len(actual) != total_pages:

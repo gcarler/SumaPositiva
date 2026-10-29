@@ -45,9 +45,7 @@ class TestimonioComunitario(Base):
     relato: Mapped[str] = mapped_column(Text, nullable=False)
     url_foto: Mapped[str | None] = mapped_column(String(500), nullable=True)
     url_audio_video: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    metadatos_enfoque: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, default=dict, server_default="{}"
-    )
+    metadatos_enfoque: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
     estado: Mapped[str] = mapped_column(String(30), default="PENDIENTE", nullable=False)
     motivo_moderacion: Mapped[str | None] = mapped_column(Text, nullable=True)
     moderado_por_id: Mapped[uuid.UUID | None] = mapped_column(

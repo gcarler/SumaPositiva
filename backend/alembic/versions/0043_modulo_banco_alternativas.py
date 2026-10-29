@@ -10,15 +10,16 @@ Create Date: 2026-10-04 13:30:00.000000
 """
 
 import json
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 from sqlalchemy import text
 
+from alembic import op
+
 revision: str = "0043_modulo_banco_alternativas"
-down_revision: Union[str, Sequence[str], None] = "0042_modulo_fuentes_informacion"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0042_modulo_fuentes_informacion"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 ALTERNATIVAS_CANONICAS = [
     {

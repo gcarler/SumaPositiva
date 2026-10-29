@@ -1,0 +1,47 @@
+{
+  "esquema": "polis.ollamacodex comparacion_ppi_r2.v1",
+  "tarea": "OL-CODEX-03-R2",
+  "fecha": "2026-10-23",
+  "estado": "PENDIENTE_REVIEW_FUNCIONAL",
+  "archivos_tocados": [
+    "backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py",
+    "backend/scripts/comparar_ppi_catalogo_polis.py",
+    "backend/tests/test_comparacion_ppi_catalogo_polis.py"
+  ],
+  "informe": "39_entrega_ollamacodex_comparacion_ppi_r2.md",
+  "validacion": {
+    "ruff_check": "exit 0",
+    "ruff_format_check": "exit 0",
+    "pytest_directo": "21 passed in 0.97s",
+    "base_prueba": "polis_test_orq_v5_20261022",
+    "suite_integral": "no_ejecutada"
+  },
+  "garantias": {
+    "criterios_r2": [
+      "ID solo en PPI y otro solo en catalogo",
+      "Cambios reales de plan, padre y nivel",
+      " tipos anidados y booleanso",
+      " JSONB decimal exacto y float legacy",
+      " JSON null y SQL null",
+      " >50 hallazgos",
+      " Orden real con referencias distintas y salida estable",
+      " CLI con argumentos y salida verificada"
+    ],
+    "conteos_jsonb": "campos y nodos separados",
+    "guardas": "archivo alterado y symlink no sobrescriben",
+    "cli": "main() == 0 con bytes y referencias"
+  },
+  "sha256": {
+    "backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py": "b866907c5139478f38427fa1932127d2e6502dcd7fd8dbadee6a51de5c00aa3a",
+    "backend/scripts/comparar_ppi_catalogo_polis.py": "3c763df7c0666cb9250a9130e2708e2bda5ca261a10bd0f1a184b42db5ff237b",
+    "backend/tests/test_comparacion_ppi_catalogo_polis.py": "3ee2aa50b67a5dad38e563ffe9c9ea320a05bd1337bc2a61b9982a01b7dcae63"
+  },
+  "fuera_alcance": {
+    "produccion": "no_usada",
+    "commit": "no_ejecutado",
+    "push": "no_ejecutado",
+    "data": "no_tocada",
+    "frontend": "no_tocado",
+    "consumidores": "no_tocados"
+  }
+}

@@ -5,8 +5,9 @@ Revises: 0036_restituir_mediciones
 Create Date: 2026-10-04 01:10:00.000000
 """
 
-from alembic import op
 from sqlalchemy import text
+
+from alembic import op
 
 revision = "0037_restituir_compromisos_pas"
 down_revision = "0036_restituir_mediciones"

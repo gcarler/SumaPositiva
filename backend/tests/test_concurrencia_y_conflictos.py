@@ -127,9 +127,7 @@ async def test_concurrencia_simultanea_multisesion(async_client: AsyncClient):
     status_codes = [r.status_code for r in respuestas]
 
     # Exactamente UNA petición debe ganar (200 OK) y las 4 restantes deben fallar con 409 Conflict
-    assert status_codes.count(200) == 1, (
-        f"Se esperaba exactamente un 200, se obtuvo: {status_codes}"
-    )
+    assert status_codes.count(200) == 1, f"Se esperaba exactamente un 200, se obtuvo: {status_codes}"
     assert status_codes.count(409) == 4, f"Se esperaban 4 conflictos 409, se obtuvo: {status_codes}"
 
     # Verificar que en base de datos la versión subió a version_base + 1

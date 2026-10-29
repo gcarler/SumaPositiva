@@ -1,9 +1,7 @@
 """Pruebas de integración del flujo de autenticación sin fricción con Magic Link (AUTH-OAUTH-MAGIC-01)."""
 
 import asyncio
-import hashlib
 import uuid
-from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi import HTTPException
@@ -14,7 +12,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.core.config import Settings
 from app.main import create_app
 from app.modules.identidad.correo import obtener_correo_identidad, procesar_cola_correo
-from app.modules.identidad.models import TokenAccion
 
 
 class CorreoControlado:
@@ -106,9 +103,7 @@ def test_magic_link_usuario_existente(contexto):
     usuario, _, datos = registrar()
 
     # 1. Solicitar Magic Link
-    solicitud = client.post(
-        "/api/v1/identidad/magic-link/solicitar", json={"correo": datos["correo"]}
-    )
+    solicitud = client.post("/api/v1/identidad/magic-link/solicitar", json={"correo": datos["correo"]})
     assert solicitud.status_code == 200
     assert "enlace de acceso" in solicitud.json()["mensaje"]
 
@@ -141,9 +136,7 @@ def test_magic_link_auto_registro_ciudadano(contexto):
     correo_nuevo = f"ciudadano.nuevo.{uuid.uuid4().hex[:8]}@cartagena.gov.co"
 
     # 1. Solicitar Magic Link para un correo no registrado previamente
-    solicitud = client.post(
-        "/api/v1/identidad/magic-link/solicitar", json={"correo": correo_nuevo}
-    )
+    solicitud = client.post("/api/v1/identidad/magic-link/solicitar", json={"correo": correo_nuevo})
     assert solicitud.status_code == 200
 
     # 2. Despachar cola y obtener token

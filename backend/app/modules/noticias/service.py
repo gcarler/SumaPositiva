@@ -20,10 +20,7 @@ class NoticiasService:
 
     async def listar(self, *, publicadas: bool) -> list[NoticiaLectura]:
         async with transaction(self.session):
-            return [
-                NoticiaLectura.model_validate(n)
-                for n in await self.repository.listar(publicadas=publicadas)
-            ]
+            return [NoticiaLectura.model_validate(n) for n in await self.repository.listar(publicadas=publicadas)]
 
     async def obtener_publicada(self, slug: str) -> NoticiaLectura:
         async with transaction(self.session):
@@ -46,9 +43,7 @@ class NoticiasService:
             try:
                 await self.repository.guardar(noticia)
             except IntegrityError as exc:
-                raise HTTPException(
-                    status_code=409, detail="Ya existe una noticia con ese slug"
-                ) from exc
+                raise HTTPException(status_code=409, detail="Ya existe una noticia con ese slug") from exc
             return NoticiaLectura.model_validate(noticia)
 
     async def actualizar(self, id: uuid.UUID, datos: NoticiaEntrada) -> NoticiaLectura:
@@ -64,9 +59,7 @@ class NoticiasService:
             try:
                 await self.repository.guardar(noticia)
             except IntegrityError as exc:
-                raise HTTPException(
-                    status_code=409, detail="Ya existe una noticia con ese slug"
-                ) from exc
+                raise HTTPException(status_code=409, detail="Ya existe una noticia con ese slug") from exc
             return NoticiaLectura.model_validate(noticia)
 
     async def eliminar(self, id: uuid.UUID) -> None:

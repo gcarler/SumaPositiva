@@ -87,9 +87,7 @@ async def serializar_arbol(instrumento_id: uuid.UUID, service: InstrumentoServic
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(requerir_permiso("instrumentos:gestionar", nivel_minimo="declarada"))],
 )
-async def agregar_nodo(
-    instrumento_id: uuid.UUID, datos: NodoInstrumentoCrear, service: InstrumentoServiceDep
-):
+async def agregar_nodo(instrumento_id: uuid.UUID, datos: NodoInstrumentoCrear, service: InstrumentoServiceDep):
     return await service.agregar_nodo(instrumento_id, datos)
 
 
@@ -117,9 +115,7 @@ async def actualizar_nodo(
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(requerir_permiso("instrumentos:gestionar", nivel_minimo="declarada"))],
 )
-async def eliminar_nodo(
-    instrumento_id: uuid.UUID, nodo_id: uuid.UUID, service: InstrumentoServiceDep
-):
+async def eliminar_nodo(instrumento_id: uuid.UUID, nodo_id: uuid.UUID, service: InstrumentoServiceDep):
     await service.eliminar_nodo(instrumento_id, nodo_id)
 
 

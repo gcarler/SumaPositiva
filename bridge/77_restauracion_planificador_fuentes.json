@@ -1,0 +1,12 @@
+{
+  "fecha": "2026-10-24",
+  "accion": "restauracion_exacta_fuente_ausente",
+  "ruta": "backend/app/modules/compromisos/planificador_fuentes_politica.py",
+  "origen": ".archify/workflow-politicas-publicas-20261024-010417/evidencia/backend/app/modules/compromisos/planificador_fuentes_politica.py",
+  "sha256": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+  "coincide_entrega_52": true,
+  "objeto_compilado_igual_a_pyc_conservado": true,
+  "no_sobrescritura": true,
+  "validacion": "Hash y comparación estática del objeto compilado; sin ejecución del planificador, pruebas o cambios de lógica.",
+  "limite": "Restaurar fuente no conecta catálogo65 ni corrige otras brechas de integración."
+}

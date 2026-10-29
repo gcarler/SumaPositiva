@@ -39,9 +39,7 @@ def test_buscar_por_coordenada_rendimiento_y_resultados(sync_client):
     sync_client.get(f"/api/v1/geodatos/territorios/buscar-por-coordenada?lon={lon}&lat={lat}")
 
     start = time.perf_counter()
-    resp = sync_client.get(
-        f"/api/v1/geodatos/territorios/buscar-por-coordenada?lon={lon}&lat={lat}"
-    )
+    resp = sync_client.get(f"/api/v1/geodatos/territorios/buscar-por-coordenada?lon={lon}&lat={lat}")
     end = time.perf_counter()
     latency_ms = (end - start) * 1000
 

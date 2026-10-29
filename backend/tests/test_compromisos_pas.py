@@ -3,7 +3,6 @@ import uuid
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.core.config import Settings
@@ -42,9 +41,7 @@ def cabeceras_auditor(prepared_test_database):
                     cuenta.rol_id, cuenta.rol = rol.id, rol
                     await repo.guardar()
                 return (
-                    await service.autenticar_usuario(
-                        LoginPeticion(correo=correo, contrasena="PruebaAuditor2026*")
-                    )
+                    await service.autenticar_usuario(LoginPeticion(correo=correo, contrasena="PruebaAuditor2026*"))
                 ).token_acceso
         finally:
             await engine.dispose()

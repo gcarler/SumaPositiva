@@ -10,18 +10,29 @@ import type {
 import {
   identidadApi,
   type Login,
+  type MfaEstado,
   type Usuario,
 } from "@/features/sesion/services/identidad-api";
+
+/* Estado MFA con tres casos (220): el estado real del servidor, sin estado
+ * (sin restricción derivada) y lectura no disponible (la consulta de
+ * /mfa/estado falló: el acceso no puede elevarse por rol nominal). */
+export type EstadoMfaAcceso = MfaEstado | null | "nodisponible";
 
 interface SesionState {
   sesion: Sesion | null;
   cargando: boolean;
   errorSesion: string | null;
+  /* Estado MFA real de la sesión (recordatorio 186): derivado de
+   * GET /identidad/mfa/estado en la sincronización, no de la bandera de login.
+   * No se persiste: se recalcula en cada restauración. */
+  estadoMfa: EstadoMfaAcceso;
   elegirAnonimo: () => void;
   elegirIdentidad: (identidad: IdentidadCiudadano) => void;
   setSesionAnonima: (token: string, sesionId: string, expiraEn: string) => void;
   iniciarSesion: (datos: Login) => void;
   actualizarPerfil: (usuario: Usuario) => void;
+  definirEstadoMfa: (estado: EstadoMfaAcceso) => void;
   limpiarSesion: () => void;
   cerrarSesion: () => Promise<void>;
 }
@@ -38,12 +49,31 @@ export function nombreParaPublicar(sesion: Sesion | null): string {
     : ANONIMO_LABEL;
 }
 
+/* Restricción derivada del estado MFA (recordatorio 186 y hallazgo 2 de
+ * EAF-ID-06/YYY): sesión limitada al enrolamiento, sesión activa sin
+ * acreditar, o lectura del estado no disponible con rol nominal que
+ * daría acceso; en ese último caso la sesión debe seguir restringida
+ * hasta confirmar el estado (188 no transforma desconocido en acceso). */
+export function sesionLimitadaPorMfa(
+  sesion: Sesion | null,
+  estado: EstadoMfaAcceso,
+): boolean {
+  if (!sesion?.usuarioId) return false;
+  if (estado === "nodisponible") return (sesion.permisos ?? []).length === 0;
+  if (!estado) return false;
+  return (
+    (estado.exigido_por_rol && !estado.activo) ||
+    (estado.activo && !estado.sesion_verificada)
+  );
+}
+
 export const useSesionStore = create<SesionState>()(
   persist(
     (set, get) => ({
       sesion: null,
       cargando: true,
       errorSesion: null,
+      estadoMfa: null,
       elegirAnonimo: () => {
         setBearerToken(null);
         set({ sesion: { modo: "anonimo", desde: new Date().toISOString() } });
@@ -73,6 +103,7 @@ export const useSesionStore = create<SesionState>()(
         set({
           cargando: false,
           errorSesion: null,
+          estadoMfa: null,
           sesion: {
             modo: datos.rol === "ciudadano" ? "identidad" : "institucional",
             identidad: {
@@ -104,9 +135,15 @@ export const useSesionStore = create<SesionState>()(
               }
             : null,
         })),
+      definirEstadoMfa: (estado) => set({ estadoMfa: estado }),
       limpiarSesion: () => {
         setBearerToken(null);
-        set({ sesion: null, cargando: false, errorSesion: null });
+        set({
+          sesion: null,
+          cargando: false,
+          errorSesion: null,
+          estadoMfa: null,
+        });
       },
       cerrarSesion: async () => {
         if (get().sesion?.usuarioId) {

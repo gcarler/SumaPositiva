@@ -24,9 +24,7 @@ class PresupuestoService:
     async def obtener_fuente(self, id: uuid.UUID) -> FuenteFinanciacion | None:
         return await self.repository.obtener_fuente(id)
 
-    async def crear_asignacion(
-        self, datos: AsignacionPresupuestalCrear
-    ) -> AsignacionPresupuestalRespuesta:
+    async def crear_asignacion(self, datos: AsignacionPresupuestalCrear) -> AsignacionPresupuestalRespuesta:
         async with transaction(self.repository.session):
             fuente = await self.repository.obtener_fuente(datos.fuente_financiacion_id)
             if not fuente:
@@ -38,18 +36,13 @@ class PresupuestoService:
                 if not datos.es_vigencia_futura:
                     raise HTTPException(
                         status.HTTP_400_BAD_REQUEST,
-                        detail=(
-                            "El año de vigencia es futuro pero no se marcó como vigencia futura."
-                        ),
+                        detail=("El año de vigencia es futuro pero no se marcó como vigencia futura."),
                     )
                 # Limite máximo de vigencias futuras excepcionales (ej: 10 años)
                 if datos.anio_vigencia > anio_actual + 10:
                     raise HTTPException(
                         status.HTTP_400_BAD_REQUEST,
-                        detail=(
-                            "Vigencias futuras excepcionales (Ley 1483/11) exceden límite máx"
-                            "imo de 10 años."
-                        ),
+                        detail=("Vigencias futuras excepcionales (Ley 1483/11) exceden límite máximo de 10 años."),
                     )
 
             asignacion = AsignacionPresupuestal(

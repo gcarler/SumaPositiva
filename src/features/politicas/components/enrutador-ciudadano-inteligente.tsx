@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
 import {
   Search,
@@ -20,6 +20,7 @@ import {Input} from "@/shared/ui/input";
 import {Badge} from "@/shared/ui/badge";
 import {usePanels} from "@/core/panels/panel-store";
 import {
+  DEPENDENCIAS_CARTAGENA_2026,
   enrutarCasoCiudadano,
   type EnrutamientoCiudadanoResultado
 } from "../data/entidades-cartagena.data";
@@ -61,6 +62,24 @@ export function EnrutadorCiudadanoInteligente() {
     setResultado(res);
     setConsultado(true);
   };
+
+  const territorioActivo: { id: string; label: string } | null =
+    TERRITORIOS_OPCIONES.find((t) => t.id === territorioSeleccionado) ?? null;
+
+  /* TCA-03: contenido asociado real a la selección territorial — las
+     dependencias del catálogo oficial cuya acción prioritaria incluye este
+     territorio. Se calcula del catálogo auditado; no se inventan datos. */
+  const dependenciasTerritorio = useMemo(() => {
+    if (territorioSeleccionado === "todos") {
+      return DEPENDENCIAS_CARTAGENA_2026.map((dep) => ({ dep, prioridad: false }));
+    }
+    return DEPENDENCIAS_CARTAGENA_2026.map((dep) => ({
+      dep,
+      prioridad: (dep.territoriosPrioritarios ?? []).includes(territorioSeleccionado),
+    }));
+  }, [territorioSeleccionado]);
+
+  const conPrioridad = dependenciasTerritorio.filter((d) => d.prioridad);
 
   const handleLimpiar = () => {
     setConsulta("");
@@ -117,6 +136,11 @@ export function EnrutadorCiudadanoInteligente() {
           <MapPin className="size-3.5 text-[var(--ember)]" />
           Territorio:
         </span>
+        <div
+          className="flex flex-wrap items-center gap-2"
+          role="group"
+          aria-label="Selección territorial del enrutador"
+        >
         {TERRITORIOS_OPCIONES.map((terr) => {
           const activo = territorioSeleccionado === terr.id;
           return (
@@ -125,6 +149,7 @@ export function EnrutadorCiudadanoInteligente() {
               variant="unstyled"
               size="unstyled"
               type="button"
+              aria-pressed={activo}
               onClick={() => {
                 setTerritorioSeleccionado(terr.id);
                 if (consulta.trim()) {
@@ -141,7 +166,78 @@ export function EnrutadorCiudadanoInteligente() {
             </Button>
           );
         })}
+        </div>
       </div>
+
+      {/* Confirmación visible de la selección territorial (TCA-03): el clic
+          siempre produce una respuesta observables aunque la consulta esté
+          vacía; la sección adicional presenta el contenido asociado real del
+          catálogo auditado, sin inventar datos. */}
+      <p aria-live="polite" className="mt-2 text-xs text-[var(--text-secondary)]">
+        {territorioActivo ? (
+          <>
+            <span className="font-semibold text-[var(--text-primary)]">
+              {territorioActivo.label}
+            </span>{" "}
+            seleccionado: abajo se listan las dependencias con acción prioritaria
+            en este territorio. Describe la situación de tu barrio para
+            identificar a la responsable legal.
+          </>
+        ) : (
+          <>
+            <span className="font-semibold text-[var(--text-primary)]">
+              Todos los territorios
+            </span>{" "}
+            seleccionados. Describe la situación de tu barrio en el buscador para
+            identificar la dependencia responsable.
+          </>
+        )}
+      </p>
+
+      {/* Ficha del territorio (TCA-03): dependencias con acción prioritaria en
+          el territorio activo, provenientes del catálogo oficial. Los chips
+          abren la rendición de cuentas por dependencia (Zero-Modals). */}
+      {territorioActivo && (
+        <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/40 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+              Acción prioritaria en «{territorioActivo.label}»
+            </h3>
+            <span className="text-[11px] text-[var(--text-secondary)] tabular">
+              {conPrioridad.length} de {DEPENDENCIAS_CARTAGENA_2026.length} dependencias (Plan de Acción 2026)
+            </span>
+          </div>
+
+          {conPrioridad.length > 0 ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {conPrioridad.map(({ dep }) => (
+                <Button
+                  key={dep.id}
+                  variant="unstyled"
+                  size="unstyled"
+                  type="button"
+                  onClick={() => openPanel("rendicion-cuentas", { dependenciaId: dep.id })}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-1 text-xs text-[var(--text-primary)] hover:border-[var(--ember)] transition-colors"
+                  title={dep.competenciaSeguridadHumana}
+                >
+                  <Building2 className="size-3 text-[var(--ember)]" />
+                  <span className="font-medium">{dep.sigla ?? dep.codigo}</span>
+                  <span className="text-[11px] tabular text-[var(--text-secondary)]">
+                    {dep.avancePlanAccion2026 != null ? `${dep.avancePlanAccion2026}%` : "sin medición"}
+                  </span>
+                  <ExternalLink className="size-2.5 opacity-60" />
+                </Button>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-3 text-xs text-[var(--text-secondary)]">
+              Ninguna dependencia declara acción prioritaria en este territorio
+              en el catálogo auditado; describe tu situación y el enrutador
+              identificará a la responsable por competencia legal.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Search Input Box */}
       <div className="relative mt-4">

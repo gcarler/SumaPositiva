@@ -1,6 +1,8 @@
 """Pruebas para [T6.5]: Control de Fases DNP, Google OAuth y Auditoría Forense/Respaldos."""
 
 import asyncio
+import hashlib
+import importlib
 import uuid
 
 import pytest
@@ -141,8 +143,16 @@ def test_control_fases_dnp_conmutar_web(client: TestClient, database_url):
     assert resp_reactivar.json()["habilitada_web"] is True
 
 
-def test_auditoria_y_supervision_respaldos(client: TestClient, database_url):
+def test_auditoria_y_supervision_respaldos(client: TestClient, database_url, tmp_path, monkeypatch):
     """Verifica consulta de registros de auditoría forense y catálogo de respaldos."""
+    # Catálogo controlado: esta prueba nunca lee ni crea respaldos de operación.
+    directorio = tmp_path / "respaldos"
+    directorio.mkdir()
+    archivo = directorio / "respaldo-sintetico.dump"
+    archivo.write_bytes(b"Contenido sintetico para comprobar el catalogo de respaldos")
+    huella = hashlib.sha256(archivo.read_bytes()).hexdigest()
+    archivo.with_suffix(".dump.sha256").write_text(f"{huella}  {archivo.name}\n")
+    monkeypatch.setattr(importlib.import_module("app.modules.auditoria.router"), "BACKUP_DIR", directorio)
     # Login como autoridad_distrital
     correo = preparar_autoridad(client, database_url, "seguridad@cartagena.gov.co")
     id_token = f"test-google-token:{correo}:Secretario Seguridad:sub_seg_999"
@@ -164,7 +174,10 @@ def test_auditoria_y_supervision_respaldos(client: TestClient, database_url):
     data_respaldos = resp_respaldos.json()
     assert "directorio" in data_respaldos
     assert "respaldos" in data_respaldos
-    assert data_respaldos["total_respaldos"] >= 1
+    assert data_respaldos["directorio"] == str(directorio)
+    assert data_respaldos["total_respaldos"] == 1
+    assert data_respaldos["respaldos"][0]["archivo"] == archivo.name
+    assert data_respaldos["respaldos"][0]["hash_sha256"] == huella
 
 
 def test_google_no_promueve_por_dominio(client):
@@ -188,9 +201,7 @@ def test_google_rollback_usuario_y_sesion(client, database_url, monkeypatch):
         try:
             async with engine.connect() as connection:
                 return (
-                    await connection.execute(
-                        text("SELECT count(*) FROM autenticacion.sesiones_usuario")
-                    )
+                    await connection.execute(text("SELECT count(*) FROM autenticacion.sesiones_usuario"))
                 ).scalar_one()
         finally:
             await engine.dispose()

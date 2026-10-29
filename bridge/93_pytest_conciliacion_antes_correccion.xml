@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="57" time="1.368" timestamp="2026-10-25T04:22:21.996585+00:00" hostname="srv2006133"><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_d1_decimal_json_and_distinct_products" time="0.005" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[indicador_fenomeno]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[unidad_observacion]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[unidad_medida]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[universo]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[poblacion]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[territorio]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[criterio_localizacion]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_incompatible_metadata_blocks[definicion_metodologica]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_partial_period_is_pending_even_when_identical[tipo]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">field = 'tipo'
+
+    @pytest.mark.parametrize("field", ["tipo", "inicio", "fin", "granularidad"])
+    def test_partial_period_is_pending_even_when_identical(field):
+        period = observation()["periodo_fenomeno"] | {field: None}
+        _, pair = contrast(observation(periodo_fenomeno=period), observation("b", periodo_fenomeno=period))
+&gt;       assert pair.estado_comparabilidad == "pendiente"
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:92: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_partial_period_is_pending_even_when_identical[inicio]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">field = 'inicio'
+
+    @pytest.mark.parametrize("field", ["tipo", "inicio", "fin", "granularidad"])
+    def test_partial_period_is_pending_even_when_identical(field):
+        period = observation()["periodo_fenomeno"] | {field: None}
+        _, pair = contrast(observation(periodo_fenomeno=period), observation("b", periodo_fenomeno=period))
+&gt;       assert pair.estado_comparabilidad == "pendiente"
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:92: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_partial_period_is_pending_even_when_identical[fin]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">field = 'fin'
+
+    @pytest.mark.parametrize("field", ["tipo", "inicio", "fin", "granularidad"])
+    def test_partial_period_is_pending_even_when_identical(field):
+        period = observation()["periodo_fenomeno"] | {field: None}
+        _, pair = contrast(observation(periodo_fenomeno=period), observation("b", periodo_fenomeno=period))
+&gt;       assert pair.estado_comparabilidad == "pendiente"
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:92: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_partial_period_is_pending_even_when_identical[granularidad]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">field = 'granularidad'
+
+    @pytest.mark.parametrize("field", ["tipo", "inicio", "fin", "granularidad"])
+    def test_partial_period_is_pending_even_when_identical(field):
+        period = observation()["periodo_fenomeno"] | {field: None}
+        _, pair = contrast(observation(periodo_fenomeno=period), observation("b", periodo_fenomeno=period))
+&gt;       assert pair.estado_comparabilidad == "pendiente"
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:92: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left0-right0-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left1-right1-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left2-right2-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left3-right3-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left4-right4-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left5-right5-pendiente]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">left = {'tipo': None}, right = {}, expected = 'pendiente', internal = False
+
+    @pytest.mark.parametrize(
+        ("left", "right", "expected"),
+        [
+            ({}, {}, "comparable_segun_metadatos_declarados"),
+            ({}, {"fecha": "2020-01-01", "precision": "diaria"}, "comparable_segun_metadatos_declarados"),
+            ({"fecha": "2020-01-01"}, {"fecha": "2020-01-01"}, "comparable_segun_metadatos_declarados"),
+            ({"fecha": "2020-01-01"}, {"fecha": "2020-01-02"}, "no_comparable"),
+            ({"precision": "anual"}, {"precision": "mensual"}, "no_comparable"),
+            ({"tipo": None}, {}, "pendiente"),
+            ({"tipo": "registro"}, {}, "no_comparable"),
+        ],
+    )
+    @pytest.mark.parametrize("internal", [False, True])
+    def test_reference_semantics_shared_with_revision(left, right, expected, internal):
+        a = observation(fecha_referencia={"tipo": "ocurrencia"} | left)
+        b = observation("b", fecha_referencia={"tipo": "ocurrencia"} | right)
+        if internal:
+            b.update(fuente_id=a["fuente_id"], producto_id=a["producto_id"], version_id="v2")
+        _, pair = contrast(a, b)
+&gt;       assert pair.estado_comparabilidad == expected
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:115: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[False-left6-right6-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left0-right0-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left1-right1-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left2-right2-comparable_segun_metadatos_declarados]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left3-right3-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left4-right4-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left5-right5-pendiente]" time="0.001"><failure message="AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'&#10;  &#10;  - pendiente&#10;  + comparable_segun_metadatos_declarados">left = {'tipo': None}, right = {}, expected = 'pendiente', internal = True
+
+    @pytest.mark.parametrize(
+        ("left", "right", "expected"),
+        [
+            ({}, {}, "comparable_segun_metadatos_declarados"),
+            ({}, {"fecha": "2020-01-01", "precision": "diaria"}, "comparable_segun_metadatos_declarados"),
+            ({"fecha": "2020-01-01"}, {"fecha": "2020-01-01"}, "comparable_segun_metadatos_declarados"),
+            ({"fecha": "2020-01-01"}, {"fecha": "2020-01-02"}, "no_comparable"),
+            ({"precision": "anual"}, {"precision": "mensual"}, "no_comparable"),
+            ({"tipo": None}, {}, "pendiente"),
+            ({"tipo": "registro"}, {}, "no_comparable"),
+        ],
+    )
+    @pytest.mark.parametrize("internal", [False, True])
+    def test_reference_semantics_shared_with_revision(left, right, expected, internal):
+        a = observation(fecha_referencia={"tipo": "ocurrencia"} | left)
+        b = observation("b", fecha_referencia={"tipo": "ocurrencia"} | right)
+        if internal:
+            b.update(fuente_id=a["fuente_id"], producto_id=a["producto_id"], version_id="v2")
+        _, pair = contrast(a, b)
+&gt;       assert pair.estado_comparabilidad == expected
+E       AssertionError: assert 'comparable_s...os_declarados' == 'pendiente'
+E         
+E         - pendiente
+E         + comparable_segun_metadatos_declarados
+
+tests/test_conciliacion_retrospectiva_fuentes_polis.py:115: AssertionError</failure></testcase><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_reference_semantics_shared_with_revision[True-left6-right6-no_comparable]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_unknown_and_conflicting_versions_do_not_compute[None]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_unknown_and_conflicting_versions_do_not_compute[v1]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_internal_methodology_change" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_null_is_not_zero" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_decimal_exact_with_reduced_ambient_context[999999999999999999999999999999.99-0.01-999999999999999999999999999999.98]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_decimal_exact_with_reduced_ambient_context[-1.20-2.3--3.50]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_decimal_exact_with_reduced_ambient_context[1E100--1E-100-100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001E-100]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_decimal_exact_with_reduced_ambient_context[0.00-0-0]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[True]" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[1.1]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[NaN]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[Infinity]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[1E101]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[1E-101]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_numbers[1111111111111111111111111111111111111111111111111]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_dates[20200101]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_dates[2020/01/01]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_invalid_dates[2020-02-30]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_inverted_period" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_duplicate_ids_pairs_and_observation_limit" time="0.007" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_pair_modes_and_combinatorial_limit" time="0.002" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_local_explanation_ids_retain_origin" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_strict_json[{&quot;observaciones&quot;:[],&quot;observaciones&quot;:[]}]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_strict_json[{&quot;x&quot;:NaN}]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_strict_json[{&quot;x&quot;:Infinity}]" time="0.000" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_uses_single_read_hash_even_if_input_changes" time="0.006" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_size_limit" time="0.001" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_no_final_publication_after_manifest_failure" time="0.003" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_real_subprocess_and_hashes" time="1.058" /><testcase classname="tests.test_conciliacion_retrospectiva_fuentes_polis" name="test_cli_rejects_external_paths_and_symlink" time="0.002" /></testsuite></testsuites>

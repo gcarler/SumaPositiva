@@ -114,8 +114,7 @@ async def test_enfoque_etnico_salvaguardas(database_url: str):
                     "territorio_id": boquilla_id,
                     "titulo": "Protección de manglares y pesca artesanal en La Boquilla",
                     ("descripcion"): (
-                        "Garantía de pervivencia cultural y derechos territoriales de com"
-                        "unidades negras."
+                        "Garantía de pervivencia cultural y derechos territoriales de comunidades negras."
                     ),
                     "tipo_aporte": "propuesta",
                 },
@@ -130,7 +129,5 @@ async def test_enfoque_etnico_salvaguardas(database_url: str):
 
         # Limpiar
         async with engine.begin() as conn:
-            await conn.execute(
-                text(f"DELETE FROM geodatos.territorios WHERE id = '{territorio_id}'")
-            )
+            await conn.execute(text(f"DELETE FROM geodatos.territorios WHERE id = '{territorio_id}'"))
         await engine.dispose()

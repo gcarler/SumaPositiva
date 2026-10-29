@@ -5,8 +5,8 @@ from typing import Any
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.auditoria.models import RegistroAuditoria
 from app.modules.alternativas.models import BancoAlternativas
+from app.modules.auditoria.models import RegistroAuditoria
 
 
 class AlternativasRepository:
@@ -108,9 +108,7 @@ class AlternativasRepository:
         return res.scalar_one_or_none()
 
     async def obtener_por_codigo(self, codigo: str) -> BancoAlternativas | None:
-        stmt = select(BancoAlternativas).where(
-            func.lower(BancoAlternativas.codigo) == codigo.strip().lower()
-        )
+        stmt = select(BancoAlternativas).where(func.lower(BancoAlternativas.codigo) == codigo.strip().lower())
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
@@ -130,9 +128,7 @@ class AlternativasRepository:
         await self.session.flush()
 
     async def contar_compromisos_vinculados(self, codigo: str) -> int:
-        stmt = text(
-            "SELECT count(*) FROM seguimiento.compromisos_pas WHERE alternativa_mga_codigo = :codigo"
-        )
+        stmt = text("SELECT count(*) FROM seguimiento.compromisos_pas WHERE alternativa_mga_codigo = :codigo")
         res = await self.session.execute(stmt, {"codigo": codigo})
         return res.scalar() or 0
 

@@ -67,20 +67,15 @@ def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
         return fn(**values)
 
     indicator = _normalizar(meta.get("indicador") or official.get("indicador") or "")
-    type_hint = str(
-        meta.get("tipologia_indicador_sispt") or official.get("tipologia_indicador_sispt") or ""
-    ).upper()
+    type_hint = str(meta.get("tipologia_indicador_sispt") or official.get("tipologia_indicador_sispt") or "").upper()
     if callable(determinar_tipologia_indicador_sispt):
         try:
             detected = invoke(
                 determinar_tipologia_indicador_sispt,
-                sentido_indicador=meta.get("sentido_indicador")
-                or official.get("sentido_indicador"),
+                sentido_indicador=meta.get("sentido_indicador") or official.get("sentido_indicador"),
                 tipo_agregacion=meta.get("tipo_agregacion") or official.get("tipo_agregacion"),
                 unidad_medida=meta.get("unidad_medida") or official.get("unidad_medida"),
-                texto_meta_o_indicador=(
-                    meta.get("indicador") or official.get("indicador") or meta.get("nombre") or ""
-                ),
+                texto_meta_o_indicador=(meta.get("indicador") or official.get("indicador") or meta.get("nombre") or ""),
                 indicador=meta.get("indicador") or official.get("indicador") or "",
                 nombre_indicador=meta.get("indicador") or official.get("indicador") or "",
                 meta=meta,
@@ -101,13 +96,9 @@ def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
             type_hint = "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD"
         else:
             type_hint = "INCREMENTO_ACUMULATIVO_FLUJO"
-    base = _numero_ocr(
-        meta.get("linea_base") or official.get("linea_base") or official.get("linea_base_texto")
-    )
+    base = _numero_ocr(meta.get("linea_base") or official.get("linea_base") or official.get("linea_base_texto"))
     target = _numero_ocr(
-        meta.get("meta_programada_anual")
-        or meta.get("meta_cuatrienio")
-        or official.get("meta_cuatrienio")
+        meta.get("meta_programada_anual") or meta.get("meta_cuatrienio") or official.get("meta_cuatrienio")
     )
     actual = _numero_ocr(meta.get("meta_ejecutada_anual"))
     raw = None
@@ -135,12 +126,7 @@ def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
     if actual is not None and target is not None:
         if raw is None and type_hint == "REDUCCION_BRECHA" and base is not None and base != target:
             raw = (base - actual) / (base - target) * 100
-        elif (
-            raw is None
-            and type_hint == "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD"
-            and base is not None
-            and target > base
-        ):
+        elif raw is None and type_hint == "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD" and base is not None and target > base:
             raw = (actual - base) / (target - base) * 100
         elif raw is None and target != 0:
             raw = actual / target * 100
@@ -189,11 +175,7 @@ def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
         except (TypeError, ValueError, KeyError):
             classified = None
     if cls not in {"META_DE_PRODUCTO", "META_DE_GESTION", "META_ADMINISTRATIVA"}:
-        cls = (
-            "META_DE_PRODUCTO"
-            if meta.get("codigo_bpim") or meta.get("codigo_bpin")
-            else "META_DE_GESTION"
-        )
+        cls = "META_DE_PRODUCTO" if meta.get("codigo_bpim") or meta.get("codigo_bpin") else "META_DE_GESTION"
     budget = _numero_ocr(meta.get("apropiacion_definitiva_cop"))
     bucket = (
         "INVERSION"
@@ -255,18 +237,14 @@ def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
 
 
 def _resumen_sispt(metas: list[dict[str, Any]]) -> dict[str, Any]:
-    evaluations = [
-        m["evaluacion_sispt_dnp"] for m in metas if isinstance(m.get("evaluacion_sispt_dnp"), dict)
-    ]
+    evaluations = [m["evaluacion_sispt_dnp"] for m in metas if isinstance(m.get("evaluacion_sispt_dnp"), dict)]
 
     def counts(key, universe):
         return {value: sum(e.get(key) == value for e in evaluations) for value in universe}
 
     raw = [e["eficacia_bruta_pct"] for e in evaluations if e.get("eficacia_bruta_pct") is not None]
     clipped = [
-        e["eficacia_truncada_sispt_pct"]
-        for e in evaluations
-        if e.get("eficacia_truncada_sispt_pct") is not None
+        e["eficacia_truncada_sispt_pct"] for e in evaluations if e.get("eficacia_truncada_sispt_pct") is not None
     ]
     coherence = counts(
         "estado_coherencia_cuipo_piip",
@@ -301,12 +279,7 @@ ESTADO_ALERTA_REVISION = "ALERTA_REQUIERE_REVISION"
 
 VERSION_REGLA_CANONICA = "EAF_REV_META_26B_V1"
 
-DEFAULT_CACHE_PATH = (
-    Path(__file__).resolve().parents[4]
-    / "data"
-    / "planes_desarrollo"
-    / "cache_pdt_ai_evaluator.json"
-)
+DEFAULT_CACHE_PATH = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo" / "cache_pdt_ai_evaluator.json"
 
 DIEZ_DIMENSIONES_REVISION: tuple[str, ...] = (
     "diagnostico",
@@ -383,9 +356,7 @@ def _normalizar_llave_ocr(valor: Any) -> str:
     return re.sub(r"\s+", "", _normalizar(valor))
 
 
-def _extraer_ocr(
-    datos: dict[str, Any], canonical_key: str, tokens: tuple[str, ...], *positional: str
-):
+def _extraer_ocr(datos: dict[str, Any], canonical_key: str, tokens: tuple[str, ...], *positional: str):
     if not isinstance(datos, dict):
         return None
     canonical = datos.get("_canonico_normalizado")
@@ -466,11 +437,7 @@ def _parse_numero_token(token: str) -> float | None:
 
 
 def _inferir_unidad(unidad: Any, indicador: str, meta_texto: Any) -> str | None:
-    if (
-        unidad is not None
-        and str(unidad).strip()
-        and _normalizar(unidad) != _normalizar(ESTADO_BRECHA_INFO)
-    ):
+    if unidad is not None and str(unidad).strip() and _normalizar(unidad) != _normalizar(ESTADO_BRECHA_INFO):
         return str(unidad).strip()
     texto = _normalizar(f"{indicador} {meta_texto}")
     if "%" in str(meta_texto) or "porcentaje" in texto or "por ciento" in texto:
@@ -502,9 +469,7 @@ def _normalizar_responsable(plan: str, value: Any, context: str = "") -> str:
         return f"{local} (LHCN)" if normalized == "lhcn" else local
     if plan == "PDL_2_2024_2027" and (not raw or "concurrencia" in normalized):
         return local
-    if plan == "PDL_3_2024_2027" and (
-        not raw or "industrial y de la" in normalized or "bahia" in normalized
-    ):
+    if plan == "PDL_3_2024_2027" and (not raw or "industrial y de la" in normalized or "bahia" in normalized):
         return local
     if raw:
         return raw
@@ -606,15 +571,9 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
         "unidad_principal_analisi": "La meta del Plan de Desarrollo y su cadena de intervención",
         "principios_rectores": [
             "Separar revisión de formulación, seguimiento de ejecución y evaluación de resultados.",
-            (
-                "Preservar ceros observados (0.0) como cero y datos faltantes (None) como "
-                "BRECHA_DE_INFORMACION."
-            ),
+            ("Preservar ceros observados (0.0) como cero y datos faltantes (None) como BRECHA_DE_INFORMACION."),
             "Evitar un score global opaco que mezcle dimensiones no comparables.",
-            (
-                "Informar siempre el universo total de metas, el filtro aplicado y la "
-                "muestra devuelta."
-            ),
+            ("Informar siempre el universo total de metas, el filtro aplicado y la muestra devuelta."),
             "No atribuir riesgos ni trampas territoriales sin vínculo acreditado por entidad/meta.",
         ],
         "diez_dimensiones_revision": {
@@ -654,10 +613,7 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "orden": 3,
                 "dominio": "FORMULACION",
                 "preguntas_clave": [
-                    (
-                        "¿Qué actividades producen qué bienes o servicios y cómo contribuyen "
-                        "al resultado?"
-                    ),
+                    ("¿Qué actividades producen qué bienes o servicios y cómo contribuyen al resultado?"),
                     "¿Qué supuestos causales o eslabones MGA faltan?",
                 ],
                 "campos_auditados": [
@@ -672,10 +628,7 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "orden": 4,
                 "dominio": "EJECUCION",
                 "preguntas_clave": [
-                    (
-                        "¿La meta tiene programación anual, responsable, hitos, cronograma y "
-                        "actividades PA?"
-                    ),
+                    ("¿La meta tiene programación anual, responsable, hitos, cronograma y actividades PA?"),
                 ],
                 "campos_auditados": [
                     "dependencia_responsable",
@@ -733,10 +686,7 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "dominio": "RESULTADOS",
                 "preguntas_clave": [
                     "¿Cambió la condición de la población?",
-                    (
-                        "¿Cómo se distribuye el cambio entre territorios (LISA) y grupos de "
-                        "especial protección?"
-                    ),
+                    ("¿Cómo se distribuye el cambio entre territorios (LISA) y grupos de especial protección?"),
                 ],
                 "campos_auditados": [
                     "dimension_seguridad_humana",
@@ -750,10 +700,7 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "orden": 9,
                 "dominio": "RESULTADOS",
                 "preguntas_clave": [
-                    (
-                        "¿Qué meta, presupuesto o responsable cambió, cuándo y mediante qué "
-                        "acto administrativo?"
-                    ),
+                    ("¿Qué meta, presupuesto o responsable cambió, cuándo y mediante qué acto administrativo?"),
                 ],
                 "campos_auditados": [
                     "norma_adopcion_plan",
@@ -766,10 +713,7 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "orden": 10,
                 "dominio": "RESULTADOS",
                 "preguntas_clave": [
-                    (
-                        "¿Quién revisó el hallazgo? ¿Qué correctivo PDCA/Catchball se acordó? "
-                        "¿Se verificó su cierre?"
-                    ),
+                    ("¿Quién revisó el hallazgo? ¿Qué correctivo PDCA/Catchball se acordó? ¿Se verificó su cierre?"),
                 ],
                 "campos_auditados": [
                     "revisor_asignado",
@@ -860,12 +804,8 @@ def obtener_especificacion_revision_por_meta() -> dict[str, Any]:
                 "calculo_reproducible": "Fórmula y operandos exactos que producen el hallazgo",
                 "severidad": "ALTA | MEDIA | BAJA | INFORMATIVA",
                 "incertidumbre": "Nivel y causa de incertidumbre metodológica o de datos",
-                "evidencia_contradictoria": (
-                    "Hechos o señales de otros motores que matizan el hallazgo"
-                ),
-                "recomendacion": (
-                    "Acción técnica sugerida (no modifica presupuesto automáticamente)"
-                ),
+                "evidencia_contradictoria": ("Hechos o señales de otros motores que matizan el hallazgo"),
+                "recomendacion": ("Acción técnica sugerida (no modifica presupuesto automáticamente)"),
                 "responsable": "Actor institucional responsable de revisar o subsanar",
                 "estado_revision": "PENDIENTE_REVISION_HUMANA | VERIFICADO | SUBSANADO",
             },
@@ -897,9 +837,7 @@ async def _consultar_datos_bd_csh_async(
     if _normalizar(codigo_plan) == "todos":
         payloads = await asyncio.gather(
             *(
-                _consultar_datos_bd_csh_async(
-                    plan, dependencia, codigo_meta, limit, _include_activities=(index == 0)
-                )
+                _consultar_datos_bd_csh_async(plan, dependencia, codigo_meta, limit, _include_activities=(index == 0))
                 for index, plan in enumerate(PLANES_REVISION_8)
             )
         )
@@ -907,8 +845,7 @@ async def _consultar_datos_bd_csh_async(
             "total_metas_plan": sum(item["total_metas_plan"] for item in payloads),
             "plan_info": {"codigo_plan": "TODOS", "periodo": "2012–2027"},
             "plan_info_por_codigo": {
-                str(item.get("plan_info", {}).get("codigo_plan")): item.get("plan_info", {})
-                for item in payloads
+                str(item.get("plan_info", {}).get("codigo_plan")): item.get("plan_info", {}) for item in payloads
             },
             "lineas_por_id": {},
             "metas": [],
@@ -924,27 +861,18 @@ async def _consultar_datos_bd_csh_async(
             merged["triada_por_id"].update(item.get("triada_por_id", {}))
             merged["vinculos_por_meta_id"].update(item.get("vinculos_por_meta_id", {}))
             merged["revisiones_hitl_por_meta"].update(item.get("revisiones_hitl_por_meta", {}))
-        merged["actividades_pa"] = list(
-            {str(row.get("id")): row for row in merged["actividades_pa"]}.values()
-        )
+        merged["actividades_pa"] = list({str(row.get("id")): row for row in merged["actividades_pa"]}.values())
         return merged
 
-    from sqlalchemy.engine import make_url
+    from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
-    from app.core.config import Settings
-
-    raw_url = Settings().async_database_url
-    parsed_url = make_url(raw_url)
-    if (parsed_url.database or "").startswith("polis_test"):
-        raw_url = parsed_url.set(database="bd_csh").render_as_string(hide_password=False)
+    raw_url = resolver_url_bd_csh()
 
     engine = create_async_engine(raw_url, pool_pre_ping=True)
     try:
         async with engine.connect() as conn:
             res_total = await conn.execute(
-                text(
-                    "SELECT COUNT(*) FROM seguimiento.pdd_metas_oficiales WHERE codigo_plan = :cp"
-                ),
+                text("SELECT COUNT(*) FROM seguimiento.pdd_metas_oficiales WHERE codigo_plan = :cp"),
                 {"cp": codigo_plan},
             )
             total_metas_plan = int(res_total.scalar() or 0)
@@ -1004,9 +932,7 @@ async def _consultar_datos_bd_csh_async(
 
             vinculos_por_meta_id: dict[str, dict[str, Any]] = {}
             try:
-                res_reg_vinc = await conn.execute(
-                    text("SELECT to_regclass('seguimiento.pdd_vinculos_meta_pa_triada')")
-                )
+                res_reg_vinc = await conn.execute(text("SELECT to_regclass('seguimiento.pdd_vinculos_meta_pa_triada')"))
                 if res_reg_vinc.scalar() is not None:
                     res_vinc = await conn.execute(
                         text(
@@ -1031,15 +957,10 @@ async def _consultar_datos_bd_csh_async(
 
             revisiones_hitl_por_meta: dict[str, list[dict[str, Any]]] = {}
             try:
-                res_reg_rev = await conn.execute(
-                    text("SELECT to_regclass('seguimiento.pdt_ai_hallazgos_revision')")
-                )
+                res_reg_rev = await conn.execute(text("SELECT to_regclass('seguimiento.pdt_ai_hallazgos_revision')"))
                 if res_reg_rev.scalar() is not None:
                     res_rev = await conn.execute(
-                        text(
-                            "SELECT * FROM seguimiento.pdt_ai_hallazgos_revision "
-                            "WHERE codigo_plan = :cp"
-                        ),
+                        text("SELECT * FROM seguimiento.pdt_ai_hallazgos_revision WHERE codigo_plan = :cp"),
                         {"cp": codigo_plan},
                     )
                     for r_hr in res_rev.mappings().all():
@@ -1187,23 +1108,17 @@ def _evaluar_meta_individual(
     ).strip()
     indicador_texto = str(
         meta.get("indicador")
-        or _extraer_campo_dict(
-            datos_of, ("Indicador de producto", "Indicador de resultado", "indicador")
-        )
+        or _extraer_campo_dict(datos_of, ("Indicador de producto", "Indicador de resultado", "indicador"))
         or ""
     ).strip()
-    unidad_medida_raw = meta.get("unidad_medida") or _extraer_ocr(
-        datos_of, "unidad_medida_canonica", ("unidad",)
-    )
+    unidad_medida_raw = meta.get("unidad_medida") or _extraer_ocr(datos_of, "unidad_medida_canonica", ("unidad",))
     responsable_raw = meta.get("dependencia") or _extraer_ocr(
         datos_of,
         "responsable_canonico",
         ("responsab", "entidad", "secretaria", "dependencia", "concurrencia"),
         "columna_9",
     )
-    dependencia_resp = _normalizar_responsable(
-        codigo_plan, responsable_raw, f"{nombre_meta} {indicador_texto}"
-    )
+    dependencia_resp = _normalizar_responsable(codigo_plan, responsable_raw, f"{nombre_meta} {indicador_texto}")
     poblacion_obj = _extraer_campo_dict(datos_of, ("Población", "Poblacion objetivo"))
     territorio_obj = _extraer_campo_dict(datos_of, ("Territorio", "Localidad", "UCG"))
     linea_base_raw = _extraer_ocr(datos_of, "linea_base_texto", ("lineabase",), "columna_2")
@@ -1221,8 +1136,7 @@ def _evaluar_meta_individual(
     linea_base_num = _numero_ocr(linea_base_raw)
     linea_base_documental = (
         "ND (Sin línea base histórica)"
-        if linea_base_num is None
-        and _normalizar(linea_base_raw) in {"nd", "n/d", "n.a.", "sin linea base"}
+        if linea_base_num is None and _normalizar(linea_base_raw) in {"nd", "n/d", "n.a.", "sin linea base"}
         else (str(linea_base_raw).strip() if linea_base_raw is not None else None)
     )
 
@@ -1240,11 +1154,7 @@ def _evaluar_meta_individual(
     vinculo_canonico = (
         vinculos_map.get(meta_id_str)
         or vinculos_map.get(_normalizar(cod_meta))
-        or (
-            meta.get("vinculo_pa_triada")
-            if isinstance(meta.get("vinculo_pa_triada"), dict)
-            else None
-        )
+        or (meta.get("vinculo_pa_triada") if isinstance(meta.get("vinculo_pa_triada"), dict) else None)
     )
     if dependencia_resp == "SIN_ATRIBUCION" and isinstance(vinculo_canonico, dict):
         dependencia_resp = _normalizar_responsable(
@@ -1280,9 +1190,7 @@ def _evaluar_meta_individual(
     reg_triada = (
         triada_por_id.get(reg_triada_id)
         if reg_triada_id
-        else (
-            meta.get("registro_triada") if isinstance(meta.get("registro_triada"), dict) else None
-        )
+        else (meta.get("registro_triada") if isinstance(meta.get("registro_triada"), dict) else None)
     )
 
     pa_vinculadas: list[dict[str, Any]] = []
@@ -1307,30 +1215,23 @@ def _evaluar_meta_individual(
             act_dep = _normalizar(act.get("entidad_responsable"))
             act_prog = _normalizar(act.get("programa_nombre"))
             if norm_dep and norm_dep != "sin_atribucion" and norm_dep in act_dep:
-                if not norm_lin or any(
-                    tok in act_prog for tok in norm_lin.split()[:2] if len(tok) > 3
-                ):
+                if not norm_lin or any(tok in act_prog for tok in norm_lin.split()[:2] if len(tok) > 3):
                     pa_vinculadas.append(act)
                 elif len(pa_vinculadas) < 2:
                     pa_vinculadas.append(act)
 
     if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("tipo_vinculo"):
         tipo_vinculo_pa_triada = str(vinculo_canonico["tipo_vinculo"])
-        score_confianza_vinculo = float(
-            _to_float_preserve_zero(vinculo_canonico.get("score_confianza")) or 0.0
-        )
+        score_confianza_vinculo = float(_to_float_preserve_zero(vinculo_canonico.get("score_confianza")) or 0.0)
     elif pa_vinculadas or reg_triada is not None:
-        if any(a.get("codigo_bpim") for a in pa_vinculadas) or (
-            reg_triada and reg_triada.get("codigo_bpim")
-        ):
+        if any(a.get("codigo_bpim") for a in pa_vinculadas) or (reg_triada and reg_triada.get("codigo_bpim")):
             tipo_vinculo_pa_triada = "EXACTO_BPIM_PROYECTO"
             score_confianza_vinculo = 0.9000
         else:
             tipo_vinculo_pa_triada = "PROGRAMA_Y_DEPENDENCIA_ACREDITADOS"
             score_confianza_vinculo = 0.7800
     elif any(
-        meta.get(k) is not None
-        for k in ("apropiacion_definitiva_cop", "meta_ejecutada_anual", "avance_fisico_pct")
+        meta.get(k) is not None for k in ("apropiacion_definitiva_cop", "meta_ejecutada_anual", "avance_fisico_pct")
     ):
         tipo_vinculo_pa_triada = "EXACTO_CODIGO_META"
         score_confianza_vinculo = 1.0000
@@ -1362,9 +1263,7 @@ def _evaluar_meta_individual(
     if avance_fisico_pct is None and isinstance(vinculo_canonico, dict):
         avance_fisico_pct = _to_float_preserve_zero(vinculo_canonico.get("avance_fisico_pct"))
     if avance_fisico_pct is None and pa_vinculadas:
-        avances_pa = [
-            _to_float_preserve_zero(a.get("porcentaje_avance_fisico")) for a in pa_vinculadas
-        ]
+        avances_pa = [_to_float_preserve_zero(a.get("porcentaje_avance_fisico")) for a in pa_vinculadas]
         avances_validos = [v for v in avances_pa if v is not None]
         if avances_validos:
             avance_fisico_pct = round(sum(avances_validos) / len(avances_validos), 4)
@@ -1375,9 +1274,7 @@ def _evaluar_meta_individual(
         else _to_float_preserve_zero(meta.get("apropiacion_definitiva_cop"))
     )
     if apropiacion_cop is None and isinstance(vinculo_canonico, dict):
-        apropiacion_cop = _to_float_preserve_zero(
-            vinculo_canonico.get("apropiacion_definitiva_cop")
-        )
+        apropiacion_cop = _to_float_preserve_zero(vinculo_canonico.get("apropiacion_definitiva_cop"))
 
     cdp_cop = (
         _to_float_preserve_zero(reg_triada.get("cdp_cop"))
@@ -1421,29 +1318,17 @@ def _evaluar_meta_individual(
 
     thetas_dep = dea_por_dep.get(_normalizar(dependencia_resp), [])
     theta_bcc_dep = (
-        round(sum(thetas_dep) / len(thetas_dep), 4)
-        if thetas_dep
-        else _to_float_preserve_zero(meta.get("theta_bcc"))
+        round(sum(thetas_dep) / len(thetas_dep), 4) if thetas_dep else _to_float_preserve_zero(meta.get("theta_bcc"))
     )
     sim_coseno = nlp_por_meta.get(_normalizar(cod_meta))
     if sim_coseno is None:
         sim_coseno = _to_float_preserve_zero(meta.get("similaridad_coseno_nlp"))
 
-    serie_dep = (
-        isri_por_dep.get(_normalizar(dependencia_resp))
-        if dependencia_resp != "SIN_ATRIBUCION"
-        else None
-    )
+    serie_dep = isri_por_dep.get(_normalizar(dependencia_resp)) if dependencia_resp != "SIN_ATRIBUCION" else None
     isri_atribuido = (
-        _to_float_preserve_zero(serie_dep.get("ISRI"))
-        if serie_dep
-        else _to_float_preserve_zero(meta.get("ISRI"))
+        _to_float_preserve_zero(serie_dep.get("ISRI")) if serie_dep else _to_float_preserve_zero(meta.get("ISRI"))
     )
-    ruptura_chow = (
-        bool((serie_dep.get("chow") or {}).get("ruptura_estructural_significativa"))
-        if serie_dep
-        else False
-    )
+    ruptura_chow = bool((serie_dep.get("chow") or {}).get("ruptura_estructural_significativa")) if serie_dep else False
 
     sentido_ind = _detectar_sentido_indicador(f"{nombre_meta} {indicador_texto}")
     fuente_doc = str(meta.get("fuente") or "SIN_FUENTE_DOCUMENTAL")
@@ -1494,26 +1379,18 @@ def _evaluar_meta_individual(
 
     dim_1_diagnostico = {
         "estado": (
-            ESTADO_CON_EVIDENCIA
-            if (linea_base_raw is not None and poblacion_obj is not None)
-            else ESTADO_BRECHA_INFO
+            ESTADO_CON_EVIDENCIA if (linea_base_raw is not None and poblacion_obj is not None) else ESTADO_BRECHA_INFO
         ),
         "problema_atendido": linea_nombre,
         "fuente_diagnostico": fuente_doc,
         "poblacion_objetivo": (poblacion_obj if poblacion_obj is not None else ESTADO_BRECHA_INFO),
-        "territorio_objetivo": (
-            territorio_obj if territorio_obj is not None else "PENDIENTE_LOCALIZACION"
-        ),
-        "linea_base_texto": (
-            linea_base_documental if linea_base_documental is not None else ESTADO_BRECHA_INFO
-        ),
+        "territorio_objetivo": (territorio_obj if territorio_obj is not None else "PENDIENTE_LOCALIZACION"),
+        "linea_base_texto": (linea_base_documental if linea_base_documental is not None else ESTADO_BRECHA_INFO),
         "linea_base_numerica": linea_base_num,
         "linea_base_documental": linea_base_documental,
     }
 
-    tiene_formulacion_completa = bool(
-        indicador_texto and nombre_meta and valor_meta_num is not None
-    )
+    tiene_formulacion_completa = bool(indicador_texto and nombre_meta and valor_meta_num is not None)
     dim_2_formulacion = {
         "estado": (
             ESTADO_ALERTA_REVISION
@@ -1575,11 +1452,7 @@ def _evaluar_meta_individual(
 
     codigos_bpim = sorted(
         {str(a.get("codigo_bpim")) for a in pa_vinculadas if a.get("codigo_bpim") is not None}
-        | (
-            {str(reg_triada["codigo_bpim"])}
-            if reg_triada and reg_triada.get("codigo_bpim")
-            else set()
-        )
+        | ({str(reg_triada["codigo_bpim"])} if reg_triada and reg_triada.get("codigo_bpim") else set())
         | (
             {str(vinculo_canonico["codigo_bpim"])}
             if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("codigo_bpim")
@@ -1595,12 +1468,8 @@ def _evaluar_meta_individual(
         "dependencia_responsable": dependencia_resp,
         "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
         "score_confianza_vinculo": score_confianza_vinculo,
-        "programacion_anual_disponible": bool(
-            meta_prog_anual is not None or monto_prog_pa_cop is not None
-        ),
-        "hitos_y_cronograma": (
-            "TRIMESTRAL_VERIFICABLE" if tiene_articulacion_verificada else ESTADO_BRECHA_INFO
-        ),
+        "programacion_anual_disponible": bool(meta_prog_anual is not None or monto_prog_pa_cop is not None),
+        "hitos_y_cronograma": ("TRIMESTRAL_VERIFICABLE" if tiene_articulacion_verificada else ESTADO_BRECHA_INFO),
         "actividades_pa_codigos": [str(a.get("codigo")) for a in pa_vinculadas if a.get("codigo")],
         "codigos_bpim": codigos_bpim,
     }
@@ -1610,9 +1479,7 @@ def _evaluar_meta_individual(
         if (ppi_total_linea is not None and apropiacion_cop is not None)
         else None
     )
-    tiene_financiacion = (
-        ppi_total_linea is not None or apropiacion_cop is not None or monto_prog_pa_cop is not None
-    )
+    tiene_financiacion = ppi_total_linea is not None or apropiacion_cop is not None or monto_prog_pa_cop is not None
     dim_5_viabilidad_financiera = {
         "estado": ESTADO_CON_EVIDENCIA if tiene_financiacion else ESTADO_BRECHA_INFO,
         "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
@@ -1683,22 +1550,16 @@ def _evaluar_meta_individual(
     dim_sh = datos_of.get("dimension_sh_primaria")
     dim_8_resultados_y_equidad = {
         "estado": (
-            ESTADO_CON_EVIDENCIA
-            if (territorio_obj is not None and isri_atribuido is not None)
-            else ESTADO_BRECHA_INFO
+            ESTADO_CON_EVIDENCIA if (territorio_obj is not None and isri_atribuido is not None) else ESTADO_BRECHA_INFO
         ),
-        "dimension_seguridad_humana": (
-            dim_sh if dim_sh is not None else "MULTIDIMENSIONAL_PENDIENTE"
-        ),
+        "dimension_seguridad_humana": (dim_sh if dim_sh is not None else "MULTIDIMENSIONAL_PENDIENTE"),
         "grado_frontalidad_sh": grado_sh,
         "riesgo_isri_atribuido": isri_atribuido,
         "territorio_verificado": (
             territorio_obj if territorio_obj is not None else "SIN_VINCULO_TERRITORIAL_ACREDITADO"
         ),
         "clasificacion_dato_territorial": (
-            "OBSERVADO_EN_DOCUMENTO_PDD"
-            if territorio_obj is not None
-            else "NO_ATRIBUIBLE_SIN_SOPORTE_LOCALIZADO"
+            "OBSERVADO_EN_DOCUMENTO_PDD" if territorio_obj is not None else "NO_ATRIBUIBLE_SIN_SOPORTE_LOCALIZADO"
         ),
     }
 
@@ -1711,9 +1572,7 @@ def _evaluar_meta_individual(
     }
 
     auditoria_for = datos_of.get("_auditoria_forense") if isinstance(datos_of, dict) else {}
-    req_hitl = bool(
-        isinstance(auditoria_for, dict) and auditoria_for.get("requiere_revision_humana", True)
-    )
+    req_hitl = bool(isinstance(auditoria_for, dict) and auditoria_for.get("requiere_revision_humana", True))
 
     hallazgos: list[dict[str, Any]] = []
     contradicciones_detectadas: list[str] = []
@@ -1729,10 +1588,7 @@ def _evaluar_meta_individual(
             f"eficiencia técnica DEA-BCC ({theta_bcc_dep}) en {dependencia_resp}."
         )
         contradicciones_detectadas.append(msg_c1)
-        calc_c1 = (
-            f"avance_fisico_pct ({avance_fisico_pct}) >= 80.0 "
-            f"AND theta_bcc ({theta_bcc_dep}) < 0.60"
-        )
+        calc_c1 = f"avance_fisico_pct ({avance_fisico_pct}) >= 80.0 AND theta_bcc ({theta_bcc_dep}) < 0.60"
         hallazgos.append(
             _construir_hallazgo_canonico(
                 id_hallazgo=f"HAL-{codigo_plan}-{cod_meta}-CONTRA-DEA",
@@ -1751,20 +1607,13 @@ def _evaluar_meta_individual(
                     f"El reporte físico indica {avance_fisico_pct}% de logro, pero la "
                     f"relación insumo-producto relativa DEA es {theta_bcc_dep}."
                 ),
-                recomendacion=(
-                    "Auditar soportes de entrega física y costos unitarios en sesión Catchball."
-                ),
+                recomendacion=("Auditar soportes de entrega física y costos unitarios en sesión Catchball."),
                 responsable=dependencia_resp,
             )
         )
 
     gasto_efectivo = compromisos_rp_cop or apropiacion_cop or monto_ejec_pa_cop
-    if (
-        gasto_efectivo is not None
-        and gasto_efectivo > 0.0
-        and sim_coseno is not None
-        and sim_coseno < 0.45
-    ):
+    if gasto_efectivo is not None and gasto_efectivo > 0.0 and sim_coseno is not None and sim_coseno < 0.45:
         msg_c2 = (
             f"Recursos comprometidos/apropiados ({gasto_efectivo:,.2f} COP) asociados a "
             f"actividad con baja similaridad semántica coseno ({sim_coseno} < 0.45)."
@@ -1784,25 +1633,17 @@ def _evaluar_meta_individual(
                 citas_evidencia=[cita_principal],
                 calculo_reproducible=calc_c2,
                 severidad="ALTA",
-                incertidumbre=(
-                    "MEDIA (similaridad léxica requiere validación experta de par meta-actividad)"
-                ),
+                incertidumbre=("MEDIA (similaridad léxica requiere validación experta de par meta-actividad)"),
                 evidencia_contradictoria=(
                     "Existe respaldo presupuestal formal, pero el texto de la actividad "
                     "operativa diverge semánticamente de la meta estratégica."
                 ),
-                recomendacion=(
-                    "Verificar vínculo causal MGA entre la actividad contratada y la meta PDD."
-                ),
+                recomendacion=("Verificar vínculo causal MGA entre la actividad contratada y la meta PDD."),
                 responsable=dependencia_resp,
             )
         )
 
-    if (
-        gasto_efectivo is not None
-        and gasto_efectivo > 0.0
-        and (meta_ejec_anual == 0.0 or avance_fisico_pct == 0.0)
-    ):
+    if gasto_efectivo is not None and gasto_efectivo > 0.0 and (meta_ejec_anual == 0.0 or avance_fisico_pct == 0.0):
         msg_c3 = (
             f"Desfase físico-financiero: gasto registrado ({gasto_efectivo:,.2f} COP) con "
             f"ejecución física observada exactamente en 0.0."
@@ -1822,19 +1663,13 @@ def _evaluar_meta_individual(
                 calculo_reproducible=(f"gasto_cop ({gasto_efectivo}) > 0 AND avance_fisico == 0.0"),
                 severidad="ALTA",
                 incertidumbre="BAJA (valores numéricos reportados directamente en matriz)",
-                evidencia_contradictoria=(
-                    "Apropiación/compromiso positivo frente a entrega física reportada en cero."
-                ),
-                recomendacion=(
-                    "Conciliar rezago de entregas físicas frente a compromisos RP expedidos."
-                ),
+                evidencia_contradictoria=("Apropiación/compromiso positivo frente a entrega física reportada en cero."),
+                recomendacion=("Conciliar rezago de entregas físicas frente a compromisos RP expedidos."),
                 responsable=dependencia_resp,
             )
         )
 
-    sin_presupuesto_cero = apropiacion_cop == 0.0 and (
-        compromisos_rp_cop is None or compromisos_rp_cop == 0.0
-    )
+    sin_presupuesto_cero = apropiacion_cop == 0.0 and (compromisos_rp_cop is None or compromisos_rp_cop == 0.0)
     if (avance_fisico_pct is not None and avance_fisico_pct > 0.0) and sin_presupuesto_cero:
         msg_c4 = (
             f"Avance físico positivo ({avance_fisico_pct}%) reportado con "
@@ -1852,19 +1687,12 @@ def _evaluar_meta_individual(
                 regla_aplicada="REGLA_CONTRADICCION_AVANCE_POSITIVO_PRESUPUESTO_CERO",
                 hechos_observados=msg_c4,
                 citas_evidencia=[cita_principal],
-                calculo_reproducible=(
-                    f"avance_fisico_pct ({avance_fisico_pct}) > 0 AND apropiacion_cop == 0.0"
-                ),
+                calculo_reproducible=(f"avance_fisico_pct ({avance_fisico_pct}) > 0 AND apropiacion_cop == 0.0"),
                 severidad="MEDIA",
-                incertidumbre=(
-                    "BAJA (puede corresponder a meta de gestión sin erogación u omisión contable)"
-                ),
-                evidencia_contradictoria=(
-                    "Avance físico reportado sin ejecución presupuestal asociada."
-                ),
+                incertidumbre=("BAJA (puede corresponder a meta de gestión sin erogación u omisión contable)"),
+                evidencia_contradictoria=("Avance físico reportado sin ejecución presupuestal asociada."),
                 recomendacion=(
-                    "Aclarar si la meta opera con recursos de funcionamiento o si falta "
-                    "cargue presupuestal."
+                    "Aclarar si la meta opera con recursos de funcionamiento o si falta cargue presupuestal."
                 ),
                 responsable=dependencia_resp,
             )
@@ -1885,18 +1713,11 @@ def _evaluar_meta_individual(
                     f"financiera={estado_ej_fin}). No se imputan ni inventan calificaciones."
                 ),
                 citas_evidencia=[cita_principal],
-                calculo_reproducible=(
-                    "meta_ejecutada_anual IS NULL OR apropiacion_definitiva_cop IS NULL"
-                ),
+                calculo_reproducible=("meta_ejecutada_anual IS NULL OR apropiacion_definitiva_cop IS NULL"),
                 severidad="MEDIA",
                 incertidumbre="ALTA (ausencia de registro conciliado en seguimiento)",
-                evidencia_contradictoria=(
-                    "Meta existe en el Plan Indicativo oficial pero carece de corte completo."
-                ),
-                recomendacion=(
-                    "Solicitar a la dependencia responsable el cargue del corte físico y "
-                    "financiero."
-                ),
+                evidencia_contradictoria=("Meta existe en el Plan Indicativo oficial pero carece de corte completo."),
+                recomendacion=("Solicitar a la dependencia responsable el cargue del corte físico y financiero."),
                 responsable=dependencia_resp,
             )
         )
@@ -1922,8 +1743,7 @@ def _evaluar_meta_individual(
                 severidad="ALTA",
                 incertidumbre="BAJA (comparación directa entre línea base y meta declarada)",
                 evidencia_contradictoria=(
-                    "La dirección del cambio entre línea base y meta contradice el sentido "
-                    "esperado del indicador."
+                    "La dirección del cambio entre línea base y meta contradice el sentido esperado del indicador."
                 ),
                 recomendacion=(
                     "Verificar en sesión técnica si el indicador mide flujo nuevo anual o si "
@@ -1934,9 +1754,7 @@ def _evaluar_meta_individual(
         )
 
     if consistencia_trimestral_consolidada["inconsistencia_aritmetica_trimestral"]:
-        det_trim = "; ".join(
-            consistencia_trimestral_consolidada["detalle_inconsistencia_trimestral"]
-        )
+        det_trim = "; ".join(consistencia_trimestral_consolidada["detalle_inconsistencia_trimestral"])
         contradicciones_detectadas.append(det_trim)
         hallazgos.append(
             _construir_hallazgo_canonico(
@@ -1973,9 +1791,7 @@ def _evaluar_meta_individual(
         )
 
     revisiones_meta = (
-        (revisiones_hitl_por_meta or {}).get(cod_meta)
-        or (revisiones_hitl_por_meta or {}).get(meta_id_str)
-        or []
+        (revisiones_hitl_por_meta or {}).get(cod_meta) or (revisiones_hitl_por_meta or {}).get(meta_id_str) or []
     )
     ultimo_estado_rev = (
         str(revisiones_meta[-1].get("estado_revision") or revisiones_meta[-1].get("decision") or "")
@@ -2014,9 +1830,7 @@ def _evaluar_meta_individual(
         "control_y_aprendizaje": dim_10_control_y_aprendizaje,
     }
 
-    estado_curador = (
-        ESTADO_CON_EVIDENCIA if fuente_doc != "SIN_FUENTE_DOCUMENTAL" else ESTADO_BRECHA_INFO
-    )
+    estado_curador = ESTADO_CON_EVIDENCIA if fuente_doc != "SIN_FUENTE_DOCUMENTAL" else ESTADO_BRECHA_INFO
     razones_excl: list[str] = []
     if unidad_medida is None:
         razones_excl.append("Falta unidad de medida explícita para comparabilidad DEA/ISRI")
@@ -2025,9 +1839,7 @@ def _evaluar_meta_individual(
     if territorio_obj is None:
         razones_excl.append("Sin localización territorial verificada para inferencia espacial LISA")
 
-    estado_contra = (
-        ESTADO_CONTRADICCION if contradicciones_detectadas else "SIN_CONTRADICCIONES_DETECTADAS"
-    )
+    estado_contra = ESTADO_CONTRADICCION if contradicciones_detectadas else "SIN_CONTRADICCIONES_DETECTADAS"
     dictamen_7_revisores = {
         "curador_evidencia": {
             "estado": estado_curador,
@@ -2059,13 +1871,10 @@ def _evaluar_meta_individual(
             ),
         },
         "revisor_articulacion": {
-            "estado": (
-                ESTADO_CON_EVIDENCIA if tiene_articulacion_verificada else ESTADO_BRECHA_INFO
-            ),
+            "estado": (ESTADO_CON_EVIDENCIA if tiene_articulacion_verificada else ESTADO_BRECHA_INFO),
             "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
             "score_confianza_vinculo": score_confianza_vinculo,
-            "es_vinculo_exacto": tipo_vinculo_pa_triada
-            in {"EXACTO_CODIGO_META", "EXACTO_BPIM_PROYECTO"},
+            "es_vinculo_exacto": tipo_vinculo_pa_triada in {"EXACTO_CODIGO_META", "EXACTO_BPIM_PROYECTO"},
             "es_vinculo_inferido": tipo_vinculo_pa_triada == "VINCULO_SECTORIAL_INFERIDO",
             "linea_estrategica": linea_nombre,
             "actividades_pa_vinculadas": len(pa_vinculadas),
@@ -2298,9 +2107,7 @@ def construir_matriz_revision_por_meta_pdt(
             or res_dom["ejecucion_financiera_estado"] == ESTADO_BRECHA_INFO
         ):
             conteo_estados["con_brecha_informacion"] += 1
-        ceros_pres = exp["dictamen_7_revisores"]["conciliador_ejecucion"][
-            "ceros_observados_preservados"
-        ]
+        ceros_pres = exp["dictamen_7_revisores"]["conciliador_ejecucion"]["ceros_observados_preservados"]
         if ceros_pres:
             conteo_estados["con_ceros_observados"] += 1
         if (

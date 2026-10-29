@@ -5,18 +5,16 @@ Revises: 0038_merge_heads
 Create Date: 2026-10-04 01:17:00.000000
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+
 from alembic import op
 
 revision: str = "0039_corregir_fuente_metas"
-down_revision: Union[str, Sequence[str], None] = "0038_merge_heads"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0038_merge_heads"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
-NUEVA_FUENTE = (
-    "Catálogo propuesto por el equipo, PENDIENTE de validación institucional, "
-    "no proviene del Decreto 037"
-)
+NUEVA_FUENTE = "Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"
 
 
 def upgrade() -> None:

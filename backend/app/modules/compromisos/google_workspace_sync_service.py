@@ -19,6 +19,7 @@ import jwt
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.compromisos.ipc_deflactor_polis import factor_desde_diciembre_2019, factor_hacia_anio_base
 from app.modules.compromisos.pdd_dea_service import PddDeaService
 
 CHART_DIR = Path("/tmp/polis_workspace_charts")
@@ -147,12 +148,8 @@ class GoogleWorkspaceSyncService:
                 }
             )
         prior = _saved_state() or {}
-        sheets_count = sum(
-            row.get("mimeType") == "application/vnd.google-apps.spreadsheet" for row in files
-        )
-        docs_count = sum(
-            row.get("mimeType") == "application/vnd.google-apps.document" for row in files
-        )
+        sheets_count = sum(row.get("mimeType") == "application/vnd.google-apps.spreadsheet" for row in files)
+        docs_count = sum(row.get("mimeType") == "application/vnd.google-apps.document" for row in files)
         templates = {
             "sheets_adicionales_en_blanco": max(0, 2 - sheets_count),
             "docs_adicionales_en_blanco": max(0, 1 - docs_count),
@@ -193,9 +190,7 @@ class GoogleWorkspaceSyncService:
         await self._write_sheets(token, pdm_id, pdm_titles, pdm_values)
         await self._write_sheets(token, pa_id, pa_titles, pa_values)
         await self._write_charts(token, pdm_id, pdm_titles, "pdm")
-        await self._write_charts(
-            token, pa_id, pa_titles, "pa", dimension_count=len(data["dimension_rows"])
-        )
+        await self._write_charts(token, pa_id, pa_titles, "pa", dimension_count=len(data["dimension_rows"]))
         report, digest = self._report(data)
         self._generate_charts(data)
         self._report_tables = [
@@ -288,13 +283,8 @@ class GoogleWorkspaceSyncService:
             raise RuntimeError("La matriz PDM no quedó publicada con siete hojas y cuatro gráficos")
         if checked["pa"]["charts_count"] != 4 or len(checked["pa"]["hojas"]) != 7:
             raise RuntimeError("La matriz PA no quedó publicada con siete hojas y cuatro gráficos")
-        if (
-            checked["analisis"]["tamano_caracteres"] < 45000
-            or checked["analisis"]["inline_images_count"] != 6
-        ):
-            raise RuntimeError(
-                "El documento no cumple el mínimo de caracteres o las seis gráficas embebidas"
-            )
+        if checked["analisis"]["tamano_caracteres"] < 45000 or checked["analisis"]["inline_images_count"] != 6:
+            raise RuntimeError("El documento no cumple el mínimo de caracteres o las seis gráficas embebidas")
         if checked["analisis"]["heading_1_count"] < 8 or checked["analisis"]["heading_2_count"] < 8:
             raise RuntimeError("El documento no conserva estilos capitulares y de subsección")
         result = {
@@ -328,12 +318,21 @@ class GoogleWorkspaceSyncService:
         """Publish only the district PDD matrix and its PDD-only technical document."""
         if self.session is None:
             raise RuntimeError("La publicación requiere sesión de base de datos")
-        token = await self._access_token()
         data = await PddDeaService(self.session).comparativo_seguridad_humana_pdd_only()
+        incompletos = [
+            {"codigo_plan": plan["codigo_plan"], "causa": plan.get("estado_ipc", "SIN_TOTAL_COMPARABLE")}
+            for plan in data["planes_pdd"]
+            if plan["ppi_total_constante_2025_cop"] is None
+        ]
+        if incompletos:
+            return {
+                "estado": "BLOQUEADO_PPI_NO_COMPARABLE",
+                "planes": incompletos,
+                "motivo": "El documento y sus gráficos requieren un total financiero comparable para cada PDD.",
+            }
+        token = await self._access_token()
         self._generate_pdd_only_charts(data)
-        pdm_id, sheet_ids = await self._prepare_spreadsheet(
-            token, FILES["pdm"]["id"], PDD_ONLY_SHEETS
-        )
+        pdm_id, sheet_ids = await self._prepare_spreadsheet(token, FILES["pdm"]["id"], PDD_ONLY_SHEETS)
         sheet_values = self._pdd_only_values(data)
         await self._write_sheets(token, pdm_id, sheet_ids, sheet_values)
         await self._write_pdd_only_charts(token, pdm_id, sheet_ids)
@@ -388,7 +387,7 @@ class GoogleWorkspaceSyncService:
             ],
             [
                 "Moneda constante",
-                "COP base 2025; factores IPC anual DANE codificados en pdd_dea_service._money_factor.",
+                "COP promedio 2025 con IPC DANE empalmado; años sin IPC anual completo se muestran sin conversión.",
             ],
             [
                 "Clasificación",
@@ -481,10 +480,14 @@ class GoogleWorkspaceSyncService:
                 annual = node["ppi_anual_cop"] or {}
                 base_2019 = node["metadatos"].get("base_precios") == "COP constantes diciembre 2019"
                 constant = {
-                    str(year): float(amount or 0)
-                    * __import__(
-                        "app.modules.compromisos.pdd_dea_service", fromlist=["_money_factor"]
-                    )._money_factor(2019 if base_2019 else int(year))
+                    str(year): (
+                        float(amount or 0)
+                        * float(
+                            factor_desde_diciembre_2019(2025) if base_2019 else factor_hacia_anio_base(int(year), 2025)
+                        )
+                        if base_2019 or factor_hacia_anio_base(int(year), 2025) is not None
+                        else None
+                    )
                     for year, amount in annual.items()
                 }
                 architecture.append(
@@ -507,9 +510,7 @@ class GoogleWorkspaceSyncService:
                 )
         dims = [["Dimensión SH (asignación A+B)", *[plan["codigo_plan"] for plan in pdds]]]
         for dimension in data["dimensiones"]:
-            dims.append(
-                [dimension, *[plan["ppi_por_7d_constante_2025_cop"][dimension] for plan in pdds]]
-            )
+            dims.append([dimension, *[plan["ppi_por_7d_constante_2025_cop"][dimension] for plan in pdds]])
         dims.append(
             [
                 "Metas canónicas A+B ponderadas (conteo, sin duplicación)",
@@ -681,9 +682,7 @@ class GoogleWorkspaceSyncService:
 
         def save(fig: Any, index: int) -> None:
             fig.tight_layout()
-            fig.savefig(
-                CHART_DIR / PDD_ONLY_CHARTS[index], dpi=300, facecolor="white", bbox_inches="tight"
-            )
+            fig.savefig(CHART_DIR / PDD_ONLY_CHARTS[index], dpi=300, facecolor="white", bbox_inches="tight")
             plt.close(fig)
 
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -704,9 +703,7 @@ class GoogleWorkspaceSyncService:
             colors,
             strict=True,
         ):
-            values = np.array(
-                [plan["ppi_por_frontalidad_constante_2025_cop"][grade] / 1e12 for plan in pdds]
-            )
+            values = np.array([plan["ppi_por_frontalidad_constante_2025_cop"][grade] / 1e12 for plan in pdds])
             ax.bar(labels, values, bottom=bottom, label=label, color=color)
             bottom += values
         ax.set_title("PPI clasificable por frontalidad · COP constantes de 2025")
@@ -718,14 +715,9 @@ class GoogleWorkspaceSyncService:
         x = np.arange(len(data["dimensiones"]))
         width = 0.15
         for i, plan in enumerate(pdds):
-            values = [
-                plan["ppi_por_7d_constante_2025_cop"][dimension] / 1e12
-                for dimension in data["dimensiones"]
-            ]
+            values = [plan["ppi_por_7d_constante_2025_cop"][dimension] / 1e12 for dimension in data["dimensiones"]]
             ax.bar(x + (i - 2) * width, values, width, label=labels[i])
-        ax.set_xticks(
-            x, [d.replace("Seguridad ", "") for d in data["dimensiones"]], rotation=20, ha="right"
-        )
+        ax.set_xticks(x, [d.replace("Seguridad ", "") for d in data["dimensiones"]], rotation=20, ha="right")
         ax.set_title("Presupuesto A+B distribuido entre las siete dimensiones")
         ax.set_ylabel("Billones de COP constantes 2025")
         ax.legend(frameon=False)
@@ -746,16 +738,10 @@ class GoogleWorkspaceSyncService:
         fig, ax = plt.subplots(figsize=(9, 6))
         for plan, label, color in zip(pdds, labels, colors + ["#775A9E"], strict=True):
             denominator = plan["ppi_total_constante_2025_cop"] or 1
-            frontal = (
-                plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"]
-                / denominator
-                * 100
-            )
+            frontal = plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"] / denominator * 100
             depth = plan["profundidad_cadena_pct"]
             ax.scatter(frontal, depth, s=110, color=color, label=label)
-            ax.annotate(
-                label, (frontal, depth), xytext=(6, 5), textcoords="offset points", fontsize=8
-            )
+            ax.annotate(label, (frontal, depth), xytext=(6, 5), textcoords="offset points", fontsize=8)
         ax.set_xlabel("Frontalidad de núcleo A (% del PPI constante 2025)")
         ax.set_ylabel("Nodos con padre (%; profundidad estructural disponible)")
         ax.set_title("Frontalidad presupuestal y profundidad de cadena")
@@ -776,19 +762,14 @@ class GoogleWorkspaceSyncService:
 
         fig, ax = plt.subplots(figsize=(9, 6))
         pdl = data["anexo_pdl"]
-        pdl_labels = [
-            plan["codigo_plan"].replace("PDL_", "Localidad ").replace("_2024_2027", "")
-            for plan in pdl
-        ]
+        pdl_labels = [plan["codigo_plan"].replace("PDL_", "Localidad ").replace("_2024_2027", "") for plan in pdl]
         pdl_amounts = [plan["ppi_total_corriente_cop"] / 1e9 for plan in pdl]
         ax.bar(pdl_labels, pdl_amounts, color=["#557A95", "#7A9E7E", "#B98755"])
         ax.set_title("Anexo PDL · PPI reportado por localidad, sin sumar al PDD")
         ax.set_ylabel("Miles de millones de COP")
         save(fig, 5)
 
-    async def _write_pdd_only_charts(
-        self, token: str, spreadsheet_id: str, sheet_ids: list[int]
-    ) -> None:
+    async def _write_pdd_only_charts(self, token: str, spreadsheet_id: str, sheet_ids: list[int]) -> None:
         url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
         book = await self._request("GET", url, token, params={"fields": "sheets(charts(chartId))"})
         requests = [
@@ -848,8 +829,7 @@ class GoogleWorkspaceSyncService:
                                     "legendPosition": "BOTTOM_LEGEND",
                                     "domains": [{"domain": {"sourceRange": {"sources": [domain]}}}],
                                     "series": [
-                                        {"series": {"sourceRange": {"sources": [item]}}}
-                                        for item in series_ranges
+                                        {"series": {"sourceRange": {"sources": [item]}}} for item in series_ranges
                                     ],
                                     "stackedType": "STACKED"
                                     if title.startswith("PPI constante 2025")
@@ -891,6 +871,7 @@ class GoogleWorkspaceSyncService:
             "PDD_2020_2023",
             "PDD_2024_2027",
         ]
+
         def levels(code: str) -> dict[str, int]:
             plan = plan_by_code.get(code, {})
             result: dict[str, int] = {}
@@ -905,20 +886,27 @@ class GoogleWorkspaceSyncService:
 
         frontal_rank = sorted(
             plans,
-            key=lambda plan: plan["ppi_por_frontalidad_constante_2025_cop"][
-                "A_NUCLEO_FRONTAL"
-            ]
-            / max(1, plan["ppi_total_constante_2025_cop"]),
+            key=lambda plan: (
+                plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"]
+                / max(1, plan["ppi_total_constante_2025_cop"])
+            ),
             reverse=True,
         )
-        strategic_rank = sorted(
-            plans, key=lambda plan: plan["profundidad_cadena_pct"], reverse=True
-        )
-        architecture = [[
-            "Código", "Plan", "Periodo", "Nodos por nivel", "Metas únicas",
-            "Resultado/bienestar", "Producto", "Objetivos estructurales sin cuantificar",
-            "PPI en base de fuente COP", "PPI constante 2025 COP",
-        ]]
+        strategic_rank = sorted(plans, key=lambda plan: plan["profundidad_cadena_pct"], reverse=True)
+        architecture = [
+            [
+                "Código",
+                "Plan",
+                "Periodo",
+                "Nodos por nivel",
+                "Metas únicas",
+                "Resultado/bienestar",
+                "Producto",
+                "Objetivos estructurales sin cuantificar",
+                "PPI en base de fuente COP",
+                "PPI constante 2025 COP",
+            ]
+        ]
         for index, code in enumerate(pdd_codes):
             plan = plan_by_code.get(code)
             if not plan:
@@ -1041,7 +1029,7 @@ class GoogleWorkspaceSyncService:
             "[[CHART:" + PDD_ONLY_CHARTS[1] + "]]",
             "[[CHART:" + PDD_ONLY_CHARTS[2] + "]]",
             "CAPÍTULO 4: PREGUNTA 3 · ¿QUÉ PLAN FUE MÁS FRONTAL Y ESTRATÉGICO?",
-            f"Con la definición A y el presupuesto PPI constante 2025, el mayor cociente de núcleo frontal corresponde a {frontal_rank[0]['codigo_plan']} ({frontal_rank[0]['ppi_por_frontalidad_constante_2025_cop']['A_NUCLEO_FRONTAL'] / max(1, frontal_rank[0]['ppi_total_constante_2025_cop']):.2%} del PPI); la mayor apuesta ampliada A+B corresponde a {max(plans, key=lambda plan: sum(plan['ppi_por_frontalidad_constante_2025_cop'][grade] for grade in ('A_NUCLEO_FRONTAL','B_DETERMINANTE_DIRECTO')) / max(1, plan['ppi_total_constante_2025_cop']))['codigo_plan']}. La etiqueta nominal de una línea no sustituye esta comparación por contenido y monto.",
+            f"Con la definición A y el presupuesto PPI constante 2025, el mayor cociente de núcleo frontal corresponde a {frontal_rank[0]['codigo_plan']} ({frontal_rank[0]['ppi_por_frontalidad_constante_2025_cop']['A_NUCLEO_FRONTAL'] / max(1, frontal_rank[0]['ppi_total_constante_2025_cop']):.2%} del PPI); la mayor apuesta ampliada A+B corresponde a {max(plans, key=lambda plan: sum(plan['ppi_por_frontalidad_constante_2025_cop'][grade] for grade in ('A_NUCLEO_FRONTAL', 'B_DETERMINANTE_DIRECTO')) / max(1, plan['ppi_total_constante_2025_cop']))['codigo_plan']}. La etiqueta nominal de una línea no sustituye esta comparación por contenido y monto.",
             f"Como aproximación a lo estratégico, el mayor porcentaje de nodos enlazados a un padre se observa en {strategic_rank[0]['codigo_plan']} ({strategic_rank[0]['profundidad_cadena_pct']:.2f}%). Esta métrica mide conectividad del árbol, no calidad causal ni implementación. La matriz contrasta ese indicador con metas de resultado/producto, cobertura del corpus y conciliación del PPI; la posición puede cambiar si se exige una cadena completa objetivo→programa→resultado→producto→presupuesto.",
             "No se declara un ganador único sin que coincidan tres dimensiones: proporción A sobre total oficial, articulación entre metas de resultado/producto y presupuesto, y cobertura territorial/poblacional explícita. La etiqueta nominal, el monto A medido por contenido y la profundidad estructural se presentan por separado para evitar confundirlos.",
             "[[CHART:" + PDD_ONLY_CHARTS[3] + "]]",
@@ -1082,9 +1070,7 @@ class GoogleWorkspaceSyncService:
             "GET",
             f"https://sheets.googleapis.com/v4/spreadsheets/{FILES['pdm']['id']}",
             token,
-            params={
-                "fields": "spreadsheetId,properties(title),sheets(properties(title),charts(chartId))"
-            },
+            params={"fields": "spreadsheetId,properties(title),sheets(properties(title),charts(chartId))"},
         )
         titles = [sheet["properties"]["title"] for sheet in book.get("sheets", [])]
         if titles != PDD_ONLY_SHEETS:
@@ -1092,9 +1078,7 @@ class GoogleWorkspaceSyncService:
         chart_count = sum(len(sheet.get("charts", [])) for sheet in book.get("sheets", []))
         if chart_count != 4:
             raise RuntimeError(f"Se esperaban cuatro gráficos nativos; recibidos {chart_count}")
-        doc = await self._request(
-            "GET", f"https://docs.googleapis.com/v1/documents/{FILES['analisis']['id']}", token
-        )
+        doc = await self._request("GET", f"https://docs.googleapis.com/v1/documents/{FILES['analisis']['id']}", token)
         text_parts = []
         images = 0
         heading1 = 0
@@ -1109,9 +1093,7 @@ class GoogleWorkspaceSyncService:
                 images += int("inlineObjectElement" in element)
         body = "".join(text_parts)
         if len(body) < 12_000 or heading1 < 7 or native_tables < 4 or images != 6:
-            raise RuntimeError(
-                "El documento PDD-only no pasó los controles de estructura, tablas y seis PNG embebidos"
-            )
+            raise RuntimeError("El documento PDD-only no pasó los controles de estructura, tablas y seis PNG embebidos")
         forbidden = (
             "225.380",
             "NETWORK DEA PA",
@@ -1189,9 +1171,7 @@ class GoogleWorkspaceSyncService:
                 }
                 if page:
                     params["pageToken"] = page
-                payload = await self._request(
-                    "GET", "https://www.googleapis.com/drive/v3/files", token, params=params
-                )
+                payload = await self._request("GET", "https://www.googleapis.com/drive/v3/files", token, params=params)
                 results.extend(payload.get("files", []))
                 page = payload.get("nextPageToken")
                 if not page:
@@ -1209,13 +1189,9 @@ class GoogleWorkspaceSyncService:
                 json={"name": spec["name"]},
             )
 
-    async def _prepare_spreadsheet(
-        self, token: str, spreadsheet_id: str, titles: list[str]
-    ) -> tuple[str, list[int]]:
+    async def _prepare_spreadsheet(self, token: str, spreadsheet_id: str, titles: list[str]) -> tuple[str, list[int]]:
         url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
-        book = await self._request(
-            "GET", url, token, params={"fields": "sheets(properties(sheetId,title,index))"}
-        )
+        book = await self._request("GET", url, token, params={"fields": "sheets(properties(sheetId,title,index))"})
         existing = book.get("sheets", [])
         requests = []
         ids = []
@@ -1454,9 +1430,7 @@ class GoogleWorkspaceSyncService:
                 }
                 if chart_type in {"COLUMN", "BAR"}:
                     basic_chart["stackedType"] = (
-                        "STACKED"
-                        if kind == "pa" and chart_type == "COLUMN" and len(series) == 2
-                        else "NOT_STACKED"
+                        "STACKED" if kind == "pa" and chart_type == "COLUMN" and len(series) == 2 else "NOT_STACKED"
                     )
                 chart_spec = {
                     "title": title,
@@ -1517,14 +1491,8 @@ class GoogleWorkspaceSyncService:
             await self._request("POST", f"{url}:batchUpdate", token, json={"requests": requests})
         payload = {"valueInputOption": "RAW", "data": []}
         for sheet_id, rows in zip(sheet_ids, values, strict=True):
-            meta = await self._request(
-                "GET", url, token, params={"fields": "sheets(properties(sheetId,title))"}
-            )
-            title = next(
-                s["properties"]["title"]
-                for s in meta["sheets"]
-                if s["properties"]["sheetId"] == sheet_id
-            )
+            meta = await self._request("GET", url, token, params={"fields": "sheets(properties(sheetId,title))"})
+            title = next(s["properties"]["title"] for s in meta["sheets"] if s["properties"]["sheetId"] == sheet_id)
             payload["data"].append(
                 {
                     "range": f"'{title}'!A1",
@@ -1604,13 +1572,7 @@ class GoogleWorkspaceSyncService:
             header = rows[0] if rows else []
             for col, label in enumerate(header):
                 label = str(label or "").casefold()
-                pattern = (
-                    "$#,##0"
-                    if "cop" in label
-                    else '0.00"%"'
-                    if "%" in label or "porcentaje" in label
-                    else None
-                )
+                pattern = "$#,##0" if "cop" in label else '0.00"%"' if "%" in label or "porcentaje" in label else None
                 if pattern:
                     formats.append(
                         {
@@ -1622,11 +1584,7 @@ class GoogleWorkspaceSyncService:
                                     "startColumnIndex": col,
                                     "endColumnIndex": col + 1,
                                 },
-                                "cell": {
-                                    "userEnteredFormat": {
-                                        "numberFormat": {"type": "NUMBER", "pattern": pattern}
-                                    }
-                                },
+                                "cell": {"userEnteredFormat": {"numberFormat": {"type": "NUMBER", "pattern": pattern}}},
                                 "fields": "userEnteredFormat.numberFormat",
                             }
                         }
@@ -1650,9 +1608,7 @@ class GoogleWorkspaceSyncService:
         end = doc.get("body", {}).get("content", [{}])[-1].get("endIndex", 1)
         requests = []
         if end > 2:
-            requests.append(
-                {"deleteContentRange": {"range": {"startIndex": 1, "endIndex": end - 1}}}
-            )
+            requests.append({"deleteContentRange": {"range": {"startIndex": 1, "endIndex": end - 1}}})
         requests.append({"insertText": {"location": {"index": 1}, "text": content}})
         await self._request("POST", f"{url}:batchUpdate", token, json={"requests": requests})
         # Apply native paragraph styles using the original text offsets.
@@ -1665,15 +1621,11 @@ class GoogleWorkspaceSyncService:
             style = None
             if clean.startswith("DOCUMENTO TÉCNICO DE DIAGNÓSTICO"):
                 style = "TITLE"
-            elif clean.startswith(
-                ("Marco del Decreto 37 de 2026", "Marco del Decreto 037 de 2026")
-            ):
+            elif clean.startswith(("Marco del Decreto 37 de 2026", "Marco del Decreto 037 de 2026")):
                 style = "SUBTITLE"
             elif clean.startswith(("CAPÍTULO ", "ANEXOS OBLIGATORIOS")):
                 style = "HEADING_1"
-            elif re.match(
-                r"^(?:[1-7]\.\s|4\.[1-8]\.\s|Anexo [A-D]|PREGUNTA [1-4])", clean
-            ) or clean.startswith(
+            elif re.match(r"^(?:[1-7]\.\s|4\.[1-8]\.\s|Anexo [A-D]|PREGUNTA [1-4])", clean) or clean.startswith(
                 (
                     "FICHA TÉCNICA",
                     "ANEXO ",
@@ -1716,9 +1668,7 @@ class GoogleWorkspaceSyncService:
             offset += len(line)
         image_reqs = []
         for start, end, name in sorted(markers, reverse=True):
-            image_reqs.append(
-                {"deleteContentRange": {"range": {"startIndex": start, "endIndex": end}}}
-            )
+            image_reqs.append({"deleteContentRange": {"range": {"startIndex": start, "endIndex": end}}})
             image_reqs.append(
                 {
                     "insertInlineImage": {
@@ -1739,9 +1689,7 @@ class GoogleWorkspaceSyncService:
         tables = getattr(self, "_report_tables", [])
         for title, rows in tables:
             current = await self._request("GET", url, token)
-            insertion = max(
-                1, current.get("body", {}).get("content", [{}])[-1].get("endIndex", 2) - 1
-            )
+            insertion = max(1, current.get("body", {}).get("content", [{}])[-1].get("endIndex", 2) - 1)
             await self._request(
                 "POST",
                 f"{url}:batchUpdate",
@@ -1792,9 +1740,7 @@ class GoogleWorkspaceSyncService:
                     cell_content = cells[col_index].get("content", [])
                     paragraph = next((item for item in cell_content if item.get("paragraph")), None)
                     if paragraph:
-                        cell_requests.append(
-                            (paragraph["startIndex"], str(value) if value is not None else "")
-                        )
+                        cell_requests.append((paragraph["startIndex"], str(value) if value is not None else ""))
             requests = [
                 {"insertText": {"location": {"index": index}, "text": value}}
                 for index, value in sorted(cell_requests, reverse=True)
@@ -1875,9 +1821,7 @@ class GoogleWorkspaceSyncService:
         plenary = (
             (
                 await self.session.execute(
-                    text(
-                        """SELECT id,nombre,tipo,estado,territorio FROM mesas_trabajo.agendas WHERE id='pc-001'"""
-                    )
+                    text("""SELECT id,nombre,tipo,estado,territorio FROM mesas_trabajo.agendas WHERE id='pc-001'""")
                 )
             )
             .mappings()
@@ -2086,9 +2030,7 @@ class GoogleWorkspaceSyncService:
             .one()
         )
         catalog_path = ROOT / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
-        drive_catalog = (
-            json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else []
-        )
+        drive_catalog = json.loads(catalog_path.read_text(encoding="utf-8")) if catalog_path.is_file() else []
         laboratory = await PddDeaService(self.session).laboratorio_prescriptivo_pdd()
         dea_frontier = await PddDeaService(self.session).frontera_dea_pdd()
         raw_total = len(goals)
@@ -2184,17 +2126,13 @@ class GoogleWorkspaceSyncService:
             unique = sum(
                 1
                 for g in subset
-                if (g["datos_oficiales"] or {})
-                .get("_auditoria_forense", {})
-                .get("estado_cobertura")
+                if (g["datos_oficiales"] or {}).get("_auditoria_forense", {}).get("estado_cobertura")
                 != "DUPLICADA_ENTRE_FUENTES_PDD"
             )
             linked = sum(
                 1
                 for g in subset
-                if (g["datos_oficiales"] or {})
-                .get("_auditoria_forense", {})
-                .get("estado_cobertura")
+                if (g["datos_oficiales"] or {}).get("_auditoria_forense", {}).get("estado_cobertura")
                 == "VINCULADA_ALTA_CONFIANZA"
             )
             audits = [(g["datos_oficiales"] or {}).get("_auditoria_forense", {}) for g in subset]
@@ -2252,9 +2190,7 @@ class GoogleWorkspaceSyncService:
                         1
                         for g in d["goals"]
                         if g["codigo_plan"] == p["codigo_plan"]
-                        and (g["datos_oficiales"] or {})
-                        .get("_auditoria_forense", {})
-                        .get("estado_cobertura")
+                        and (g["datos_oficiales"] or {}).get("_auditoria_forense", {}).get("estado_cobertura")
                         == "VINCULADA_ALTA_CONFIANZA"
                     )
                     for p in d["plans"]
@@ -2307,9 +2243,7 @@ class GoogleWorkspaceSyncService:
                 obligations = float(pa.get("obligaciones_cop") or 0)
             ppi_constant = None
             if ppi is not None and plan.get("ppi_total_corriente_cop"):
-                ratio = float(plan.get("ppi_total_constante_2025_cop") or 0) / float(
-                    plan["ppi_total_corriente_cop"]
-                )
+                ratio = float(plan.get("ppi_total_constante_2025_cop") or 0) / float(plan["ppi_total_corriente_cop"])
                 ppi_constant = ppi * ratio
             annual.append(
                 [
@@ -2397,11 +2331,7 @@ class GoogleWorkspaceSyncService:
             ccr = average(frontier_rows, "theta_ccr")
             bcc = average(frontier_rows, "eficiencia_bcc")
             scale = average(frontier_rows, "escala_eficiencia_se")
-            rts_values = [
-                row.get("retornos_escala_rts")
-                for row in frontier_rows
-                if row.get("retornos_escala_rts")
-            ]
+            rts_values = [row.get("retornos_escala_rts") for row in frontier_rows if row.get("retornos_escala_rts")]
             rts = max(set(rts_values), key=rts_values.count) if rts_values else None
             bootstrap = average(frontier_rows, "theta_bootstrap_corregido")
             dmu.append(
@@ -2451,9 +2381,7 @@ class GoogleWorkspaceSyncService:
         ]
         for item in d["lines"]:
             vals = item.get("ppi_anual_cop") or {}
-            total = sum(
-                float(v or 0) for v in vals.values() if isinstance(v, (float, int, Decimal))
-            )
+            total = sum(float(v or 0) for v in vals.values() if isinstance(v, (float, int, Decimal)))
             plan_total = next(
                 (
                     float(p.get("ppi_total_corriente_cop") or 0)
@@ -2513,9 +2441,7 @@ class GoogleWorkspaceSyncService:
                     obj.get("linea_base") or obj.get("valor_linea_base"),
                     obj.get("meta_cuatrienio") or obj.get("meta"),
                     obj.get("entidad_responsable"),
-                    "NO"
-                    if audit.get("estado_cobertura") == "DUPLICADA_ENTRE_FUENTES_PDD"
-                    else "SÍ",
+                    "NO" if audit.get("estado_cobertura") == "DUPLICADA_ENTRE_FUENTES_PDD" else "SÍ",
                     audit.get("estado_cobertura"),
                     obj.get("taxonomia_mga_dnp") or obj.get("tipo_indicador"),
                     audit.get("metodo_emparejamiento"),
@@ -2621,18 +2547,13 @@ class GoogleWorkspaceSyncService:
         activities_by_entity: dict[str, list[dict[str, Any]]] = {}
         for activity in d["activities"]:
             if activity["codigo"].startswith("PA-REAL-"):
-                activities_by_entity.setdefault(activity["entidad_responsable"], []).append(
-                    activity
-                )
+                activities_by_entity.setdefault(activity["entidad_responsable"], []).append(activity)
         summary = [header]
         for entity in d["entities"]:
             name = entity["entidad_responsable"]
             stat = aggregates.get(name, {})
             activities = activities_by_entity.get(name, [])
-            strong = sum(
-                (a.get("verbo_infinitivo") or "").casefold() not in VERBOS_DNP_DEBILES
-                for a in activities
-            )
+            strong = sum((a.get("verbo_infinitivo") or "").casefold() not in VERBOS_DNP_DEBILES for a in activities)
             weak = len(activities) - strong
             appropriation = float(stat.get("apropiacion_cop") or 0)
             paid = float(stat.get("pagos_cop") or 0)
@@ -2720,29 +2641,15 @@ class GoogleWorkspaceSyncService:
                 ]
                 + [
                     "FUERTE" if strong else "DÉBIL",
-                    float(a.get("monto_programado_cop") or 0)
-                    - float(a.get("monto_ejecutado_cop") or 0),
-                    "CUMPLIDA"
-                    if advance >= 100
-                    else "EN_RIESGO"
-                    if advance >= 70
-                    else "REZAGO_CRITICO",
+                    float(a.get("monto_programado_cop") or 0) - float(a.get("monto_ejecutado_cop") or 0),
+                    "CUMPLIDA" if advance >= 100 else "EN_RIESGO" if advance >= 70 else "REZAGO_CRITICO",
                 ]
             )
         dimtab = [["Dimensión de seguridad humana", "Registros PA", "Apropiación COP"]]
-        dimtab.extend(
-            [
-                [row["dimension"], row["registros"], row["apropiacion_cop"]]
-                for row in d["dimension_rows"]
-            ]
-        )
+        dimtab.extend([[row["dimension"], row["registros"], row["apropiacion_cop"]] for row in d["dimension_rows"]])
         dimtab.append([])
-        dimtab.append(
-            ["Vigencia", "Periodo gobierno", "Registros PA", "Apropiación COP", "Obligaciones COP"]
-        )
-        pa_year = {
-            int(row["vigencia"]): row for row in d["annual_pa"] if row.get("vigencia") is not None
-        }
+        dimtab.append(["Vigencia", "Periodo gobierno", "Registros PA", "Apropiación COP", "Obligaciones COP"])
+        pa_year = {int(row["vigencia"]): row for row in d["annual_pa"] if row.get("vigencia") is not None}
         for year in range(2016, 2027):
             row = pa_year.get(year, {})
             dimtab.append(
@@ -2836,9 +2743,7 @@ class GoogleWorkspaceSyncService:
                         dbfile.get("periodo_gobierno") or item.get("periodo_gobierno"),
                         dbfile.get("entidad_normalizada"),
                         ", ".join(
-                            dbfile.get("dimensiones_seguridad_humana")
-                            or item.get("dimensiones_seguridad_humana")
-                            or []
+                            dbfile.get("dimensiones_seguridad_humana") or item.get("dimensiones_seguridad_humana") or []
                         ),
                         h,
                         item.get("bytes") or item.get("size_bytes"),
@@ -2937,26 +2842,34 @@ class GoogleWorkspaceSyncService:
         dashboard.extend([[row[0], row[13], row[6], row[7]] for row in summary[1:]])
         return [dashboard, summary, dimtab, detail, normalized, pdfs, mesas]
 
-    def _report(self, d: dict[str, Any]) -> tuple[str, str]:
-        """Expand the user's official seven-chapter outline without changing its order."""
+    def _report(self, d: dict[str, Any], outline_text: str | None = None) -> tuple[str, str]:
+        """Expand the user's official seven-chapter outline without changing its order.
+
+        El guion oficial del usuario es el insumo del documento nativo; la ruta se
+        resuelve en orden: texto inyectado explícito → variable de entorno
+        POLIS_USER_OUTLINE_PATH (reproducible en CI) → guion colocado por el
+        usuario en /tmp. Si el insumo no existe, el caso de uso falla de forma
+        explícita y no se sustituye el guion de nadie.
+        """
+        import os
         import re
 
-        outline_path = Path("/tmp/user_google_doc_content.txt")
-        if not outline_path.is_file():
-            raise FileNotFoundError(
-                "Falta el guion oficial del usuario /tmp/user_google_doc_content.txt"
-            )
-        outline = outline_path.read_text(encoding="utf-8")
+        outline = outline_text
+        if outline is None:
+            outline_env = os.getenv("POLIS_USER_OUTLINE_PATH")
+            outline_path = Path(outline_env) if outline_env else Path("/tmp/user_google_doc_content.txt")
+            if not outline_path.is_file():
+                raise FileNotFoundError(
+                    "Falta el guion oficial del usuario "
+                    f"{outline_path} (insumo del documento nativo de Google Workspace)"
+                )
+            outline = outline_path.read_text(encoding="utf-8")
         zone_detail = "; ".join(
-            f"{row['zona']}: {row['casos']:,} casos en {row['filas']:,} filas"
-            for row in d.get("theft_by_zone", [])[:8]
+            f"{row['zona']}: {row['casos']:,} casos en {row['filas']:,} filas" for row in d.get("theft_by_zone", [])[:8]
         )
-        type_detail = "; ".join(
-            f"{row['delito']}: {row['casos']:,} casos" for row in d.get("theft_by_type", [])[:8]
-        )
+        type_detail = "; ".join(f"{row['delito']}: {row['casos']:,} casos" for row in d.get("theft_by_type", [])[:8])
         arms_detail = "; ".join(
-            f"{row['armas_medios']}: {row['casos']:,} casos"
-            for row in d.get("theft_by_arms", [])[:8]
+            f"{row['armas_medios']}: {row['casos']:,} casos" for row in d.get("theft_by_arms", [])[:8]
         )
         out = [
             "DOCUMENTO TÉCNICO DE DIAGNÓSTICO — POLÍTICA PÚBLICA DE SEGURIDAD HUMANA INTEGRAL DEL DISTRITO TURÍSTICO Y CULTURAL DE CARTAGENA DE INDIAS (2026–2036)",
@@ -3145,9 +3058,7 @@ class GoogleWorkspaceSyncService:
             vals = [grouped[m].get(period, 0) for m in motors]
             ax.bar(motors, vals, bottom=bottom, label=period, color=[navy, teal, amber, red][index])
             bottom = [a + b for a, b in zip(bottom, vals, strict=True)]
-        ax.set_title(
-            f"Corpus Triada por motor y periodo · {d['normalized_counts']['registros']:,} filas"
-        )
+        ax.set_title(f"Corpus Triada por motor y periodo · {d['normalized_counts']['registros']:,} filas")
         ax.set_ylabel("Registros normalizados")
         ax.tick_params(axis="x", rotation=20)
         ax.legend()
@@ -3158,10 +3069,7 @@ class GoogleWorkspaceSyncService:
         localities = d["laboratory"].get("justicia_territorial_pdl", {}).get("localidades", [])
         fig, axes = plt.subplots(1, 3)
         axes[0].bar(
-            [
-                f"{x.get('localidad', '')}\nPob. {x.get('poblacion_dane') or 's/d'}"
-                for x in localities
-            ],
+            [f"{x.get('localidad', '')}\nPob. {x.get('poblacion_dane') or 's/d'}" for x in localities],
             [float(x.get("inversion_per_capita_cop") or 0) for x in localities],
             color=teal,
         )
@@ -3197,10 +3105,7 @@ class GoogleWorkspaceSyncService:
         save(fig, CHART_NAMES[2])
 
         # 4. Network DEA scores: non-estimable entities are not fabricated as zeros.
-        dmus = {
-            row["entidad"]: row
-            for row in d["laboratory"].get("network_dea_bi_etapa", {}).get("dmus", [])
-        }
+        dmus = {row["entidad"]: row for row in d["laboratory"].get("network_dea_bi_etapa", {}).get("dmus", [])}
         fig, ax = plt.subplots()
         for entity in d["entities"]:
             score = dmus.get(entity["entidad_responsable"], {})
@@ -3273,9 +3178,7 @@ class GoogleWorkspaceSyncService:
         axes[0].legend(fontsize=8)
         axes[0].grid(axis="x", alpha=0.3)
         advances = [
-            sum(by_entity[n]["advances"]) / len(by_entity[n]["advances"])
-            if by_entity[n]["advances"]
-            else 0
+            sum(by_entity[n]["advances"]) / len(by_entity[n]["advances"]) if by_entity[n]["advances"] else 0
             for n in names
         ]
         axes[1].barh(y, advances, color=navy)
@@ -3293,9 +3196,7 @@ class GoogleWorkspaceSyncService:
                 "GET",
                 f"https://sheets.googleapis.com/v4/spreadsheets/{FILES[key]['id']}",
                 token,
-                params={
-                    "fields": "spreadsheetId,properties(title),sheets(properties(title),charts(chartId))"
-                },
+                params={"fields": "spreadsheetId,properties(title),sheets(properties(title),charts(chartId))"},
             )
             titles = [s["properties"]["title"] for s in book.get("sheets", [])]
             values = await self._request(

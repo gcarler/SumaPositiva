@@ -27,8 +27,7 @@ class CorreoIdentidad:
         if not self.settings.smtp_host:
             raise HTTPException(503, "El servicio de correo aún no está configurado")
         if self.settings.environment == "production" and (
-            not self.settings.smtp_tls
-            or not self.settings.identidad_url_publica.startswith("https://")
+            not self.settings.smtp_tls or not self.settings.identidad_url_publica.startswith("https://")
         ):
             raise HTTPException(503, "El servicio de correo requiere HTTPS y TLS")
 
@@ -78,9 +77,7 @@ def obtener_correo_identidad(request: Request) -> CorreoIdentidad:
 
 
 def token_para_correo(nonce: uuid.UUID, settings: Settings) -> str:
-    digest = hmac.new(
-        settings.jwt_secret_key.encode(), f"polis-correo:{nonce}".encode(), hashlib.sha256
-    ).digest()
+    digest = hmac.new(settings.jwt_secret_key.encode(), f"polis-correo:{nonce}".encode(), hashlib.sha256).digest()
     return base64.urlsafe_b64encode(digest).decode().rstrip("=")
 
 

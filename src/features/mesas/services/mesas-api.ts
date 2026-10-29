@@ -102,8 +102,8 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
   return {
     id: b.id,
     nombre: b.nombre,
-    fecha: b.fecha ? (typeof b.fecha === "string" ? b.fecha.slice(0, 10) : new Date(b.fecha).toISOString().slice(0, 10)) : "2026-10-01",
-    lugar: b.lugar_nombre || b.lugar || b.metadatos?.lugar || "Lugar por definir",
+    fecha: b.fecha ? (typeof b.fecha === "string" ? b.fecha.slice(0, 10) : new Date(b.fecha).toISOString().slice(0, 10)) : "Por definir",
+    lugar: b.lugar_nombre || b.lugar || b.metadatos?.lugar || "Por definir",
     entidad: b.metadatos?.entidad || b.entidad || (b.tipo_mesa ? `Mesa ${b.tipo_mesa}` : "Distrito de Cartagena"),
     facilitador: b.facilitador_nombre || b.metadatos?.facilitador || b.facilitador || "",
     totalAsistentes: b.total_asistentes ?? b.totalAsistentes ?? b.aforo_maximo ?? 0,
@@ -113,7 +113,7 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
     codigoOficial: b.codigo_oficial,
     shortcodeCiudadano: b.shortcode_ciudadano,
     tipoMesa: b.tipo_mesa,
-    horario: b.horario,
+    horario: b.horario || "Por definir",
     modalidad: b.modalidad,
     sha256Acta: b.sha256_acta,
     coordenadas: (b.metadatos?.coordenadas as { lat: number; lng: number } | undefined) ?? undefined,
@@ -342,7 +342,7 @@ export async function cerrarActaOficial(
   const res = await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta/cerrar`, {
     method: "POST",
     headers,
-    body: JSON.stringify(payload),
+    body: payload,
   });
 
   const sha256 =
@@ -395,10 +395,10 @@ export async function crearSubMesa(
   // 1. Persistir primero en backend; si falla, el error se propaga (sin retorno simulado)
   const creada = await apiFetch<{ id: string }>(`/api/v1/mesas/${mesaId}/submesas`, {
     method: "POST",
-    body: JSON.stringify({
+    body: {
       nombre: datos.nombre,
       metadatos: { tema: datos.tema, participantes: datos.participantes ?? null },
-    }),
+    },
   });
 
   // 2. Reflejar en el store local solo tras confirmación del servidor

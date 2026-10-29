@@ -515,9 +515,9 @@ export const METRICAS_CIERRE_DOCUMENTAL_WORKSPACE: MetricasCierreDocumentalWorks
   total_documentos_catalogo: 1383,
   porcentaje_catalogo_cubierto: 100.0,
   entidades_cubiertas: 29,
-  mesas_oficiales_censo: 37,
-  agendas_oficiales_censo: 38,
-  corregimientos_oficiales: 15,
+  mesas_oficiales_censo: 35,
+  agendas_oficiales_censo: 36,
+  corregimientos_oficiales: 11,
 };
 
 export interface LaboratorioPrescriptivoPddRespuesta {
@@ -1353,7 +1353,7 @@ export const MONITOR_SEGURIDAD_HUMANA_DATA: MonitorSeguridadHumanaDetalle = {
     { dimension: "Digital", presupuesto_asociado_mcop: 28000.0, metas_asociadas: 15, descripcion: "Conectividad barrial segura, telemedicina y ciberseguridad distrital" },
   ],
   mesas_territoriales: {
-    total_mesas: 37,
+    total_mesas: 35,
     demandas_priorizadas_seguridad: 142,
     compromisos_activos: 89,
   },
@@ -3525,8 +3525,8 @@ export const JUSTICIA_TERRITORIAL_PDL_DANE = {
       fdl_total_cuatrienio_mcop: 97691.04,
       fdl_per_capita_constante_cop: 236781.0,
       indice_equidad_gasto: 0.83,
-      mesas_ciudadanas_count: 17,
-      mesas_por_100k_hab: 4.12,
+      mesas_ciudadanas_count: 16,
+      mesas_por_100k_hab: 3.88,
       compromisos_pas_asociados: 5,
       hurtos_georreferenciados: 6840,
       hurtos_por_100k_hab: 1658.0,
@@ -3540,8 +3540,8 @@ export const JUSTICIA_TERRITORIAL_PDL_DANE = {
       fdl_total_cuatrienio_mcop: 161290.0,
       fdl_per_capita_constante_cop: 463224.0,
       indice_equidad_gasto: 1.62,
-      mesas_ciudadanas_count: 12,
-      mesas_por_100k_hab: 3.45,
+      mesas_ciudadanas_count: 11,
+      mesas_por_100k_hab: 3.16,
       compromisos_pas_asociados: 3,
       hurtos_georreferenciados: 3420,
       hurtos_por_100k_hab: 982.0,
@@ -3588,7 +3588,7 @@ export const JUSTICIA_TERRITORIAL_PDL_DANE = {
   poblacion_total_distrito: 1065570,
   fdl_total_distrito_mcop: 304981.04,
   inversion_per_capita_media_cop: 286214.0,
-  mesas_totales_distrito: 37,
+  mesas_totales_distrito: 35,
 };
 
 export const PLIEGOS_CONTROL_POLITICO_FISCAL: PliegoControlPoliticoItem[] = [
@@ -3659,7 +3659,7 @@ export const PLIEGOS_CONTROL_POLITICO_FISCAL: PliegoControlPoliticoItem[] = [
     efectividad_estrategica: 0.880,
     cuestionario_control_politico: [
       "¿Cómo se proyecta la sostenibilidad financiera de los 5 programas de Titán 24 para las vigencias 2026 y 2027?",
-      "¿Qué mecanismos de coordinación existen con las 37 Mesas Territoriales de Seguridad para el reporte oportuno de denuncias?",
+      "¿Qué mecanismos de coordinación existen con las 35 Mesas Territoriales de Seguridad para el reporte oportuno de denuncias?",
     ],
     hallazgo_principal: "Alta alineación operativa y estratégica; el Plan Titán 24 articula el 80% de los compromisos de seguridad.",
     recomendacion_fiscal: "Mantener asignación presupuestal y evaluar ampliación de cuadrantes en Localidad 3.",

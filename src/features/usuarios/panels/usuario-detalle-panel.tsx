@@ -346,7 +346,7 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps<"us
                         </span>
                       </div>
                       <span className="text-xs text-text-tertiary">
-                        Asignado el {new Date(ambito.asignado_en).toLocaleDateString("es-CO")}
+                        Asignado el {new Date(ambito.creado_en).toLocaleDateString("es-CO")}
                       </span>
                     </div>
                   </div>

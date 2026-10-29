@@ -64,9 +64,7 @@ class ComunicacionesService:
 
             return TareaComunicacionLectura.model_validate(tarea)
 
-    async def actualizar(
-        self, id: uuid.UUID, datos: TareaComunicacionActualizar
-    ) -> TareaComunicacionLectura:
+    async def actualizar(self, id: uuid.UUID, datos: TareaComunicacionActualizar) -> TareaComunicacionLectura:
         async with transaction(self.session):
             tarea = await self.repository.obtener_por_id(id)
             if tarea is None:

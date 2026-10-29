@@ -70,16 +70,12 @@ def main() -> int:
     if output.is_file():
         from app.modules.compromisos.motor_multiagente_pdd import _page_chunks
 
-        pages.update(
-            _page_chunks(output.read_text(encoding="utf-8", errors="replace"))
-        )
+        pages.update(_page_chunks(output.read_text(encoding="utf-8", errors="replace")))
     missing = [number for number in range(1, total + 1) if number not in pages]
     started = time.monotonic()
     if missing:
         with ProcessPoolExecutor(max_workers=max(1, min(args.workers, 8))) as pool:
-            futures = {
-                pool.submit(_ocr_one, (filename, number)): number for number in missing
-            }
+            futures = {pool.submit(_ocr_one, (filename, number)): number for number in missing}
             with progress_file.open("a", encoding="utf-8") as stream:
                 for completed, future in enumerate(as_completed(futures), 1):
                     number, content, dpi = future.result()
@@ -95,8 +91,7 @@ def main() -> int:
                         stream.flush()
                     if completed % 10 == 0 or completed == len(missing):
                         print(
-                            f"{filename}: {completed}/{len(missing)} pendientes; "
-                            f"{len(pages)}/{total} con texto OCR",
+                            f"{filename}: {completed}/{len(missing)} pendientes; {len(pages)}/{total} con texto OCR",
                             flush=True,
                         )
     absent = sorted(set(range(1, total + 1)) - set(pages))

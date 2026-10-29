@@ -122,9 +122,7 @@ def graf_multiples(e: dict) -> Path:
         t = e["tend_act"][k]
         xs = np.array([ANIO_MIN_TENDENCIA, ANIO_MAX_TENDENCIA])
         ax.plot(xs, (t["intercepto"] + t["pendiente_raw"] * xs) * 100, color="k", lw=1)
-        ax.set_title(
-            f"{_etq(k)}\n{t['pendiente_pp_anio']:+.1f} pp/año · {t['etiqueta'][:12]}", fontsize=7
-        )
+        ax.set_title(f"{_etq(k)}\n{t['pendiente_pp_anio']:+.1f} pp/año · {t['etiqueta'][:12]}", fontsize=7)
         ax.tick_params(labelsize=6)
         ax.spines[["top", "right"]].set_visible(False)
     axs.flat[-1].axis("off")
@@ -179,9 +177,7 @@ def graf_eje(e: dict, k: str, i: int) -> Path:
     ax.plot(ct.index, ct[k], color="gray", ls="--", marker="s", ms=3, label="solo por texto")
     t = e["tend_act"][k]
     xs = np.array([ANIO_MIN_TENDENCIA, ANIO_MAX_TENDENCIA])
-    ax.plot(
-        xs, (t["intercepto"] + t["pendiente_raw"] * xs) * 100, color="k", lw=1, label="Theil-Sen"
-    )
+    ax.plot(xs, (t["intercepto"] + t["pendiente_raw"] * xs) * 100, color="k", lw=1, label="Theil-Sen")
     ax.set_title("Participación en la actividad (%)", fontsize=9)
     ax.legend(fontsize=6, frameon=False)
     ax.spines[["top", "right"]].set_visible(False)
@@ -314,9 +310,7 @@ class Doc:
         tcPr.append(b)
         self.d.add_paragraph()
 
-    def tabla(
-        self, cab: list[str], filas: list[list[str]], anchos: list[float] | None = None
-    ) -> None:
+    def tabla(self, cab: list[str], filas: list[list[str]], anchos: list[float] | None = None) -> None:
         t = self.d.add_table(rows=1, cols=len(cab))
         t.style = "Table Grid"
         for i, x in enumerate(cab):
@@ -363,10 +357,7 @@ def _lectura(t: dict, tt: dict) -> str:
             f"({t['pendiente_pp_anio']:+.2f} pp/año, p={t['p']}) y en la restringida a texto "
             f"({tt['pendiente_pp_anio']:+.2f} pp/año, p={tt['p']})."
         )
-    if (
-        t["etiqueta"] != "sin tendencia concluyente"
-        or tt["etiqueta"] != "sin tendencia concluyente"
-    ):
+    if t["etiqueta"] != "sin tendencia concluyente" or tt["etiqueta"] != "sin tendencia concluyente":
         return (
             f"INDICIO NO CONFIRMADO: completa {t['etiqueta']} ({t['pendiente_pp_anio']:+.2f} "
             f"pp/año, p={t['p']}); solo texto {tt['etiqueta']} ({tt['pendiente_pp_anio']:+.2f} "
@@ -383,8 +374,7 @@ def construir_docx(e: dict) -> Path:
     cuota, ct, cal = e["cuota"].reindex(ANIOS), e["cuota_texto"].reindex(ANIOS), e["calidad"]
     n_act = int(cal["actividades_unicas"].sum())
     por_texto = float(
-        cal["clasif_por_texto"].sum()
-        / max(1, cal["clasif_por_texto"].sum() + cal["clasif_por_entidad"].sum())
+        cal["clasif_por_texto"].sum() / max(1, cal["clasif_por_texto"].sum() + cal["clasif_por_entidad"].sum())
     )
     # ---- portada
     D.d.add_paragraph()
@@ -408,8 +398,7 @@ def construir_docx(e: dict) -> Path:
     rob = [
         k
         for k in CODIGOS
-        if tr[k]["etiqueta"] == tx[k]["etiqueta"]
-        and tr[k]["etiqueta"] != "sin tendencia concluyente"
+        if tr[k]["etiqueta"] == tx[k]["etiqueta"] and tr[k]["etiqueta"] != "sin tendencia concluyente"
     ]
     D.p(
         f"Se analizaron {n_act:,} actividades únicas de plan de acción vigencias 2018–2026 y "
@@ -423,18 +412,13 @@ def construir_docx(e: dict) -> Path:
             f"{e['tend_agenda']['etiqueta']} ({e['tend_agenda']['pendiente_pp_anio']:+.2f} pp/año).",
             "Tendencias robustas (coinciden en las dos clasificaciones): "
             + (
-                ", ".join(
-                    f"{_etq(k)} ({tr[k]['etiqueta']}, {tr[k]['pendiente_pp_anio']:+.2f} pp/año)"
-                    for k in rob
-                )
+                ", ".join(f"{_etq(k)} ({tr[k]['etiqueta']}, {tr[k]['pendiente_pp_anio']:+.2f} pp/año)" for k in rob)
                 if rob
                 else "ninguna."
             ),
             f"Equilibrio entre ejes (Pielou): {e['evenness'].loc[2018]:.2f} en 2018 → "
             f"{e['evenness'].loc[2025]:.2f} en 2025; tendencia {e['tend_evenness']['etiqueta']}.",
-            "Distancia (JSD) entre perfiles de periodo: "
-            + "; ".join(f"{a}: {v}" for a, v in e["jsd"].items())
-            + ".",
+            "Distancia (JSD) entre perfiles de periodo: " + "; ".join(f"{a}: {v}" for a, v in e["jsd"].items()) + ".",
         ]
     )
     D.callout(
@@ -557,10 +541,7 @@ def construir_docx(e: dict) -> Path:
                 f"{tx[k]['pendiente_pp_anio']:+.2f}",
                 f"{tx[k]['p']}",
                 "robusta: " + tr[k]["etiqueta"]
-                if (
-                    tr[k]["etiqueta"] == tx[k]["etiqueta"]
-                    and tr[k]["etiqueta"] != "sin tendencia concluyente"
-                )
+                if (tr[k]["etiqueta"] == tx[k]["etiqueta"] and tr[k]["etiqueta"] != "sin tendencia concluyente")
                 else "no concluyente",
             ]
             for k in CODIGOS
@@ -582,13 +563,7 @@ def construir_docx(e: dict) -> Path:
         if prev is not None:
             d = (cuota.loc[a] - cuota.loc[prev]) * 100
             mayor = d.abs().sort_values(ascending=False).head(2).index
-            txt += (
-                "Cambios frente a "
-                + str(prev)
-                + ": "
-                + ", ".join(f"{_etq(k)} {d[k]:+.1f} pp" for k in mayor)
-                + ". "
-            )
+            txt += "Cambios frente a " + str(prev) + ": " + ", ".join(f"{_etq(k)} {d[k]:+.1f} pp" for k in mayor) + ". "
         if r.proyectos_bpin > 0:
             ci = e["cuota_inv"].loc[a].sort_values(ascending=False)
             txt += (
@@ -601,11 +576,7 @@ def construir_docx(e: dict) -> Path:
                 txt += (
                     f"Mayor proyecto: BPIN {tp['codigo_bpim']} por {cop(tp['aprop'])} "
                     f"({str(tp['descripcion'])[:80].strip()})"
-                    + (
-                        "; es funcionamiento y no cuenta en los ejes. "
-                        if tp["cat"] not in CODIGOS
-                        else ". "
-                    )
+                    + ("; es funcionamiento y no cuenta en los ejes. " if tp["cat"] not in CODIGOS else ". ")
                 )
         else:
             txt += "No hay BPIN identificable este año: no se calcula inversión. "
@@ -675,8 +646,7 @@ def construir_docx(e: dict) -> Path:
         )
         D.h("Actividades e indicadores recurrentes", 2)
         D.bullets(
-            [f"{tx_} (×{n})" for tx_, n in _top_textos(sub["descripcion"], 6)]
-            or ["Sin textos recurrentes relevantes."]
+            [f"{tx_} (×{n})" for tx_, n in _top_textos(sub["descripcion"], 6)] or ["Sin textos recurrentes relevantes."]
         )
         D.h("Lectura cautelosa", 2)
         s = cuota[k].loc[ANIO_MIN_TENDENCIA:ANIO_MAX_TENDENCIA]
@@ -713,10 +683,7 @@ def construir_docx(e: dict) -> Path:
             + [
                 f"{tr[k]['pendiente_pp_anio']:+.2f}",
                 "robusta: " + tr[k]["etiqueta"]
-                if (
-                    tr[k]["etiqueta"] == tx[k]["etiqueta"]
-                    and tr[k]["etiqueta"] != "sin tendencia concluyente"
-                )
+                if (tr[k]["etiqueta"] == tx[k]["etiqueta"] and tr[k]["etiqueta"] != "sin tendencia concluyente")
                 else "no concluyente",
             ]
             for k in CODIGOS
@@ -793,13 +760,86 @@ def construir_docx(e: dict) -> Path:
             "Próximo paso: indicadores de resultado externos y localización por comuna/UCG.",
         ]
     )
+    D.h("9.9 Qué plan priorizó más cada dimensión y el conjunto", 2)
+    metas = e["mat_plan"][CODIGOS]
+    pdd = metas.loc[[p for p in metas.index if p.startswith("PDD_")]]
+    D.p(
+        "Las tablas de cada capítulo permiten comparar metas formuladas, pero no medían "
+        "explícitamente el total de las siete dimensiones por plan. Esta síntesis cuenta cada "
+        "meta una sola vez en su eje principal. Compara PDD distritales entre sí; los PDL "
+        "tienen otra jurisdicción y no se suman al PDD vigente."
+    )
+    D.tabla(
+        ["Dimensión", "PDD con más metas", "Metas"],
+        [[_etq(k), str(pdd[k].idxmax()), str(int(pdd[k].max()))] for k in CODIGOS],
+    )
+    total_7 = pdd.sum(axis=1).sort_values(ascending=False)
+    D.tabla(
+        ["PDD", "Metas en 7 dimensiones", "Metas totales", "% de sus metas"],
+        [
+            [
+                str(plan),
+                str(int(total_7.loc[plan])),
+                str(int(e["metas_plan"].loc[plan])),
+                pct(total_7.loc[plan] / e["metas_plan"].loc[plan]),
+            ]
+            for plan in total_7.index
+        ],
+    )
+    D.p(
+        "Por número absoluto de metas en los siete ejes encabeza el PDD 2024–2027; "
+        "por proporción dentro del propio plan encabeza el PDD 2016–2019. La suma de "
+        "porcentajes por dimensión no sirve para este ranking porque siempre da 100 % "
+        "dentro de los siete ejes. Ninguna de estas medidas demuestra ejecución ni "
+        "mejoras en casos, salud o pobreza."
+    )
+    D.h("9.10 Comparación financiera: lo identificado y lo que falta conciliar", 2)
+    proy = e["proy"]
+    periodos_fin = [
+        ("2019 · PDD 2016–2019", [2019]),
+        ("2020–2023 · PDD 2020–2023", [2020, 2021, 2022, 2023]),
+        ("2024–2025 · PDD 2024–2027", [2024, 2025]),
+    ]
+    filas_fin = []
+    for etiqueta, vigencias in periodos_fin:
+        todos = proy[proy["vigencia"].isin(vigencias)]
+        siete = todos[todos["cat"].isin(CODIGOS)]
+        sin_dominante = siete.drop(index=siete.groupby("vigencia")["aprop"].idxmax())
+        filas_fin.append(
+            [
+                etiqueta,
+                cop(siete["aprop"].sum()),
+                cop(siete["aprop"].sum() / len(vigencias)),
+                pct(siete["aprop"].sum() / todos["aprop"].sum()),
+                cop(sin_dominante["aprop"].sum()),
+            ]
+        )
+    D.tabla(
+        ["Periodo observado", "Apropiación 7 ejes", "Promedio anual", "% BPIN", "Sin mayor BPIN anual"],
+        filas_fin,
+    )
+    D.p(
+        "La mayor apropiación nominal identificable corresponde a 2024–2025, incluso al "
+        "excluir el proyecto de mayor valor de cada año. Es una comparación de periodos "
+        "observados, no una asignación contable de cada BPIN a un plan: los registros de "
+        "inversión no contienen un vínculo fiable PDD/PDL→proyecto. En 2018 no hay BPIN "
+        "identificable, 2019 tiene cobertura delgada, 2026 es parcial y los periodos duran "
+        "distinto número de años. Las cifras son COP corrientes, sin ajuste por inflación. "
+        "El BPIN 2024130010246 de 2025 es atípico y requiere cotejo con su expediente."
+    )
+    D.p(
+        "Los campos de pagos y compromisos todavía no permiten un ranking de ejecución: "
+        "hay proyectos cuyo pago registrado supera ampliamente su apropiación y otros "
+        "con compromiso cero pese a pagos positivos. Deben conciliarse vigencia, fuente "
+        "presupuestal, valor y unidad antes de comparar gasto ejecutado o concluir cuál "
+        "plan aportó más a los resultados de seguridad humana."
+    )
     D.salto()
     D.h("Apéndice A. Método y fórmulas", 1)
     D.bullets(
         [
             "Participación del eje k en el año t: n_kt / Σ_k n_kt sobre los 7 ejes.",
-            "Tendencia: pendiente de Theil-Sen (pp/año) y τ de Kendall (Mann-Kendall); "
-            "umbral p<0,10 por el bajo n.",
+            "Tendencia: pendiente de Theil-Sen (pp/año) y τ de Kendall (Mann-Kendall); umbral p<0,10 por el bajo n.",
             "Equilibrio (Pielou): −Σ p_k ln p_k / ln 7.",
             "Distancia entre periodos: raíz de la divergencia de Jensen-Shannon (base 2).",
             "Intensidad: (inversión_k / inversión_7ejes) / (actividad_k / actividad_7ejes).",
@@ -840,10 +880,7 @@ def _plan_vigente(a: int) -> str:
 
 def exportar_muestra(e: dict) -> Path:
     u = e["uni"]
-    partes = [
-        g.sample(min(10, len(g)), random_state=7)
-        for _, g in u[u["cat"].isin(CODIGOS)].groupby("cat")
-    ]
+    partes = [g.sample(min(10, len(g)), random_state=7) for _, g in u[u["cat"].isin(CODIGOS)].groupby("cat")]
     m = pd.concat(partes)[["vigencia", "entidad", "indicador", "descripcion", "cat", "fuente"]]
     m = m.copy()
     m["validacion_humana_correcto_si_no"] = ""

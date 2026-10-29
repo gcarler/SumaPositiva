@@ -43,6 +43,7 @@ export function SidePanel({
       role="dialog"
       aria-labelledby={titleId}
       aria-label={title}
+      aria-modal={currentKey ? "true" : undefined}
       tabIndex={-1}
       className="flex h-full min-w-0 flex-col border-l border-border bg-surface-0 text-text-primary shadow-panel"
       data-slot="side-panel"

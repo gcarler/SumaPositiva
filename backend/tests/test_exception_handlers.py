@@ -13,7 +13,6 @@ from sqlalchemy.exc import IntegrityError
 from app.core.config import Settings
 from app.main import create_app
 
-
 router_pruebas = APIRouter(prefix="/api/v1/test-errores", tags=["TestErrores"])
 
 

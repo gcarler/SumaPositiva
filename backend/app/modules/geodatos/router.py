@@ -4,17 +4,19 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.core.database import SessionDependency
+from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.schemas import (
     CapaGeovisorRead,
     DireccionEstandarizadaResponse,
     EstandarizarDireccionRequest,
     ExploradorHurtosResponse,
     HurtosFeatureCollection,
+    IndicadoresTerritorioResponse,
+    IndicadorTerritorioDetalladoRead,
     IsocronasFeatureCollection,
     ResumenHurtosResponse,
     TerritorioRead,
 )
-from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.service import GeodatosService
 
 router = APIRouter(prefix="/geodatos", tags=["geovisor-territorial"])
@@ -30,15 +32,32 @@ GeodatosServiceDep = Annotated[GeodatosService, Depends(get_geodatos_service)]
 @router.get("/territorios", response_model=list[TerritorioRead])
 async def listar_territorios(
     service: GeodatosServiceDep,
-    tipo_territorio: str | None = None,
-    es_zona_etnica: bool | None = None,
+    tipo_territorio: str | None = Query(None, description="Tipo de territorio"),
+    tipo: str | None = Query(None, description="Alias tipo"),
+    es_zona_etnica: bool | None = Query(None, description="Zona étnica"),
 ):
-    return await service.listar_territorios(tipo_territorio, es_zona_etnica)
+    tipo_final = tipo_territorio if tipo_territorio is not None else tipo
+    return await service.listar_territorios(tipo_final, es_zona_etnica)
 
 
 @router.get("/territorios/geojson")
-async def obtener_territorios_geojson(service: GeodatosServiceDep):
-    return await service.obtener_territorios_geojson()
+async def obtener_territorios_geojson(
+    service: GeodatosServiceDep,
+    tipo: str | None = Query(None, description="Filtrar por tipo de territorio"),
+    tipo_territorio: str | None = Query(None, description="Alias de tipo de territorio"),
+    busqueda: str | None = Query(None, description="Búsqueda por nombre o código"),
+    es_zona_sat: bool | None = Query(None, description="Filtrar por zona SAT"),
+    alerta_sat: bool | None = Query(None, description="Alias de zona SAT"),
+    es_zona_etnica: bool | None = Query(None, description="Filtrar por zona étnica"),
+):
+    tipo_final = tipo_territorio if tipo_territorio is not None else tipo
+    sat_final = es_zona_sat if es_zona_sat is not None else alerta_sat
+    return await service.obtener_territorios_geojson(
+        tipo_territorio=tipo_final,
+        busqueda=busqueda,
+        es_zona_sat=sat_final,
+        es_zona_etnica=es_zona_etnica,
+    )
 
 
 @router.get("/territorios/buscar-por-coordenada", response_model=list[TerritorioRead])
@@ -63,6 +82,69 @@ async def listar_capas(service: GeodatosServiceDep):
     return await service.listar_capas()
 
 
+@router.get(
+    "/indicadores",
+    response_model=IndicadoresTerritorioResponse,
+    summary="Consultar banco multifuente de indicadores territoriales",
+    description=(
+        "Permite consultar y filtrar indicadores del Geovisor por territorio, dimensión de seguridad humana, "
+        "fuente oficial de datos y año de corte."
+    ),
+)
+async def listar_indicadores(
+    service: GeodatosServiceDep,
+    territorio_id: Annotated[uuid.UUID | None, Query(description="UUID del territorio")] = None,
+    codigo_territorio: Annotated[
+        str | None, Query(description="Código del territorio (ej. DISTRITO-CTG, LOC-1)")
+    ] = None,
+    dimension: Annotated[
+        str | None, Query(description="Dimensión (código o nombre: personal, salud, economica, etc.)")
+    ] = None,
+    fuente_datos: Annotated[
+        str | None, Query(description="Filtro por entidad o fuente (DANE, Medicina Legal, ICBF, etc.)")
+    ] = None,
+    anio_corte: Annotated[int | None, Query(description="Año de corte del indicador")] = None,
+    codigo_indicador: Annotated[str | None, Query(description="Código del indicador o patrón")] = None,
+    busqueda: Annotated[str | None, Query(description="Búsqueda de texto en nombre de indicador")] = None,
+    limit: Annotated[int, Query(ge=1, le=1000, description="Límite de registros por página")] = 100,
+    offset: Annotated[int, Query(ge=0, description="Desplazamiento para paginación")] = 0,
+) -> IndicadoresTerritorioResponse:
+    return await service.listar_indicadores(
+        territorio_id=territorio_id,
+        codigo_territorio=codigo_territorio,
+        dimension=dimension,
+        fuente_datos=fuente_datos,
+        anio_corte=anio_corte,
+        codigo_indicador=codigo_indicador,
+        busqueda=busqueda,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@router.get(
+    "/territorios/{id}/indicadores",
+    response_model=list[IndicadorTerritorioDetalladoRead],
+    summary="Obtener todos los indicadores de un territorio específico",
+)
+async def obtener_indicadores_territorio(
+    id: uuid.UUID,
+    service: GeodatosServiceDep,
+    dimension: Annotated[str | None, Query(description="Dimensión de seguridad humana opcional")] = None,
+    anio_corte: Annotated[int | None, Query(description="Año de corte opcional")] = None,
+    busqueda: Annotated[str | None, Query(description="Búsqueda de texto en nombre de indicador")] = None,
+) -> list[IndicadorTerritorioDetalladoRead]:
+    res = await service.listar_indicadores(
+        territorio_id=id,
+        dimension=dimension,
+        anio_corte=anio_corte,
+        busqueda=busqueda,
+        limit=1000,
+        offset=0,
+    )
+    return res.indicadores
+
+
 @router.post(
     "/estandarizar-direccion",
     response_model=DireccionEstandarizadaResponse,
@@ -82,7 +164,7 @@ async def estandarizar_direccion(
     summary="Cálculo de isócronas de accesibilidad y ruteo de seguridad humana",
     description=(
         "Genera polígonos de isócronas de cobertura temporal (5, 10, 15 min) a pie o vehículo "
-        "calculando la proximidad al nodo de seguridad ciudadana o salud más cercano mediante PostGIS y pgRouting."
+        "calculando la proximidad al nodo de seguridad ciudadana o salud más cercano mediante PostGIS y buffer euclidiano geodésico."
     ),
 )
 async def calcular_isocronas(
@@ -176,9 +258,7 @@ async def explorar_registros_hurtos(
     delito: str | None = Query(default=None, description="Delito a filtrar o variantes"),
     anio: int | None = Query(default=None, ge=2018, le=2026, description="Año analizado"),
     mes: str | None = Query(default=None, description="Mes del evento"),
-    zona: str | None = Query(
-        default=None, pattern="^(URBANA|RURAL|urbana|rural)$", description="Zona URBANA o RURAL"
-    ),
+    zona: str | None = Query(default=None, pattern="^(URBANA|RURAL|urbana|rural)$", description="Zona URBANA o RURAL"),
     armas_medios: str | None = Query(default=None, description="Modalidad o arma empleada"),
     clase_sitio: str | None = Query(default=None, description="Clase de sitio de ocurrencia"),
     dia_semana: str | None = Query(default=None, description="Día de la semana"),
@@ -204,4 +284,3 @@ async def explorar_registros_hurtos(
         limit=limit,
         offset=offset,
     )
-

@@ -23,9 +23,7 @@ class RegistroAuditoria(Base):
         ),
         {
             ("schema"): ("auditoria"),
-            ("comment"): (
-                "Log de auditoría forense inmutable y registro de razones motivadas (C-150/15)"
-            ),
+            ("comment"): ("Log de auditoría forense inmutable y registro de razones motivadas (C-150/15)"),
         },
     )
 
@@ -60,4 +58,3 @@ class RegistroAuditoria(Base):
 
 # Modelos adicionales en esquema auditoria
 from app.modules.fuentes.models import FuenteInformacion  # noqa: E402, F401
-

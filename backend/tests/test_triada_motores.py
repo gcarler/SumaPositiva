@@ -105,12 +105,8 @@ def test_validacion_dnp_y_comparativa_sin_imputacion():
 def test_motor_plan_desarrollo_agrupa_lineas():
     result = motor_plan_desarrollo(
         [
-            MetaEstrategicaTriada(
-                entidad="DADIS", linea_estrategica="Salud", avance_estrategico_pct=40
-            ),
-            MetaEstrategicaTriada(
-                entidad="DADIS", linea_estrategica="Salud", avance_estrategico_pct=60
-            ),
+            MetaEstrategicaTriada(entidad="DADIS", linea_estrategica="Salud", avance_estrategico_pct=40),
+            MetaEstrategicaTriada(entidad="DADIS", linea_estrategica="Salud", avance_estrategico_pct=60),
         ]
     )
     assert result["metas_evaluadas"] == 2
@@ -134,11 +130,7 @@ def test_motor_plan_accion_agrupa_avance_y_validacion():
 
 def test_motor_financiero_calcula_rp_y_giros():
     result = motor_inversion_presupuestal(
-        [
-            EjecucionPresupuestalTriada(
-                apropiacion_definitiva_cop=1000, compromisos_rp_cop=800, pagos_tesoreria_cop=300
-            )
-        ]
+        [EjecucionPresupuestalTriada(apropiacion_definitiva_cop=1000, compromisos_rp_cop=800, pagos_tesoreria_cop=300)]
     )
     assert result["ejecuciones"][0]["ejecucion_compromisos_pct"] == 80
     assert result["ejecuciones"][0]["giro_efectivo_pct"] == 30
@@ -209,9 +201,7 @@ def test_cruce_triadas_deduplica_cortes_y_separa_vigencias():
 
 
 def test_cruce_no_agrupa_registros_con_claves_incompletas():
-    meta = MetaEstrategicaTriada(
-        entidad="", linea_estrategica="", codigo_bpim="", avance_estrategico_pct=80
-    )
+    meta = MetaEstrategicaTriada(entidad="", linea_estrategica="", codigo_bpim="", avance_estrategico_pct=80)
     activity = ActividadOperativaTriada(
         entidad="", linea_estrategica="", codigo_bpim="", avance_operativo_fisico_pct=10
     )
@@ -291,12 +281,7 @@ def test_tres_endpoints_http_publicos_y_calculados():
     with TestClient(app) as client:
         summary = client.get("/api/v1/compromisos/triada/resumen")
         assert summary.status_code == 200
-        assert (
-            len(
-                summary.json()["catalogo_transparencia_cartagena"]["planes_accion_2026"]["archivos"]
-            )
-            == 23
-        )
+        assert len(summary.json()["catalogo_transparencia_cartagena"]["planes_accion_2026"]["archivos"]) == 23
         detected = client.post("/api/v1/compromisos/triada/detectar-formato", json="2016_MONOHOJA")
         assert detected.status_code == 200, detected.text
         assert detected.json()["perfil_detectado"] == "PA_MONOHOJA_2016_2019"
@@ -323,9 +308,7 @@ def test_endpoint_detectar_formato_acepta_hojas_personalizadas():
             "/api/v1/compromisos/triada/detectar-formato",
             json={
                 "nombre_archivo": "mi_plan_2021.xlsx",
-                "hojas": [
-                    {"nombre_hoja": "Cartagena Incluyente", "encabezados_detectados": ["Actividad"]}
-                ],
+                "hojas": [{"nombre_hoja": "Cartagena Incluyente", "encabezados_detectados": ["Actividad"]}],
             },
         )
     assert response.status_code == 200
@@ -365,8 +348,6 @@ def test_endpoint_cruzar_lecturas_devuelve_alertas():
         ],
     )
     with TestClient(app) as client:
-        response = client.post(
-            "/api/v1/compromisos/triada/cruzar-lecturas", json=request.model_dump()
-        )
+        response = client.post("/api/v1/compromisos/triada/cruzar-lecturas", json=request.model_dump())
     assert response.status_code == 200, response.text
     assert response.json()["alertas"][0]["estado_semaforo"] == "DESFASE_CRITICO_SOBREEJECUCION"

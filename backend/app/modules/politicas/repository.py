@@ -21,17 +21,13 @@ class LineaRepository:
         )
 
     async def fase(self, id: uuid.UUID):
-        return await self.session.scalar(
-            select(FasePolitica).where(FasePolitica.id == id).with_for_update()
-        )
+        return await self.session.scalar(select(FasePolitica).where(FasePolitica.id == id).with_for_update())
 
     async def dimension(self, id: uuid.UUID):
         return await self.session.get(DimensionSeguridadHumana, id)
 
     async def duplicado(self, fase_id, codigo, excluir=None):
-        stmt = select(LineaEstrategica.id).where(
-            LineaEstrategica.fase_id == fase_id, LineaEstrategica.codigo == codigo
-        )
+        stmt = select(LineaEstrategica.id).where(LineaEstrategica.fase_id == fase_id, LineaEstrategica.codigo == codigo)
         if excluir:
             stmt = stmt.where(LineaEstrategica.id != excluir)
         return await self.session.scalar(stmt.limit(1))

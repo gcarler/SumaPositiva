@@ -1,0 +1,24 @@
+{
+  "fecha_utc": "2026-10-24T17:06:37.608160+00:00",
+  "estado": "OL_TERR_01_devuelto_para_R1",
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "ejecucion_funcional": false,
+  "revision": "bridge/87_revision_ollamacodex_parser_territorial_r1.md",
+  "archivos": {
+    "backend/app/modules/compromisos/parser_terridata_polis.py": {
+      "sha256": "6ad572e2950dc2fc7a2647e340be5ef042852eec74260a80ba8113903d35df4c",
+      "bytes": 18426,
+      "AST": "ok"
+    },
+    "bridge/84_entrega_ollamacodex_parser_territorial.md": {
+      "sha256": "c05b46665d7461bce17b32c9c6793d8d5116766ab915763fbe75b2e269a40949",
+      "bytes": 5111
+    },
+    "bridge/84_contrato_parser_territorial.json": {
+      "sha256": "219ddc1ae331ee6fc268549ee3b8b0c490d3583ec4495ab7a6871b87a2cf574c",
+      "bytes": 20657,
+      "JSON": "ok"
+    }
+  }
+}

@@ -47,10 +47,12 @@ export interface FeatureCollection {
 
 export interface CapaEspacial {
   id: string;
-  slug: string;
+  slug?: string;
+  codigo?: string;
   nombre: string;
   descripcion: string;
-  tipo_geometria: "POLYGON" | "POINT" | "LINESTRING";
+  categoria?: string;
+  tipo_geometria: "POLYGON" | "POINT" | "LINESTRING" | string;
   color_hex: string;
   activa: boolean;
 }
@@ -73,3 +75,49 @@ export interface TerritorioDetalle {
   propuestas_count: number;
   descripcion: string;
 }
+
+export interface IndicadorMultifuente {
+  id: string;
+  territorio_id: string;
+  dimension_id?: string | null;
+  codigo_indicador: string;
+  nombre_indicador: string;
+  valor: number | string;
+  unidad_medida: string;
+  nivel_riesgo: "bajo" | "medio" | "alto" | "critico" | string;
+  anio_corte: number;
+  fuente_datos: string;
+  metadatos?: {
+    url_fuente?: string;
+    nota_origen?: string;
+    fecha_extraccion?: string;
+    ambito?: string;
+    subtipo?: string;
+    dataset_id?: string;
+    dimension_seguridad_humana?: string;
+    [key: string]: unknown;
+  } | null;
+  codigo_territorio?: string;
+  nombre_territorio?: string;
+  codigo_dimension?: string;
+  nombre_dimension?: string;
+}
+
+export interface IndicadorFiltros {
+  limit?: number;
+  offset?: number;
+  dimension?: string;
+  fuente_datos?: string;
+  codigo_territorio?: string;
+  territorio_id?: string;
+  anio_corte?: number;
+  busqueda?: string;
+}
+
+export interface RespuestaIndicadores {
+  total: number;
+  limit: number;
+  offset: number;
+  indicadores: IndicadorMultifuente[];
+}
+

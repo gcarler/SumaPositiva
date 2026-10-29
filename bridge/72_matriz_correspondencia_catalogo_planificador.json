@@ -1,0 +1,841 @@
+{
+  "esquema": "polis.matriz_correspondencia_catalogo_planificador.v1",
+  "tarea": "OP-FUENTES-01",
+  "fecha": "2026-10-24",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "alcance": "Revision preventiva de solo lectura. No implementa adaptador, no modifica 65/70, no ejecuta planificador ni adquisicion.",
+  "fuentes": {
+    "catalogo": "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+    "esquema_documental": "bridge/65_schema_clasificacion_fuentes_ollamacodex.json",
+    "contrato": "bridge/65_contrato_ciclo_fuentes_ollamacodex.md",
+    "planificador": {
+      "ruta_declarada": "backend/app/modules/compromisos/planificador_fuentes_politica.py",
+      "estado": "AUSENTE en el arbol y en HEAD; sin historial git",
+      "fuente_analizada": ".archify/workflow-politicas-publicas-20261024-010417/evidencia/backend/app/modules/compromisos/planificador_fuentes_politica.py",
+      "sha256_fuente_analizada": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+      "lineas": 289
+    },
+    "adquisicion": "backend/app/modules/compromisos/adquisicion_fuentes_polis.py",
+    "registro": "backend/app/modules/compromisos/registro_descargas_polis.py"
+  },
+  "contrato_de_conversion": {
+    "regla_1": "Solo se copia lo que existe con el mismo significado; no se renombra para parecer compatible.",
+    "regla_2": "Ningun campo vacio de 65 se rellena desde listas de 48, desde la mision institucional ni desde una URL conocida.",
+    "regla_3": "clase_registro no se traduce automaticamente a tipo; requiere decision auditada por producto.",
+    "regla_4": "coberturas_acreditadas solo se puebla con evidencia por combinacion concepto-indicador-unidad-territorio-poblacion-anios.",
+    "regla_5": "sha_contenido_declarado nunca ocupa version_local_sha256 sin verificacion de bytes.",
+    "regla_6": "El enlace de despacho real es producto_id == clave de registro_descargas, no el campo adaptador.",
+    "regla_7": "Los campos sin destino no se descartan: van a un sidecar de contexto institucional/documental referenciado por producto_id."
+  },
+  "campos": [
+    {
+      "campo_origen": "id_ficha",
+      "destino": [
+        "producto_id"
+      ],
+      "transformacion": "Copia literal. No se deriva ni normaliza.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/id_ficha",
+      "desconocido_bloqueo": "Es identificador documental, no clave de adaptador. Solo coincide con registro_descargas cuando el valor ya es 'local:<clave>'.",
+      "conservacion": "Se conserva en producto_id.",
+      "fidelidad": "fiel"
+    },
+    {
+      "campo_origen": "producto_id",
+      "destino": [
+        "producto_id"
+      ],
+      "transformacion": "Copia literal; unicidad ya validada por 70.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/producto_id",
+      "desconocido_bloqueo": "35 de 63 valores no existen en registro_descargas(); ver cobertura.",
+      "conservacion": "Se conserva en producto_id.",
+      "fidelidad": "fiel"
+    },
+    {
+      "campo_origen": "nombre",
+      "destino": [
+        "nombre"
+      ],
+      "transformacion": "Copia literal.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/nombre",
+      "desconocido_bloqueo": "En las 43 locales 'nombre' es el slug de 48, no un nombre de producto legible. En las 20 PR 'nombre' es la institucion/sistema, no un producto estadistico.",
+      "conservacion": "Se conserva; no se embellece ni se traduce.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "clase_registro",
+      "destino": [
+        "tipo"
+      ],
+      "transformacion": "Mapeo propuesto, no automatico: institucion/portal->referencia; sistema->referencia; indicador/encuesta->datos solo si existe producto definido; serie->insumo_local.",
+      "evidencia": "65_schema_clasificacion_fuentes_ollamacodex.json#/$defs/ficha/properties/clase_registro",
+      "desconocido_bloqueo": "Una clase documental no acredita que exista un producto estadistico adquirible. 'sistema' y 'portal' agrupan multiples productos.",
+      "conservacion": "Se conserva en ficha de origen; el tipo propuesto debe quedar auditado.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "custodio_declarado",
+      "destino": [],
+      "transformacion": "Sin destino. No se usa como producto_id ni como nombre de producto.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/custodio_declarado",
+      "desconocido_bloqueo": "ProductoFuente no tiene campo custodio. Perderlo impide auditar atribucion.",
+      "conservacion": "Se preserva en el documento 65 y en el sidecar de contexto institucional propuesto.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "naturaleza",
+      "destino": [],
+      "transformacion": "Sin destino. No se mapea a 'tipo' ni a 'condiciones_uso'.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/naturaleza",
+      "desconocido_bloqueo": "Naturaleza del custodio (publico/cooperacion/academia/por_verificar) no es tipo de producto ni permiso de uso.",
+      "conservacion": "Sidecar institucional (propuesto), no se descarta.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "pais_jurisdiccion_institucion",
+      "destino": [],
+      "transformacion": "Sin destino. Prohibido mapearlo a 'territorios'.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/pais_jurisdiccion_institucion",
+      "desconocido_bloqueo": "Jurisdiccion de la institucion no es cobertura geografica del dato. 3 fichas PR quedan en 'por_verificar'.",
+      "conservacion": "Sidecar institucional.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "evidencia_atribucion",
+      "destino": [],
+      "transformacion": "Sin destino. No se usa como evidencia_validacion.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/evidencia_atribucion",
+      "desconocido_bloqueo": "'declarada... no verificada' acredita atribucion, no validacion del producto.",
+      "conservacion": "Se conserva como evidencia de atribucion separada.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "ambito_institucional",
+      "destino": [],
+      "transformacion": "Sin destino. Prohibido mapearlo a 'territorios'.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/ambito_institucional",
+      "desconocido_bloqueo": "Ambito nacional/internacional del custodio no es ambito geografico del dato (contrato 65, reglas separadoras).",
+      "conservacion": "Sidecar institucional.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "cobertura_dato",
+      "destino": [],
+      "transformacion": "Sin destino directo. Candidato a evidencia de cobertura para una futura CoberturaFuente, no a valor acreditado.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/cobertura_dato",
+      "desconocido_bloqueo": "Valores 'desconocido'(20), 'municipal', 'municipal_con_desglose_urbano_rural', 'cabecera', 'estacion'. No incluye territorio, poblacion, periodo ni unidad de observacion.",
+      "conservacion": "Sidecar de cobertura; se descarta para acreditar coberturas_acreditadas.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "territorios",
+      "destino": [
+        "territorios"
+      ],
+      "transformacion": "Copia literal cuando no esta vacio (9 fichas, valor 'Cartagena'). No se traduce a DIVIPOLA.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/territorios",
+      "desconocido_bloqueo": "54 de 63 fichas lo tienen vacio, incluido TerriData municipal e IDEAM estacion: vacio no significa nacional. El registro de adquisicion fija DIVIPOLA:13001 sin leer este campo.",
+      "conservacion": "Se conserva tal cual; la resolucion de alias es una decision pendiente, no una conversion.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "poblaciones",
+      "destino": [
+        "poblaciones"
+      ],
+      "transformacion": "Copia literal (0 de 63 tienen valor). Prohibido inferir poblacion desde indicador, unidad o mision.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/poblaciones",
+      "desconocido_bloqueo": "Vacio en las 63. La necesidad del perfil exige poblacion no vacia; nunca coincidira sin definirla con evidencia.",
+      "conservacion": "Vacio se conserva vacio.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "unidades",
+      "destino": [
+        "unidades"
+      ],
+      "transformacion": "Copia literal de la lista de unidades de medida declaradas.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/unidades",
+      "desconocido_bloqueo": "Es una bolsa plana por producto, no el par indicador-unidad. Coincidir con necesidad.unidad no prueba que esa unidad corresponda a ese indicador (TerriData: 10 indicadores, 8 unidades).",
+      "conservacion": "Se conserva; la pareja indicador-unidad debe vivir en CoberturaFuente.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "anios",
+      "destino": [
+        "anios"
+      ],
+      "transformacion": "Copia literal como enteros (solo 43 seriess locales; las 20 PR conservan []).",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/anios",
+      "desconocido_bloqueo": "Lista de anios observados por el producto, no anios acreditados por combinacion indicador-unidad-territorio-poblacion. PR sin anios: 20.",
+      "conservacion": "Se conserva; no se rellena con 2026.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "alias",
+      "destino": [],
+      "transformacion": "Sin destino. Se preserva como tabla de alias institucional (0 valores hoy).",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/alias",
+      "desconocido_bloqueo": "ProductoFuente no tiene alias. Sin tabla de alias no se puede resolver 'Cartagena' -> DIVIPOLA:13001 ni variantes de nombre de institucion.",
+      "conservacion": "Sidecar de alias/roles (propuesto).",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "vigencia",
+      "destino": [
+        "vigente_hasta"
+      ],
+      "transformacion": "Conversion ISO solo si es fecha; hoy es null en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/vigencia",
+      "desconocido_bloqueo": "Al ser null, _evaluar agrega 'requiere_revision_vigencia' en todas las fichas: ninguna puede llegar a apto_segun_ficha.",
+      "conservacion": "Se conserva; no se inventa fecha de vigencia.",
+      "fidelidad": "imposible_sin_perdida"
+    },
+    {
+      "campo_origen": "verificacion",
+      "destino": [],
+      "transformacion": "Sin destino. No se mapea a evidencia_validacion.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/verificacion",
+      "desconocido_bloqueo": "'parcial' (62) y 'pendiente' (1) son estados de revision documental, no evidencia de validacion del dato.",
+      "conservacion": "Se conserva.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "urls",
+      "destino": [
+        "url_referencia"
+      ],
+      "transformacion": "Se toma urls[0] si existe; el resto se pierde en el destino actual.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/urls",
+      "desconocido_bloqueo": "Una URL conocida no acredita API, acceso ni permiso. Perder urls[1..n] rompe trazabilidad de referencias multiples.",
+      "conservacion": "Se conserva la lista completa en el sidecar documental.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "procedencia",
+      "destino": [
+        "procedencia"
+      ],
+      "transformacion": "Copia literal con prefijo de origen ('origen_usuario_y_revision_2026' o 'inventario_48').",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/procedencia",
+      "desconocido_bloqueo": "Texto libre; el planificador lo trata como campo obligatorio y opaco. No transporta hash ni puntero.",
+      "conservacion": "Se conserva; se propone anadir puntero#sha en el sidecar.",
+      "fidelidad": "fiel"
+    },
+    {
+      "campo_origen": "sha_entrada",
+      "destino": [],
+      "transformacion": "Sin destino. Prohibido usarlo como version_local_sha256.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/sha_entrada",
+      "desconocido_bloqueo": "Es el SHA del inventario 48 (todas las locales: 549c51...) o del archivo de 20 referencias: identifica la entrada documental, no el dato.",
+      "conservacion": "Se conserva en evidencia.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "estado",
+      "destino": [],
+      "transformacion": "Sin destino. 'estado.acceso' es estado de evidencia ('por_verificar'), no capacidad de acceso de ProductoFuente.acceso.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/estado",
+      "desconocido_bloqueo": "Mapear 'por_verificar' a 'api'/'descarga' seria inventar capacidad. 63/63 en acceso=por_verificar, validacion=por_verificar, condiciones_uso=por_verificar, integracion=no_integrada.",
+      "conservacion": "Se conserva; alimenta la lista de bloqueos.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "relaciones_candidatas",
+      "destino": [],
+      "transformacion": "Sin destino. Lista vacia en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/relaciones_candidatas",
+      "desconocido_bloqueo": "El contrato 65 exige relaciones con origen, destino, justificacion y evidencia; no existe campo en el planificador.",
+      "conservacion": "Registro de relaciones candidatas propuesto (fuera del planificador).",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "origen_id",
+      "destino": [],
+      "transformacion": "Sin destino. Trazabilidad documental.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/origen_id",
+      "desconocido_bloqueo": "Necesario para reconciliar PR con el archivo de 20 referencias; no debe perderse.",
+      "conservacion": "Sidecar documental.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "origen_url",
+      "destino": [],
+      "transformacion": "Sin destino. Trazabilidad documental (JSON Pointer).",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/origen_url",
+      "desconocido_bloqueo": "Permite reproducir el cotejo 65<->48/20; no es url_referencia del producto.",
+      "conservacion": "Sidecar documental.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "origen_sha256",
+      "destino": [],
+      "transformacion": "Sin destino. Trazabilidad documental.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/origen_sha256",
+      "desconocido_bloqueo": "SHA de la entrada (feb3728a... para PR, 549c5199... para locales). No identifica bytes analiticos.",
+      "conservacion": "Sidecar documental.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "coberturas",
+      "destino": [
+        "coberturas_acreditadas"
+      ],
+      "transformacion": "Conversion estructural posible (CoberturaFuente exige concepto, indicador, unidad, territorio, poblacion, anios, evidencia). En 65 esta vacio deliberadamente en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/coberturas",
+      "desconocido_bloqueo": "Rellenarlo desde listas de indicadores/unidades/anios de 48 seria inventar el producto cartesiano que el propio _evaluar prohibe. Sin coberturas, todo 'anios_no_acreditados'.",
+      "conservacion": "Se conserva vacio; no se sintetiza.",
+      "fidelidad": "imposible_sin_perdida"
+    },
+    {
+      "campo_origen": "poblacion",
+      "destino": [],
+      "transformacion": "Sin destino. Campo heredado vacio; no debe poblar 'poblaciones'.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/poblacion (ausente en las 63 fichas)",
+      "desconocido_bloqueo": "Su ausencia confirma que 65 no declara poblacion; cualquier valor seria invencion.",
+      "conservacion": "Se conserva ausente.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "vinculos_rol",
+      "destino": [],
+      "transformacion": "Sin destino. Vacio en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/vinculos_rol",
+      "desconocido_bloqueo": "No existe tabla de roles/alias en el planificador; el contrato 65 ya advierte que no hay resolutor universal de roles.",
+      "conservacion": "Sidecar de roles propuesto.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "conciliacion",
+      "destino": [],
+      "transformacion": "Sin destino. Estado 'pendiente' en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/conciliacion",
+      "desconocido_bloqueo": "Requiere expediente de conciliacion (67); el planificador no tiene campo. No se convierte en evidencia.",
+      "conservacion": "Sidecar de conciliacion propuesto.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "retrospectiva",
+      "destino": [],
+      "transformacion": "Sin destino.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/retrospectiva",
+      "desconocido_bloqueo": "Requiere versiones historicas; hoy corte_previo/corte_actual=por_verificar y sin_recuperacion=[].",
+      "conservacion": "Sidecar de cortes/versiones propuesto.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "ambitos_originales",
+      "destino": [],
+      "transformacion": "Sin destino.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/ambitos_originales",
+      "desconocido_bloqueo": "Ambitos de 48 (p.ej. municipio_o_subtipo); no equivalen a territorios del planificador.",
+      "conservacion": "Se conserva.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "indicadores_originales",
+      "destino": [
+        "indicadores"
+      ],
+      "transformacion": "Copia literal (43 locales). Las 20 PR tienen [].",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/indicadores_originales",
+      "desconocido_bloqueo": "Nombre de columna de 48, no definicion de indicador. 'victimizacion_algun_delito' no acredita universo ni unidad de observacion.",
+      "conservacion": "Se conserva; la definicion queda pendiente en producto_estadistico.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "unidades_originales",
+      "destino": [
+        "unidades"
+      ],
+      "transformacion": "Copia literal.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/unidades_originales",
+      "desconocido_bloqueo": "Igual que unidades: bolsa plana sin pareja indicador-unidad.",
+      "conservacion": "Se conserva.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "anios_originales",
+      "destino": [
+        "anios"
+      ],
+      "transformacion": "Copia literal como enteros.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/anios_originales",
+      "desconocido_bloqueo": "Mismos anios que 'anios'; no acredita cobertura conjunta.",
+      "conservacion": "Se conserva.",
+      "fidelidad": "parcial"
+    },
+    {
+      "campo_origen": "atribucion",
+      "destino": [],
+      "transformacion": "Sin destino.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/atribucion",
+      "desconocido_bloqueo": "metodo/estado/referencia de atribucion. No es condicion de uso ni licencia.",
+      "conservacion": "Sidecar institucional.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "mision_institucional",
+      "destino": [],
+      "transformacion": "Sin destino; prohibido usarla para inferir indicador o explicar diferencias (68).",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/mision_institucional",
+      "desconocido_bloqueo": "Declaracion null y estado 'pendiente' en las 63.",
+      "conservacion": "Sidecar institucional.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "producto_estadistico",
+      "destino": [],
+      "transformacion": "Sin destino, salvo unidades_medida_declaradas que ya viaja en unidades. proposito, definicion_indicador, unidad_observacion, universo, poblacion_referencia, reglas_inclusion_exclusion y tipificacion estan vacios en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/producto_estadistico",
+      "desconocido_bloqueo": "Sin estos campos no se puede poblar 'conceptos' ni 'poblaciones'; hacerlo seria inventar semantica para que el motor acepte la ficha.",
+      "conservacion": "Se conserva; es la deuda semantica central.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "temporalidad",
+      "destino": [],
+      "transformacion": "Sin destino. Ninguna fecha (ocurrencia, registro, publicacion, corte, extraccion) esta registrada; todas por_verificar.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/temporalidad",
+      "desconocido_bloqueo": "No se puede derivar vigente_hasta ni fecha de corte. No se imponen desfases (68).",
+      "conservacion": "Sidecar de temporalidad; alimenta corte/version cuando exista evidencia.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "revisiones",
+      "destino": [],
+      "transformacion": "Sin destino. Vacio en las 63.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/revisiones",
+      "desconocido_bloqueo": "Sin historial de versiones no hay conciliacion retrospectiva posible.",
+      "conservacion": "Sidecar de revisiones.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "referencia_captura",
+      "destino": [],
+      "transformacion": "Sin destino; prohibido usarlo como evidencia_validacion o version_local_sha256.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/referencia_captura",
+      "desconocido_bloqueo": "Estado explicito: 'no_captura' (20 PR) y 'metadatos_no_bytes' (43 locales). Acredita cotejo de metadatos, no bytes.",
+      "conservacion": "Se conserva en evidencia.",
+      "fidelidad": "sin_destino"
+    },
+    {
+      "campo_origen": "sha_contenido_declarado",
+      "destino": [
+        "version_local_sha256"
+      ],
+      "transformacion": "Estructuralmente compatible (64 hex; identico a 48.sha256_contenido_declarado en las 43 locales). Semanticamente NO es version validada del dato.",
+      "evidencia": "65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/sha_contenido_declarado; 48#/fuentes/*/sha256_contenido_declarado",
+      "desconocido_bloqueo": "70.md: 'No se revalidaron los bytes de los conjuntos analiticos'; 65: capturas_58_verificadas=false, nivel=metadatos_sin_lectura_de_bytes_analiticos. Copiarlo a version_local_sha256 afirmaria una version local validada inexistente.",
+      "conservacion": "Se conserva como hash declarado, en campo propio del sidecar; no se copia a version_local_sha256 sin verificacion de bytes.",
+      "fidelidad": "imposible_sin_perdida"
+    }
+  ],
+  "clases": [
+    {
+      "clase_registro": "institucion",
+      "n": 2,
+      "destino_rama": "consulta_documental",
+      "regla": "No es dataset. Requiere definir producto concreto antes de crear ProductoFuente de tipo datos.",
+      "ejemplos": [
+        "PR-01",
+        "PR-02"
+      ]
+    },
+    {
+      "clase_registro": "sistema",
+      "n": 13,
+      "destino_rama": "consulta_documental_o_producto_por_definir",
+      "regla": "Un sistema agrupa varios productos y adaptadores; la ficha no identifica cual.",
+      "ejemplos": [
+        "PR-03",
+        "PR-04",
+        "PR-17"
+      ]
+    },
+    {
+      "clase_registro": "portal",
+      "n": 2,
+      "destino_rama": "consulta_documental",
+      "regla": "Portal es punto de acceso, no producto.",
+      "ejemplos": [
+        "PR-11",
+        "PR-16"
+      ]
+    },
+    {
+      "clase_registro": "indicador",
+      "n": 2,
+      "destino_rama": "producto_por_definir",
+      "regla": "Un indicador puede ser serie o calculo; falta unidad de observacion y universo.",
+      "ejemplos": [
+        "PR-14",
+        "PR-15"
+      ]
+    },
+    {
+      "clase_registro": "encuesta",
+      "n": 1,
+      "destino_rama": "producto_estadistico_con_diseno_muestral",
+      "regla": "La encuesta ECSC declara cobertura 'desconocido' y anios []; solo la ficha local de 48 tiene indicadores y anios.",
+      "ejemplos": [
+        "PR-18"
+      ]
+    },
+    {
+      "clase_registro": "serie",
+      "n": 43,
+      "destino_rama": "insumo_local",
+      "regla": "Unica clase con indicadores/unidades/anios; aun asi no acredita cobertura conjunta ni poblacion.",
+      "ejemplos": [
+        "local:dane_ecsc_2024",
+        "local:dnp_terridata_13001"
+      ]
+    }
+  ],
+  "casos": [
+    {
+      "caso": "instituciones_PR",
+      "fichas": [
+        "PR-01",
+        "PR-02"
+      ],
+      "n": 20,
+      "hecho": "20 fichas PR: instituciones/sistemas/portales/indicadores/encuesta; relaciones_candidatas vacias en las 20; anios [] en las 20; sha_entrada=SHA de fuentes_nacionales_aportadas_20.json.",
+      "destino_propuesto": {
+        "tipo": "referencia",
+        "producto_id": "PR-xx",
+        "adaptador": null,
+        "acceso": "desconocido"
+      },
+      "accion_que_produciria__evaluar": "consultar_referencia (tipo no estadistico) o completar_ficha_y_adaptador si se forzara tipo=datos.",
+      "cobertura_acreditable": "ninguna: cobertura_dato=desconocido, sin indicadores, sin anios, sin poblacion.",
+      "riesgo": "Tratar 20 PR como 20 datasets o 20 adaptadores. Los 21 enlaces son solo URLs de la lista del usuario, no conectores.",
+      "decision": "Rama documental. No crear ProductoFuente de tipo datos hasta identificar producto, version y cobertura con evidencia."
+    },
+    {
+      "caso": "encuesta_ECSC",
+      "fichas": [
+        "PR-18",
+        "local:dane_ecsc_2024"
+      ],
+      "n": 2,
+      "hecho": "PR-18 (clase encuesta, cobertura desconocido, anios []) y local:dane_ecsc_2024 (serie, cobertura cabecera, anios [2023,2024], 7 indicadores, unidad %, sha declarado 51b49874...) comparten la misma URL de DANE. Son dos fichas del mismo universo, no dos fuentes independientes.",
+      "destino_propuesto": {
+        "tipo": "referencia",
+        "producto_id": "PR-18"
+      },
+      "destino_propuesto_2": {
+        "tipo": "insumo_local",
+        "producto_id": "local:dane_ecsc_2024"
+      },
+      "accion_que_produciria__evaluar": "PR-18: consultar_referencia. local:dane_ecsc_2024: completar_ficha_y_adaptador (sin conceptos/poblacion/coberturas).",
+      "cobertura_acreditable": "Solo existencia de 7 columnas de 2023/2024 con unidad %. 'cabecera' no es Cartagena ni municipio.",
+      "riesgo": "Duplicar el mismo universo como dos fuentes y sumar o promediar; confundir 'cabecera' con cobertura municipal.",
+      "decision": "Registrar relacion_candidata PR-18 -> local:dane_ecsc_2024 con justificacion; no fusionar ni deduplicar automaticamente."
+    },
+    {
+      "caso": "estacion_IDEAM",
+      "fichas": [
+        "local:ideam_calidad_aire"
+      ],
+      "n": 1,
+      "hecho": "cobertura_dato='estacion'; territorios=[]; unidades=['Celsius','mmHg','ugm3']; anios con hueco 2019-2021 (2014-2018, 2022-2025). Una estacion no es un municipio.",
+      "destino_propuesto": {
+        "tipo": "insumo_local",
+        "producto_id": "local:ideam_calidad_aire",
+        "adaptador": "local:ideam_calidad_aire (existe en registro_descargas)"
+      },
+      "accion_que_produciria__evaluar": "completar_ficha_y_adaptador: sin conceptos, sin territorios (aunque la necesidad pidiera DIVIPOLA:13001), sin poblacion, coberturas vacias, vigencia nula.",
+      "cobertura_acreditable": "Variable climatica/calidad de aire por estacion; no cobertura municipal ni serie continua.",
+      "riesgo": "Mapear 'estacion' a municipio o tomar Celsius/mmHg/ugm3 como magnitudes comparables entre si.",
+      "decision": "Territorio debe ser el identificador de estacion, no DIVIPOLA:13001. Requiere ficha de estacion y unidad por variable."
+    },
+    {
+      "caso": "serie_multimedida_TerriData",
+      "fichas": [
+        "local:dnp_terridata_13001"
+      ],
+      "n": 1,
+      "hecho": "10 indicadores heterogeneos, 8 unidades, 14 anios (2012-2025), cobertura municipal, territorios=[], sha declarado 42d3ce65...",
+      "destino_propuesto": {
+        "tipo": "insumo_local",
+        "producto_id": "local:dnp_terridata_13001",
+        "adaptador": "local:dnp_terridata_13001 (existe)"
+      },
+      "accion_que_produciria__evaluar": "completar_ficha_y_adaptador; ademas 'unidad' de la necesidad solo coincidiria si el perfil usa exactamente una de las 8 cadenas, y aun asi el producto cartesiano indicador x unidad x anio no esta acreditado (el propio _evaluar lo prohibe).",
+      "cobertura_acreditable": "Existencia de 10 columnas y rango de anios del archivo; ninguna pareja indicador-unidad-territorio-poblacion-anio.",
+      "riesgo": "Aceptar la ficha para cualquier indicador del archivo y cualquier anio; 'Porcentaje (el valor esta multiplicado por 100)' mezclado con tasas y conteos.",
+      "decision": "Exigir una CoberturaFuente por indicador con su unidad y anios verificados. Mientras no exista, la ficha debe quedar como no acreditada."
+    },
+    {
+      "caso": "dato_financiero",
+      "fichas": [
+        "local:unidad_victimas_indemnizaciones_cartagena"
+      ],
+      "n": 1,
+      "hecho": "Indicadores ['giros_indemnizacion','personas_indemnizadas','valor_indemnizaciones']; unidades ['giros','millones COP','personas']; anios 2012-2023; cobertura municipal; territorios=[].",
+      "destino_propuesto": {
+        "tipo": "insumo_local",
+        "producto_id": "local:unidad_victimas_indemnizaciones_cartagena",
+        "adaptador": "local:unidad_victimas_indemnizaciones_cartagena (existe; metodo 'indemnizaciones')"
+      },
+      "accion_que_produciria__evaluar": "completar_ficha_y_adaptador por falta de conceptos/territorios/poblacion/coberturas/vigencia.",
+      "cobertura_acreditable": "Tres series monetarias/conteo en millones COP, giros y personas; sin deflactor, sin fecha de corte, sin poblacion beneficiaria.",
+      "riesgo": "Sumar 'millones COP' con 'personas' o 'giros'; declarar cobertura municipal sin territorio en la ficha; comparar valores corrientes entre anios.",
+      "decision": "Unidad monetaria debe declararse por indicador, con nota de precios corrientes; no convertir a poblacion ni a cobertura."
+    },
+    {
+      "caso": "entrega_Drive_procedencia_pendiente",
+      "fichas": [
+        "local:drive_delito_sexual",
+        "local:drive_excel_policial_11_delitos",
+        "local:drive_extorsion",
+        "local:drive_homicidios",
+        "local:drive_muertes_transporte",
+        "local:drive_suicidios",
+        "local:drive_violencia_intrafamiliar"
+      ],
+      "n": 7,
+      "hecho": "7 fichas con urls de carpeta Google Drive; procedencia='inventario_48'; naturaleza='por_verificar'; referencia_captura.estado='metadatos_no_bytes'; ninguna tiene adaptador en registro_descargas; 6 de 7 cobertura municipal_con_desglose_urbano_rural.",
+      "destino_propuesto": {
+        "tipo": "insumo_local",
+        "producto_id": "local:drive_*",
+        "adaptador": null
+      },
+      "accion_que_produciria__evaluar": "completar_ficha_y_adaptador (nunca programar_adquisicion_y_validacion: no hay adaptador y acceso no es api/descarga).",
+      "cobertura_acreditable": "Solo metadatos de inventario 48; el Drive no es origen de bytes verificado ni host permitido por adquisicion (HOSTS no incluye drive.google.com).",
+      "riesgo": "Confundir una carpeta compartida con una entrega formal; asumir version, licencia o custodio; intentar descargar desde Drive.",
+      "decision": "Bloquear adquisicion hasta que exista entrega formal con custodio, version, licencia y hash de bytes; registrar la URL como referencia, no como acceso."
+    },
+    {
+      "caso": "ficha_sin_adaptador",
+      "fichas": [
+        "local:dane_geih_cartagena",
+        "PR-05"
+      ],
+      "n": 35,
+      "hecho": "35 fichas sin clave en registro_descargas(): 20 PR + 15 locales (7 drive_*, dane_geih_cartagena, dane_geih_informalidad_cartagena, dane_nbi_cnpv2018, dane_poblacion_municipal, dane_poblacion_vigencia_censal, dane_pobreza_monetaria, dane_sae_fies_pobreza_cartagena, fiscalia_spoa_busquedas_por_anio_hecho).",
+      "destino_propuesto": {
+        "tipo": "insumo_local",
+        "producto_id": "local:dane_geih_cartagena",
+        "adaptador": null
+      },
+      "accion_que_produciria__evaluar": "completar_ficha_y_adaptador; y si un humano pusiera adaptador='x', el plan diria programar pero adquirir_fuentes lanzaria ValueError antes de cualquier red.",
+      "cobertura_acreditable": "Metadatos de 48; sin adaptador no hay bytes.",
+      "riesgo": "Suponer que 'existe ficha' equivale a 'existe adaptador'. Si alguna de estas 35 llegara al plan, el run completo falla por validacion todo-o-nada.",
+      "decision": "Reportar como brecha de cobertura de adaptadores; el adaptador real se identifica por producto_id en registro_descargas, no por el campo adaptador de la ficha."
+    }
+  ],
+  "cobertura": {
+    "fichas_total": 63,
+    "por_clase_registro": {
+      "encuesta": 1,
+      "indicador": 2,
+      "institucion": 2,
+      "portal": 2,
+      "serie": 43,
+      "sistema": 13
+    },
+    "fichas_PR": 20,
+    "fichas_locales": 43,
+    "fichas_con_clave_en_registro_descargas": 28,
+    "fichas_sin_clave_en_registro_descargas": 35,
+    "claves_registro_descargas": 28,
+    "claves_registro_sin_ficha_65": 0,
+    "fichas_sin_adaptador_detalle": [
+      "PR-01",
+      "PR-02",
+      "PR-03",
+      "PR-04",
+      "PR-05",
+      "PR-06",
+      "PR-07",
+      "PR-08",
+      "PR-09",
+      "PR-10",
+      "PR-11",
+      "PR-12",
+      "PR-13",
+      "PR-14",
+      "PR-15",
+      "PR-16",
+      "PR-17",
+      "PR-18",
+      "PR-19",
+      "PR-20",
+      "local:dane_geih_cartagena",
+      "local:dane_geih_informalidad_cartagena",
+      "local:dane_nbi_cnpv2018",
+      "local:dane_poblacion_municipal",
+      "local:dane_poblacion_vigencia_censal",
+      "local:dane_pobreza_monetaria",
+      "local:dane_sae_fies_pobreza_cartagena",
+      "local:drive_delito_sexual",
+      "local:drive_excel_policial_11_delitos",
+      "local:drive_extorsion",
+      "local:drive_homicidios",
+      "local:drive_muertes_transporte",
+      "local:drive_suicidios",
+      "local:drive_violencia_intrafamiliar",
+      "local:fiscalia_spoa_busquedas_por_anio_hecho"
+    ],
+    "campos_semanticos_poblados": {
+      "conceptos": 0,
+      "indicadores": 43,
+      "unidades": 43,
+      "anios": 43,
+      "territorios": 9,
+      "poblaciones": 0,
+      "coberturas": 0,
+      "producto_estadistico.unidad_observacion": 0,
+      "producto_estadistico.definicion_indicador": 0,
+      "producto_estadistico.universo": 0,
+      "vigencia_no_nula": 0,
+      "alias": 0,
+      "vinculos_rol": 0,
+      "relaciones_candidatas": 0
+    },
+    "suma_indicadores_locales": 136,
+    "suma_unidades_locales": 60,
+    "enlaces_PR_declarados": 21,
+    "pr_con_anios": 0,
+    "sha_contenido_declarado_igual_a_48": 43
+  },
+  "hashes": {
+    "documento_clasificacion": {
+      "ruta": "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+      "sha256": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+      "sha_entrega_final_70": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+      "coincide_70": true
+    },
+    "esquema_clasificacion": {
+      "ruta": "bridge/65_schema_clasificacion_fuentes_ollamacodex.json",
+      "sha256": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+      "sha_entrega_final_70": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+      "coincide_70": true
+    },
+    "contrato_ciclo": {
+      "ruta": "bridge/65_contrato_ciclo_fuentes_ollamacodex.md",
+      "sha256": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+      "sha_entrega_final_70": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+      "coincide_70": true
+    },
+    "entrega_ollamacodex": {
+      "ruta": "bridge/65_entrega_ollamacodex_clasificacion_fuentes.md",
+      "sha256": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+      "sha_entrega_final_70": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+      "coincide_70": true
+    },
+    "inventario_origen_48": {
+      "ruta": "bridge/48_inventario_fuentes_multipolitica.json",
+      "sha256": "549c519919d5e631c7f56913dda478498183cf69d75c08bf59891da4af0e1e8f",
+      "sha_70": "549c519919d5e631c7f56913dda478498183cf69d75c08bf59891da4af0e1e8f",
+      "coincide_70": true
+    },
+    "contenido_declarado_por_fuente": {
+      "ruta": "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json#/fichas/*/sha_contenido_declarado",
+      "sha256": "por ficha (43 locales); identico a 48#/fuentes/*/sha256_contenido_declarado",
+      "representa": "hash declarado por 48; NO bytes analiticos verificados en esta revision"
+    },
+    "bytes_analiticos_verificados": {
+      "n": 0,
+      "detalle": "Ningun byte de conjunto analitico fue leido ni revalidado (70.md; capturas_58_verificadas=false)"
+    }
+  },
+  "defectos": [
+    {
+      "id": "D1",
+      "severidad": "P0",
+      "tipo": "defecto_reproducible",
+      "titulo": "Falta el modulo del planificador en el arbol de fuentes",
+      "detalle": "backend/app/modules/compromisos/planificador_fuentes_politica.py no existe en el arbol, no esta en HEAD y no tiene historial git; backend/scripts/planificar_fuentes_politica.py:14 lo importa. Solo quedan el .pyc (Oct 23 17:46) y una copia de evidencia en .archify/... (sha eb2dfd11...).",
+      "efecto": "El CLI 'planificar' falla con ImportError. La revision del contrato se hizo sobre la copia de evidencia, no sobre fuente vigente.",
+      "evidencia": ".archify/workflow-politicas-publicas-20261024-010417/evidencia/backend/app/modules/compromisos/planificador_fuentes_politica.py (289 lineas, sha eb2dfd11...)"
+    },
+    {
+      "id": "D2",
+      "severidad": "P0",
+      "tipo": "defecto_reproducible",
+      "titulo": "programar_adquisicion_y_validacion es inalcanzable con los importadores existentes",
+      "detalle": "catalogo_desde_lista_chequeo e incorporar_inventario_local nunca asignan conceptos, territorios, poblaciones, coberturas_acreditadas, acceso, adaptador, condiciones_uso ni evidencia_validacion. grep en backend/ y scripts/ no encuentra ningun productor de esos campos.",
+      "efecto": "Toda ficha importada evalua a completar_ficha_y_adaptador o consultar_referencia; productos_desde_plan lanza 'El plan no autoriza adquisiciones'.",
+      "evidencia": "planificador evidencia L252-289; adquisicion L69-84"
+    },
+    {
+      "id": "D3",
+      "severidad": "P1",
+      "tipo": "defecto_reproducible",
+      "titulo": "El campo adaptador de ProductoFuente no es el enlace al adaptador real",
+      "detalle": "_evaluar solo comprueba que adaptador sea truthy. El despacho real es registro_descargas()[producto_id].metodo. Ninguna validacion cruza ambos.",
+      "efecto": "Un plan puede 'programar' un producto_id con adaptador inventado; adquirir_fuentes falla con ValueError('Productos sin adaptador autorizado') y aborta todo el lote.",
+      "evidencia": "planificador evidencia L172-181; adquisicion L398-406"
+    },
+    {
+      "id": "D4",
+      "severidad": "P1",
+      "tipo": "defecto_reproducible",
+      "titulo": "El plan no transporta territorio ni anios de la necesidad a la adquisicion",
+      "detalle": "adquirir_fuentes fija territorio='DIVIPOLA:13001' y toma anios_solicitados del CLI --anios; no lee necesidades[].territorio ni necesidades[].anios del plan.",
+      "efecto": "La seleccion de capas IRV y el manifiesto pueden no corresponder a la necesidad que origino la adquisicion.",
+      "evidencia": "adquisicion L412-421; scripts/adquirir_fuentes_politica.py"
+    },
+    {
+      "id": "D5",
+      "severidad": "P1",
+      "tipo": "defecto_reproducible",
+      "titulo": "version_local_sha256 se puede poblar con un hash declarado, no verificado",
+      "detalle": "incorporar_inventario_local copia ficha['sha256_contenido_declarado'] a version_local_sha256. En 65 ese valor es identico a 48.sha256_contenido_declarado, pero 70.md declara que no se revalidaron bytes analiticos y 65 declara capturas_58_verificadas=false.",
+      "efecto": "El planificador usa la presencia de version_local_sha256 como senal de version local; se sobreacredita.",
+      "evidencia": "planificador evidencia L288; 65 entrega L33-35; 70.md L11"
+    },
+    {
+      "id": "D6",
+      "severidad": "P1",
+      "tipo": "defecto_reproducible",
+      "titulo": "El catalogo 65 no tiene destino para la semantica que el planificador exige",
+      "detalle": "conceptos, poblaciones y coberturas_acreditadas no existen en 65 (0/63, 0/63 y 0/63). producto_estadistico.definicion_indicador, universo, poblacion_referencia, unidad_observacion y tipificacion estan vacios en las 63.",
+      "efecto": "No hay conversion fiel que produzca un producto apto; cualquier 'arreglo' seria invencion de concepto/poblacion/cobertura.",
+      "evidencia": "65_catalogo... fichas; schema #/$defs/producto_estadistico"
+    },
+    {
+      "id": "D7",
+      "severidad": "P2",
+      "tipo": "defecto_documental",
+      "titulo": "'nombre' local es un slug y 'nombre' PR es una institucion",
+      "detalle": "En las 43 locales nombre == clave de 48 (p.ej. 'dnp_terridata_13001'); en las 20 PR nombre es institucion/sistema ('USAID Colombia', 'Sistema de...').",
+      "efecto": "ProductoFuente.nombre queda semanticamente heterogeneo; no sirve para mostrar ni para emparejar.",
+      "evidencia": "65_catalogo... fichas"
+    },
+    {
+      "id": "D8",
+      "severidad": "P2",
+      "tipo": "defecto_documental",
+      "titulo": "territorios vacio no significa cobertura nacional",
+      "detalle": "54/63 sin territorios, incluidos TerriData (cobertura_dato='municipal') e IDEAM ('estacion'). Solo 9 fichas dicen 'Cartagena', ninguna en formato DIVIPOLA.",
+      "efecto": "Copiar territorios deja sin territorio a productos municipales; rellenar con DIVIPOLA:13001 seria inventar.",
+      "evidencia": "65_catalogo... fichas"
+    },
+    {
+      "id": "D9",
+      "severidad": "P2",
+      "tipo": "defecto_documental",
+      "titulo": "Duplicidad de universo ECSC entre PR-18 y local:dane_ecsc_2024",
+      "detalle": "Misma URL de DANE, una como 'encuesta' sin anios y otra como 'serie' 2023-2024 con 7 indicadores.",
+      "efecto": "Riesgo de contar dos veces el mismo universo o de promediar fichas no independientes. 70 ya advierte que las 63 no son 63 fuentes independientes.",
+      "evidencia": "65_catalogo... PR-18 y local:dane_ecsc_2024; 70.md L8"
+    }
+  ],
+  "conversion_propuesta": {
+    "interfaz": "bridge/72... no implementada. Propuesta: backend/app/modules/compromisos/adaptador_catalogo_fuentes_politica.py",
+    "firma_propuesta": "catalogo_desde_clasificacion_65(clasificacion: dict, *, version: str) -> tuple[CatalogoProductos, dict] (segundo valor = sidecar de contexto institucional/documental)",
+    "consumidor_real": "backend/scripts/planificar_fuentes_politica.py (unico importador del planificador). No hay router, service, grafo ni orquestador que lo consuma.",
+    "condiciones": "No produce tipos 'datos' para PR; no rellena conceptos/poblaciones/coberturas; no copia sha declarado a version_local_sha256; exige tabla de alias territorial explicita."
+  },
+  "limites": [
+    "No se ejecuto el planificador, ni el CLI, ni adaptadores, ni motores.",
+    "No se leyeron bytes de conjuntos analiticos; solo JSON, hashes, conteos y referencias locales.",
+    "No se modifico 65/70, Python, datos ni hallazgos previos.",
+    "El contrato del planificador se leyo de una copia de evidencia (D1), no de fuente vigente.",
+    "Esta matriz no es dictamen EAF ni autorizacion de despliegue."
+  ]
+}

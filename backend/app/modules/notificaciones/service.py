@@ -11,7 +11,6 @@ from sqlalchemy.orm import selectinload
 from app.core.config import Settings
 from app.modules.aportes.models import PropuestaCiudadana
 from app.modules.notificaciones.correo import (
-    despachar_correo,
     generar_html_cambio_estado,
     generar_html_constancia_radicacion,
 )
@@ -36,7 +35,7 @@ class NotificacionService:
         descripcion: str,
         autor: str,
     ) -> NotificacionTransaccional:
-        """Genera y despacha la constancia oficial de radicación por correo electrónico."""
+        """Persiste la intención dentro de la transacción del llamador, sin transporte."""
         url_base = self.settings.identidad_url_publica.rstrip("/")
         enlace_consulta = f"{url_base}/seguimiento?radicado={radicado}"
 
@@ -49,22 +48,13 @@ class NotificacionService:
             enlace_consulta=enlace_consulta,
         )
 
-        estado_envio, error_detalle, enviado_en = await despachar_correo(
-            destinatario=destinatario,
-            asunto=asunto,
-            cuerpo_html=cuerpo_html,
-            settings=self.settings,
-        )
-
         notificacion = NotificacionTransaccional(
             codigo_radicado=radicado,
             destinatario_correo=destinatario,
             tipo_evento="radicacion",
             asunto=asunto,
             cuerpo_html=cuerpo_html,
-            estado_envio=estado_envio,
-            error_detalle=error_detalle,
-            enviado_en=enviado_en,
+            estado_envio="pendiente",
         )
         self.session.add(notificacion)
         await self.session.flush()
@@ -79,7 +69,7 @@ class NotificacionService:
         nuevo_estado: str,
         observaciones: str = "",
     ) -> NotificacionTransaccional:
-        """Despacha notificación ciudadana cuando una propuesta cambia de estado o se prioriza."""
+        """Persiste el aviso junto al cambio de estado; un worker entrega tras el commit."""
         url_base = self.settings.identidad_url_publica.rstrip("/")
         enlace_consulta = f"{url_base}/seguimiento?radicado={radicado}"
 
@@ -92,31 +82,20 @@ class NotificacionService:
             enlace_consulta=enlace_consulta,
         )
 
-        estado_envio, error_detalle, enviado_en = await despachar_correo(
-            destinatario=destinatario,
-            asunto=asunto,
-            cuerpo_html=cuerpo_html,
-            settings=self.settings,
-        )
-
         notificacion = NotificacionTransaccional(
             codigo_radicado=radicado,
             destinatario_correo=destinatario,
             tipo_evento="cambio_estado" if nuevo_estado != "incorporado" else "priorizacion",
             asunto=asunto,
             cuerpo_html=cuerpo_html,
-            estado_envio=estado_envio,
-            error_detalle=error_detalle,
-            enviado_en=enviado_en,
+            estado_envio="pendiente",
         )
         self.session.add(notificacion)
         await self.session.flush()
         await self.session.refresh(notificacion)
         return notificacion
 
-    async def consultar_por_radicado(
-        self, codigo_radicado: str
-    ) -> ConsultaRadicadoRespuesta:
+    async def consultar_por_radicado(self, codigo_radicado: str) -> ConsultaRadicadoRespuesta:
         """Permite a cualquier ciudadano verificar el estado de su propuesta mediante su radicado."""
         stmt = (
             select(PropuestaCiudadana)
@@ -158,9 +137,7 @@ class NotificacionService:
         """Listado de notificaciones para auditoría forense y control institucional."""
         condiciones = []
         if codigo_radicado:
-            condiciones.append(
-                NotificacionTransaccional.codigo_radicado == codigo_radicado.strip().upper()
-            )
+            condiciones.append(NotificacionTransaccional.codigo_radicado == codigo_radicado.strip().upper())
         if tipo_evento:
             condiciones.append(NotificacionTransaccional.tipo_evento == tipo_evento)
 

@@ -393,9 +393,7 @@ def _prior(entidad_norm: str) -> str | None:
     return None
 
 
-def clasificar_actividad(
-    entidad: Any, indicador: Any, descripcion: Any
-) -> tuple[str, list[str], str]:
+def clasificar_actividad(entidad: Any, indicador: Any, descripcion: Any) -> tuple[str, list[str], str]:
     """Devuelve (categoria_primaria, ejes_fuertes, fuente).
 
     fuente: 'texto' (léxico), 'entidad' (prior por entidad responsable) o 'sin_informacion'.
@@ -495,9 +493,7 @@ def _tendencia(serie: pd.Series, desde: int = ANIO_MIN_TENDENCIA) -> dict[str, A
     ts = stats.theilslopes(y, x)
     tau, p = stats.kendalltau(x, y)
     pend = float(ts.slope) * 100.0
-    etiqueta = (
-        ("creciente" if pend > 0 else "decreciente") if p < 0.10 else "sin tendencia concluyente"
-    )
+    etiqueta = ("creciente" if pend > 0 else "decreciente") if p < 0.10 else "sin tendencia concluyente"
     return {
         "pendiente_pp_anio": round(pend, 3),
         "tau": round(float(tau), 3),
@@ -535,8 +531,7 @@ def _top_textos(serie: pd.Series, n: int) -> list[tuple[str, int]]:
 
 def _clasificar_df(df: pd.DataFrame) -> pd.DataFrame:
     res = [
-        clasificar_actividad(e, i, d)
-        for e, i, d in zip(df["entidad"], df["indicador"], df["descripcion"], strict=True)
+        clasificar_actividad(e, i, d) for e, i, d in zip(df["entidad"], df["indicador"], df["descripcion"], strict=True)
     ]
     df = df.copy()
     df["cat"] = [r[0] for r in res]
@@ -572,9 +567,7 @@ async def construir_estudio() -> dict[str, Any]:
 
     anios = ANIOS
     total_unicas = uni.groupby("vigencia").size().reindex(anios).fillna(0)
-    conteo_cat = (
-        uni.groupby(["vigencia", "cat"]).size().unstack(fill_value=0).reindex(anios).fillna(0)
-    )
+    conteo_cat = uni.groupby(["vigencia", "cat"]).size().unstack(fill_value=0).reindex(anios).fillna(0)
     for c in [*TODAS_CATEGORIAS, SIN_INFO]:
         if c not in conteo_cat.columns:
             conteo_cat[c] = 0
@@ -584,18 +577,10 @@ async def construir_estudio() -> dict[str, Any]:
     peso_agenda_sh = (ejes_total / clasificadas.replace(0, np.nan)).fillna(0.0)
     cuota_9 = _cuota(conteo_cat, TODAS_CATEGORIAS)
 
-    por_fuente = (
-        uni.groupby(["vigencia", "fuente"]).size().unstack(fill_value=0).reindex(anios).fillna(0)
-    )
+    por_fuente = uni.groupby(["vigencia", "fuente"]).size().unstack(fill_value=0).reindex(anios).fillna(0)
     ejes_df = uni[uni["cat"].isin(CODIGOS)]
     solo_texto = ejes_df[ejes_df["fuente"] == "texto"]
-    conteo_texto = (
-        solo_texto.groupby(["vigencia", "cat"])
-        .size()
-        .unstack(fill_value=0)
-        .reindex(anios)
-        .fillna(0)
-    )
+    conteo_texto = solo_texto.groupby(["vigencia", "cat"]).size().unstack(fill_value=0).reindex(anios).fillna(0)
     for c in CODIGOS:
         if c not in conteo_texto.columns:
             conteo_texto[c] = 0
@@ -603,11 +588,7 @@ async def construir_estudio() -> dict[str, Any]:
 
     entidades_anio = ejes_df.groupby("vigencia")["entidad"].nunique().reindex(anios).fillna(0)
     transversal = (
-        solo_texto.assign(multi=solo_texto["k"] >= 2)
-        .groupby("vigencia")["multi"]
-        .mean()
-        .reindex(anios)
-        .fillna(0.0)
+        solo_texto.assign(multi=solo_texto["k"] >= 2).groupby("vigencia")["multi"].mean().reindex(anios).fillna(0.0)
     )
 
     # ---------------- Inversión con BPIN identificable ----------------
@@ -635,23 +616,17 @@ async def construir_estudio() -> dict[str, Any]:
     inv_total = proy.groupby("vigencia")["aprop"].sum().reindex(anios).fillna(0.0)
     n_proy = proy.groupby("vigencia").size().reindex(anios).fillna(0)
     inv_cat = (
-        proy.pivot_table(
-            index="vigencia", columns="cat", values="aprop", aggfunc="sum", fill_value=0.0
-        )
+        proy.pivot_table(index="vigencia", columns="cat", values="aprop", aggfunc="sum", fill_value=0.0)
         .reindex(anios)
         .fillna(0.0)
     )
     inv_comp = (
-        proy.pivot_table(
-            index="vigencia", columns="cat", values="comp", aggfunc="sum", fill_value=0.0
-        )
+        proy.pivot_table(index="vigencia", columns="cat", values="comp", aggfunc="sum", fill_value=0.0)
         .reindex(anios)
         .fillna(0.0)
     )
     inv_pag = (
-        proy.pivot_table(
-            index="vigencia", columns="cat", values="pagos", aggfunc="sum", fill_value=0.0
-        )
+        proy.pivot_table(index="vigencia", columns="cat", values="pagos", aggfunc="sum", fill_value=0.0)
         .reindex(anios)
         .fillna(0.0)
     )
@@ -664,9 +639,7 @@ async def construir_estudio() -> dict[str, Any]:
     idx_max = proy.groupby("vigencia")["aprop"].idxmax()
     proy_sin = proy.drop(index=idx_max.values)
     inv_cat_sin = (
-        proy_sin.pivot_table(
-            index="vigencia", columns="cat", values="aprop", aggfunc="sum", fill_value=0.0
-        )
+        proy_sin.pivot_table(index="vigencia", columns="cat", values="aprop", aggfunc="sum", fill_value=0.0)
         .reindex(anios)
         .fillna(0.0)
     )
@@ -674,9 +647,7 @@ async def construir_estudio() -> dict[str, Any]:
         if c not in inv_cat_sin.columns:
             inv_cat_sin[c] = 0.0
     cuota_inv_sin = _cuota(inv_cat_sin, CODIGOS)
-    top_proyecto = (
-        proy.sort_values("aprop", ascending=False).groupby("vigencia").head(1).set_index("vigencia")
-    )
+    top_proyecto = proy.sort_values("aprop", ascending=False).groupby("vigencia").head(1).set_index("vigencia")
 
     # ---------------- Tendencias ----------------
     tend_act = {c: _tendencia(cuota[c]) for c in CODIGOS}
@@ -690,9 +661,7 @@ async def construir_estudio() -> dict[str, Any]:
         periodos_conteo[nombre] = sub.to_dict()
         periodos_act[nombre] = (sub / sub.sum()).to_dict()
         subi = inv_cat.loc[a:b, CODIGOS].sum()
-        periodos_inv[nombre] = (
-            (subi / subi.sum()).to_dict() if subi.sum() > 0 else {c: 0.0 for c in CODIGOS}
-        )
+        periodos_inv[nombre] = (subi / subi.sum()).to_dict() if subi.sum() > 0 else {c: 0.0 for c in CODIGOS}
 
     # ---------------- Integración de ciudad ----------------
     evenness = pd.Series({y: _evenness(cuota.loc[y].to_numpy()) for y in anios})
@@ -710,10 +679,7 @@ async def construir_estudio() -> dict[str, Any]:
             )
     corr = cuota.loc[ANIO_MIN_TENDENCIA:ANIO_MAX_TENDENCIA].corr(method="spearman")
     intensidad = {
-        p: {
-            c: (periodos_inv[p][c] / periodos_act[p][c]) if periodos_act[p][c] > 0 else float("nan")
-            for c in CODIGOS
-        }
+        p: {c: (periodos_inv[p][c] / periodos_act[p][c]) if periodos_act[p][c] > 0 else float("nan") for c in CODIGOS}
         for p in PERIODOS
     }
 
@@ -725,9 +691,7 @@ async def construir_estudio() -> dict[str, Any]:
     plan = _clasificar_df(plan[["codigo_plan", "meta_id", "entidad", "indicador", "descripcion"]])
     planes = sorted(plan["codigo_plan"].unique())
     mat_plan = (
-        plan.pivot_table(
-            index="codigo_plan", columns="cat", values="meta_id", aggfunc="count", fill_value=0
-        )
+        plan.pivot_table(index="codigo_plan", columns="cat", values="meta_id", aggfunc="count", fill_value=0)
         .reindex(planes)
         .fillna(0)
     )
@@ -751,9 +715,7 @@ async def construir_estudio() -> dict[str, Any]:
             "entidades_en_ejes": entidades_anio,
             "proyectos_bpin": n_proy,
             "inversion_bpin_cop": inv_total,
-            "pct_con_avance_fisico": (cob_pa["con_avance"] / cob_pa["filas"] * 100)
-            .reindex(anios)
-            .round(1),
+            "pct_con_avance_fisico": (cob_pa["con_avance"] / cob_pa["filas"] * 100).reindex(anios).round(1),
         }
     ).fillna(0)
 

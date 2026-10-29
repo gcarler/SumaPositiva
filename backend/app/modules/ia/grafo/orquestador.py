@@ -10,6 +10,7 @@ import uuid
 
 from langgraph.graph import END, START, StateGraph
 
+from app.modules.compromisos.contexto_corte_polis import ContextoCorte
 from app.modules.ia.grafo.estado import EstadoCicloPolitica
 from app.modules.ia.grafo.nodos import (
     nodo_consolidacion_adopcion,
@@ -94,12 +95,16 @@ class PolicyLifecycleGraph:
 
         return builder
 
-    def inicializar_estado(self, entrada: EntradaCicloPolitica) -> EstadoCicloPolitica:
+    def inicializar_estado(
+        self, entrada: EntradaCicloPolitica, *, corte: ContextoCorte | None = None
+    ) -> EstadoCicloPolitica:
         """Prepara el estado inicial tipado para el flujo del grafo."""
         propuestas_serializadas = [p.model_dump(mode="json") for p in entrada.propuestas_ciudadanas]
 
         return {
             "politica_id": str(entrada.politica_id),
+            "run_id": str(corte.run_id) if corte is not None else None,
+            "corte": corte.referencia() if corte is not None else None,
             "titulo": entrada.titulo,
             "descripcion": entrada.descripcion,
             "sector": entrada.sector,
@@ -136,21 +141,23 @@ class PolicyLifecycleGraph:
             "iteracion_total": 0,
             "max_iteraciones": entrada.max_iteraciones,
             "historial_estados": ["inicio"],
-            "bitacora_mensajes": [
-                f"[SISTEMA] Iniciando ciclo de política pública: '{entrada.titulo}'"
-            ],
+            "bitacora_mensajes": [f"[SISTEMA] Iniciando ciclo de política pública: '{entrada.titulo}'"],
             "errores": [],
         }
 
-    def ejecutar_ciclo(self, entrada: EntradaCicloPolitica) -> RespuestaCicloPolitica:
+    def ejecutar_ciclo(
+        self, entrada: EntradaCicloPolitica, *, corte: ContextoCorte | None = None
+    ) -> RespuestaCicloPolitica:
         """Ejecuta sincrónicamente el StateGraph completo determinista."""
-        estado_inicial = self.inicializar_estado(entrada)
+        estado_inicial = self.inicializar_estado(entrada, corte=corte)
         estado_final = self.app.invoke(estado_inicial)
         return self._transformar_respuesta(estado_final)
 
-    async def ejecutar_ciclo_async(self, entrada: EntradaCicloPolitica) -> RespuestaCicloPolitica:
+    async def ejecutar_ciclo_async(
+        self, entrada: EntradaCicloPolitica, *, corte: ContextoCorte | None = None
+    ) -> RespuestaCicloPolitica:
         """Ejecuta asincrónicamente el StateGraph completo."""
-        estado_inicial = self.inicializar_estado(entrada)
+        estado_inicial = self.inicializar_estado(entrada, corte=corte)
         estado_final = await self.app.ainvoke(estado_inicial)
         return self._transformar_respuesta(estado_final)
 
@@ -162,14 +169,10 @@ class PolicyLifecycleGraph:
             else None
         )
         res_jur = (
-            ResultadoJuridico.model_validate(estado["resultado_juridico"])
-            if estado.get("resultado_juridico")
-            else None
+            ResultadoJuridico.model_validate(estado["resultado_juridico"]) if estado.get("resultado_juridico") else None
         )
         res_fisc = (
-            ResultadoFiscal.model_validate(estado["resultado_fiscal"])
-            if estado.get("resultado_fiscal")
-            else None
+            ResultadoFiscal.model_validate(estado["resultado_fiscal"]) if estado.get("resultado_fiscal") else None
         )
         res_dev = (
             ResultadoDevolucion.model_validate(estado["resultado_devolucion"])
@@ -179,6 +182,13 @@ class PolicyLifecycleGraph:
 
         return RespuestaCicloPolitica(
             politica_id=uuid.UUID(estado["politica_id"]),
+            run_id=uuid.UUID(estado["run_id"]) if estado.get("run_id") else None,
+            corte=estado.get("corte"),
+            alcance_corte=(
+                "REFERENCIA_VERIFICADA_PROPUESTA_NO_CONCILIADA_CON_FUENTES"
+                if estado.get("corte")
+                else "EVALUACION_DE_PROPUESTA_INDEPENDIENTE"
+            ),
             titulo=estado["titulo"],
             fase_final=estado["fase_actual"],
             ciclo_completado_exitosamente=estado["ciclo_completado_exitosamente"],

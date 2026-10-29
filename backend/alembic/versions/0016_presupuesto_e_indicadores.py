@@ -33,9 +33,7 @@ def upgrade() -> None:
             actualizado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
         );
     """)
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_fuentes_codigo ON presupuesto.fuentes_financiacion (codigo);"
-    )
+    op.execute("CREATE INDEX IF NOT EXISTS idx_fuentes_codigo ON presupuesto.fuentes_financiacion (codigo);")
 
     op.execute("""
         CREATE TABLE IF NOT EXISTS presupuesto.asignaciones_presupuestales (
@@ -86,9 +84,7 @@ def upgrade() -> None:
             actualizado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
         );
     """)
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_fichas_codigo ON indicadores.fichas_tecnicas_indicadores (codigo);"
-    )
+    op.execute("CREATE INDEX IF NOT EXISTS idx_fichas_codigo ON indicadores.fichas_tecnicas_indicadores (codigo);")
     op.execute(
         "CREATE INDEX IF NOT EXISTS idx_fichas_tipo ON indicadores.fichas_tecnicas_indicadores (tipo_indicador);"
     )

@@ -21,9 +21,7 @@ from app.modules.compromisos.motor_multiagente_pdd import (  # noqa: E402
 async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preflight", action="store_true", help="Validar corpus sin escribir.")
-    parser.add_argument(
-        "--no-publicar", action="store_true", help="No actualizar Google Workspace."
-    )
+    parser.add_argument("--no-publicar", action="store_true", help="No actualizar Google Workspace.")
     parser.add_argument(
         "--finalizar-desde-bd",
         action="store_true",

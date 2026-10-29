@@ -30,9 +30,7 @@ def upgrade() -> None:
     op.execute(
         "CREATE INDEX IF NOT EXISTS idx_geometrias_capas_gist ON geodatos.geometrias_capas USING GIST (geometria);"
     )
-    op.execute(
-        "CREATE INDEX IF NOT EXISTS idx_geometrias_capas_categoria ON geodatos.geometrias_capas (categoria);"
-    )
+    op.execute("CREATE INDEX IF NOT EXISTS idx_geometrias_capas_categoria ON geodatos.geometrias_capas (categoria);")
 
     # 2. Poblar territorios con MultiPolígonos (se insertan datos sintéticos válidos para la región de Cartagena)
     # En un entorno real, estos provienen de la Infraestructura de Datos Espaciales (IDE) de Cartagena.

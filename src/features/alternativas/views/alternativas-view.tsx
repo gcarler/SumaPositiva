@@ -52,8 +52,11 @@ import {
   LINEAS_ESTRATEGICAS_MAP
 } from "../models/alternativa";
 import {sanitizarCsv} from "@/shared/lib/csv";
+import { CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function AlternativasView() {
+  const [vista, setVista] = useCollectionView("alternativas", "lista");
   const [modoVista, setModoVista] = useState<"banco_mga" | "costeo_presupuesto">("banco_mga");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
@@ -444,7 +447,9 @@ export function AlternativasView() {
       </div>
 
       {/* DataGrid interactivo de Alternativas */}
+      <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista del banco de alternativas" />
       <AlternativasTabla
+        vista={vista}
         alternativas={alternativasFiltradas}
         puedeEditar={puedeEditarEfectivo}
       />

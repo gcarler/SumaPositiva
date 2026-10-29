@@ -1,10 +1,23 @@
 """Esquemas Pydantic v2 para aportes ciudadanos con enfoque diferencial y territorio."""
 
+import re
 import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError, field_validator
+
+
+def proyectar_metadatos_publicos(datos: Any) -> dict[str, Any]:
+    """Contrato público cerrado; los diccionarios originales permanecen privados."""
+    if not isinstance(datos, dict):
+        return {}
+    publico: dict[str, Any] = {}
+    if isinstance(datos.get("canal"), str) and datos["canal"] in {"web", "whatsapp", "mesa", "taller", "presencial"}:
+        publico["canal"] = datos["canal"]
+    if isinstance(datos.get("tipo_mensaje"), str) and datos["tipo_mensaje"] in {"text", "audio", "image", "document"}:
+        publico["tipo_mensaje"] = datos["tipo_mensaje"]
+    return publico
 
 
 class MetadataEnfoqueDiferencial(BaseModel):
@@ -13,8 +26,7 @@ class MetadataEnfoqueDiferencial(BaseModel):
     etnia: str | None = Field(
         default=None,
         description=(
-            "Identificación étnica: indigena, afrocolombiano_negro, raizal, "
-            "palenquero, rrom_gitano, mestizo_ninguno"
+            "Identificación étnica: indigena, afrocolombiano_negro, raizal, palenquero, rrom_gitano, mestizo_ninguno"
         ),
     )
     genero: str | None = Field(
@@ -39,9 +51,7 @@ class MetadataEnfoqueDiferencial(BaseModel):
     )
     tipo_discapacidad: str | None = Field(
         default=None,
-        description=(
-            "Tipo de discapacidad: fisica, visual, auditiva, intelectual, psicosocial, multiple"
-        ),
+        description=("Tipo de discapacidad: fisica, visual, auditiva, intelectual, psicosocial, multiple"),
     )
     poblacion_campesina: bool = Field(
         default=False,
@@ -62,6 +72,13 @@ class MetadataEnfoqueDiferencial(BaseModel):
     )
 
     model_config = ConfigDict(extra="allow")
+
+
+_CAMPOS_ENFOQUE_PUBLICO = {
+    clave: TypeAdapter(campo.rebuild_annotation())
+    for clave, campo in MetadataEnfoqueDiferencial.model_fields.items()
+    if clave != "datos_adicionales"
+}
 
 
 TipoAporteLiteral = Literal[
@@ -141,9 +158,9 @@ class PropuestaCiudadanaBase(BaseModel):
 class PropuestaCiudadanaCreate(PropuestaCiudadanaBase):
     """Esquema para recepción y creación de propuestas ciudadanas."""
 
-    estado: EstadoPropuestaLiteral = Field(
+    estado: Literal["borrador", "publicado"] = Field(
         default="publicado",
-        description="Estado inicial de la propuesta",
+        description="Alta ciudadana: borrador o publicado; las decisiones institucionales requieren gestión",
     )
     correo_contacto: str | None = Field(
         default=None,
@@ -180,12 +197,6 @@ class PropuestaCiudadanaRead(PropuestaCiudadanaBase):
         ...,
         description="Código oficial único de radicación distrital (ej. POL-2026-0001)",
     )
-    sesion_id: uuid.UUID | None = Field(
-        default=None, description="UUIDv7 de la sesión anónima originaria"
-    )
-    huella_hash: str | None = Field(
-        default=None, description="Huella criptográfica de la sesión (Habeas Data)"
-    )
     apoyos_contador: int = Field(default=0, description="Contador de respaldos ciudadanos")
     estado: str = Field(..., description="Estado actual de tramitación o devolución")
     activo: bool = Field(default=True, description="Bandera para soft-delete")
@@ -195,6 +206,46 @@ class PropuestaCiudadanaRead(PropuestaCiudadanaBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_validator("metadatos", mode="before")
+    @classmethod
+    def metadatos_publicos(cls, value: Any) -> dict[str, Any]:
+        return proyectar_metadatos_publicos(value)
+
+    @field_validator("metadata_enfoque", mode="before")
+    @classmethod
+    def enfoque_publico(cls, value: Any) -> dict[str, Any]:
+        datos = value.model_dump() if isinstance(value, BaseModel) else value
+        if not isinstance(datos, dict):
+            return {}
+        publico = {}
+        for clave, adaptador in _CAMPOS_ENFOQUE_PUBLICO.items():
+            if clave not in datos:
+                continue
+            try:
+                contenido = adaptador.validate_python(datos[clave], strict=True)
+            except ValidationError:
+                # Omitir lo no utilizable conserva los defaults técnicos del contrato;
+                # no convierte el JSON legado ni afirma una condición demográfica.
+                continue
+            if isinstance(contenido, str) and ("@" in contenido or re.search(r"(?:\d[\s()+.-]*){7}", contenido)):
+                continue
+            publico[clave] = contenido
+        return publico
+
+    @field_validator("archivos_adjuntos", mode="before")
+    @classmethod
+    def adjuntos_publicos(cls, value: Any) -> list[dict[str, Any]]:
+        publico = []
+        for adjunto in value if isinstance(value, list) else []:
+            if not isinstance(adjunto, dict):
+                continue
+            try:
+                evidencia_id = uuid.UUID(str(adjunto.get("evidencia_id") or adjunto.get("id")))
+            except (ValueError, TypeError):
+                continue
+            publico.append({"evidencia_id": str(evidencia_id)})
+        return publico
+
 
 class PropuestasPaginadasRead(BaseModel):
     """Estructura de paginación para listados de aportes ciudadanos."""
@@ -202,9 +253,7 @@ class PropuestasPaginadasRead(BaseModel):
     total: int = Field(..., description="Total de registros que coinciden con los filtros")
     limite: int = Field(..., description="Cantidad máxima de elementos solicitados por página")
     desplazamiento: int = Field(..., description="Desplazamiento u offset aplicado")
-    elementos: list[PropuestaCiudadanaRead] = Field(
-        ..., description="Lista de aportes en la página actual"
-    )
+    elementos: list[PropuestaCiudadanaRead] = Field(..., description="Lista de aportes en la página actual")
 
 
 class RespuestaToggleApoyo(BaseModel):
@@ -223,4 +272,3 @@ class MisApoyosRespuesta(BaseModel):
         default_factory=list,
         description="Lista de UUIDs de propuestas que la sesión actual ha respaldado",
     )
-

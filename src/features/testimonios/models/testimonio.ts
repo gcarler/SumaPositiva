@@ -1,6 +1,6 @@
 export type TipoTestimonio = "ciudadano" | "lider_comunal" | "funcionario" | "academia";
 
-export type EstadoTestimonio = "PENDIENTE" | "APROBADO" | "DESTACADO" | "RECHAZADO";
+export type EstadoTestimonio = "BORRADOR" | "PENDIENTE" | "APROBADO" | "DESTACADO" | "RECHAZADO";
 
 export interface Testimonio {
   id: string;
@@ -46,6 +46,7 @@ export interface TestimonioCrearPeticion {
   url_foto?: string | null;
   url_audio_video?: string | null;
   metadatos_enfoque?: Record<string, unknown>;
+  estado?: EstadoTestimonio;
 }
 
 export interface TestimonioModeracionPeticion {
@@ -55,6 +56,7 @@ export interface TestimonioModeracionPeticion {
 
 export interface ResumenTestimonios {
   total_testimonios: number;
+  borradores?: number;
   aprobados: number;
   destacados: number;
   pendientes: number;

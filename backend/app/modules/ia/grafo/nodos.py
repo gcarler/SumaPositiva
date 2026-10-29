@@ -36,9 +36,7 @@ def nodo_diagnostico(state: EstadoCicloPolitica) -> EstadoCicloPolitica:
     nuevo_estado["fase_actual"] = "diagnostico"
     nuevo_estado["iteracion_diagnostico"] += 1
     nuevo_estado["iteracion_total"] += 1
-    nuevo_estado["historial_estados"].append(
-        f"diagnostico_iter_{nuevo_estado['iteracion_diagnostico']}"
-    )
+    nuevo_estado["historial_estados"].append(f"diagnostico_iter_{nuevo_estado['iteracion_diagnostico']}")
 
     politica_uuid = uuid.UUID(state["politica_id"])
 
@@ -93,9 +91,7 @@ def nodo_viabilidad_juridica(state: EstadoCicloPolitica) -> EstadoCicloPolitica:
     resultado = _agente_juridico.analizar(entrada)
     nuevo_estado["resultado_juridico"] = resultado.model_dump(mode="json")
     nuevo_estado["viabilidad_juridica_aprobada"] = resultado.es_viable
-    nuevo_estado["consulta_previa_requerida"] = (
-        resultado.alerta_consulta_previa.requiere_consulta_previa
-    )
+    nuevo_estado["consulta_previa_requerida"] = resultado.alerta_consulta_previa.requiere_consulta_previa
     nuevo_estado["acto_administrativo_sugerido"] = resultado.instrumento_adopcion_recomendado
 
     nuevo_estado["bitacora_mensajes"].append(
@@ -155,8 +151,7 @@ def nodo_deliberacion_consulta(state: EstadoCicloPolitica) -> EstadoCicloPolitic
         )
     else:
         nuevo_estado["bitacora_mensajes"].append(
-            "[DELIBERACIÓN] Mesas de trabajo participativas ordinarias comple"
-            "tadas en las localidades de Cartagena."
+            "[DELIBERACIÓN] Mesas de trabajo participativas ordinarias completadas en las localidades de Cartagena."
         )
 
     nuevo_estado["deliberacion_completada"] = True
@@ -198,12 +193,8 @@ def nodo_devolucion_motivada(state: EstadoCicloPolitica) -> EstadoCicloPolitica:
             PropuestaParaDevolucion(
                 propuesta_id=generar_uuidv7(),
                 titulo="Aportes generales recopilados en plenarias",
-                descripcion=(
-                    "Sugerencias complementarias de infraestructura no prioritarias en esta fase"
-                ),
-                motivo_descarte_preliminar=(
-                    "Aporte agrupado para consideración en futuros planes operativos anuales."
-                ),
+                descripcion=("Sugerencias complementarias de infraestructura no prioritarias en esta fase"),
+                motivo_descarte_preliminar=("Aporte agrupado para consideración en futuros planes operativos anuales."),
             )
         )
 

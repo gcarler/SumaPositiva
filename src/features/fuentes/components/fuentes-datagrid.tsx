@@ -22,6 +22,8 @@ import {usePanels} from "@/core/panels/panel-store";
 import type {EstadoEntrega, FuenteInformacion} from "../models/fuente";
 import {useFuentesFiltradas, useFuentesStore} from "../state/fuentes-store";
 import {sanitizarCsv} from "@/shared/lib/csv";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 function formatearEstado(estado: EstadoEntrega): {
   etiqueta: string;
@@ -46,6 +48,7 @@ function formatearEstado(estado: EstadoEntrega): {
 }
 
 export function FuentesDataGrid() {
+  const [vista, setVista] = useCollectionView("fuentes", "lista");
   const fuentes = useFuentesFiltradas();
   const totalTodas = useFuentesStore((s) => s.fuentes.length);
   const { openPanel } = usePanels();
@@ -143,7 +146,8 @@ export function FuentesDataGrid() {
           Mostrando <strong className="text-text-primary">{fuentes.length}</strong> de{" "}
           <strong className="text-text-primary">{totalTodas}</strong> fuentes de información registradas
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de las fuentes de información" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
@@ -165,7 +169,33 @@ export function FuentesDataGrid() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-surface-1">
+      {vista === "tarjetas" ? (
+        <CollectionLayout view={vista} aria-label="Tarjetas de fuentes de información">
+          {fuentes.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-text-secondary sm:col-span-2 xl:col-span-3">No se encontraron fuentes con los criterios seleccionados. Ajusta o reinicia los filtros de búsqueda.</p>}
+          {fuentes.map((fuente) => {
+            const estado = formatearEstado(fuente.estadoEntrega);
+            return (
+              <article key={fuente.id} className="flex flex-col gap-4 rounded-xl border border-border bg-surface-1 p-5">
+                <div className="space-y-1">
+                  <p className="font-mono text-xs text-text-tertiary">{fuente.codigo}</p>
+                  <h2 className="break-words font-semibold text-text-primary">{fuente.nombreFuente}</h2>
+                  <p className="text-sm text-text-secondary">{fuente.entidad}</p>
+                </div>
+                <div className="flex flex-wrap gap-2"><Badge variant={estado.variante} className="whitespace-normal">{estado.etiqueta}</Badge><Badge variant="outline" className="whitespace-normal capitalize">{fuente.ambito} · {fuente.tipo}</Badge></div>
+                <dl className="space-y-2 text-sm">
+                  <div><dt className="text-xs text-text-tertiary">Dimensión</dt><dd>{fuente.dimensionSeguridad}</dd></div>
+                  <div><dt className="text-xs text-text-tertiary">Radicado</dt><dd>{fuente.radicadoSolicitud || "Sin radicar"}</dd></div>
+                  <div><dt className="text-xs text-text-tertiary">Solicitud / Límite de respuesta</dt><dd>{fuente.fechaSolicitud || "Sin fecha"} / {fuente.fechaLimiteRespuesta || "Sin fecha"}</dd></div>
+                </dl>
+                <div className="mt-auto flex flex-wrap items-center gap-3">
+                  <Button variant="outline" size="sm" onClick={() => abrirGestion(fuente)} aria-label={`Gestionar ${fuente.nombreFuente}`}>Gestionar</Button>
+                  {fuente.archivoAdjuntoUrl && <a href={fuente.archivoAdjuntoUrl} target="_blank" rel="noreferrer" className="text-sm text-ember underline">Ver recurso<span className="sr-only"> de {fuente.nombreFuente} (nueva pestaña)</span></a>}
+                </div>
+              </article>
+            );
+          })}
+        </CollectionLayout>
+      ) : <div className="overflow-hidden rounded-xl border border-border bg-surface-1">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -279,7 +309,7 @@ export function FuentesDataGrid() {
             </TableBody>
           </Table>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

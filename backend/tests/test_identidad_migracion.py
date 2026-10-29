@@ -13,6 +13,7 @@ from app.modules.identidad.security import obtener_hash_contrasena
 pytestmark = pytest.mark.integration
 
 
+@pytest.mark.migration
 def test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin(database_url, monkeypatch):
     monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
     config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
@@ -60,10 +61,7 @@ def test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin(database_url,
                         )
                     ).one()
                     assert usuario.correo == correo and usuario.hash_contrasena == hash_clave
-                    assert (
-                        usuario.metadatos == {"legado": True}
-                        and usuario.correo_verificado_en is None
-                    )
+                    assert usuario.metadatos == {"legado": True} and usuario.correo_verificado_en is None
                 elif accion == "promover":
                     await connection.execute(
                         text("""UPDATE autenticacion.usuarios SET rol_id=(

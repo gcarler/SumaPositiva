@@ -8,9 +8,8 @@ sujeta a trazabilidad de auditoría forense inmutable y gating de ciclo de vida 
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Response, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import get_session
+from app.core.database import SessionDependency
 from app.modules.alternativas.repository import AlternativasRepository
 from app.modules.alternativas.schemas import (
     AlternativaActualizar,
@@ -25,8 +24,14 @@ from app.modules.politicas.gating import verificar_escritura_fase
 router = APIRouter(prefix="/alternativas", tags=["Alternativas MGA"])
 
 
-def obtener_servicio(db: AsyncSession = Depends(get_session)) -> AlternativasService:
+def obtener_servicio(db: SessionDependency) -> AlternativasService:
     return AlternativasService(AlternativasRepository(db))
+
+
+# B008: depósito de servicio como alias Annotated módulo-nivel, conforme al
+# patrón del kit (ver SujetoAutenticadoDep en identidad/deps). Se define después
+# de obtener_servicio porque la expresión se evalúa en import.
+ServicioAlternativasDep = Annotated[AlternativasService, Depends(obtener_servicio)]
 
 
 @router.get(
@@ -36,13 +41,13 @@ def obtener_servicio(db: AsyncSession = Depends(get_session)) -> AlternativasSer
     description="Consulta pública de las iniciativas de solución formuladas en el Banco Distrital MGA.",
 )
 async def listar_alternativas(
+    service: ServicioAlternativasDep,
     busqueda: Annotated[str | None, Query(description="Término de búsqueda")] = None,
     sector: Annotated[str | None, Query(description="Filtrar por sector MGA")] = None,
     linea: Annotated[str | None, Query(description="Filtrar por código o ID de línea estratégica")] = None,
     dimension: Annotated[str | None, Query(description="Filtrar por código o ID de dimensión")] = None,
     estado: Annotated[str | None, Query(description="Filtrar por estado de formulación")] = None,
     enfoque_etnico: Annotated[str | None, Query(description="solo_etnicos o no_etnicos")] = None,
-    service: AlternativasService = Depends(obtener_servicio),
 ) -> list[AlternativaRead]:
     alternativas = await service.listar_alternativas(
         busqueda=busqueda,
@@ -63,7 +68,7 @@ async def listar_alternativas(
 )
 async def obtener_alternativa(
     id_o_codigo: str,
-    service: AlternativasService = Depends(obtener_servicio),
+    service: ServicioAlternativasDep,
 ) -> AlternativaRead:
     alt = await service.obtener_alternativa(id_o_codigo)
     return AlternativaRead.model_validate(alt)
@@ -82,7 +87,7 @@ async def crear_alternativa(
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("alternativas:gestionar", nivel_minimo="declarada")),
     ],
-    db: AsyncSession = Depends(get_session),
+    db: SessionDependency,
 ) -> AlternativaRead:
     await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, db)
     service = AlternativasService(AlternativasRepository(db))
@@ -103,7 +108,7 @@ async def actualizar_alternativa(
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("alternativas:gestionar", nivel_minimo="declarada")),
     ],
-    db: AsyncSession = Depends(get_session),
+    db: SessionDependency,
 ) -> AlternativaRead:
     await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, db)
     service = AlternativasService(AlternativasRepository(db))
@@ -123,7 +128,7 @@ async def eliminar_alternativa(
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("alternativas:gestionar", nivel_minimo="declarada")),
     ],
-    db: AsyncSession = Depends(get_session),
+    db: SessionDependency,
 ) -> Response:
     await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, db)
     service = AlternativasService(AlternativasRepository(db))

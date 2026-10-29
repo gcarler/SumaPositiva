@@ -19,15 +19,25 @@ def test_validador_linguistico_dnp_unidad():
     """Valida la regla lingüística oficial del DNP a nivel unitario."""
     # 1. Verbos débiles prohibidos taxativamente por el DNP (16 verbos)
     verbos_prohibidos = [
-        "apropiar", "asegurar", "colaborar", "consolidar", "contribuir",
-        "desarrollar", "integrar", "fomentar", "fortalecer", "garantizar",
-        "implementar", "impulsar", "mejorar", "movilizar", "proponer", "promover"
+        "apropiar",
+        "asegurar",
+        "colaborar",
+        "consolidar",
+        "contribuir",
+        "desarrollar",
+        "integrar",
+        "fomentar",
+        "fortalecer",
+        "garantizar",
+        "implementar",
+        "impulsar",
+        "mejorar",
+        "movilizar",
+        "proponer",
+        "promover",
     ]
     for verbo in verbos_prohibidos:
-        frase = (
-            f"{verbo.capitalize()} las capacidades de seguridad comunitaria "
-            "en barrios priorizados"
-        )
+        frase = f"{verbo.capitalize()} las capacidades de seguridad comunitaria en barrios priorizados"
         res = CompromisosService.validar_redaccion_dnp(frase, "NORMATIVA")
         assert not res.es_valida, f"Debe rechazar '{verbo}'"
         assert res.es_verbo_debil_prohibido
@@ -325,9 +335,7 @@ def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: st
                 "lider_responsable": "Director de Seguridad",
                 "tipo_meta": "ACTIVIDAD",
                 "tipo_actividad": "NORMATIVA",
-                "descripcion_actividad": (
-                    "Expedir el decreto distrital de zonas de especial protección comunitaria"
-                ),
+                "descripcion_actividad": ("Expedir el decreto distrital de zonas de especial protección comunitaria"),
                 "categoria_recursos": "INVERSION",
                 "fuente_financiacion": "RECURSOS_PROPIOS",
                 "monto_programado_cop": 100000000.0,
@@ -341,9 +349,7 @@ def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: st
                 "lider_responsable": "Jefe de Operaciones",
                 "tipo_meta": "META_PRODUCTO",
                 "tipo_actividad": "LOGISTICA",
-                "descripcion_actividad": (
-                    "Fortalecer la capacidad logística de los frentes de seguridad barrial"
-                ),
+                "descripcion_actividad": ("Fortalecer la capacidad logística de los frentes de seguridad barrial"),
                 "categoria_recursos": "INVERSION",
                 "fuente_financiacion": "SGP_PROPOSITO_GENERAL",
                 "monto_programado_cop": 200000000.0,
@@ -488,5 +494,3 @@ def test_auditar_consistencia_serie_y_sentido_indicador_casos_dnp():
     assert res_suma_pos_avance_cero["sentido_indicador"] == "MANTENIMIENTO"
     assert res_suma_pos_avance_cero["inconsistencia_aritmetica_trimestral"] is True
     assert res_suma_pos_avance_cero["consistencia_trimestral_t1_t4"]["suma_trimestral"] == 15.0
-
-

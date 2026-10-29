@@ -29,12 +29,7 @@ SEMAFORO_VERDE = "VERDE_EN_META"
 SEMAFORO_AMARILLO = "AMARILLO_PREVENTIVO"
 SEMAFORO_ROJO = "ROJO_CONTENCION_PDCA"
 
-DEFAULT_CACHE_PATH = (
-    Path(__file__).resolve().parents[4]
-    / "data"
-    / "planes_desarrollo"
-    / "cache_pdt_ai_evaluator.json"
-)
+DEFAULT_CACHE_PATH = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo" / "cache_pdt_ai_evaluator.json"
 
 
 def _normalizar(valor: Any) -> str:
@@ -83,9 +78,7 @@ def _cargar_diagnostico_cache(
         if codigo_plan:
             norm_plan = _normalizar(codigo_plan)
             for candidate in runs:
-                if isinstance(candidate, dict) and norm_plan in _normalizar(
-                    candidate.get("thread_id", "")
-                ):
+                if isinstance(candidate, dict) and norm_plan in _normalizar(candidate.get("thread_id", "")):
                     return candidate
         first_run = runs[0]
         return first_run if isinstance(first_run, dict) else {}
@@ -251,8 +244,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                     "codigo": "SO",
                     "interseccion": "Objetivos de Ruptura (Sur) <-> Objetivos Anuales (Oeste)",
                     "metodo_cuantitativo": (
-                        "Consistencia entre Plan Indicativo Cuatrienal, despliegue anual PPI "
-                        "y MPI Malmquist"
+                        "Consistencia entre Plan Indicativo Cuatrienal, despliegue anual PPI y MPI Malmquist"
                     ),
                     "regla_simbologia": {
                         SIMBOLO_FUERTE: "Puntaje >= 0.75 (FUERTE)",
@@ -262,9 +254,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 },
                 "oeste_norte": {
                     "codigo": "ON",
-                    "interseccion": (
-                        "Objetivos Anuales (Oeste) <-> Proyectos BPIM / Plan de Acción (Norte)"
-                    ),
+                    "interseccion": ("Objetivos Anuales (Oeste) <-> Proyectos BPIM / Plan de Acción (Norte)"),
                     "metodo_cuantitativo": "Similaridad Coseno NLP Sim(O_k, A_m)",
                     "regla_simbologia": {
                         SIMBOLO_FUERTE: "Sim >= 0.65 (FUERTE)",
@@ -274,12 +264,8 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 },
                 "norte_este": {
                     "codigo": "NE",
-                    "interseccion": (
-                        "Proyectos BPIM (Norte) <-> KPIs MIR y Responsables DMU (Este)"
-                    ),
-                    "metodo_cuantitativo": (
-                        "Eficiencia Técnica Pura DEA-BCC (theta_bcc) y holguras (s-, s+)"
-                    ),
+                    "interseccion": ("Proyectos BPIM (Norte) <-> KPIs MIR y Responsables DMU (Este)"),
+                    "metodo_cuantitativo": ("Eficiencia Técnica Pura DEA-BCC (theta_bcc) y holguras (s-, s+)"),
                     "regla_simbologia": {
                         SIMBOLO_FUERTE: "theta_bcc >= 0.80 (FUERTE)",
                         SIMBOLO_MEDIA: "0.50 <= theta_bcc < 0.80 (MEDIA)",
@@ -289,9 +275,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 "este_sur": {
                     "codigo": "ES",
                     "interseccion": ("KPIs y Responsables (Este) <-> Ruptura Territorial (Sur)"),
-                    "metodo_cuantitativo": (
-                        "Probabilidad de cumplimiento (1 - ISRI_k) cruzada con LISA Coldspots"
-                    ),
+                    "metodo_cuantitativo": ("Probabilidad de cumplimiento (1 - ISRI_k) cruzada con LISA Coldspots"),
                     "regla_simbologia": {
                         SIMBOLO_FUERTE: "ISRI <= 0.25 y sin Coldspot (FUERTE)",
                         SIMBOLO_MEDIA: "0.25 < ISRI <= 0.40 y sin Coldspot (MEDIA)",
@@ -339,8 +323,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                     SEMAFORO_VERDE: "Cumplimiento proyectado >= 85% e ISRI <= 0.25",
                     SEMAFORO_AMARILLO: "Cumplimiento entre 60% y 85% o 0.25 < ISRI <= 0.40",
                     SEMAFORO_ROJO: (
-                        "Cumplimiento < 60% o ISRI > 0.40 (activa análisis de causa raíz y plan "
-                        "de contención PDCA)"
+                        "Cumplimiento < 60% o ISRI > 0.40 (activa análisis de causa raíz y plan de contención PDCA)"
                     ),
                 },
             },
@@ -349,26 +332,19 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
             {
                 "paso": 1,
                 "nombre": "Definir la Visión Territorial",
-                "descripcion": (
-                    "Consolidar la visión de Seguridad Humana Integral y GBR del Distrito."
-                ),
+                "descripcion": ("Consolidar la visión de Seguridad Humana Integral y GBR del Distrito."),
                 "cuadrante_asociado": "GLOBAL / FAIR-Focus",
             },
             {
                 "paso": 2,
                 "nombre": "Identificar Objetivos de Ruptura (Sur)",
-                "descripcion": (
-                    "Seleccionar las metas transformadoras cuatrienales a 3-5 años en los "
-                    "5 sectores GBR."
-                ),
+                "descripcion": ("Seleccionar las metas transformadoras cuatrienales a 3-5 años en los 5 sectores GBR."),
                 "cuadrante_asociado": "SUR",
             },
             {
                 "paso": 3,
                 "nombre": "Establecer Objetivos Anuales (Oeste)",
-                "descripcion": (
-                    "Desglosar metas físicas y presupuestales (PPI) por vigencia fiscal."
-                ),
+                "descripcion": ("Desglosar metas físicas y presupuestales (PPI) por vigencia fiscal."),
                 "cuadrante_asociado": "OESTE",
             },
             {
@@ -384,8 +360,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 "paso": 5,
                 "nombre": "Ejecutar e Integrar en Rutina Operativa",
                 "descripcion": (
-                    "Monitoreo continuo de apropiaciones, compromisos RP y entregas físicas "
-                    "eficientes (DEA)."
+                    "Monitoreo continuo de apropiaciones, compromisos RP y entregas físicas eficientes (DEA)."
                 ),
                 "cuadrante_asociado": "NORTE",
             },
@@ -393,8 +368,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 "paso": 6,
                 "nombre": "Revisiones Periódicas (Bowling Charts + PDCA)",
                 "descripcion": (
-                    "Detección temprana de desviaciones en rojo (ISRI > 0.40, mission creep "
-                    "< 0.45, holguras DEA)."
+                    "Detección temprana de desviaciones en rojo (ISRI > 0.40, mission creep < 0.45, holguras DEA)."
                 ),
                 "cuadrante_asociado": "ESTE",
             },
@@ -402,8 +376,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
                 "paso": 7,
                 "nombre": "Diagnóstico Anual y Retroalimentación (Gemba)",
                 "descripcion": (
-                    "Auditoría integral al cierre de vigencia en los 29 territorios con "
-                    "trazabilidad en PostgreSQL."
+                    "Auditoría integral al cierre de vigencia en los 29 territorios con trazabilidad en PostgreSQL."
                 ),
                 "cuadrante_asociado": "SUR / ESTE",
             },
@@ -412,12 +385,9 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
             {
                 "dimension": "Cadencia",
                 "SMART_Tradicional": (
-                    "Evaluación estática anual o al cierre del cuatrienio sin recalibración "
-                    "intermedia."
+                    "Evaluación estática anual o al cierre del cuatrienio sin recalibración intermedia."
                 ),
-                "OKRs": (
-                    "Ciclos trimestrales ágiles enfocados en equipos autónomos de corto plazo."
-                ),
+                "OKRs": ("Ciclos trimestrales ágiles enfocados en equipos autónomos de corto plazo."),
                 "Hoshin_Kanri_Matriz_X": (
                     "Sincronización multiescala: Ruptura cuatrienal (3-5 años), despliegue "
                     "anual (Oeste) y revisión mensual/trimestral en Bowling Charts PDCA."
@@ -426,13 +396,9 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
             {
                 "dimension": "Ambición",
                 "SMART_Tradicional": (
-                    "Metas incrementales y conservadoras diseñadas para asegurar cumplimiento "
-                    "nominal."
+                    "Metas incrementales y conservadoras diseñadas para asegurar cumplimiento nominal."
                 ),
-                "OKRs": (
-                    "Metas desafiantes (moonshots) donde 70% de avance se considera éxito "
-                    "cualitativo."
-                ),
+                "OKRs": ("Metas desafiantes (moonshots) donde 70% de avance se considera éxito cualitativo."),
                 "Hoshin_Kanri_Matriz_X": (
                     "Objetivos de Ruptura estructurales evaluados sobre la frontera de "
                     "producción eficiente no paramétrica (DEA CCR/BCC) y quiebres estructurales "
@@ -441,13 +407,8 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
             },
             {
                 "dimension": "Alineación",
-                "SMART_Tradicional": (
-                    "Cascada top-down rígida por silos administrativos sin verificación cruzada."
-                ),
-                "OKRs": (
-                    "Alineación flexible bottom-up/top-down pero propensa a desconexión "
-                    "presupuestal."
-                ),
+                "SMART_Tradicional": ("Cascada top-down rígida por silos administrativos sin verificación cruzada."),
+                "OKRs": ("Alineación flexible bottom-up/top-down pero propensa a desconexión presupuestal."),
                 "Hoshin_Kanri_Matriz_X": (
                     "Interconexión explícita en 4 cuadrantes y 4 esquinas auditadas con NLP "
                     "Coseno, DEA-BCC, ISRI y LISA mediante negociación Catchball (Nemawashi)."
@@ -455,9 +416,7 @@ def obtener_especificacion_hoshin_kanri_pdt() -> dict[str, Any]:
             },
             {
                 "dimension": "Propósito",
-                "SMART_Tradicional": (
-                    "Control administrativo de metas aisladas y reporte formal de actividades."
-                ),
+                "SMART_Tradicional": ("Control administrativo de metas aisladas y reporte formal de actividades."),
                 "OKRs": "Foco y tracción rápida en productos puntuales o innovación operativa.",
                 "Hoshin_Kanri_Matriz_X": (
                     "Gobernanza pública basada en evidencia (GBR/DNP) que evita el cumplimiento "
@@ -513,18 +472,13 @@ def _calcular_evaluacion_fair(
 
     spatial = diagnostico.get("spatial_lisa") or {}
     poligonos_lisa = int(
-        spatial.get("poligonos_reales_postgis")
-        or spatial.get("territorios_con_geometria")
-        or spatial.get("n")
-        or 0
+        spatial.get("poligonos_reales_postgis") or spatial.get("territorios_con_geometria") or spatial.get("n") or 0
     )
     cobertura_lisa = min(1.0, poligonos_lisa / 29.0) if poligonos_lisa > 0 else 0.50
     cobertura_series = min(1.0, len(series_tiempo) / 10.0) if series_tiempo else 0.50
     trazabilidad_pg = 1.0 if fuentes else 0.60
     review_score = round(
-        _clamp(
-            ((0.45 * cobertura_lisa) + (0.35 * cobertura_series) + (0.20 * trazabilidad_pg)) * 100.0
-        ),
+        _clamp(((0.45 * cobertura_lisa) + (0.35 * cobertura_series) + (0.20 * trazabilidad_pg)) * 100.0),
         2,
     )
 
@@ -621,9 +575,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         ]
 
     sectores_filtrados = [
-        row
-        for row in multisector_raw
-        if not filtro_sector or filtro_sector in _normalizar(row.get("sector"))
+        row for row in multisector_raw if not filtro_sector or filtro_sector in _normalizar(row.get("sector"))
     ]
     if not sectores_filtrados and multisector_raw:
         sectores_filtrados = multisector_raw
@@ -644,9 +596,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             if isinstance(deps, str):
                 deps = [deps]
             texto_act = str(item.get("actividad_operativa") or "")
-            if not any(
-                filtro_dep in _normalizar(d) for d in deps
-            ) and filtro_dep not in _normalizar(texto_act):
+            if not any(filtro_dep in _normalizar(d) for d in deps) and filtro_dep not in _normalizar(texto_act):
                 return False
         return True
 
@@ -747,9 +697,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         if p_t1 is not None and mpi_val is not None:
             mpi_por_vigencia.setdefault(int(p_t1), []).append(float(mpi_val))
 
-    todas_vigencias = sorted(
-        set(por_vigencia.keys()) | set(avances_por_vigencia.keys()) | set(mpi_por_vigencia.keys())
-    )
+    todas_vigencias = sorted(set(por_vigencia.keys()) | set(avances_por_vigencia.keys()) | set(mpi_por_vigencia.keys()))
     if not todas_vigencias:
         todas_vigencias = [2024, 2025, 2026, 2027]
 
@@ -761,12 +709,8 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         b_dea = por_vigencia.get(vig, {"dmus": 0, "thetas_bcc": [], "thetas_ccr": []})
         vals_av = avances_por_vigencia.get(vig, [])
         vals_mpi = mpi_por_vigencia.get(vig, [])
-        bcc_mean = (
-            sum(b_dea["thetas_bcc"]) / len(b_dea["thetas_bcc"]) if b_dea["thetas_bcc"] else None
-        )
-        av_mean = (
-            sum(vals_av) / len(vals_av) if vals_av else (bcc_mean * 100.0 if bcc_mean else 65.0)
-        )
+        bcc_mean = sum(b_dea["thetas_bcc"]) / len(b_dea["thetas_bcc"]) if b_dea["thetas_bcc"] else None
+        av_mean = sum(vals_av) / len(vals_av) if vals_av else (bcc_mean * 100.0 if bcc_mean else 65.0)
         mpi_mean = sum(vals_mpi) / len(vals_mpi) if vals_mpi else 1.0
         peso_vig = max(1, b_dea["dmus"])
         ppi_estimado = round(insumo_anual_medio * (0.85 + 0.01 * min(peso_vig, 30)), 2)
@@ -785,14 +729,10 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         )
 
     cuadrante_norte: list[dict[str, Any]] = []
-    fuente_norte = (
-        muestra_filtrada if muestra_filtrada else (alertas_filtradas or muestra_nlp or alertas_nlp)
-    )
+    fuente_norte = muestra_filtrada if muestra_filtrada else (alertas_filtradas or muestra_nlp or alertas_nlp)
     for idx, item in enumerate(fuente_norte[:20], start=1):
         sim_val = float(item.get("similaridad_coseno_lexica") or sim_info.get("promedio") or 0.50)
-        simbolo, nivel = clasificar_correlacion_simbolo(
-            sim_val, umbral_fuerte=0.65, umbral_media=0.45
-        )
+        simbolo, nivel = clasificar_correlacion_simbolo(sim_val, umbral_fuerte=0.65, umbral_media=0.45)
         deps = item.get("dependencias") or item.get("dependencia") or []
         if isinstance(deps, str):
             deps = [deps]
@@ -803,9 +743,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
                 "codigo_plan": str(item.get("codigo_plan") or "PDD_CARTAGENA"),
                 "codigo_meta_vinculada": str(item.get("codigo_meta") or f"M-{idx:02d}"),
                 "actividad_proyecto_bpim": act_str,
-                "meta_estrategica_referencia": str(item.get("meta_estrategica") or "").strip()[
-                    :200
-                ],
+                "meta_estrategica_referencia": str(item.get("meta_estrategica") or "").strip()[:200],
                 "dependencias_responsables": list(deps),
                 "similaridad_coseno_nlp": round(sim_val, 4),
                 "simbolo_alineacion": simbolo,
@@ -822,9 +760,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
                     "id_proyecto_prioridad": f"NORTE-PA-{idx:02d}",
                     "codigo_plan": codigo_plan or "PDD_2024_2027",
                     "codigo_meta_vinculada": f"M-GBR-{idx:02d}",
-                    "actividad_proyecto_bpim": (
-                        f"Proyecto de Inversión BPIM / Plan de Acción — {sec.get('sector')}"
-                    ),
+                    "actividad_proyecto_bpim": (f"Proyecto de Inversión BPIM / Plan de Acción — {sec.get('sector')}"),
                     "meta_estrategica_referencia": f"Meta sectorial GBR en {sec.get('sector')}",
                     "dependencias_responsables": [dependencia or "Secretaría de Planeación"],
                     "similaridad_coseno_nlp": round(sim_global, 4),
@@ -868,16 +804,12 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         for r in rows:
             sl = r.get("slacks") or {}
             slack_insumos_total += sum(float(v) for v in (sl.get("insumos") or []) if v is not None)
-            slack_productos_total += sum(
-                float(v) for v in (sl.get("productos") or []) if v is not None
-            )
+            slack_productos_total += sum(float(v) for v in (sl.get("productos") or []) if v is not None)
 
         serie_dep = isri_por_dep.get(_normalizar(dep_name)) or {}
         isri_val = float(serie_dep["ISRI"]) if serie_dep.get("ISRI") is not None else 0.35
         coldspots_dep = sorted(set(trampas_por_dep.get(_normalizar(dep_name), [])))
-        kpi_label = str(
-            serie_dep.get("indicador") or f"Índice de Cumplimiento Físico y Eficiencia — {dep_name}"
-        )
+        kpi_label = str(serie_dep.get("indicador") or f"Índice de Cumplimiento Físico y Eficiencia — {dep_name}")
 
         cuadrante_este.append(
             {
@@ -904,9 +836,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             mpi_val = float(oeste_item.get("mpi_malmquist") or 1.0)
             bcc_anual = float(oeste_item.get("theta_bcc_anual_promedio") or 0.55)
             puntaje_so = round(max(0.0, min(1.0, 0.55 * min(1.0, mpi_val) + 0.45 * bcc_anual)), 4)
-            simbolo, nivel = clasificar_correlacion_simbolo(
-                puntaje_so, umbral_fuerte=0.75, umbral_media=0.50
-            )
+            simbolo, nivel = clasificar_correlacion_simbolo(puntaje_so, umbral_fuerte=0.75, umbral_media=0.50)
             esquina_sur_oeste.append(
                 {
                     "esquina": "SUR_OESTE",
@@ -920,16 +850,10 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             )
 
     esquina_oeste_norte: list[dict[str, Any]] = []
-    oeste_ref = (
-        cuadrante_oeste[-1]
-        if cuadrante_oeste
-        else {"id_objetivo_anual": "OESTE-2026", "vigencia": 2026}
-    )
+    oeste_ref = cuadrante_oeste[-1] if cuadrante_oeste else {"id_objetivo_anual": "OESTE-2026", "vigencia": 2026}
     for norte_item in cuadrante_norte:
         sim_val = float(norte_item.get("similaridad_coseno_nlp") or 0.0)
-        simbolo, nivel = clasificar_correlacion_simbolo(
-            sim_val, umbral_fuerte=0.65, umbral_media=0.45
-        )
+        simbolo, nivel = clasificar_correlacion_simbolo(sim_val, umbral_fuerte=0.65, umbral_media=0.45)
         esquina_oeste_norte.append(
             {
                 "esquina": "OESTE_NORTE",
@@ -948,9 +872,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         norte_vinculado = cuadrante_norte[idx_e % len(cuadrante_norte)]
         theta_bcc = este_item.get("theta_bcc")
         puntaje_ne = float(theta_bcc) if theta_bcc is not None else 0.45
-        simbolo, nivel = clasificar_correlacion_simbolo(
-            puntaje_ne, umbral_fuerte=0.80, umbral_media=0.50
-        )
+        simbolo, nivel = clasificar_correlacion_simbolo(puntaje_ne, umbral_fuerte=0.80, umbral_media=0.50)
         esquina_norte_este.append(
             {
                 "esquina": "NORTE_ESTE",
@@ -997,14 +919,8 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         meta_prog = float(serie.get("meta_cuatrienio") or 100.0)
         pronostico_obj = serie.get("pronostico_arima_var") or {}
         ultimo_val = float(trayectoria[-1]["valor"]) if trayectoria else 0.0
-        val_proyectado = (
-            float(pronostico_obj["valor"])
-            if pronostico_obj.get("valor") is not None
-            else ultimo_val
-        )
-        cumplimiento_pct = _clamp(
-            (max(ultimo_val, val_proyectado) / max(1.0, meta_prog)) * 100.0, 0.0, 100.0
-        )
+        val_proyectado = float(pronostico_obj["valor"]) if pronostico_obj.get("valor") is not None else ultimo_val
+        cumplimiento_pct = _clamp((max(ultimo_val, val_proyectado) / max(1.0, meta_prog)) * 100.0, 0.0, 100.0)
         isri_val = float(serie.get("ISRI") if serie.get("ISRI") is not None else 0.35)
         desviacion_pct = round(cumplimiento_pct - meta_prog, 4)
         semaforo = clasificar_semaforo_bowling_chart(cumplimiento_pct, isri_val)
@@ -1012,75 +928,39 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         ruptura_chow = bool(chow_info.get("ruptura_estructural_significativa"))
 
         if semaforo == SEMAFORO_ROJO:
-            sufijo_chow = (
-                " y ruptura estructural de Chow en 2024."
-                if ruptura_chow
-                else " en la trayectoria histórica."
-            )
+            sufijo_chow = " y ruptura estructural de Chow en 2024." if ruptura_chow else " en la trayectoria histórica."
             causa_raiz = (
                 f"Brecha crítica ({round(cumplimiento_pct, 2)}% vs meta {meta_prog}%) "
                 f"con ISRI={round(isri_val, 4)}" + sufijo_chow
             )
             pdca_plan = {
-                "Plan": (
-                    f"Reprogramar cronograma físico-financiero de {dep_asociada} en la "
-                    "Matriz de Plan de Acción."
-                ),
-                "Do": (
-                    "Ejecutar plan de choque trimestral focalizando recursos en metas "
-                    "con rezago severo."
-                ),
-                "Check": (
-                    "Auditar avance mensual en Bowling Chart y verificar reducción de "
-                    "holguras DEA-BCC."
-                ),
-                "Act": (
-                    "Estandarizar ajuste vía sesión Catchball y registrar compromiso en "
-                    "Checkpointer HITL."
-                ),
+                "Plan": (f"Reprogramar cronograma físico-financiero de {dep_asociada} en la Matriz de Plan de Acción."),
+                "Do": ("Ejecutar plan de choque trimestral focalizando recursos en metas con rezago severo."),
+                "Check": ("Auditar avance mensual en Bowling Chart y verificar reducción de holguras DEA-BCC."),
+                "Act": ("Estandarizar ajuste vía sesión Catchball y registrar compromiso en Checkpointer HITL."),
             }
         elif semaforo == SEMAFORO_AMARILLO:
             causa_raiz = (
-                f"Desempeño intermedio ({round(cumplimiento_pct, 2)}%) o riesgo "
-                f"preventivo ISRI={round(isri_val, 4)}."
+                f"Desempeño intermedio ({round(cumplimiento_pct, 2)}%) o riesgo preventivo ISRI={round(isri_val, 4)}."
             )
             pdca_plan = {
-                "Plan": (
-                    f"Ajustar hitos preventivos de contratación y entregas físicas en "
-                    f"{dep_asociada}."
-                ),
-                "Do": (
-                    "Acelerar ejecución de compromisos RP y eliminar cuellos de botella operativos."
-                ),
-                "Check": (
-                    "Monitorear tendencia ARIMA/VAR en corte bimensual para evitar paso "
-                    "a estado rojo."
-                ),
-                "Act": (
-                    "Documentar lecciones preventivas en mesa técnica con Planeación Distrital."
-                ),
+                "Plan": (f"Ajustar hitos preventivos de contratación y entregas físicas en {dep_asociada}."),
+                "Do": ("Acelerar ejecución de compromisos RP y eliminar cuellos de botella operativos."),
+                "Check": ("Monitorear tendencia ARIMA/VAR en corte bimensual para evitar paso a estado rojo."),
+                "Act": ("Documentar lecciones preventivas en mesa técnica con Planeación Distrital."),
             }
         else:
             causa_raiz = (
-                f"Trayectoria controlada ({round(cumplimiento_pct, 2)}%) dentro de banda "
-                "de cumplimiento e ISRI bajo."
+                f"Trayectoria controlada ({round(cumplimiento_pct, 2)}%) dentro de banda de cumplimiento e ISRI bajo."
             )
             pdca_plan = {
-                "Plan": (
-                    "Consolidar meta anual y evaluar ampliación de alcance hacia "
-                    "territorios vulnerables."
-                ),
+                "Plan": ("Consolidar meta anual y evaluar ampliación de alcance hacia territorios vulnerables."),
                 "Do": "Mantener ritmo de ejecución sobre la frontera eficiente DEA.",
                 "Check": ("Verificar sostenibilidad del indicador MIR e impacto territorial LISA."),
-                "Act": (
-                    "Transferir buenas prácticas como benchmark para otras DMUs en "
-                    "sesiones Catchball."
-                ),
+                "Act": ("Transferir buenas prácticas como benchmark para otras DMUs en sesiones Catchball."),
             }
 
-        sec_asignado = sectores_filtrados[idx_b % len(sectores_filtrados)].get(
-            "sector", SECTORES_GBR[0]
-        )
+        sec_asignado = sectores_filtrados[idx_b % len(sectores_filtrados)].get("sector", SECTORES_GBR[0])
         bowling_charts.append(
             {
                 "id_bowling_chart": f"BC-{idx_b:02d}",
@@ -1123,9 +1003,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
                     "ISRI": round(isri_s, 4),
                     "ruptura_chow_2024": False,
                     "color_semaforo": semaforo_s,
-                    "analisis_causa_raiz": (
-                        f"Evaluación sectorial agregada para {sec.get('sector')}."
-                    ),
+                    "analisis_causa_raiz": (f"Evaluación sectorial agregada para {sec.get('sector')}."),
                     "accion_correctiva_pdca": {
                         "Plan": "Alinear metas sectoriales con presupuesto PPI.",
                         "Do": "Desplegar proyectos prioritarios BPIM.",
@@ -1165,9 +1043,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             cs_joined = ", ".join(este_item.get("coldspots_asociados") or [])
             brechas_detectadas.append(f"Trampa Territorial LISA en Coldspot ({cs_joined})")
         if alto_riesgo_isri:
-            brechas_detectadas.append(
-                f"Alto riesgo prospectivo de incumplimiento (ISRI={round(isri_val, 4)} > 0.40)"
-            )
+            brechas_detectadas.append(f"Alto riesgo prospectivo de incumplimiento (ISRI={round(isri_val, 4)} > 0.40)")
 
         catchball_sesiones.append(
             {
@@ -1185,9 +1061,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
                     "umbral_coseno_minimo": 0.45,
                 },
                 "bottom_up_dependencia_y_gemba_territorial": {
-                    "actor": (
-                        f"{dep_name} + Mesas Territoriales (29 unidades sub-distritales PostGIS)"
-                    ),
+                    "actor": (f"{dep_name} + Mesas Territoriales (29 unidades sub-distritales PostGIS)"),
                     "contrapropuesta_operativa": (
                         "Reestructurar descriptores MGA/BPIM en la Matriz de Plan de Acción, "
                         "focalizar entregas físicas en los Coldspots territoriales "
@@ -1202,16 +1076,12 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
                     "Human-in-the-Loop."
                 ),
                 "requiere_validacion_hitl": True,
-                "estado_checkpointer": str(
-                    raw_diag.get("estado_checkpointer") or "PENDIENTE_REVISION_HUMANA"
-                ),
+                "estado_checkpointer": str(raw_diag.get("estado_checkpointer") or "PENDIENTE_REVISION_HUMANA"),
             }
         )
 
     fuentes = raw_diag.get("trazabilidad_fuentes") or {}
-    poligonos_postgis = int(
-        spatial.get("poligonos_reales_postgis") or spatial.get("territorios_con_geometria") or 29
-    )
+    poligonos_postgis = int(spatial.get("poligonos_reales_postgis") or spatial.get("territorios_con_geometria") or 29)
     indicadores_territorio = int(fuentes.get("geodatos.territorios_con_indicadores") or 116)
     rojos_count = sum(1 for bc in bowling_charts if bc["color_semaforo"] == SEMAFORO_ROJO)
     jurisdiccion_label = raw_diag.get("jurisdiction", "Distrito de Cartagena")
@@ -1235,17 +1105,14 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             "paso": 2,
             "nombre": "Identificar Objetivos de Ruptura (Sur)",
             "estado": "COMPLETADO",
-            "evidencia_bd_csh": (
-                f"{n_lineas} líneas/programas y {n_metas} metas oficiales cargadas en bd_csh."
-            ),
+            "evidencia_bd_csh": (f"{n_lineas} líneas/programas y {n_metas} metas oficiales cargadas en bd_csh."),
         },
         {
             "paso": 3,
             "nombre": "Establecer Objetivos Anuales (Oeste)",
             "estado": "COMPLETADO",
             "evidencia_bd_csh": (
-                f"{n_triada} registros anuales normalizados en {len(cuadrante_oeste)} "
-                "vigencias evaluadas."
+                f"{n_triada} registros anuales normalizados en {len(cuadrante_oeste)} vigencias evaluadas."
             ),
         },
         {
@@ -1271,8 +1138,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
             "nombre": "Revisiones Periódicas (Bowling Charts + PDCA)",
             "estado": "ALERTA_CONTENCION_PDCA" if rojos_count > 0 else "EN_META",
             "evidencia_bd_csh": (
-                f"{len(bowling_charts)} Bowling Charts generados "
-                f"({rojos_count} en estado {SEMAFORO_ROJO})."
+                f"{len(bowling_charts)} Bowling Charts generados ({rojos_count} en estado {SEMAFORO_ROJO})."
             ),
         },
         {
@@ -1303,9 +1169,7 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
         )
     return {
         "motor": "PDT-AI-EVALUATOR / HOSHIN-KANRI-MATRIZ-X",
-        "jurisdiction": raw_diag.get(
-            "jurisdiction", "Distrito Turístico y Cultural de Cartagena de Indias"
-        ),
+        "jurisdiction": raw_diag.get("jurisdiction", "Distrito Turístico y Cultural de Cartagena de Indias"),
         "time_horizon": raw_diag.get("time_horizon", "2024-2027 (Serie Multianual 2012-2027)"),
         "filtros_aplicados": {
             "codigo_plan": codigo_plan,
@@ -1336,167 +1200,169 @@ def _construir_matriz_x_hoshin_kanri_pdt_core(
 
 
 async def _consultar_articulacion_distrital_local_pdl(db, diagnostico: dict[str, Any]):
-    """Consulta PDL, metas, líneas y unidades UCG; devuelve un fallback auditable ante fallos."""
-    from sqlalchemy import text
+    """Consulta PDL, metas, líneas y unidades UCG; devuelve un fallback auditable ante fallos.
 
-    plan_codes = [f"PDL_{index}_2024_2027" for index in range(1, 4)]
-    plan_rows = (
-        (
-            await db.execute(
-                text(
-                    """SELECT p.codigo_plan,p.nombre_oficial,p.ppi_total_corriente_cop,
-                          count(DISTINCT l.id)::int total_lineas,
-                          count(DISTINCT m.id)::int total_metas
-                   FROM seguimiento.planes_desarrollo_distrital p
-                   LEFT JOIN seguimiento.pdd_lineas_y_programas l ON l.codigo_plan=p.codigo_plan
-                   LEFT JOIN seguimiento.pdd_metas_oficiales m ON m.codigo_plan=p.codigo_plan
-                   WHERE p.codigo_plan = ANY(:planes)
-                   GROUP BY p.codigo_plan,p.nombre_oficial,p.ppi_total_corriente_cop
-                   ORDER BY p.codigo_plan"""
-                ),
-                {"planes": plan_codes},
-            )
-        )
-        .mappings()
-        .all()
-    )
-    meta_rows = (
-        (
-            await db.execute(
-                text(
-                    """SELECT codigo_plan,codigo,nombre,indicador,linea_nombre
-                   FROM seguimiento.pdd_metas_oficiales
-                   WHERE codigo_plan = ANY(:planes)"""
-                ),
-                {"planes": plan_codes},
-            )
-        )
-        .mappings()
-        .all()
-    )
-    pdd_meta_rows = (
-        (
-            await db.execute(
-                text(
-                    """SELECT nombre,indicador,linea_nombre
-                   FROM seguimiento.pdd_metas_oficiales
-                   WHERE codigo_plan='PDD_2024_2027'"""
-                )
-            )
-        )
-        .mappings()
-        .all()
-    )
-    territory_rows = (
-        (
-            await db.execute(
-                text(
-                    """SELECT id::text id,codigo,nombre,tipo_territorio,metadatos
-                   FROM geodatos.territorios
-                   WHERE codigo LIKE 'UCG-%' OR tipo_territorio='localidad'
-                   ORDER BY codigo"""
-                )
-            )
-        )
-        .mappings()
-        .all()
-    )
-    names = {
-        "PDL_1_2024_2027": "Localidad 1 Histórica y del Caribe Norte",
-        "PDL_2_2024_2027": "Localidad 2 de la Virgen y Turística",
-        "PDL_3_2024_2027": "Localidad 3 Industrial y de la Bahía",
-    }
-    coldspots = (diagnostico.get("spatial_lisa") or {}).get("coldspots") or []
-    coldspot_text = _normalizar(" ".join(str(row) for row in coldspots))
-    pdd_texts = [
-        _normalizar(
-            " ".join(str(row.get(k) or "") for k in ("nombre", "indicador", "linea_nombre"))
-        )
-        for row in pdd_meta_rows
-    ]
-    metas_by_plan: dict[str, list[dict[str, Any]]] = {}
-    for row in meta_rows:
-        metas_by_plan.setdefault(str(row["codigo_plan"]), []).append(dict(row))
-    localidades = []
-    sesiones = []
-    for index, code in enumerate(plan_codes, start=1):
-        plan = next((dict(row) for row in plan_rows if row["codigo_plan"] == code), {})
-        ucg_codes = [f"UCG-{n:02d}" for n in range((index - 1) * 5 + 1, index * 5 + 1)]
-        ucgs = [dict(row) for row in territory_rows if str(row["codigo"]) in ucg_codes]
-        local_territory = next(
+    Consulta de solo lectura en una sesión auxiliar del mismo engine (precedente
+    de ambito_territorial): un fallo de catálogo nunca aborta la transacción
+    principal del caso de uso, y esta consulta auxiliar no gestiona commits ni
+    rollbacks (docs/transacciones.md).
+    """
+    from sqlalchemy import text
+    from sqlalchemy.ext.asyncio import AsyncSession as AuxSession
+
+    async def _ejecutar_catalogo(conexion: Any):
+        plan_codes = [f"PDL_{index}_2024_2027" for index in range(1, 4)]
+        plan_rows = (
             (
-                dict(row)
-                for row in territory_rows
-                if str(row.get("codigo") or "").casefold()
-                in {f"loc-{index}".casefold(), f"localidad-{index}".casefold()}
-            ),
-            None,
+                await conexion.execute(
+                    text(
+                        """SELECT p.codigo_plan,p.nombre_oficial,p.ppi_total_corriente_cop,
+                              count(DISTINCT l.id)::int total_lineas,
+                              count(DISTINCT m.id)::int total_metas
+                       FROM seguimiento.planes_desarrollo_distrital p
+                       LEFT JOIN seguimiento.pdd_lineas_y_programas l ON l.codigo_plan=p.codigo_plan
+                       LEFT JOIN seguimiento.pdd_metas_oficiales m ON m.codigo_plan=p.codigo_plan
+                       WHERE p.codigo_plan = ANY(:planes)
+                       GROUP BY p.codigo_plan,p.nombre_oficial,p.ppi_total_corriente_cop
+                       ORDER BY p.codigo_plan"""
+                    ),
+                    {"planes": plan_codes},
+                )
+            )
+            .mappings()
+            .all()
         )
-        metas = metas_by_plan.get(code, [])
-        aligned = 0
-        for meta in metas:
-            descriptor = _normalizar(
-                " ".join(str(meta.get(k) or "") for k in ("nombre", "indicador", "linea_nombre"))
+        meta_rows = (
+            (
+                await conexion.execute(
+                    text(
+                        """SELECT codigo_plan,codigo,nombre,indicador,linea_nombre
+                       FROM seguimiento.pdd_metas_oficiales
+                       WHERE codigo_plan = ANY(:planes)"""
+                    ),
+                    {"planes": plan_codes},
+                )
             )
-            tokens = {token for token in descriptor.split() if len(token) > 4}
-            if tokens and any(
-                len(tokens.intersection(set(text.split()))) / len(tokens) >= 0.2
-                for text in pdd_texts
-            ):
-                aligned += 1
-        alignment = round(aligned / len(metas) * 100, 2) if metas else 0.0
-        ucg_coldspots = [
-            row
-            for row in ucgs
-            if _normalizar(row.get("codigo")) in coldspot_text
-            or _normalizar(row.get("nombre")) in coldspot_text
-        ]
-        locality = {
-            "codigo_plan": code,
-            "nombre_localidad": names[code],
-            "territorio_geodatos": local_territory,
-            "ppi_total_corriente_cop": float(plan.get("ppi_total_corriente_cop") or 0),
-            "total_lineas": int(plan.get("total_lineas") or 0),
-            "total_metas": int(plan.get("total_metas") or len(metas)),
-            "ucgs_territoriales": ucgs,
-            "coldspots_lisa_en_localidad": len(ucg_coldspots),
-            "indice_alineacion_con_pdd_distrital": alignment,
-            "estado_catchball_local": "REQUIERE_CATCHBALL"
-            if metas or ucg_coldspots
-            else "SIN_BRECHA_DETECTADA",
-            "metas_pdl_destacadas": metas[:5],
+            .mappings()
+            .all()
+        )
+        pdd_meta_rows = (
+            (
+                await conexion.execute(
+                    text(
+                        """SELECT nombre,indicador,linea_nombre
+                       FROM seguimiento.pdd_metas_oficiales
+                       WHERE codigo_plan='PDD_2024_2027'"""
+                    )
+                )
+            )
+            .mappings()
+            .all()
+        )
+        territory_rows = (
+            (
+                await conexion.execute(
+                    text(
+                        """SELECT id::text id,codigo,nombre,tipo_territorio,metadatos
+                       FROM geodatos.territorios
+                       WHERE codigo LIKE 'UCG-%' OR tipo_territorio='localidad'
+                       ORDER BY codigo"""
+                    )
+                )
+            )
+            .mappings()
+            .all()
+        )
+        names = {
+            "PDL_1_2024_2027": "Localidad 1 Histórica y del Caribe Norte",
+            "PDL_2_2024_2027": "Localidad 2 de la Virgen y Turística",
+            "PDL_3_2024_2027": "Localidad 3 Industrial y de la Bahía",
         }
-        localidades.append(locality)
-        if metas or ucg_coldspots:
-            sesiones.append(
-                {
-                    "id_sesion_catchball": f"CATCHBALL-PDL-{index}",
-                    "tipo": "DISTRITAL_LOCAL_PDL",
-                    "codigo_plan": code,
-                    "localidad": names[code],
-                    "brechas_criticas_detectadas": [
-                        f"{len(metas)} metas PDL sujetas a alineación/cofinanciación distrital",
-                        *(
-                            [f"{len(ucg_coldspots)} UCGs con coldspot LISA"]
-                            if ucg_coldspots
-                            else []
-                        ),
-                    ],
-                    "requiere_validacion_hitl": True,
-                    "actor_distrital": "Secretaría de Planeación Distrital",
-                    "actor_local": names[code],
-                }
+        coldspots = (diagnostico.get("spatial_lisa") or {}).get("coldspots") or []
+        coldspot_text = _normalizar(" ".join(str(row) for row in coldspots))
+        pdd_texts = [
+            _normalizar(" ".join(str(row.get(k) or "") for k in ("nombre", "indicador", "linea_nombre")))
+            for row in pdd_meta_rows
+        ]
+        metas_by_plan: dict[str, list[dict[str, Any]]] = {}
+        for row in meta_rows:
+            metas_by_plan.setdefault(str(row["codigo_plan"]), []).append(dict(row))
+        localidades = []
+        sesiones = []
+        for index, code in enumerate(plan_codes, start=1):
+            plan = next((dict(row) for row in plan_rows if row["codigo_plan"] == code), {})
+            ucg_codes = [f"UCG-{n:02d}" for n in range((index - 1) * 5 + 1, index * 5 + 1)]
+            ucgs = [dict(row) for row in territory_rows if str(row["codigo"]) in ucg_codes]
+            local_territory = next(
+                (
+                    dict(row)
+                    for row in territory_rows
+                    if str(row.get("codigo") or "").casefold()
+                    in {f"loc-{index}".casefold(), f"localidad-{index}".casefold()}
+                ),
+                None,
             )
-    return {
-        "estado": "DISPONIBLE",
-        "total_planes_locales": len(plan_rows),
-        "total_metas_pdl": sum(int(row.get("total_metas") or 0) for row in plan_rows),
-        "ppi_total_locales_cop": sum(
-            float(row.get("ppi_total_corriente_cop") or 0) for row in plan_rows
-        ),
-        "localidades": localidades,
-        "sesiones_catchball": sesiones,
-    }
+            metas = metas_by_plan.get(code, [])
+            aligned = 0
+            for meta in metas:
+                descriptor = _normalizar(
+                    " ".join(str(meta.get(k) or "") for k in ("nombre", "indicador", "linea_nombre"))
+                )
+                tokens = {token for token in descriptor.split() if len(token) > 4}
+                if tokens and any(
+                    len(tokens.intersection(set(texto.split()))) / len(tokens) >= 0.2 for texto in pdd_texts
+                ):
+                    aligned += 1
+            alignment = round(aligned / len(metas) * 100, 2) if metas else 0.0
+            ucg_coldspots = [
+                row
+                for row in ucgs
+                if _normalizar(row.get("codigo")) in coldspot_text or _normalizar(row.get("nombre")) in coldspot_text
+            ]
+            locality = {
+                "codigo_plan": code,
+                "nombre_localidad": names[code],
+                "territorio_geodatos": local_territory,
+                "ppi_total_corriente_cop": float(plan.get("ppi_total_corriente_cop") or 0),
+                "total_lineas": int(plan.get("total_lineas") or 0),
+                "total_metas": int(plan.get("total_metas") or len(metas)),
+                "ucgs_territoriales": ucgs,
+                "coldspots_lisa_en_localidad": len(ucg_coldspots),
+                "indice_alineacion_con_pdd_distrital": alignment,
+                "estado_catchball_local": "REQUIERE_CATCHBALL" if metas or ucg_coldspots else "SIN_BRECHA_DETECTADA",
+                "metas_pdl_destacadas": metas[:5],
+            }
+            localidades.append(locality)
+            if metas or ucg_coldspots:
+                sesiones.append(
+                    {
+                        "id_sesion_catchball": f"CATCHBALL-PDL-{index}",
+                        "tipo": "DISTRITAL_LOCAL_PDL",
+                        "codigo_plan": code,
+                        "localidad": names[code],
+                        "brechas_criticas_detectadas": [
+                            f"{len(metas)} metas PDL sujetas a alineación/cofinanciación distrital",
+                            *([f"{len(ucg_coldspots)} UCGs con coldspot LISA"] if ucg_coldspots else []),
+                        ],
+                        "requiere_validacion_hitl": True,
+                        "actor_distrital": "Secretaría de Planeación Distrital",
+                        "actor_local": names[code],
+                    }
+                )
+        return {
+            "estado": "DISPONIBLE",
+            "total_planes_locales": len(plan_rows),
+            "total_metas_pdl": sum(int(row.get("total_metas") or 0) for row in plan_rows),
+            "ppi_total_locales_cop": sum(float(row.get("ppi_total_corriente_cop") or 0) for row in plan_rows),
+            "localidades": localidades,
+            "sesiones_catchball": sesiones,
+        }
+
+    # Consulta auxiliar sólo con sesión real (test dobres pasan la conexión directa).
+    if not isinstance(db, AuxSession):
+        return await _ejecutar_catalogo(db)
+    async with AuxSession(db.bind, expire_on_commit=False) as auxiliar:
+        return await _ejecutar_catalogo(auxiliar)
 
 
 async def construir_matriz_x_hoshin_kanri_pdt(
@@ -1526,10 +1392,6 @@ async def construir_matriz_x_hoshin_kanri_pdt(
         try:
             articulation = await _consultar_articulacion_distrital_local_pdl(db, raw_diag)
         except Exception as exc:
-            try:
-                await db.rollback()
-            except Exception:
-                pass
             articulation["estado"] = f"NO_DISPONIBLE_{type(exc).__name__}"
     return _construir_matriz_x_hoshin_kanri_pdt_core(
         diagnostico=raw_diag,

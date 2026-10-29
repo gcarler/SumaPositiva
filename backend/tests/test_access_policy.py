@@ -47,9 +47,7 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
     app = create_app(Settings(_env_file=None, environment="test"))
     documentadas = leer_matriz()
     assert len({(method, path) for method, path, _, _ in documentadas}) == len(documentadas)
-    esperadas = {
-        (method, path): (control, motivo) for method, path, control, motivo in documentadas
-    }
+    esperadas = {(method, path): (control, motivo) for method, path, control, motivo in documentadas}
     reales = {}
     for route in rutas_efectivas(app):
         for method in route.methods:
@@ -58,9 +56,7 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
     for clave, llamadas in reales.items():
         control, motivo = esperadas[clave]
         assert motivo, clave
-        permisos = {
-            (c.permiso, c.nivel_minimo) for c in llamadas if isinstance(c, requerir_permiso)
-        }
+        permisos = {(c.permiso, c.nivel_minimo) for c in llamadas if isinstance(c, requerir_permiso)}
         roles = {tuple(c.roles) for c in llamadas if isinstance(c, requerir_rol)}
         nombres = {getattr(c, "__name__", "") for c in llamadas}
         if control.startswith("permiso:"):
@@ -77,9 +73,7 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
         else:
             assert control == "publico", clave
             assert not permisos and not roles, clave
-            assert not nombres.intersection(
-                {"obtener_sujeto_autenticado", "obtener_sesion_requerida"}
-            ), clave
+            assert not nombres.intersection({"obtener_sujeto_autenticado", "obtener_sesion_requerida"}), clave
             if clave[0] == "GET" and clave[1] == "/api/v1/mesas/geovisor":
                 assert "get_evidencia_service" in nombres
             if clave[0] != "GET":
@@ -104,15 +98,6 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
                     ("POST", "/api/v1/compromisos/triada/cruzar-lecturas"),
                     ("POST", "/api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd"),
                     ("POST", "/api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd"),
-                    ("POST", "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar"),
-                    (
-                        "POST",
-                        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar",
-                    ),
-                    (
-                        "POST",
-                        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo",
-                    ),
                     ("GET", "/api/v1/compromisos/triada/lotes"),
                     ("GET", "/api/v1/compromisos/triada/comparativa-interanual"),
                 }, "Una escritura pública nueva requiere decisión explícita y pruebas"
@@ -123,28 +108,18 @@ def test_endpoint_sispt_esta_registrado_como_lectura_publica():
 
     path = "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento"
     assert es_ruta_analitica_publica(path)
-    assert ("GET", path, "publico") in {
-        (method, route, control) for method, route, control, _ in leer_matriz()
-    }
+    assert ("GET", path, "publico") in {(method, route, control) for method, route, control, _ in leer_matriz()}
 
 
 def test_endpoint_diagnostico_pshc_esta_registrado_como_lectura_publica():
     from app.core.security.access_policy import es_ruta_analitica_publica
 
-    path = (
-        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes"
-    )
+    path = "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes"
     assert es_ruta_analitica_publica(path)
-    assert ("GET", path, "publico") in {
-        (method, route, control) for method, route, control, _ in leer_matriz()
-    }
+    assert ("GET", path, "publico") in {(method, route, control) for method, route, control, _ in leer_matriz()}
 
 
-GESTION = [
-    (method, path)
-    for method, path, control, _ in leer_matriz()
-    if control.startswith(("permiso:", "roles:"))
-]
+GESTION = [(method, path) for method, path, control, _ in leer_matriz() if control.startswith(("permiso:", "roles:"))]
 
 
 @pytest.mark.parametrize("method,path", GESTION)
@@ -171,9 +146,7 @@ def test_gestion_rechaza_sin_token_y_ciudadano(method, path, monkeypatch):
         raise AssertionError("Una petición denegada no debe llegar a persistencia")
 
     app.dependency_overrides[get_session] = prohibir_base
-    esperado_control = next(
-        control for m, p, control, _ in leer_matriz() if (m, p) == (method, path)
-    )
+    esperado_control = next(control for m, p, control, _ in leer_matriz() if (m, p) == (method, path))
     if esperado_control.startswith("permiso:"):
         permiso = esperado_control.removeprefix("permiso:").split("@")[0]
         token_nivel_bajo = crear_token_acceso(

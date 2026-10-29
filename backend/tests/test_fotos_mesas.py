@@ -106,9 +106,7 @@ async def test_foto_mesa_pendiente_no_es_publica_hasta_moderacion(
         )
         assert revisar.status_code == 200, revisar.text
 
-        mesa_aprobada = next(
-            item for item in client.get("/api/v1/mesas/geovisor").json() if item["id"] == mesa_id
-        )
+        mesa_aprobada = next(item for item in client.get("/api/v1/mesas/geovisor").json() if item["id"] == mesa_id)
         assert len(mesa_aprobada["fotos"]) == 1
         foto_url = mesa_aprobada["fotos"][0]["archivo_url"]
         descarga = client.get(foto_url)
@@ -174,13 +172,26 @@ async def test_fallo_tras_insertar_evidencia_revierte_y_compensa_archivo(
     engine = create_async_engine(database_url, hide_parameters=True)
     try:
         async with engine.connect() as connection:
-            assert await connection.scalar(
-                text("SELECT count(*) FROM participacion_ciudadana.evidencias_multimedia WHERE nombre_archivo_original = :nombre"),
-                {"nombre": nombre_archivo},
-            ) == 0
-            assert await connection.scalar(
-                text("SELECT count(*) FROM mesas_trabajo.fotos_mesa AS foto JOIN mesas_trabajo.mesas AS mesa ON mesa.id = foto.mesa_id WHERE mesa.id = :mesa_id"),
-                {"mesa_id": uuid.UUID(mesa_id)},
-            ) == 0
+            assert (
+                await connection.scalar(
+                    text(
+                        "SELECT count(*) FROM participacion_ciudadana.evidencias_multimedia"
+                        " WHERE nombre_archivo_original = :nombre"
+                    ),
+                    {"nombre": nombre_archivo},
+                )
+                == 0
+            )
+            assert (
+                await connection.scalar(
+                    text(
+                        "SELECT count(*) FROM mesas_trabajo.fotos_mesa AS foto"
+                        " JOIN mesas_trabajo.mesas AS mesa ON mesa.id = foto.mesa_id"
+                        " WHERE mesa.id = :mesa_id"
+                    ),
+                    {"mesa_id": uuid.UUID(mesa_id)},
+                )
+                == 0
+            )
     finally:
         await engine.dispose()

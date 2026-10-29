@@ -44,9 +44,7 @@ class LineaService:
                     raise HTTPException(422, "Seleccione una de las siete dimensiones activas")
                 if await self.repo.duplicado(datos.fase_id, datos.codigo, id):
                     raise HTTPException(409, "El código de línea ya existe en esta fase")
-                campos = datos.model_dump(
-                    exclude={"metadatos", "sublineas"}, exclude_unset=bool(id)
-                )
+                campos = datos.model_dump(exclude={"metadatos", "sublineas"}, exclude_unset=bool(id))
                 for nombre, valor in campos.items():
                     setattr(linea, nombre, valor)
                 linea.metadatos = {
@@ -58,9 +56,7 @@ class LineaService:
                 guardada = await self.repo.guardar(linea)
                 return LineaEstrategicaRead.model_validate(guardada)
         except IntegrityError as error:
-            raise HTTPException(
-                409, "La operación entra en conflicto con un registro vinculado"
-            ) from error
+            raise HTTPException(409, "La operación entra en conflicto con un registro vinculado") from error
 
     async def eliminar(self, id):
         try:
@@ -69,9 +65,7 @@ class LineaService:
                 if not linea:
                     raise HTTPException(404, "Línea estratégica no encontrada")
                 if await self.repo.referencias(id):
-                    raise HTTPException(
-                        409, "La línea tiene registros vinculados; consérvela o desactívela"
-                    )
+                    raise HTTPException(409, "La línea tiene registros vinculados; consérvela o desactívela")
                 await self.repo.eliminar(linea)
                 return {"mensaje": "Línea estratégica eliminada"}
         except IntegrityError as error:

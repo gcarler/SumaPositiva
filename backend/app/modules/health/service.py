@@ -1,10 +1,10 @@
 import asyncio
-from datetime import datetime, timezone
 import logging
 import re
 import resource
 import shutil
-from typing import Any
+from datetime import UTC, datetime
+from typing import Any, Literal
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -25,7 +25,6 @@ from app.modules.health.schemas import (
 
 logger = logging.getLogger(__name__)
 REQUIRED_EXTENSIONS = {"postgis", "ltree", "pgcrypto", "pg_trgm"}
-
 
 
 def obtener_memoria_rss_mb() -> float:
@@ -142,7 +141,7 @@ class HealthService:
 
         return SystemHealthResponse(
             status=overall_status,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             service="polis-api",
             version="0.2.1",
             environment=settings.environment,
@@ -159,21 +158,25 @@ class HealthService:
         if ordenar_por not in ("tiempo_total", "tiempo_medio", "llamadas"):
             ordenar_por = "tiempo_total"
 
-        status = "ok"
-        total_queries = 0
-        hit_ratio = 99.5
+        status: Literal["ok", "degraded", "unavailable"] = "ok"
+        total_queries: int | None = None
+        hit_ratio: float | None = None
         raw_queries: list[dict[str, Any]] = []
 
         try:
             async with asyncio.timeout(5):
-                total_queries, hit_ratio, raw_queries = (
-                    await self.repository.obtener_telemetria_consultas(
-                        limite=limite, ordenar_por=ordenar_por
-                    )
+                total_queries, hit_ratio, raw_queries = await self.repository.obtener_telemetria_consultas(
+                    limite=limite, ordenar_por=ordenar_por
                 )
-        except (SQLAlchemyError, OSError, TimeoutError) as e:
+            if hit_ratio is None:
+                status = "unavailable"
+            elif not raw_queries and (total_queries is None or total_queries == 0):
+                status = "degraded"
+        except (SQLAlchemyError, OSError, TimeoutError, Exception) as e:
             logger.warning("Fallo al obtener telemetría de consultas SQL: %s", type(e).__name__)
             status = "unavailable"
+            hit_ratio = None
+            total_queries = 0
 
         sanitized_queries = [
             DatabaseQueryStat(
@@ -189,7 +192,7 @@ class HealthService:
 
         return DatabaseTelemetryResponse(
             status=status,
-            timestamp=datetime.now(timezone.utc).isoformat(),
+            timestamp=datetime.now(UTC).isoformat(),
             total_queries_recorded=total_queries,
             cache_hit_ratio_pct=hit_ratio,
             top_queries=sanitized_queries,
@@ -208,4 +211,3 @@ def sanitizar_consulta_sql(query_raw: str, max_chars: int = 200) -> str:
     if len(texto) > max_chars:
         return texto[: max_chars - 3] + "..."
     return texto
-

@@ -27,10 +27,9 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import Settings
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
 PLANES_8_CARTAGENA: tuple[str, ...] = (
     "PDD_2012_2015",
@@ -310,11 +309,8 @@ REGLAS_INFERENCIA_SECRETARIA: tuple[tuple[tuple[str, ...], str], ...] = (
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def _normalizar_ascii(valor: Any) -> str:
@@ -380,8 +376,7 @@ def extraer_valor_numerico_meta(texto: Any) -> float | None:
         # Evitar confundir "2023" aislado cuando es solo una referencia de año ("2023 Fuente...")
         rest_norm = _normalizar_ascii(raw[m_lead.end() :])
         if val_lead is not None and not (
-            2010 <= val_lead <= 2030
-            and rest_norm.startswith(("asegurar", "en ", "ano", "vigencia"))
+            2010 <= val_lead <= 2030 and rest_norm.startswith(("asegurar", "en ", "ano", "vigencia"))
         ):
             return val_lead
 
@@ -564,9 +559,7 @@ def _normalizar_unidad_medida(
         return "Porcentaje (%)"
     if any(k in contexto for k in ("tasa ", "por cada 100", "por 1.000", "por 100.000")):
         return "Tasa"
-    if any(
-        k in contexto for k in ("kilometro", " km ", "metros lineales", "m2", "metros cuadrados")
-    ):
+    if any(k in contexto for k in ("kilometro", " km ", "metros lineales", "m2", "metros cuadrados")):
         return "Kilómetros / Metros"
     if any(k in contexto for k in ("hectarea", " ha ")):
         return "Hectáreas (ha)"
@@ -582,11 +575,7 @@ def normalizar_meta_oficial_ocr(
 ) -> dict[str, Any]:
     """Normaliza una fila de `seguimiento.pdd_metas_oficiales` resolviendo artefactos OCR."""
     codigo_plan = str(meta_row.get("codigo_plan") or "")
-    datos_of = (
-        dict(meta_row["datos_oficiales"])
-        if isinstance(meta_row.get("datos_oficiales"), dict)
-        else {}
-    )
+    datos_of = dict(meta_row["datos_oficiales"]) if isinstance(meta_row.get("datos_oficiales"), dict) else {}
     fila_fuente = meta_row.get("fila_fuente")
     codigo_actual = str(meta_row.get("codigo") or "").strip()
     if not codigo_actual:
@@ -705,9 +694,7 @@ async def normalizar_y_actualizar_metas_oficiales_async(
     codigo_plan: str | None = None,
 ) -> dict[str, Any]:
     """Normaliza y persiste en `seguimiento.pdd_metas_oficiales` las 4,637 metas de los 8 planes."""
-    planes = (
-        (codigo_plan,) if codigo_plan and codigo_plan.upper() != "TODOS" else PLANES_8_CARTAGENA
-    )
+    planes = (codigo_plan,) if codigo_plan and codigo_plan.upper() != "TODOS" else PLANES_8_CARTAGENA
     engine = create_async_engine(_resolver_url_bd_csh(), pool_pre_ping=True)
 
     try:
@@ -765,9 +752,7 @@ async def normalizar_y_actualizar_metas_oficiales_async(
                         "id": norm_row["id"],
                         "codigo": norm_row["codigo"],
                         "unidad_medida": norm_row["unidad_medida"],
-                        "datos_oficiales": json.dumps(
-                            norm_row["datos_oficiales"], ensure_ascii=False
-                        ),
+                        "datos_oficiales": json.dumps(norm_row["datos_oficiales"], ensure_ascii=False),
                     }
                 )
 

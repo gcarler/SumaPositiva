@@ -1,0 +1,23 @@
+{
+  "tipo": "fe_de_erratas",
+  "fecha_utc": "2026-10-25",
+  "agente": "Freebuff",
+  "solicitada_por": "coordinacion (=codex:0.0)",
+  "evidencia_afectada": "bridge/96_evidencia_freebuff_validacion_funcional.json (congelada, no se modifica)",
+  "errata": [
+    {
+      "archivo_con_errata": "bridge/96_evidencia_freebuff_validacion_funcional.json",
+      "campo": "objetos_verificados[\"bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json\"].bytes",
+      "valor_previo": 1126,
+      "valor_correcto": 34320,
+      "hash": "correcto",
+      "sha256_constatado": "071d8bc79be61df64925c768485102890f771a6fca35371d4636b83df386b008",
+      "explicacion": "1126 era el conteo de lineas del archivo (72 en lo mostrado y 1126 totales), no su peso en bytes; el SHA-256 registrado era y sigue siendo correcto, verificado de nuevo con stat -c %s y sha256sum antes de esta fe de erratas."
+    }
+  ],
+  "naturaleza": "solo_metadato_documental; la validez del cotejo en 96 (SHA completo y corridas) no dependia del campo bytes",
+  "sin_nuevas_pruebas": true,
+  "sin_cambios_de_codigo": true,
+  "evidencias_congeladas_tocadas": false,
+  "alcance": "escritura_unica_de_este_archivo_104; valida_reproducida_sin_integracion_ni_EAF_se_mantiene"
+}

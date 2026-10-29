@@ -1,0 +1,28 @@
+{
+  "fecha_utc": "2026-10-26T03:14:37.318629+00:00",
+  "estado": "ficha_R1_devuelta_para_R2",
+  "pytest_original": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "10",
+    "time": "2.179",
+    "timestamp": "2026-10-26T03:12:37.416772+00:00",
+    "hostname": "srv2006133"
+  },
+  "hash_salida_declarado": "21a7a6ab68e923949f9e3d63d0170bbb46a9e043f27270c5fe174a349fefdb94",
+  "hash_salida_real": "0e53aa04d690b5e6fa53cca781926d5a87480ee5eb2168445a90a473618699e9",
+  "hash_nucleo_ficha_declarado": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+  "hash_nucleo_ficha_real": "fc8c7842a7ec7a8a5d2e12bb0eda5daa0d0f02b9c252cca04023b9767f5baa89",
+  "homonimos_catalogo_verificados": {
+    "nombres_exactos": 66,
+    "codigos_exactos": 151,
+    "nombres_normalizados_sin_acentos": 67,
+    "codigos_normalizados": 153
+  },
+  "tarea_R2": "bridge/138_tarea_ollamacodex_ficha_r2.md",
+  "SQL": false,
+  "red": false,
+  "promocion_banco": false
+}

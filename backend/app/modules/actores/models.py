@@ -36,27 +36,13 @@ class ActorEstrategico(Base):
     nivel_poder: Mapped[str] = mapped_column(String(20), nullable=False)
     nivel_interes: Mapped[str] = mapped_column(String(20), nullable=False)
     postura: Mapped[str] = mapped_column(String(50), nullable=False)
-    contacto: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, nullable=False, server_default=text("'{}'::jsonb")
-    )
-    mesas_asistidas: Mapped[list[str]] = mapped_column(
-        JSONB, nullable=False, server_default=text("'[]'::jsonb")
-    )
-    propuestas_radicadas: Mapped[int] = mapped_column(
-        Integer, nullable=False, server_default=text("0")
-    )
-    expectativas_principales: Mapped[str] = mapped_column(
-        Text, nullable=False, server_default=text("''")
-    )
-    acciones_involucramiento: Mapped[str] = mapped_column(
-        Text, nullable=False, server_default=text("''")
-    )
-    es_demostracion: Mapped[bool] = mapped_column(
-        Boolean, nullable=False, server_default=text("false")
-    )
-    creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("now()")
-    )
+    contacto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    mesas_asistidas: Mapped[list[str]] = mapped_column(JSONB, nullable=False, server_default=text("'[]'::jsonb"))
+    propuestas_radicadas: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    expectativas_principales: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''"))
+    acciones_involucramiento: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("''"))
+    es_demostracion: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("false"))
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
     actualizado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("now()")
     )

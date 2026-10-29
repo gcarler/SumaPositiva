@@ -22,6 +22,13 @@ usuario activo, rol y permisos actuales en PostgreSQL. La revocación inmediata
 se aplica a la siguiente petición; la administración de roles personalizados se realiza por API.
 Contrato y activación: [usuarios y acceso](identidad.md).
 
+Si el rol vigente exige MFA, cada operación protegida requiere la acreditación
+del segundo factor de esa sesión persistida. Sin ella, el token no habilita sus
+permisos institucionales. La sesión limitada conserva únicamente consulta del
+perfil propio con permisos vacíos, estado MFA, enrolamiento inicial y logout.
+La activación acredita solo esa sesión. Configuración y contratos de los flags:
+[MFA y sesiones limitadas](identidad.md#mfa-y-sesiones-limitadas).
+
 ## Roles institucionales y acceso de gestión
 
 | Permiso | Roles canónicos autorizados | Nivel mínimo |
@@ -53,6 +60,7 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | alternativas:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
 | comunicaciones:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | comunicaciones:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa | declarada |
+| proyectos:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -79,15 +87,15 @@ La última columna explica la excepción pública o la condición adicional.
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
 | GET | /api/v1/aportes | publico | Consulta pública de participación y devoluciones motivadas. |
-| POST | /api/v1/aportes | sesion | Sesión cívica anónima o registrada; token obligatorio y vigencia de la cuenta. |
-| GET | /api/v1/aportes/mis-apoyos | sesion | Consulta de las propuestas respaldadas por la sesión cívica actual. |
+| POST | /api/v1/aportes | sesion | Sesión cívica anónima o registrada vigente; alta ciudadana solo en borrador o publicado. Los estados institucionales se gestionan mediante las operaciones autorizadas. |
+| GET | /api/v1/aportes/mis-apoyos | sesion | Consulta de los respaldos de la cuenta registrada vigente, estable entre logins; para anónimos conserva el UUID cívico de esa sesión. |
 | DELETE | /api/v1/aportes/{aporte_id} | permiso:aportes:priorizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/aportes/{aporte_id} | publico | Consulta pública de participación y devoluciones motivadas. |
 | PATCH | /api/v1/aportes/{aporte_id} | permiso:aportes:priorizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
-| POST | /api/v1/aportes/{aporte_id}/apoyar | sesion | Alternancia de respaldo ciudadano (apoyar o retirar) vinculado a sesión cívica. |
-| DELETE | /api/v1/aportes/{aporte_id}/apoyar | sesion | Retiro de respaldo ciudadano vinculado a sesión cívica. |
+| POST | /api/v1/aportes/{aporte_id}/apoyar | sesion | Alternancia de un respaldo por cuenta registrada vigente o UUID cívico anónimo; bloquea la propuesta hasta confirmar y comprueba el principal persistido. |
+| DELETE | /api/v1/aportes/{aporte_id}/apoyar | sesion | Retiro del respaldo del mismo principal; dos logins de la cuenta no crean identidades de apoyo diferentes. |
 | GET | /api/v1/aportes/{aporte_id}/devolucion-razon | publico | Consulta pública de participación y devoluciones motivadas. |
-| POST | /api/v1/aportes/{aporte_id}/devolucion-razon | permiso:aportes:responder@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| POST | /api/v1/aportes/{aporte_id}/devolucion-razon | permiso:aportes:responder@declarada | Decisión motivada y cambio de estado dentro de la misma transacción, con bloqueo de la propuesta; la condición se revalida para evitar dos decisiones simultáneas. |
 | GET | /api/v1/auditoria/registros | permiso:auditoria:leer@declarada | Consulta forense inmutable de razones motivadas y trazabilidad. |
 | GET | /api/v1/auditoria/respaldos | permiso:auditoria:leer@declarada | Supervisión de copias de seguridad lógicas y verificación de hash SHA-256. |
 | POST | /api/v1/auditoria/respaldos/ejecutar | permiso:auditoria:leer@declarada | Ejecución supervisada de respaldo en caliente de la base de datos. |
@@ -133,11 +141,12 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/4-niveles | publico | Evaluación DEA jerárquica por niveles territoriales, institucionales, operativos y temporales; admite nivel, orientación y sector. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion | publico | Alertas de cumplimiento físico con baja eficiencia y benchmarks DEA para armonización presupuestal. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/informe-integral-spd | publico | Informe consolidado auditable SPD de Hoshin/PDL, revisión 10D, DEA de cuatro niveles, alertas y armonización, con exportables Markdown/CSV y huella SHA-256. |
-| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes | publico | Diagnóstico PSHC en seis capítulos para los ocho planes; genera HTML, Markdown y CSV y permite publicación opcional en Drive. |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes | publico | Diagnóstico PSHC en seis capítulos para los ocho planes; genera HTML, Markdown y CSV para consulta pública sin efectos colaterales. |
+| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes/publicar-drive | permiso:seguimiento:gestionar@declarada | Publicación oficial autorizada del paquete de diagnóstico en la carpeta oficial de Google Drive. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico | publico | Diagnóstico multidimensional PDT-AI-EVALUATOR (DEA CCR/BCC/Malmquist/Bootstrap, NLP BERTopic/c-TF-IDF/Coseno, LISA/Moran, ARIMA/Chow/ISRI y Checkpointer). |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo | publico | Dictamen pericial ejecutivo por dependencia y sector GBR, con trazabilidad DEA, Malmquist, coherencia NLP, alertas territoriales e indicadores críticos. |
-| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar | publico | Ejecución parametrizada del grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus de Planes de Desarrollo. |
-| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar | publico | Intervención Human-in-the-Loop sobre el Checkpointer del grafo PDT-AI-EVALUATOR para validación técnica y reasignación presupuestal vinculante. |
+| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar | permiso:ia:analizar@declarada | Ejecución parametrizada del grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus de Planes de Desarrollo. |
+| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar | permiso:seguimiento:gestionar@declarada | Intervención Human-in-the-Loop sobre el Checkpointer del grafo PDT-AI-EVALUATOR para validación técnica y reasignación presupuestal vinculante. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/historial-auditoria | publico | Consulta pública del historial transaccional en PostgreSQL (`seguimiento.pdt_ai_evaluaciones` y `seguimiento.pdt_ai_checkpoints_hitl`) con verificación SHA-256. |
 | GET | /api/v1/compromisos/triada/google-workspace/estado | publico | Estado de conexión y archivos nativos de las carpetas oficiales de Google Workspace. |
 | GET | /api/v1/compromisos/triada/google-workspace/graficas/{nombre_archivo} | publico | Sirve PNG generadas para los informes técnicos de diagnóstico; limita el acceso a nombres incluidos en lista permitida. |
@@ -165,7 +174,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/formularios/{id}/respuestas | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/formularios/{id}/respuestas | sujeto | Un envío por sujeto; datos estructurados y enfoque diferencial. |
 | GET | /api/v1/geodatos/capas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/geodatos/indicadores | publico | Consulta pública y filtrado del banco multifuente de indicadores territoriales para el Geovisor. |
 | GET | /api/v1/geodatos/territorios | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/geodatos/territorios/{id}/indicadores | publico | Consulta pública de los indicadores territoriales asociados a un territorio específico. |
 | GET | /api/v1/geodatos/territorios/buscar-por-coordenada | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios/geojson | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
@@ -191,16 +202,16 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/identidad/eventos | permiso:identidad:auditar@declarada | Eventos paginados de identidad sin contraseñas o tokens. |
 | POST | /api/v1/identidad/login | publico | Intercambio de credenciales por token; no concede roles adicionales. |
 | POST | /api/v1/identidad/magic-link/confirmar | publico | Consumo de token Magic Link de uso único para autenticación directa e inicio de sesión. |
-| POST | /api/v1/identidad/magic-link/solicitar | publico | Solicitud de acceso instantáneo sin contraseñas; emite token de uso único con caducidad de 15 minutos. |
-| POST | /api/v1/identidad/mfa/activar | sujeto | Valida código TOTP y activa MFA entregando códigos de recuperación de un solo uso. |
-| POST | /api/v1/identidad/mfa/desactivar | sujeto | Desactiva MFA requiriendo reautenticación por contraseña. |
-| GET | /api/v1/identidad/mfa/estado | sujeto | Consulta estado de activación de MFA TOTP y códigos restantes de la cuenta. |
-| POST | /api/v1/identidad/mfa/iniciar | sujeto | Genera secreto TOTP y código QR para inicio de enrolamiento MFA. |
+| POST | /api/v1/identidad/magic-link/solicitar | publico | Solicitud genérica con límites; persiste token/cola/evento y valida respuesta antes del commit. No verifica el correo hasta consumir el enlace válido. |
+| POST | /api/v1/identidad/mfa/activar | sujeto | Enrolamiento inicial con TOTP; acredita solo la sesión solicitante y entrega códigos de recuperación. Factor ya activo devuelve 409. |
+| POST | /api/v1/identidad/mfa/desactivar | sujeto | Reautenticación por contraseña; prohibido para rol vigente que exige MFA. |
+| GET | /api/v1/identidad/mfa/estado | sujeto | Estado propio y sesion_verificada calculada por servidor; disponible durante enrolamiento pendiente. |
+| POST | /api/v1/identidad/mfa/iniciar | sujeto | Enrolamiento inicial propio; devuelve otpauth_uri. Factor activo devuelve 409 sin sustituir secreto ni códigos. |
 | POST | /api/v1/identidad/mfa/recuperacion/regenerar | sujeto | Regenera lote de códigos de recuperación de un solo uso validando TOTP. |
 | POST | /api/v1/identidad/mfa/verificar | publico | Valida código TOTP o código de recuperación contra token de desafío emitido en login. |
 | POST | /api/v1/identidad/oauth/google | publico | Login mediante ID token verificado para audiencia configurada; conserva el rol existente y crea cuentas nuevas solo como ciudadano. |
 | POST | /api/v1/identidad/logout | sujeto | Revoca la sesión actual de la cuenta registrada. |
-| GET | /api/v1/identidad/perfil | sujeto | Solo perfil propio de usuario registrado; sesión anónima denegada. |
+| GET | /api/v1/identidad/perfil | sujeto | Solo perfil propio; sesión anónima denegada y sesión MFA limitada con permisos efectivos vacíos. |
 | PATCH | /api/v1/identidad/perfil | sujeto | El usuario edita exclusivamente su nombre; no acepta cambios de rol o permisos. |
 | GET | /api/v1/identidad/permisos | permiso:usuarios:leer@declarada | Catálogo reconocido por la aplicación. |
 | POST | /api/v1/identidad/recuperacion/confirmar | publico | Token de propósito recuperar, caducidad, uso único y límite de intentos. |
@@ -281,6 +292,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/politicas/fases/control | permiso:politicas:gestionar@declarada | Supervisión institucional del ciclo metodológico DNP y reglas web. |
 | PATCH | /api/v1/politicas/fases/{fase_id}/conmutar | permiso:politicas:gestionar@declarada | Interruptor maestro de apertura y cierre de fases de participación web. |
 | GET | /api/v1/politicas/lineas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/politicas/heros | publico | Configuración pública de imágenes y diapositivas de espacios hero territoriales. |
+| PUT | /api/v1/politicas/heros | roles:autoridad_distrital,administrador_identidades,auditor_forense | Actualización atómica de configuración de diapositivas hero y catálogo territorial. |
+| POST | /api/v1/politicas/heros/subir-imagen | roles:autoridad_distrital,administrador_identidades,auditor_forense | Carga de fotografía territorial oficial para catálogo hero institucional. |
 | GET | /api/v1/presupuesto/asignaciones | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | POST | /api/v1/presupuesto/asignaciones | permiso:presupuesto:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/presupuesto/fuentes | publico | Consulta pública de catálogos y resultados de política para transparencia. |
@@ -295,6 +309,8 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/sesion/anonima | publico | Emisión pública para participación sin cuenta registrada. |
 | GET | /api/v1/sesion/verificar | sesion | Sesión cívica anónima o registrada; token obligatorio y vigencia de la cuenta. |
 | POST | /api/v1/seguridad/csp-report | publico | Recolección anónima de violaciones de CSP para supervisión perimetral sin datos personales. |
+| GET | /api/v1/seguridad/csp-report/recientes | permiso:auditoria:leer@declarada | Consulta telemetría reciente de violaciones CSP para auditoría perimetral. |
+| GET | /api/v1/seguridad/csp-report/resumen | permiso:auditoria:leer@declarada | Consulta resumen métrico de violaciones CSP para auditoría perimetral. |
 | GET | /api/v1/testimonios | publico | Consulta pública de relatos de memoria social y testimonios comunitarios. |
 | POST | /api/v1/testimonios | sujeto | Creación de testimonio comunitario vinculada a sesión cívica o cuenta de usuario. |
 | GET | /api/v1/testimonios/gestion | permiso:testimonios:moderar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
@@ -397,15 +413,23 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
 | GET | /api/v1/notificaciones/radicado/{codigo_radicado} | publico | Consulta pública del estado de tramitación ciudadana por radicado POL-2026-XXXX. |
-| GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Supervisión forense e institucional del historial de notificaciones transaccionales despachadas. |
+| GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Historial privado de intenciones y resultados de notificación; pendiente, procesando, enviado, simulado o fallido no equivalen a entrega real. Puede contener destinatarios y requiere autorización institucional. |
 
 ## Canal Conversacional WhatsApp e Ingesta Comunitaria — decisión CANAL-WHATSAPP-01
 
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
-| GET | /api/v1/canales/whatsapp/webhook | publico | Handshake de suscripción y verificación exigido por Meta WhatsApp Cloud API. |
-| POST | /api/v1/canales/whatsapp/webhook | publico | Recepción asíncrona de eventos y mensajes comunitarios entrantes desde Meta. |
-| POST | /api/v1/canales/whatsapp/simular | publico | Ingesta de reportes y propuestas comunitarias directas para pruebas y auditoría forense. |
+| GET | /api/v1/canales/whatsapp/webhook | publico | Verificación de suscripción con token explícito. Recepción habilitada, verify token y app secret son obligatorios; configuración incompleta devuelve503 y verificación incorrecta403. |
+| POST | /api/v1/canales/whatsapp/webhook | publico | Sin sesión de ciudadano; exige configuración y firma HMAC SHA-256 del cuerpo crudo. Firma incorrecta401. HTTP200 acredita recepción durable del lote en inbox, con deduplicación por cuenta receptora/ID externo; la radicación se procesa después por mensaje. Colisión de contenido409 revierte el lote. |
+| POST | /api/v1/canales/whatsapp/simular | publico | Prueba local fuera de producción; en production devuelve403. Campos adicionales se rechazan y el resultado de simulación no acredita contacto con Meta. |
+
+Las respuestas públicas de aportes usan una proyección cerrada: no publican correo
+de contacto, huella, UUID de sesión ni JSON de captura abierto. El correo se guarda
+en columna privada; los metadatos históricos conservados no amplían los campos
+públicos permitidos. El texto declarado por la persona en título, descripción,
+autor y justificación sigue siendo contenido público. La creación/edición del
+aporte solo confirma una intención de correo junto con el cambio; la entrega es
+posterior mediante outbox. Consultar [operación de las colas](operacion.md#colas-de-aportes-y-recepcion-whatsapp).
 
 ## Revisión por meta de Planes de Desarrollo — decisión PDT-REVISION-META-26A
 
@@ -413,5 +437,18 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | --- | --- | --- | --- |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta | publico | Dictamen de metas del PDD con revisión de diez dimensiones y siete roles revisores. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento | publico | Seguimiento de eficacia SisPT DNP, tipologías, metas del Plan de Acción y coherencia CUIPO/PIIP. |
-| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo | publico | Registro auditable por hallazgo, con acción correctiva PDCA, responsable y hash SHA-256. |
+| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo | permiso:seguimiento:gestionar@declarada | Registro auditable por hallazgo, con acción correctiva PDCA, responsable y hash SHA-256. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictamenes-hallazgos | publico | Consulta de dictámenes individuales de hallazgos con filtros por plan, meta y estado. |
+
+## Vista agregada de Proyectos — decisión de producto 2026-10-28
+
+Read-only: une en una proyección actividades de comunicaciones, agendas de
+mesas, formularios y actividades del Plan de Acción. No crea persistencia
+paralela ni muta estado; cada fila conserva `modulo_dueno` y `permiso_editar`.
+La edición sigue ocurriendo por las rutas nativas de cada módulo con sus
+controles propios.
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/proyectos/actividades | permiso:proyectos:leer@declarada | Proyección agregada read-only de actividades de la política; filtra por módulo y rango de fechas sin mutación. |
+| GET | /api/v1/proyectos/resumen | permiso:proyectos:leer@declarada | Resumen agregado por módulo y por estado canónico; derivado de la misma proyección read-only. |

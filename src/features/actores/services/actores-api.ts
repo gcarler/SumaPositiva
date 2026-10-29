@@ -97,7 +97,7 @@ export async function crearActorApi(
   const res = await apiFetch<Record<string, unknown>>("/actores", {
     method: "POST",
     headers,
-    body: JSON.stringify(payload),
+    body: payload,
   });
   return normalizarActor(res);
 }
@@ -139,7 +139,7 @@ export async function actualizarActorApi(
   const res = await apiFetch<Record<string, unknown>>(`/actores/${id}`, {
     method: "PUT",
     headers,
-    body: JSON.stringify(payload),
+    body: payload,
   });
   return normalizarActor(res);
 }

@@ -1,0 +1,46 @@
+{
+  "naturaleza": "integridad_local_de_originales_y_manifestos_no_aceptacion_semantica",
+  "capturas": [
+    {
+      "codigo": "13001",
+      "sha_zip": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+      "sha_txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+      "filas_declaradas": 12899,
+      "identidad_original_discordante": 12899,
+      "bytes_zip": 114090,
+      "bytes_txt": 2853390,
+      "crc_valido": true
+    },
+    {
+      "codigo": "13673",
+      "sha_zip": "b9e7672d7ae7044181c4b3910d927576e65b1dfc057544e4a7e6f6235711eda2",
+      "sha_txt": "e3833026873719aa30aa4aac7afa045a09df3d95ef0009e1553691a12e4176ac",
+      "filas_declaradas": 12733,
+      "identidad_original_discordante": 12733,
+      "bytes_zip": 103394,
+      "bytes_txt": 2822512,
+      "crc_valido": true
+    },
+    {
+      "codigo": "23660",
+      "sha_zip": "0d12c51c43a3f9eefab36006b18e1c9c1595dfc75b1c142da213bfb2ec4a1fc2",
+      "sha_txt": "56927d9d4677e61de0a10a54cfeaaee75c33096d6f20a6aef808a17291f54e92",
+      "filas_declaradas": 12885,
+      "identidad_original_discordante": 12885,
+      "bytes_zip": 108832,
+      "bytes_txt": 2791867,
+      "crc_valido": true
+    },
+    {
+      "codigo": "11001",
+      "sha_zip": "f2ff0718158884a21f94f021db14bd5f2c638c1a12b1aeb62b2feddbf8501a78",
+      "sha_txt": "32d62761d384d93a943e851391f93b5f63ec9afecdaa02fb9e25e95f228e1946",
+      "filas_declaradas": 13410,
+      "identidad_original_discordante": 13410,
+      "bytes_zip": 119235,
+      "bytes_txt": 2927313,
+      "crc_valido": true
+    }
+  ],
+  "estado": "capturas_hash_crc_cotejados_identidad_pendiente_de167"
+}

@@ -66,14 +66,10 @@ class DatabaseQueryStat(BaseModel):
 
     query: str = Field(..., description="Consulta SQL sanitizada (máximo 200 caracteres)")
     calls: int = Field(..., description="Número total de ejecuciones registradas")
-    total_ms: float = Field(
-        ..., description="Tiempo total de ejecución acumulado en milisegundos"
-    )
+    total_ms: float = Field(..., description="Tiempo total de ejecución acumulado en milisegundos")
     mean_ms: float = Field(..., description="Tiempo promedio por ejecución en milisegundos")
     rows: int = Field(..., description="Total de filas devueltas o afectadas")
-    hit_ratio_pct: float = Field(
-        ..., description="Porcentaje de acierto en memoria caché de bloques"
-    )
+    hit_ratio_pct: float = Field(..., description="Porcentaje de acierto en memoria caché de bloques")
 
 
 class DatabaseTelemetryResponse(BaseModel):
@@ -81,11 +77,11 @@ class DatabaseTelemetryResponse(BaseModel):
 
     status: Literal["ok", "degraded", "unavailable"] = "ok"
     timestamp: str = Field(..., description="Estampa temporal ISO 8601")
-    total_queries_recorded: int = Field(
-        ..., description="Total de consultas catalogadas en pg_stat_statements"
+    total_queries_recorded: int | None = Field(
+        default=None, description="Total de consultas catalogadas en pg_stat_statements"
     )
-    cache_hit_ratio_pct: float = Field(
-        ..., description="Porcentaje global de acierto en caché del motor de base de datos"
+    cache_hit_ratio_pct: float | None = Field(
+        default=None, description="Porcentaje global de acierto en caché del motor de base de datos"
     )
     top_queries: list[DatabaseQueryStat] = Field(
         default_factory=list, description="Top de consultas SQL ordenadas por métrica seleccionada"

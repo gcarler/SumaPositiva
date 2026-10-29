@@ -36,10 +36,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from app.core.config import Settings
 from app.modules.geodatos.models import EstadisticaHurto, PoligonoAnaliticaHurto
 
-
-DEFAULT_SCRATCH_DIR = (
-    "/root/.gemini/antigravity-cli/brain/827a451d-ecea-4e9b-ab9d-e6b1b5fa6094/scratch"
-)
+DEFAULT_SCRATCH_DIR = "/root/.gemini/antigravity-cli/brain/827a451d-ecea-4e9b-ab9d-e6b1b5fa6094/scratch"
 
 ARCHIVOS_HURTOS = [
     {
@@ -106,7 +103,9 @@ def extraer_anio(props: dict[str, Any]) -> int:
 
 def extraer_dia(props: dict[str, Any]) -> str:
     for k, v in props.items():
-        k_lower = k.lower()
+        # El filtro de días usa el literal "D…a" de tres letras (Día/Dia); no se
+        # requiere la forma minúscula, por esto AUD-2026-10-21 T2 elimina la
+        # asignación muerta k_lower.
         if k.startswith("D") and k.endswith("a") and len(k) == 3:
             return sanitizar_texto(v)
     return sanitizar_texto(props.get("Día", props.get("Dia", "No reportado")))
@@ -131,36 +130,36 @@ async def ingestar_geometrias_base(session: AsyncSession, scratch_dir: str) -> N
                     break
                 buf += chunk
                 while len(geoms_4326) < 2:
-                    idx_props = buf.find(b'\"properties\":{')
+                    idx_props = buf.find(b'"properties":{')
                     if idx_props == -1:
                         buf = buf[-30:]
                         break
-                    idx_geom = buf.find(b',\"geometry\":', idx_props)
+                    idx_geom = buf.find(b',"geometry":', idx_props)
                     if idx_geom == -1:
                         buf = buf[idx_props:]
                         break
-                    p_bytes = buf[idx_props + len('\"properties\":'):idx_geom]
+                    p_bytes = buf[idx_props + len('"properties":') : idx_geom]
                     props = json.loads(p_bytes.decode("utf-8", errors="replace"))
                     polig_id = props.get("ID_POLIG", props.get("ID_Poligono"))
 
                     # Buscar el final de geometry
-                    idx_geom_start = idx_geom + len(',\"geometry\":')
-                    idx_feat_end = buf.find(b'}},', idx_geom_start)
+                    idx_geom_start = idx_geom + len(',"geometry":')
+                    idx_feat_end = buf.find(b"}},", idx_geom_start)
                     if idx_feat_end == -1:
-                        idx_feat_end = buf.find(b'}]}', idx_geom_start)
+                        idx_feat_end = buf.find(b"}]}", idx_geom_start)
                     if idx_feat_end == -1:
                         buf = buf[idx_props:]
                         break
 
                     if polig_id not in geoms_4326:
-                        geom_bytes = buf[idx_geom_start:idx_feat_end + 1]
+                        geom_bytes = buf[idx_geom_start : idx_feat_end + 1]
                         raw_geom = json.loads(geom_bytes.decode("utf-8", errors="replace"))
                         s_9377 = shape(raw_geom)
                         s_4326 = transform(transformer.transform, s_9377)
                         geoms_4326[polig_id] = s_4326
                         print(f"   ✓ Geometría base ID_POLIG={polig_id} extraída (tipo={s_4326.geom_type})")
 
-                    buf = buf[idx_feat_end + 3:]
+                    buf = buf[idx_feat_end + 3 :]
 
     # Persistir en geodatos.poligonos_analitica_hurtos
     datos_poligonos = [
@@ -223,15 +222,11 @@ async def ingestar_geometrias_base(session: AsyncSession, scratch_dir: str) -> N
     await session.commit()
 
 
-async def ingestar_registros_analitica(
-    session: AsyncSession, scratch_dir: str, forzar: bool = False
-) -> int:
+async def ingestar_registros_analitica(session: AsyncSession, scratch_dir: str, forzar: bool = False) -> int:
     """Procesa por streaming los 3 archivos e inserta las 12.280 filas analíticas."""
     print("📦 [2/4] Verificando estado previo de la tabla de estadísticas de hurtos...")
 
-    conteo_actual = (
-        await session.execute(select(func.count(EstadisticaHurto.id)))
-    ).scalar() or 0
+    conteo_actual = (await session.execute(select(func.count(EstadisticaHurto.id)))).scalar() or 0
 
     if conteo_actual == TOTAL_ESPERADO and not forzar:
         print(f"   ℹ️  La tabla ya contiene exactamente los {TOTAL_ESPERADO} registros esperados. Omitiendo re-ingesta.")
@@ -266,16 +261,16 @@ async def ingestar_registros_analitica(
                         break
                     buf += chunk
                     while True:
-                        idx_props = buf.find(b'\"properties\":{')
+                        idx_props = buf.find(b'"properties":{')
                         if idx_props == -1:
                             buf = buf[-30:]
                             break
-                        idx_geom = buf.find(b',\"geometry\":', idx_props)
+                        idx_geom = buf.find(b',"geometry":', idx_props)
                         if idx_geom == -1:
                             buf = buf[idx_props:]
                             break
 
-                        p_bytes = buf[idx_props + len('\"properties\":'):idx_geom]
+                        p_bytes = buf[idx_props + len('"properties":') : idx_geom]
                         props = json.loads(p_bytes.decode("utf-8", errors="replace"))
 
                         polig_id = int(props.get("ID_POLIG", props.get("ID_Poligono", 1)))
@@ -313,30 +308,28 @@ async def ingestar_registros_analitica(
                         )
 
                         conteo_archivo += 1
-                        buf = buf[idx_geom + len(',\"geometry\":'):]
+                        buf = buf[idx_geom + len(',"geometry":') :]
 
                         if len(lote) >= 2000:
+                            # B023: se fija el valor del lote por parámetro por defecto
+                            # para evitar cerrar sobre la variable mutada del bucle.
                             await session.run_sync(
-                                lambda sync_s: sync_s.bulk_insert_mappings(EstadisticaHurto, lote)
+                                lambda sync_s, _lote=lote: sync_s.bulk_insert_mappings(EstadisticaHurto, _lote)
                             )
                             await session.commit()
                             lote = []
 
         if lote:
-            await session.run_sync(
-                lambda sync_s: sync_s.bulk_insert_mappings(EstadisticaHurto, lote)
-            )
+            await session.run_sync(lambda sync_s, _lote=lote: sync_s.bulk_insert_mappings(EstadisticaHurto, _lote))
             await session.commit()
 
         print(
-            f"   ✓ {zname}: {conteo_archivo} registros ingestados en {time.time()-t_file:.2f}s "
+            f"   ✓ {zname}: {conteo_archivo} registros ingestados en {time.time() - t_file:.2f}s "
             f"(esperados: {esperados})"
         )
         total_insertado += conteo_archivo
 
-    print(
-        f"📊 Total consolidado ingestado: {total_insertado} registros en {time.time()-t_global:.2f}s"
-    )
+    print(f"📊 Total consolidado ingestado: {total_insertado} registros en {time.time() - t_global:.2f}s")
     return total_insertado
 
 
@@ -345,18 +338,12 @@ async def verificar_integridad_y_censo(session: AsyncSession) -> None:
     print("🔍 [3/4] Verificando conteos analíticos e inviolabilidad del censo...")
 
     # 1. Conteo total de hurtos
-    total_hurtos = (
-        await session.execute(select(func.count(EstadisticaHurto.id)))
-    ).scalar() or 0
-    assert total_hurtos == TOTAL_ESPERADO, (
-        f"Conteo de hurtos no coincide: {total_hurtos} != {TOTAL_ESPERADO}"
-    )
+    total_hurtos = (await session.execute(select(func.count(EstadisticaHurto.id)))).scalar() or 0
+    assert total_hurtos == TOTAL_ESPERADO, f"Conteo de hurtos no coincide: {total_hurtos} != {TOTAL_ESPERADO}"
 
     # 2. Conteo por delito
     res_delitos = await session.execute(
-        select(EstadisticaHurto.delito, func.count(EstadisticaHurto.id)).group_by(
-            EstadisticaHurto.delito
-        )
+        select(EstadisticaHurto.delito, func.count(EstadisticaHurto.id)).group_by(EstadisticaHurto.delito)
     )
     desglose = dict(res_delitos.all())
     print(f"   ✓ Hurtos por delito: {desglose}")
@@ -366,36 +353,28 @@ async def verificar_integridad_y_censo(session: AsyncSession) -> None:
     assert desglose.get("HURTO COMERCIO") == 5907, f"Error en Comercio: {desglose}"
 
     # 3. Conteo de polígonos base
-    total_poligonos = (
-        await session.execute(select(func.count(PoligonoAnaliticaHurto.id)))
-    ).scalar() or 0
+    total_poligonos = (await session.execute(select(func.count(PoligonoAnaliticaHurto.id)))).scalar() or 0
     assert total_poligonos == 2, f"Deben existir exactamente 2 polígonos: {total_poligonos}"
     print("   ✓ Polígonos analíticos base verificados: 2 (Urbano y Rural)")
 
-    # 4. Inviolabilidad del censo bd_csh: 37 mesas, 38 agendas, 11 fichas, 17 actores
+    # 4. Inviolabilidad del censo bd_csh: 35 mesas, 36 agendas, 11 fichas, 17 actores
     mesas_c = (await session.execute(text("SELECT count(*) FROM mesas_trabajo.mesas;"))).scalar()
     agendas_c = (await session.execute(text("SELECT count(*) FROM mesas_trabajo.agendas;"))).scalar()
-    fichas_c = (
-        await session.execute(text("SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores;"))
-    ).scalar()
+    fichas_c = (await session.execute(text("SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores;"))).scalar()
     actores_c = (
-        await session.execute(
-            text("SELECT count(*) FROM participacion_ciudadana.actores_estrategicos;")
-        )
+        await session.execute(text("SELECT count(*) FROM participacion_ciudadana.actores_estrategicos;"))
     ).scalar()
 
     print(f"   🏛️  Censo canónico bd_csh: mesas={mesas_c}, agendas={agendas_c}, fichas={fichas_c}, actores={actores_c}")
-    assert mesas_c == 37, f"Censo mesas alterado: {mesas_c} != 37"
-    assert agendas_c == 38, f"Censo agendas alterado: {agendas_c} != 38"
+    assert mesas_c == 35, f"Censo mesas alterado: {mesas_c} != 35"
+    assert agendas_c == 36, f"Censo agendas alterado: {agendas_c} != 36"
     assert fichas_c == 11, f"Censo fichas alterado: {fichas_c} != 11"
     assert actores_c == 17, f"Censo actores alterado: {actores_c} != 17"
     print("   🛡️  ¡Censo canónico bd_csh 100% INTACTO e INVIOLADO!")
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Ingesta analítica de hurtos Cartagena (2018-2026)"
-    )
+    parser = argparse.ArgumentParser(description="Ingesta analítica de hurtos Cartagena (2018-2026)")
     parser.add_argument(
         "--scratch",
         default=DEFAULT_SCRATCH_DIR,

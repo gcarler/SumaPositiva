@@ -28,7 +28,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
 from app.core.config import Settings  # noqa: E402
-from app.modules.compromisos.pdd_dea_service import _money_factor  # noqa: E402
+from app.modules.compromisos.ipc_deflactor_polis import factor_desde_diciembre_2019  # noqa: E402
+from app.modules.compromisos.pdd_dea_service import _known_money_factor, _money_factor  # noqa: E402
 
 DATA = ROOT / "data" / "planes_desarrollo"
 DIMENSIONS = (
@@ -247,18 +248,12 @@ def _dimension(text_value: str) -> tuple[str, dict[str, float]]:
     return matches[0], weights
 
 
-def _classify(
-    name: str, level: str, metadata: dict[str, Any]
-) -> tuple[str, str | None, dict[str, float]]:
+def _classify(name: str, level: str, metadata: dict[str, Any]) -> tuple[str, str | None, dict[str, float]]:
     value = _fold(f"{name} {metadata.get('descripcion', '')}")
     umbrella_level = level in {"EJE", "OBJETIVO", "PILAR", "LINEA", "LINEA_ESTRATEGICA"}
     mixed_security_label = (
         umbrella_level
-        and (
-            "SEGURIDAD HUMANA" in value
-            or "BUEN GOBIERNO" in value
-            or "PARA LA GOBERNABILIDAD" in value
-        )
+        and ("SEGURIDAD HUMANA" in value or "BUEN GOBIERNO" in value or "PARA LA GOBERNABILIDAD" in value)
         and not re.search(
             r"\b(SEGURIDAD CIUDADANA|CONVIVENCIA|JUSTICIA|DERECHOS HUMANOS|VICTIMAS|"
             r"GESTION DEL RIESGO|HOMICIDIO|PREVENCION DE VIOLENCIA)\b",
@@ -321,9 +316,7 @@ def _amounts_2020() -> list[tuple[str, str, str, dict[str, int]]]:
         annual = {}
         for year, cell in zip((2020, 2021, 2022, 2023), cells[:4], strict=True):
             try:
-                amount_millions = (
-                    float(cell.replace(".", "").replace(",", ".")) if cell not in {"-", ""} else 0.0
-                )
+                amount_millions = float(cell.replace(".", "").replace(",", ".")) if cell not in {"-", ""} else 0.0
             except ValueError:
                 annual = {}
                 break
@@ -358,24 +351,16 @@ def _source_2016() -> dict[str, dict[str, int]]:
         # the document, so the legacy first-page table probe no longer applies.
         # These 11 annual program-line values are the transcribed Table 209 rows.
         source_labels = {
-            "1.1 LINEA ESTRATEGICA: EDUCACION PARA LA GENTE DEL SIGLO XXI":
-                "EDUCACION PARA LA GENTE DEL SIGLO XXI",
-            "1.2 LINEA ESTRATEGICA: POR UNA CARTAGENA CON EQUIDAD EN SALUD":
-                "POR UNA CARTAGENA CON EQUIDAD EN SALUD",
-            "1.3 LINEA ESTRATEGICA: CARTAGENA CIUDAD PARA INVERTIR":
-                "CARTAGENA CIUDAD PARA INVERTIR",
+            "1.1 LINEA ESTRATEGICA: EDUCACION PARA LA GENTE DEL SIGLO XXI": "EDUCACION PARA LA GENTE DEL SIGLO XXI",
+            "1.2 LINEA ESTRATEGICA: POR UNA CARTAGENA CON EQUIDAD EN SALUD": "POR UNA CARTAGENA CON EQUIDAD EN SALUD",
+            "1.3 LINEA ESTRATEGICA: CARTAGENA CIUDAD PARA INVERTIR": "CARTAGENA CIUDAD PARA INVERTIR",
             "1.4 LINEA ESTRATEGICA: PRIMERO LA GENTE": "PRIMERO LA GENTE",
-            "2.1 LINEA ESTRATEGICA: GESTION DEL RIESGO Y MEDIO AMBIENTE":
-                "GESTION DEL RIESGO Y MEDIO AMBIENTE",
+            "2.1 LINEA ESTRATEGICA: GESTION DEL RIESGO Y MEDIO AMBIENTE": "GESTION DEL RIESGO Y MEDIO AMBIENTE",
             "2.2 LINEA ESTRATEGICA: DESARROLLO URBANO": "DESARROLLO URBANO",
-            "3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)":
-                "CARTAGENA SIN MIEDOS",
-            "3.2 LINEA ESTRATEGICA: CARTAGENA TERRITORIO DE PAZ":
-                "CARTAGENA TERRITORIO DE PAZ",
-            "3.3 LINEA ESTRATEGICA: GESTION PUBLICA LOCAL TRANSPARENTE":
-                "GESTION PUBLICA LOCAL TRANSPARENTE",
-            "3.4 LINEA ESTRATEGICA: PARTICIPACION Y FORTALECIMIENTO":
-                "PARTICIPACION Y FORTALECIMIENTO",
+            "3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)": "CARTAGENA SIN MIEDOS",
+            "3.2 LINEA ESTRATEGICA: CARTAGENA TERRITORIO DE PAZ": "CARTAGENA TERRITORIO DE PAZ",
+            "3.3 LINEA ESTRATEGICA: GESTION PUBLICA LOCAL TRANSPARENTE": "GESTION PUBLICA LOCAL TRANSPARENTE",
+            "3.4 LINEA ESTRATEGICA: PARTICIPACION Y FORTALECIMIENTO": "PARTICIPACION Y FORTALECIMIENTO",
             "3.5 LINEA ESTRATEGICA: FINANZAS SANAS Y ROBUSTAS": "FINANZAS SANAS Y ROBUSTAS",
         }
         rows = {label: dict(PPI_2016[name]) for label, name in source_labels.items()}
@@ -449,27 +434,20 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                 ),
             ]
             p2016 = by_plan["PDD_2016_2019"]
-            objective_by_code = {
-                str(i): r for i, r in enumerate([r for r in p2016 if r["nivel"] == "OBJETIVO"], 1)
-            }
+            objective_by_code = {str(i): r for i, r in enumerate([r for r in p2016 if r["nivel"] == "OBJETIVO"], 1)}
             line_by_name: dict[str, dict[str, Any]] = {}
             for index, (_needle, canonical) in enumerate(canonical_2016, 1):
                 found = next(
                     (
                         r
                         for r in p2016
-                        if r["nivel"] == "LINEA"
-                        and _fold(r["nombre"]).startswith(_fold(canonical.split(". ", 1)[-1]))
+                        if r["nivel"] == "LINEA" and _fold(r["nombre"]).startswith(_fold(canonical.split(". ", 1)[-1]))
                     ),
                     None,
                 )
                 if found is None:
                     found = next(
-                        (
-                            r
-                            for r in p2016
-                            if r["nivel"] == "LINEA" and _needle in _fold(r["nombre"])
-                        ),
+                        (r for r in p2016 if r["nivel"] == "LINEA" and _needle in _fold(r["nombre"])),
                         None,
                     )
                 if found:
@@ -504,11 +482,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
             annual_2016 = _source_2016()
             for code, objective in objective_by_code.items():
                 data = next(
-                    (
-                        value
-                        for key, value in annual_2016.items()
-                        if key.startswith(f"{code}. OBJETIVO ESTRATEGICO")
-                    ),
+                    (value for key, value in annual_2016.items() if key.startswith(f"{code}. OBJETIVO ESTRATEGICO")),
                     None,
                 )
                 if data:
@@ -590,9 +564,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         row["metadatos"] = meta
                         updates_nodes.append(row)
             # The 2013 PPI summary specifies only 2014 and 2015; no amount is assigned to 2013.
-            source_2013 = (DATA / "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md").read_text(
-                encoding="utf-8"
-            )
+            source_2013 = (DATA / "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md").read_text(encoding="utf-8")
             for raw in source_2013.splitlines():
                 cells = [cell.strip() for cell in raw.strip().strip("|").split("|")]
                 if len(cells) < 4 or not re.match(r"OBJETIVO\s+[1-4]\.\s+", cells[0], re.I):
@@ -604,8 +576,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     (
                         node
                         for node in by_plan["PDD_2013_2015"]
-                        if node["nivel"] == "OBJETIVO"
-                        and node.get("codigo") == objective_number.group(1)
+                        if node["nivel"] == "OBJETIVO" and node.get("codigo") == objective_number.group(1)
                     ),
                     None,
                 )
@@ -689,9 +660,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                 for row in rows:
                     if row["nivel"] not in {"PROGRAMA", "IMPULSOR"} or row.get("parent_id"):
                         continue
-                    possible_levels = (
-                        {"LINEA", "IMPULSOR"} if row["nivel"] == "PROGRAMA" else {"LINEA"}
-                    )
+                    possible_levels = {"LINEA", "IMPULSOR"} if row["nivel"] == "PROGRAMA" else {"LINEA"}
                     code = str(row.get("codigo") or "")
                     ancestors = [
                         candidate
@@ -710,15 +679,9 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         source_tokens = set(re.findall(r"[A-Z]{4,}", _fold(row["nombre"])))
                         candidates = []
                         for candidate in rows:
-                            if (
-                                candidate["nivel"] not in possible_levels
-                                or candidate["id"] == row["id"]
-                            ):
+                            if candidate["nivel"] not in possible_levels or candidate["id"] == row["id"]:
                                 continue
-                            overlap = len(
-                                source_tokens
-                                & set(re.findall(r"[A-Z]{4,}", _fold(candidate["nombre"])))
-                            )
+                            overlap = len(source_tokens & set(re.findall(r"[A-Z]{4,}", _fold(candidate["nombre"]))))
                             if overlap:
                                 candidates.append((overlap, candidate))
                         if candidates:
@@ -808,8 +771,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     ancestors = [
                         candidate
                         for candidate in by_plan["PDD_2020_2023"]
-                        if candidate["nivel"] == "LINEA"
-                        and code.startswith(f"{candidate.get('codigo') or ''}.")
+                        if candidate["nivel"] == "LINEA" and code.startswith(f"{candidate.get('codigo') or ''}.")
                     ]
                     if ancestors:
                         row["parent_id"] = max(
@@ -829,8 +791,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         (
                             candidate
                             for candidate in by_plan["PDD_2020_2023"]
-                            if candidate["nivel"] == "PILAR"
-                            and _fold(candidate["nombre"]) == _fold(pillar_name)
+                            if candidate["nivel"] == "PILAR" and _fold(candidate["nombre"]) == _fold(pillar_name)
                         ),
                         None,
                     )
@@ -841,10 +802,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     for candidate in by_plan["PDD_2020_2023"]:
                         if candidate["nivel"] != "LINEA":
                             continue
-                        overlap = len(
-                            program_tokens
-                            & set(re.findall(r"[A-Z]{4,}", _fold(candidate["nombre"])))
-                        )
+                        overlap = len(program_tokens & set(re.findall(r"[A-Z]{4,}", _fold(candidate["nombre"]))))
                         if overlap:
                             choices.append((overlap, candidate))
                     if choices:
@@ -861,9 +819,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
             for _plan_code, rows in by_plan.items():
                 for row in rows:
                     metadata = dict(row.get("metadatos") or {})
-                    grade, primary_dimension, weights = _classify(
-                        row["nombre"], row["nivel"], metadata
-                    )
+                    grade, primary_dimension, weights = _classify(row["nombre"], row["nivel"], metadata)
                     metadata.update(
                         {
                             "grado_frontalidad_sh": grade,
@@ -877,10 +833,18 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     if annual:
                         metadata["ppi_total_cop"] = sum(float(v or 0) for v in annual.values())
                         base_2019 = metadata.get("base_precios") == "COP constantes diciembre 2019"
-                        metadata["ppi_total_constante_2025_cop"] = sum(
-                            float(v or 0)
-                            * (_money_factor(2019) if base_2019 else _money_factor(int(year)))
-                            for year, v in annual.items()
+                        metadata["ppi_total_constante_2025_cop"] = (
+                            sum(
+                                float(v or 0)
+                                * (
+                                    float(factor_desde_diciembre_2019(2025))
+                                    if base_2019
+                                    else _known_money_factor(int(year))
+                                )
+                                for year, v in annual.items()
+                            )
+                            if base_2019 or all(_money_factor(int(year)) is not None for year in annual)
+                            else None
                         )
                     row["metadatos"] = metadata
                     updates_nodes.append(row)
@@ -894,9 +858,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     if row.get("parent_id"):
                         children[row["parent_id"]].append(row)
                 for parent in rows:
-                    if parent["nivel"] not in {"EJE", "OBJETIVO"} or not parent.get(
-                        "ppi_anual_cop"
-                    ):
+                    if parent["nivel"] not in {"EJE", "OBJETIVO"} or not parent.get("ppi_anual_cop"):
                         continue
                     stack = list(children.get(parent["id"], []))
                     descendants = []
@@ -909,8 +871,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         for node in descendants
                         if node["nivel"] in {"PROGRAMA", "SUBPROGRAMA"}
                         and not any(
-                            child["nivel"] in {"PROGRAMA", "SUBPROGRAMA"}
-                            for child in children.get(node["id"], [])
+                            child["nivel"] in {"PROGRAMA", "SUBPROGRAMA"} for child in children.get(node["id"], [])
                         )
                     ]
                     if not leaves:
@@ -933,10 +894,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         if source_line_id and source_line_id not in descendant_ids:
                             continue
                         meta_text = _fold(
-                            " ".join(
-                                str(meta.get(key) or "")
-                                for key in ("linea_nombre", "nombre", "indicador")
-                            )
+                            " ".join(str(meta.get(key) or "") for key in ("linea_nombre", "nombre", "indicador"))
                         )
                         meta_tokens = set(re.findall(r"[A-Z]{4,}", meta_text))
                         scores = {
@@ -947,9 +905,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         if not scores or max(scores.values()) == 0:
                             continue
                         best_score = max(scores.values())
-                        best_leaf = min(
-                            leaf_id for leaf_id, score in scores.items() if score == best_score
-                        )
+                        best_leaf = min(leaf_id for leaf_id, score in scores.items() if score == best_score)
                         evidence_by_leaf[best_leaf] += 1
                         raw_details = meta.get("datos_oficiales") or {}
                         if isinstance(raw_details, str):
@@ -963,10 +919,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                             raw_details if isinstance(raw_details, dict) else {},
                         )
                         evidence_grade_by_leaf[best_leaf][grade[0]] += 1
-                    weights = {
-                        node["id"]: float(1 + evidence_by_leaf[node["id"]])
-                        for node in leaves
-                    }
+                    weights = {node["id"]: float(1 + evidence_by_leaf[node["id"]]) for node in leaves}
                     total_weight = sum(weights.values())
                     source_annual = dict(parent.get("ppi_anual_cop") or {})
                     source_metadata = dict(parent.get("metadatos") or {})
@@ -978,14 +931,11 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         "hojas": len(leaves),
                         "metas_vinculadas_por_hoja": dict(evidence_by_leaf),
                         "metas_clasificadas_por_hoja": {
-                            leaf_id: dict(counts)
-                            for leaf_id, counts in evidence_grade_by_leaf.items()
+                            leaf_id: dict(counts) for leaf_id, counts in evidence_grade_by_leaf.items()
                         },
                         "frontalidad_hojas": {
                             code: sum(
-                                str(node.get("metadatos", {}).get(grade_key, "")).startswith(
-                                    f"{code}_"
-                                )
+                                str(node.get("metadatos", {}).get(grade_key, "")).startswith(f"{code}_")
                                 for node in leaves
                             )
                             for code in "ABCN"
@@ -994,9 +944,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     parent["ppi_anual_cop"] = {}
                     parent["metadatos"] = source_metadata
                     updates_nodes.append(parent)
-                    allocations_by_id: dict[str, dict[str, float]] = {
-                        node["id"]: {} for node in leaves
-                    }
+                    allocations_by_id: dict[str, dict[str, float]] = {node["id"]: {} for node in leaves}
                     for year, amount in source_annual.items():
                         total = float(amount or 0)
                         remaining = total
@@ -1013,13 +961,9 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         metadata = dict(node.get("metadatos") or {})
                         metadata["ppi_fuente"] = parent.get("fuente")
                         metadata["imputacion_ppi_desde"] = parent["nombre"]
-                        metadata["imputacion_ppi_metodo"] = (
-                            "PONDERACION_POR_METAS_VINCULADAS_CON_PRIOR_UNITARIO"
-                        )
+                        metadata["imputacion_ppi_metodo"] = "PONDERACION_POR_METAS_VINCULADAS_CON_PRIOR_UNITARIO"
                         metadata["ppi_evidencia_metas_vinculadas"] = evidence_by_leaf[node["id"]]
-                        metadata["base_precios"] = source_metadata.get(
-                            "base_precios", "COP corrientes"
-                        )
+                        metadata["base_precios"] = source_metadata.get("base_precios", "COP corrientes")
                         metadata["ppi_total_cop"] = sum(allocations_by_id[node["id"]].values())
                         node["metadatos"] = metadata
                         updates_nodes.append(node)
@@ -1071,9 +1015,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         )
                         meta_source = "pdd_2012_2015_acuerdo_001_campo_para_todos.pdf (visión oficial, pp. 1–2)"
                         source_row_number = vision_order
-                        data["fila_fuente_reconstruida"] = (
-                            f"Compromiso de visión {vision_order}; páginas impresas 1–2"
-                        )
+                        data["fila_fuente_reconstruida"] = f"Compromiso de visión {vision_order}; páginas impresas 1–2"
                 duplicate = False
                 if meta["codigo_plan"] == "PDD_2024_2027":
                     audit = data.get("_auditoria_forense", {})
@@ -1081,11 +1023,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     duplicate = canonical_flag is False or canonical_flag == "false"
                     if duplicate and audit.get("meta_canonica_id"):
                         data["procedencia_duplicada_de"] = audit["meta_canonica_id"]
-                candidates = [
-                    node
-                    for node in node_lookup.get(meta["codigo_plan"], [])
-                    if node["id"] not in deletions
-                ]
+                candidates = [node for node in node_lookup.get(meta["codigo_plan"], []) if node["id"] not in deletions]
                 text_goal = _fold(
                     " ".join(
                         (
@@ -1102,8 +1040,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         (
                             node
                             for node in candidates
-                            if node["nivel"] == "EJE"
-                            and str(node.get("codigo")) == official_goal["eje"]
+                            if node["nivel"] == "EJE" and str(node.get("codigo")) == official_goal["eje"]
                         ),
                         None,
                     )
@@ -1111,11 +1048,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     prefix = numbered.group(1)
                     if not chosen:
                         chosen = next(
-                            (
-                                node
-                                for node in candidates
-                                if str(node.get("codigo") or "") == prefix
-                            ),
+                            (node for node in candidates if str(node.get("codigo") or "") == prefix),
                             None,
                         )
                 if not chosen:
@@ -1129,10 +1062,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         node_text = _fold(node["nombre"])
                         node_tokens = set(re.findall(r"[A-Z]{4,}", node_text))
                         overlap = len(tokens & node_tokens)
-                        if (
-                            _fold(meta.get("linea_nombre"))
-                            and _fold(meta.get("linea_nombre")) in node_text
-                        ):
+                        if _fold(meta.get("linea_nombre")) and _fold(meta.get("linea_nombre")) in node_text:
                             overlap += 8
                         if overlap:
                             scored.append((overlap, node["id"]))
@@ -1208,9 +1138,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     )
                 if deletions:
                     await conn.execute(
-                        text(
-                            "DELETE FROM seguimiento.pdd_lineas_y_programas WHERE id = ANY(CAST(:ids AS uuid[]))"
-                        ),
+                        text("DELETE FROM seguimiento.pdd_lineas_y_programas WHERE id = ANY(CAST(:ids AS uuid[]))"),
                         {"ids": deletions},
                     )
                 # Use JSON recordset updates to avoid mutating the source rows in place.
@@ -1245,9 +1173,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                                 "orden": row["orden"],
                                 "annual": json.dumps(row.get("ppi_anual_cop") or {}),
                                 "source": row.get("fuente"),
-                                "metadata": json.dumps(
-                                    row.get("metadatos") or {}, ensure_ascii=False
-                                ),
+                                "metadata": json.dumps(row.get("metadatos") or {}, ensure_ascii=False),
                             },
                         )
                 for row in updates_metas:
@@ -1305,14 +1231,13 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     if code not in PLAN_PERIODS or not annual:
                         continue
                     if code == "PDD_2020_2023":
+                        constant = None  # La fuente presenta tres totales incompatibles.
+                    elif all(_money_factor(int(year)) is not None for year in annual):
                         constant = sum(
-                            float(value or 0) for value in annual.values()
-                        ) * _money_factor(2019)
-                    else:
-                        constant = sum(
-                            float(value or 0) * _money_factor(int(year))
-                            for year, value in annual.items()
+                            float(value or 0) * _known_money_factor(int(year)) for year, value in annual.items()
                         )
+                    else:
+                        constant = None
                     await conn.execute(
                         text(
                             "UPDATE seguimiento.planes_desarrollo_distrital SET ppi_total_constante_2025_cop=:value WHERE codigo_plan=:code"
@@ -1327,11 +1252,7 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                 )
             ).scalar_one()
             unlinked = (
-                await conn.execute(
-                    text(
-                        "SELECT count(*) FROM seguimiento.pdd_metas_oficiales WHERE linea_id IS NULL"
-                    )
-                )
+                await conn.execute(text("SELECT count(*) FROM seguimiento.pdd_metas_oficiales WHERE linea_id IS NULL"))
             ).scalar_one()
             plan_stats = (
                 (

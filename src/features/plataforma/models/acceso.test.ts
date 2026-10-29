@@ -30,9 +30,9 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "noticias", "testimonios", "fuentes", "actores", "diagnostico", "alternativas", "seguimiento", "comunicaciones"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "noticias", "testimonios", "fuentes", "actores", "diagnostico", "alternativas", "seguimiento", "proyectos", "comunicaciones"],
     ],
-    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "testimonios", "actores", "comunicaciones"]],
+    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "testimonios", "actores", "proyectos", "comunicaciones"]],
     [
       "auditor_forense",
       [
@@ -47,6 +47,7 @@ describe("Matriz de rutas internas", () => {
         "diagnostico",
         "alternativas",
         "seguimiento",
+        "proyectos",
         "comunicaciones",
         "configuracion",
       ],
@@ -86,15 +87,50 @@ describe("Matriz de rutas internas", () => {
       expect(panelPermitido(auditor, p)).toBe(false);
     expect(panelPermitido(auditor, "formulario-analitica")).toBe(true);
     expect(panelPermitido(auditor, "evaluacion-viabilidad")).toBe(true);
+    expect(panelPermitido(auditor, "auditoria-consola")).toBe(false);
+    const auditorConPermiso = sesion("auditor_forense", { permisos: ["auditoria:leer"] });
+    expect(panelPermitido(auditorConPermiso, "auditoria-consola")).toBe(true);
     expect(panelPermitido(auditor, "usuarios")).toBe(false);
   });
-  test("facilitador consulta formularios y gestiona mesas y actores", () => {
+  test("ficha-actividad-proyecto exige lectura de proyectos", () => {
+    const gestor = sesion("gestor_bienestar_social", {
+      permisos: ["proyectos:leer"],
+    });
+    expect(panelPermitido(gestor, "ficha-actividad-proyecto")).toBe(true);
+    // Rol personalizado: la ficha queda ligada a proyectos:leer
+    const lector = sesion("liga_comunitaria", { permisos: ["proyectos:leer"] });
+    expect(panelPermitido(lector, "ficha-actividad-proyecto")).toBe(true);
+    const sinProyectos = sesion("liga_comunitaria", {
+      permisos: ["testimonios:moderar"],
+    });
+    expect(panelPermitido(sinProyectos, "ficha-actividad-proyecto")).toBe(false);
+  });
+  test("paneles internos de mesas y diagnóstico sin caso quedaban bloqueados", () => {
+    const gestor = sesion("gestor_bienestar_social", {
+      permisos: ["mesas:abrir", "diagnostico:leer"],
+    });
+    // Acta y agenda de mesa: lectura/edición del módulo mesas
+    expect(panelPermitido(gestor, "mesa-acta")).toBe(true);
+    expect(panelPermitido(gestor, "agenda-editor")).toBe(true);
+    // Proyecciones read-only del diagnóstico: basta lectura
+    expect(panelPermitido(gestor, "ficha-territorial")).toBe(true);
+    expect(panelPermitido(gestor, "validacion-mga")).toBe(true);
+    // El módulo dueño gatea: sin mesas ni diagnóstico no hay panel
+    const soloProyectos = sesion("liga_comunitaria", {
+      permisos: ["proyectos:leer"],
+    });
+    expect(panelPermitido(soloProyectos, "mesa-acta")).toBe(false);
+    expect(panelPermitido(soloProyectos, "agenda-editor")).toBe(false);
+    expect(panelPermitido(soloProyectos, "ficha-territorial")).toBe(false);
+    expect(panelPermitido(soloProyectos, "validacion-mga")).toBe(false);
+  });
+  test("facilitador consulta formularios y gestiona mesas y testimonios sin editar actores", () => {
     const f = sesion("facilitador_mesa");
     expect(puedeEditar(f, "formularios")).toBe(false);
     expect(panelPermitido(f, "formulario-editor")).toBe(false);
     expect(puedeEditar(f, "mesas")).toBe(true);
-    expect(puedeEditar(f, "actores")).toBe(true);
-    expect(panelPermitido(f, "actor-editor")).toBe(true);
+    expect(puedeEditar(f, "actores")).toBe(false);
+    expect(panelPermitido(f, "actor-editor")).toBe(false);
     expect(puedeEditar(f, "testimonios")).toBe(true);
     expect(panelPermitido(f, "testimonios-moderacion")).toBe(true);
     expect(puedeVer(f, "noticias")).toBe(false);
@@ -106,6 +142,9 @@ describe("Matriz de rutas internas", () => {
     expect(panelPermitido(autoridad, "noticia")).toBe(true);
     expect(panelPermitido(autoridad, "noticia-editor")).toBe(true);
     expect(panelPermitido(autoridad, "testimonios-moderacion")).toBe(true);
+    expect(panelPermitido(autoridad, "testimonio-editor")).toBe(true);
+    expect(panelPermitido(autoridad, "testimonio-nuevo")).toBe(true);
+    expect(panelPermitido(autoridad, "testimonios-galeria")).toBe(true);
 
     const lector = sesion("lector_contenido", { permisos: ["contenido:leer"] });
     expect(puedeVer(lector, "noticias")).toBe(true);
@@ -113,6 +152,7 @@ describe("Matriz de rutas internas", () => {
     expect(puedeVer(lector, "testimonios")).toBe(false);
     expect(panelPermitido(lector, "noticia-editor")).toBe(false);
     expect(panelPermitido(lector, "testimonios-moderacion")).toBe(false);
+    expect(panelPermitido(lector, "testimonio-editor")).toBe(false);
 
     const moderador = sesion("moderador_testimonios", {
       permisos: ["testimonios:moderar"],
@@ -122,6 +162,9 @@ describe("Matriz de rutas internas", () => {
       "testimonios",
     ]);
     expect(panelPermitido(moderador, "testimonios-moderacion")).toBe(true);
+    expect(panelPermitido(moderador, "testimonio-editor")).toBe(true);
+    expect(panelPermitido(moderador, "testimonio-nuevo")).toBe(true);
+    expect(panelPermitido(moderador, "testimonios-galeria")).toBe(true);
     expect(panelPermitido(moderador, "noticia-editor")).toBe(false);
   });
   test("perfil personalizado administra solo los módulos concedidos", () => {

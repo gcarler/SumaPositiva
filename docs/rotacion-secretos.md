@@ -19,7 +19,25 @@ Dado que el repositorio **nunca ha sido sincronizado a un remoto (`git push`)**,
 
 ## 2. Procedimiento de Rotación de Secretos
 
-### 2.1. Rotación de Credenciales de Base de Datos (PostgreSQL)
+### 2.0. Método Automatizado Recomendado (`scripts/rotar_secretos_produccion.py`)
+
+Para evitar errores manuales, el sistema dispone de un script administrativo de rotación criptográfica:
+
+```bash
+# 1. Simulación previa (dry-run): inspecciona cambios sin alterar archivos
+python3 scripts/rotar_secretos_produccion.py --dry-run --con-bd
+
+# 2. Ejecutar rotación de llaves JWT y Salt de IP (con respaldo atómico .env 0600):
+python3 scripts/rotar_secretos_produccion.py
+
+# 3. O bien, rotación integral incluyendo credenciales de PostgreSQL:
+python3 scripts/rotar_secretos_produccion.py --con-bd
+
+# 4. Reiniciar backend para invalidar sesiones previas y recargar llaves
+sudo systemctl restart polis-backend
+```
+
+### 2.1. Rotación Manual de Credenciales de Base de Datos (PostgreSQL)
 
 Para actualizar la contraseña del usuario `polis` en el cluster de PostgreSQL:
 

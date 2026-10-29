@@ -37,9 +37,7 @@ class EscenarioEspecial(Base):
     lugar: Mapped[str] = mapped_column(String(250), nullable=False)
     entidad_convocante: Mapped[str] = mapped_column(String(150), nullable=False)
     total_asistentes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    desglose_poblacional: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, default=dict, server_default="{}"
-    )
+    desglose_poblacional: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
     sintesis_acuerdos: Mapped[str | None] = mapped_column(Text, nullable=True)
     url_evidencia: Mapped[str | None] = mapped_column(String(500), nullable=True)
     estado: Mapped[str] = mapped_column(String(50), default="REALIZADO", nullable=False)

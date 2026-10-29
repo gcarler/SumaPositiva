@@ -2,8 +2,10 @@
 
 import uuid
 from collections.abc import Sequence
+from datetime import UTC, datetime
 from typing import Any
 
+from fastapi import HTTPException
 from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -34,11 +36,7 @@ class AporteRepository:
     ) -> PropuestaCiudadana:
         """Crea y persiste un nuevo aporte ciudadano asignando radicado oficial atómico."""
         radicado = await self.generar_codigo_radicado()
-        datos_dict = datos.model_dump(exclude={"correo_contacto"})
-        if datos.correo_contacto:
-            metadatos_actuales = dict(datos_dict.get("metadatos") or {})
-            metadatos_actuales["correo_contacto"] = datos.correo_contacto
-            datos_dict["metadatos"] = metadatos_actuales
+        datos_dict = datos.model_dump()
 
         propuesta = PropuestaCiudadana(**datos_dict, codigo_radicado=radicado)
         if sesion_contexto is not None:
@@ -50,12 +48,14 @@ class AporteRepository:
         return propuesta
 
     async def obtener_por_id(
-        self, aporte_id: uuid.UUID, incluir_inactivos: bool = False
+        self, aporte_id: uuid.UUID, incluir_inactivos: bool = False, *, bloquear: bool = False
     ) -> PropuestaCiudadana | None:
         """Obtiene un aporte por su identificador UUIDv7."""
         query = select(PropuestaCiudadana).where(PropuestaCiudadana.id == aporte_id)
         if not incluir_inactivos:
             query = query.where(PropuestaCiudadana.activo.is_(True))
+        if bloquear:
+            query = query.with_for_update().execution_options(populate_existing=True)
 
         resultado = await self.session.execute(query)
         return resultado.scalar_one_or_none()
@@ -116,26 +116,20 @@ class AporteRepository:
             condiciones.append(PropuestaCiudadana.metadata_enfoque["genero"].astext == genero)
         if es_victima_conflicto is not None:
             condiciones.append(
-                PropuestaCiudadana.metadata_enfoque["es_victima_conflicto"].astext
-                == str(es_victima_conflicto).lower()
+                PropuestaCiudadana.metadata_enfoque["es_victima_conflicto"].astext == str(es_victima_conflicto).lower()
             )
         if sesion_id is not None:
             condiciones.append(PropuestaCiudadana.sesion_id == sesion_id)
         if solo_etnicos:
             condiciones.append(PropuestaCiudadana.es_territorio_etnico.is_(True))
         if requiere_consulta_previa is not None:
-            condiciones.append(
-                PropuestaCiudadana.requiere_consulta_previa.is_(requiere_consulta_previa)
-            )
+            condiciones.append(PropuestaCiudadana.requiere_consulta_previa.is_(requiere_consulta_previa))
         if ruta_etnica_diferenciada is not None:
-            condiciones.append(
-                PropuestaCiudadana.ruta_etnica_diferenciada.is_(ruta_etnica_diferenciada)
-            )
+            condiciones.append(PropuestaCiudadana.ruta_etnica_diferenciada.is_(ruta_etnica_diferenciada))
         if busqueda:
             termino = f"%{busqueda}%"
             condiciones.append(
-                (PropuestaCiudadana.titulo.ilike(termino))
-                | (PropuestaCiudadana.descripcion.ilike(termino))
+                (PropuestaCiudadana.titulo.ilike(termino)) | (PropuestaCiudadana.descripcion.ilike(termino))
             )
 
         # Contar total con filtros
@@ -161,9 +155,7 @@ class AporteRepository:
 
         return total, elementos
 
-    async def actualizar(
-        self, aporte_id: uuid.UUID, cambios: PropuestaCiudadanaUpdate
-    ) -> PropuestaCiudadana | None:
+    async def actualizar(self, aporte_id: uuid.UUID, cambios: PropuestaCiudadanaUpdate) -> PropuestaCiudadana | None:
         """Actualiza atributos de una propuesta existente."""
         propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=True)
         if not propuesta:
@@ -187,32 +179,42 @@ class AporteRepository:
         await self.session.flush()
         return True
 
-    @staticmethod
-    def _extraer_sujeto_info(sujeto: Any) -> tuple[uuid.UUID, str]:
-        """Extrae (sujeto_id, tipo_sujeto) de SesionContexto o SujetoAutenticadoContexto."""
+    async def _extraer_sujeto_info(self, sujeto: Any) -> tuple[uuid.UUID, str]:
+        """Identifica la cuenta mediante su sesión persistida; nunca por datos del cliente."""
         if sujeto is None:
             return uuid.uuid4(), "sesion_anonima"
-        if hasattr(sujeto, "sujeto_id") and getattr(sujeto, "sujeto_id"):
-            sujeto_id = sujeto.sujeto_id
-            tipo_sujeto = "sesion_anonima" if getattr(sujeto, "es_anonimo", False) else "usuario"
-            return sujeto_id, tipo_sujeto
-        if hasattr(sujeto, "sesion_id") and getattr(sujeto, "sesion_id"):
-            sujeto_id = sujeto.sesion_id
-            tipo_sujeto = "sesion_anonima" if getattr(sujeto, "es_anonimo", True) else "usuario"
-            return sujeto_id, tipo_sujeto
-        return uuid.uuid4(), "sesion_anonima"
+        sesion_id = getattr(sujeto, "sesion_id", None)
+        if getattr(sujeto, "es_anonimo", True):
+            return sesion_id or sujeto.sujeto_id, "sesion_anonima"
+        from app.modules.identidad.models import SesionUsuario, Usuario
 
-    async def sumar_apoyo(
-        self, aporte_id: uuid.UUID, sujeto: Any = None
-    ) -> PropuestaCiudadana | None:
+        resultado = await self.session.execute(
+            select(SesionUsuario.usuario_id)
+            .join(Usuario, Usuario.id == SesionUsuario.usuario_id)
+            .where(
+                SesionUsuario.id == sesion_id,
+                SesionUsuario.revocada_en.is_(None),
+                SesionUsuario.expira_en > datetime.now(UTC),
+                Usuario.activo.is_(True),
+            )
+        )
+        usuario_id = resultado.scalar_one_or_none()
+        if usuario_id is None:
+            raise HTTPException(401, "Sesión registrada inválida o revocada")
+        sujeto_declarado = getattr(sujeto, "sujeto_id", None)
+        if sujeto_declarado and sujeto_declarado != usuario_id:
+            raise HTTPException(401, "La sesión no corresponde al participante")
+        return usuario_id, "usuario"
+
+    async def sumar_apoyo(self, aporte_id: uuid.UUID, sujeto: Any = None) -> PropuestaCiudadana | None:
         """Incrementa el contador de respaldo popular mediante inserción única de apoyo."""
-        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False)
+        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False, bloquear=True)
         if not propuesta:
             return None
 
         from app.modules.aportes.models import ApoyoPropuesta
 
-        sujeto_id, tipo_sujeto = self._extraer_sujeto_info(sujeto)
+        sujeto_id, tipo_sujeto = await self._extraer_sujeto_info(sujeto)
 
         apoyo = ApoyoPropuesta(
             propuesta_id=propuesta.id,
@@ -224,17 +226,15 @@ class AporteRepository:
         await self.session.refresh(propuesta)
         return propuesta
 
-    async def retirar_apoyo(
-        self, aporte_id: uuid.UUID, sujeto: Any = None
-    ) -> PropuestaCiudadana | None:
+    async def retirar_apoyo(self, aporte_id: uuid.UUID, sujeto: Any = None) -> PropuestaCiudadana | None:
         """Retira el respaldo popular ciudadano previamente registrado."""
-        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False)
+        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False, bloquear=True)
         if not propuesta:
             return None
 
         from app.modules.aportes.models import ApoyoPropuesta
 
-        sujeto_id, _ = self._extraer_sujeto_info(sujeto)
+        sujeto_id, _ = await self._extraer_sujeto_info(sujeto)
 
         stmt = select(ApoyoPropuesta).where(
             ApoyoPropuesta.propuesta_id == propuesta.id,
@@ -249,17 +249,15 @@ class AporteRepository:
         await self.session.refresh(propuesta)
         return propuesta
 
-    async def alternar_apoyo(
-        self, aporte_id: uuid.UUID, sujeto: Any = None
-    ) -> tuple[PropuestaCiudadana | None, bool]:
+    async def alternar_apoyo(self, aporte_id: uuid.UUID, sujeto: Any = None) -> tuple[PropuestaCiudadana | None, bool]:
         """Alterna el respaldo ciudadano (suma si no existe, retira si ya existe)."""
-        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False)
+        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False, bloquear=True)
         if not propuesta:
             return None, False
 
         from app.modules.aportes.models import ApoyoPropuesta
 
-        sujeto_id, tipo_sujeto = self._extraer_sujeto_info(sujeto)
+        sujeto_id, tipo_sujeto = await self._extraer_sujeto_info(sujeto)
 
         stmt = select(ApoyoPropuesta).where(
             ApoyoPropuesta.propuesta_id == propuesta.id,
@@ -293,11 +291,8 @@ class AporteRepository:
 
         from app.modules.aportes.models import ApoyoPropuesta
 
-        sujeto_id, _ = self._extraer_sujeto_info(sujeto)
+        sujeto_id, _ = await self._extraer_sujeto_info(sujeto)
 
-        stmt = select(ApoyoPropuesta.propuesta_id).where(
-            ApoyoPropuesta.sujeto_id == sujeto_id
-        )
+        stmt = select(ApoyoPropuesta.propuesta_id).where(ApoyoPropuesta.sujeto_id == sujeto_id)
         res = await self.session.execute(stmt)
         return list(res.scalars().all())
-

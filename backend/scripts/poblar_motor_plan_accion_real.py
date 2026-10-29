@@ -92,9 +92,7 @@ def _normalizar(valor: Any) -> str:
 
 def _text(value: Any, fallback: str) -> str:
     result = str(value or "").strip()
-    return (
-        fallback if not result or result.upper() in {"N/A", "NA", "NONE", "NULL", "-"} else result
-    )
+    return fallback if not result or result.upper() in {"N/A", "NA", "NONE", "NULL", "-"} else result
 
 
 def _number(value: Any, *, percent: bool = False) -> float:
@@ -213,8 +211,7 @@ async def populate() -> dict[str, Any]:
                 program = _text(data.get("PROGRAMA"), "Plan de Acción institucional")
                 project = _text(data.get("PROYECTO DE INVERSIÓN"), program)
                 objective = _text(
-                    data.get("OBJETIVO GENERAL DEL PROYECTO")
-                    or data.get("OBJETIVO ESPECIFICO DEL PROYECTO"),
+                    data.get("OBJETIVO GENERAL DEL PROYECTO") or data.get("OBJETIVO ESPECIFICO DEL PROYECTO"),
                     description,
                 )
                 indicator = _text(row["indicador"], description)
@@ -226,14 +223,9 @@ async def populate() -> dict[str, Any]:
                 )
                 advance = _number(row["avance_fisico_pct"], percent=True)
                 if advance == 0:
-                    quarterly = [
-                        _number(row.get(f"avance_t{quarter}"), percent=True)
-                        for quarter in range(1, 5)
-                    ]
+                    quarterly = [_number(row.get(f"avance_t{quarter}"), percent=True) for quarter in range(1, 5)]
                     advance = max(quarterly, default=0)
-                quarterly = [
-                    _number(row.get(f"avance_t{quarter}"), percent=True) for quarter in range(1, 5)
-                ]
+                quarterly = [_number(row.get(f"avance_t{quarter}"), percent=True) for quarter in range(1, 5)]
                 start = date(year, 1, 1)
                 end = date(year, 12, 31)
                 await connection.execute(
@@ -292,9 +284,7 @@ async def populate() -> dict[str, Any]:
                         "program": program[:250],
                         "entity": row["entidad_normalizada"][:150],
                         "indicator": indicator[:300],
-                        "meta": _number(
-                            row["meta_programada_anual"] or row["meta_ejecutada_anual"] or 1
-                        ),
+                        "meta": _number(row["meta_programada_anual"] or row["meta_ejecutada_anual"] or 1),
                         "unit": unit[:50],
                         "bpim": bpim,
                         "project": project[:300],
@@ -311,10 +301,7 @@ async def populate() -> dict[str, Any]:
                         "source": resource_source[:50],
                         "budget": _number(row["apropiacion_definitiva_cop"]),
                         "execution": _money(row),
-                        "evidence": (
-                            "Seguimiento Triada normalizado; "
-                            "evidencia primaria enlazada en metadatos."
-                        ),
+                        "evidence": ("Seguimiento Triada normalizado; evidencia primaria enlazada en metadatos."),
                         "metadata": json.dumps(
                             {
                                 "registro_triada_id": row["registro_id"],
@@ -328,9 +315,7 @@ async def populate() -> dict[str, Any]:
                         ),
                     },
                 )
-            total = await connection.scalar(
-                text("SELECT count(*) FROM seguimiento.actividades_plan_accion")
-            )
+            total = await connection.scalar(text("SELECT count(*) FROM seguimiento.actividades_plan_accion"))
             seed_count = await connection.scalar(
                 text(
                     """SELECT count(*) FROM seguimiento.actividades_plan_accion
@@ -343,9 +328,7 @@ async def populate() -> dict[str, Any]:
             "semillas_preservadas": seed_count,
             "entidades_cubiertas": len(entities),
             "por_vigencia": years,
-            "entidades_por_vigencia": {
-                entity: sorted(entity_year[entity]) for entity in sorted(entity_year)
-            },
+            "entidades_por_vigencia": {entity: sorted(entity_year[entity]) for entity in sorted(entity_year)},
         }
     finally:
         await engine.dispose()

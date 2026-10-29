@@ -197,13 +197,9 @@ def test_panel_gestion_y_moderacion(
     assert nuevo_codigo in codigos_pub
 
 
-def test_editar_testimonio_desde_plataforma_conserva_moderacion(
-    sync_client: TestClient, public_client: TestClient
-):
+def test_editar_testimonio_desde_plataforma_conserva_moderacion(sync_client: TestClient, public_client: TestClient):
     pendiente = next(
-        item
-        for item in sync_client.get("/api/v1/testimonios/gestion").json()
-        if item["estado"] == "PENDIENTE"
+        item for item in sync_client.get("/api/v1/testimonios/gestion").json() if item["estado"] == "PENDIENTE"
     )
     respuesta = sync_client.put(
         f"/api/v1/testimonios/{pendiente['id']}",
@@ -237,9 +233,7 @@ async def test_fallo_despues_de_editar_testimonio_revierte(database_url):
     sessions = async_sessionmaker(engine, expire_on_commit=False)
     try:
         async with sessions() as session:
-            original = await session.scalar(
-                select(ModeloTestimonio).where(ModeloTestimonio.codigo_unico == "TEST-004")
-            )
+            original = await session.scalar(select(ModeloTestimonio).where(ModeloTestimonio.codigo_unico == "TEST-004"))
             assert original is not None
             testimonio_id = original.id
             titulo_anterior = original.titulo
@@ -268,3 +262,88 @@ async def test_fallo_despues_de_editar_testimonio_revierte(database_url):
             assert persistido.nombre_autor != "Nombre para rollback"
     finally:
         await engine.dispose()
+
+
+def test_ciclo_completo_borrador_y_publicacion_directa(sync_client: TestClient, public_client: TestClient):
+    """Verifica el ciclo completo: borrador, publicación directa y métricas con borradores."""
+    # 1. Crear en BORRADOR desde cliente con permiso institucional
+    resp_borrador = sync_client.post(
+        "/api/v1/testimonios",
+        json={
+            "nombre_autor": "Gestor Institucional",
+            "titulo": "Relato institucional en borrador de trabajo",
+            "relato": "Contenido preliminar del testimonio recogido en campo que queda en borrador.",
+            "estado": "BORRADOR",
+        },
+    )
+    assert resp_borrador.status_code == 201
+    borrador_data = resp_borrador.json()
+    assert borrador_data["estado"] == "BORRADOR"
+    borrador_id = borrador_data["id"]
+
+    # 2. Borrador NO debe aparecer en la galería pública
+    resp_pub = public_client.get("/api/v1/testimonios")
+    assert resp_pub.status_code == 200
+    ids_pub = [t["id"] for t in resp_pub.json()]
+    assert borrador_id not in ids_pub
+
+    # 3. Borrador DEBE aparecer en el listado de gestión filtrando por BORRADOR
+    resp_gestion = sync_client.get("/api/v1/testimonios/gestion?estado=BORRADOR")
+    assert resp_gestion.status_code == 200
+    ids_borradores = [t["id"] for t in resp_gestion.json()]
+    assert borrador_id in ids_borradores
+
+    # 4. Métricas de resumen incluyen contador de borradores
+    resp_resumen = public_client.get("/api/v1/testimonios/resumen")
+    assert resp_resumen.status_code == 200
+    resumen = resp_resumen.json()
+    assert "borradores" in resumen
+    assert resumen["borradores"] >= 1
+
+    # 5. Publicar directamente desde edición
+    resp_edit = sync_client.put(
+        f"/api/v1/testimonios/{borrador_id}",
+        json={
+            "nombre_autor": "Gestor Institucional",
+            "titulo": "Relato institucional publicado oficialmente",
+            "relato": "Contenido revisado del testimonio comunitario que pasa a estar aprobado.",
+            "estado": "APROBADO",
+        },
+    )
+    assert resp_edit.status_code == 200
+    assert resp_edit.json()["estado"] == "APROBADO"
+
+    # 6. Ahora DEBE aparecer en la galería pública
+    resp_pub_despues = public_client.get("/api/v1/testimonios")
+    ids_pub_despues = [t["id"] for t in resp_pub_despues.json()]
+    assert borrador_id in ids_pub_despues
+
+    # 7. Moderar de regreso a BORRADOR
+    resp_mod = sync_client.put(
+        f"/api/v1/testimonios/{borrador_id}/moderar",
+        json={"estado": "BORRADOR"},
+    )
+    assert resp_mod.status_code == 200
+    assert resp_mod.json()["estado"] == "BORRADOR"
+
+    # 8. Un ciudadano no autorizado no puede crear en APROBADO directo
+    correo = f"ciudadano_intento_{uuid.uuid4().hex[:6]}@cartagena.gov.co"
+    clave = "Cartagena2026*"
+    public_client.post(
+        "/api/v1/identidad/registro",
+        json={"correo": correo, "contrasena": clave, "nombres": "Pedro", "apellidos": "Pérez"},
+    )
+    resp_log = public_client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": clave})
+    tok = resp_log.json()["token_acceso"]
+
+    resp_denegado = public_client.post(
+        "/api/v1/testimonios",
+        headers={"Authorization": f"Bearer {tok}"},
+        json={
+            "nombre_autor": "Ciudadano sin rol",
+            "titulo": "Intento de autopublicación directa",
+            "relato": "Este testimonio no debería poder autoaprobarse sin revisión.",
+            "estado": "APROBADO",
+        },
+    )
+    assert resp_denegado.status_code == 403

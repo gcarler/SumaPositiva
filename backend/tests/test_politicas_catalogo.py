@@ -29,7 +29,9 @@ def test_catalogo_politicas_publicas_distrital(database_url: str):
         assert "fechaInicio" in politica or "fecha_inicio" in politica
         assert "fechaCierre" in politica or "fecha_cierre" in politica
         assert "participantes" in politica
-        assert politica["participantes"] is None or (isinstance(politica["participantes"], int) and politica["participantes"] >= 0)
+        assert politica["participantes"] is None or (
+            isinstance(politica["participantes"], int) and politica["participantes"] >= 0
+        )
         assert isinstance(politica["fases"], list)
         assert len(politica["fases"]) >= 3
 
@@ -94,4 +96,3 @@ def test_gating_fases_ciclo_progresos_y_aportes_lineas(database_url: str):
             assert "aportes_count" in linea
             assert isinstance(linea["aportes_count"], int)
             assert linea["aportes_count"] >= 0
-

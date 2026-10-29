@@ -1,20 +1,26 @@
 """Servicio del Canal de WhatsApp para normalización, radicación e ingesta comunitaria."""
 
 import hashlib
+import json
 import logging
 import re
 import uuid
-from datetime import datetime, timezone
-from typing import Any
+from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import select, text
+from fastapi import HTTPException
+from pydantic import ValidationError
+from sqlalchemy import and_, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.transactions import transaction
 from app.modules.aportes.repository import AporteRepository
 from app.modules.aportes.schemas import PropuestaCiudadanaCreate
+from app.modules.canales.models import WhatsAppInbox
+from app.modules.canales.repository import WhatsAppInboxRepository
 from app.modules.canales.schemas import (
     WhatsAppIngestaRespuesta,
-    WhatsAppSimulacionEntrante,
+    WhatsAppProcesamientoResultado,
+    WhatsAppRecepcionRespuesta,
     WhatsAppWebhookPayload,
 )
 from app.modules.notificaciones.models import NotificacionTransaccional
@@ -101,15 +107,36 @@ class CanalWhatsAppService:
         codigo_meta = "LE-02"  # Convivencia por defecto
         if any(w in t_lower for w in ["niño", "niñez", "escnna", "explotacion", "explotación", "infancia"]):
             codigo_meta = "LE-01"
-        elif any(w in t_lower for w in ["cienaga", "ciénaga", "manglar", "ambiental", "basura", "inundacion", "inundación", "caño"]):
+        elif any(
+            w in t_lower
+            for w in ["cienaga", "ciénaga", "manglar", "ambiental", "basura", "inundacion", "inundación", "caño"]
+        ):
             codigo_meta = "LE-03"
-        elif any(w in t_lower for w in ["empleo", "vendedor", "informal", "credito", "crédito", "gota a gota", "emprendimiento", "trabajo"]):
+        elif any(
+            w in t_lower
+            for w in [
+                "empleo",
+                "vendedor",
+                "informal",
+                "credito",
+                "crédito",
+                "gota a gota",
+                "emprendimiento",
+                "trabajo",
+            ]
+        ):
             codigo_meta = "LE-04"
         elif any(w in t_lower for w in ["hambre", "comida", "comedor", "alimento", "nutricion", "nutrición", "olla"]):
             codigo_meta = "LE-05"
-        elif any(w in t_lower for w in ["salud", "droga", "adiccion", "adicción", "sustancia", "hospital", "puesto de salud", "mental"]):
+        elif any(
+            w in t_lower
+            for w in ["salud", "droga", "adiccion", "adicción", "sustancia", "hospital", "puesto de salud", "mental"]
+        ):
             codigo_meta = "LE-06"
-        elif any(w in t_lower for w in ["corrupcion", "corrupción", "lider", "líder", "amenaza", "transparencia", "veeduria", "veeduría"]):
+        elif any(
+            w in t_lower
+            for w in ["corrupcion", "corrupción", "lider", "líder", "amenaza", "transparencia", "veeduria", "veeduría"]
+        ):
             codigo_meta = "LE-07"
 
         # Buscar por código en base de datos
@@ -122,9 +149,7 @@ class CanalWhatsAppService:
             return row
 
         # Fallback a la primera línea estratégica existente
-        res_primera = await self.session.execute(
-            text("SELECT id FROM motor_politicas.lineas_estrategicas LIMIT 1")
-        )
+        res_primera = await self.session.execute(text("SELECT id FROM motor_politicas.lineas_estrategicas LIMIT 1"))
         primera = res_primera.scalar_one_or_none()
         if not primera:
             raise ValueError("No existen líneas estratégicas registradas en motor_politicas.")
@@ -154,10 +179,7 @@ class CanalWhatsAppService:
 
         # Intentar enlazar con geodatos.territorios
         res = await self.session.execute(
-            text(
-                "SELECT id, nombre FROM geodatos.territorios "
-                "WHERE nombre ILIKE :term LIMIT 1"
-            ),
+            text("SELECT id, nombre FROM geodatos.territorios WHERE nombre ILIKE :term LIMIT 1"),
             {"term": f"%{barrio_encontrado}%"},
         )
         fila = res.first()
@@ -176,10 +198,31 @@ class CanalWhatsAppService:
         territorio_id: uuid.UUID | None = None,
         wa_id: str | None = None,
     ) -> WhatsAppIngestaRespuesta:
-        """Procesa un mensaje comunitario de WhatsApp, genera radicado y acuse institucional."""
+        """Simulación de un caso de uso; la recepción Meta usa su inbox durable."""
+        async with transaction(self.session):
+            return await self._radicar_mensaje(
+                telefono_remitente,
+                nombre_remitente,
+                texto_mensaje,
+                tipo_mensaje,
+                linea_id,
+                territorio_id,
+                wa_id,
+            )
+
+    async def _radicar_mensaje(
+        self,
+        telefono_remitente: str,
+        nombre_remitente: str,
+        texto_mensaje: str,
+        tipo_mensaje: str = "text",
+        linea_id: uuid.UUID | None = None,
+        territorio_id: uuid.UUID | None = None,
+        wa_id: str | None = None,
+    ) -> WhatsAppIngestaRespuesta:
+        """Composición sin límite propio; el llamador confirma aporte, constancia y resultado."""
         telefono_limpio = telefono_remitente.strip()
         tel_mascarado = enmascarar_telefono(telefono_limpio)
-        huella = calcular_hash_remitente(telefono_limpio)
 
         linea_final = await self._obtener_linea_estrategica_predeterminada(texto_mensaje, linea_id)
         terr_final_id, terr_nombre = await self._identificar_territorio(texto_mensaje, territorio_id)
@@ -192,7 +235,7 @@ class CanalWhatsAppService:
             "telefono_remitente": tel_mascarado,
             "tipo_mensaje": tipo_mensaje,
             "barrio_identificado": terr_nombre,
-            "ingesta_en": datetime.now(timezone.utc).isoformat(),
+            "ingesta_en": datetime.now(UTC).isoformat(),
         }
 
         aporte_create = PropuestaCiudadanaCreate(
@@ -223,7 +266,7 @@ class CanalWhatsAppService:
             f"<p><strong>Remitente:</strong> {nombre_remitente} ({tel_mascarado})</p>"
             f"<p><strong>Sector:</strong> {terr_nombre or 'Cartagena de Indias'}</p>"
             f"<p><strong>Mensaje:</strong> {texto_mensaje}</p>"
-            f"<p><strong>Respuesta enviada:</strong> {mensaje_respuesta}</p>"
+            f"<p><strong>Respuesta simulada (sin envío):</strong> {mensaje_respuesta}</p>"
             f"</div>"
         )
 
@@ -235,17 +278,13 @@ class CanalWhatsAppService:
             asunto=f"POLIS WhatsApp: Constancia {propuesta.codigo_radicado}",
             cuerpo_html=cuerpo_html,
             estado_envio="simulado",
-            enviado_en=datetime.now(timezone.utc),
+            enviado_en=None,
+            simulado_en=datetime.now(UTC),
         )
         self.session.add(notificacion)
-        await self.session.commit()
-        await self.session.refresh(propuesta)
+        await self.session.flush()
 
-        logger.info(
-            "Propuesta radicada exitosamente desde WhatsApp: radicado=%s autor=%s",
-            propuesta.codigo_radicado,
-            tel_mascarado,
-        )
+        logger.info("Propuesta WhatsApp radicada: %s", propuesta.codigo_radicado)
 
         return WhatsAppIngestaRespuesta(
             codigo_radicado=propuesta.codigo_radicado,
@@ -256,41 +295,126 @@ class CanalWhatsAppService:
             mensaje_respuesta=mensaje_respuesta,
         )
 
-    async def procesar_webhook_meta(
-        self, payload: WhatsAppWebhookPayload
-    ) -> list[WhatsAppIngestaRespuesta]:
-        """Procesa todas las entradas y mensajes de un payload recibido de Meta Cloud API."""
-        respuestas: list[WhatsAppIngestaRespuesta] = []
+    async def procesar_webhook_meta(self, payload: WhatsAppWebhookPayload) -> WhatsAppRecepcionRespuesta:
+        """Recibe TODO el lote antes del acuse; no radica ni invoca casos transaccionales."""
+        nuevos = total = 0
+        async with transaction(self.session):
+            repo = WhatsAppInboxRepository(self.session)
+            for entry in payload.entry:
+                for change in entry.changes:
+                    value = change.value
+                    contactos = {contacto.wa_id: contacto.profile.name for contacto in value.contacts}
+                    telefono_receptor = str(value.metadata.get("phone_number_id", ""))
+                    if len(telefono_receptor) > 149:
+                        raise HTTPException(422, "Identificador de cuenta receptora demasiado largo")
+                    cuenta = f"{entry.id}:{telefono_receptor}"
+                    for mensaje in value.messages:
+                        contenido = {
+                            "mensaje": mensaje.model_dump(mode="json", by_alias=True),
+                            "nombre": contactos.get(mensaje.from_, "Líder Comunitario WhatsApp"),
+                        }
+                        huella = hashlib.sha256(
+                            json.dumps(contenido, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+                        ).hexdigest()
+                        _, nuevo = await repo.recibir(
+                            cuenta=cuenta, mensaje_id=mensaje.id, contenido_hash=huella, payload=contenido
+                        )
+                        total += 1
+                        nuevos += int(nuevo)
+            return WhatsAppRecepcionRespuesta(
+                mensajes_recibidos=total, mensajes_nuevos=nuevos, mensajes_repetidos=total - nuevos
+            )
 
-        for entry in payload.entry:
-            for change in entry.changes:
-                value = change.value
-                contactos_dict = {c.wa_id: c.profile.name for c in value.contacts if c.wa_id}
+    async def procesar_inbox_uno(
+        self, *, recepcion_id: uuid.UUID | None = None
+    ) -> WhatsAppProcesamientoResultado | None:
+        """Reclama confirmado; radica con resultado atómico o registra un fallo recuperable."""
+        ahora = datetime.now(UTC)
+        async with transaction(self.session):
+            registro = await self.session.scalar(
+                select(WhatsAppInbox)
+                .where(
+                    WhatsAppInbox.id == recepcion_id if recepcion_id else True,
+                    or_(
+                        and_(
+                            WhatsAppInbox.estado.in_(["pendiente", "error"]),
+                            or_(WhatsAppInbox.proximo_intento_en.is_(None), WhatsAppInbox.proximo_intento_en <= ahora),
+                        ),
+                        and_(WhatsAppInbox.estado == "procesando", WhatsAppInbox.reclamo_vence_en <= ahora),
+                    ),
+                )
+                .order_by(WhatsAppInbox.recibido_en, WhatsAppInbox.id)
+                .limit(1)
+                .with_for_update(skip_locked=True)
+                .execution_options(populate_existing=True)
+            )
+            if registro is None:
+                return None
+            token = uuid.uuid4()
+            registro.estado = "procesando"
+            registro.reclamo_token = token
+            registro.reclamo_vence_en = ahora + timedelta(minutes=5)
+            registro.intentos += 1
+            registro.error_codigo = None
+            await self.session.flush()
+            mensaje_id, intentos = registro.id, registro.intentos
 
-                for msg in value.messages:
-                    texto = ""
-                    tipo = msg.type
-
-                    if msg.text and msg.text.body:
-                        texto = msg.text.body
-                    elif msg.audio and msg.audio.caption:
-                        texto = msg.audio.caption
-                    elif msg.image and msg.image.caption:
-                        texto = msg.image.caption
-                    elif msg.document and msg.document.caption:
-                        texto = msg.document.caption
-                    else:
-                        texto = f"Aporte comunitario en formato {tipo} recibido vía WhatsApp."
-
-                    nombre = contactos_dict.get(msg.from_, "Líder Comunitario WhatsApp")
-
-                    respuesta = await self.registrar_mensaje_comunitario(
-                        telefono_remitente=msg.from_,
-                        nombre_remitente=nombre,
-                        texto_mensaje=texto,
-                        tipo_mensaje=tipo,
-                        wa_id=msg.id,
+        repo = WhatsAppInboxRepository(self.session)
+        try:
+            async with transaction(self.session):
+                registro = await repo.obtener_reclamado(mensaje_id, token)
+                if registro is None:
+                    return WhatsAppProcesamientoResultado(
+                        recepcion_id=mensaje_id, estado="reclamo_perdido", intentos=intentos
                     )
-                    respuestas.append(respuesta)
-
-        return respuestas
+                mensaje = registro.payload["mensaje"]
+                texto = next(
+                    (
+                        mensaje[tipo].get("body" if tipo == "text" else "caption")
+                        for tipo in ("text", "audio", "image", "document")
+                        if isinstance(mensaje.get(tipo), dict)
+                        and mensaje[tipo].get("body" if tipo == "text" else "caption")
+                    ),
+                    f"Aporte comunitario en formato {mensaje['type']} recibido vía WhatsApp.",
+                )
+                respuesta = await self._radicar_mensaje(
+                    telefono_remitente=mensaje["from"],
+                    nombre_remitente=registro.payload["nombre"],
+                    texto_mensaje=texto,
+                    tipo_mensaje=mensaje["type"],
+                    wa_id=mensaje["id"],
+                )
+                registro.propuesta_id = respuesta.propuesta_id
+                registro.resultado = respuesta.model_dump(mode="json")
+                registro.estado = "procesado"
+                registro.procesado_en = datetime.now(UTC)
+                registro.reclamo_token = registro.reclamo_vence_en = None
+                registro.proximo_intento_en = None
+                await self.session.flush()
+                return WhatsAppProcesamientoResultado(
+                    recepcion_id=mensaje_id,
+                    estado="procesado",
+                    intentos=intentos,
+                    codigo_radicado=respuesta.codigo_radicado,
+                )
+        except Exception as exc:
+            # El límite anterior ya revirtió cualquier aporte/constancia/resultado parcial.
+            # La cancelación se propaga: el lease durable permite recuperarla al vencer.
+            estado = (
+                "rechazado" if isinstance(exc, ValidationError) and exc.title == "PropuestaCiudadanaCreate" else "error"
+            )
+            codigo = "payload_no_admisible" if estado == "rechazado" else type(exc).__name__
+            async with transaction(self.session):
+                registro = await repo.obtener_reclamado(mensaje_id, token)
+                if registro is None:
+                    return WhatsAppProcesamientoResultado(
+                        recepcion_id=mensaje_id, estado="reclamo_perdido", intentos=intentos
+                    )
+                registro.estado = estado
+                registro.error_codigo = codigo
+                registro.reclamo_token = registro.reclamo_vence_en = None
+                registro.proximo_intento_en = datetime.now(UTC) + timedelta(minutes=1) if estado == "error" else None
+                await self.session.flush()
+                return WhatsAppProcesamientoResultado(
+                    recepcion_id=mensaje_id, estado=estado, intentos=intentos, error_codigo=codigo
+                )

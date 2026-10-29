@@ -1,0 +1,143 @@
+{
+  "tarea": "FB-CONCILIA-01",
+  "fecha": "2026-10-24",
+  "veredicto": "revision_estatica_independiente_sin_dictamen_eaf",
+  "estado_aceptacion": "pendiente_de_aceptacion_funcional_e_integracion",
+  "objeto_revisado_sha256": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": "79001ee3ceee9699541ec1bb9284a7d419faa8f630dca2ed30bda47f46e75e15",
+    "backend/scripts/contrastar_fuentes_por_periodo.py": "15634cdedec70b20a75a6349a104b63e1031b62008c87708f3bad06d888bdd5e",
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json": "11599382afd61a5170642fa25bef808c60ca08eba08612a27c2796d572feca95",
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md": "04699525b394569d8900354f88dcc7a0ac404ce14a224997a2c23d85877a516f"
+  },
+  "hashes_coinciden_con_informe_74": {
+    "nucleo": true,
+    "cli": true,
+    "contrato": true,
+    "informe_sin_autoreferencia": true
+  },
+  "comandos_ejecutados": [
+    {
+      "comando": "cd backend && .venv/bin/ruff check app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py scripts/contrastar_fuentes_por_periodo.py",
+      "salida": "All checks passed!",
+      "exit_code": 0
+    },
+    {
+      "comando": "cd backend && .venv/bin/ruff format --check app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py scripts/contrastar_fuentes_por_periodo.py",
+      "salida": "2 files already formatted",
+      "exit_code": 0
+    },
+    {
+      "commando_sha256sum": "sha256sum sobre los cuatro archivos del objeto de revisión",
+      "exit_code": 0
+    }
+  ],
+  "comprobaciones_no_ejecutadas": [
+    "pytest",
+    "backend:check",
+    "núcleo puro (ejecución funcional)",
+    "CLI (ejecución funcional)",
+    "pruebas sintéticas",
+    "SQL / acceso a bases",
+    "red",
+    "instalación de dependencias",
+    "commit / push"
+  ],
+  "lecturas_realizadas": [
+    "bridge/85_tarea_freebuff_revision_conciliador.md",
+    "bridge/73_tarea_ollamacodex_conciliacion_retrospectiva.md",
+    "bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md",
+    "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json",
+    "bridge/79_revision_ollamacodex_conciliacion_r1.md",
+    "bridge/80_revision_ollamacodex_conciliacion_r2.md",
+    "bridge/81_revision_ollamacodex_conciliacion_r3.md",
+    "bridge/82_revision_ollamacodex_conciliacion_r4.md",
+    "núcleo y CLI actuales con hash fijado arriba"
+  ],
+  "correcciones_previas_verificadas_por_lectura": [
+    "producto_id informativo y definicion_metodologica como criterio obligatorio (79-R1/81-R1)",
+    "escritura_valida del CLI con iterable correcto (81-R2)",
+    "conteos por estado_comparabilidad separados del permiso de resta (81-R3)",
+    "ExplicacionDelPar con observacion_id y referencias locales documentadas (81-R4)",
+    "captura única del CLI con hash sobre bytes leídos y límite en lectura real (79-R9, 80-R4)",
+    "límites Decimal, rechazo bool/float/no finitos, resta por coeficientes enteros (79-R4, 80-R1)",
+    "fechas ISO estrictas con ValueError, sin coercion numérica; periodo invertido rechazado (80-R5, 79-R3)",
+    "max_length declarativo 256/5000 en la solicitud (80-R5)",
+    "publicación por renombrado con carpeta temporal reconocible (80-R4)",
+    "casos conflicto_hash y version_desconocida del contrato alineados al código, más periodo_parcial_identico y periodo_completo_opcionales_ausentes (82)"
+  ],
+  "hallazgos": [
+    {
+      "id": "H1",
+      "tipo": "defecto_demostrado_por_lectura",
+      "severidad": "media",
+      "titulo": "Opcionales de fecha_referencia bloquean comparabilidad por presencia/ausencia desigual",
+      "ubicacion": [
+        "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py:459 (_incompleto_comparativo)",
+        "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py:495-501 (_diferencias_metodicas)",
+        "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py:516 (_estado_por_diferencias)",
+        "bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json:caso periodo_completo_opcionales_ausentes"
+      ],
+      "camino": "FechaReferencia(tipo=X) vs FechaReferencia(tipo=X, fecha=Y, precision=Z): _incompleto_comparativo no marca incompletitud (solo exige tipo), pero la igualdad completa de modelo en _diferencias_metodicas produce estado=distinto, y _estado_por_diferencias traduce distinto con bloquea_comparabilidad=True en no_comparable.",
+      "consecuencia": "Pares con referencia temporal inequívoca quedan no_comparable por mera asimetría de campos opcionales; resta no calculada; el conteo pares_no_comparables infla abstenciones. Error sobreconservador: no posibilita resta engañosa.",
+      "contrato_afectado": "caso periodo_completo_opcionales_ausentes: 'la comparabilidad depende de los demás criterios'",
+      "propuesta_minima": "Tratar fecha/precision como contexto opcional: presencia/ausencia desigual informativa o coincidente_parcial; distinto (y bloqueo) solo cuando ambos lados declaran el campo y difieren. Sincronizar contrato y informe 74 en la misma ronda."
+    },
+    {
+      "id": "N1",
+      "tipo": "nota_no_bloqueante",
+      "severidad": "baja",
+      "titulo": "Precedencia no_comparable sobre pendiente sin especificar",
+      "ubicacion": ["núcleo:516 (_estado_por_diferencias)"],
+      "detalle": "Coexistencia de campo distinto e incompleto resuelve no_comparable; el contrato no especifica precedencia. Documentar."
+    },
+    {
+      "id": "N2",
+      "tipo": "nota_no_bloqueante",
+      "severidad": "baja",
+      "titulo": "Precedencia de _tipo_par oculta conflicto/desconocimiento",
+      "ubicacion": ["núcleo:546 (_tipo_par)"],
+      "detalle": "Con producto_id distinto (misma fuente), conflicto de versión o version desconocida quedan clasificados como contraste_entre_productos/estado_revision=no_revision y el contador de conflicto no aumenta. Mantener o documentar la precedencia."
+    },
+    {
+      "id": "N3",
+      "tipo": "nota_no_bloqueante",
+      "severidad": "baja",
+      "titulo": "revision_identificada posible con definicion pendiente",
+      "ubicacion": ["núcleo:562 (_estado_revision)"],
+      "detalle": "Con definicion_metodologica incompleta, _diferencia_metodica da pendiente (no distinto) y la etiqueta resta revision_identificada. La resta global queda bloqueada por estado pendiente; ajuste de etiqueta, no de seguridad."
+    },
+    {
+      "id": "N4",
+      "tipo": "nota_no_bloqueante",
+      "severidad": "baja",
+      "titulo": "Formato de DiferenciaValor sin documentar",
+      "ubicacion": ["núcleo:595"],
+      "detalle": "Texto '±CEE±exp' con exponente mínimo común de las entradas; el contrato no describe la convención de serialización."
+    },
+    {
+      "id": "N5",
+      "tipo": "nota_no_bloqueante",
+      "severidad": "baja",
+      "titulo": "MAXIMO_DIGITOS_DIFERENCIA inerte",
+      "ubicacion": ["núcleo:10 y 604-605"],
+      "detalle": "Con 48 dígitos y shift de exponente ≤ 200, el coeficiente máximo es de 248 dígitos: el límite de 256 no es alcanzable. Inocuo; documentar o recalcular."
+    },
+    {
+      "id": "D1",
+      "tipo": "duda_pendiente_verificacion_funcional",
+      "severidad": "ninguna_hasta_probar",
+      "titulo": "Serialización Decimal como texto en model_dump(mode='json')",
+      "detalle": "El CLI depende de que pydantic v2 serialice Decimal a cadena en modo json. Afirmado por documentación del proveedor; no reproducido aquí por límites de la tarea. Verificar en la corrida funcional de aceptación."
+    }
+  ],
+  "pendientes_funcionales_recomendadas_para_aceptacion": [
+    "Corrida del CLI con JSON de muestra verificado (manifiesto, hashes, carpeta publicada)",
+    "Reproducción de casos nominales del contrato 74 en el núcleo",
+    "Verificación D1 de serialización Decimal"
+  ],
+  "sin_hallazgos_bloqueantes": false,
+  "sin_defectos_que_posibiliten_resta_engañosa": true,
+  "no_dictamen_eaf": true,
+  "no_aprobacion_productiva": true,
+  "no_integracion": true
+}

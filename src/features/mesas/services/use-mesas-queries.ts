@@ -101,7 +101,7 @@ export function useActualizarAsistentesPlenaria() {
       try {
         await apiFetch(`/api/v1/mesas/${mesaId}`, {
           method: "PATCH",
-          body: JSON.stringify({ metadatos: { asistentesPlenaaria: cantidad } }),
+          body: { metadatos: { asistentesPlenaaria: cantidad } },
         });
       } catch {}
       return cantidad;

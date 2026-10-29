@@ -1,0 +1,29 @@
+{
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "archivos_nuevos": [
+    "backend/app/modules/compromisos/ppi_planeacion_corte_polis.py",
+    "backend/scripts/congelar_ppi_planeacion_polis.py",
+    "backend/tests/test_ppi_planeacion_corte_polis.py"
+  ],
+  "captura": {
+    "base_origen": "polis_test_orq_v5_20261022",
+    "corrida_idempotente": true,
+    "destino": "/tmp/polis-ppi-captura-20261022",
+    "nodos": 0,
+    "planes": 0,
+    "sha256": "1df28bd9cd9b63c3c71ba4211d836dd04d9f596efdeea8bba348be100add7bce"
+  },
+  "esquema": "polis.ollamacodex.pp.v1",
+  "estado": "PENDIENTE_EVIDENCIA_ADICIONAL",
+  "fecha": "2026-10-22",
+  "guardas": {
+    "bd_csh": "no_usada",
+    "polis_test_orq_v5_20261022": "solo_lectura",
+    "produccion": "no_usada"
+  },
+  "pruebas": {
+    "pytest": "32 passed",
+    "ruff": "exit 0"
+  },
+  "tarea": "OL-CODEX-02"
+}

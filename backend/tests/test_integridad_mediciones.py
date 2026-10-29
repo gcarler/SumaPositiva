@@ -8,7 +8,7 @@ Mandato EAF:
 """
 
 import asyncio
-import pytest
+
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -25,6 +25,7 @@ NOMBRES_FICTICIOS_PROHIBIDOS = {
 
 def test_base_de_datos_no_contiene_mediciones_fabricadas(database_url: str):
     """Verifica que la base de datos no contenga mediciones con funcionarios ficticios o URLs no verificables."""
+
     async def verificar():
         engine = create_async_engine(database_url)
         try:
@@ -48,7 +49,8 @@ def test_base_de_datos_no_contiene_mediciones_fabricadas(database_url: str):
                     # 2. Si es demo, debe cumplir estrictamente las reglas
                     if es_demo:
                         assert registrado_por == "DATOS DE DEMOSTRACIÓN", (
-                            f"Medición demo {_id} debe tener registrado_por='DATOS DE DEMOSTRACIÓN', no '{registrado_por}'"
+                            f"Medición demo {_id} debe tener registrado_por='DATOS DE DEMOSTRACIÓN',"
+                            f" no '{registrado_por}'"
                         )
                         assert evidencia_url is None or evidencia_url == "", (
                             f"Medición demo {_id} no puede tener URL de evidencia: {evidencia_url}"
@@ -67,6 +69,7 @@ def test_base_de_datos_no_contiene_mediciones_fabricadas(database_url: str):
 
 def test_fichas_tecnicas_sin_medicion_real_muestran_cero_avance(database_url: str):
     """Verifica que las fichas técnicas sin mediciones reales verificadas tengan valor_actual=0 y avance=0."""
+
     async def verificar():
         engine = create_async_engine(database_url)
         try:

@@ -253,8 +253,8 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(nombres).toContain("Personal");
     });
 
-    it("17. el monitor cruza 37 Mesas Territoriales, 10 Compromisos PAS y 12.280 hurtos georreferenciados", () => {
-      expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.total_mesas).toBe(37);
+    it("17. el monitor cruza 35 Mesas Territoriales, 10 Compromisos PAS y 12.280 hurtos georreferenciados", () => {
+      expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.total_mesas).toBe(35);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.demandas_priorizadas_seguridad).toBe(142);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.compromisos_pas.total_compromisos).toBe(10);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.compromisos_pas.articulacion_pct).toBe(80.0);
@@ -728,9 +728,9 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       }
     });
 
-    it("41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 37 mesas y compuerta Moran N < 30", () => {
+    it("41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 35 mesas y compuerta Moran N < 30", () => {
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.poblacion_total_distrito).toBe(1_065_570);
-      expect(JUSTICIA_TERRITORIAL_PDL_DANE.mesas_totales_distrito).toBe(37);
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.mesas_totales_distrito).toBe(35);
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.fdl_total_distrito_mcop).toBe(304981.04);
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.inversion_per_capita_media_cop).toBe(286214.0);
 
@@ -747,7 +747,7 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(sumaPoblacion).toBe(1_065_570);
 
       const sumaMesas = l1.mesas_ciudadanas_count + l2.mesas_ciudadanas_count + l3.mesas_ciudadanas_count;
-      expect(sumaMesas).toBe(37);
+      expect(sumaMesas).toBe(35);
 
       // Balance hurtos: 12.280 totales
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.balance_hurtos).toHaveLength(2);
@@ -831,32 +831,31 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(m.porcentaje_catalogo_cubierto).toBe(100.0);
       expect(m.cobertura_sobre_metas_unicas_pct).toBe(100.0);
       expect(m.entidades_cubiertas).toBe(29);
-      expect(m.mesas_oficiales_censo).toBe(37);
-      expect(m.agendas_oficiales_censo).toBe(38);
-      expect(m.corregimientos_oficiales).toBe(15);
+      expect(m.mesas_oficiales_censo).toBe(35);
+      expect(m.agendas_oficiales_censo).toBe(36);
+      expect(m.corregimientos_oficiales).toBe(11);
     });
 
     it("46. cliente API de Google Workspace implementa estado y sincronización con fallback seguro offline", async () => {
-      expect(ESTADO_WORKSPACE_INICIAL.conectado).toBe(true);
+      expect(ESTADO_WORKSPACE_INICIAL.conectado).toBe(false);
       expect(ESTADO_WORKSPACE_INICIAL.service_account_email).toBe("polis-pshc@polis-511719.iam.gserviceaccount.com");
       expect(ESTADO_WORKSPACE_INICIAL.carpeta_pshc_id).toBe("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
       expect(ESTADO_WORKSPACE_INICIAL.subcarpeta_expediente_id).toBe("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
-      expect(ESTADO_WORKSPACE_INICIAL.archivos_nativos_detectados.length).toBeGreaterThan(0);
+      expect(ESTADO_WORKSPACE_INICIAL.archivos_nativos_detectados).toHaveLength(0);
 
       const fetchSpy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Network down"));
       try {
         const estado = await obtenerEstadoGoogleWorkspace();
-        expect(estado.conectado).toBe(true);
+        expect(estado.conectado).toBe(false);
         expect(estado.carpeta_pshc_id).toBe("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
         expect(estado.subcarpeta_expediente_id).toBe("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
-        expect(estado.archivos_nativos_detectados.some((a) => a.tipo === "SPREADSHEET")).toBe(true);
-        expect(estado.archivos_nativos_detectados.some((a) => a.tipo === "DOCUMENT")).toBe(true);
+        expect(estado.archivos_nativos_detectados).toHaveLength(0);
 
         const sync = await sincronizarGoogleWorkspace();
-        expect(sync.exito).toBe(true);
-        expect(sync.archivos_sincronizados.length).toBeGreaterThanOrEqual(2);
-        expect(sync.hojas_calculo_count).toBeGreaterThanOrEqual(1);
-        expect(sync.documentos_count).toBeGreaterThanOrEqual(1);
+        // Conforme a 257-H04, ante caída de red nunca se debe enmascarar como éxito
+        expect(sync.exito).toBe(false);
+        expect(sync.esContingencia).toBe(true);
+        expect(sync.archivos_sincronizados.length).toBe(0);
       } finally {
         fetchSpy.mockRestore();
       }
@@ -877,8 +876,8 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(html).toContain("78");
       expect(html).toContain("1.383");
       expect(html).toContain("29");
-      expect(html).toContain("37");
-      expect(html).toContain("15 corregimientos");
+      expect(html).toContain("35");
+      expect(html).toContain("11 corregimientos");
       expect(html).toContain("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
       expect(html).toContain("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
       expect(html).toContain("polis-pshc@polis-511719.iam.gserviceaccount.com");

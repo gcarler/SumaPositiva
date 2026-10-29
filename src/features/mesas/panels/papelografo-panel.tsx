@@ -471,8 +471,18 @@ export function PapelografoPanel({
                   <Button variant="unstyled" size="unstyled"
                     key={t.id}
                     type="button"
+                    id={`tab-arbol-${t.id}`}
                     role="tab"
                     aria-selected={tab === t.id}
+                    aria-controls="panel-arboles-papel"
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                        e.preventDefault();
+                        const destino = e.key === "ArrowRight" ? "soluciones" : "problemas";
+                        cambiarTab(destino);
+                        document.getElementById(`tab-arbol-${destino}`)?.focus();
+                      }
+                    }}
                     onClick={() => cambiarTab(t.id)}
                     className={`rounded-full px-3.5 py-1.5 text-[11px] font-medium transition-colors sm:text-xs ${
                       tab === t.id
@@ -549,7 +559,12 @@ export function PapelografoPanel({
         ) : (
           <>
             {/* ---------- El papel ---------- */}
-            <div className="bg-papel rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] px-4 py-8 sm:px-6 lg:px-8">
+            <div
+              id="panel-arboles-papel"
+              role="tabpanel"
+              aria-labelledby={`tab-arbol-${tab}`}
+              className="bg-papel rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] px-4 py-8 sm:px-6 lg:px-8"
+            >
               <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-0">
                 {/* Centro (primero en móvil, centro en desktop) */}
                 <div className="order-1 flex justify-center lg:order-2">

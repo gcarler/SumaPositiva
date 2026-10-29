@@ -30,12 +30,14 @@ class EvidenciaRepository:
         return foto
 
     async def foto_mesa_por_id(self, foto_id: uuid.UUID) -> FotoMesa | None:
-        result = await self.session.execute(
-            select(FotoMesa).where(FotoMesa.id == foto_id).with_for_update()
-        )
+        result = await self.session.execute(select(FotoMesa).where(FotoMesa.id == foto_id).with_for_update())
         return result.scalar_one_or_none()
 
-    async def listar_mesas_geovisor(self) -> list[tuple[Mesa, str | None, str | None, float | None, float | None, FotoMesa | None, EvidenciaMultimedia | None]]:
+    async def listar_mesas_geovisor(
+        self,
+    ) -> list[
+        tuple[Mesa, str | None, str | None, float | None, float | None, FotoMesa | None, EvidenciaMultimedia | None]
+    ]:
         stmt = (
             select(
                 Mesa,
@@ -58,9 +60,7 @@ class EvidenciaRepository:
         return list(result.all())
 
     async def estado_foto_evidencia(self, evidencia_id: uuid.UUID) -> str | None:
-        result = await self.session.execute(
-            select(FotoMesa.estado).where(FotoMesa.evidencia_id == evidencia_id)
-        )
+        result = await self.session.execute(select(FotoMesa.estado).where(FotoMesa.evidencia_id == evidencia_id))
         return result.scalar_one_or_none()
 
     async def foto_revision_con_archivo(self, foto_id: uuid.UUID) -> tuple[FotoMesa, EvidenciaMultimedia] | None:

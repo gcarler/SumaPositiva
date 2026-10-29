@@ -50,9 +50,9 @@ from app.modules.compromisos.pdd_dea_service import (
 )
 from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
 from app.modules.compromisos.pdt_persistencia_pg import (
+    dictaminar_hallazgo_pdt_pg,
     listar_dictamenes_hallazgos_pdt_pg,
     obtener_historial_auditoria_pdt_pg,
-    registrar_dictamen_hallazgo_pdt_pg,
 )
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
@@ -112,12 +112,7 @@ _read_disk_cache()
 
 async def _precargar_caches_pesados(session=None) -> None:
     try:
-        cache_pdt = (
-            Path(__file__).resolve().parents[4]
-            / "data"
-            / "planes_desarrollo"
-            / "cache_pdt_ai_evaluator.json"
-        )
+        cache_pdt = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo" / "cache_pdt_ai_evaluator.json"
         if cache_pdt.is_file():
             from .pdt_ai_evaluator_graph import (
                 ejecutar_pdt_ai_evaluator as _warm_pdt_ai_evaluator,
@@ -227,9 +222,7 @@ async def google_workspace_sincronizar(session: SessionDependency, sujeto: Sujet
     dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
     summary="Publicar exclusivamente la comparación PDD y el anexo PDL separado",
 )
-async def google_workspace_sincronizar_pdd_only(
-    session: SessionDependency, sujeto: SujetoAutenticadoDep
-):
+async def google_workspace_sincronizar_pdd_only(session: SessionDependency, sujeto: SujetoAutenticadoDep):
     return await GoogleWorkspaceSyncService(session).sincronizar_pdd_only()
 
 
@@ -243,9 +236,7 @@ async def pdd_seguridad_humana_comparativo(
 ):
     if incluir_detalle:
         async with request.app.state.database.sessions() as session:
-            payload = await PddDeaService(session).comparativo_seguridad_humana_pdd_only(
-                incluir_detalle=True
-            )
+            payload = await PddDeaService(session).comparativo_seguridad_humana_pdd_only(incluir_detalle=True)
     else:
         payload = await _pdd_payload(
             request,
@@ -354,17 +345,11 @@ async def ingerir_archivos_triada(
     if len(files) > 200:
         from fastapi import HTTPException
 
-        raise HTTPException(
-            status_code=413, detail="El lote excede el máximo de 200 archivos adjuntos."
-        )
+        raise HTTPException(status_code=413, detail="El lote excede el máximo de 200 archivos adjuntos.")
     items = []
     total = 0
     for file in files:
-        per_file_limit = (
-            150 * 1024 * 1024
-            if (file.filename or "").lower().endswith(".zip")
-            else 25 * 1024 * 1024
-        )
+        per_file_limit = 150 * 1024 * 1024 if (file.filename or "").lower().endswith(".zip") else 25 * 1024 * 1024
         data = await file.read(per_file_limit + 1)
         if len(data) > per_file_limit:
             from fastapi import HTTPException
@@ -380,11 +365,7 @@ async def ingerir_archivos_triada(
             raise HTTPException(status_code=413, detail="El lote excede el máximo de 150 MiB.")
         items.append((file.filename or "sin_nombre", data))
         await file.close()
-    origen = (
-        "UPLOAD_ZIP_MASIVO"
-        if any(name.lower().endswith(".zip") for name, _ in items)
-        else "UPLOAD_ARCHIVO"
-    )
+    origen = "UPLOAD_ZIP_MASIVO" if any(name.lower().endswith(".zip") for name, _ in items) else "UPLOAD_ARCHIVO"
     return await IngestaMasivaService(session).ingerir(
         items,
         origen=origen,
@@ -412,9 +393,7 @@ async def ingerir_directorio_triada(
 
     candidate = (RAIZ_INGESTA / subdirectorio).resolve()
     if not candidate.is_relative_to(RAIZ_INGESTA) or ".." in Path(subdirectorio).parts:
-        raise HTTPException(
-            status_code=400, detail="La ruta debe permanecer dentro de data/planes_accion."
-        )
+        raise HTTPException(status_code=400, detail="La ruta debe permanecer dentro de data/planes_accion.")
     if not candidate.is_dir():
         raise HTTPException(status_code=404, detail="El directorio autorizado no existe.")
     paths = []
@@ -435,9 +414,7 @@ async def ingerir_directorio_triada(
             paths.append(path)
     paths.sort()
     if len(paths) > 200:
-        raise HTTPException(
-            status_code=413, detail="El directorio supera el máximo de 200 archivos."
-        )
+        raise HTTPException(status_code=413, detail="El directorio supera el máximo de 200 archivos.")
     total = sum(p.stat().st_size for p in paths)
     if total > 150 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="El directorio supera el máximo de 150 MiB.")
@@ -456,9 +433,7 @@ async def listar_lotes_triada(
     dimension: str | None = Query(None, max_length=120),
     periodo: str | None = Query(None, max_length=40),
 ):
-    return await IngestaMasivaService(session).listar_lotes(
-        limite, vigencia, entidad, dimension, periodo
-    )
+    return await IngestaMasivaService(session).listar_lotes(limite, vigencia, entidad, dimension, periodo)
 
 
 @router.get(
@@ -470,9 +445,7 @@ async def comparativa_interanual_triada(
     entidad: str | None = Query(None, max_length=180),
     linea_estrategica: str | None = Query(None, max_length=250),
     codigo_bpim: str | None = Query(None, max_length=100),
-    motor: str | None = Query(
-        None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"
-    ),
+    motor: str | None = Query(None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"),
     vigencia_desde: int = Query(2016, ge=2016, le=2027),
     vigencia_hasta: int = Query(2026, ge=2016, le=2027),
     dimension: str | None = Query(None, max_length=120),
@@ -482,9 +455,7 @@ async def comparativa_interanual_triada(
     if vigencia_desde > vigencia_hasta:
         from fastapi import HTTPException
 
-        raise HTTPException(
-            status_code=422, detail="vigencia_desde debe ser menor o igual a vigencia_hasta."
-        )
+        raise HTTPException(status_code=422, detail="vigencia_desde debe ser menor o igual a vigencia_hasta.")
     return await IngestaMasivaService(session).comparativa(
         entidad=entidad,
         linea=linea_estrategica,
@@ -519,17 +490,13 @@ async def obtener_resumen_triada_motores(
         raise HTTPException(status_code=422, detail="Dimensión de seguridad humana no reconocida.")
     if periodo and periodo not in PERIODOS:
         raise HTTPException(status_code=422, detail="Periodo de gobierno no reconocido.")
-    resumen = await service.obtener_resumen_triada(
-        cuatrienio, vigencia, entidad, fuente, dimension, periodo
-    )
+    resumen = await service.obtener_resumen_triada(cuatrienio, vigencia, entidad, fuente, dimension, periodo)
     session = getattr(service.repo, "session", None)
     if session is not None:
-        resumen["resumen_dimensiones_seguridad"] = await IngestaMasivaService(
-            session
-        ).resumen_dimensiones(dimension, periodo)
-        resumen["ingesta_masiva"]["calidad_datos"] = await IngestaMasivaService(
-            session
-        ).calidad_datos()
+        resumen["resumen_dimensiones_seguridad"] = await IngestaMasivaService(session).resumen_dimensiones(
+            dimension, periodo
+        )
+        resumen["ingesta_masiva"]["calidad_datos"] = await IngestaMasivaService(session).calidad_datos()
     resumen["filtros"]["dimension"] = dimension
     resumen["filtros"]["periodo"] = periodo
     return resumen
@@ -606,9 +573,7 @@ async def obtener_banco_conocimiento_dnp(service: CompromisosServiceDep):
     response_model=ValidarRedaccionRespuesta,
     summary="Validador Lingüístico Oficial DNP de Actividades",
 )
-async def validar_redaccion_actividad_dnp(
-    datos: ValidarRedaccionSolicitud, service: CompromisosServiceDep
-):
+async def validar_redaccion_actividad_dnp(datos: ValidarRedaccionSolicitud, service: CompromisosServiceDep):
     """Verifica que la redacción cumpla la regla DNP del verbo fuerte en infinitivo.
 
     También detecta los 16 verbos débiles prohibidos (Instructivo DNP, pág. 12).
@@ -621,9 +586,7 @@ async def validar_redaccion_actividad_dnp(
     response_model=ProcesarLotePlanAccionRespuesta,
     summary="Procesador y Auditor Metodológico de Lotes DNP (Hoja 2 PI -> Hoja 1 PA)",
 )
-async def procesar_lote_plan_accion_dnp(
-    datos: ProcesarLotePlanAccionSolicitud, service: CompromisosServiceDep
-):
+async def procesar_lote_plan_accion_dnp(datos: ProcesarLotePlanAccionSolicitud, service: CompromisosServiceDep):
     """Procesamiento por lotes y auditoría metodológica oficial DNP:
     Cruce automático Hoja 2 (Plan_Indicativo) -> Hoja 1 (Plan_Accion),
     validación de verbos fuertes en infinitivo (con redacción corregida en 1 clic),
@@ -650,6 +613,7 @@ async def obtener_matriz_plan_accion_dnp(
     categoria_recursos: str | None = Query(None, description="Filtrar por categoría de recursos"),
     fuente_financiacion: str | None = Query(None, description="Filtrar por fuente de financiación"),
     busqueda: str | None = Query(None, description="Búsqueda libre por texto"),
+    compromiso_pas_codigo: str | None = Query(None, description="Filtrar por código de compromiso PAS"),
 ):
     """Consulta pública de la Matriz Oficial DNP: Resumen Ejecutivo con semáforo de alertas,
     Hoja 1 contiene actividades anuales; Hoja 2 articula compromisos del Plan Indicativo.
@@ -663,6 +627,7 @@ async def obtener_matriz_plan_accion_dnp(
         categoria_recursos=categoria_recursos,
         fuente_financiacion=fuente_financiacion,
         busqueda=busqueda,
+        compromiso_pas_codigo=compromiso_pas_codigo,
     )
 
 
@@ -699,9 +664,7 @@ async def actualizar_seguimiento_actividad_pa(
 ):
     """Actualiza avances trimestrales, ejecución presupuestal y evidencias."""
     await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
-    return await service.actualizar_seguimiento_actividad(
-        id_o_codigo, datos, actor_id=sujeto.sujeto_id
-    )
+    return await service.actualizar_seguimiento_actividad(id_o_codigo, datos, actor_id=sujeto.sujeto_id)
 
 
 # =============================================================================
@@ -805,18 +768,14 @@ async def inteligencia_patologias_dnp(
     )
 
 
-@router.get(
-    "/triada/inteligencia/continuidad-gobiernos", summary="Continuidad y ruptura entre gobiernos"
-)
+@router.get("/triada/inteligencia/continuidad-gobiernos", summary="Continuidad y ruptura entre gobiernos")
 async def inteligencia_continuidad_gobiernos(
     session: SessionDependency,
     dimension: str | None = Query(None, max_length=120),
     entidad: str | None = Query(None, max_length=180),
 ):
     _validar_filtros_inteligencia(dimension)
-    return await InteligenciaTriadaService(session).continuidad_gobiernos(
-        dimension=dimension, entidad=entidad
-    )
+    return await InteligenciaTriadaService(session).continuidad_gobiernos(dimension=dimension, entidad=entidad)
 
 
 @router.get("/triada/inteligencia/radar-transparencia", summary="Radar de cortes y completitud")
@@ -825,14 +784,10 @@ async def inteligencia_radar_transparencia(
     entidad: str | None = Query(None, max_length=180),
     vigencia: int | None = Query(None, ge=2016, le=2027),
 ):
-    return await InteligenciaTriadaService(session).radar_transparencia(
-        entidad=entidad, vigencia=vigencia
-    )
+    return await InteligenciaTriadaService(session).radar_transparencia(entidad=entidad, vigencia=vigencia)
 
 
-@router.get(
-    "/triada/inteligencia/alineacion-territorial", summary="Inversión, delitos y demanda ciudadana"
-)
+@router.get("/triada/inteligencia/alineacion-territorial", summary="Inversión, delitos y demanda ciudadana")
 async def inteligencia_alineacion_territorial(session: SessionDependency):
     return await InteligenciaTriadaService(session).alineacion_territorial()
 
@@ -844,9 +799,7 @@ async def inteligencia_buscador(
     vigencia: int | None = Query(None, ge=2016, le=2027),
     periodo: str | None = Query(None, max_length=20),
     dimension: str | None = Query(None, max_length=120),
-    motor: str | None = Query(
-        None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"
-    ),
+    motor: str | None = Query(None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"),
     limite: int = Query(50, ge=1, le=200),
 ):
     _validar_filtros_inteligencia(dimension, periodo)
@@ -855,23 +808,17 @@ async def inteligencia_buscador(
     )
 
 
-@router.get(
-    "/triada/inteligencia/simulador-cierre", summary="Proyección de cierre de gobierno 2027"
-)
+@router.get("/triada/inteligencia/simulador-cierre", summary="Proyección de cierre de gobierno 2027")
 async def inteligencia_simulador_cierre(
     session: SessionDependency,
     entidad: str | None = Query(None, max_length=180),
     dimension: str | None = Query(None, max_length=120),
 ):
     _validar_filtros_inteligencia(dimension)
-    return await InteligenciaTriadaService(session).simulador_cierre(
-        entidad=entidad, dimension=dimension
-    )
+    return await InteligenciaTriadaService(session).simulador_cierre(entidad=entidad, dimension=dimension)
 
 
-@router.get(
-    "/triada/inteligencia/resumen-ejecutivo", summary="Resumen consolidado de los seis motores"
-)
+@router.get("/triada/inteligencia/resumen-ejecutivo", summary="Resumen consolidado de los seis motores")
 async def inteligencia_resumen_ejecutivo(session: SessionDependency):
     return await InteligenciaTriadaService(session).resumen_ejecutivo()
 
@@ -888,9 +835,7 @@ async def dea_frontera_eficiencia(
     modo: str = Query("nucleo_1x2", pattern="^(nucleo_1x2|extendido_2x3|extendida_2x3)$"),
     insumo: str = Query("apropiacion", pattern="^(apropiacion|pagos)$"),
 ):
-    return await DeaEconometriaService(session).frontera_eficiencia(
-        vigencia=vigencia, modo=modo, insumo=insumo
-    )
+    return await DeaEconometriaService(session).frontera_eficiencia(vigencia=vigencia, modo=modo, insumo=insumo)
 
 
 @router.get("/triada/dea/malmquist", summary="Productividad Malmquist de años cerrados")
@@ -933,38 +878,40 @@ async def pdd_dea_catalogo(request: Request):
 async def pdd_dea_cumplimiento(
     request: Request,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
+    linea: str | None = Query(None, description="Filtrar por línea o eje estratégico"),
+    entidad: str | None = Query(None, description="Filtrar por entidad ejecutora"),
+    imputacion: str | None = Query(None, description="Filtrar por tipo de imputación"),
 ):
     payload = await _pdd_payload(
         request,
-        ("pdd-dea", "cumplimiento", plan or "TODOS"),
+        ("pdd-dea", "cumplimiento", plan or "TODOS", linea or "", entidad or "", imputacion or ""),
         "cumplimiento_metas",
         plan=plan,
+        linea=linea,
+        entidad=entidad,
+        imputacion=imputacion,
     )
-    key = f"pdd-dea/cumplimiento/{plan or 'TODOS'}"
-    return pre_serialized_response(
-        _pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match")
-    )
+    key = f"pdd-dea/cumplimiento/{plan or 'TODOS'}/{linea or ''}/{entidad or ''}/{imputacion or ''}"
+    return pre_serialized_response(_pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match"))
 
 
-@router.get(
-    "/triada/pdd-dea/frontera-dea-pdd", summary="Frontera DEA exploratoria por plan de desarrollo"
-)
+@router.get("/triada/pdd-dea/frontera-dea-pdd", summary="Frontera DEA exploratoria por plan de desarrollo")
 async def pdd_dea_frontera(
     request: Request,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
     insumo: str = Query("conciliado_ppi", pattern="^(conciliado_ppi|reportado)$"),
+    nivel: str | None = Query(None, description="Filtrar por nivel DEA"),
 ):
     payload = await _pdd_payload(
         request,
-        ("pdd-dea", "frontera", plan or "TODOS", insumo),
+        ("pdd-dea", "frontera", plan or "TODOS", insumo, nivel or ""),
         "frontera_dea_pdd",
         plan=plan,
         insumo=insumo,
+        nivel=nivel,
     )
-    key = f"pdd-dea/frontera/{plan or 'TODOS'}/{insumo}"
-    return pre_serialized_response(
-        _pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match")
-    )
+    key = f"pdd-dea/frontera/{plan or 'TODOS'}/{insumo}/{nivel or ''}"
+    return pre_serialized_response(_pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match"))
 
 
 @router.get(
@@ -997,9 +944,7 @@ async def pdd_dea_explorador(request: Request):
     )
 
 
-@router.get(
-    "/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA"
-)
+@router.get("/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA")
 async def pdd_dea_resumen(request: Request):
     payload = await _pdd_payload(request, ("pdd-dea", "resumen"), "resumen_ejecutivo")
     return pre_serialized_response(
@@ -1093,8 +1038,10 @@ async def pdt_ai_evaluator_dictamen_ejecutivo(
 @router.post(
     "/triada/pdd-dea/pdt-ai-evaluator/ejecutar",
     summary="Ejecutar grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus territorial",
+    dependencies=[Depends(requerir_permiso("ia:analizar", nivel_minimo="declarada"))],
 )
 async def pdt_ai_evaluator_ejecutar(
+    sujeto: SujetoAutenticadoDep,
     db: SessionDependency,
     payload: Annotated[PdtAiEvaluatorEjecutarRequest | None, Body()] = None,
 ):
@@ -1112,18 +1059,23 @@ async def pdt_ai_evaluator_ejecutar(
 @router.post(
     "/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar",
     summary="Intervención Human-in-the-Loop sobre el Checkpointer del grafo PDT-AI-EVALUATOR",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
 )
 async def pdt_ai_evaluator_validar_checkpoint(
     payload: PdtAiEvaluatorValidarCheckpointRequest,
+    sujeto: SujetoAutenticadoDep,
+    db: SessionDependency,
 ):
     import inspect
 
     _, _, fn_validar = _cargar_pdt_ai_evaluator_fns()
+    auditor_verificado = f"{sujeto.rol}:{sujeto.sujeto_id}"
     resultado = fn_validar(
         payload.thread_id,
         aprobado=payload.aprobado,
-        auditor=payload.auditor,
+        auditor=auditor_verificado,
         observaciones=payload.observaciones,
+        db=db,
     )
     if inspect.isawaitable(resultado):
         return await resultado
@@ -1147,15 +1099,18 @@ async def pdt_ai_evaluator_historial_auditoria(
     "/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo",
     response_model=PdtDictaminarHallazgoRespuesta,
     summary="Registrar dictamen y acción PDCA para un hallazgo de meta",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
 )
 async def pdt_ai_evaluator_dictaminar_hallazgo(
     payload: PdtDictaminarHallazgoRequest,
+    sujeto: SujetoAutenticadoDep,
     db: SessionDependency,
 ):
     try:
-        result = await registrar_dictamen_hallazgo_pdt_pg(**payload.model_dump(), db=db)
-        await db.commit()
-        return result
+        data = payload.model_dump()
+        auditor_verificado = f"{sujeto.rol}:{sujeto.sujeto_id}"
+        data["auditor"] = auditor_verificado
+        return await dictaminar_hallazgo_pdt_pg(**data, db=db)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
@@ -1202,9 +1157,7 @@ async def pdt_dea_cartagena_4_niveles(
     orientacion: str = Query(default="input"),
     sector: str | None = Query(default=None),
 ):
-    return await obtener_dea_cartagena_4_niveles(
-        nivel=nivel, orientacion=orientacion, sector=sector, db=db
-    )
+    return await obtener_dea_cartagena_4_niveles(nivel=nivel, orientacion=orientacion, sector=sector, db=db)
 
 
 @router.get(
@@ -1267,16 +1220,10 @@ async def pdt_ai_evaluator_sispt_dnp_seguimiento(
                 "total_metas_evaluadas": payload.get("total_metas_evaluadas", 0),
                 "conteo_por_tipologia": payload.get("distribucion_tipologias_sispt", {}),
                 "eficacia_media_bruta_pct": payload.get("eficacia_media_bruta_pct"),
-                "eficacia_media_truncada_sispt_pct": payload.get(
-                    "eficacia_media_truncada_sispt_pct"
-                ),
+                "eficacia_media_truncada_sispt_pct": payload.get("eficacia_media_truncada_sispt_pct"),
                 "distribucion_rango_mdm": payload.get("distribucion_semaforo_mdm", {}),
-                "distribucion_clase_meta_pa_dnp": payload.get(
-                    "distribucion_clases_meta_pa_dnp", {}
-                ),
-                "conteo_actividades_por_tipo_dnp": payload.get(
-                    "distribucion_actividades_por_tipo_dnp", {}
-                ),
+                "distribucion_clase_meta_pa_dnp": payload.get("distribucion_clases_meta_pa_dnp", {}),
+                "conteo_actividades_por_tipo_dnp": payload.get("distribucion_actividades_por_tipo_dnp", {}),
                 "alertas_cuipo_piip": payload.get("resumen_interoperabilidad_cuipo_piip", {}),
             },
         )
@@ -1318,20 +1265,43 @@ async def pdt_ai_evaluator_sispt_dnp_seguimiento(
 )
 async def pdt_ai_evaluator_diagnostico_seguridad_humana_8planes(
     codigo_plan: str = Query(default="TODOS"),
-    publicar_drive: bool = Query(default=False),
+):
+    from app.modules.compromisos.pdt_generador_google_doc_pshc import (
+        generar_paquete_diagnostico_pshc_google_doc,
+    )
+
+    return generar_paquete_diagnostico_pshc_google_doc(codigo_plan=codigo_plan)
+
+
+@router.post(
+    "/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes/publicar-drive",
+    response_model=PdtDiagnosticoSeguridadHumana8PlanesResponse,
+    summary="Publicar paquete de diagnóstico de seguridad humana en Google Drive oficial",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+)
+async def pdt_ai_evaluator_diagnostico_seguridad_humana_8planes_publicar_drive(
+    sujeto: SujetoAutenticadoDep,
+    codigo_plan: str = Query(default="TODOS"),
     folder_id: str = Query(default="1g3wXPujYCZfJVB77_iZOrdfBZNfTkVVS"),
 ):
     from app.modules.compromisos.pdt_generador_google_doc_pshc import (
+        FOLDER_DEFAULT,
         generar_paquete_diagnostico_pshc_google_doc,
         publicar_diagnostico_pshc_en_drive,
     )
 
+    carpetas_permitidas = {FOLDER_DEFAULT}
+    if folder_id not in carpetas_permitidas:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Carpeta Google Drive '{folder_id}' no autorizada para publicación oficial.",
+        )
+
     paquete = generar_paquete_diagnostico_pshc_google_doc(codigo_plan=codigo_plan)
-    if publicar_drive:
-        result = publicar_diagnostico_pshc_en_drive(folder_id=folder_id, paquete=paquete)
-        if hasattr(result, "__await__"):
-            result = await result
-        paquete["publicacion_google_drive"] = result
+    result = publicar_diagnostico_pshc_en_drive(folder_id=folder_id, paquete=paquete)
+    if hasattr(result, "__await__"):
+        result = await result
+    paquete["publicacion_google_drive"] = result
     return paquete
 
 
@@ -1414,8 +1384,7 @@ def _normalizar_revision_por_meta(resultado: dict, module, filtros: dict) -> dic
     reviewers = resultado.get("catalogo_7_revisores")
     if reviewers is None:
         reviewers = [
-            {"rol": name, **details}
-            for name, details in specification.get("siete_roles_revisores", {}).items()
+            {"rol": name, **details} for name, details in specification.get("siete_roles_revisores", {}).items()
         ]
     metas = resultado.get("matriz_metas", resultado.get("metas_auditadas", []))
     summary = resultado.get("resumen_ejecutivo_revision")
@@ -1444,8 +1413,7 @@ def _normalizar_revision_por_meta(resultado: dict, module, filtros: dict) -> dic
         "generado_en": str(resultado.get("generado_en") or ""),
         "filtros_aplicados": resultado.get("filtros_aplicados") or filtros,
         "total_metas_evaluadas": int(
-            resultado.get("total_metas_evaluadas", resultado.get("metas_devueltas", len(metas)))
-            or 0
+            resultado.get("total_metas_evaluadas", resultado.get("metas_devueltas", len(metas))) or 0
         ),
         "catalogo_10_dimensiones": dimensions,
         "catalogo_7_revisores": reviewers,

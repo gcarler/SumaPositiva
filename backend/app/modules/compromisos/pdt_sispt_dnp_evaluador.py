@@ -30,10 +30,9 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import Settings
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
 PLANES_8_CARTAGENA: tuple[str, ...] = (
     "PDD_2012_2015",
@@ -102,9 +101,7 @@ PASOS_6_FORMULACION_PDT_SISPT: list[dict[str, str]] = [
     {
         "paso": "PASO_4",
         "nombre": "Formulación del Plan Plurianual de Inversiones (PPI / MFMP)",
-        "regla_sispt": (
-            "Costeo cuatrienal Año 1..4 por fuente (SGP, SGR, ICLD, Crédito, Cofinanciación)."
-        ),
+        "regla_sispt": ("Costeo cuatrienal Año 1..4 por fuente (SGP, SGR, ICLD, Crédito, Cofinanciación)."),
     },
     {
         "paso": "PASO_5",
@@ -220,11 +217,8 @@ _CACHE_UNIVERSO_SISPT: dict[str, dict[str, Any]] = {}
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def _normalizar_ascii(valor: Any) -> str:
@@ -284,10 +278,7 @@ def determinar_tipologia_indicador_sispt(
 
     # 1. REDUCCION_BRECHA (Sentido descendente / decreciente)
     if (
-        any(
-            kw in sent_norm
-            for kw in ("descendente", "reduccion", "decreciente", "negativo", "disminucion")
-        )
+        any(kw in sent_norm for kw in ("descendente", "reduccion", "decreciente", "negativo", "disminucion"))
         or any(kw in agreg_norm for kw in ("decreciente", "reduccion"))
         or any(
             kw in txt_norm
@@ -316,23 +307,15 @@ def determinar_tipologia_indicador_sispt(
     if (
         any(kw in sent_norm for kw in ("mantenimiento", "estabilidad", "estable", "constante"))
         or any(kw in agreg_norm for kw in ("mantenimiento", "constante", "stock", "sostenimiento"))
-        or txt_norm.startswith(
-            ("mantener ", "sostener ", "conservar ", "garantizar el mantenimiento")
-        )
+        or txt_norm.startswith(("mantener ", "sostener ", "conservar ", "garantizar el mantenimiento"))
         or any(kw in txt_norm for kw in ("mantener en ", "sostener en ", "conservar en "))
     ):
         return "MANTENIMIENTO_STOCK"
 
     # 3. INCREMENTO_NO_ACUMULATIVO_CAPACIDAD (Coberturas %, tasas, índices o puntajes)
     if (
-        any(
-            kw in agreg_norm
-            for kw in ("no acumulativ", "capacidad", "estado", "ultimo valor", "nivel")
-        )
-        or any(
-            kw in unid_norm
-            for kw in ("%", "porcentaje", "tasa", "indice", "puntaje", "promedio", "cobertura")
-        )
+        any(kw in agreg_norm for kw in ("no acumulativ", "capacidad", "estado", "ultimo valor", "nivel"))
+        or any(kw in unid_norm for kw in ("%", "porcentaje", "tasa", "indice", "puntaje", "promedio", "cobertura"))
         or any(
             kw in combinado
             for kw in (
@@ -374,11 +357,7 @@ def calcular_eficacia_indicador_sispt(
     avance_fisico_observado_pct: float | None = None,
 ) -> dict[str, Any]:
     """Calcula la eficacia bruta y truncada al 100% (`SISPT-R2`) según las 4 fórmulas de `SisPT`."""
-    tipologia = (
-        tipologia_sispt
-        if tipologia_sispt in TIPOLOGIAS_INDICADOR_SISPT
-        else "INCREMENTO_ACUMULATIVO_FLUJO"
-    )
+    tipologia = tipologia_sispt if tipologia_sispt in TIPOLOGIAS_INDICADOR_SISPT else "INCREMENTO_ACUMULATIVO_FLUJO"
     lb = _to_float_preserve_zero(linea_base)
     mp = _to_float_preserve_zero(meta_programada)
     le = _to_float_preserve_zero(logro_ejecutado)
@@ -480,9 +459,7 @@ def _clasificar_texto_actividad_dnp(texto_actividad: str) -> str:
     primera_palabra = norm.split(" ", 1)[0]
     if primera_palabra in VERBOS_NORMATIVOS_DNP or any(k in norm for k in VERBOS_NORMATIVOS_DNP):
         return "ACTIVIDAD_NORMATIVA"
-    if primera_palabra in VERBOS_ADMINISTRATIVOS_DNP or any(
-        k in norm for k in VERBOS_ADMINISTRATIVOS_DNP
-    ):
+    if primera_palabra in VERBOS_ADMINISTRATIVOS_DNP or any(k in norm for k in VERBOS_ADMINISTRATIVOS_DNP):
         return "ACTIVIDAD_ADMINISTRATIVA"
     if primera_palabra in VERBOS_LOGISTICOS_DNP or any(k in norm for k in VERBOS_LOGISTICOS_DNP):
         return "ACTIVIDAD_LOGISTICA"
@@ -589,8 +566,7 @@ def clasificar_meta_y_actividad_plan_accion_dnp(
         bolsa_financiacion = "INVERSION"
 
     cumple_7_pasos = bool(
-        bool(norm_meta)
-        and (len(lista_acts) > 0 or tiene_inversion or clase_meta != "META_DE_PRODUCTO")
+        bool(norm_meta) and (len(lista_acts) > 0 or tiene_inversion or clase_meta != "META_DE_PRODUCTO")
     )
 
     return {
@@ -602,8 +578,7 @@ def clasificar_meta_y_actividad_plan_accion_dnp(
         "total_actividades_evaluadas": len(actividades_clasificadas),
         "cumple_7_pasos_pa_ley_1474": cumple_7_pasos,
         "marco_legal_plan_accion": (
-            "Art. 41 Ley 152/1994 · Art. 74 Ley 1474/2011 (publicación <= 31 de enero) · "
-            "Decreto 2482/2012"
+            "Art. 41 Ley 152/1994 · Art. 74 Ley 1474/2011 (publicación <= 31 de enero) · Decreto 2482/2012"
         ),
     }
 
@@ -644,12 +619,7 @@ def evaluar_interoperabilidad_sispt_cuipo_piip_meta(
         cadena_cuipo_integra = False
 
     # Regla SISPT-R5: Estado de coherencia físico-financiera CUIPO vs PIIP/PA
-    if (
-        ejecucion_cuipo_pct is not None
-        and ejecucion_cuipo_pct >= 75.0
-        and ef_sispt is not None
-        and ef_sispt < 40.0
-    ):
+    if ejecucion_cuipo_pct is not None and ejecucion_cuipo_pct >= 75.0 and ef_sispt is not None and ef_sispt < 40.0:
         estado_coherencia = "DESFASE_CUIPO_SIN_AVANCE_PIIP"
     elif (
         clase_meta_pa_dnp == "META_DE_PRODUCTO"
@@ -664,10 +634,7 @@ def evaluar_interoperabilidad_sispt_cuipo_piip_meta(
         estado_coherencia = "COHERENTE_SISPT_CUIPO_PIIP"
 
     trazabilidad_completa = bool(
-        ef_sispt is not None
-        and aprop is not None
-        and aprop > 0.0
-        and (tiene_bpin or int(total_actividades_pa) > 0)
+        ef_sispt is not None and aprop is not None and aprop > 0.0 and (tiene_bpin or int(total_actividades_pa) > 0)
     )
 
     reglas_sispt = {
@@ -678,11 +645,7 @@ def evaluar_interoperabilidad_sispt_cuipo_piip_meta(
             if (tiene_bpin or int(total_actividades_pa) > 0)
             else "SIN_CODIGO_BPIN_O_ACTIVIDAD_PA_EXPLICITA"
         ),
-        "SISPT-R4": (
-            "CADENA_PRESUPUESTAL_CUIPO_LEGAL"
-            if cadena_cuipo_integra
-            else "ALERTA_SOBRECOMPROMISO_CUIPO"
-        ),
+        "SISPT-R4": ("CADENA_PRESUPUESTAL_CUIPO_LEGAL" if cadena_cuipo_integra else "ALERTA_SOBRECOMPROMISO_CUIPO"),
         "SISPT-R5": estado_coherencia,
     }
 
@@ -699,27 +662,15 @@ def evaluar_interoperabilidad_sispt_cuipo_piip_meta(
 
 def evaluar_meta_integral_sispt_dnp(meta_row: dict[str, Any]) -> dict[str, Any]:
     """Evalúa una meta combinando Tipología SisPT, Eficacia Truncada, PA y CUIPO/PIIP."""
-    datos_of = (
-        meta_row.get("datos_oficiales") if isinstance(meta_row.get("datos_oficiales"), dict) else {}
-    )
-    canonico = (
-        datos_of.get("_canonico_normalizado")
-        if isinstance(datos_of.get("_canonico_normalizado"), dict)
-        else {}
-    )
+    datos_of = meta_row.get("datos_oficiales") if isinstance(meta_row.get("datos_oficiales"), dict) else {}
+    canonico = datos_of.get("_canonico_normalizado") if isinstance(datos_of.get("_canonico_normalizado"), dict) else {}
 
     nombre_meta = str(
-        meta_row.get("nombre")
-        or canonico.get("meta_cuatrienio_texto")
-        or datos_of.get("meta_cuatrienio")
-        or ""
+        meta_row.get("nombre") or canonico.get("meta_cuatrienio_texto") or datos_of.get("meta_cuatrienio") or ""
     ).strip()
     indicador_meta = str(meta_row.get("indicador") or "").strip()
     unidad_medida = str(
-        meta_row.get("unidad_medida")
-        or canonico.get("unidad_medida_canonica")
-        or datos_of.get("unidad_medida")
-        or ""
+        meta_row.get("unidad_medida") or canonico.get("unidad_medida_canonica") or datos_of.get("unidad_medida") or ""
     ).strip()
     sentido_raw = str(
         meta_row.get("sentido_indicador")
@@ -727,9 +678,7 @@ def evaluar_meta_integral_sispt_dnp(meta_row: dict[str, Any]) -> dict[str, Any]:
         or datos_of.get("sentido_indicador")
         or ""
     ).strip()
-    tipo_agreg_raw = str(
-        meta_row.get("tipo_agregacion") or datos_of.get("Tipo de acumulación") or ""
-    ).strip()
+    tipo_agreg_raw = str(meta_row.get("tipo_agregacion") or datos_of.get("Tipo de acumulación") or "").strip()
 
     tipologia = determinar_tipologia_indicador_sispt(
         sentido_indicador=sentido_raw,
@@ -738,9 +687,7 @@ def evaluar_meta_integral_sispt_dnp(meta_row: dict[str, Any]) -> dict[str, Any]:
         texto_meta_o_indicador=f"{nombre_meta} {indicador_meta}",
     )
 
-    lb_num = _to_float_preserve_zero(
-        meta_row.get("linea_base_numerica", canonico.get("linea_base_numerica"))
-    )
+    lb_num = _to_float_preserve_zero(meta_row.get("linea_base_numerica", canonico.get("linea_base_numerica")))
     meta_prog = _to_float_preserve_zero(
         meta_row.get(
             "meta_programada_anual",
@@ -763,12 +710,8 @@ def evaluar_meta_integral_sispt_dnp(meta_row: dict[str, Any]) -> dict[str, Any]:
     oblig_cop = _to_float_preserve_zero(meta_row.get("obligaciones_cop"))
     pagos_cop = _to_float_preserve_zero(meta_row.get("pagos_tesoreria_cop"))
     cod_bpin = str(meta_row.get("codigo_bpim") or meta_row.get("codigo_bpin") or "").strip() or None
-    acts_pa = (
-        meta_row.get("actividades_pa") if isinstance(meta_row.get("actividades_pa"), list) else None
-    )
-    tiene_act_vinculada = bool(
-        meta_row.get("actividad_pa_id") or meta_row.get("registro_triada_id")
-    )
+    acts_pa = meta_row.get("actividades_pa") if isinstance(meta_row.get("actividades_pa"), list) else None
+    tiene_act_vinculada = bool(meta_row.get("actividad_pa_id") or meta_row.get("registro_triada_id"))
 
     res_pa = clasificar_meta_y_actividad_plan_accion_dnp(
         texto_meta=f"{nombre_meta} {indicador_meta}".strip(),
@@ -885,10 +828,7 @@ def _consolidar_metricas_filas(
         mt_p = round(sum(sub_trunc) / len(sub_trunc), 2) if sub_trunc else 0.0
         rango_p, sem_p = _clasificar_rango_mdm_sispt(mt_p if sub_trunc else None)
         tip_p = Counter(x["evaluacion"]["tipologia_indicador_sispt"] for x in sub)
-        coh_p = Counter(
-            x["evaluacion"]["interoperabilidad_cuipo_piip"]["estado_coherencia_cuipo_piip"]
-            for x in sub
-        )
+        coh_p = Counter(x["evaluacion"]["interoperabilidad_cuipo_piip"]["estado_coherencia_cuipo_piip"] for x in sub)
         resumen_por_plan.append(
             {
                 "codigo_plan": cp,
@@ -899,31 +839,21 @@ def _consolidar_metricas_filas(
                 "sesgo_compensacion_eliminado_pct": round(max(mb_p - mt_p, 0.0), 2),
                 "rango_desempeno_sispt_mdm": rango_p,
                 "semaforo_mdm": sem_p,
-                "distribucion_tipologias_sispt": {
-                    t: int(tip_p.get(t, 0)) for t in TIPOLOGIAS_INDICADOR_SISPT
-                },
+                "distribucion_tipologias_sispt": {t: int(tip_p.get(t, 0)) for t in TIPOLOGIAS_INDICADOR_SISPT},
                 "resumen_interoperabilidad_cuipo_piip": {
                     "COHERENTE_SISPT_CUIPO_PIIP": int(coh_p.get("COHERENTE_SISPT_CUIPO_PIIP", 0)),
-                    "DESFASE_CUIPO_SIN_AVANCE_PIIP": int(
-                        coh_p.get("DESFASE_CUIPO_SIN_AVANCE_PIIP", 0)
-                    ),
-                    "AVANCE_FISICO_SIN_SOPORTE_CUIPO": int(
-                        coh_p.get("AVANCE_FISICO_SIN_SOPORTE_CUIPO", 0)
-                    ),
+                    "DESFASE_CUIPO_SIN_AVANCE_PIIP": int(coh_p.get("DESFASE_CUIPO_SIN_AVANCE_PIIP", 0)),
+                    "AVANCE_FISICO_SIN_SOPORTE_CUIPO": int(coh_p.get("AVANCE_FISICO_SIN_SOPORTE_CUIPO", 0)),
                     "SIN_MEDICION_OBSERVADA": int(coh_p.get("SIN_MEDICION_OBSERVADA", 0)),
                 },
             }
         )
 
-    rango_global, semaforo_global = _clasificar_rango_mdm_sispt(
-        media_truncada if truncadas else None
-    )
+    rango_global, semaforo_global = _clasificar_rango_mdm_sispt(media_truncada if truncadas else None)
 
     return {
         "estado": "EVALUADO_SISPT_DNP_CUIPO_PIIP",
-        "sistema_referencia": (
-            "SisPT-DNP (https://sispt.dnp.gov.co/) + Instructivo Plan de Acción DNP/MHCP"
-        ),
+        "sistema_referencia": ("SisPT-DNP (https://sispt.dnp.gov.co/) + Instructivo Plan de Acción DNP/MHCP"),
         "doctrina_referencia": "KB-16-SISPT-DNP-PDT-INDICADORES-PLAN-ACCION-CUIPO-PIIP",
         "codigo_plan_filtrado": codigo_plan_filtro or "TODOS",
         "total_planes_evaluados": len(resumen_por_plan),
@@ -957,18 +887,12 @@ async def evaluar_universo_sispt_dnp_bd_csh_async(
 ) -> dict[str, Any]:
     """Evalúa en `bd_csh` el universo de `4,637` metas de los 8 planes bajo el estándar `SisPT`."""
     clave_cache = (
-        str(codigo_plan).strip().upper()
-        if codigo_plan and str(codigo_plan).strip().upper() != "TODOS"
-        else "TODOS"
+        str(codigo_plan).strip().upper() if codigo_plan and str(codigo_plan).strip().upper() != "TODOS" else "TODOS"
     )
     if clave_cache in _CACHE_UNIVERSO_SISPT:
         return dict(_CACHE_UNIVERSO_SISPT[clave_cache])
 
-    planes = (
-        (clave_cache,)
-        if clave_cache != "TODOS" and clave_cache in PLANES_8_CARTAGENA
-        else PLANES_8_CARTAGENA
-    )
+    planes = (clave_cache,) if clave_cache != "TODOS" and clave_cache in PLANES_8_CARTAGENA else PLANES_8_CARTAGENA
 
     filas_db: list[dict[str, Any]] = []
     engine = create_async_engine(_resolver_url_bd_csh(), pool_pre_ping=True)
@@ -1026,9 +950,7 @@ async def evaluar_universo_sispt_dnp_bd_csh_async(
                         "codigo_plan": cp,
                         "codigo": f"M-{idx:04d}",
                         "nombre": f"Realizar intervención territorial #{idx} ({cp})",
-                        "indicador": "Unidades entregadas"
-                        if idx % 3 != 0
-                        else "Porcentaje de cobertura (%)",
+                        "indicador": "Unidades entregadas" if idx % 3 != 0 else "Porcentaje de cobertura (%)",
                         "unidad_medida": "Número / Unidades" if idx % 3 != 0 else "Porcentaje (%)",
                         "datos_oficiales": {},
                         "actividad_pa_id": f"act-{idx}",

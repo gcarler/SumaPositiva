@@ -8,15 +8,17 @@ Revises: 0057_comentario_pas
 Create Date: 2026-10-13 03:40:00.000000
 """
 
-from typing import Sequence, Union
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
+from alembic import op
+
 revision: str = "0058_mfa_totp"
-down_revision: Union[str, Sequence[str], None] = "0057_comentario_pas"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0057_comentario_pas"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

@@ -1,0 +1,32 @@
+# OL-FUENTES-02-R1 · Revisión del coordinador
+
+Fecha: 24 de octubre de 2026. Entrega 65 revisada; **no aceptada para integración**.
+Evidencia técnica del coordinador, no dictamen independiente EAF.
+
+## Lo comprobado
+
+Los 63 IDs coinciden con las 20 fichas PR y 43 series locales. Los 21 enlaces PR se conservan. Las 28 capturas se cotejan por ID y las otras 15 series locales no reciben captura nueva. Los SHA de las tres salidas enumeradas coinciden con el informe.
+
+La validación del catálogo completo contra su JSON Schema produce **181 errores**. El detalle reproducible está en `66_evidencia_revision_clasificacion_fuentes.json`, con hashes de la entrega revisada. Esto es validación documental, no una suite de aplicación.
+
+## Correcciones obligatorias
+
+1. **Contrato y catálogo incompatibles.** El objeto raíz contiene campos no admitidos; las fichas incluyen propiedades no declaradas; aparecen `accesso` en vez de `acceso`, clase `serie` y ámbito `serie_municipal` fuera del esquema. Corregir la estructura y su esquema con decisiones semánticas explícitas. No resolverlo con `additionalProperties: true` indiscriminado ni eliminando información necesaria. La validación del objeto completo debe terminar sin errores.
+2. **Fechas inventadas.** Las 20 fichas PR llevan `anios: [2026]`, aunque el origen no acredita años del dato. La fecha de revisión no es cobertura temporal. Dejar desconocidos vacíos o nulos según contrato, con estado pendiente; registrar aparte fecha de revisión.
+3. **Custodio confundido con sistema.** Por ejemplo, SAT se atribuye a SAT y SMByC a SMByC. Separar nombre del producto/sistema, custodio declarado y evidencia de atribución; usar las atribuciones aportadas cuando estén documentadas y marcarlas como declaradas, no verificadas. Cuando no haya atribución suficiente, dejarla pendiente sin inventar una identidad jurídica.
+4. **Se repite la confusión que el usuario pidió eliminar.** Las 43 series tienen ámbito institucional `serie_municipal`; una serie municipal no es un nivel institucional. El esquema también mezcla `cooperacion`, `portal` y `serie` en ámbito. Separar ámbito institucional, naturaleza y clase de registro. No inferir ámbito de la institución a partir del municipio del dato. Conservar los desconocidos con evidencia pendiente.
+5. **Cobertura y población sobregeneralizadas.** Se fuerza `poblaciones: [total]` a las 43 series; ECSC pierde `cabecera` e IDEAM `estacion`, sustituidos por municipal. Preservar los ámbitos originales del inventario 48 y no inventar población ni cobertura conjunta por mezclar listas de indicadores/unidades/años. A las PR no asignar cobertura estadística nacional acreditada por aparecer en una lista de fuentes nacionales.
+6. **Trazabilidad incompleta.** Las 20 PR tienen SHA de entrada nulo y procedencia genérica. Cada ficha debe apuntar al archivo real, su hash y el ID/puntero JSON de origen. En las locales no confundir SHA del archivo inventario con SHA de contenido/versiones declarados en él: conservarlos en campos distintos. Registrar hashes de todas las entradas efectivamente utilizadas en el informe. No atribuir verificación de bytes analíticos a un cotejo de metadatos.
+7. **Falta el contrato de roles/alias.** El esquema solo tiene `alias: []`; no representa rol, entidad, jurisdicción, competencia y vigencia en vínculos separados. Añadir el contrato de vínculos permitiendo cero, uno o varios. No rellenar 63 fichas con roles cartageneros ni asignar organigramas desconocidos. Incluir ejemplos documentales separados de Cartagena basados en los alias aportados y estados pendientes para los otros territorios.
+8. **Relaciones sin fundamento y agregación incoherente.** PR-17 (SIEDCO) se enlaza a Fiscalía, PR-20 (SisPT) a FIES/pobreza, y SMByC/OCA a calidad del aire sin justificación de producto. El agregado raíz solo enumera PR sin nodo de origen. Revisar: toda relación debe tener origen, destino, tipo, justificación y evidencia; si solo hay afinidad temática, nombrarla así sin equivalencia ni integración. Evitar relaciones arbitrarias; no inferir por custodio común o palabras del título. La relación ECSC–anexo ECSC puede conservarse como candidata respaldada por su referencia.
+9. **Contrato del ciclo insuficiente.** Las 50 líneas actuales no describen entradas/salidas, controles, responsables reales, evidencia y devoluciones por etapa. Elaborar una matriz del ciclo acordado: selección; depuración de pertinencia; adquisición/orquestación; diseño y ejecución de armonización; comparación/limpieza; validación; corte; enrutamiento a motor; resultado; interpretación; retroalimentación. Incluir ramas documental/normativa y cuarentena/revisión. Los conflictos se conservan cuando corresponda. Identificar implementado/propuesto por etapa con archivos/funciones reales, sin afirmar integración universal.
+10. **Descripción de código y términos.** El contrato menciona `PoliticaFuentes`, que no existe en el planificador revisado; sí existe `PerfilFuentesPolitica`. Retirar ese nombre ficticio. Corregir términos como `desgaseamiento UCG`, `restingido`, `cyclo` y la tabla de compatibilidad: no hay desagregación por UCG automática desde datos municipales. Tampoco afirmar que el grafo de ciclo exige corte si no lo verifica su implementación.
+11. **Informe coherente y honesto.** `capturas_58_verificadas: false` debe aclarar si significa bytes no revisados o metadatos no cotejados; son comprobaciones distintas. Retirar campos huérfanos como `capturas_53` si no tienen función documentada. El informe debe indicar exactamente qué validó, qué no pudo validar y el límite de integración.
+
+## Ejecución de R1
+
+Esta revisión autoriza modificar únicamente los cuatro entregables 65 originales de tu asignación 64. No tocar 64/66, código, datos, fuentes de entrada o diagramas. Sin red, SQL, pruebas de aplicación, commit/push o despliegue.
+
+Validador existente disponible: `/root/polis/backend/.venv/bin/python`, paquete `jsonschema`. Ejecutar `Draft202012Validator.check_schema(schema)` y validar **el catálogo completo**, sin recortar a `{fichas: ...}`. No instalar dependencias. Cotejar IDs, enlaces, capturas y hashes desde las entradas reales. Estas comprobaciones documentales sí forman parte de esta revisión y no son pytest.
+
+Los criterios semánticos siguen siendo obligatorios aunque el JSON valide. Al completar, actualizar el informe 65, congelar los cuatro archivos y avisar `OL-FUENTES-02-R1 entregado` a `=codex:0.0`. Mantener límites pendientes explícitos; no declarar integración ni aceptación del coordinador.

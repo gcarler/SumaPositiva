@@ -50,9 +50,7 @@ async def actualizar_noticia(id: uuid.UUID, datos: NoticiaEntrada, service: Noti
     return await service.actualizar(id, datos)
 
 
-@router.delete(
-    "/gestion/{id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[PuedeGestionarContenido]
-)
+@router.delete("/gestion/{id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[PuedeGestionarContenido])
 async def eliminar_noticia(id: uuid.UUID, service: NoticiasServiceDep):
     await service.eliminar(id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

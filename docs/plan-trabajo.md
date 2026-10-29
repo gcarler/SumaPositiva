@@ -5,6 +5,47 @@ Este plan de trabajo rige el desarrollo y la auditoría pericial de la plataform
 
 ---
 
+## Gold set de conciliación con doble anotación — 2026-10-22
+
+Estado: aparato de medición construido, vuelto a produccion y persistido;
+las métricas de precisión dependen de la doble anotación humana (jueces a y b)
+y del adjudicador, que quedan como paso operativo del equipo.
+
+- [x] Muestreo estratificado reproducible (semilla `gold-set-2026-10-21`) sobre
+  `seguimiento.pdd_vinculos_meta_pa_triada` y pares no vinculados como negativos:
+  muestrario `gold-set-2026-10-21` con 240 pares (180 positivos: 96
+  PROGRAMA_Y_DEPENDENCIA_ACREDITADOS, 83 VINCULO_SECTORIAL_INFERIDO, 1
+  EXACTO_BPIM_PROYECTO; 60 negativos); corrida registrada en la bitácora 0070.
+- [x] Tabla `seguimiento.conciliador_gold_set` (migración 0083, carga
+  idempotente por muestrario, CHECK de catálogos) con modelo ORM y
+  `alembic check` limpio; aplicada en `bd_csh` y verificada en base aislada `polis_test*`.
+- [x] Doble anotación a ciegas reforzada: el CSV sin exponer etiqueta ni score,
+  y con el identificador neutralizado (`GP-…`, derivado del hash) para que el
+  `par_tipo` nunca se filtre por el ID (`data/gold_set_conciliacion/anotacion_a_ciegas.csv`);
+  test anti-fuga en la suite.
+- [x] Rúbrica normativa de anotación: escala de etiquetas, criterios de
+  decisión, calibración con kappa objetivo ≥ 0,8, adjudicación ciega y reglas
+  de difusión honesta en [gold-set-anotacion](gold-set-anotacion.md).
+- [x] Intervalos de confianza por percentil (remuestreo con semilla;
+  `metricas --bootstrap N --semilla-ic S`): el valor puntual no basta para
+  difundir con muestras pequeñas (60 negativos, estratos mínimos).
+- [ ] Doble anotación humana (jueces a y b), adjudicación de desacuerdos y
+  publicación de precision/recobrado/kappa con
+  `python scripts/conciliador_gold_set.py importar` + `metricas`.
+
+Lectura honesta: el recobrado del conciliador es 1.0 por diseño (una pareja por
+meta); la precisión del 45,9 % de vínculos inferidos queda sin dictamen hasta
+cerrar la doble anotación. Evidencia: artefactos en `data/gold_set_conciliacion/`.
+
+Del hallazgo HALL-03 (resolutores de URL con semántica opuesta): verificado el
+cierre en el árbol — todos los módulos delegan en
+`app/modules/compromisos/resolutor_bd.py` con la guardia que jamás redirige
+`polis_test*` a `bd_csh`, el fallback de la prueba de persistencia a `bd_csh`
+fue eliminado (omitido con causa explícita) y las guardias están probadas en
+`tests/test_pipeline_p0_unit.py` (37 pruebas de gold set + guardia pasadas en
+la ronda de esta sección, base `polis_test_dea`). El
+dictamen independiente corresponde a EAF.
+
 ## Usuarios, acceso y permisos — 2026-10-01
 
 Estado: alcance funcional implementado y validación interna de EDD. Contrato y
@@ -41,10 +82,20 @@ Los registros históricos siguientes deben interpretarse dentro de su alcance or
 
 ## Consolidación de scaffold y trazabilidad — 2026-10-14
 
-El snapshot actual de Alembic tiene cabeza `0062_motor_plan_accion_dnp`; las
+El snapshot del 2026-10-14 citaba en su momento la cabeza
+`0062_motor_plan_accion_dnp` (la vigente es `0084_aportes_colas_y_apoyos`: ver
+nota 244-DOCS-01 más abajo); las
 validaciones históricas que terminan en `0022` o `0025` no describen la cabeza
 actual ni certifican migraciones posteriores. El censo de frontend/backend y su
 clasificación conservadora están en [la matriz de trazabilidad](matriz-trazabilidad-modulos.md).
+
+> **[244-DOCS-01] 2026-10-27:** la nota anterior describe su snapshot del
+> 2026-10-14, no la cabeza vigente. La cabeza única verificada hoy es
+> `0084_aportes_colas_y_apoyos` (`cd backend && .venv/bin/alembic -c alembic.ini
+> heads`); la evolución 0063–0084 (ingesta triada y corpus Drive, catálogo de
+> planes, evaluador AI, corridas del pipeline, catálogo de fuentes y paquetes de
+> artefactos, correspondencias 1:n con guardas, DEA DMU nivel 3, gold set y
+> aportes) está resumida en [arquitectura](arquitectura.md).
 El estado de CSP en código está descrito en [arquitectura](arquitectura.md):
 Report-Only por defecto, con enforcement configurable; no se afirma activación
 en producción sin evidencia del proxy y del navegador desplegado.

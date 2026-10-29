@@ -1,0 +1,89 @@
+{
+  "fecha": "2026-10-24",
+  "tipo": "revision_interfaz_diagrama",
+  "html": "bridge/60_flujo_sistema_politicas_publicas.html",
+  "sha256": "1cc9e88d9a53fbb13d193dca3c7592b462f0f820484d009d045578a3885a1bff",
+  "nuevo_diagrama": ".archify/architecture-tablero-fuentes-20261024-141720/fuentes.html",
+  "recibo": ".archify/architecture-tablero-fuentes-20261024-141720/review-2/fuentes.finalize-summary.json",
+  "navegador": {
+    "views": [
+      {
+        "id": "panorama",
+        "svg": {
+          "x": 12,
+          "y": 107,
+          "width": 1106,
+          "height": 703
+        },
+        "iframe": {
+          "x": 0,
+          "y": 95,
+          "width": 1130,
+          "height": 779
+        }
+      },
+      {
+        "id": "fuentes",
+        "svg": {
+          "x": 12,
+          "y": 107,
+          "width": 1106,
+          "height": 703
+        },
+        "iframe": {
+          "x": 0,
+          "y": 95,
+          "width": 1130,
+          "height": 779
+        }
+      },
+      {
+        "id": "datos",
+        "svg": {
+          "x": 12,
+          "y": 107,
+          "width": 1106,
+          "height": 703
+        },
+        "iframe": {
+          "x": 0,
+          "y": 95,
+          "width": 1130,
+          "height": 779
+        }
+      },
+      {
+        "id": "formulacion",
+        "svg": {
+          "x": 12,
+          "y": 107,
+          "width": 1106,
+          "height": 703
+        },
+        "iframe": {
+          "x": 0,
+          "y": 95,
+          "width": 1130,
+          "height": 779
+        }
+      }
+    ],
+    "errors": [],
+    "filtered": 1,
+    "closed": true,
+    "info": true,
+    "overflow": {
+      "x": false,
+      "y": false
+    },
+    "mobileHidden": true,
+    "mobilePanel": {
+      "x": 50,
+      "y": 95,
+      "width": 340,
+      "height": 723
+    }
+  },
+  "revision_visual": "Capturas de panorama y fuentes inspeccionadas. Sin solapamientos observados.",
+  "alcance": "Solo artefacto documental estático; sin cambios a src, backend, datos o permisos de aplicación."
+}

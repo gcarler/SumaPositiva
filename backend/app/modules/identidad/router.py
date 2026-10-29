@@ -58,9 +58,7 @@ def exigir_usuario(sujeto):
 
 @router.post("/registro", response_model=UsuarioLectura, status_code=201)
 async def registrar_usuario(datos: UsuarioCreacion, request: Request, service: IdentidadServiceDep):
-    await service.limitar(
-        "registro", request.client.host if request.client else "local", datos.correo
-    )
+    await service.limitar("registro", request.client.host if request.client else "local", datos.correo)
     return await service.registrar_usuario(datos)
 
 
@@ -119,13 +117,11 @@ async def login_google(
 @router.get("/perfil", response_model=UsuarioLectura)
 async def obtener_perfil(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
-    return await service.obtener_perfil(sujeto.sujeto_id)
+    return await service.obtener_perfil(sujeto.sujeto_id, mfa_pendiente=sujeto.mfa_pendiente)
 
 
 @router.patch("/perfil", response_model=UsuarioLectura)
-async def editar_perfil(
-    datos: PerfilEdicion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def editar_perfil(datos: PerfilEdicion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
     return await service.editar_perfil(datos, sujeto)
 
@@ -155,17 +151,13 @@ async def revocar_todas(sujeto: SujetoAutenticadoDep, service: IdentidadServiceD
 
 
 @router.delete("/sesiones/{sesion_id}", response_model=MensajeRespuesta)
-async def revocar_sesion(
-    sesion_id: uuid.UUID, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def revocar_sesion(sesion_id: uuid.UUID, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
     return await service.cerrar_sesiones(sujeto, sesion_id)
 
 
 @router.post("/contrasena", response_model=MensajeRespuesta)
-async def cambiar_contrasena(
-    datos: CambiarContrasena, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def cambiar_contrasena(datos: CambiarContrasena, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
     return await service.cambiar_contrasena(datos, sujeto)
 
@@ -174,16 +166,12 @@ async def cambiar_contrasena(
 async def solicitar_recuperacion(
     datos: CorreoPeticion, request: Request, service: IdentidadServiceDep, correo: CorreoDep
 ):
-    await service.limitar(
-        "recuperar", request.client.host if request.client else "local", datos.correo
-    )
+    await service.limitar("recuperar", request.client.host if request.client else "local", datos.correo)
     return await service.solicitar_correo(datos.correo, "recuperar", correo)
 
 
 @router.post("/recuperacion/confirmar", response_model=MensajeRespuesta)
-async def confirmar_recuperacion(
-    datos: RecuperarContrasena, request: Request, service: IdentidadServiceDep
-):
+async def confirmar_recuperacion(datos: RecuperarContrasena, request: Request, service: IdentidadServiceDep):
     await service.limitar("confirmar", request.client.host if request.client else "local")
     return await service.consumir_token(datos.token, "recuperar", datos.contrasena)
 
@@ -193,16 +181,12 @@ async def solicitar_verificacion(
     sujeto: SujetoAutenticadoDep, request: Request, service: IdentidadServiceDep, correo: CorreoDep
 ):
     exigir_usuario(sujeto)
-    await service.limitar(
-        "verificar", request.client.host if request.client else "local", sujeto.sujeto_id
-    )
+    await service.limitar("verificar", request.client.host if request.client else "local", sujeto.sujeto_id)
     return await service.solicitar_correo(None, "verificar", correo, sujeto)
 
 
 @router.post("/correo/confirmar", response_model=MensajeRespuesta)
-async def confirmar_verificacion(
-    datos: TokenPeticion, request: Request, service: IdentidadServiceDep
-):
+async def confirmar_verificacion(datos: TokenPeticion, request: Request, service: IdentidadServiceDep):
     await service.limitar("confirmar", request.client.host if request.client else "local")
     return await service.consumir_token(datos.token, "verificar")
 
@@ -211,9 +195,7 @@ async def confirmar_verificacion(
 async def solicitar_magic_link(
     datos: CorreoPeticion, request: Request, service: IdentidadServiceDep, correo: CorreoDep
 ):
-    await service.limitar(
-        "magic_link_solicitar", request.client.host if request.client else "local", datos.correo
-    )
+    await service.limitar("magic_link_solicitar", request.client.host if request.client else "local", datos.correo)
     return await service.solicitar_magic_link(datos.correo, correo)
 
 
@@ -224,9 +206,7 @@ async def confirmar_magic_link(
     response: Response,
     service: IdentidadServiceDep,
 ):
-    await service.limitar(
-        "magic_link_confirmar", request.client.host if request.client else "local"
-    )
+    await service.limitar("magic_link_confirmar", request.client.host if request.client else "local")
     resultado = await service.consumir_magic_link(datos.token)
     es_seguro = (
         request.app.state.settings.environment == "production"
@@ -283,9 +263,7 @@ async def listar_usuarios(
     status_code=201,
     dependencies=[Depends(requerir_permiso("usuarios:gestionar", "declarada"))],
 )
-async def crear_usuario(
-    datos: UsuarioAltaAdministrativa, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def crear_usuario(datos: UsuarioAltaAdministrativa, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     return await service.crear_usuario_administrado(datos, sujeto)
 
 
@@ -308,9 +286,7 @@ async def editar_usuario(
     response_model=MensajeRespuesta,
     dependencies=[Depends(requerir_permiso("usuarios:gestionar", "declarada"))],
 )
-async def revocar_usuario(
-    usuario_id: uuid.UUID, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def revocar_usuario(usuario_id: uuid.UUID, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     return await service.revocar_usuario(usuario_id, sujeto)
 
 
@@ -389,9 +365,7 @@ async def crear_rol(datos: RolCreacion, sujeto: SujetoAutenticadoDep, service: I
     response_model=RolLectura,
     dependencies=[Depends(requerir_permiso("roles:gestionar", "declarada"))],
 )
-async def editar_rol(
-    codigo: str, datos: RolEdicion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def editar_rol(codigo: str, datos: RolEdicion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     return await service.editar_rol(codigo, datos, sujeto)
 
 
@@ -440,17 +414,13 @@ async def iniciar_mfa(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
 
 
 @router.post("/mfa/activar", response_model=MfaActivarRespuesta)
-async def activar_mfa(
-    datos: MfaCodigoPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def activar_mfa(datos: MfaCodigoPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
     return await service.activar_mfa(datos, sujeto)
 
 
 @router.post("/mfa/desactivar", response_model=MensajeRespuesta)
-async def desactivar_mfa(
-    datos: MfaDesactivarPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
-):
+async def desactivar_mfa(datos: MfaDesactivarPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
     exigir_usuario(sujeto)
     return await service.desactivar_mfa(datos, sujeto)
 
@@ -470,9 +440,7 @@ async def verificar_mfa(
     response: Response,
     service: IdentidadServiceDep,
 ):
-    await service.limitar(
-        "mfa_verificar", request.client.host if request.client else "local"
-    )
+    await service.limitar("mfa_verificar", request.client.host if request.client else "local")
     resultado = await service.verificar_desafio_mfa(datos)
     es_seguro = (
         request.app.state.settings.environment == "production"
@@ -489,4 +457,3 @@ async def verificar_mfa(
         path="/",
     )
     return resultado
-

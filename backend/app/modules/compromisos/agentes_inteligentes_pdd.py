@@ -23,6 +23,12 @@ from pydantic_ai.models.function import AgentInfo, FunctionModel
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .catalogo_planeacion_corte_polis import ReferenciaCatalogoPlaneacion, comprobar_matriz_y_catalogo
+from .contexto_corte_polis import ContextoCorte
+from .correspondencias_meta_pa_polis import resumir_matriz_correspondencias
+from .matriz_correspondencias_corte_polis import ReferenciaMatrizPlaneacion
+from .ppi_planeacion_corte_polis import ReferenciaPPIPlaneacion
+
 MOTOR = "POLIS_NEUROSIMBOLICO_LANGGRAPH_PYDANTIC_AI_V2"
 DIMENSIONES = (
     "Personal",
@@ -33,13 +39,13 @@ DIMENSIONES = (
     "Ambiental",
     "Política",
 )
+# Alias dentro de la taxonomía heredada. No son equivalencias con PERS/COM/.../SAT.
+ETIQUETAS_DIMENSIONES_HEREDADAS = {
+    dimension: (dimension, "Seguridad en la Salud" if dimension == "Salud" else f"Seguridad {dimension}")
+    for dimension in DIMENSIONES
+}
 MAX_RESULTADOS = 40
-PDT_CACHE_PATH = (
-    Path(__file__).resolve().parents[4]
-    / "data"
-    / "planes_desarrollo"
-    / "cache_pdt_ai_evaluator.json"
-)
+PDT_CACHE_PATH = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo" / "cache_pdt_ai_evaluator.json"
 
 
 class ConsultaAgentesPDD(BaseModel):
@@ -60,13 +66,18 @@ class InterpretarFragmentoPDD(BaseModel):
 
 @dataclass
 class ToolContext:
-    session: AsyncSession
+    session: AsyncSession | None
     consulta: ConsultaAgentesPDD
+    corte: ContextoCorte | None = None
+    planeacion: ReferenciaMatrizPlaneacion | None = None
+    catalogo: ReferenciaCatalogoPlaneacion | None = None
+    ppi: ReferenciaPPIPlaneacion | None = None
     invocaciones: list[dict[str, Any]] = field(default_factory=list)
     resultados: dict[str, Any] = field(default_factory=dict)
     ampliar_busqueda: bool = False
     cobertura_universo_bd: dict[str, Any] = field(default_factory=dict)
     cobertura_universo_operativo: dict[str, Any] = field(default_factory=dict)
+    cobertura_nodos: dict[str, Any] = field(default_factory=dict)
 
 
 class GrafoState(TypedDict, total=False):
@@ -119,15 +130,29 @@ def _read_pdt_cache() -> dict[str, Any] | None:
         return None
 
 
-async def _load_pdt_diagnostic(session: AsyncSession) -> tuple[dict[str, Any] | None, str]:
-    diagnostic = await asyncio.to_thread(_read_pdt_cache)
+async def _load_pdt_diagnostic(
+    session: AsyncSession, corte: ContextoCorte | None = None
+) -> tuple[dict[str, Any] | None, str]:
+    if corte is not None:
+        corte.verificar()
+    diagnostic = await asyncio.to_thread(_read_pdt_cache) if corte is None else None
     if diagnostic:
         return diagnostic, "cache_pdt_ai_evaluator.json"
     try:
         from app.modules.compromisos.pdt_ai_evaluator_graph import ejecutar_pdt_ai_evaluator
 
+        if corte is not None:
+            thread_id = f"pdt-{corte.run_id}"
+            resultado = await ejecutar_pdt_ai_evaluator(session, thread_id=thread_id, force_refresh=True)
+            if resultado.get("thread_id") != thread_id:
+                raise ValueError("El PDT devolvió una identidad de hilo ajena al corte")
+            if resultado.get("estado_checkpointer") != "COMPLETADO_SIN_BLOQUEO":
+                raise ValueError("El PDT no completó su evaluación para el corte")
+            return resultado, "ejecucion_pdt_ai_evaluator_mismo_run_id"
         return await ejecutar_pdt_ai_evaluator(session), "ejecucion_pdt_ai_evaluator"
     except Exception:
+        if corte is not None:
+            raise
         return None, "PDT-AI-EVALUATOR no disponible"
 
 
@@ -147,9 +172,9 @@ def _matches_pdt_filter(value: Any, terms: list[str], plan_code: str) -> bool:
 
 
 async def _evaluacion_pdt_gbr(
-    session: AsyncSession, consulta: ConsultaAgentesPDD
+    session: AsyncSession, consulta: ConsultaAgentesPDD, corte: ContextoCorte | None = None
 ) -> dict[str, Any]:
-    diagnostic, source = await _load_pdt_diagnostic(session)
+    diagnostic, source = await _load_pdt_diagnostic(session, corte)
     if not diagnostic:
         return {
             "estado": "PENDIENTE",
@@ -166,9 +191,7 @@ async def _evaluacion_pdt_gbr(
     terms = _terms(consulta.pregunta)
     dea = diagnostic.get("dea_scores", {})
     selected_dmus = [
-        row
-        for row in dea.get("resultados_dmu", [])
-        if _matches_pdt_filter(row.get("dmu"), terms, consulta.codigo_plan)
+        row for row in dea.get("resultados_dmu", []) if _matches_pdt_filter(row.get("dmu"), terms, consulta.codigo_plan)
     ]
     relevant_dependencies = {str(row.get("dmu", "")).rsplit("|", 1)[0] for row in selected_dmus}
     nlp = diagnostic.get("nlp_coherence", {})
@@ -193,9 +216,7 @@ async def _evaluacion_pdt_gbr(
     traps = [
         row
         for row in spatial.get("trampas_territoriales_gestion_publica", [])
-        if _matches_pdt_filter(
-            row.get("unidad_dmu") or row.get("diagnostico"), terms, consulta.codigo_plan
-        )
+        if _matches_pdt_filter(row.get("unidad_dmu") or row.get("diagnostico"), terms, consulta.codigo_plan)
     ][:100]
     forecast = diagnostic.get("time_series_forecast", {})
     risks = [
@@ -250,14 +271,11 @@ async def _evaluacion_pdt_gbr(
         "coldspots_lisa": [
             row
             for row in spatial.get("lisa", [])
-            if "Bajo-Bajo" in str(row.get("cluster", ""))
-            and _matches_pdt_filter(row.get("unidad"), terms, "TODOS")
+            if "Bajo-Bajo" in str(row.get("cluster", "")) and _matches_pdt_filter(row.get("unidad"), terms, "TODOS")
         ],
         "trampas_territoriales": traps,
         "indicadores_isri_alto_riesgo": risks,
-        "pruebas_chow_2024": [
-            {"indicador": row.get("indicador"), **(row.get("chow") or {})} for row in risks
-        ],
+        "pruebas_chow_2024": [{"indicador": row.get("indicador"), **(row.get("chow") or {})} for row in risks],
         "dictamenes_dependencias": briefs,
         "hoshin_kanri_fair": hoshin_summary,
         "revision_10d_resumen": revision_summary,
@@ -277,26 +295,18 @@ async def _resumen_dea_4_niveles_cartagena(session: AsyncSession) -> dict[str, A
         return {
             "estado": levels.get("estado", "DISPONIBLE"),
             "niveles": {
-                name: {
-                    key: value.get(key, 0) for key in ("total_dmus", "eficientes", "ineficientes")
-                }
+                name: {key: value.get(key, 0) for key in ("total_dmus", "eficientes", "ineficientes")}
                 for name, value in (levels.get("niveles") or {}).items()
             },
             "alertas_tablero_alcalde": tablero.get("alertas_falso_cumplimiento_nominal", []),
-            "total_alertas_tablero_alcalde": tablero.get(
-                "total_alertas_falso_cumplimiento_nominal", 0
-            ),
-            "benchmarks_armonizacion_presupuestal": tablero.get(
-                "benchmarks_armonizacion_presupuestal", []
-            ),
+            "total_alertas_tablero_alcalde": tablero.get("total_alertas_falso_cumplimiento_nominal", 0),
+            "benchmarks_armonizacion_presupuestal": tablero.get("benchmarks_armonizacion_presupuestal", []),
         }
     except Exception as exc:
         return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
 
 
-async def _resumen_hoshin_kanri(
-    diagnostic: dict[str, Any], consulta: ConsultaAgentesPDD
-) -> dict[str, Any]:
+async def _resumen_hoshin_kanri(diagnostic: dict[str, Any], consulta: ConsultaAgentesPDD) -> dict[str, Any]:
     try:
         from app.modules.compromisos.pdt_hoshin_kanri import construir_matriz_x_hoshin_kanri_pdt
 
@@ -346,9 +356,7 @@ async def _resumen_revision_10d(
         kwargs = {
             "db": session,
             "diagnostico": diagnostic,
-            "codigo_plan": (
-                "PDD_2024_2027" if consulta.codigo_plan == "TODOS" else consulta.codigo_plan
-            ),
+            "codigo_plan": ("PDD_2024_2027" if consulta.codigo_plan == "TODOS" else consulta.codigo_plan),
             "dependencia": None,
             "limit": 100,
         }
@@ -364,9 +372,7 @@ async def _resumen_revision_10d(
         summary = result.get("resumen_ejecutivo_revision") or result.get("resumen_auditoria")
         return {
             "estado": "DISPONIBLE" if summary is not None else "RESUMEN_NO_DISPONIBLE",
-            "total_metas_evaluadas": result.get(
-                "total_metas_evaluadas", result.get("metas_devueltas", 0)
-            ),
+            "total_metas_evaluadas": result.get("total_metas_evaluadas", result.get("metas_devueltas", 0)),
             "resumen_ejecutivo_revision": summary or {},
         }
     except Exception as exc:
@@ -430,9 +436,81 @@ async def _query_evidencias(ctx: ToolContext) -> list[dict[str, Any]]:
     return evidence
 
 
-async def _query_nodos(
-    ctx: ToolContext, *, limit: int | None = MAX_RESULTADOS
-) -> list[dict[str, Any]]:
+def _catalogo_del_contexto(ctx: ToolContext):
+    if ctx.corte is None or ctx.catalogo is None:
+        raise ValueError("El catálogo de planeación requiere corte y referencia verificables")
+    etiquetas = {etiqueta for variantes in ETIQUETAS_DIMENSIONES_HEREDADAS.values() for etiqueta in variantes}
+    if ctx.consulta.dimension_sh != "TODAS" and ctx.consulta.dimension_sh not in etiquetas:
+        raise ValueError("El catálogo conserva la clasificación SH heredada, no códigos de la taxonomía canónica 7D")
+    return ctx.catalogo.leer(ctx.corte)
+
+
+def _query_nodos_corte(ctx: ToolContext, *, limit: int | None = MAX_RESULTADOS) -> list[dict[str, Any]]:
+    if limit is not None and limit < 0:
+        raise ValueError("El límite de nodos no puede ser negativo")
+    catalogo = _catalogo_del_contexto(ctx)
+    consulta = ctx.consulta
+    etiquetas = next(
+        (variantes for variantes in ETIQUETAS_DIMENSIONES_HEREDADAS.values() if consulta.dimension_sh in variantes),
+        (),
+    )
+    terms = _terms(consulta.pregunta)
+    needle = terms[0].casefold() if terms else ""
+    universo = [n for n in catalogo.nodos if consulta.codigo_plan in ("TODOS", n.codigo_plan)]
+    filtrados = [
+        n
+        for n in universo
+        if (consulta.dimension_sh == "TODAS" or n.metadatos.get("dimension_sh_primaria") in etiquetas)
+        and (
+            consulta.grado_frontalidad == "TODOS"
+            or str(n.metadatos.get("grado_frontalidad_sh") or "").startswith(consulta.grado_frontalidad)
+        )
+        and (not needle or needle in n.nombre.casefold() or needle in (n.codigo or "").casefold())
+    ]
+    filtrados.sort(key=lambda n: (n.codigo_plan, n.orden, str(n.id)))
+    muestra = filtrados if limit is None else filtrados[:limit]
+    ctx.cobertura_nodos = {
+        "nodos_por_plan_totales": {
+            p: c.nodos for p, c in catalogo.cobertura_sql.items() if consulta.codigo_plan in ("TODOS", p)
+        },
+        "total_nodos_coincidentes_sin_truncar": len(filtrados),
+        "nodos_incluidos_en_muestra": len(muestra),
+        "muestra_truncada": len(filtrados) > len(muestra),
+        "taxonomia": "CLASIFICACION_SH_HEREDADA_NO_CANONICA_7D",
+        "etiquetas_dimension_consultadas": list(etiquetas),
+        "busqueda": "SUBCADENA_LITERAL_PRIMER_TERMINO",
+    }
+    return [n.model_dump(mode="json") for n in muestra]
+
+
+def _query_metas_corte(ctx: ToolContext) -> list[dict[str, Any]]:
+    catalogo = _catalogo_del_contexto(ctx)
+    terms = _terms(ctx.consulta.pregunta)
+    needle = terms[0].casefold() if terms else ""
+    universo = [m for m in catalogo.metas if ctx.consulta.codigo_plan in ("TODOS", m.codigo_plan)]
+    filtradas = [
+        m for m in universo if not needle or needle in m.nombre.casefold() or needle in (m.indicador or "").casefold()
+    ]
+    filtradas.sort(key=lambda m: (m.codigo_plan, m.fila_fuente is None, m.fila_fuente or 0, str(m.id)))
+    muestra = filtradas[:MAX_RESULTADOS]
+    totales = {
+        p: c.metas for p, c in catalogo.cobertura_sql.items() if c.metas and ctx.consulta.codigo_plan in ("TODOS", p)
+    }
+    ctx.cobertura_universo_bd = {
+        "planes_evaluados_count": len(totales),
+        "metas_por_plan_totales": totales,
+        "total_metas_coincidentes_sin_truncar": len(filtradas),
+        "metas_incluidas_en_muestra": len(muestra),
+        "muestra_truncada": len(filtradas) > len(muestra),
+        "filtros_aplicados": ["codigo_plan", "primer_termino_nombre_o_indicador"],
+        "limite": "Las metas no tienen clasificación SH propia; dimensión y frontalidad solo filtran nodos.",
+    }
+    return [m.model_dump(mode="json") for m in muestra]
+
+
+async def _query_nodos(ctx: ToolContext, *, limit: int | None = MAX_RESULTADOS) -> list[dict[str, Any]]:
+    if ctx.catalogo is not None:
+        return await asyncio.to_thread(_query_nodos_corte, ctx, limit=limit)
     consulta = ctx.consulta
     rows = (
         (
@@ -456,9 +534,7 @@ async def _query_nodos(
                     "grado_like": consulta.grado_frontalidad + "%",
                     "dimension": consulta.dimension_sh,
                     "busqueda": " ".join(_terms(consulta.pregunta)),
-                    "busqueda_like": f"%{_terms(consulta.pregunta)[0]}%"
-                    if _terms(consulta.pregunta)
-                    else "%%",
+                    "busqueda_like": f"%{_terms(consulta.pregunta)[0]}%" if _terms(consulta.pregunta) else "%%",
                     "limite": limit,
                 },
             )
@@ -470,6 +546,8 @@ async def _query_nodos(
 
 
 async def _query_metas(ctx: ToolContext) -> list[dict[str, Any]]:
+    if ctx.catalogo is not None:
+        return await asyncio.to_thread(_query_metas_corte, ctx)
     terms = _terms(ctx.consulta.pregunta)
     needle = terms[0] if terms else ""
     coverage_rows = (
@@ -529,7 +607,79 @@ async def _query_metas(ctx: ToolContext) -> list[dict[str, Any]]:
     return metas
 
 
+def _query_ppi_corte(ctx: ToolContext) -> list[dict[str, Any]]:
+    """Lee cifras formuladas exactas; no calcula deflación ni agrega jerarquías."""
+    if ctx.corte is None or ctx.ppi is None or ctx.catalogo is None:
+        raise ValueError("PPI congelado requiere corte, referencia PPI y catálogo")
+    if ctx.consulta.dimension_sh != "TODAS" or ctx.consulta.grado_frontalidad != "TODOS":
+        raise ValueError("PPI crudo por corte solo admite filtro de plan; no acredita clasificación SH")
+    captura = ctx.ppi.leer(ctx.corte)
+    catalogo = ctx.catalogo.leer(ctx.corte)
+    if captura.base_origen != catalogo.base_origen:
+        raise ValueError("PPI y catálogo proceden de bases distintas")
+    cobertura = {k: v.model_dump() for k, v in captura.conteos_sql.items()}
+    if cobertura != {k: v.model_dump() for k, v in catalogo.cobertura_sql.items()}:
+        raise ValueError("Cobertura PPI distinta del catálogo del corte")
+
+    def estructura(n):
+        return n.codigo_plan, n.parent_id, n.nivel
+
+    if {n.id: estructura(n) for n in captura.nodos} != {n.id: estructura(n) for n in catalogo.nodos}:
+        raise ValueError("Identidades o estructura PPI distintas del catálogo del corte")
+    planes = sorted(
+        (p for p in captura.planes if ctx.consulta.codigo_plan in {"TODOS", p.codigo_plan}),
+        key=lambda p: (p.periodo, p.codigo_plan),
+    )
+    salida = []
+    for plan in planes:
+        crudo = plan.model_dump(mode="json")
+        estado = (
+            "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+            if plan.codigo_plan == "PDD_2020_2023"
+            else "SIN_IPC_ANUAL_COMPLETO_2026_2027"
+            if plan.codigo_plan == "PDD_2024_2027" or plan.codigo_plan.startswith("PDL_")
+            else "PPI_CRUDO_SIN_COMPARABILIDAD_ACREDITADA"
+        )
+        salida.append(
+            {
+                **crudo,
+                "valores_crudos": crudo,
+                "ppi_total_corriente_cop": (
+                    None if plan.codigo_plan == "PDD_2020_2023" else crudo["ppi_total_corriente_cop"]
+                ),
+                "ppi_total_constante_2025_cop": None,
+                "desglose_abcn_constante_2025_cop": None,
+                "desglose_7d_constante_2025_cop": None,
+                "estado_financiero": estado,
+                "representacion_jsonb": captura.representacion_jsonb,
+                "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+                "ppi_sha256": ctx.ppi.captura.stem,
+                "run_id": str(ctx.corte.run_id),
+                "estado_publicacion": "no_publicable",
+            }
+        )
+    ctx.resultados["cobertura_financiera"] = {
+        "origen": "PPI_FORMULADO_CONGELADO",
+        "run_id": str(ctx.corte.run_id),
+        "ppi_sha256": ctx.ppi.captura.stem,
+        "catalogo_sha256": ctx.catalogo.catalogo.stem,
+        "planes_capturados": len(captura.planes),
+        "planes_filtrados": len(planes),
+        "conteos_por_plan": {p.codigo_plan: cobertura[p.codigo_plan] for p in planes},
+        "filtro_textual_aplicado": False,
+        "filtros_aplicados": {"codigo_plan": ctx.consulta.codigo_plan},
+        "comparabilidad_financiera_acreditada": False,
+        "estado_publicacion": "no_publicable",
+        "limite": "Numeric copiado y JSONB crudo; sin ejecución, agregación jerárquica, deflación ni ranking.",
+    }
+    return salida
+
+
 async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
+    if ctx.ppi is not None:
+        planes = await asyncio.to_thread(_query_ppi_corte, ctx)
+        await _query_metas(ctx)
+        return planes
     rows = (
         (
             await ctx.session.execute(
@@ -549,6 +699,12 @@ async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
     output = []
     for row in rows:
         plan = _row_dict(row)
+        code = str(plan["codigo_plan"])
+        sin_total_comparable = (
+            code in {"PDD_2020_2023", "PDD_2024_2027"}
+            or code.startswith("PDL_")
+            or plan.get("ppi_total_constante_2025_cop") is None
+        )
         node_rows = (
             (
                 await ctx.session.execute(
@@ -571,13 +727,33 @@ async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
                 grades[grade] += float(metadata.get("ppi_total_constante_2025_cop") or 0)
             for dimension, weight in (metadata.get("pesos_7d") or {}).items():
                 if dimension in dimensions:
-                    dimensions[dimension] += float(
-                        metadata.get("ppi_total_constante_2025_cop") or 0
-                    ) * float(weight or 0)
-        plan["desglose_abcn_constante_2025_cop"] = grades
-        plan["desglose_7d_constante_2025_cop"] = dimensions
+                    dimensions[dimension] += float(metadata.get("ppi_total_constante_2025_cop") or 0) * float(
+                        weight or 0
+                    )
+        if sin_total_comparable:
+            if code == "PDD_2020_2023":
+                # La BD puede conservar una suma previa aunque el documento tenga tres totales discordantes.
+                plan["ppi_total_corriente_cop"] = None
+            plan["ppi_total_constante_2025_cop"] = None
+            plan["desglose_abcn_constante_2025_cop"] = None
+            plan["desglose_7d_constante_2025_cop"] = None
+            plan["estado_financiero"] = (
+                "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA"
+                if code == "PDD_2020_2023"
+                else "SIN_IPC_ANUAL_COMPLETO_2026_2027"
+                if code == "PDD_2024_2027" or code.startswith("PDL_")
+                else "SIN_TOTAL_COMPARABLE"
+            )
+        else:
+            plan["desglose_abcn_constante_2025_cop"] = grades
+            plan["desglose_7d_constante_2025_cop"] = dimensions
+            plan["estado_financiero"] = "TOTAL_COMPARABLE"
         plan["fuente_cifras"] = "seguimiento.planes_desarrollo_distrital y pdd_lineas_y_programas"
         output.append(plan)
+    if ctx.catalogo is not None:
+        # El PPI sigue vivo, pero no puede reemplazar el universo de metas fijado por el corte.
+        await _query_metas(ctx)
+        return output
     terms = _terms(ctx.consulta.pregunta)
     needle = terms[0] if terms else ""
     meta_counts = (
@@ -614,7 +790,71 @@ async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
     return output
 
 
+def _query_actividades_corte(ctx: ToolContext) -> list[dict[str, Any]]:
+    if ctx.corte is None or ctx.planeacion is None:
+        raise ValueError("La lectura de planeación necesita un corte y una referencia de matriz")
+    if ctx.consulta.dimension_sh != "TODAS" or ctx.consulta.grado_frontalidad != "TODOS":
+        raise ValueError("La matriz congelada no contiene clasificación SH/frontalidad para aplicar esos filtros")
+    lectura = ctx.planeacion.leer(ctx.corte)
+    filas = [
+        fila
+        for fila in lectura.matriz.filas
+        if ctx.consulta.codigo_plan == "TODOS" or fila.codigo_plan == ctx.consulta.codigo_plan
+    ]
+    resumen = resumir_matriz_correspondencias(filas)
+    activas = [
+        fila for fila in filas if fila.actividad_pa_id is not None and fila.estado_correspondencia != "DESCARTADO"
+    ]
+    muestra = activas[:MAX_RESULTADOS]
+    ctx.cobertura_universo_operativo = {
+        "origen": "MATRIZ_PLANEACION_CONGELADA",
+        "run_id": lectura.run_id,
+        "instantanea_sha256": lectura.instantanea_sha256,
+        "base_origen": lectura.base_origen,
+        "modo_matriz": lectura.modo_matriz,
+        "metas_distintas": resumen.metas_distintas,
+        "metas_sin_pa_identificado": resumen.metas_sin_pa,
+        "metas_con_multiples_actividades": resumen.metas_con_multiples_actividades,
+        "pares_meta_pa_sin_truncar": len(activas),
+        "total_actividades_pa_coincidentes_sin_truncar": len({fila.actividad_pa_id for fila in activas}),
+        "actividades_incluidas_en_muestra": len({fila.actividad_pa_id for fila in muestra}),
+        "muestra_truncada": len(muestra) < len(activas),
+        "filtro_textual_aplicado": False,
+        "total_registros_triada_coincidentes_sin_truncar": None,
+        "registros_incluidos_en_muestra": 0,
+        "suma_apropiacion_universo_filtrado_cop": None,
+        "suma_compromisos_universo_filtrado_cop": None,
+        "promedio_avance_fisico_universo_filtrado_pct": None,
+        "estado_publicacion": "no_publicable",
+        "limite": "Solo filtro de plan; sin filtro léxico, clasificación 7D, ejecución o impacto acreditado.",
+    }
+    ctx.resultados["cobertura_universo_operativo"] = ctx.cobertura_universo_operativo
+    return [
+        {
+            "codigo_plan": fila.codigo_plan,
+            "meta_id": str(fila.meta_id),
+            "codigo_meta": fila.codigo_meta,
+            "nombre_meta": fila.nombre_meta,
+            "nombre_nodo": fila.nodo_plan_nombre,
+            "programa_pdd_id": str(fila.programa_pdd_id) if fila.programa_pdd_id else None,
+            "programa_pdd_nombre": fila.programa_pdd_nombre,
+            "actividad_pa_id": str(fila.actividad_pa_id),
+            "actividad_pa_codigo": fila.codigo_actividad_pa,
+            "codigo_bpim": fila.codigo_bpim,
+            "vigencia": fila.vigencia,
+            "estado_correspondencia": fila.estado_correspondencia,
+            "documento_evidencia": fila.documento_evidencia,
+            "pagina_evidencia": fila.pagina_evidencia,
+            "sha256_documento": fila.sha256_documento,
+            "instantanea_sha256": lectura.instantanea_sha256,
+        }
+        for fila in muestra
+    ]
+
+
 async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
+    if ctx.planeacion is not None:
+        return await asyncio.to_thread(_query_actividades_corte, ctx)
     rows = (
         (
             await ctx.session.execute(
@@ -642,8 +882,7 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
         node_terms = set(_terms(node.get("nombre", ""))) | terms
         for activity in activities:
             activity_text = " ".join(
-                str(activity.get(key) or "")
-                for key in ("programa_nombre", "proyecto_nombre", "descripcion_actividad")
+                str(activity.get(key) or "") for key in ("programa_nombre", "proyecto_nombre", "descripcion_actividad")
             )
             overlap = set(_terms(activity_text)) & node_terms
             if overlap:
@@ -652,12 +891,8 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
                         "codigo_plan": node["codigo_plan"],
                         "codigo_nodo": node.get("codigo"),
                         "nombre_nodo": node["nombre"],
-                        "grado_frontalidad": (node.get("metadatos") or {}).get(
-                            "grado_frontalidad_sh"
-                        ),
-                        "dimension_sh_primaria": (node.get("metadatos") or {}).get(
-                            "dimension_sh_primaria"
-                        ),
+                        "grado_frontalidad": (node.get("metadatos") or {}).get("grado_frontalidad_sh"),
+                        "dimension_sh_primaria": (node.get("metadatos") or {}).get("dimension_sh_primaria"),
                         "actividad_pa_codigo": activity["codigo"],
                         "entidad_responsable": activity["entidad_responsable"],
                         "codigo_bpim": activity["codigo_bpim"],
@@ -667,13 +902,9 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
                         "terminos_coincidentes": sorted(overlap),
                     }
                 )
-    matched_activity_codes = {
-        str(row["actividad_pa_codigo"]) for row in matches if row.get("actividad_pa_codigo")
-    }
+    matched_activity_codes = {str(row["actividad_pa_codigo"]) for row in matches if row.get("actividad_pa_codigo")}
     sample = matches[:MAX_RESULTADOS]
-    matched_activities = [
-        row for row in activities if str(row.get("codigo")) in matched_activity_codes
-    ]
+    matched_activities = [row for row in activities if str(row.get("codigo")) in matched_activity_codes]
     activity_codes = list(
         {
             str(row[key])
@@ -713,17 +944,11 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
         "actividades_incluidas_en_muestra": len(
             {str(row["actividad_pa_codigo"]) for row in sample if row.get("actividad_pa_codigo")}
         ),
-        "total_registros_triada_coincidentes_sin_truncar": int(
-            triad.get("total_registros", 0) or 0
-        ),
-        "registros_incluidos_en_muestra": min(
-            int(triad.get("total_registros", 0) or 0), MAX_RESULTADOS
-        ),
+        "total_registros_triada_coincidentes_sin_truncar": int(triad.get("total_registros", 0) or 0),
+        "registros_incluidos_en_muestra": min(int(triad.get("total_registros", 0) or 0), MAX_RESULTADOS),
         "suma_apropiacion_universo_filtrado_cop": float(triad.get("apropiacion", 0) or 0),
         "suma_compromisos_universo_filtrado_cop": float(triad.get("compromisos", 0) or 0),
-        "promedio_avance_fisico_universo_filtrado_pct": (
-            sum(advances) / len(advances) if advances else None
-        ),
+        "promedio_avance_fisico_universo_filtrado_pct": (sum(advances) / len(advances) if advances else None),
     }
     ctx.resultados["cobertura_universo_operativo"] = ctx.cobertura_universo_operativo
     return sample
@@ -731,9 +956,7 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
 
 def _record(ctx: ToolContext, name: str, params: dict[str, Any], value: Any) -> Any:
     count = len(value) if isinstance(value, list) else (1 if value else 0)
-    ctx.invocaciones.append(
-        {"herramienta": name, "parametros": params, "registros_recuperados": count}
-    )
+    ctx.invocaciones.append({"herramienta": name, "parametros": params, "registros_recuperados": count})
     ctx.resultados[name] = value
     return value
 
@@ -750,20 +973,20 @@ def _cognitive_model(messages: list[Any], info: AgentInfo) -> ModelResponse:
     if pending:
         return ModelResponse(parts=[ToolCallPart(tool_name=pending.name, args={})])
     return ModelResponse(
-        parts=[TextPart("Consulta completada con registros recuperados por las herramientas SQL.")]
+        parts=[TextPart("Consulta completada con registros recuperados por las herramientas de lectura.")]
     )
 
 
 def _make_agent(name: str, instructions: str, model: Any) -> Agent:
-    return Agent(
-        model, deps_type=ToolContext, output_type=str, instructions=instructions, name=name
-    )
+    return Agent(model, deps_type=ToolContext, output_type=str, instructions=instructions, name=name)
 
 
-def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
+def _build_agents(ctx: ToolContext, *, modelo: Any = None) -> dict[str, Agent]:
     external_model = os.getenv("POLIS_IA_MODELO")
-    if os.getenv("OPENAI_API_KEY") and external_model != "test":
-        model: Any = external_model or "openai:gpt-4o-mini"
+    if modelo is not None:
+        model: Any = modelo
+    elif os.getenv("OPENAI_API_KEY") and external_model != "test":
+        model = external_model or "openai:gpt-4o-mini"
     else:
         model = FunctionModel(_cognitive_model, model_name="polis-pdd-function-cognitive")
     agents = {
@@ -783,11 +1006,16 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
             model,
         ),
         "auditor_financiero_ppi": _make_agent(
-            "AgenteAuditorFinancieroPPI", "Concilia únicamente montos leídos de PostgreSQL.", model
+            "AgenteAuditorFinancieroPPI",
+            "Lee PPI crudo del corte; no acredita comparabilidad ni ejecución."
+            if ctx.ppi is not None
+            else "Concilia únicamente montos leídos de PostgreSQL.",
+            model,
         ),
         "articulador_operativo_bpim": _make_agent(
             "AgenteArticuladorOperativoBPIM",
-            "Cruza nodos A/B con actividades y BPIM existentes.",
+            "Consulta la matriz congelada cuando se aporta; distingue candidatos de acreditaciones. "
+            "En consulta SQL independiente cruza nodos A/B con actividades y BPIM existentes.",
             model,
         ),
     }
@@ -835,7 +1063,7 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
 
     @agents["auditor_financiero_ppi"].tool
     async def tool_conciliar_ppi_plan(run: RunContext[ToolContext]) -> dict[str, Any]:
-        """Leer PPI corriente/constante y desgloses persistidos por frontalidad y 7D."""
+        """Leer el origen PPI configurado y respetar sus límites financieros."""
         ctx = run.deps
         plans = await _query_ppi(ctx)
         _record(
@@ -852,7 +1080,7 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
     ) -> dict[str, Any]:
         """Cruzar la consulta con DEA, mission creep, LISA, ISRI/Chow y dictamen PDT."""
         ctx = run.deps
-        result = await _evaluacion_pdt_gbr(ctx.session, ctx.consulta)
+        result = await _evaluacion_pdt_gbr(ctx.session, ctx.consulta, ctx.corte)
         ctx.invocaciones.append(
             {
                 "herramienta": "tool_consultar_evaluador_pdt_gbr",
@@ -868,7 +1096,7 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
 
     @agents["articulador_operativo_bpim"].tool
     async def tool_cruzar_actividades_pa_bpim(run: RunContext[ToolContext]) -> dict[str, Any]:
-        """Cruzar nodos A/B con actividades PA y códigos BPIM disponibles."""
+        """Consulta pares meta–PA por corte o coincidencias SQL, con alcance explícito."""
         ctx = run.deps
         matches = await _query_actividades(ctx)
         _record(
@@ -1049,9 +1277,7 @@ def _pdt_architecture_summary(diagnostic: dict[str, Any] | None, source: str) ->
         "total_dmus": len(dea.get("resultados_dmu", [])),
         "pares_malmquist": len(dea.get("malmquist", {}).get("pares", [])),
         "poligonos_postgis_lisa": int(
-            spatial.get(
-                "poligonos_reales_postgis", spatial.get("territorios_con_poligono_geojson", 0)
-            )
+            spatial.get("poligonos_reales_postgis", spatial.get("territorios_con_poligono_geojson", 0))
         ),
         "trampas_territoriales": len(spatial.get("trampas_territoriales_gestion_publica", [])),
         "series_alto_riesgo_isri": len(forecast.get("alto_riesgo_indicadores", [])),
@@ -1075,9 +1301,7 @@ async def _run_agent(agents: dict[str, Agent], key: str, ctx: ToolContext) -> st
     return result.output
 
 
-def _trace_entry(
-    order: int, key: str, started: float, ctx: ToolContext, reason: str
-) -> dict[str, Any]:
+def _trace_entry(order: int, key: str, started: float, ctx: ToolContext, reason: str) -> dict[str, Any]:
     spec = next(item for item in AGENT_SPECS if item["id_nodo"] == key)
     calls = ctx.invocaciones
     ctx.invocaciones = []
@@ -1092,10 +1316,143 @@ def _trace_entry(
     }
 
 
-async def ejecutar_consulta_pdd(
-    session: AsyncSession, consulta: ConsultaAgentesPDD
+async def ejecutar_articulacion_por_corte(
+    consulta: ConsultaAgentesPDD, corte: ContextoCorte, planeacion: ReferenciaMatrizPlaneacion
 ) -> dict[str, Any]:
-    ctx = ToolContext(session=session, consulta=consulta)
+    """Herramienta del supervisor: Agent local, solo artefactos y sin sesión SQL."""
+    ctx = ToolContext(session=None, consulta=consulta, corte=corte, planeacion=planeacion)
+    await asyncio.to_thread(_query_actividades_corte, ctx)
+    agentes = _build_agents(ctx, modelo=FunctionModel(_cognitive_model, model_name="polis-pdd-function-cognitive"))
+    gestion = await agentes["articulador_operativo_bpim"].run(
+        f"Consultar matriz del corte para el plan {consulta.codigo_plan}. Pregunta: {consulta.pregunta}", deps=ctx
+    )
+    if "tool_cruzar_actividades_pa_bpim" not in ctx.resultados:
+        raise ValueError("El agente no ejecutó la herramienta de articulación")
+    uso = gestion.usage
+    return {
+        "esquema": "polis.articulacion_planeacion_corte.v1",
+        "run_id": str(corte.run_id),
+        "corte": corte.referencia(),
+        "consulta": consulta.model_dump(),
+        "modelo": "polis-pdd-function-cognitive",
+        "version_prompt": "articulacion_planeacion_corte.v1",
+        "uso": {"requests": uso.requests, "input_tokens": uso.input_tokens, "output_tokens": uso.output_tokens},
+        "alcance": "SOLO_ARTICULACION_PA_POR_CORTE",
+        "estado_publicacion": "no_publicable",
+        "cobertura": ctx.cobertura_universo_operativo,
+        "muestra": ctx.resultados["tool_cruzar_actividades_pa_bpim"],
+        "herramientas_invocadas": ctx.invocaciones,
+        "limite": "Cruces descriptivos; sin clasificación 7D, montos, inferencia LLM externa ni evaluación causal.",
+    }
+
+
+async def ejecutar_catalogo_por_corte(
+    consulta: ConsultaAgentesPDD, corte: ContextoCorte, catalogo: ReferenciaCatalogoPlaneacion
+) -> dict[str, Any]:
+    """Ejecuta las dos tools MGA mediante Agent local sin conexión SQL ni proveedor externo."""
+    ctx = ToolContext(session=None, consulta=consulta, corte=corte, catalogo=catalogo)
+    await asyncio.to_thread(_catalogo_del_contexto, ctx)
+    agentes = _build_agents(ctx, modelo=FunctionModel(_cognitive_model, model_name="polis-pdd-function-cognitive"))
+    gestion = await agentes["reconstructor_causal_mga"].run(
+        f"Consultar catálogo del corte para {consulta.codigo_plan}. Pregunta: {consulta.pregunta}", deps=ctx
+    )
+    herramientas = ("tool_consultar_nodos_mga", "tool_consultar_metas_oficiales")
+    if any(h not in ctx.resultados for h in herramientas):
+        raise ValueError("El agente no ejecutó las herramientas del catálogo")
+    uso = gestion.usage
+    ruta = (
+        catalogo.catalogo
+        if catalogo.catalogo.is_absolute()
+        else Path(__file__).resolve().parents[4] / catalogo.catalogo
+    )
+    return {
+        "esquema": "polis.consulta_catalogo_corte.v1",
+        "run_id": str(corte.run_id),
+        "corte": corte.referencia(),
+        "catalogo_sha256": ruta.stem,
+        "consulta": consulta.model_dump(),
+        "modelo": "polis-pdd-function-cognitive",
+        "version_prompt": "consulta_catalogo_corte.v1",
+        "uso": {"requests": uso.requests, "input_tokens": uso.input_tokens, "output_tokens": uso.output_tokens},
+        "cobertura_nodos": ctx.cobertura_nodos,
+        "cobertura_metas": ctx.cobertura_universo_bd,
+        "muestras": {h: ctx.resultados[h] for h in herramientas},
+        "herramientas_invocadas": ctx.invocaciones,
+        "estado_publicacion": "no_publicable",
+        "alcance": "SOLO_NODOS_Y_METAS_POR_CORTE",
+        "limite": (
+            "Catálogo formulado y clasificación heredada; no acredita ejecución, impacto ni clasificación canónica 7D."
+        ),
+    }
+
+
+async def ejecutar_ppi_por_corte(
+    consulta: ConsultaAgentesPDD,
+    corte: ContextoCorte,
+    catalogo: ReferenciaCatalogoPlaneacion,
+    ppi: ReferenciaPPIPlaneacion,
+) -> dict[str, Any]:
+    """Ejecuta solo la tool financiera con Agent local; sin sesión ni otras tools SQL."""
+    ctx = ToolContext(session=None, consulta=consulta, corte=corte, catalogo=catalogo, ppi=ppi)
+    await asyncio.to_thread(_query_ppi_corte, ctx)
+    agent = _make_agent(
+        "AgentePPIFormuladoPorCorte",
+        "Lee solo cifras crudas congeladas; no acredita comparabilidad, ejecución ni causalidad.",
+        FunctionModel(_cognitive_model, model_name="polis-pdd-function-cognitive"),
+    )
+
+    @agent.tool
+    async def tool_conciliar_ppi_plan(run: RunContext[ToolContext]) -> dict[str, Any]:
+        planes = await _query_ppi(run.deps)
+        _record(run.deps, "tool_conciliar_ppi_plan", {"codigo_plan": consulta.codigo_plan}, planes)
+        return {"planes": planes, "cobertura": run.deps.resultados["cobertura_financiera"]}
+
+    gestion = await agent.run(f"Lee PPI del plan {consulta.codigo_plan} en el corte indicado.", deps=ctx)
+    if "tool_conciliar_ppi_plan" not in ctx.resultados:
+        raise ValueError("El agente no ejecutó la herramienta financiera")
+    uso = gestion.usage
+    return {
+        "esquema": "polis.consulta_ppi_corte.v1",
+        "run_id": str(corte.run_id),
+        "corte": corte.referencia(),
+        "consulta": consulta.model_dump(),
+        "modelo": "polis-pdd-function-cognitive",
+        "version_prompt": "consulta_ppi_corte.v1",
+        "uso": {"requests": uso.requests, "input_tokens": uso.input_tokens, "output_tokens": uso.output_tokens},
+        "cobertura_financiera": ctx.resultados["cobertura_financiera"],
+        "cobertura_metas": ctx.cobertura_universo_bd,
+        "planes": ctx.resultados["tool_conciliar_ppi_plan"],
+        "herramientas_invocadas": ctx.invocaciones,
+        "estado_publicacion": "no_publicable",
+        "alcance": "SOLO_PPI_FORMULADO_POR_CORTE_SIN_SQL",
+    }
+
+
+async def ejecutar_consulta_pdd(
+    session: AsyncSession,
+    consulta: ConsultaAgentesPDD,
+    *,
+    corte: ContextoCorte | None = None,
+    planeacion: ReferenciaMatrizPlaneacion | None = None,
+    catalogo: ReferenciaCatalogoPlaneacion | None = None,
+    ppi: ReferenciaPPIPlaneacion | None = None,
+) -> dict[str, Any]:
+    referencia_corte = corte.referencia() if corte is not None else None
+    if planeacion is not None:
+        if corte is None:
+            raise ValueError("La referencia de planeación requiere corte")
+        await asyncio.to_thread(planeacion.leer, corte)
+        if consulta.dimension_sh != "TODAS" or consulta.grado_frontalidad != "TODOS":
+            raise ValueError("La matriz congelada no contiene clasificación SH/frontalidad para aplicar esos filtros")
+    ctx = ToolContext(
+        session=session, consulta=consulta, corte=corte, planeacion=planeacion, catalogo=catalogo, ppi=ppi
+    )
+    if ppi is not None:
+        await asyncio.to_thread(_query_ppi_corte, ctx)
+    if catalogo is not None:
+        captura = await asyncio.to_thread(_catalogo_del_contexto, ctx)
+        if planeacion is not None:
+            comprobar_matriz_y_catalogo(captura, await asyncio.to_thread(planeacion.leer, corte))
     agents = _build_agents(ctx)
     state: GrafoState = {"consulta": consulta, "contexto": ctx, "traza": [], "iteracion": 1}
     graph = StateGraph(GrafoState)
@@ -1125,10 +1482,7 @@ async def ejecutar_consulta_pdd(
                     "observacion": (
                         "Citas SHA-256 comprobadas contra el contenido fuente."
                         if valid
-                        else (
-                            "Sin coincidencias documentales verificables; "
-                            "no se atribuyen citas ni cifras."
-                        )
+                        else ("Sin coincidencias documentales verificables; no se atribuyen citas ni cifras.")
                     ),
                 }
             await _run_agent(agents, key, ctx)
@@ -1168,7 +1522,9 @@ async def ejecutar_consulta_pdd(
         ),
         (
             "auditor_financiero_ppi",
-            "Reconcilia exclusivamente montos persistidos en las tablas de planes y nodos.",
+            "Lee PPI formulado congelado; el evaluador PDT de este nodo puede consultar SQL vivo."
+            if ppi is not None
+            else "Reconcilia exclusivamente montos persistidos en las tablas de planes y nodos.",
             ("conciliacion", "evaluacion_pdt_gbr"),
         ),
         (
@@ -1212,6 +1568,7 @@ async def ejecutar_consulta_pdd(
                 "nombre_oficial",
                 "ppi_total_corriente_cop",
                 "ppi_total_constante_2025_cop",
+                "estado_financiero",
                 "desglose_abcn_constante_2025_cop",
                 "desglose_7d_constante_2025_cop",
             )
@@ -1222,11 +1579,12 @@ async def ejecutar_consulta_pdd(
     plan_lines = [
         f"{plan.get('codigo_plan')}: PPI corriente COP "
         f"{plan.get('ppi_total_corriente_cop')}; constante 2025 COP "
-        f"{plan.get('ppi_total_constante_2025_cop')}"
+        f"{plan.get('ppi_total_constante_2025_cop')} "
+        f"({plan.get('estado_financiero', 'SIN_ESTADO')})"
         for plan in financial
     ]
     synthesis = (
-        "PPI observado por plan: " + "; ".join(plan_lines)
+        "PPI formulado por plan según el catálogo documental: " + "; ".join(plan_lines)
         if plan_lines
         else "La consulta no encontró planes con PPI en la BD para los filtros indicados."
     )
@@ -1235,16 +1593,42 @@ async def ejecutar_consulta_pdd(
         f"{len(nodes)} nodos MGA y {len(metas)} metas oficiales."
     )
     return {
-        "run_id": str(uuid.uuid4()),
+        "run_id": str(corte.run_id) if corte is not None else str(uuid.uuid4()),
+        "corte": referencia_corte,
+        "alcance_corte": (
+            "NODOS_METAS_Y_PPI_POR_CORTE_EVIDENCIA_PDT_Y_OTRAS_TOOLS_PUEDEN_USAR_SQL_VIVO"
+            if ppi is not None
+            else "NODOS_Y_METAS_POR_CORTE_OTRAS_CONSULTAS_SQL_EN_VIVO"
+            if catalogo is not None and planeacion is None
+            else "NODOS_METAS_Y_ARTICULACION_PA_POR_CORTE_OTRAS_CONSULTAS_SQL_EN_VIVO"
+            if catalogo is not None
+            else "ARTICULACION_PA_POR_CORTE_OTRAS_CONSULTAS_SQL_EN_VIVO"
+            if planeacion is not None
+            else (
+                "REFERENCIA_VERIFICADA_SQL_EN_VIVO_NO_CONCILIADO"
+                if corte is not None
+                else "CONSULTA_INDEPENDIENTE_SQL_EN_VIVO"
+            )
+        ),
         "motor": MOTOR,
+        "cobertura_financiera": ctx.resultados.get("cobertura_financiera"),
         "pregunta": consulta.pregunta,
         "sintesis_ejecutiva": synthesis,
         "dictamen_forense_detallado": {
             "planes_analizados": plan_summary,
             "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
             "limites": (
-                "La clasificación es la persistida en la BD; las coincidencias con "
-                "actividades son léxicas y no prueban causalidad."
+                "Nodos, metas y PPI provienen del mismo corte; evidencia y PDT pueden consultar SQL vivo. "
+                "La articulación solo se congela con referencia de matriz. PPI crudo sin comparabilidad acreditada."
+                if ppi is not None
+                else "Nodos y metas provienen del catálogo congelado; PPI, evidencia y PDT siguen en SQL vivo. "
+                "La articulación PA usa matriz congelada solo si se aporta su referencia. "
+                "Clasificación SH heredada; no acredita ejecución, clasificación canónica 7D ni impacto."
+                if catalogo is not None
+                else "La articulación PA proviene de la matriz congelada; las otras consultas siguen en SQL vivo. "
+                "Las candidaturas no acreditan ejecución ni impacto."
+                if planeacion is not None
+                else "La clasificación procede de BD; las coincidencias léxicas con actividades no prueban causalidad."
             ),
         },
         "traza_langgraph": result.get("traza", []),
@@ -1256,6 +1640,7 @@ async def ejecutar_consulta_pdd(
             "articulacion_pa_bpim": result.get("articulacion", []),
             "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
             "cobertura_universo_bd": ctx.cobertura_universo_bd,
+            "cobertura_nodos": ctx.cobertura_nodos,
             "cobertura_universo_operativo": ctx.cobertura_universo_operativo,
         },
         "cobertura_universo_bd": ctx.cobertura_universo_bd,
@@ -1292,20 +1677,13 @@ def _fragment_analysis(text_fragment: str, plan_code: str) -> dict[str, Any]:
     digits = re.findall(r"\d+(?:[,.]\d+)?\s*%?", meta_text)
     weights = dict.fromkeys(DIMENSIONES, 0.0)
     matched = next(
-        (
-            dimension
-            for dimension in DIMENSIONES
-            if dimension.casefold() in text_fragment.casefold()
-        ),
+        (dimension for dimension in DIMENSIONES if dimension.casefold() in text_fragment.casefold()),
         "Personal",
     )
     weights[matched] = 1.0
     grade = (
         "A"
-        if any(
-            term in text_fragment.casefold()
-            for term in ("reducir", "prevalencia", "hogares vulnerables")
-        )
+        if any(term in text_fragment.casefold() for term in ("reducir", "prevalencia", "hogares vulnerables"))
         else "B"
     )
     return {
@@ -1325,8 +1703,7 @@ def _fragment_analysis(text_fragment: str, plan_code: str) -> dict[str, Any]:
                     "adecuado": bool(meta_text),
                     "puntaje_crema_pct": 80.0 if digits else 60.0,
                     "observacion_dnp": (
-                        "Evaluación heurística del texto aportado; requiere validación "
-                        "contra fuente oficial."
+                        "Evaluación heurística del texto aportado; requiere validación contra fuente oficial."
                     ),
                 },
             }
@@ -1337,8 +1714,7 @@ def _fragment_analysis(text_fragment: str, plan_code: str) -> dict[str, Any]:
             "dimension_sh_primaria": matched,
             "pesos_7d": weights,
             "justificacion_causal_ia": (
-                "Asignación heurística provisional basada en términos explícitos; "
-                "no reemplaza clasificación oficial."
+                "Asignación heurística provisional basada en términos explícitos; no reemplaza clasificación oficial."
             ),
             "evidencias_homologas_bd": [],
         },
@@ -1350,9 +1726,7 @@ def _fragment_analysis(text_fragment: str, plan_code: str) -> dict[str, Any]:
     }
 
 
-async def interpretar_fragmento(
-    session: AsyncSession, request: InterpretarFragmentoPDD
-) -> dict[str, Any]:
+async def interpretar_fragmento(session: AsyncSession, request: InterpretarFragmentoPDD) -> dict[str, Any]:
     analysis = _fragment_analysis(request.texto_fragmento, request.codigo_plan_referencia)
     ctx = ToolContext(
         session,

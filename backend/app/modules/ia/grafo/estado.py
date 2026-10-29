@@ -13,6 +13,8 @@ class EstadoCicloPolitica(TypedDict):
     """Estado compartido a través de todos los nodos del StateGraph de LangGraph."""
 
     politica_id: str
+    run_id: str | None
+    corte: dict[str, str] | None
     titulo: str
     descripcion: str
     sector: str

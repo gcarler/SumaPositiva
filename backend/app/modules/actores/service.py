@@ -1,5 +1,5 @@
 import uuid
-from typing import Sequence
+from collections.abc import Sequence
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +10,7 @@ from app.modules.actores.repository import ActoresRepository
 from app.modules.actores.schemas import (
     ActorEstrategicoActualizar,
     ActorEstrategicoCrear,
+    ActorEstrategicoRespuesta,
     KpisActoresRespuesta,
 )
 from app.modules.auditoria.models import RegistroAuditoria
@@ -95,15 +96,16 @@ class ActoresService:
             )
             self.session.add(auditoria)
             await self.session.flush()
+            respuesta = ActorEstrategicoRespuesta.model_validate(creado)
 
-        return creado
+        return respuesta
 
     async def actualizar_actor(
         self,
         actor_id: uuid.UUID,
         cambios: ActorEstrategicoActualizar,
         usuario_id: uuid.UUID | None = None,
-    ) -> ActorEstrategico:
+    ) -> ActorEstrategicoRespuesta:
         actor = await self.obtener_por_id(actor_id)
 
         datos_dict = cambios.model_dump(exclude_unset=True)
@@ -123,8 +125,9 @@ class ActoresService:
             )
             self.session.add(auditoria)
             await self.session.flush()
+            respuesta = ActorEstrategicoRespuesta.model_validate(actor)
 
-        return actor
+        return respuesta
 
     async def eliminar_actor(
         self,

@@ -1,0 +1,12 @@
+{
+  "alembic_check": "aprobado",
+  "alembic_check_reconstruccion": "aprobado",
+  "anotacion_preservada_downgrade_0083_0082": true,
+  "base": "polis_test_matriz_0083_20261022_01",
+  "check_etiqueta_invalida_y_rollback": "aprobado_desde_otra_conexion",
+  "datos_previos_preservados": true,
+  "downgrade_base_reconstruccion": "aprobado",
+  "migracion_0083_sha256": "f9f2e6135cd36992926ba613fc8aff96b3f12561a06f4e1ecf4a5c26076ddd16",
+  "produccion_modificada": false,
+  "upgrade_desde_0082": "aprobado"
+}

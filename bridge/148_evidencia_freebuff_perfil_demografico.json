@@ -1,0 +1,79 @@
+{
+  "tarea": "FB-TERR-SEM-01-R1",
+  "fecha_verificacion_utc": "2026-10-26T03:28:31.358879+00:00",
+  "insumos_sha256": {
+    "filas_jsonl_118": "a6f30f18dccc7950ba12ed5dc83012fd3e46b03870660c1cbfbd3c8323c02e4c",
+    "perfil_141": "1a55b987c71a367947c37cb706c9c6a5af13e5477957d5ec0a0cf03e3846f31c",
+    "resumen_118": "5d8909ba84612990b8abc02d762426b0590ee82b23b21ccb1cb85f7fbc4a308e",
+    "cotejo_119": "09d566a83ae0ced31438cf69c6648e0a88c565b7fcc0198bb0d9c53bc96efefd",
+    "este_script": "bcd9e348966e9f4dbd3a9a0c26d54cfc2d9fa8ddd72863590ea5f612c4da0945"
+  },
+  "checks_integridad_insumos": {
+    "jsonl_sha256_igual_a_119": true,
+    "jsonl_sha256_igual_a_id_141": true,
+    "zip_sha256_igual_118_119": true,
+    "txt_sha256_igual_118_119": true
+  },
+  "modo": "verificacion_solo_lectura; el perfil 141 no fue reescrito",
+  "cotejo_resultado": {
+    "errores": [],
+    "comparaciones_por_serie": 6018,
+    "series_recomputadas": 354,
+    "duplicados_recomputados": 0,
+    "agregados_por_fuente_recomputados": 19,
+    "familias_fuentes_recomputadas": 19
+  },
+  "causa_filas_retenidas": {
+    "filas_retenidas": 74,
+    "filas_rechazadas": 0,
+    "estado_valor_numerico": {
+      "no_presente": 74
+    },
+    "dato_numerico_vacio_todas": true,
+    "dato_cualitativo_vacio_todas": true,
+    "advertencias": {
+      "temporalidad_preservada_sin_regla_proveedor": 74,
+      "sin_valor_declarado": 74
+    },
+    "victima_de_formato_decimal": 0,
+    "indicadores_con_PEP": 68,
+    "indicadores_con_PPT": 0,
+    "subcategorias_retenidas": {
+      "Población étnica": 6,
+      "Migración": 68
+    },
+    "ordenes_por_familia": {
+      "migracion_PEP": [
+        3590,
+        3591,
+        3592,
+        3593,
+        3594,
+        3595,
+        3596,
+        3597
+      ],
+      "resguardos": [
+        2255,
+        2256,
+        2263,
+        2264,
+        2271,
+        2272
+      ]
+    }
+  },
+  "no_afirmado": "no se afirma identidad byte a byte del guion parcial incluido en 141",
+  "neg_ctrl_check": {
+    "patron": "smapple|instrucción reproducible|17.085|PPT",
+    "archivo": "bridge/148_fe_erratas_freebuff_perfil_demografico.md",
+    "coincidencias": 1,
+    "resultados": [
+      {
+        "line": 16,
+        "frag": "- **68 filas de permisos especiales** (subcategoría `Migración`, fuente UAMC, años 2020–2021, 34 series × 2 filas): seri"
+      }
+    ],
+    "nota": "coincidencia unica = la cita literal de la errata PEP/PPT en la seccion 1 (el texto menciona PPT para corregirlo); sin restos corruptos ni texto ajeno"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "tarea": "FB-FUENTES-01",
+  "fecha_utc": "2026-10-25",
+  "agente": "Freebuff",
+  "estado": "revision_independiente_92_completada",
+  "objeto": {
+    "especificacion": "bridge/92_especificacion_ollamacodex_integracion_catalogo_planificador.md",
+    "matriz": "bridge/92_matriz_ollamacodex_catalogo_planificador.json",
+    "evidencia_92": "bridge/92_evidencia_ollamacodex_integracion_fuentes.json",
+    "hashes_92": {
+      "especificacion": "92f3a20b2acfce1f3abfa8383b11f174a842932ebada1010c4feda6eec173756",
+      "matriz": "c2e84161d768fac031f1bfab398a3dc563ab739d0e96e4a4f93f21c25c38638d",
+      "evidencia": "537e1c8f73aacf18baf3bf5ef7da243dfe5ffe10daa1b4021f288008809f6b3c"
+    }
+  },
+  "entradas_cuyo_hash_cotejado_coincide": {
+    "bridge/65_schema_clasificacion_fuentes_ollamacodex.json": "0dfcd27e74680b3cdcfd7bfb5475752a3c0c47fc03f861c6dcbb3e2e182f231e",
+    "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca",
+    "bridge/65_contrato_ciclo_fuentes_ollamacodex.md": "0419f711d3c05a558cf6c94b2ffa90529c64eb8ca767de41020d152d6a8aa99f",
+    "bridge/65_entrega_ollamacodex_clasificacion_fuentes.md": "9ac012517ed74741dfd5fb78b041c216a352bd5695014b819e8cd066a4691666",
+    "bridge/70_revision_final_clasificacion_fuentes.json": "2583c59f5ec558551e7e2ff950955c66e94c73c3d6a6f80b1c8933e6c5da44fc",
+    "bridge/70_revision_final_clasificacion_fuentes.md": "838d4ef5bcb3ff26b457c7d7ae606b741df8baf66fa83af0330048f9dc61f9fe",
+    "bridge/71_tarea_opencode_integracion_catalogo_fuentes.md": "8ba59f39b8f560da855f629450db91dc9a441d608b1e13e21fc5b4aed8f45306",
+    "bridge/72_revision_preventiva_integracion_fuentes_opencode.md": "dc132c84c5cc095cc3c4cf2f05d4f09b69c39c832d0a94a7f7080874d23358ff",
+    "bridge/72_matriz_correspondencia_catalogo_planificador.json": "03c77c754a179d2b2531542aee3c4d341079a6017d4caa0ba2f312b1e30eee67",
+    "bridge/72_evidencia_revision_fuentes_opencode.json": "ec1ab27a44064382b92bb9082916efa0b086361d31aa2231e4c217e75a86ea15",
+    "bridge/78_revision_opencode_integracion_fuentes_r1.md": "7ca5b13d8d3727a90b00cff8df1e4eb9d1f44023fde694d7a9f5d3efd7a76e6c",
+    "bridge/58_evidencia_adquisicion_fuentes.json": "c5861d20a618de5376cb5489e274876d4a22a671dee900b17e0c950a9b172e7e",
+    "bridge/58_resultados_descargas.csv": "4f1ec29ab5bffe45c9a14ca1fca88fc53d057ced63a655e622efe3e156a2def1",
+    "backend/app/modules/compromisos/planificador_fuentes_politica.py": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+    "backend/app/modules/compromisos/registro_descargas_polis.py": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd",
+    "backend/app/modules/compromisos/adquisicion_fuentes_polis.py": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3",
+    "backend/scripts/planificar_fuentes_politica.py": "b1423ed6eda1b36a0fb38c48366476bddba5da5ff64d9ea7138eea8cd135b0a4",
+    "backend/scripts/adquirir_fuentes_politica.py": "a8986ada9a6f7a2d7a93838608b153d29fe63d8e7e348fc9595886656cb83184",
+    "backend/app/modules/compromisos/corte_datos_polis.py": "16cc4fd6b3aecf423f24e4bcea236728aa56f21f16ce6e14ad44012bb8be5f0f",
+    "backend/app/modules/compromisos/contexto_corte_polis.py": "3daa460376e0b0fa3bb005445513c557e388dbdeb8209a0648e2fc1c94261a58",
+    "backend/app/modules/compromisos/orquestador_grafo.py": "58a2e6daecc382825fa51e7ef0315b5a675aef3042dcedac737550e9bc3855f5"
+  },
+  "cotejos_ejecutados_localmente": [
+    "union_de_campos_primer_nivel_40_vs_matriz_40_bidireccional_0_diferencias",
+    "clases_2_13_2_2_1_43; PR_20_locales_43; suma_indicadores_136; suma_unidades_60; enlaces_PR_21",
+    "territorios_no_vacios_9; vigencia_no_nula_0; coberturas_no_vacias_0",
+    "fidelidad_recalculada_3_10_24_3_total_40",
+    "claves_registro_descargas_reconstruidas_estaticamente_28; fichas_con_clave_28; sin_clave_35_igual_a_matriz; claves_huerfanas_0",
+    "AST_lectura_planificador_289_lineas; HOSTS_sin_drive; abortos_antes_de_red_l404; filtros_13001_13001000",
+    "l285_importador_copia_sha_declarado_a_version_local_sha256_F1"
+  ],
+  "diez_puntos_78": {
+    "1_BytesAlcance": "resuelto (matriz separa hash entrada/sha declarado/bytes analiticos)",
+    "2_Matriz40": "resuelto y verificado con exactitud",
+    "3_FidelidadVsAptitud": "resuelto (sidecar conserva ficha completa)",
+    "4_PendienteNoDefecto": "resuelto",
+    "5_CicloImposible": "resuelto (_evaluar permite programar sin validacion previa; vigencia nula no bloquea)",
+    "6_DespachoURLs": "resuelto (despacho por producto_id; HOSTS sin drive; aborto antes de red; filtros 13001)",
+    "7_Agregados": "resuelto (compatible si contrasta; no identifica individuos)",
+    "8_UnidadesNoPresumidas": "resuelto",
+    "9_DosResoluciones": "resuelto",
+    "10_NombresReales_PR18_Procedencia": "resuelto; falta anexo de interfaz concreta (F2)"
+  },
+  "hallazgos_nuevos": {
+    "F1": "incorporar_inventario_local (planificador:285) copia sha256_contenido_declarado a version_local_sha256; contradice regla 6 de 92 si el adaptador reutiliza el importador tal cual; clasificar como requisito de implementacion, no defecto de 92",
+    "F2": "la interfaz concreta del adaptador (modulo, firma de funcion, formato de sidecar versionado, criterio CoberturaFuente por estacion) no esta definida en 92; se necesita anexo para implementar sin reinterpretacion",
+    "F3": "DIVIPOLA:13001 es abreviatura documental; el codigo real usa filtros 13001/13001000 por dataset en registro_descargas; el contrato futuro debe nombrar el campo real por dataset"
+  },
+  "limites": {
+    "SQL": false,
+    "red": false,
+    "pruebas_funcionales": false,
+    "pytest": false,
+    "ejecucion_planificador_CLI": false,
+    "cambios_aplicacion_o_datos": false,
+    "modifico_92_65_70_72_78": false,
+    "piloto_106_integerferido": false,
+    "dictamen_EAF": false,
+    "commit_push_despliegue": false
+  },
+  "escrituras": [
+    "bridge/108_revision_freebuff_integracion_92.md",
+    "bridge/108_evidencia_freebuff_integracion_92.json",
+    "bridge/104_fe_erratas_freebuff_validacion.json (turno previo; intacta)"
+  ],
+  "fe_de_erratas_104": "ya_registrada_en_turno_previo: 1126_previo_a_34320_bytes_del_contrato_74; SHA_071d8bc7_mm_correcto; sin_nuevas_erratas_en_92"
+}

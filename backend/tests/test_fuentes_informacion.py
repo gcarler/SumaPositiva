@@ -1,4 +1,5 @@
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import text
@@ -40,7 +41,9 @@ async def test_migracion_0042_cero_radicados_y_solo_por_solicitar(database_url: 
             res_resumenes = await conn.execute(
                 text("""
                     SELECT count(*) FROM auditoria.fuentes_informacion
-                    WHERE resumen_datos IS NOT NULL OR archivo_adjunto_url IS NOT NULL OR observaciones_calidad IS NOT NULL;
+                    WHERE resumen_datos IS NOT NULL
+                       OR archivo_adjunto_url IS NOT NULL
+                       OR observaciones_calidad IS NOT NULL;
                 """)
             )
             assert res_resumenes.scalar() == 0, "No debe haber resúmenes ni URLs ficticias en la semilla"
@@ -99,12 +102,14 @@ def test_seguridad_rbac_fuentes_401_y_403(database_url: str):
         assert resp_delete.status_code == 401
 
     # 2. Cliente con rol ciudadano (sin fuentes:gestionar) -> 403 Forbidden
+    import asyncio
+
     from sqlalchemy.ext.asyncio import async_sessionmaker
+
     from app.core.transactions import transaction
     from app.modules.identidad.repository import IdentidadRepository
     from app.modules.identidad.schemas import LoginPeticion, UsuarioCreacion
     from app.modules.identidad.service import IdentidadService
-    import asyncio
 
     async def obtener_cabeceras_ciudadano():
         engine = create_async_engine(database_url, hide_parameters=True)
@@ -127,9 +132,7 @@ def test_seguridad_rbac_fuentes_401_y_403(database_url: str):
                     rol = await repo.obtener_rol_por_codigo("ciudadano")
                     cuenta.rol_id, cuenta.rol = rol.id, rol
                     await repo.guardar()
-                token = await service.autenticar_usuario(
-                    LoginPeticion(correo=correo, contrasena="Ciudadano2026*")
-                )
+                token = await service.autenticar_usuario(LoginPeticion(correo=correo, contrasena="Ciudadano2026*"))
                 return {"Authorization": f"Bearer {token.token_acceso}"}
         finally:
             await engine.dispose()

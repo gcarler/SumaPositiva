@@ -5,8 +5,9 @@ Revises: 0035_mediciones_indicadores_seed
 Create Date: 2026-10-04 00:15:00.000000
 """
 
-from alembic import op
 from sqlalchemy import text
+
+from alembic import op
 
 revision = "0036_restituir_mediciones"
 down_revision = "0035_mediciones_indicadores_seed"

@@ -39,11 +39,7 @@ class TelemetryTracker:
             total = self._total_requests
             err_count = self._status_5xx
             error_rate = round((err_count / total * 100), 2) if total > 0 else 0.0
-            avg_latency = (
-                round(sum(self._latencies) / len(self._latencies), 2)
-                if self._latencies
-                else 0.0
-            )
+            avg_latency = round(sum(self._latencies) / len(self._latencies), 2) if self._latencies else 0.0
             return {
                 "uptime_seconds": uptime,
                 "total_requests": total,

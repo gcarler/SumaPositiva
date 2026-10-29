@@ -29,12 +29,8 @@ def upgrade() -> None:
             ),
             schema="seguimiento",
         )
-        op.add_column(
-            table, sa.Column("periodo_gobierno", sa.String(20), nullable=True), schema="seguimiento"
-        )
-        op.create_index(
-            f"idx_{table}_periodo_gobierno", table, ["periodo_gobierno"], schema="seguimiento"
-        )
+        op.add_column(table, sa.Column("periodo_gobierno", sa.String(20), nullable=True), schema="seguimiento")
+        op.create_index(f"idx_{table}_periodo_gobierno", table, ["periodo_gobierno"], schema="seguimiento")
         op.create_index(
             f"idx_{table}_dimensiones_gin",
             table,

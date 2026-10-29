@@ -15,18 +15,24 @@ export type Rol = z.infer<typeof rolSchema>;
 export const tokenSchema = z.object({token_acceso: z.string(), expira_en: z.string(),
   rol: z.string(), permisos: z.array(z.string()), nivel_identidad: z.string(), usuario: usuarioSchema,
   mfa_requerido: z.boolean().optional(),
-  token_desafio_mfa: z.string().nullable().optional()});
+  token_desafio_mfa: z.string().nullable().optional(),    /* Sesión limitada al enrolamiento acordada con EDD (181): true solo en el token
+   * de configuración inicial; se interpreta como false si la respuesta no lo
+   * trae (compatibilidad con respuestas anteriores). */
+  mfa_enrolamiento_requerido: z.boolean().optional().catch(false)});
+
 export type Login = z.infer<typeof tokenSchema>;
 export const mfaEstadoSchema = z.object({
   activo: z.boolean(),
   activado_en: z.string().nullable(),
-  ultimo_uso_en: z.string().nullable(),
+  /* La API no entrega fecha de último uso (EAF-ID-06): no se inventa. */
   codigos_restantes: z.number(),
+  exigido_por_rol: z.boolean(),
+  sesion_verificada: z.boolean().default(false),
 });
 export type MfaEstado = z.infer<typeof mfaEstadoSchema>;
 export const mfaIniciarSchema = z.object({
   secreto_b32: z.string(),
-  uri_totp: z.string(),
+  otpauth_uri: z.string(),
   qr_code_base64: z.string(),
 });
 export type MfaIniciar = z.infer<typeof mfaIniciarSchema>;
@@ -54,7 +60,8 @@ export const ambitoTerritorialSchema = z.object({
   tipo_ambito: z.enum(["distrital", "localidad", "mesa"]),
   identificador_territorial: z.string(),
   activo: z.boolean(),
-  asignado_en: z.string(),
+  creado_en: z.string(),
+  actualizado_en: z.string(),
 });
 export type AmbitoTerritorial = z.infer<typeof ambitoTerritorialSchema>;
 

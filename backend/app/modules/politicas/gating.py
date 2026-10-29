@@ -15,15 +15,15 @@ Reglas de Negocio (Sentencia C-150/15, Ley 152/94, DNP Sinergia / MGA):
    - Progreso real = Promedio de cumplimiento cuatrienal de compromisos PAS (seguimiento.compromisos_pas.porcentaje_cumplimiento).
 """
 
+import logging
 from decimal import Decimal
+
 from fastapi import HTTPException, status
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.politicas.models import FasePolitica
-
-import logging
 
 logger = logging.getLogger("polis.politicas.gating")
 ROLES_ADMIN_DISTRITAL = {"autoridad_distrital", "administrador_identidades"}
@@ -48,16 +48,11 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
     # 1. Diagnóstico Participativo: mesas de trabajo concertadas vs total (con piso de 15.00% para alistamiento en curso [FASES-CICLO-01])
     try:
         res_f1 = await session.execute(
-            text(
-                "SELECT count(*) FILTER (WHERE estado = 'ACTA_CONCERTADA'), "
-                "count(*) FROM mesas_trabajo.mesas"
-            )
+            text("SELECT count(*) FILTER (WHERE estado = 'ACTA_CONCERTADA'), count(*) FROM mesas_trabajo.mesas")
         )
         fila_f1 = res_f1.fetchone()
         if fila_f1 and fila_f1[1] and fila_f1[1] > 0:
-            pct_calculado = round(
-                Decimal(fila_f1[0]) / Decimal(fila_f1[1]) * 100, 2
-            )
+            pct_calculado = round(Decimal(fila_f1[0]) / Decimal(fila_f1[1]) * 100, 2)
             # Piso metodológico: alistamiento y diagnóstico en curso (15.00%)
             progresos["FASE_1_DIAGNOSTICO"] = max(Decimal("15.00"), pct_calculado)
         else:
@@ -112,7 +107,7 @@ async def verificar_escritura_fase(
     session: AsyncSession,
 ) -> None:
     """Verifica si la fase del ciclo permite operaciones de mutación al sujeto autenticado.
-    
+
     Regla de Gating (AUD-05):
     - Si la fase está 'activa', cualquier usuario con el permiso del módulo correspondiente puede escribir.
     - Si la fase NO está 'activa' (ej. 'preparatoria', 'en_revision', 'cerrada', 'archivada'),

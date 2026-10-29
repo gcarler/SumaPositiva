@@ -91,19 +91,46 @@ describe("Costeo Presupuestal y Asignación de Fuentes (Hito F-3)", () => {
 
   describe("Servicio y Métodos Asíncronos", () => {
     test("listarFuentesFinanciacion retorna las 5 fuentes oficiales o fallback", async () => {
-      const fuentes = await listarFuentesFinanciacion();
-      expect(Array.isArray(fuentes)).toBe(true);
-      expect(fuentes.length).toBeGreaterThanOrEqual(5);
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(FUENTES_FINANCIACION_FALLBACK), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+      try {
+        const fuentes = await listarFuentesFinanciacion();
+        expect(Array.isArray(fuentes)).toBe(true);
+        expect(fuentes.length).toBeGreaterThanOrEqual(5);
 
-      const fonset = fuentes.find((f) => f.codigo === "FONSET");
-      expect(fonset).toBeDefined();
-      expect(fonset?.base_legal).toContain("Ley 418 de 1997");
+        const fonset = fuentes.find((f) => f.codigo === "FONSET");
+        expect(fonset).toBeDefined();
+        expect(fonset?.base_legal).toContain("Ley 418 de 1997");
+      } finally {
+        fetchSpy.mockRestore();
+      }
     });
 
     test("listarAsignacionesPresupuestales retorna asignaciones enlazadas", async () => {
-      const asignaciones = await listarAsignacionesPresupuestales();
-      expect(Array.isArray(asignaciones)).toBe(true);
-      expect(asignaciones.length).toBeGreaterThan(0);
+      const fetchSpy = vi.spyOn(globalThis, "fetch")
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(FUENTES_FINANCIACION_FALLBACK), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          })
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(ASIGNACIONES_FALLBACK), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          })
+        );
+      try {
+        const asignaciones = await listarAsignacionesPresupuestales();
+        expect(Array.isArray(asignaciones)).toBe(true);
+        expect(asignaciones.length).toBeGreaterThan(0);
+      } finally {
+        fetchSpy.mockRestore();
+      }
     });
 
     test("crearAsignacionPresupuestal propaga error ante fallo de autenticación o backend (H-04)", async () => {

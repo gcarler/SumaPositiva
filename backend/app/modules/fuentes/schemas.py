@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from typing import Any, Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 TipoFuenteLiteral = Literal["primaria", "secundaria"]
@@ -12,9 +13,7 @@ EstadoEntregaLiteral = Literal[
     "vencida_sin_entrega",
     "requerimiento_insistencia",
 ]
-PeriodicidadLiteral = Literal[
-    "mensual", "trimestral", "semestral", "anual", "por_demanda"
-]
+PeriodicidadLiteral = Literal["mensual", "trimestral", "semestral", "anual", "por_demanda"]
 
 
 class ResponsableContactoSchema(BaseModel):

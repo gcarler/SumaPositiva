@@ -1,0 +1,39 @@
+{
+  "esquema": "polis.ollamacodex.pp.v1",
+  "tarea": "OL-CODEX-03-R1",
+  "fecha": "2026-10-23",
+  "estado": "PENDIENTE_REVIEW_FUNCIONAL",
+  "archivos_tocados": [
+    "backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py",
+    "backend/scripts/comparar_ppi_catalogo_polis.py",
+    "backend/tests/test_comparacion_ppi_catalogo_polis.py"
+  ],
+  "validacion": {
+    "ruff_check": "exit 0",
+    "ruff_format_check": "exit 0",
+    "pytest_directo": "16 passed in 0.94s",
+    "base_prueba": "polis_test_orq_v5_20261022",
+    "suite_integral": "no_ejecutada"
+  },
+  "garantias": {
+    "rutas": "normalizadas_contra_RAIZ_y_igual_para_lectores_y_sha_archivo",
+    "universos": "conteo_faltantes_sobrantes_completo",
+    "hallazgos": "tipados_con_conteo_muestreado_y_muestra_maxima",
+    "jsonb": "conteo_campos_y_nodos_separados",
+    "base_origen": "distinta_reportada",
+    "clis": "sin_sql_y_sin_sobrescritura"
+  },
+  "sha256": {
+    "backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py": "ec7e320b76512817014f6481bf9e455ce0f8dc59b217861e4ea69b971e7dbbcc",
+    "backend/scripts/comparar_ppi_catalogo_polis.py": "3c763df7c0666cb9250a9130e2708e2bda5ca261a10bd0f1a184b42db5ff237b",
+    "backend/tests/test_comparacion_ppi_catalogo_polis.py": "c9c443e313f647ac9980506137d7ad7b9b4555d05ca0a739d90d3804e53075e2"
+  },
+  "fuera_alcance": {
+    "produccion": "no_usada",
+    "commit": "no_ejecutado",
+    "push": "no_ejecutado",
+    "data": "no_tocada",
+    "frontend": "no_tocado",
+    "consumidores": "no_tocados"
+  }
+}

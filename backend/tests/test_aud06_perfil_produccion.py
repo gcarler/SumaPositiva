@@ -1,5 +1,8 @@
 import uuid
+from datetime import UTC
+
 from starlette.testclient import TestClient
+
 from app.core.config import Settings
 from app.main import create_app
 
@@ -99,8 +102,8 @@ def test_cookies_con_flags_seguros_en_produccion():
 def test_limite_tasa_ia_excedido():
     """El enrutador de IA debe rechazar con 429 si se excede el límite de solicitudes."""
     from app.modules.ia import limpiar_cache_tasa_ia
-    from app.modules.identidad.security import crear_token_acceso
     from app.modules.identidad import deps
+    from app.modules.identidad.security import crear_token_acceso
 
     token = crear_token_acceso(
         sujeto_id=uuid.uuid4(),
@@ -146,6 +149,7 @@ def test_limite_tasa_ia_excedido():
 def test_limite_tasa_sesion_anonima_excedido():
     """El control de tasa para sesiones anónimas debe detectar y bloquear excesos."""
     import app.modules.sesion.router as sesion_router_mod
+
     sesion_router_mod._limite_ip_memoria.clear()
 
     ip_test = "192.168.1.100"
@@ -161,13 +165,16 @@ def test_limite_tasa_sesion_anonima_excedido():
 
 
 def test_token_firmado_con_otra_clave_rechazado_401():
-    """OBS-09: Un token firmado con una clave distinta a settings.jwt_secret_key debe ser rechazado con 401 en cualquier entorno."""
+    """OBS-09: Un token firmado con una clave distinta a settings.jwt_secret_key
+    debe ser rechazado con 401 en cualquier entorno."""
+    from datetime import datetime, timedelta
+
     import jwt
     import pytest
     from fastapi import HTTPException
+
     from app.modules.identidad.security import decodificar_token_acceso
     from app.modules.sesion.security import decodificar_token_sesion
-    from datetime import datetime, timezone, timedelta
 
     clave_forjada = "clave_forjada_no_autorizada_por_polis_2026"
     clave_legitima = "clave_legitima_autorizada_produccion_2026_secreta"
@@ -184,8 +191,8 @@ def test_token_firmado_con_otra_clave_rechazado_401():
         "es_anonimo": False,
         "iss": "polis-identidad",
         "aud": "polis-api",
-        "iat": datetime.now(timezone.utc),
-        "exp": datetime.now(timezone.utc) + timedelta(hours=1),
+        "iat": datetime.now(UTC),
+        "exp": datetime.now(UTC) + timedelta(hours=1),
     }
     token_forjado = jwt.encode(payload_acceso, clave_forjada, algorithm="HS256")
 
@@ -197,8 +204,8 @@ def test_token_firmado_con_otra_clave_rechazado_401():
         "sesion_id": str(uuid.uuid4()),
         "huella_hash": "huella_prueba",
         "rol": "ciudadano_anonimo",
-        "iat": datetime.now(timezone.utc),
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
+        "iat": datetime.now(UTC),
+        "exp": datetime.now(UTC) + timedelta(minutes=15),
     }
     token_sesion_forjado = jwt.encode(payload_sesion, clave_forjada, algorithm="HS256")
 
@@ -218,6 +225,7 @@ def test_error_sql_en_gating_devuelve_null_y_registra_log(caplog):
     import asyncio
     import logging
     from unittest.mock import AsyncMock
+
     from app.modules.politicas.gating import calcular_progreso_real_fases
 
     mock_session = AsyncMock()
@@ -230,15 +238,23 @@ def test_error_sql_en_gating_devuelve_null_y_registra_log(caplog):
     assert progresos["FASE_2_FORMULACION"] is None
     assert progresos["FASE_3_PLAN_ACCION"] is None
 
-    assert any("Error SQL calculando progreso empírico de FASE_1_DIAGNOSTICO" in record.message for record in caplog.records)
-    assert any("Error SQL calculando progreso empírico de FASE_2_FORMULACION" in record.message for record in caplog.records)
-    assert any("Error SQL calculando progreso empírico de FASE_3_PLAN_ACCION" in record.message for record in caplog.records)
+    assert any(
+        "Error SQL calculando progreso empírico de FASE_1_DIAGNOSTICO" in record.message for record in caplog.records
+    )
+    assert any(
+        "Error SQL calculando progreso empírico de FASE_2_FORMULACION" in record.message for record in caplog.records
+    )
+    assert any(
+        "Error SQL calculando progreso empírico de FASE_3_PLAN_ACCION" in record.message for record in caplog.records
+    )
 
 
 def test_limite_tasa_sesion_anonima_endpoint_429():
     """OBS-10: Petición HTTP que supera el límite de tasa de sesión anónima debe recibir 429 con Retry-After."""
     from unittest.mock import AsyncMock
+
     import app.modules.sesion.router as sesion_router_mod
+
     sesion_router_mod._limite_ip_memoria.clear()
 
     settings = Settings(_env_file=None, environment="test", sesion_anonima_limite_ip=2, identidad_ventana_segundos=120)
@@ -271,5 +287,3 @@ def test_limite_tasa_sesion_anonima_endpoint_429():
             assert r3.headers.get("retry-after") == "120"
     finally:
         app.dependency_overrides.clear()
-
-

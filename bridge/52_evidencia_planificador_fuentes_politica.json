@@ -1,0 +1,18 @@
+{
+  "fecha": "2026-10-23",
+  "catalogo_entradas": 211,
+  "necesidades": 2,
+  "evaluaciones": 4,
+  "brechas": 2,
+  "productos_aptos_segun_ficha": 0,
+  "adquisiciones_ejecutadas": 0,
+  "plan_sha256": "fed11a78d5660e786187079c220417de7ad0c3ece7193a67c0e177309e921073",
+  "verificacion": "CLI real catalogar/planificar; Ruff check/format; análisis sintáctico; no pytest",
+  "archivos_sha256": {
+    "backend/app/modules/compromisos/planificador_fuentes_politica.py": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54",
+    "backend/scripts/planificar_fuentes_politica.py": "b1423ed6eda1b36a0fb38c48366476bddba5da5ff64d9ea7138eea8cd135b0a4",
+    "bridge/51_catalogo_productos_candidatos.json": "f2ed2643227dc723451354067b12265d0d37aacb2cf4259e966bd1ec2328220b",
+    "bridge/51_perfil_fuentes_sh_borrador.json": "1ea8b139d355a9cac288b460973a2fad3f6465601a303fb8498795c140671571",
+    "bridge/51_plan_fuentes_sh_borrador.json": "0cbf57688bf8e8e708c7e576edb3383a56b38c9fe39a2f5c7b3a5ba4323602b9"
+  }
+}

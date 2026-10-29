@@ -14,14 +14,13 @@ from pathlib import Path
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.core.config import Settings  # noqa: E402
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh  # noqa: E402
 
 DDL_IEO_OFICIALES = """
 CREATE TABLE IF NOT EXISTS seguimiento.pdd_dmu_ieo_oficiales (
@@ -237,11 +236,8 @@ ESE_NOMBRES_CANONICOS: list[tuple[str, str, str, str]] = [
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def construir_registros_105_ieo() -> list[dict[str, Any]]:
@@ -609,25 +605,13 @@ async def poblar_padron_nivel3_y_fuentes_cartagena() -> dict[str, Any]:
             )
 
             c_ieo = int(
-                (
-                    await conn.execute(
-                        text("SELECT COUNT(*) FROM seguimiento.pdd_dmu_ieo_oficiales")
-                    )
-                ).scalar_one()
+                (await conn.execute(text("SELECT COUNT(*) FROM seguimiento.pdd_dmu_ieo_oficiales"))).scalar_one()
             )
             c_ese = int(
-                (
-                    await conn.execute(
-                        text("SELECT COUNT(*) FROM seguimiento.pdd_dmu_ese_centros_salud")
-                    )
-                ).scalar_one()
+                (await conn.execute(text("SELECT COUNT(*) FROM seguimiento.pdd_dmu_ese_centros_salud"))).scalar_one()
             )
             c_fnt = int(
-                (
-                    await conn.execute(
-                        text("SELECT COUNT(*) FROM seguimiento.pdd_fuentes_financiacion_dmu")
-                    )
-                ).scalar_one()
+                (await conn.execute(text("SELECT COUNT(*) FROM seguimiento.pdd_fuentes_financiacion_dmu"))).scalar_one()
             )
     finally:
         await engine.dispose()

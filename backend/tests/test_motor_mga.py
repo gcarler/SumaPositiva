@@ -35,9 +35,7 @@ async def test_creacion_y_serializacion_arbol_problemas(database_url: str, cabec
             f"/api/v1/instrumentos/{inst_id}/nodos",
             json={
                 "tipo_nodo": "PROBLEMA_CENTRAL",
-                "contenido": (
-                    "Elevados índices de siniestralidad y congestión en el Centro Histórico"
-                ),
+                "contenido": ("Elevados índices de siniestralidad y congestión en el Centro Histórico"),
             },
         )
         assert resp_central.status_code == 201
@@ -119,9 +117,7 @@ async def test_creacion_y_serializacion_arbol_problemas(database_url: str, cabec
         assert arbol["efectos_o_fines"][0]["hijos"][0]["tipo_nodo"] == "EFECTO_INDIRECTO"
 
 
-async def test_conversion_metodologica_mga_problemas_a_objetivos(
-    database_url: str, cabeceras_gestion
-):
+async def test_conversion_metodologica_mga_problemas_a_objetivos(database_url: str, cabeceras_gestion):
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
 
@@ -263,9 +259,7 @@ async def test_conversion_con_modificaciones_manuales(database_url: str, cabecer
         central_id = resp_central.json()["id"]
 
         # Conversión con texto redactado manualmente por el formulador
-        texto_personalizado = (
-            "Recuperar ecológicamente la Ciénaga de la Virgen y garantizar su saneamiento integral"
-        )
+        texto_personalizado = "Recuperar ecológicamente la Ciénaga de la Virgen y garantizar su saneamiento integral"
         resp_conv = client.post(
             f"/api/v1/instrumentos/{inst_id}/convertir-a-objetivos",
             json={"modificaciones_manuales": {central_id: texto_personalizado}},

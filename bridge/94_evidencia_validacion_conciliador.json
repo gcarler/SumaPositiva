@@ -1,0 +1,59 @@
+{
+  "fecha_utc": "2026-10-25T04:24:15.206802+00:00",
+  "estado": "validacion_funcional_dirigida_superada_pendiente_revision_independiente_cambio",
+  "corrida_final": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "72",
+    "time": "1.218",
+    "timestamp": "2026-10-25T04:23:17.228815+00:00",
+    "hostname": "srv2006133"
+  },
+  "corrida_inicial": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "6",
+    "skipped": "0",
+    "tests": "57",
+    "time": "1.368",
+    "timestamp": "2026-10-25T04:22:21.996585+00:00",
+    "hostname": "srv2006133"
+  },
+  "D1": "verificado_Decimal_serializado_como_texto_en_nucleo_y_CLI",
+  "fallo_corregido": "pendientes_esenciales_sin_bloqueo_comparabilidad",
+  "ruff_check_exit": 0,
+  "ruff_format_check_exit": 0,
+  "ejecucion_SQL": false,
+  "datos_oficiales_procesados": false,
+  "integracion_productiva": false,
+  "dictamen_EAF": false,
+  "artefactos_piloto_sintetico": "bridge/93_piloto_sintetico_conciliacion",
+  "archivos": {
+    "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd",
+      "bytes": 31061
+    },
+    "backend/scripts/contrastar_fuentes_por_periodo.py": {
+      "sha256": "15634cdedec70b20a75a6349a104b63e1031b62008c87708f3bad06d888bdd5e",
+      "bytes": 5414
+    },
+    "backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py": {
+      "sha256": "8e789b73f3408d103391d1412b5ed49b81231e8861bf65485a44562598e66b9f",
+      "bytes": 15099
+    },
+    "bridge/93_pytest_conciliacion_retrospectiva.xml": {
+      "sha256": "622fbc8b3e898131b910539372b80d82909ad1abdb0bdf4b64f89d539555eab2",
+      "bytes": 11449
+    },
+    "bridge/93_pytest_conciliacion_antes_correccion.xml": {
+      "sha256": "ef67766661b29a575f20fda78c83b2e66f1e67470450e154d5d559eb5d2bf06a",
+      "bytes": 15702
+    },
+    "bridge/94_validacion_funcional_conciliador.md": {
+      "sha256": "119d0498d307c1de5dcff226f4ecd33266291c1dac863c1c39e1e528125bae2a",
+      "bytes": 4838
+    }
+  }
+}

@@ -53,7 +53,14 @@ function construirCsp(isProd: boolean): string {
   ].join("; ");
 }
 
+/* POLIS_NEXT_DIST_DIR: distDir temporal para builds de validación aislados.
+ * Sirve cuando hay un proceso Next sirviendo el distDir por defecto (.next):
+ * reconstruir .next deja ese proceso con su cwd "deleted" (PID 1228166).
+ * Sin la variable se conserva el comportamiento por defecto. */
+const distDirTemporal = process.env.POLIS_NEXT_DIST_DIR;
+
 const nextConfig: NextConfig = {
+  ...(distDirTemporal ? { distDir: distDirTemporal } : {}),
   output: "standalone",
   experimental: { proxyClientMaxBodySize: "40mb" },
   // Route the browser API through Next.js to keep a single public origin.
@@ -67,11 +74,12 @@ const nextConfig: NextConfig = {
     const isProd = process.env.NODE_ENV === "production";
     const cspDirectives = construirCsp(isProd);
 
-    // CIERRE-05: Modo por defecto es Report-Only hasta nueva orden.
-    // Solo aplica Enforce si se declara explícitamente POLIS_CSP_ENFORCE=true o POLIS_CSP_REPORT_ONLY=false.
+    // En producción se aplica modo Enforce por defecto para blindaje perimetral efectivo.
+    // Se mantiene la opción de Report-Only si se declara explícitamente POLIS_CSP_REPORT_ONLY=true.
     const isEnforce =
       process.env.POLIS_CSP_ENFORCE === "true" ||
-      process.env.POLIS_CSP_REPORT_ONLY === "false";
+      process.env.POLIS_CSP_REPORT_ONLY === "false" ||
+      (isProd && process.env.POLIS_CSP_REPORT_ONLY !== "true");
 
     const cspHeaderKey = isEnforce
       ? "Content-Security-Policy"

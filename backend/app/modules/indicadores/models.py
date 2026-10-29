@@ -37,27 +37,17 @@ class FichaTecnicaIndicador(Base):
     definicion: Mapped[str] = mapped_column(Text, nullable=False)
     metodo_calculo: Mapped[str] = mapped_column(Text, nullable=False)
     unidad_medida: Mapped[str] = mapped_column(String(50), nullable=False)
-    sentido_esperado: Mapped[str] = mapped_column(
-        String(20), server_default="ascendente", nullable=False
-    )
+    sentido_esperado: Mapped[str] = mapped_column(String(20), server_default="ascendente", nullable=False)
     periodicidad: Mapped[str] = mapped_column(String(50), nullable=False)
     linea_base_valor: Mapped[float] = mapped_column(Numeric(14, 4), nullable=False)
     linea_base_anio: Mapped[int] = mapped_column(Integer, nullable=False)
     meta_cuatrienio: Mapped[float] = mapped_column(Numeric(14, 4), nullable=False)
-    meta_anualizada: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
-    valor_actual: Mapped[float] = mapped_column(
-        Numeric(14, 4), server_default=text("0"), nullable=False
-    )
-    porcentaje_avance: Mapped[float] = mapped_column(
-        Numeric(6, 2), server_default=text("0"), nullable=False
-    )
+    meta_anualizada: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
+    valor_actual: Mapped[float] = mapped_column(Numeric(14, 4), server_default=text("0"), nullable=False)
+    porcentaje_avance: Mapped[float] = mapped_column(Numeric(6, 2), server_default=text("0"), nullable=False)
     fuente_datos: Mapped[str] = mapped_column(String(250), nullable=False)
     responsable_reporte: Mapped[str] = mapped_column(String(250), nullable=False)
-    metadatos: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
+    metadatos: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
@@ -76,6 +66,7 @@ class FichaTecnicaIndicador(Base):
         if isinstance(self.metadatos, dict) and self.metadatos.get("fecha_corte_ultimo_reporte"):
             try:
                 from datetime import date
+
                 return date.fromisoformat(str(self.metadatos["fecha_corte_ultimo_reporte"]))
             except Exception:
                 return None
@@ -110,9 +101,7 @@ class MedicionIndicador(Base):
     observaciones: Mapped[str | None] = mapped_column(Text, nullable=True)
     evidencia_documental_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     registrado_por: Mapped[str] = mapped_column(String(150), nullable=False)
-    es_demostracion: Mapped[bool] = mapped_column(
-        Boolean, default=False, server_default=text("false"), nullable=False
-    )
+    es_demostracion: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("false"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )

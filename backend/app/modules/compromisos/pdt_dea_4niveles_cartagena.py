@@ -51,10 +51,9 @@ import pandas as pd
 import pulp
 from scipy.optimize import linprog
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import Settings
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
 DEA_NIVELES_CANONICOS: tuple[str, ...] = (
     "nivel_1_territorial_localidades_ucg",
@@ -146,10 +145,7 @@ MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL: dict[str, dict[str, Any]] = {
             "Puestos y centros de salud (CAP / Hospitales Locales) construidos y dotados",
         ],
         "resultados_y_outc_mir": [
-            (
-                "% de población vulnerable con atención preferencial en EAPB "
-                "subsidiadas y contributivas"
-            ),
+            ("% de población vulnerable con atención preferencial en EAPB subsidiadas y contributivas"),
             "Cobertura útil de vacunación PAI en menores de 5 años (%)",
             "Reducción de mortalidad materna e infantil y desnutrición aguda",
         ],
@@ -180,10 +176,7 @@ MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL: dict[str, dict[str, Any]] = {
             "Gerencia de Espacio Público y Movilidad",
         ],
         "insumos_x": [
-            (
-                "Presupuesto de asignaciones directas SGR e inversión distrital "
-                "en malla vial por localidad (COP)"
-            ),
+            ("Presupuesto de asignaciones directas SGR e inversión distrital en malla vial por localidad (COP)"),
             "Presupuesto de operación, recaudo y modernización de flota de Transcaribe S.A. (COP)",
             "Capacidad operativa de interventoría y maquinaria amarilla",
         ],
@@ -214,11 +207,8 @@ MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL: dict[str, dict[str, Any]] = {
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def _ejecutar_corutina_sync(coro: Any) -> Any:
@@ -342,9 +332,7 @@ def _resolver_dea_dos_etapas_dmu(
         f"DEA_Stage1_{'BCC' if bcc else 'CCR'}_{orient}_{target_idx}",
         pulp.LpMinimize if orient == "input" else pulp.LpMaximize,
     )
-    lambdas_s1 = [
-        _crear_var_pulp(prob_stage1, f"lambda_{j:03d}", low_bound=0.0) for j in range(n_dmus)
-    ]
+    lambdas_s1 = [_crear_var_pulp(prob_stage1, f"lambda_{j:03d}", low_bound=0.0) for j in range(n_dmus)]
 
     if orient == "input":
         theta_var = _crear_var_pulp(prob_stage1, "theta", low_bound=0.0, up_bound=1.0)
@@ -352,15 +340,13 @@ def _resolver_dea_dos_etapas_dmu(
         for i in range(m_inputs):
             scale_x = max(abs(float(x_o[i])), 1.0)
             prob_stage1 += (
-                pulp.lpSum(lambdas_s1[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus))
-                <= theta_var,
+                pulp.lpSum(lambdas_s1[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus)) <= theta_var,
                 f"Insumo_{i}",
             )
         for r in range(s_outputs):
             scale_y = max(abs(float(y_o[r])), 1.0)
             prob_stage1 += (
-                pulp.lpSum(lambdas_s1[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus))
-                >= 1.0,
+                pulp.lpSum(lambdas_s1[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus)) >= 1.0,
                 f"Producto_{r}",
             )
     else:
@@ -369,15 +355,13 @@ def _resolver_dea_dos_etapas_dmu(
         for i in range(m_inputs):
             scale_x = max(abs(float(x_o[i])), 1.0)
             prob_stage1 += (
-                pulp.lpSum(lambdas_s1[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus))
-                <= 1.0,
+                pulp.lpSum(lambdas_s1[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus)) <= 1.0,
                 f"Insumo_{i}",
             )
         for r in range(s_outputs):
             scale_y = max(abs(float(y_o[r])), 1.0)
             prob_stage1 += (
-                pulp.lpSum(lambdas_s1[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus))
-                >= phi_var,
+                pulp.lpSum(lambdas_s1[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus)) >= phi_var,
                 f"Producto_{r}",
             )
 
@@ -422,20 +406,13 @@ def _resolver_dea_dos_etapas_dmu(
         f"DEA_Stage2_Slacks_{'BCC' if bcc else 'CCR'}_{orient}_{target_idx}",
         pulp.LpMaximize,
     )
-    lambdas_s2 = [
-        _crear_var_pulp(prob_stage2, f"lambda2_{j:03d}", low_bound=0.0) for j in range(n_dmus)
-    ]
-    s_minus_vars = [
-        _crear_var_pulp(prob_stage2, f"s_minus_{i:02d}", low_bound=0.0) for i in range(m_inputs)
-    ]
-    s_plus_vars = [
-        _crear_var_pulp(prob_stage2, f"s_plus_{r:02d}", low_bound=0.0) for r in range(s_outputs)
-    ]
+    lambdas_s2 = [_crear_var_pulp(prob_stage2, f"lambda2_{j:03d}", low_bound=0.0) for j in range(n_dmus)]
+    s_minus_vars = [_crear_var_pulp(prob_stage2, f"s_minus_{i:02d}", low_bound=0.0) for i in range(m_inputs)]
+    s_plus_vars = [_crear_var_pulp(prob_stage2, f"s_plus_{r:02d}", low_bound=0.0) for r in range(s_outputs)]
 
     # Ponderación invariante de escala (variables s_minus y s_plus normalizadas por x_o y y_o)
     prob_stage2 += (
-        pulp.lpSum(s_minus_vars[i] for i in range(m_inputs))
-        + pulp.lpSum(s_plus_vars[r] for r in range(s_outputs)),
+        pulp.lpSum(s_minus_vars[i] for i in range(m_inputs)) + pulp.lpSum(s_plus_vars[r] for r in range(s_outputs)),
         "Max_Slacks_Normalizados",
     )
 
@@ -443,9 +420,7 @@ def _resolver_dea_dos_etapas_dmu(
         scale_x = max(abs(float(x_o[i])), 1.0)
         rhs_in = theta_star if orient == "input" else 1.0
         prob_stage2 += (
-            pulp.lpSum(lambdas_s2[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus))
-            + s_minus_vars[i]
-            == rhs_in,
+            pulp.lpSum(lambdas_s2[j] * (float(X[j, i]) / scale_x) for j in range(n_dmus)) + s_minus_vars[i] == rhs_in,
             f"Igualdad_Insumo_Slack_{i}",
         )
 
@@ -453,9 +428,7 @@ def _resolver_dea_dos_etapas_dmu(
         scale_y = max(abs(float(y_o[r])), 1.0)
         rhs_out = 1.0 if orient == "input" else phi_star
         prob_stage2 += (
-            pulp.lpSum(lambdas_s2[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus))
-            - s_plus_vars[r]
-            == rhs_out,
+            pulp.lpSum(lambdas_s2[j] * (float(Y[j, r]) / scale_y) for j in range(n_dmus)) - s_plus_vars[r] == rhs_out,
             f"Igualdad_Producto_Slack_{r}",
         )
 
@@ -469,12 +442,10 @@ def _resolver_dea_dos_etapas_dmu(
     if ok_s2:
         lambdas_final = [max(0.0, float(pulp.value(v) or 0.0)) for v in lambdas_s2]
         s_minus_nr = [
-            max(0.0, float(pulp.value(s_minus_vars[i]) or 0.0) * max(abs(float(x_o[i])), 1.0))
-            for i in range(m_inputs)
+            max(0.0, float(pulp.value(s_minus_vars[i]) or 0.0) * max(abs(float(x_o[i])), 1.0)) for i in range(m_inputs)
         ]
         s_plus_nr = [
-            max(0.0, float(pulp.value(s_plus_vars[r]) or 0.0) * max(abs(float(y_o[r])), 1.0))
-            for r in range(s_outputs)
+            max(0.0, float(pulp.value(s_plus_vars[r]) or 0.0) * max(abs(float(y_o[r])), 1.0)) for r in range(s_outputs)
         ]
         solver_used = solver_s2
     else:
@@ -516,29 +487,17 @@ def calcular_dea_ccr_y_escala(
     orient = orientacion.lower().strip()
 
     # 1. Resolver CCR y BCC en la orientación solicitada + orientación complementaria
-    ccr_runs = [
-        _resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=False, orientacion=orient)
-        for idx in range(n_dmus)
-    ]
-    bcc_runs = [
-        _resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion=orient)
-        for idx in range(n_dmus)
-    ]
+    ccr_runs = [_resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=False, orientacion=orient) for idx in range(n_dmus)]
+    bcc_runs = [_resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion=orient) for idx in range(n_dmus)]
     bcc_input_runs = (
         bcc_runs
         if orient == "input" or n_dmus > 25
-        else [
-            _resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion="input")
-            for idx in range(n_dmus)
-        ]
+        else [_resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion="input") for idx in range(n_dmus)]
     )
     bcc_output_runs = (
         bcc_runs
         if orient == "output" or n_dmus > 25
-        else [
-            _resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion="output")
-            for idx in range(n_dmus)
-        ]
+        else [_resolver_dea_dos_etapas_dmu(X, Y, idx, bcc=True, orientacion="output") for idx in range(n_dmus)]
     )
 
     # Identificar DMUs en la frontera BCC (theta_bcc == 1.0)
@@ -628,9 +587,7 @@ def calcular_dea_ccr_y_escala(
             productos_obs[col] = round(val_obs, 4)
             productos_obj[col] = round(max(val_obs, val_obj), 4)
 
-        pesos_lambda_dict = {
-            names[j]: round(float(w), 6) for j, w in enumerate(lambdas_bcc) if w > 1e-5
-        }
+        pesos_lambda_dict = {names[j]: round(float(w), 6) for j, w in enumerate(lambdas_bcc) if w > 1e-5}
         benchmarks_list = [
             {
                 "dmu": names[j],
@@ -763,13 +720,9 @@ def _distancia_radial_crs(
     theta = _crear_var_pulp(prob, "theta_dist", low_bound=0.0)
     prob += theta
     for i in range(m_in):
-        prob += pulp.lpSum(lambdas[j] * float(X_ref[j, i]) for j in range(n_ref)) <= theta * float(
-            x_eval[i]
-        )
+        prob += pulp.lpSum(lambdas[j] * float(X_ref[j, i]) for j in range(n_ref)) <= theta * float(x_eval[i])
     for r in range(s_out):
-        prob += pulp.lpSum(lambdas[j] * float(Y_ref[j, r]) for j in range(n_ref)) >= float(
-            y_eval[r]
-        )
+        prob += pulp.lpSum(lambdas[j] * float(Y_ref[j, r]) for j in range(n_ref)) >= float(y_eval[r])
     ok, _ = _resolver_modelo_pulp_con_highs(prob)
     if not ok:
         return 1.0
@@ -833,9 +786,7 @@ def calcular_malmquist_panel(
                 "Techch": round(frontier_shift, 6),
                 "MPI": round(mpi, 6),
                 "interpretacion": (
-                    "GANANCIA_PRODUCTIVIDAD_TOTAL"
-                    if mpi > 1.0
-                    else "ESTANCAMIENTO_O_RETROCESO_PRODUCTIVO"
+                    "GANANCIA_PRODUCTIVIDAD_TOTAL" if mpi > 1.0 else "ESTANCAMIENTO_O_RETROCESO_PRODUCTIVO"
                 ),
             }
         )
@@ -873,9 +824,7 @@ def recalificar_unidad_tablero_alcalde(
     pero eficiencia técnica `theta_bcc <= 0.70`, NO se clasifica en `"MUY_ALTO_SOBRESALIENTE"`,
     sino que se recalifica vinculantemente a `"ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"`.
     """
-    avance_norm_pct = (
-        avance_fisico_pct * 100.0 if 0.0 < avance_fisico_pct <= 1.0 else avance_fisico_pct
-    )
+    avance_norm_pct = avance_fisico_pct * 100.0 if 0.0 < avance_fisico_pct <= 1.0 else avance_fisico_pct
     cumplimiento_ratio = round(min(1.0, max(0.0, avance_norm_pct / 100.0)), 4)
 
     if avance_norm_pct >= 90.0:
@@ -1149,9 +1098,7 @@ async def _consultar_insumos_bd_csh() -> dict[str, Any]:
             if len(datos["fuentes_financiacion_rows"]) < 27:
                 datos["fuentes_financiacion_rows"] = construir_registros_fuentes_financiacion()
                 for r in datos["fuentes_financiacion_rows"]:
-                    datos["fuentes_financiacion_dmu"][
-                        str(r.get("dmu_codigo") or r.get("codigo_dmu"))
-                    ] = r
+                    datos["fuentes_financiacion_dmu"][str(r.get("dmu_codigo") or r.get("codigo_dmu"))] = r
                     datos["fuentes_financiacion_dmu"][str(r["nombre_dmu"])] = r
         except Exception:
             pass
@@ -1177,9 +1124,7 @@ def _enriquecer_dmu_con_fuentes_y_holgura(
 ) -> None:
     """Inyecta desagregacion_fuentes_financiacion y holgura_s_minus_por_fuente_cop en la DMU."""
     if fuente_row:
-        desagregacion = {
-            k: round(float(fuente_row.get(k, 0.0)), 2) for k in FUENTES_FINANCIACION_KEYS
-        }
+        desagregacion = {k: round(float(fuente_row.get(k, 0.0)), 2) for k in FUENTES_FINANCIACION_KEYS}
         total_f = round(sum(desagregacion.values()), 2)
     else:
         base = round(float(presupuesto_fallback_cop), 2)
@@ -1235,12 +1180,8 @@ def _resumir_fuentes_financiacion_y_holguras(
             presupuesto_tot[k] = round(presupuesto_tot[k] + float(des.get(k, 0.0)), 2)
             holgura_tot[k] = round(holgura_tot[k] + float(hol.get(k, 0.0)), 2)
 
-    presupuesto_tot["total_fuentes_cop"] = round(
-        sum(presupuesto_tot[k] for k in FUENTES_FINANCIACION_KEYS), 2
-    )
-    holgura_tot["total_holgura_s_minus_cop"] = round(
-        sum(holgura_tot[k] for k in FUENTES_FINANCIACION_KEYS), 2
-    )
+    presupuesto_tot["total_fuentes_cop"] = round(sum(presupuesto_tot[k] for k in FUENTES_FINANCIACION_KEYS), 2)
+    holgura_tot["total_holgura_s_minus_cop"] = round(sum(holgura_tot[k] for k in FUENTES_FINANCIACION_KEYS), 2)
     return {
         "fuente_tabla_bd_csh": "seguimiento.pdd_fuentes_financiacion_dmu",
         "total_dmus_con_fuentes": con_fuentes,
@@ -1402,8 +1343,7 @@ def _construir_nivel_1_territorial(
     return {
         "nivel": "nivel_1_territorial_localidades_ucg",
         "nombre_nivel": (
-            "Nivel 1: Territorial Descentralizado (3 Localidades Distritales "
-            "y 15 UCGs en fronteras separadas)"
+            "Nivel 1: Territorial Descentralizado (3 Localidades Distritales y 15 UCGs en fronteras separadas)"
         ),
         "orientacion": orientacion,
         "sector": "Territorial",
@@ -1428,9 +1368,7 @@ def _construir_nivel_1_territorial(
                 "dmus": ucgs_dea,
             },
         },
-        "resumen_fuentes_financiacion_y_holguras": _resumir_fuentes_financiacion_y_holguras(
-            todas_dmus
-        ),
+        "resumen_fuentes_financiacion_y_holguras": _resumir_fuentes_financiacion_y_holguras(todas_dmus),
         "total_dmus": len(todas_dmus),
         "eficientes": sum(1 for d in todas_dmus if d["es_eficiente_bcc"]),
         "ineficientes": sum(1 for d in todas_dmus if not d["es_eficiente_bcc"]),
@@ -1447,18 +1385,9 @@ def _construir_nivel_2_institucional(
     dep_bd = datos_bd.get("dependencias_vinculos", {})
     fuentes_map = datos_bd.get("fuentes_financiacion_dmu", {})
     metas_sed = int((dep_bd.get("Secretaría de Educación") or {}).get("total_metas") or 73)
-    metas_dadis = int(
-        (dep_bd.get("Departamento Administrativo Distrital de Salud") or {}).get("total_metas")
-        or 32
-    )
-    metas_part = int(
-        (dep_bd.get("Secretaría de Participación y Desarrollo Social") or {}).get("total_metas")
-        or 57
-    )
-    metas_int = int(
-        (dep_bd.get("Secretaría del Interior y Convivencia Ciudadana") or {}).get("total_metas")
-        or 39
-    )
+    metas_dadis = int((dep_bd.get("Departamento Administrativo Distrital de Salud") or {}).get("total_metas") or 32)
+    metas_part = int((dep_bd.get("Secretaría de Participación y Desarrollo Social") or {}).get("total_metas") or 57)
+    metas_int = int((dep_bd.get("Secretaría del Interior y Convivencia Ciudadana") or {}).get("total_metas") or 39)
 
     secretarias_raw = [
         {
@@ -1605,24 +1534,19 @@ def _construir_nivel_2_institucional(
         filtradas = [
             d
             for d in dmus_evaluadas
-            if sec_norm in str(d.get("sector", "")).casefold()
-            or sec_norm in str(d.get("dmu", "")).casefold()
+            if sec_norm in str(d.get("sector", "")).casefold() or sec_norm in str(d.get("dmu", "")).casefold()
         ]
         if filtradas:
             dmus_evaluadas = filtradas
 
     return {
         "nivel": "nivel_2_institucional_secretarias",
-        "nombre_nivel": (
-            "Nivel 2: Institucional (Secretarías de Despacho y Entes Descentralizados de Cartagena)"
-        ),
+        "nombre_nivel": ("Nivel 2: Institucional (Secretarías de Despacho y Entes Descentralizados de Cartagena)"),
         "orientacion": orientacion,
         "sector": sector,
         "inputs_cols": inputs_sec,
         "outputs_cols": outputs_sec,
-        "resumen_fuentes_financiacion_y_holguras": _resumir_fuentes_financiacion_y_holguras(
-            dmus_evaluadas
-        ),
+        "resumen_fuentes_financiacion_y_holguras": _resumir_fuentes_financiacion_y_holguras(dmus_evaluadas),
         "total_dmus": len(dmus_evaluadas),
         "eficientes": sum(1 for d in dmus_evaluadas if d["es_eficiente_bcc"]),
         "ineficientes": sum(1 for d in dmus_evaluadas if not d["es_eficiente_bcc"]),
@@ -1664,9 +1588,7 @@ def _construir_nivel_3_operativo(
                 "sector": "Educación Pública",
                 "presupuesto_sgr_pae_infraestructura_cop": presup_ieo,
                 "planta_docente_y_aulas_asignadas": docentes_val,
-                "cupos_y_beneficiarios_pae_me_quedo_y_out": float(
-                    r.get("cupos_matricula_simat", 2100.0)
-                ),
+                "cupos_y_beneficiarios_pae_me_quedo_y_out": float(r.get("cupos_matricula_simat", 2100.0)),
                 "puntaje_saber11_y_retencion_mir_y_outc": mir_score,
                 "puntaje_saber11": saber_val,
                 "categoria_saber11": str(r.get("categoria_saber11", "B")),
@@ -1722,9 +1644,7 @@ def _construir_nivel_3_operativo(
                 "presupuesto_pts_ese_cop": presup_ese,
                 "personal_medico_asistencial": float(r.get("personal_medico_asistencial", 45.0)),
                 "atenciones_vulnerables_y_discapacidad_y_out": atenciones_tot,
-                "cobertura_vacunacion_y_materno_infantil_mir_y_outc": float(
-                    r.get("cobertura_vacunacion_pct", 90.0)
-                ),
+                "cobertura_vacunacion_y_materno_infantil_mir_y_outc": float(r.get("cobertura_vacunacion_pct", 90.0)),
                 "satisfaccion_usuario_pct": float(r.get("atencion_preferencial_eapb_pct", 88.0)),
                 "avance_fisico_pct": float(r.get("cumplimiento_nominal_pct", 91.0)),
                 "desagregacion_fuentes_financiacion": {
@@ -1768,16 +1688,12 @@ def _construir_nivel_3_operativo(
         "padron_censal_bd_csh": {
             "ieo_evaluadas_en_frontera": len(ieos_dea),
             "centros_ese_evaluados_en_frontera": len(ese_dea),
-            "fuente_datos": (
-                "seguimiento.pdd_dmu_ieo_oficiales + seguimiento.pdd_dmu_ese_centros_salud"
-            ),
+            "fuente_datos": ("seguimiento.pdd_dmu_ieo_oficiales + seguimiento.pdd_dmu_ese_centros_salud"),
         },
         "universo_institucional": {
             "total_ieo_oficiales_cartagena": len(ieos_dea),
             "total_centros_ese_cartagena": len(ese_dea),
-            "red_ese_hospital_local_cartagena": (
-                "ESE Hospital Local Cartagena de Indias (43 sedes: Hospitales y CAP)"
-            ),
+            "red_ese_hospital_local_cartagena": ("ESE Hospital Local Cartagena de Indias (43 sedes: Hospitales y CAP)"),
         },
         "separacion_subfronteras": True,
         "fronteras_independientes": {
@@ -2139,17 +2055,10 @@ def evaluar_dea_4_niveles_cartagena(
 
     # Verificación explícita de homogeneidad (cero mezcla de Localidades con IEOs o Secretarías)
     ids_loc = {d["dmu"] for d in n1["fronteras_independientes"]["localidades_distritales"]["dmus"]}
-    ids_ucg = {
-        d["dmu"] for d in n1["fronteras_independientes"]["unidades_comuneras_gobierno_ucg"]["dmus"]
-    }
+    ids_ucg = {d["dmu"] for d in n1["fronteras_independientes"]["unidades_comuneras_gobierno_ucg"]["dmus"]}
     ids_sec = {d["dmu"] for d in n2["dmus"]}
-    ids_ieo = {
-        d["dmu"]
-        for d in n3["fronteras_independientes"]["instituciones_educativas_oficiales_ieo"]["dmus"]
-    }
-    ids_ese = {
-        d["dmu"] for d in n3["fronteras_independientes"]["centros_salud_ese_cartagena"]["dmus"]
-    }
+    ids_ieo = {d["dmu"] for d in n3["fronteras_independientes"]["instituciones_educativas_oficiales_ieo"]["dmus"]}
+    ids_ese = {d["dmu"] for d in n3["fronteras_independientes"]["centros_salud_ese_cartagena"]["dmus"]}
     ids_temp = {d["dmu"] for d in n4["dmus"]}
 
     intersecciones = (
@@ -2164,9 +2073,7 @@ def evaluar_dea_4_niveles_cartagena(
     mapeo_compat = {
         "Educación": MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL["Educación Pública"],
         "Salud": MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL["Salud Pública"],
-        "Infraestructura/Transcaribe": MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL[
-            "Infraestructura Vial y Movilidad"
-        ],
+        "Infraestructura/Transcaribe": MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL["Infraestructura Vial y Movilidad"],
         **MAPEO_CADENA_VALOR_MGA_MIR_SECTORIAL,
     }
 
@@ -2247,9 +2154,7 @@ def generar_tablero_alcalde_y_armonizacion_dea_cartagena(
             recalif["rendimientos_escala"] = dmu_row.get("rendimientos_escala")
             recalif["holguras_insumos_s_minus"] = dmu_row.get("holguras_insumos_s_minus", {})
             recalif["holguras_productos_s_plus"] = dmu_row.get("holguras_productos_s_plus", {})
-            recalif["deficit_producto_s_plus_total"] = dmu_row.get(
-                "deficit_producto_s_plus_total", 0.0
-            )
+            recalif["deficit_producto_s_plus_total"] = dmu_row.get("deficit_producto_s_plus_total", 0.0)
 
             retroalimentacion_spd.append(
                 {
@@ -2271,10 +2176,7 @@ def generar_tablero_alcalde_y_armonizacion_dea_cartagena(
             )
             registros_tablero.append(recalif)
 
-            if (
-                recalif["calificacion_recalificada_dea"]
-                == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"
-            ):
+            if recalif["calificacion_recalificada_dea"] == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO":
                 alertas_falso_cumplimiento.append(recalif)
 
             if dmu_row.get("es_eficiente_bcc"):
@@ -2304,9 +2206,7 @@ def generar_tablero_alcalde_y_armonizacion_dea_cartagena(
                         "eficiencia_escala_se": dmu_row["eficiencia_escala_se"],
                         "rendimientos_escala": dmu_row["rendimientos_escala"],
                         "presupuesto_actual_cop": round(presupuesto_obs, 2),
-                        "presupuesto_eficiente_objetivo_cop": round(
-                            max(0.0, presupuesto_obs - holgura_cop), 2
-                        ),
+                        "presupuesto_eficiente_objetivo_cop": round(max(0.0, presupuesto_obs - holgura_cop), 2),
                         "reasignacion_potencial_s_minus_cop": round(holgura_cop, 2),
                         "deficit_producto_exigible_s_plus": dmu_row["holguras_productos_s_plus"],
                         "benchmarks_referencia": peers,

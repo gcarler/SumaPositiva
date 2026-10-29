@@ -18,6 +18,11 @@ import {FlujoInversionGobernanza} from "@/features/politicas/components/flujo-in
  * Al hacer clic en una línea, se abre el panel lateral L3 (Zero-Modals).
  */
 
+/** Quita el prefijo "Fase N" redundante del nombre sembrado de la fase. */
+function limpiarPrefijoFase(nombre: string): string {
+  return nombre.replace(/^Fase\s*\d+\s*[:·-]\s*/, "");
+}
+
 export function ExplorarView() {
   const reducedMotion = useReducedMotion();
   const { openPanel } = usePanels();
@@ -53,11 +58,11 @@ export function ExplorarView() {
     });
   }, [fases, lineasApi]);
 
-  /* Fases disponibles para filtrar */
-  const fasesDisponibles = useMemo(() => {
-    const idsConLineas = new Set(todasLasLineas.map((l) => l.faseId));
-    return fases.filter((f) => idsConLineas.has(f.id));
-  }, [fases, todasLasLineas]);
+  /* TCA-04/TCA-05: los chips de fase muestran TODO el catálogo, no solo las
+     fases con líneas publicadas — la secuencia debe coincidir con la
+     estructura real del proceso; una fase sin líneas muestra su estado vacío
+     explícito al filtrar. */
+  const fasesDisponibles = fases;
 
   /* Filtro reactivo */
   const lineasFiltradas = useMemo(() => {
@@ -149,7 +154,10 @@ export function ExplorarView() {
                 setFaseFiltro(faseFiltro === fase.id ? "todas" : fase.id)
               }
             >
-              Fase 0{fase.orden}: {fase.nombre}
+              {/* TCA-05: el nombre sembrado ya incluye el prefijo "Fase N:";
+                  se elimina para no duplicar la referencia y conservar una
+                  sola numeración visible. */}
+              Fase 0{fase.orden}: {limpiarPrefijoFase(fase.nombre)}
             </FilterChip>
           ))}
         </div>

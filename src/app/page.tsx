@@ -15,6 +15,7 @@ import { DimensionesView } from "@/features/politicas/views/dimensiones-view";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 
 import { SidebarProvider } from "@/shared/ui/sidebar";
+import { DeepLinkPanelesPublicos } from "@/app/_composition/deeplink-paneles-publicos";
 
 /**
  * POLIS — Plataforma de Participación Ciudadana en Políticas Públicas.
@@ -34,6 +35,8 @@ export default function Home() {
 
   return (
     <SidebarProvider id="polis-application">
+      {/* TCA-06: conserva el detalle de mesa en la URL y lo restaura tras recarga */}
+      <DeepLinkPanelesPublicos />
       <div className="flex min-h-screen flex-col flex-1 min-w-0 overflow-x-hidden">
         <a className="ui-skip-link" href="#main-content">
           Saltar al contenido

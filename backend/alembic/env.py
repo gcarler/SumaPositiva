@@ -10,6 +10,8 @@ from app.modules.actores import models as actores_models  # noqa: F401
 from app.modules.alternativas import models as alternativas_models  # noqa: F401
 from app.modules.aportes import models as aportes_models  # noqa: F401
 from app.modules.auditoria import models as auditoria_models  # noqa: F401
+from app.modules.canales import models as canales_models  # noqa: F401
+from app.modules.compromisos import fuentes_catalogo_models as fuentes_catalogo_models  # noqa: F401
 from app.modules.compromisos import models as compromisos_models  # noqa: F401
 from app.modules.comunicaciones import models as comunicaciones_models  # noqa: F401
 from app.modules.evidencia import models as evidencia_models  # noqa: F401
@@ -56,6 +58,17 @@ POSTGIS_INTERNAL_TABLES = {
     "geometry_columns",
     "pg_stat_statements",
     "pg_stat_statements_info",
+    # Catálogo interno de la extensión address_standardizer_data_us (parse_address)
+    "us_lex",
+    "us_gaz",
+    "us_rules",
+}
+
+LANGGRAPH_CHECKPOINT_TABLES = {
+    "checkpoint_migrations",
+    "checkpoints",
+    "checkpoint_blobs",
+    "checkpoint_writes",
 }
 
 
@@ -64,6 +77,8 @@ def include_object(obj, name, type_, reflected, compare_to) -> bool:
         return name in ALLOWED_SCHEMAS
     if type_ == "table":
         if reflected and name in POSTGIS_INTERNAL_TABLES:
+            return False
+        if reflected and name in LANGGRAPH_CHECKPOINT_TABLES:
             return False
         schema = getattr(obj, "schema", None)
         if schema and schema not in ALLOWED_SCHEMAS:

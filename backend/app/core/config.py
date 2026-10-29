@@ -8,9 +8,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_prefix="POLIS_", env_file=BACKEND_DIR / ".env", extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_prefix="POLIS_", env_file=BACKEND_DIR / ".env", extra="ignore")
 
     environment: Literal["development", "test", "production"] = "development"
     database_url: PostgresDsn = "postgresql+asyncpg://polis:polis_local@127.0.0.1:5433/polis"
@@ -34,6 +32,10 @@ class Settings(BaseSettings):
     jwt_expiracion_horas: int = 24
 
     google_client_id: str | None = None
+
+    whatsapp_habilitado: bool = False
+    whatsapp_app_secret: str | None = None
+    whatsapp_verify_token: str | None = None
 
     identidad_url_publica: str = "https://seguridadhumanaintegral.org"
     smtp_host: str | None = None
@@ -73,6 +75,7 @@ class Settings(BaseSettings):
         if key:
             try:
                 from cryptography.fernet import Fernet
+
                 Fernet(key.encode("ascii"))
             except Exception as e:
                 raise ValueError(
@@ -108,9 +111,5 @@ class Settings(BaseSettings):
     @property
     def async_database_url(self) -> str:
         # Normalize standard PostgreSQL URLs for the asyncpg driver.
-        url = (
-            self.database_url
-            if isinstance(self.database_url, str)
-            else self.database_url.unicode_string()
-        )
+        url = self.database_url if isinstance(self.database_url, str) else self.database_url.unicode_string()
         return url.replace("postgresql://", "postgresql+asyncpg://", 1)

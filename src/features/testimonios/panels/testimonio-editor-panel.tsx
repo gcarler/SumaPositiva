@@ -14,7 +14,7 @@ import {
   TESTIMONIOS_KEYS,
 } from "../services/use-testimonios-queries";
 import { useDimensiones } from "@/features/politicas/services/use-politicas-queries";
-import type { TestimonioCrearPeticion } from "../models/testimonio";
+import type { EstadoTestimonio, TestimonioCrearPeticion } from "../models/testimonio";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { ShieldCheck, HeartHandshake, MapPin, Tag, RefreshCw } from "lucide-react";
+import { HeartHandshake, MapPin, Tag, RefreshCw, FileText, Send, CheckCircle2 } from "lucide-react";
 
 interface TestimonioEditorPanelProps {
   entryKey: string;
@@ -95,6 +95,7 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
     esVictima?: boolean;
     territorioId?: string;
     dimensionId?: string;
+    estado?: EstadoTestimonio;
   }>({});
 
   const datosServidor = detalle.data;
@@ -107,10 +108,9 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
   const esVictima = edicion.esVictima ?? (esEdicion ? (datosServidor?.metadatos_enfoque?.ley_1448_victima === true) : false);
   const territorioId = edicion.territorioId ?? (esEdicion ? (datosServidor?.territorio_id ?? "ninguno") : "ninguno");
   const dimensionId = edicion.dimensionId ?? (esEdicion ? (datosServidor?.dimension_id ?? "ninguna") : "ninguna");
+  const estadoActual: EstadoTestimonio = edicion.estado ?? (esEdicion ? (datosServidor?.estado ?? "BORRADOR") : "BORRADOR");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const guardarConEstado = async (estadoObjetivo: EstadoTestimonio) => {
     if (!nombreAutor.trim() || !titulo.trim() || !relato.trim()) {
       toast.error("Campos obligatorios requeridos", {
         description: "Por favor diligencia el nombre, título y relato del testimonio.",
@@ -139,6 +139,7 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
           ley_1448_victima: esVictima,
           canal_origen: "plataforma_administrativa",
         },
+        estado: estadoObjetivo,
       };
 
       if (testimonioId) {
@@ -159,14 +160,18 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
       await queryClient.invalidateQueries({ queryKey: ["testimonios", "gestion"] });
       await queryClient.invalidateQueries({ queryKey: ["testimonios", "publicos"] });
 
+      const mensajeExito = estadoObjetivo === "BORRADOR"
+        ? "Testimonio guardado como borrador"
+        : estadoObjetivo === "APROBADO"
+        ? "Testimonio publicado directamente"
+        : estadoObjetivo === "DESTACADO"
+        ? "Testimonio guardado como destacado"
+        : "Testimonio enviado a moderación (pendiente)";
+
       toast.success(
-        testimonioId
-          ? "Testimonio actualizado correctamente"
-          : "Testimonio registrado exitosamente",
+        testimonioId ? "Testimonio actualizado correctamente" : mensajeExito,
         {
-          description: testimonioId
-            ? "Los cambios editoriales fueron persistidos en la base de datos distrital."
-            : "El nuevo testimonio ha sido registrado en la plataforma institucional.",
+          description: `El testimonio quedó persistido en estado ${estadoObjetivo}.`,
         }
       );
       closeTop();
@@ -181,6 +186,11 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
         description: mensaje,
       });
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await guardarConEstado(estadoActual);
   };
 
   const isSaving = crearMutation.isPending || editarMutation.isPending;
@@ -406,26 +416,70 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
           </div>
         </div>
 
+        {/* Fila 7: Estado de Gestión */}
+        <div className="pt-2 border-t border-[var(--border)] space-y-2">
+          <Label htmlFor="estado" className="text-xs font-semibold text-[var(--text-primary)]">
+            Estado de Publicación y Curaduría
+          </Label>
+          <Select
+            value={estadoActual}
+            onValueChange={(val) => setEdicion((actual) => ({ ...actual, estado: val as EstadoTestimonio }))}
+          >
+            <SelectTrigger id="estado" className="w-full text-xs">
+              <SelectValue placeholder="Selecciona el estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="BORRADOR">Borrador (Solo visible en gestión interna)</SelectItem>
+              <SelectItem value="PENDIENTE">Pendiente (En cola de moderación ética)</SelectItem>
+              <SelectItem value="APROBADO">Aprobado (Publicado en la galería ciudadana)</SelectItem>
+              <SelectItem value="DESTACADO">Destacado (Prioritario en portal principal)</SelectItem>
+              {esEdicion && <SelectItem value="RECHAZADO">Rechazado (No publicado)</SelectItem>}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Acciones de Guardado */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border)]">
           <Button type="button" variant="outline" size="sm" onClick={closeTop}>
             Cancelar
           </Button>
-          <Button
-            type="submit"
-            size="sm"
-            variant="ember"
-            disabled={isSaving || (esEdicion && detalle.isLoading)}
-          >
-            {isSaving ? (
-              "Guardando..."
-            ) : (
-              <>
-                <ShieldCheck className="mr-1.5 size-4" />
-                {esEdicion ? "Guardar cambios" : "Registrar Testimonio"}
-              </>
-            )}
-          </Button>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isSaving || (esEdicion && detalle.isLoading)}
+              onClick={() => void guardarConEstado("BORRADOR")}
+              className="text-xs border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            >
+              <FileText className="mr-1.5 size-3.5" />
+              Guardar Borrador
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isSaving || (esEdicion && detalle.isLoading)}
+              onClick={() => void guardarConEstado("PENDIENTE")}
+              className="text-xs"
+            >
+              <Send className="mr-1.5 size-3.5 text-warning" />
+              Enviar a Moderación
+            </Button>
+
+            <Button
+              type="button"
+              size="sm"
+              variant="ember"
+              disabled={isSaving || (esEdicion && detalle.isLoading)}
+              onClick={() => void guardarConEstado(estadoActual === "DESTACADO" ? "DESTACADO" : "APROBADO")}
+            >
+              <CheckCircle2 className="mr-1.5 size-4" />
+              {esEdicion ? "Guardar y Publicar" : "Publicar Directamente"}
+            </Button>
+          </div>
         </div>
       </form>
     </PanelShell>

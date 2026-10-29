@@ -25,9 +25,7 @@ class FuenteFinanciacion(Base):
     base_legal: Mapped[str] = mapped_column(String(250), nullable=False)
     descripcion: Mapped[str | None] = mapped_column(Text, nullable=True)
     activa: Mapped[bool] = mapped_column(Boolean, server_default=text("true"), nullable=False)
-    metadatos: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
+    metadatos: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
@@ -59,15 +57,11 @@ class AsignacionPresupuestal(Base):
     nodo_instrumento_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     monto_estimado: Mapped[float] = mapped_column(Numeric(16, 2), nullable=False)
     anio_vigencia: Mapped[int] = mapped_column(Integer, nullable=False)
-    es_vigencia_futura: Mapped[bool] = mapped_column(
-        Boolean, server_default=text("false"), nullable=False
-    )
+    es_vigencia_futura: Mapped[bool] = mapped_column(Boolean, server_default=text("false"), nullable=False)
     tipo_vigencia_futura: Mapped[str | None] = mapped_column(String(50), nullable=True)
     codigo_bpin: Mapped[str | None] = mapped_column(String(100), nullable=True)
     justificacion: Mapped[str] = mapped_column(Text, nullable=False)
-    metadatos: Mapped[dict[str, Any]] = mapped_column(
-        JSONB, server_default=text("'{}'::jsonb"), nullable=False
-    )
+    metadatos: Mapped[dict[str, Any]] = mapped_column(JSONB, server_default=text("'{}'::jsonb"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )

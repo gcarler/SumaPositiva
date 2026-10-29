@@ -225,7 +225,7 @@ def test_interoperabilidad_sispt_cuipo_piip_alertas_r3_r4_r5() -> None:
     assert coherente["trazabilidad_pi_pa_cuipo_piip_completa"] is True
 
 
-def test_evaluar_universo_sispt_dnp_bd_csh_4637_metas_8_planes() -> None:
+def test_evaluar_universo_sispt_dnp_bd_csh_4637_metas_8_planes(corpus_analitica) -> None:
     """Verifica la evaluación censal SisPT sobre las 4,637 metas de los 8 planes en bd_csh."""
     res = evaluar_universo_sispt_dnp_bd_csh("TODOS")
     assert res["estado"] == "EVALUADO_SISPT_DNP_CUIPO_PIIP"

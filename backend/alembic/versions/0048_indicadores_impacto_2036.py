@@ -6,9 +6,11 @@ Create Date: 2026-10-05 14:42:00.000000
 
 """
 
-from alembic import op
-import sqlalchemy as sa
 import json
+
+import sqlalchemy as sa
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "0048_indicadores_impacto_2036"
@@ -36,7 +38,12 @@ INDICADORES_IMPACTO = [
         "porcentaje_avance": 0.0,
         "fuente_datos": "DANE - Encuesta Nacional de Calidad de Vida (ECV)",
         "responsable_reporte": "Secretaría de Planeación Distrital / PES-PR",
-        "metadatos": {"horizonte": 2036, "meta_2036": 15.0, "enfoque_ged": "Sentencia T-025 de 2004", "tipo": "impacto"},
+        "metadatos": {
+            "horizonte": 2036,
+            "meta_2036": 15.0,
+            "enfoque_ged": "Sentencia T-025 de 2004",
+            "tipo": "impacto",
+        },
     },
     {
         "codigo": "IND-IMP-02",
@@ -57,7 +64,12 @@ INDICADORES_IMPACTO = [
         "porcentaje_avance": 0.0,
         "fuente_datos": "Sistema de Información Estadístico, Delincuencial, Contravencional y Operativo (SIEDCO / MECAR / SICC)",
         "responsable_reporte": "Secretaría del Interior y Convivencia Ciudadana (SICC) / Distriseguridad",
-        "metadatos": {"horizonte": 2036, "meta_2036": 25.0, "enfoque_ged": "Seguridad Humana Integral", "tipo": "impacto"},
+        "metadatos": {
+            "horizonte": 2036,
+            "meta_2036": 25.0,
+            "enfoque_ged": "Seguridad Humana Integral",
+            "tipo": "impacto",
+        },
     },
     {
         "codigo": "IND-IMP-03",
@@ -78,7 +90,12 @@ INDICADORES_IMPACTO = [
         "porcentaje_avance": 0.0,
         "fuente_datos": "EPA Cartagena / Cardique / OAGRD / Invemar",
         "responsable_reporte": "Establecimiento Público Ambiental (EPA Cartagena)",
-        "metadatos": {"horizonte": 2036, "meta_2036": 85.0, "enfoque_ged": "Justicia Ambiental y Protección Costera", "tipo": "impacto"},
+        "metadatos": {
+            "horizonte": 2036,
+            "meta_2036": 85.0,
+            "enfoque_ged": "Justicia Ambiental y Protección Costera",
+            "tipo": "impacto",
+        },
     },
 ]
 

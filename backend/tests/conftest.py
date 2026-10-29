@@ -6,40 +6,11 @@ from pathlib import Path
 
 # Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09 / AUD-07 / OBS-13)
 os.environ.setdefault("POLIS_ENVIRONMENT", "test")
-os.environ.setdefault(
-    "POLIS_JWT_SECRET_KEY", "polis_test_jwt_secret_key_32bytes_min_longitud!"
-)
+os.environ.setdefault("POLIS_JWT_SECRET_KEY", "polis_test_jwt_secret_key_32bytes_min_longitud!")
 os.environ.setdefault("POLIS_IP_SALT", "salt_test_habeas_data_aislado_32bytes!")
 
-# Resolución dinámica de base de datos de pruebas sin credenciales en código versionado
-if "POLIS_TEST_DATABASE_URL" not in os.environ:
-    _target_url = None
-    if "POLIS_DATABASE_URL" in os.environ:
-        try:
-            from sqlalchemy.engine import make_url
-            _target_url = make_url(os.environ["POLIS_DATABASE_URL"]).set(database="polis_test").render_as_string(hide_password=False)
-        except Exception:
-            pass
-    if not _target_url:
-        _env_file = Path(__file__).resolve().parents[1] / ".env"
-        if _env_file.exists():
-            for _line in _env_file.read_text().splitlines():
-                if _line.startswith("POLIS_DATABASE_URL="):
-                    try:
-                        from sqlalchemy.engine import make_url
-                        _raw = _line.split("=", 1)[1].strip()
-                        _target_url = make_url(_raw).set(database="polis_test").render_as_string(hide_password=False)
-                    except Exception:
-                        pass
-                    break
-    if not _target_url:
-        _db_pass = os.environ.get("POLIS_DB_PASS") or os.environ.get("PGPASSWORD")
-        if _db_pass:
-            _target_url = f"postgresql+asyncpg://polis:{_db_pass}@127.0.0.1:5432/polis_test"
-        else:
-            _target_url = "postgresql+asyncpg://polis@127.0.0.1:5432/polis_test"
-
-    os.environ["POLIS_TEST_DATABASE_URL"] = _target_url
+# El DSN de pruebas debe ser explícito. Sin él, las pruebas de integración se omiten;
+# no se leen credenciales del entorno de trabajo ni se reutiliza una base por defecto.
 
 import pytest
 from alembic.config import Config
@@ -48,6 +19,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import command
+from tests.database_isolation import validar_base_migraciones
 
 
 @pytest.fixture(scope="session")
@@ -75,21 +47,38 @@ def reset_in_memory_rate_limits():
     """Limpia contadores en memoria entre tests para evitar 429 cruzados en la suite."""
     try:
         from app.modules.sesion.router import _limite_ip_memoria
+
         _limite_ip_memoria.clear()
     except Exception:
         pass
     yield
     try:
         from app.modules.sesion.router import _limite_ip_memoria
+
         _limite_ip_memoria.clear()
     except Exception:
         pass
 
 
 @pytest.fixture
-def database_url(prepared_test_database):
+def migration_database_url(prepared_test_database, monkeypatch):
+    """Destino propio para los ensayos que hacen downgrade/reconstrucción."""
+    migrations_url = os.getenv("POLIS_TEST_MIGRATIONS_DATABASE_URL")
+    if not prepared_test_database or not migrations_url:
+        pytest.skip("Configura otra base exclusiva POLIS_TEST_MIGRATIONS_DATABASE_URL para reconstrucciones")
+    url = validar_base_migraciones(prepared_test_database, migrations_url)
+    monkeypatch.setenv("POLIS_DATABASE_URL", url)
+    config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+    command.upgrade(config, "head")
+    return url
+
+
+@pytest.fixture
+def database_url(request, prepared_test_database):
     if not prepared_test_database:
         pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+    if request.node.get_closest_marker("migration"):
+        return request.getfixturevalue("migration_database_url")
     return prepared_test_database
 
 
@@ -99,9 +88,12 @@ def integration_context(request, prepared_test_database):
         return
     if not prepared_test_database:
         pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+    selected_database = (
+        request.getfixturevalue("database_url") if "database_url" in request.fixturenames else prepared_test_database
+    )
 
     async def prepare_context():
-        engine = create_async_engine(prepared_test_database, hide_parameters=True)
+        engine = create_async_engine(selected_database, hide_parameters=True)
         try:
             async with engine.begin() as connection:
                 # La prueba de migraciones reconstruye las tablas entre escenarios.
@@ -162,9 +154,7 @@ def cabeceras_gestion(prepared_test_database):
                     cuenta.rol_id, cuenta.rol = rol.id, rol
                     await repo.guardar()
                 return (
-                    await service.autenticar_usuario(
-                        LoginPeticion(correo=correo, contrasena="PruebaGestion2026*")
-                    )
+                    await service.autenticar_usuario(LoginPeticion(correo=correo, contrasena="PruebaGestion2026*"))
                 ).token_acceso
         finally:
             await engine.dispose()
@@ -173,12 +163,12 @@ def cabeceras_gestion(prepared_test_database):
 
 
 @pytest.fixture
-def provisionar_usuario(prepared_test_database):
+def provisionar_usuario(database_url):
     """Promoción controlada en la base aislada; nunca habilita autorregistro privilegiado."""
     import uuid
 
     async def provisionar(client, datos):
-        assert prepared_test_database is not None
+        assert database_url is not None
         rol = datos.get("codigo_rol", "ciudadano")
         datos_publicos = {clave: valor for clave, valor in datos.items() if clave != "codigo_rol"}
         respuesta = client.post("/api/v1/identidad/registro", json=datos_publicos)
@@ -186,7 +176,7 @@ def provisionar_usuario(prepared_test_database):
         assert respuesta.json()["codigo_rol"] == "ciudadano"
         assert respuesta.json()["id"]
         # Validar rol y permisos en persistencia, no solo en la respuesta de registro.
-        engine = create_async_engine(prepared_test_database, hide_parameters=True)
+        engine = create_async_engine(database_url, hide_parameters=True)
         try:
             async with engine.connect() as connection:
                 rol_real = await connection.scalar(
@@ -200,7 +190,7 @@ def provisionar_usuario(prepared_test_database):
                 assert rol_real == "ciudadano"
         finally:
             await engine.dispose()
-        engine = create_async_engine(prepared_test_database, hide_parameters=True)
+        engine = create_async_engine(database_url, hide_parameters=True)
         try:
             async with engine.begin() as connection:
                 rol_id = await connection.scalar(
@@ -224,3 +214,36 @@ def provisionar_usuario_sync(provisionar_usuario):
         return asyncio.run(provisionar_usuario(client, datos))
 
     return provisionar
+
+
+def _corpus_analitica_disponible(url: str) -> bool:
+    """¿Está cargado el corpus de análisis PDD/PDL (8 planes) en la base?"""
+
+    async def contar() -> int:
+        engine = create_async_engine(url, hide_parameters=True)
+        try:
+            async with engine.connect() as conn:
+                total = await conn.scalar(text("SELECT count(*) FROM seguimiento.pdd_metas_oficiales"))
+                return int(total or 0)
+        finally:
+            await engine.dispose()
+
+    try:
+        return asyncio.run(contar()) > 0
+    except Exception:
+        return False
+
+
+@pytest.fixture
+def corpus_analitica(prepared_test_database):
+    """Los tests de integración del corpus exigen la base de análisis cargada
+    (bd_csh caliente en producción, corpus cargado en polis_test* en CI). Sin
+    corpus el test se omite con causa explícita; no cuenta como fallo de código."""
+    if not prepared_test_database:
+        pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+    if not _corpus_analitica_disponible(prepared_test_database):
+        pytest.skip(
+            "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* "
+            "provisionado con scripts de ingesta); no disponible en este entorno"
+        )
+    return prepared_test_database

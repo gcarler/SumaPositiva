@@ -1,0 +1,1304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Clasificación y ciclo documental de fuentes",
+  "description": "Esquema documental de fuentes: separa misión declarada, definición de producto, temporalidad, roles, cobertura y límites de inferencia. No acredita equivalencia por nombre ni causalidad.",
+  "type": "object",
+  "properties": {
+    "fichas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ficha"
+      }
+    },
+    "ciclo": {
+      "type": "object",
+      "properties": {
+        "etapa": {
+          "type": "string",
+          "enum": [
+            "seleccion",
+            "adquisicion",
+            "armonizacion",
+            "depuracion",
+            "validacion",
+            "corte",
+            "motor",
+            "resultado",
+            "interprete",
+            "retroalimentacion"
+          ]
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "propuesto",
+            "iniciado",
+            "bloqueado",
+            "ejecutado",
+            "validado",
+            "promocionado"
+          ]
+        },
+        "evidencia_id": {
+          "type": "string"
+        },
+        "responsable_tecnico": {
+          "type": "string",
+          "enum": [
+            "coordinador",
+            "operador_web",
+            "extractor",
+            "validador",
+            "motor",
+            "agente",
+            "sin_definir"
+          ]
+        },
+        "condicion_avance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entrada_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "salida_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "etapa",
+        "estado",
+        "condicion_avance"
+      ]
+    },
+    "capturas_58_verificadas": {
+      "type": "boolean"
+    },
+    "capturas_58_local": {
+      "type": "integer"
+    },
+    "capturas_58_aportadas": {
+      "type": "integer"
+    },
+    "capturas_58_ids": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "capturas_58_count": {
+      "type": "integer"
+    },
+    "productos_locales_sin_captura_nueva": {
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "productos_locales_sin_captura_nueva_count": {
+      "type": "integer"
+    },
+    "enlaces_pr": {
+      "type": "integer"
+    },
+    "relaciones_candidatas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "origen_id",
+          "destino_id",
+          "tipo",
+          "justificacion",
+          "evidencia"
+        ],
+        "properties": {
+          "origen_id": {
+            "type": "string"
+          },
+          "destino_id": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "justificacion": {
+            "type": "string"
+          },
+          "evidencia": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "no_capturadas_nueva": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relaciones_candidatas_aportadas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "origen_id",
+          "destino_id",
+          "tipo",
+          "justificacion",
+          "evidencia"
+        ],
+        "properties": {
+          "origen_id": {
+            "type": "string"
+          },
+          "destino_id": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "justificacion": {
+            "type": "string"
+          },
+          "evidencia": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "esquema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "generado": {
+      "type": "string"
+    },
+    "limite": {
+      "type": "string"
+    },
+    "estado_publicacion": {
+      "type": "string"
+    },
+    "fichas_locales": {
+      "type": "integer"
+    },
+    "fichas_pr": {
+      "type": "integer"
+    },
+    "ids_unicos": {
+      "type": "boolean"
+    },
+    "series_48": {
+      "type": "integer"
+    },
+    "total_fichas": {
+      "type": "integer"
+    },
+    "capturas_58": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "capturas_58_nivel_verificacion": {
+      "type": "string",
+      "const": "metadatos_sin_lectura_de_bytes_analiticos"
+    },
+    "capturas_trazabilidad": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/captura_trazabilidad"
+      }
+    },
+    "ampliaciones_aplicadas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "66",
+        "67",
+        "68"
+      ],
+      "properties": {
+        "66": {
+          "type": "boolean"
+        },
+        "67": {
+          "type": "boolean"
+        },
+        "68": {
+          "type": "boolean"
+        }
+      }
+    },
+    "diagnosticos": {
+      "$ref": "#/$defs/diagnosticos"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "fichas"
+  ],
+  "$defs": {
+    "ficha": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id_ficha",
+        "producto_id",
+        "clase_registro",
+        "custodio_declarado",
+        "naturaleza",
+        "pais_jurisdiccion_institucion",
+        "evidencia_atribucion",
+        "ambito_institucional",
+        "cobertura_dato",
+        "territorios",
+        "poblaciones",
+        "unidades",
+        "anios",
+        "alias",
+        "vigencia",
+        "verificacion",
+        "urls",
+        "procedencia",
+        "sha_entrada",
+        "estado",
+        "relaciones_candidatas",
+        "origen_id",
+        "origen_url",
+        "origen_sha256",
+        "vinculos_rol",
+        "conciliacion",
+        "retrospectiva",
+        "ambitos_originales",
+        "indicadores_originales",
+        "unidades_originales",
+        "anios_originales",
+        "atribucion",
+        "mision_institucional",
+        "producto_estadistico",
+        "temporalidad",
+        "revisiones",
+        "referencia_captura"
+      ],
+      "properties": {
+        "id_ficha": {
+          "type": "string",
+          "pattern": "^(PR-\\d{2}|local:[a-zA-Z0-9_-]+)$"
+        },
+        "producto_id": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string"
+        },
+        "clase_registro": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "institucion",
+            "sistema",
+            "portal",
+            "encuesta",
+            "indicador",
+            "documento",
+            "por_determinar",
+            "serie"
+          ]
+        },
+        "custodio_declarado": {
+          "type": "string",
+          "minLength": 1
+        },
+        "naturaleza": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "publico",
+            "cooperacion",
+            "academia",
+            "privado",
+            "organizacion_social",
+            "mixto",
+            "por_verificar"
+          ]
+        },
+        "pais_jurisdiccion_institucion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidencia_atribucion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ambito_institucional": {
+          "type": "string",
+          "enum": [
+            "internacional",
+            "nacional",
+            "departamental",
+            "distrital",
+            "municipal",
+            "regional",
+            "territorial",
+            "multinivel",
+            "desconocido",
+            "por_verificar"
+          ]
+        },
+        "cobertura_dato": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "nacional",
+            "territorial",
+            "municipal",
+            "regional",
+            "local",
+            "estacion",
+            "global",
+            "desconocido",
+            "cabecera",
+            "municipal_con_desglose_urbano_rural"
+          ]
+        },
+        "territorios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "poblaciones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unidades": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "anios": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "alias": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vigencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verificacion": {
+          "type": "string",
+          "enum": [
+            "pendiente",
+            "parcial",
+            "aplicado",
+            "no_aplicable"
+          ]
+        },
+        "urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "procedencia": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha_entrada": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "estado": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "acceso",
+            "captura",
+            "validacion",
+            "condiciones_uso",
+            "integracion",
+            "publicacion"
+          ],
+          "properties": {
+            "acceso": {
+              "type": "string",
+              "enum": [
+                "por_verificar",
+                "consulta_sin_contenido",
+                "archivo_conocido",
+                "capturado",
+                "sin_acceso",
+                "restringido"
+              ]
+            },
+            "captura": {
+              "type": "string",
+              "enum": [
+                "sin_captura_nueva",
+                "capturado_pendiente_validacion",
+                "capturado_validado",
+                "no_aplicable"
+              ]
+            },
+            "validacion": {
+              "type": "string",
+              "enum": [
+                "por_verificar",
+                "parcial",
+                "aprobado",
+                "bloqueado"
+              ]
+            },
+            "condiciones_uso": {
+              "type": "string",
+              "enum": [
+                "por_verificar",
+                "restringidas",
+                "verificadas"
+              ]
+            },
+            "integracion": {
+              "type": "string",
+              "enum": [
+                "no_integrada",
+                "candidata",
+                "en_planificacion",
+                "integrada",
+                "en_replanificacion"
+              ]
+            },
+            "publicacion": {
+              "type": "string",
+              "enum": [
+                "no_publicada",
+                "publicable",
+                "publicada"
+              ]
+            }
+          }
+        },
+        "relaciones_candidatas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id_relacionado",
+              "tipo",
+              "estado",
+              "origen_id",
+              "destino_id",
+              "tipificacion",
+              "evidencia"
+            ],
+            "properties": {
+              "id_relacionado": {
+                "type": "string"
+              },
+              "tipo": {
+                "type": "string",
+                "enum": [
+                  "fuente_relacionada",
+                  "serie_equivalente",
+                  "portal_complementario",
+                  "ciclo_reutilizable",
+                  "origen_local"
+                ]
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "candidata",
+                  "declarada",
+                  "verificada"
+                ]
+              },
+              "origen_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "destino_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tipificacion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidencia": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "origen_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origen_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origen_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "coberturas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "ambito",
+              "territorio",
+              "poblacion",
+              "unidad",
+              "anios",
+              "estado"
+            ],
+            "properties": {
+              "ambito": {
+                "type": "string",
+                "minLength": 1
+              },
+              "territorio": {
+                "type": "string",
+                "minLength": 1
+              },
+              "poblacion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unidad": {
+                "type": "string",
+                "minLength": 1
+              },
+              "anios": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "por_verificar",
+                  "parcial",
+                  "aplicado"
+                ]
+              }
+            }
+          }
+        },
+        "poblacion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vinculos_rol": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "rol",
+              "entidad",
+              "jurisdiccion",
+              "competencia",
+              "vigencia",
+              "estado"
+            ],
+            "properties": {
+              "rol": {
+                "type": "string",
+                "minLength": 1
+              },
+              "entidad": {
+                "type": "string",
+                "minLength": 1
+              },
+              "jurisdiccion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "competencia": {
+                "type": "string",
+                "minLength": 1
+              },
+              "vigencia": {
+                "type": "string",
+                "minLength": 1
+              },
+              "estado": {
+                "type": "string",
+                "enum": [
+                  "pendiente",
+                  "aplicado",
+                  "no_aplicable"
+                ]
+              }
+            }
+          }
+        },
+        "conciliacion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "estado",
+            "fuentes_comparadas",
+            "criterios",
+            "explanaciones",
+            "periodo_comparable",
+            "unidad_comun"
+          ],
+          "properties": {
+            "estado": {
+              "type": "string",
+              "enum": [
+                "pendiente",
+                "comparable",
+                "comparable_ajustado",
+                "parcial_comparable",
+                "no_comparable"
+              ]
+            },
+            "fuentes_comparadas": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "criterios": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explanaciones": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "tipo",
+                  "detalle",
+                  "evidencia"
+                ],
+                "properties": {
+                  "tipo": {
+                    "type": "string",
+                    "enum": [
+                      "documentada",
+                      "verificada",
+                      "hipotesis_pendiente",
+                      "sin_explicacion"
+                    ]
+                  },
+                  "detalle": {
+                    "type": "string"
+                  },
+                  "evidencia": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "periodo_comparable": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "unidad_comun": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "retrospectiva": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "corte_previo",
+            "corte_actual",
+            "cambios_explicables",
+            "sin_recuperacion"
+          ],
+          "properties": {
+            "corte_previo": {
+              "type": "string",
+              "minLength": 1
+            },
+            "corte_actual": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cambios_explicables": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "campo",
+                  "detalle"
+                ],
+                "properties": {
+                  "campo": {
+                    "type": "string"
+                  },
+                  "detalle": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "sin_recuperacion": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "ambitos_originales": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "indicadores_originales": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unidades_originales": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "anios_originales": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "atribucion": {
+          "$ref": "#/$defs/atribucion"
+        },
+        "mision_institucional": {
+          "$ref": "#/$defs/mision_institucional"
+        },
+        "producto_estadistico": {
+          "$ref": "#/$defs/producto_estadistico"
+        },
+        "temporalidad": {
+          "$ref": "#/$defs/temporalidad"
+        },
+        "revisiones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/revision"
+          }
+        },
+        "referencia_captura": {
+          "$ref": "#/$defs/referencia_captura"
+        },
+        "sha_contenido_declarado": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "atribucion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metodo",
+        "estado",
+        "referencia"
+      ],
+      "properties": {
+        "metodo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "declarada_no_verificada",
+            "pendiente",
+            "verificada"
+          ]
+        },
+        "referencia": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "mision_institucional": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declaracion",
+        "evidencia_id",
+        "estado"
+      ],
+      "properties": {
+        "declaracion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidencia_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "documentada",
+            "por_verificar",
+            "pendiente",
+            "no_aplicable"
+          ]
+        }
+      }
+    },
+    "producto_estadistico": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proposito",
+        "definicion_indicador",
+        "unidad_observacion",
+        "universo",
+        "poblacion_referencia",
+        "reglas_inclusion_exclusion",
+        "tipificacion",
+        "documentacion",
+        "estado",
+        "unidades_medida_declaradas"
+      ],
+      "properties": {
+        "proposito": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "definicion_indicador": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unidad_observacion": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "universo": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "poblacion_referencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reglas_inclusion_exclusion": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tipificacion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "documentacion": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "pendiente",
+            "parcial",
+            "documentado_verificado"
+          ]
+        },
+        "unidades_medida_declaradas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "temporalidad": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "periodo_observado",
+        "ocurrencia",
+        "fallecimiento",
+        "registro",
+        "procedimiento_pericial",
+        "reclasificacion",
+        "publicacion",
+        "corte",
+        "extraccion",
+        "intervalo_ejecucion_captura"
+      ],
+      "properties": {
+        "periodo_observado": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "ocurrencia": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "fallecimiento": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "registro": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "procedimiento_pericial": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "reclasificacion": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "publicacion": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "corte": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "extraccion": {
+          "$ref": "#/$defs/fecha_conocimiento"
+        },
+        "intervalo_ejecucion_captura": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "inicio_utc",
+            "fin_utc",
+            "evidencia_id",
+            "sha256",
+            "alcance"
+          ],
+          "properties": {
+            "inicio_utc": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "fin_utc": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "evidencia_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "alcance": {
+              "const": "intervalo_del_run_no_fecha_exacta_por_producto"
+            }
+          }
+        }
+      }
+    },
+    "fecha_conocimiento": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fecha",
+        "estado",
+        "detalle",
+        "evidencia_id"
+      ],
+      "properties": {
+        "fecha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "por_verificar",
+            "declarado",
+            "verificado",
+            "no_aplicable",
+            "por_validar"
+          ]
+        },
+        "detalle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencia_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version_id",
+        "fecha",
+        "alcance",
+        "celdas_afectadas",
+        "cambios",
+        "evidencia_id",
+        "estado"
+      ],
+      "properties": {
+        "version_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fecha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "alcance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "celdas_afectadas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cambios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidencia_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "por_verificar",
+            "declarado",
+            "verificado",
+            "no_identificado"
+          ]
+        }
+      }
+    },
+    "referencia_captura": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "archivo",
+        "id_puntero",
+        "sha256",
+        "estado"
+      ],
+      "properties": {
+        "archivo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id_puntero": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "metadatos_no_bytes",
+            "aplicado",
+            "no_captura"
+          ]
+        }
+      }
+    },
+    "captura_trazabilidad": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producto_id",
+        "archivo_evidencia",
+        "archivo_csv",
+        "sha256_evidencia",
+        "sha256_csv",
+        "estado"
+      ],
+      "properties": {
+        "producto_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archivo_evidencia": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archivo_csv": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256_evidencia": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sha256_csv": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "estado": {
+          "type": "string",
+          "const": "capturado_pendiente_validacion"
+        }
+      }
+    },
+    "diagnosticos": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fenomeno",
+        "fuentes"
+      ],
+      "properties": {
+        "fenomeno": {
+          "$ref": "#/$defs/diagnostico"
+        },
+        "fuentes": {
+          "$ref": "#/$defs/diagnostico"
+        }
+      }
+    },
+    "diagnostico": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "estado",
+        "alcance",
+        "regla_referencia",
+        "limite"
+      ],
+      "properties": {
+        "regla_referencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estado": {
+          "type": "string",
+          "enum": [
+            "no_ejecutado",
+            "contrato_definido_no_ejecutado",
+            "ejecutado",
+            "en_revision"
+          ]
+        },
+        "alcance": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "limite": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "version_revision": "2026-10-24-r2"
+}

@@ -1,0 +1,815 @@
+{
+  "esquema": "polis.parser_terridata.v1",
+  "estado": "prototipo_parser_pendiente_revision_funcional",
+  "version_parser": "terridata_txt.v1",
+  "api_publica": {
+    "funcion": "parsear_terridata_txt",
+    "entrada": [
+      "bytes_txt",
+      "MetadatosCapturaTerridata",
+      "IdentidadEsperadaTerridata"
+    ],
+    "salida": "ResultadoParserTerridata",
+    "comportamiento": "Parser puro de bytes TXT ya capturados; no abre rutas, ZIP, URLs ni SQL; no genera ficha, analisis ni persistencia."
+  },
+  "evidencia_estructura_75": {
+    "manifiesto": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/manifiesto.json",
+    "perfil": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/perfil_estructural.json",
+    "sha256_zip_inspeccionado": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+    "miembro_txt": "TerriData13001.txt",
+    "codificacion_declarada": "utf-8-sig",
+    "delimitador": "|",
+    "encabezado": [
+      "Código Departamento",
+      "Departamento",
+      "Código Entidad",
+      "Entidad",
+      "Dimensión",
+      "Subcategoría",
+      "Indicador",
+      "Dato Numérico",
+      "Dato Cualitativo",
+      "Año",
+      "Mes",
+      "Fuente",
+      "Unidad de Medida"
+    ],
+    "filas_tabulares_consultadas": 12899
+  },
+  "limites": {
+    "MAXIMO_BYTES_TXT": 67108864,
+    "MAXIMO_FILAS_DATOS": 200000,
+    "MAXIMO_CELDA": 2048,
+    "truncamiento": "no",
+    "csv_field_size_limit": "ambiente_no_modificado_por_el_parser"
+  },
+  "regla_numerica": {
+    "id": "decimal_simple_v1",
+    "texto": "Vacio produce None; enteros o decimales con punto y sin separadores, espacios, exponente, simbolo porcentual o texto no numeral producen Decimal sin float. Cualquier otro texto conserva texto original y retiene la fila por pendiente."
+  },
+  "estados": {
+    "fila": [
+      "aceptada",
+      "retiene",
+      "rechazada"
+    ],
+    "valor_numerico": [
+      "no_presente",
+      "decimal_validado",
+      "formato_no_regla",
+      "no_evaluable_por_estructura"
+    ],
+    "temporalidad": [
+      "declarada_sin_regla_proveedor",
+      "mes_0_sin_regla_proveedor",
+      "anio_no_conforme",
+      "mes_no_conforme",
+      "no_evaluable_por_estructura"
+    ],
+    "identidad": [
+      "concordante_declarada",
+      "discordante_declarada",
+      "no_contrastable",
+      "no_evaluable_por_estructura"
+    ]
+  },
+  "conservacion": {
+    "campos_originales_por_fila": true,
+    "codigo_departamento_y_entidad_como_texto": true,
+    "anio_y_mes_crudos": true,
+    "dato_numerico_texto": true,
+    "dato_cualitativo_texto": true,
+    "fuente_como_texto": true,
+    "unidad_de_medida_texto": true,
+    "unidad_de_observacion": "no_inferida",
+    "productor": "no_reclasificado"
+  },
+  "criterios_rechazo_esquema": {
+    "columnas_duplicadas": "error",
+    "columna_faltante_o_inesperada": "error",
+    "encabezado_vacio": "error",
+    "orden_o_nombres_diferentes": "error"
+  },
+  "causas_retencion": [
+    "discordancia_identidad_declarada",
+    "identidad_no_contrastable",
+    "anio_no_conforme_a_YYYY",
+    "mes_no_conforme_a_valor_0_a_12",
+    "mes_0_sin_regla_proveedor_acreditada",
+    "numerico_formato_no_compatible:decimal_simple_v1",
+    "sin_valor_declarado"
+  ],
+  "casos_aceptacion_previstos": [
+    {
+      "id": "esquema_75_exacto",
+      "entrada": "Encabezado exacto, delimitador | y codificacion declarada utf-8-sig.",
+      "esperado": "Filas estructuradas con todos los campos originales y conteo reconciliable; sin ficha ni analisis."
+    },
+    {
+      "id": "encabezado_duplicado",
+      "entrada": "Columna repetida.",
+      "esperado": "ValueError; sin filas parcialmente procesadas."
+    },
+    {
+      "id": "columna_inesperada",
+      "entrada": "Columna ausente, extra o alterada.",
+      "esperado": "ValueError de esquema constatado; sin sustitucion ni tolerancia implicita."
+    },
+    {
+      "id": "identidad_concordante",
+      "entrada": "Codigo y nombre declarados por quien invoca coinciden exactamente.",
+      "esperado": "Fila aceptada como estructura; advertencia de no certificacion DIVIPOLA; ningun codigo autocompletado."
+    },
+    {
+      "id": "identidad_discordante",
+      "entrada": "Codigo o nombre distinto a la identidad declarada.",
+      "esperado": "Fila retenida con causa por campo; campos originales intactos; sin sustituir municipio por capital."
+    },
+    {
+      "id": "valor_numerico_simple",
+      "entrada": "Dato Numérico entero o decimal con punto y sin separadores.",
+      "esperado": "Valor Decimal exacto y texto original conservados; float ausente."
+    },
+    {
+      "id": "valor_numerico_no_regla",
+      "entrada": "Valor con separador, espacio, exponente, porcentaje o texto no numeral.",
+      "esperado": "Texto original conservado y fila retenida con pendiente decimal_simple_v1; sin truncamiento."
+    },
+    {
+      "id": "fila_cualitativa_valida",
+      "entrada": "Dato Numérico vacio y Dato Cualitativo con contenido.",
+      "esperado": "El estado vacio NO es error numerico por defecto; fila estructurada sin relleno."
+    },
+    {
+      "id": "faltante_no_cero",
+      "entrada": "Dato Numérico vacio y Dato Cualitativo vacio.",
+      "esperado": "Sin valor declarado y advertencia; nunca cero."
+    },
+    {
+      "id": "mes_cero",
+      "entrada": "Mes='0'.",
+      "esperado": "Texto original preservado; estado temporal no mensual sin regla del proveedor; sin conversion a fecha."
+    },
+    {
+      "id": "year_invalido",
+      "entrada": "Año distinto de YYYY.",
+      "esperado": "Fila retenida con causa; valor original no truncado ni imputado."
+    },
+    {
+      "id": "descripcion_general",
+      "entrada": "Dimension='Descripción general'.",
+      "esperado": "No se usa el año como observacion historica automatica; registro conservado con advertencia."
+    },
+    {
+      "id": "unidad_medida_no_observacion",
+      "entrada": "Solo campo Unidad de Medida constatado.",
+      "esperado": "No se asigna unidad de observacion derivada; TerriData no se declara productor."
+    },
+    {
+      "id": "limite_bytes",
+      "entrada": "TXT mayor al limite.",
+      "esperado": "ValueError antes de decodificar; sin truncar."
+    },
+    {
+      "id": "limite_fila_o_celda",
+      "entrada": "Numero de filas o celdas mayores a limites.",
+      "esperado": "Error o rechazo por causa explicita; sin recorte silencioso."
+    },
+    {
+      "id": "error_codificacion",
+      "entrada": "Bytes no decodificables como utf-8-sig.",
+      "esperado": "ValueError; sin reinterpretacion automatica."
+    },
+    {
+      "id": "ancho_incorrecto_primera_fila",
+      "entrada": "Primera fila con numero de campos distinto a 13.",
+      "esperado": "estado_valor_numerico=no_evaluable_por_estructura; sin herencia de otra fila; fila rechazada y campos originales conservados."
+    },
+    {
+      "id": "ancho_incorrecto_tras_fila_valida",
+      "entrada": "Fila valida seguida de fila con ancho incorrecto.",
+      "esperado": "La fila invalida no reutiliza estados numericos ni temporalidad de la anterior."
+    },
+    {
+      "id": "anio_o_mes_no_conforme",
+      "entrada": "Año distinto de YYYY o mes fuera de 0-12.",
+      "esperado": "Fila retenida con causa; valores originales intactos; sin imputacion ni conversion."
+    },
+    {
+      "id": "celda_numerica_excedida",
+      "entrada": "Celda mayor a 2048 en fila de 13 campos.",
+      "esperado": "Fila rechazada; no conversion numerica ni revision semantica de esa celda; texto y causa preservados."
+    },
+    {
+      "id": "identidad_no_contrastable",
+      "entrada": "Identidad declarada solo con nivel_territorial.",
+      "esperado": "Fila retenida con estado_identidad=no_contrastable; sin concordancia inferida."
+    },
+    {
+      "id": "error_csv_cuerpo",
+      "entrada": "Error de lectura CSV en el cuerpo.",
+      "esperado": "ValueError con linea del lector; sin truncamiento; el limite ambiental csv.field_size_limit no se modifica."
+    }
+  ],
+  "validacion_ejecutada": {
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "sintaxis_ast": "passed",
+    "json_valido": "passed",
+    "pytest_aplicacion": "no_ejecutado",
+    "chequeo_sintetico": "no_ejecutado",
+    "procesamiento_corpus_real": "no_ejecutado"
+  },
+  "limites_salida": [
+    "No certifica DIVIPOLA.",
+    "No valida semantica.",
+    "No infiere naturaleza observada/proyectada.",
+    "No genera ficha, catálogo, SQL ni persistencia."
+  ],
+  "model_schema": {
+    "$defs": {
+      "ConteosParserTerridata": {
+        "additionalProperties": false,
+        "properties": {
+          "filas_datos": {
+            "title": "Filas Datos",
+            "type": "integer"
+          },
+          "filas_aceptadas": {
+            "title": "Filas Aceptadas",
+            "type": "integer"
+          },
+          "filas_retenidas": {
+            "title": "Filas Retenidas",
+            "type": "integer"
+          },
+          "filas_rechazadas": {
+            "title": "Filas Rechazadas",
+            "type": "integer"
+          },
+          "filas_ancho_inconsistente": {
+            "title": "Filas Ancho Inconsistente",
+            "type": "integer"
+          },
+          "filas_celda_excede_limite": {
+            "title": "Filas Celda Excede Limite",
+            "type": "integer"
+          },
+          "filas_campo_obligatorio_vacio": {
+            "title": "Filas Campo Obligatorio Vacio",
+            "type": "integer"
+          },
+          "filas_con_valor_numerico_valido": {
+            "title": "Filas Con Valor Numerico Valido",
+            "type": "integer"
+          },
+          "filas_con_numerico_sin_regla": {
+            "title": "Filas Con Numerico Sin Regla",
+            "type": "integer"
+          },
+          "filas_con_cualitativo": {
+            "title": "Filas Con Cualitativo",
+            "type": "integer"
+          },
+          "filas_sin_valor_declarado": {
+            "title": "Filas Sin Valor Declarado",
+            "type": "integer"
+          },
+          "filas_con_mes_0": {
+            "title": "Filas Con Mes 0",
+            "type": "integer"
+          },
+          "filas_descripcion_general": {
+            "title": "Filas Descripcion General",
+            "type": "integer"
+          },
+          "filas_identidad_concordante_declarada": {
+            "title": "Filas Identidad Concordante Declarada",
+            "type": "integer"
+          },
+          "filas_identidad_discordante_declarada": {
+            "title": "Filas Identidad Discordante Declarada",
+            "type": "integer"
+          },
+          "filas_identidad_no_contrastable": {
+            "title": "Filas Identidad No Contrastable",
+            "type": "integer"
+          },
+          "filas_identidad_no_evaluable": {
+            "title": "Filas Identidad No Evaluable",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "filas_datos",
+          "filas_aceptadas",
+          "filas_retenidas",
+          "filas_rechazadas",
+          "filas_ancho_inconsistente",
+          "filas_celda_excede_limite",
+          "filas_campo_obligatorio_vacio",
+          "filas_con_valor_numerico_valido",
+          "filas_con_numerico_sin_regla",
+          "filas_con_cualitativo",
+          "filas_sin_valor_declarado",
+          "filas_con_mes_0",
+          "filas_descripcion_general",
+          "filas_identidad_concordante_declarada",
+          "filas_identidad_discordante_declarada",
+          "filas_identidad_no_contrastable",
+          "filas_identidad_no_evaluable"
+        ],
+        "title": "ConteosParserTerridata",
+        "type": "object"
+      },
+      "FilaTerridata": {
+        "additionalProperties": false,
+        "description": "Fila estructurada con campos originales y estados conservadores.",
+        "properties": {
+          "orden": {
+            "minimum": 1,
+            "title": "Orden",
+            "type": "integer"
+          },
+          "linea_final": {
+            "minimum": 2,
+            "title": "Linea Final",
+            "type": "integer"
+          },
+          "campos_originales": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Campos Originales",
+            "type": "array"
+          },
+          "codigo_departamento": {
+            "title": "Codigo Departamento",
+            "type": "string"
+          },
+          "departamento": {
+            "title": "Departamento",
+            "type": "string"
+          },
+          "codigo_entidad": {
+            "title": "Codigo Entidad",
+            "type": "string"
+          },
+          "entidad": {
+            "title": "Entidad",
+            "type": "string"
+          },
+          "dimension": {
+            "title": "Dimension",
+            "type": "string"
+          },
+          "subcategoria": {
+            "title": "Subcategoria",
+            "type": "string"
+          },
+          "indicador": {
+            "title": "Indicador",
+            "type": "string"
+          },
+          "dato_numerico": {
+            "title": "Dato Numerico",
+            "type": "string"
+          },
+          "dato_cualitativo": {
+            "title": "Dato Cualitativo",
+            "type": "string"
+          },
+          "anio": {
+            "title": "Anio",
+            "type": "string"
+          },
+          "mes": {
+            "title": "Mes",
+            "type": "string"
+          },
+          "fuente": {
+            "title": "Fuente",
+            "type": "string"
+          },
+          "unidad_medida": {
+            "title": "Unidad Medida",
+            "type": "string"
+          },
+          "valor_numerico": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valor Numerico"
+          },
+          "estado_valor_numerico": {
+            "enum": [
+              "no_presente",
+              "decimal_validado",
+              "formato_no_regla",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Valor Numerico",
+            "type": "string"
+          },
+          "estado_temporalidad": {
+            "enum": [
+              "declarada_sin_regla_proveedor",
+              "mes_0_sin_regla_proveedor",
+              "anio_no_conforme",
+              "mes_no_conforme",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Temporalidad",
+            "type": "string"
+          },
+          "estado_identidad": {
+            "enum": [
+              "concordante_declarada",
+              "discordante_declarada",
+              "no_contrastable",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Identidad",
+            "type": "string"
+          },
+          "estado_fila": {
+            "enum": [
+              "aceptada",
+              "retiene",
+              "rechazada"
+            ],
+            "title": "Estado Fila",
+            "type": "string"
+          },
+          "advertencias": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Advertencias",
+            "type": "array"
+          }
+        },
+        "required": [
+          "orden",
+          "linea_final",
+          "campos_originales",
+          "codigo_departamento",
+          "departamento",
+          "codigo_entidad",
+          "entidad",
+          "dimension",
+          "subcategoria",
+          "indicador",
+          "dato_numerico",
+          "dato_cualitativo",
+          "anio",
+          "mes",
+          "fuente",
+          "unidad_medida",
+          "estado_valor_numerico",
+          "estado_temporalidad",
+          "estado_identidad",
+          "estado_fila",
+          "advertencias"
+        ],
+        "title": "FilaTerridata",
+        "type": "object"
+      },
+      "IdentidadEsperadaTerridata": {
+        "additionalProperties": false,
+        "description": "Identidad declarada por quien invoca; `nivel_territorial` no tiene columna comparativa.",
+        "properties": {
+          "codigo_departamento": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Codigo Departamento"
+          },
+          "nombre_departamento": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nombre Departamento"
+          },
+          "codigo_entidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Codigo Entidad"
+          },
+          "nombre_entidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nombre Entidad"
+          },
+          "nivel_territorial": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nivel Territorial"
+          }
+        },
+        "title": "IdentidadEsperadaTerridata",
+        "type": "object"
+      },
+      "MetadatosCapturaTerridata": {
+        "additionalProperties": false,
+        "description": "Metadatos declarados del TXT recibido. No incluyen ruta a abrir.",
+        "properties": {
+          "canal_declarado": {
+            "const": "TerriData",
+            "title": "Canal Declarado",
+            "type": "string"
+          },
+          "origen_declarado": {
+            "minLength": 1,
+            "title": "Origen Declarado",
+            "type": "string"
+          },
+          "miembro_texto": {
+            "minLength": 1,
+            "title": "Miembro Texto",
+            "type": "string"
+          },
+          "fecha_captura": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fecha Captura"
+          },
+          "sha256_captura_declarado": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sha256 Captura Declarado"
+          },
+          "codificacion": {
+            "const": "utf-8-sig",
+            "default": "utf-8-sig",
+            "title": "Codificacion",
+            "type": "string"
+          },
+          "delimitador": {
+            "const": "|",
+            "default": "|",
+            "title": "Delimitador",
+            "type": "string"
+          }
+        },
+        "required": [
+          "canal_declarado",
+          "origen_declarado",
+          "miembro_texto"
+        ],
+        "title": "MetadatosCapturaTerridata",
+        "type": "object"
+      },
+      "VerificacionParserTerridata": {
+        "additionalProperties": false,
+        "properties": {
+          "certificacion_divipola": {
+            "const": "no_certificada",
+            "default": "no_certificada",
+            "title": "Certificacion Divipola",
+            "type": "string"
+          },
+          "validacion_semantica": {
+            "const": "no_realizada",
+            "default": "no_realizada",
+            "title": "Validacion Semantica",
+            "type": "string"
+          },
+          "naturaleza_observacion": {
+            "const": "no_inferida",
+            "default": "no_inferida",
+            "title": "Naturaleza Observacion",
+            "type": "string"
+          },
+          "unidad_de_observacion": {
+            "const": "no_inferida",
+            "default": "no_inferida",
+            "title": "Unidad De Observacion",
+            "type": "string"
+          },
+          "terridata_es_productor": {
+            "const": "no",
+            "default": "no",
+            "title": "Terridata Es Productor",
+            "type": "string"
+          },
+          "terridata_es_canal": {
+            "const": "si",
+            "default": "si",
+            "title": "Terridata Es Canal",
+            "type": "string"
+          }
+        },
+        "title": "VerificacionParserTerridata",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Resultado puro del TXT sin ficha normalizada ni persistencia.",
+    "properties": {
+      "esquema": {
+        "const": "polis.parser_terridata.v1",
+        "title": "Esquema",
+        "type": "string"
+      },
+      "version_parser": {
+        "const": "terridata_txt.v1",
+        "title": "Version Parser",
+        "type": "string"
+      },
+      "estado": {
+        "const": "prototipo_parser_pendiente_revision_funcional",
+        "title": "Estado",
+        "type": "string"
+      },
+      "sha256_bytes_txt": {
+        "title": "Sha256 Bytes Txt",
+        "type": "string"
+      },
+      "bytes_txt": {
+        "title": "Bytes Txt",
+        "type": "integer"
+      },
+      "captura": {
+        "$ref": "#/$defs/MetadatosCapturaTerridata"
+      },
+      "identidad_esperada": {
+        "$ref": "#/$defs/IdentidadEsperadaTerridata"
+      },
+      "encabezado": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Encabezado",
+        "type": "array"
+      },
+      "limites_aplicados": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Limites Aplicados",
+        "type": "array"
+      },
+      "conteos": {
+        "$ref": "#/$defs/ConteosParserTerridata"
+      },
+      "filas": {
+        "items": {
+          "$ref": "#/$defs/FilaTerridata"
+        },
+        "title": "Filas",
+        "type": "array"
+      },
+      "advertencias_globales": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Advertencias Globales",
+        "type": "array"
+      },
+      "pendientes": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Pendientes",
+        "type": "array"
+      },
+      "verificacion": {
+        "$ref": "#/$defs/VerificacionParserTerridata"
+      }
+    },
+    "required": [
+      "esquema",
+      "version_parser",
+      "estado",
+      "sha256_bytes_txt",
+      "bytes_txt",
+      "captura",
+      "identidad_esperada",
+      "encabezado",
+      "limites_aplicados",
+      "conteos",
+      "filas",
+      "advertencias_globales",
+      "pendientes",
+      "verificacion"
+    ],
+    "title": "ResultadoParserTerridata",
+    "type": "object"
+  },
+  "politica_estados": {
+    "prioridad": "Estructura invalida rechaza; pendientes semanticos retienen; avisos informativos solo notifican y pueden quedar aceptados.",
+    "retiene": [
+      "Discordancia exacta con atributo declarado contrastable.",
+      "Identidad esperada sin atributo contrastable.",
+      "Año no conforme a YYYY.",
+      "Mes no conforme a 0-12.",
+      "Mes 0 sin regla acreditada del proveedor.",
+      "Dato numerico no compatible con decimal_simple_v1.",
+      "Ausencia explicita de valor numerico y cualitativo."
+    ],
+    "rechaza": [
+      "Ancho inconsistente.",
+      "Celda superior a limite.",
+      "Campo obligatorio vacio en esquema nominal."
+    ],
+    "informativo_no_retener": [
+      "Temporalidad declarada sin regla externa acreditada, cuando año y mes son conformes.",
+      "Dimension Descripcion general: no conversion automatica a serie historica.",
+      "Coincidencia con identidad declarada: no es certificacion DIVIPOLA."
+    ]
+  },
+  "csv": {
+    "field_size_limit": "ambiente_no_modificado",
+    "error_cuerpo": "ValueError con linea_final del lector; sin truncamiento ni reinterpretacion."
+  },
+  "identidad": {
+    "nivel_territorial": "declarado_como_contexto_no_comparado",
+    "requiere_menos_un_compar": "codigo/nombre de departamento o entidad",
+    "no_certificacion_divipola": true,
+    "contraste": {
+      "columnas": [
+        "Código Departamento",
+        "Departamento",
+        "Código Entidad",
+        "Entidad"
+      ],
+      "requiere_menos_un_compar": "codigo/nombre de departamento o entidad",
+      "solo_nivel_territorial": "filas retenidas con estado_identidad=no_contrastable"
+    }
+  },
+  "causas_rechazo_por_fila": [
+    "ancho_inconsistente",
+    "celda_excede_limite",
+    "campo_obligatorio_vacio"
+  ],
+  "avisos_informativos": [
+    "temporalidad_preservada_sin_regla_proveedor",
+    "descripcion_general_no_serie_estadistica_automatica",
+    "no_certificacion_divipola_por_coincidencia_declarada"
+  ]
+}

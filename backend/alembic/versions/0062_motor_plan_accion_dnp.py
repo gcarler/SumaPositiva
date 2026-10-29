@@ -9,16 +9,17 @@ Revises: 0061_analitica_hurtos
 Create Date: 2026-10-14 05:20:00.000000
 """
 
-from typing import Sequence, Union
 import json
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
 
+from alembic import op
 
 revision: str = "0062_motor_plan_accion_dnp"
-down_revision: Union[str, Sequence[str], None] = "0061_analitica_hurtos"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "0061_analitica_hurtos"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -66,14 +67,30 @@ def upgrade() -> None:
 
     # Indices de optimizacion pericial y busqueda multicriterio
     op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_codigo ON seguimiento.actividades_plan_accion (codigo);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_vigencia ON seguimiento.actividades_plan_accion (vigencia);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_compromiso ON seguimiento.actividades_plan_accion (compromiso_pas_codigo);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_linea ON seguimiento.actividades_plan_accion (linea_estrategica_codigo);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_entidad ON seguimiento.actividades_plan_accion (entidad_responsable);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_tipo_meta ON seguimiento.actividades_plan_accion (tipo_meta);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_tipo_actividad ON seguimiento.actividades_plan_accion (tipo_actividad);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_fuente ON seguimiento.actividades_plan_accion (fuente_financiacion);")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_actividades_pa_metadatos_gin ON seguimiento.actividades_plan_accion USING GIN (metadatos);")
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_vigencia ON seguimiento.actividades_plan_accion (vigencia);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_compromiso ON seguimiento.actividades_plan_accion (compromiso_pas_codigo);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_linea ON seguimiento.actividades_plan_accion (linea_estrategica_codigo);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_entidad ON seguimiento.actividades_plan_accion (entidad_responsable);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_tipo_meta ON seguimiento.actividades_plan_accion (tipo_meta);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_tipo_actividad ON seguimiento.actividades_plan_accion (tipo_actividad);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_fuente ON seguimiento.actividades_plan_accion (fuente_financiacion);"
+    )
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_actividades_pa_metadatos_gin ON seguimiento.actividades_plan_accion USING GIN (metadatos);"
+    )
 
     # 2. Sembrar 12 actividades ejemplares del Plan de Accion 2026 de Seguridad Humana de Cartagena
     actividades_semilla = [
@@ -110,7 +127,7 @@ def upgrade() -> None:
             380000000.00,
             "PUBLICADO_LEY_1474",
             "Decreto Distrital 0412 de 2026 y Actas de concertación turística publicadas en gaceta.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "proteccion_nna"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "proteccion_nna"}),
         ),
         (
             "PA-2026-L01-02",
@@ -145,7 +162,7 @@ def upgrade() -> None:
             2240000000.00,
             "PUBLICADO_LEY_1474",
             "Actas de entrega técnica de obra civil y enlaces IP activos al CAD de Manga.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"}),
         ),
         (
             "PA-2026-L01-03",
@@ -180,7 +197,7 @@ def upgrade() -> None:
             1460000000.00,
             "PUBLICADO_LEY_1474",
             "Bitácoras de instalación de la cuadrilla técnica y actas de interventoría bimestral.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "ambiente_habitat"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "ambiente_habitat"}),
         ),
         (
             "PA-2026-L01-04",
@@ -215,7 +232,7 @@ def upgrade() -> None:
             256000000.00,
             "PUBLICADO_LEY_1474",
             "Informes técnicos de inspección policial de cuadrantes y actas suscritas con JAC.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"}),
         ),
         (
             "PA-2026-L02-01",
@@ -250,7 +267,7 @@ def upgrade() -> None:
             935000000.00,
             "PUBLICADO_LEY_1474",
             "Convenio Tripartito de Cooperación No. 018-2026 SENA-Distrito y resolución de planes de estudio.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "educacion_cultura"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "educacion_cultura"}),
         ),
         (
             "PA-2026-L02-02",
@@ -285,7 +302,7 @@ def upgrade() -> None:
             680000000.00,
             "PUBLICADO_LEY_1474",
             "Pactos barriales de no agresión firmados y actas de desescalamiento con custodia personería.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"}),
         ),
         (
             "PA-2026-L03-01",
@@ -320,7 +337,7 @@ def upgrade() -> None:
             648000000.00,
             "PUBLICADO_LEY_1474",
             "Resolución conjunta EPA-Cardique 0314 de 2026 y cartografía oficial de borde de protección.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "ambiente_habitat"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "ambiente_habitat"}),
         ),
         (
             "PA-2026-L03-02",
@@ -330,7 +347,9 @@ def upgrade() -> None:
             "Seguridad Económica e Inclusión Productiva en Bazurto",
             "Secretaría de Hacienda Distrital",
             "Director de Desarrollo Económico y Financiamiento Popular",
-            json.dumps(["Gerencia de Espacio Público", "Banco Agrario / Findeter", "Asociaciones de Comerciantes de Bazurto"]),
+            json.dumps(
+                ["Gerencia de Espacio Público", "Banco Agrario / Findeter", "Asociaciones de Comerciantes de Bazurto"]
+            ),
             "META_PRODUCTO",
             "800 comerciantes informales beneficiados con microcréditos a tasa subsidiada",
             800.0,
@@ -355,7 +374,7 @@ def upgrade() -> None:
             2400000000.00,
             "PUBLICADO_LEY_1474",
             "Acuerdo Distrital de creación de la cuenta especial y convenio fiduciario de administración.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "desarrollo_economico"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "desarrollo_economico"}),
         ),
         (
             "PA-2026-L04-01",
@@ -390,7 +409,7 @@ def upgrade() -> None:
             1350000000.00,
             "PUBLICADO_LEY_1474",
             "Decreto Distrital 0285 de 2026 de adopción del Modelo de Cuidado y Manual de Operaciones.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "genero_inclusion"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "genero_inclusion"}),
         ),
         (
             "PA-2026-L04-02",
@@ -400,7 +419,13 @@ def upgrade() -> None:
             "Soberanía y Salvaguarda Étnica con Consejos Comunitarios",
             "Dirección de Asuntos Étnicos",
             "Director de Asuntos Étnicos y Afrodescendientes",
-            json.dumps(["Ministerio del Interior", "Consejos Comunitarios de Comunidades Negras", "Agencia Nacional de Tierras"]),
+            json.dumps(
+                [
+                    "Ministerio del Interior",
+                    "Consejos Comunitarios de Comunidades Negras",
+                    "Agencia Nacional de Tierras",
+                ]
+            ),
             "ACTIVIDAD",
             "8 acuerdos de salvaguarda étnica y fortalecimiento de gobiernos propios comunitarios suscritos",
             8.0,
@@ -425,7 +450,7 @@ def upgrade() -> None:
             0.00,
             "PUBLICADO_LEY_1474",
             "Actas de asamblea general comunitaria y protocolos de relacionamiento bilateral registrados ante MinInterior.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "etnico_comunitario"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "etnico_comunitario"}),
         ),
         (
             "PA-2026-L05-01",
@@ -460,7 +485,7 @@ def upgrade() -> None:
             520000000.00,
             "PUBLICADO_LEY_1474",
             "Directorio pericial de campesinos y pescadores inscritos en el registro distrital de compras públicas.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "desarrollo_economico"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "desarrollo_economico"}),
         ),
         (
             "PA-2026-L06-01",
@@ -470,7 +495,9 @@ def upgrade() -> None:
             "Atención Primaria, Salud Mental Barrial y Reducción del Daño",
             "Departamento Administrativo Distrital de Salud (DADIS)",
             "Coordinador de Salud Mental y Prevención de Consumo",
-            json.dumps(["ESE Hospital Local Cartagena de Indias", "Secretaría del Interior", "Líderes de Salud Barrial"]),
+            json.dumps(
+                ["ESE Hospital Local Cartagena de Indias", "Secretaría del Interior", "Líderes de Salud Barrial"]
+            ),
             "ACTIVIDAD",
             "10 Zonas de Escucha y Acompañamiento Comunitario (ZEAC) en salud mental y reducción del daño operando",
             10.0,
@@ -495,7 +522,7 @@ def upgrade() -> None:
             260000000.00,
             "PUBLICADO_LEY_1474",
             "Circulares informativas radicadas con acuse de recibo en la totalidad de centros asistenciales.",
-            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"})
+            json.dumps({"fase_metodologica": "Fase 3", "sector": "seguridad_convivencia"}),
         ),
     ]
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Check, AlertCircle } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -42,6 +42,26 @@ export function AgendaEditorPanel({
   const [estado, setEstado] = useState<EstadoMesa>(
     agenda?.estado || "programada"
   );
+  // El flujo desde la ficha de Proyectos llega con el store de agendas frío:
+  // sin carga, el formulario abriría vacío y el guardado fallaría por
+  // "Datos incompletos" (fecha y lugar obligatorios).
+  useEffect(() => {
+    if (!agenda) void useAgendaStore.getState().cargarAgendas();
+    // Solo a demanda: si la agenda ya está en el store no hay recarga.
+  }, [agenda]);
+  // Rehidratación del formulario en la carga inicial de la agenda
+  // (de indefinida a datos); no toca los campos si el usuario ya editó.
+  useEffect(() => {
+    if (!agenda || !agenda.id) return;
+    setEstado(agenda.estado || "programada");
+    setFecha(agenda.fecha || "");
+    setHoraInicio(agenda.horaInicio || "08:30");
+    setHoraFin(agenda.horaFin || "12:00");
+    setLugar(agenda.lugar || "");
+    setTerritorio(agenda.territorio || "");
+    setResponsable(agenda.responsable || "");
+    setObservaciones(agenda.observaciones || "");
+  }, [agenda?.id]);
   const [fecha, setFecha] = useState(agenda?.fecha || "");
   const [horaInicio, setHoraInicio] = useState(agenda?.horaInicio || "08:30");
   const [horaFin, setHoraFin] = useState(agenda?.horaFin || "12:00");

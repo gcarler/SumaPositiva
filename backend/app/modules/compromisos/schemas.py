@@ -320,9 +320,7 @@ class DetectarFormatoPlanAccionSolicitud(BaseModel):
     vigencia_declarada: int | None = Field(default=None, ge=2016, le=2026)
     entidad_declarada: str | None = Field(default=None, max_length=180)
     hojas: list[HojaExcelEntrada] = Field(default_factory=list, max_length=30)
-    muestra: (
-        Literal["2016_MONOHOJA", "2021_HIBRIDO", "2026_MULTIHOJA", "2026_CANONICO_DNP"] | None
-    ) = None
+    muestra: Literal["2016_MONOHOJA", "2021_HIBRIDO", "2026_MULTIHOJA", "2026_CANONICO_DNP"] | None = None
 
 
 class RegistroPlanAccionNormalizado(BaseModel):
@@ -401,18 +399,21 @@ class EjecucionPresupuestalTriada(BaseModel):
 
 class CruzarTresLecturasSolicitud(BaseModel):
     metas_estrategicas: list[MetaEstrategicaTriada] = Field(default_factory=list, max_length=10000)
-    actividades_operativas: list[ActividadOperativaTriada] = Field(
-        default_factory=list, max_length=10000
-    )
-    ejecuciones_presupuestales: list[EjecucionPresupuestalTriada] = Field(
-        default_factory=list, max_length=10000
-    )
+    actividades_operativas: list[ActividadOperativaTriada] = Field(default_factory=list, max_length=10000)
+    ejecuciones_presupuestales: list[EjecucionPresupuestalTriada] = Field(default_factory=list, max_length=10000)
+    cuatrienio: str | None = None
+    vigencia: int | None = None
+    dependencia: str | None = None
+    fuente_financiacion: str | None = None
+    estado_semaforo: str | None = None
 
 
 class CruceTresLecturasRespuesta(BaseModel):
-    total_cruces: int
-    cruces: list[dict[str, Any]]
-    alertas: list[dict[str, Any]]
+    total_cruces: int = 0
+    totales_evaluados: int = 0
+    cruces: list[dict[str, Any]] = Field(default_factory=list)
+    alertas: list[dict[str, Any]] = Field(default_factory=list)
+    resumen_semaforo: dict[str, int] = Field(default_factory=dict)
 
 
 class ResumenTriadaRespuesta(BaseModel):

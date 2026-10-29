@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { identidadApi, type MfaIniciar } from "@/features/sesion/services/identidad-api";
+import { sincronizarRestriccionMfa } from "@/features/sesion/services/sincronizar-sesion";
 import {
   tienePermiso,
   useSesionStore,
@@ -88,23 +89,46 @@ export function CuentaUsuario() {
     event.preventDefault();
     const datos = new FormData(event.currentTarget);
     const codigo = textoFormulario(datos, "codigo_activacion");
+    const tokenInicial = useSesionStore.getState().sesion?.token ?? "";
     void ejecutar(async () => {
       const resp = await identidadApi.mfaActivar(codigo);
+      /* Guarda de vigencia (revisión preventiva 238): un logout o un nuevo
+       * login puede haber reemplazado la sesión mientras el backend resolvía;
+       * en ese caso no se escribe ni mensaje ni estado local ni perfil. */
+      if (useSesionStore.getState().sesion?.token !== tokenInicial) return;
       setMfaSetup(null);
       setCodigosGenerados(resp.codigos_recuperacion);
       setMensaje("Autenticación multifactor activada con éxito.");
+      /* La acreditación es solo de esta sesión: recarga el perfil para
+       * obtener los permisos efectivos vigentes y deriva la restricción MFA
+       * del estado que usa el shell (hallazgo 1 de EAF-ID-06); sin permisos
+       * optimistas: el store se actualiza desde la respuesta real del
+       * servidor y abandona si la sesión fue reemplazada. */
+      const perfil = await identidadApi.perfil();
+      /* Guarda después del await: solo la sesión vigente acepta escritura. */
+      if (useSesionStore.getState().sesion?.token !== tokenInicial) return;
+      useSesionStore.getState().actualizarPerfil(perfil);
       await mfaEstado.refetch();
+      await sincronizarRestriccionMfa(perfil, tokenInicial);
     });
   }
   function desactivarMfa(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const datos = new FormData(event.currentTarget);
     const contrasena = textoFormulario(datos, "contrasena_desactivacion");
+    const tokenInicial = useSesionStore.getState().sesion?.token ?? "";
     void ejecutar(async () => {
       const resp = await identidadApi.mfaDesactivar(contrasena);
+      /* Guarda de vigencia: igual que en activarMfa. */
+      if (useSesionStore.getState().sesion?.token !== tokenInicial) return;
       setModoDesactivarMfa(false);
       setMensaje(resp.mensaje);
       await mfaEstado.refetch();
+      const perfil = await identidadApi.perfil();
+      /* Guarda después del await: solo la sesión vigente acepta escritura. */
+      if (useSesionStore.getState().sesion?.token !== tokenInicial) return;
+      useSesionStore.getState().actualizarPerfil(perfil);
+      await sincronizarRestriccionMfa(perfil, tokenInicial);
     });
   }
   function regenerarCodigos(event: FormEvent<HTMLFormElement>) {
@@ -128,6 +152,40 @@ export function CuentaUsuario() {
         </Notice>
       )}
       {mensaje && <Notice tone="success" title={mensaje} />}
+      {/* Enrolamiento exigido: sesión limitada a configurar MFA (contrato con
+       * EDD 181). No presenta permisos plenos ni navegación administrativa. */}
+      {mfaEstado.data && !mfaEstado.data.activo && mfaEstado.data.exigido_por_rol && (
+        <Notice tone="warning" title="Verificación en dos pasos pendiente">
+          Tu rol exige la verificación en dos pasos. Esta sesión solo permite
+          configurar MFA, ver tu perfil y cerrar sesión; el acceso completo se
+          habilita al activarlo.
+        </Notice>
+      )}
+      {/* Sesión anterior a la activación del factor: no está verificada.
+       * Se ofrece cerrar sesión para volver a entrar con el desafío vigente. */}
+      {mfaEstado.data?.activo &&
+        !mfaEstado.data.sesion_verificada && (
+          <Notice tone="warning" title="Sesión sin verificar">
+            Ya cuentas con la verificación en dos pasos, pero esta sesión se
+            inició antes y no está acreditada. Debes cerrar sesión y volver a
+            entrar para completar el desafío.
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                disabled={ocupado}
+                onClick={() =>
+                  void ejecutar(async () => {
+                    await useSesionStore.getState().cerrarSesion();
+                    cache.clear();
+                    closeAll();
+                  })
+                }
+              >
+                Cerrar sesión y volver a entrar
+              </Button>
+            </div>
+          </Notice>
+        )}
       <section className="space-y-3">
         <h3 className="text-base font-semibold text-text-primary">Perfil</h3>
         <p className="break-words text-sm text-text-secondary">
@@ -222,7 +280,11 @@ export function CuentaUsuario() {
             </p>
           </div>
           {mfaEstado.data?.activo ? (
-            <StatusBadge tone="success">Activo</StatusBadge>
+            mfaEstado.data.sesion_verificada ? (
+              <StatusBadge tone="success">Activo en esta sesión</StatusBadge>
+            ) : (
+              <StatusBadge tone="warning">Active · sesión sin verificar</StatusBadge>
+            )
           ) : (
             <StatusBadge tone="warning">Inactivo</StatusBadge>
           )}
@@ -296,7 +358,7 @@ export function CuentaUsuario() {
                 maxLength={6}
                 required
               />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button type="submit" disabled={ocupado}>
                   Verificar y activar MFA
                 </Button>

@@ -51,9 +51,7 @@ def test_calcular_dea_bcc_input_y_output_holguras_y_benchmarks_exactos() -> None
 
     assert by_name_in["DMU_EFICIENTE_A"]["theta_bcc"] == pytest.approx(1.0, abs=1e-5)
     assert by_name_in["DMU_EFICIENTE_A"]["es_eficiente_bcc"] is True
-    assert by_name_in["DMU_EFICIENTE_A"]["holgura_presupuestal_s_minus_cop"] == pytest.approx(
-        0.0, abs=1e-4
-    )
+    assert by_name_in["DMU_EFICIENTE_A"]["holgura_presupuestal_s_minus_cop"] == pytest.approx(0.0, abs=1e-4)
 
     c_in = by_name_in["DMU_INEFICIENTE_C"]
     assert c_in["theta_bcc"] == pytest.approx(0.5, abs=1e-4)
@@ -73,8 +71,7 @@ def test_calcular_dea_bcc_input_y_output_holguras_y_benchmarks_exactos() -> None
 
     res_escala = calcular_dea_ccr_y_escala(df, inputs_cols, outputs_cols, orientacion="input")
     assert all(
-        r["rendimientos_escala"]
-        in {"CRS_OPTIMO", "IRS_SUBINVERSION", "DRS_SATURACION_PRESUPUESTAL"}
+        r["rendimientos_escala"] in {"CRS_OPTIMO", "IRS_SUBINVERSION", "DRS_SATURACION_PRESUPUESTAL"}
         for r in res_escala
     )
 
@@ -148,10 +145,7 @@ def test_tablero_alcalde_dispara_alerta_ineficiencia_financiera_desperdicio() ->
         dmu="Secretaría de Infraestructura Distrital",
     )
     assert dictamen_directo["calificacion_nominal_sin_dea"] == "MUY_ALTO_SOBRESALIENTE"
-    assert (
-        dictamen_directo["calificacion_recalificada_dea"]
-        == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"
-    )
+    assert dictamen_directo["calificacion_recalificada_dea"] == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"
     assert dictamen_directo["recalificado_por_ineficiencia_dea"] is True
     assert dictamen_directo["holgura_presupuestal_s_minus_cop"] > 200_000_000_000.0
 
@@ -161,10 +155,7 @@ def test_tablero_alcalde_dispara_alerta_ineficiencia_financiera_desperdicio() ->
     infra_alerta = next(a for a in alertas if "Infraestructura" in a["dmu"])
     assert infra_alerta["avance_fisico_pct"] == pytest.approx(100.0, abs=1e-2)
     assert infra_alerta["theta_bcc"] == pytest.approx(0.65, abs=1e-2)
-    assert (
-        infra_alerta["calificacion_recalificada_dea"]
-        == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"
-    )
+    assert infra_alerta["calificacion_recalificada_dea"] == "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"
     assert infra_alerta["holgura_presupuestal_s_minus_cop"] > 0.0
 
 
@@ -185,9 +176,7 @@ def test_armonizacion_presupuestal_con_benchmarks_frontera() -> None:
         assert rec["theta_bcc"] < 1.0
         assert rec["reasignacion_potencial_s_minus_cop"] > 0.0
         assert len(rec["benchmarks_referencia"]) >= 1
-        assert all(
-            b["theta_bcc"] == pytest.approx(1.0, abs=1e-4) for b in rec["benchmarks_referencia"]
-        )
+        assert all(b["theta_bcc"] == pytest.approx(1.0, abs=1e-4) for b in rec["benchmarks_referencia"])
 
 
 def test_nivel_4_malmquist_inter_cuatrienial_pdd_2020_2023_vs_2024_2027() -> None:

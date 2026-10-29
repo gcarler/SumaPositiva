@@ -121,9 +121,7 @@ def _page_chunks(markdown: str) -> dict[int, str]:
     matches = []
     for pattern in patterns:
         matches.extend(pattern.finditer(markdown))
-    matches = sorted(
-        {match.start(): match for match in matches}.values(), key=lambda item: item.start()
-    )
+    matches = sorted({match.start(): match for match in matches}.values(), key=lambda item: item.start())
     chunks: dict[int, str] = {}
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(markdown)
@@ -160,19 +158,12 @@ class AgenteAbsorcionDocumentalPDD:
                 pdf = pymupdf.open(path)
                 expected = EXPECTED_PAGES.get(filename, len(pdf))
                 if len(pdf) != expected:
-                    raise ValueError(
-                        f"Puerta documental: {filename} tiene {len(pdf)} páginas; "
-                        f"esperado {expected}."
-                    )
+                    raise ValueError(f"Puerta documental: {filename} tiene {len(pdf)} páginas; esperado {expected}.")
                 markdown_paths = _matching_markdown(filename)
-                md_text = "\n".join(
-                    p.read_text(encoding="utf-8", errors="replace") for p in markdown_paths
-                )
+                md_text = "\n".join(p.read_text(encoding="utf-8", errors="replace") for p in markdown_paths)
                 chunks: dict[int, str] = {}
                 for md_path in markdown_paths:
-                    chunks.update(
-                        _page_chunks(md_path.read_text(encoding="utf-8", errors="replace"))
-                    )
+                    chunks.update(_page_chunks(md_path.read_text(encoding="utf-8", errors="replace")))
                 if (
                     filename
                     in {
@@ -181,10 +172,7 @@ class AgenteAbsorcionDocumentalPDD:
                     }
                     and len(chunks) != expected
                 ):
-                    raise ValueError(
-                        f"OCR incompleto para {filename}: {len(chunks)}/{expected} "
-                        "páginas delimitadas."
-                    )
+                    raise ValueError(f"OCR incompleto para {filename}: {len(chunks)}/{expected} páginas delimitadas.")
                 doc_pages = []
                 for page_no, page in enumerate(pdf, start=1):
                     text = page.get_text("text").strip()
@@ -200,9 +188,7 @@ class AgenteAbsorcionDocumentalPDD:
                         }
                         and page_no in chunks
                     )
-                    if use_complete_ocr or (
-                        len(text) < 40 and page_no in chunks and len(chunks[page_no]) > len(text)
-                    ):
+                    if use_complete_ocr or (len(text) < 40 and page_no in chunks and len(chunks[page_no]) > len(text)):
                         text = chunks[page_no]
                         source = "MARKDOWN_OCR"
                     page_tables = []
@@ -230,9 +216,7 @@ class AgenteAbsorcionDocumentalPDD:
                     raise ValueError(f"Cobertura de páginas incompleta para {filename}.")
                 state_tables = sum(page.filas_tabla for page in doc_pages)
                 state_text_hash = (
-                    _stable_hash(md_text)
-                    if md_text
-                    else _stable_hash("\n".join(p.contenido for p in doc_pages))
+                    _stable_hash(md_text) if md_text else _stable_hash("\n".join(p.contenido for p in doc_pages))
                 )
                 estado.paginas.extend(doc_pages)
                 estado.archivos.append(
@@ -310,9 +294,7 @@ class AgenteAbsorcionDocumentalPDD:
                 "paginas_absorbidas": len(estado.paginas),
                 "paginas_con_texto": sum(bool(p.contenido.strip()) for p in estado.paginas),
                 "tablas_filas_detectadas": sum(x["filas_detectadas"] for x in estado.tablas),
-                "json_estructurados": len(
-                    [x for x in estado.archivos if x.get("tipo") == "JSON_ESTRUCTURADO"]
-                ),
+                "json_estructurados": len([x for x in estado.archivos if x.get("tipo") == "JSON_ESTRUCTURADO"]),
             },
         )
         estado.log(result)
@@ -360,8 +342,7 @@ class AgenteReconstructorJerarquicoMGA:
         }
         structure_counts = {
             code: {
-                level: sum(row["codigo_plan"] == code and row["nivel"] == level for row in lines)
-                for level in targets
+                level: sum(row["codigo_plan"] == code and row["nivel"] == level for row in lines) for level in targets
             }
             for code, targets in structural_targets.items()
         }
@@ -391,8 +372,7 @@ class AgenteReconstructorJerarquicoMGA:
                 round(time.monotonic() - started, 3),
                 estado.catalogo,
                 [
-                    "Las filas OCR conservan su evidencia y requieren revisión cuando "
-                    "carecen de indicador o valor.",
+                    "Las filas OCR conservan su evidencia y requieren revisión cuando carecen de indicador o valor.",
                     *(
                         [
                             "No se alcanzó el umbral de nodos programáticos esperado en "
@@ -424,9 +404,7 @@ class AgenteTaxonomoSeguridadHumana:
         classified = 0
         counts: dict[str, dict[str, int]] = {}
         for row in estado.nodos_catalogo:
-            grade, dimension, weights = _classify(
-                row["nombre"], row["nivel"], row.get("metadatos") or {}
-            )
+            grade, dimension, weights = _classify(row["nombre"], row["nivel"], row.get("metadatos") or {})
             metadata = dict(row.get("metadatos") or {})
             metadata.update(
                 {
@@ -488,8 +466,7 @@ class AgenteFinancieroPPI:
 
         total_2012 = sum(sum(years.values()) for years in PPI_2012.values())
         plan_totals = {
-            row["codigo_plan"]: float(row.get("ppi_total_corriente_cop") or 0)
-            for row in estado.planes_catalogo
+            row["codigo_plan"]: float(row.get("ppi_total_corriente_cop") or 0) for row in estado.planes_catalogo
         }
         frontal_counts = {}
         for plan_code in (
@@ -644,9 +621,7 @@ async def _auditar_bd() -> dict[str, Any]:
                 .all()
             )
             page_count = (
-                await connection.execute(
-                    text("SELECT count(*) FROM seguimiento.pdd_evidencia_paginas")
-                )
+                await connection.execute(text("SELECT count(*) FROM seguimiento.pdd_evidencia_paginas"))
             ).scalar_one()
             catalog_counts = (
                 (
@@ -684,11 +659,22 @@ async def _auditar_bd() -> dict[str, Any]:
         financial_audit = {}
         for plan in report["planes_pdd"]:
             budget = plan["ppi_por_frontalidad_constante_2025_cop"]
-            total = float(plan["ppi_total_constante_2025_cop"] or 0)
+            total_value = plan["ppi_total_constante_2025_cop"]
+            if total_value is None:
+                financial_audit[plan["codigo_plan"]] = {
+                    "estado": plan.get("estado_ipc", "SIN_TOTAL_COMPARABLE"),
+                    "ppi_oficial_constante_2025_cop": None,
+                    "suma_abcn_constante_2025_cop": None,
+                    "brecha_abcn_cop": None,
+                    "suma_7d_constante_2025_cop": None,
+                    "ppi_a_mas_b_constante_2025_cop": None,
+                    "brecha_dimensiones_cop": None,
+                    "frontalidad_a_b_positiva": None,
+                }
+                continue
+            total = float(total_value)
             grade_sum = sum(float(budget[key]) for key in budget)
-            dimensions_sum = sum(
-                float(value) for value in plan["ppi_por_7d_constante_2025_cop"].values()
-            )
+            dimensions_sum = sum(float(value) for value in plan["ppi_por_7d_constante_2025_cop"].values())
             ab_sum = float(budget["A_NUCLEO_FRONTAL"]) + float(budget["B_DETERMINANTE_DIRECTO"])
             financial_audit[plan["codigo_plan"]] = {
                 "ppi_oficial_constante_2025_cop": total,
@@ -697,15 +683,20 @@ async def _auditar_bd() -> dict[str, Any]:
                 "suma_7d_constante_2025_cop": dimensions_sum,
                 "ppi_a_mas_b_constante_2025_cop": ab_sum,
                 "brecha_dimensiones_cop": dimensions_sum - ab_sum,
-                "frontalidad_a_b_positiva": budget["A_NUCLEO_FRONTAL"] > 0
-                and budget["B_DETERMINANTE_DIRECTO"] > 0,
+                "frontalidad_a_b_positiva": budget["A_NUCLEO_FRONTAL"] > 0 and budget["B_DETERMINANTE_DIRECTO"] > 0,
             }
         audit_tolerance = 1.0
         financial_failures = [
             code
             for code, values in financial_audit.items()
-            if abs(values["brecha_abcn_cop"]) > audit_tolerance
-            or abs(values["brecha_dimensiones_cop"]) > audit_tolerance
+            if values["brecha_abcn_cop"] is not None
+            and (
+                abs(values["brecha_abcn_cop"]) > audit_tolerance
+                or abs(values["brecha_dimensiones_cop"]) > audit_tolerance
+            )
+        ]
+        financial_missing = [
+            code for code, values in financial_audit.items() if values["ppi_oficial_constante_2025_cop"] is None
         ]
         financial_ab_missing = [
             code
@@ -735,15 +726,14 @@ async def _auditar_bd() -> dict[str, Any]:
             "comparativo_resumen": plan_summary,
             "conciliacion_financiera": financial_audit,
             "fallas_conciliacion_financiera": financial_failures,
+            "planes_sin_ppi_comparable": financial_missing,
             "planes_sin_ppi_a_b_positivo": financial_ab_missing,
         }
     finally:
         await engine.dispose()
 
 
-async def ejecutar_sistema_multiagente_pdd(
-    *, publicar: bool = True, persistir: bool = True
-) -> dict[str, Any]:
+async def ejecutar_sistema_multiagente_pdd(*, publicar: bool = True, persistir: bool = True) -> dict[str, Any]:
     """Execute all five agents, their quality gates, DB reconstruction and publication."""
     state = EstadoSistemaPDD()
     try:
@@ -759,9 +749,7 @@ async def ejecutar_sistema_multiagente_pdd(
             if int(counts.get(code, {}).get("metas", 0)) < minimum
         }
         if insufficient:
-            raise ValueError(
-                f"Puerta MGA: metas/candidatas insuficientes por fuente: {insufficient}"
-            )
+            raise ValueError(f"Puerta MGA: metas/candidatas insuficientes por fuente: {insufficient}")
         if persistir:
             from scripts.reconstruir_catalogo_pdd_seguridad_humana_16 import rebuild
             from scripts.sincronizar_catalogo_pdd import synchronize
@@ -779,13 +767,12 @@ async def ejecutar_sistema_multiagente_pdd(
             audit = await _auditar_bd()
             if audit["fallas_conciliacion_financiera"]:
                 raise ValueError(
-                    "Puerta financiera ABCN/7 dimensiones fallida: "
-                    f"{audit['fallas_conciliacion_financiera']}"
+                    f"Puerta financiera ABCN/7 dimensiones fallida: {audit['fallas_conciliacion_financiera']}"
                 )
+            if audit["planes_sin_ppi_comparable"]:
+                raise ValueError(f"Planes sin PPI comparable: {audit['planes_sin_ppi_comparable']}")
             if audit["planes_sin_ppi_a_b_positivo"]:
-                raise ValueError(
-                    f"Puerta PPI A/B sin monto positivo: {audit['planes_sin_ppi_a_b_positivo']}"
-                )
+                raise ValueError(f"Puerta PPI A/B sin monto positivo: {audit['planes_sin_ppi_a_b_positivo']}")
             state.puertas["D_CONCILIACION_PPI"] = {
                 "estado": "APROBADA",
                 "sin_doble_conteo": True,
@@ -803,9 +790,7 @@ async def ejecutar_sistema_multiagente_pdd(
             if a_b_missing:
                 raise ValueError(f"Puerta de frontalidad: falta A o B en {a_b_missing}")
             if audit["paginas_persistidas"] != len(state.paginas):
-                raise ValueError(
-                    "Puerta de persistencia: la cantidad de páginas de BD no coincide."
-                )
+                raise ValueError("Puerta de persistencia: la cantidad de páginas de BD no coincide.")
             if publicar:
                 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
@@ -818,9 +803,7 @@ async def ejecutar_sistema_multiagente_pdd(
                 try:
                     factory = async_sessionmaker(engine, expire_on_commit=False)
                     async with factory() as session:
-                        state.publicacion = await GoogleWorkspaceSyncService(
-                            session
-                        ).sincronizar_pdd_only()
+                        state.publicacion = await GoogleWorkspaceSyncService(session).sincronizar_pdd_only()
                 finally:
                     await engine.dispose()
         strategy = AGENTES_PREVIOS[-1]
@@ -850,25 +833,21 @@ async def finalizar_sistema_multiagente_pdd_desde_bd() -> dict[str, Any]:
 
     audit = await _auditar_bd()
     if audit["fallas_conciliacion_financiera"]:
-        raise ValueError(
-            "Puerta financiera ABCN/7 dimensiones fallida: "
-            f"{audit['fallas_conciliacion_financiera']}"
-        )
+        raise ValueError(f"Puerta financiera ABCN/7 dimensiones fallida: {audit['fallas_conciliacion_financiera']}")
+    if audit["planes_sin_ppi_comparable"]:
+        raise ValueError(f"Planes sin PPI comparable: {audit['planes_sin_ppi_comparable']}")
     if audit["planes_sin_ppi_a_b_positivo"]:
         raise ValueError(f"PPI A/B sin monto positivo: {audit['planes_sin_ppi_a_b_positivo']}")
     weak_grades = [
         row["codigo_plan"]
         for row in audit["clasificacion_nodos"]
-        if row["codigo_plan"] in {"PDD_2012_2015", "PDD_2013_2015", "PDD_2016_2019"}
-        and (not row["a"] or not row["b"])
+        if row["codigo_plan"] in {"PDD_2012_2015", "PDD_2013_2015", "PDD_2016_2019"} and (not row["a"] or not row["b"])
     ]
     if weak_grades:
         raise ValueError(f"Puerta de frontalidad: falta A o B en {weak_grades}")
 
     pdf_coverage = {
-        item["archivo"]: item["paginas"]
-        for item in audit["archivos_cobertura"]
-        if item["archivo"].endswith(".pdf")
+        item["archivo"]: item["paginas"] for item in audit["archivos_cobertura"] if item["archivo"].endswith(".pdf")
     }
     missing_pdf_pages = {
         filename: {"esperadas": expected, "persistidas": pdf_coverage.get(filename, 0)}
@@ -876,10 +855,7 @@ async def finalizar_sistema_multiagente_pdd_desde_bd() -> dict[str, Any]:
         if pdf_coverage.get(filename, 0) != expected
     }
     if missing_pdf_pages:
-        raise ValueError(
-            "La cobertura PDF persistida no coincide con las páginas esperadas: "
-            f"{missing_pdf_pages}"
-        )
+        raise ValueError(f"La cobertura PDF persistida no coincide con las páginas esperadas: {missing_pdf_pages}")
 
     engine = create_async_engine(Settings().async_database_url, pool_pre_ping=True)
     try:
@@ -928,13 +904,22 @@ def _save_state(state: EstadoSistemaPDD) -> None:
 async def obtener_estado_sistema_multiagente_pdd() -> dict[str, Any]:
     cached = json.loads(STATE_PATH.read_text(encoding="utf-8")) if STATE_PATH.is_file() else None
     if cached and cached.get("estado") != "SIN_EJECUCIONES":
+        if cached.get("estado") == "COMPLETADO" and cached.get("version_financiera") != 12:
+            cached["estado"] = "REQUIERE_REVALIDACION_FINANCIERA"
+            cached["puertas"] = {
+                **cached.get("puertas", {}),
+                "D_CONCILIACION_PPI": {
+                    "estado": "BLOQUEADA",
+                    "motivo": "Estado anterior al IPC oficial y a la conciliación de totales PPI.",
+                },
+            }
         return cached
     audit = await _auditar_bd()
     counts = audit["conteos_catalogo"]
     if not (audit["paginas_persistidas"] and counts["nodos"] and counts["metas_pdd"]):
         return cached or {"estado": "SIN_EJECUCIONES", "run_id": None, "auditoria_agentes": []}
     state = EstadoSistemaPDD()
-    state.estado = "COMPLETADO"
+    state.estado = "REQUIERE_REVALIDACION_FINANCIERA" if audit["planes_sin_ppi_comparable"] else "COMPLETADO"
     state.catalogo = {
         "paginas_persistidas": audit["paginas_persistidas"],
         "total_nodos_pdd_pdl": counts["nodos"],
@@ -967,9 +952,12 @@ async def obtener_estado_sistema_multiagente_pdd() -> dict[str, Any]:
         }
     )
     state.puertas["C_CLASIFICACION_SH"].update({"conteo_frontalidad": audit["clasificacion_nodos"]})
-    state.puertas["D_CONCILIACION_PPI"].update(
-        {"conciliacion_financiera": audit["conciliacion_financiera"]}
-    )
+    state.puertas["D_CONCILIACION_PPI"].update({"conciliacion_financiera": audit["conciliacion_financiera"]})
+    if audit["planes_sin_ppi_comparable"]:
+        state.puertas["D_CONCILIACION_PPI"].update(
+            {"estado": "BLOQUEADA", "planes_sin_ppi_comparable": audit["planes_sin_ppi_comparable"]}
+        )
+        state.puertas["E_ESTRATEGIA_PUBLICACION"].update({"estado": "BLOQUEADA", "motivo": "PPI no comparable"})
     state.puertas["F_CRUCE_PA_BPIM"].update(
         {"actividades_pa": counts["actividades_pa"], "entidades": counts["entidades_pa"]}
     )
@@ -1032,24 +1020,17 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
                 .mappings()
                 .all()
             )
-            ppi = await conn.execute(
-                text("""SELECT count(*) FROM seguimiento.registros_triada_normalizados""")
-            )
+            ppi = await conn.execute(text("""SELECT count(*) FROM seguimiento.registros_triada_normalizados"""))
             active_entities = (
                 await conn.execute(
-                    text(
-                        "SELECT count(DISTINCT entidad_responsable) "
-                        "FROM seguimiento.actividades_plan_accion"
-                    )
+                    text("SELECT count(DISTINCT entidad_responsable) FROM seguimiento.actividades_plan_accion")
                 )
             ).scalar_one()
         activities = [dict(row) for row in activities]
         nodes = [dict(row) for row in nodes]
         trace = []
         for node in nodes:
-            if not node.get("meta_id") or not str(node.get("codigo_plan", "")).startswith(
-                "PDD_2024"
-            ):
+            if not node.get("meta_id") or not str(node.get("codigo_plan", "")).startswith("PDD_2024"):
                 continue
             meta_name = str(node.get("meta_nombre") or "").casefold()
             meta_terms = {word for word in re.findall(r"[\wáéíóúñ]+", meta_name) if len(word) > 7}
@@ -1067,9 +1048,7 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
                 ).casefold()
                 overlap = sum(term in haystack for term in meta_terms)
                 if overlap:
-                    grade = (node.get("metadatos") or {}).get(
-                        "grado_frontalidad_sh", "N_SIN_CLASIFICAR"
-                    )
+                    grade = (node.get("metadatos") or {}).get("grado_frontalidad_sh", "N_SIN_CLASIFICAR")
                     if not str(grade).startswith(("A_", "B_")):
                         continue
                     trace.append(
@@ -1078,9 +1057,7 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
                             "codigo_nodo": node.get("codigo"),
                             "nombre_programa": node.get("nombre"),
                             "grado_frontalidad": grade,
-                            "dimension_sh_principal": (node.get("metadatos") or {}).get(
-                                "dimension_sh_primaria"
-                            ),
+                            "dimension_sh_principal": (node.get("metadatos") or {}).get("dimension_sh_primaria"),
                             "meta_pdd": node.get("meta_nombre"),
                             "actividad_pa_id": activity.get("codigo"),
                             "descripcion_actividad_pa": activity.get("descripcion_actividad"),
@@ -1113,17 +1090,11 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
             dim_nodes = [
                 n
                 for n in unique_nodes.values()
-                if str((n.get("metadatos") or {}).get("grado_frontalidad_sh", "")).startswith(
-                    ("A_", "B_")
-                )
+                if str((n.get("metadatos") or {}).get("grado_frontalidad_sh", "")).startswith(("A_", "B_"))
                 and (n.get("metadatos") or {}).get("dimension_sh_primaria") == key
             ]
             dim_trace = [r for r in trace if r["dimension_sh_principal"] == key]
-            advances = [
-                float(r["avance_fisico_pct"])
-                for r in dim_trace
-                if r["avance_fisico_pct"] is not None
-            ]
+            advances = [float(r["avance_fisico_pct"]) for r in dim_trace if r["avance_fisico_pct"] is not None]
             leaders = {}
             for row in dim_trace:
                 entity = row["dependencia_responsable"]
@@ -1168,12 +1139,8 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
             "resumen_ejecutivo": {
                 "total_nodos_pdd_pdl": len(unique_nodes),
                 "desglose_frontalidad": counts,
-                "total_metas_pdd": sum(
-                    str(n["codigo_plan"]).startswith("PDD_") for n in unique_metas.values()
-                ),
-                "total_metas_pdl": sum(
-                    str(n["codigo_plan"]).startswith("PDL_") for n in unique_metas.values()
-                ),
+                "total_metas_pdd": sum(str(n["codigo_plan"]).startswith("PDD_") for n in unique_metas.values()),
+                "total_metas_pdl": sum(str(n["codigo_plan"]).startswith("PDL_") for n in unique_metas.values()),
                 "total_actividades_pa": len(activities),
                 "entidades_activas": active_entities,
                 "cobertura_articulacion_vigente_2024_2027": {
@@ -1183,9 +1150,7 @@ async def obtener_cruce_multiagente_pa_bpim() -> dict[str, Any]:
                         sum(
                             n.get("meta_id") is not None
                             and str(n["codigo_plan"]).startswith("PDD_2024")
-                            and str(
-                                (n.get("metadatos") or {}).get("grado_frontalidad_sh", "")
-                            ).startswith(("A_", "B_"))
+                            and str((n.get("metadatos") or {}).get("grado_frontalidad_sh", "")).startswith(("A_", "B_"))
                             for n in unique_metas.values()
                         )
                         - len(trace),
@@ -1220,6 +1185,7 @@ class AgenteArticulacionPlanAccionBPIM:
 
 def serializar_estado(state: EstadoSistemaPDD) -> dict[str, Any]:
     return {
+        "version_financiera": 12,
         "run_id": state.run_id,
         "estado": state.estado,
         "iniciado_en": state.iniciado_en,

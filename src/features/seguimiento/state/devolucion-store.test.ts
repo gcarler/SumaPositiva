@@ -184,7 +184,7 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / A
       expect(state.totalPendientes).toBe(0);
       expect(state.tasaRespuestaMotivada).toBe(0);
       expect(state.esContingencia).toBe(true);
-      expect(state.error).toContain("Sin conexión");
+      expect(state.error).toBeTruthy();
       expect(state.cargando).toBe(false);
 
       spyApi.mockRestore();

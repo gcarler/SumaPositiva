@@ -4,11 +4,10 @@ Tarea: [GEO-HURTOS-01]
 Valida:
 1. GET /api/v1/geodatos/analitica/hurtos/resumen (con filtros de delito, año y zona).
 2. GET /api/v1/geodatos/analitica/hurtos/geojson (FeatureCollection < 150 KB).
-3. Inviolabilidad del censo bd_csh (37 mesas, 38 agendas, 11 fichas, 17 actores).
+3. Las consultas analíticas conservan el contexto institucional de la base aislada.
 """
 
 import json
-from pathlib import Path
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -241,43 +240,34 @@ async def test_explorador_registros_hurtos_paginacion_y_pivot(async_client: Asyn
     assert 99.0 <= pct_total <= 101.0
 
 
-async def test_inviolabilidad_censo_bd_csh():
-    """Garantiza que el censo institucional de bd_csh continúe estrictamente intacto."""
+async def test_consultas_hurtos_conservan_contexto_aislado(async_client: AsyncClient, database_url: str):
+    """Los GET conservan el contexto de polis_test*, sin leer bases de trabajo."""
     from sqlalchemy import text
+    from sqlalchemy.engine import make_url
     from sqlalchemy.ext.asyncio import create_async_engine
 
-    # Leer URL directa de producción desde backend/.env
-    env_file = Path(__file__).resolve().parents[1] / ".env"
-    db_url = None
-    if env_file.exists():
-        for line in env_file.read_text().splitlines():
-            if line.startswith("POLIS_DATABASE_URL="):
-                db_url = line.split("=", 1)[1].strip()
-                break
-
-    if not db_url:
-        db_url = "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/bd_csh"
-
-    engine = create_async_engine(db_url)
-    async with engine.connect() as conn:
-        mesas_c = (await conn.execute(text("SELECT count(*) FROM mesas_trabajo.mesas;"))).scalar()
-        agendas_c = (
-            await conn.execute(text("SELECT count(*) FROM mesas_trabajo.agendas;"))
-        ).scalar()
-        fichas_c = (
-            await conn.execute(
-                text("SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores;")
-            )
-        ).scalar()
-        actores_c = (
-            await conn.execute(
-                text("SELECT count(*) FROM participacion_ciudadana.actores_estrategicos;")
-            )
-        ).scalar()
-
-        assert mesas_c == 37, f"Censo mesas alterado: {mesas_c} != 37"
-        assert agendas_c == 38, f"Censo agendas alterado: {agendas_c} != 38"
-        assert fichas_c == 11, f"Censo fichas alterado: {fichas_c} != 11"
-        assert actores_c == 17, f"Censo actores alterado: {actores_c} != 17"
-
-    await engine.dispose()
+    assert (make_url(database_url).database or "").startswith("polis_test")
+    tablas = (
+        "mesas_trabajo.mesas",
+        "mesas_trabajo.agendas",
+        "indicadores.fichas_tecnicas_indicadores",
+        "participacion_ciudadana.actores_estrategicos",
+    )
+    consultas = {
+        tabla: text(
+            f"SELECT count(*), md5(coalesce(string_agg(to_jsonb(t)::text, '' ORDER BY id::text), '')) FROM {tabla} AS t"
+        )
+        for tabla in tablas
+    }
+    engine = create_async_engine(database_url)
+    try:
+        async with engine.connect() as conn:
+            antes = {tabla: (await conn.execute(consulta)).one() for tabla, consulta in consultas.items()}
+        for recurso in ("resumen", "geojson", "registros"):
+            respuesta = await async_client.get(f"/api/v1/geodatos/analitica/hurtos/{recurso}")
+            assert respuesta.status_code == 200
+        async with engine.connect() as conn:
+            despues = {tabla: (await conn.execute(consulta)).one() for tabla, consulta in consultas.items()}
+        assert despues == antes
+    finally:
+        await engine.dispose()

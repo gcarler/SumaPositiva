@@ -96,9 +96,7 @@ async def test_apoyos_unicos_flujo(database_url: str):
         assert resp_apoyo3.json()["apoyos_contador"] == 3
 
         # 5.2 Segundo apoyo por el mismo usuario autenticado -> Toggle / Retira apoyo
-        resp_apoyo3_dup = client.post(
-            f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_usuario
-        )
+        resp_apoyo3_dup = client.post(f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_usuario)
         assert resp_apoyo3_dup.status_code == 200
         assert resp_apoyo3_dup.json()["apoyado"] is False
         assert resp_apoyo3_dup.json()["apoyos_contador"] == 2

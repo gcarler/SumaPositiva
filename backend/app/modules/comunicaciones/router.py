@@ -19,15 +19,9 @@ def get_comunicaciones_service(session: SessionDependency) -> ComunicacionesServ
     return ComunicacionesService(session)
 
 
-ComunicacionesServiceDep = Annotated[
-    ComunicacionesService, Depends(get_comunicaciones_service)
-]
-PuedeLeerComunicaciones = Depends(
-    requerir_permiso("comunicaciones:leer", nivel_minimo="declarada")
-)
-PuedeGestionarComunicaciones = Depends(
-    requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada")
-)
+ComunicacionesServiceDep = Annotated[ComunicacionesService, Depends(get_comunicaciones_service)]
+PuedeLeerComunicaciones = Depends(requerir_permiso("comunicaciones:leer", nivel_minimo="declarada"))
+PuedeGestionarComunicaciones = Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))
 
 
 @router.get(

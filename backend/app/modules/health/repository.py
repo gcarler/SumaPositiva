@@ -39,9 +39,10 @@ class HealthRepository:
 
     async def obtener_telemetria_consultas(
         self, limite: int = 10, ordenar_por: str = "tiempo_total"
-    ) -> tuple[int, float, list[dict[str, Any]]]:
+    ) -> tuple[int | None, float | None, list[dict[str, Any]]]:
         """Obtiene métricas de pg_stat_statements y el cache hit ratio de pg_stat_database."""
-        cache_ratio = 99.5
+        cache_ratio: float | None = None
+        ratio_error = False
         try:
             res_ratio = await self.session.scalar(
                 text(
@@ -51,15 +52,19 @@ class HealthRepository:
             )
             if res_ratio is not None:
                 cache_ratio = float(res_ratio)
+            else:
+                cache_ratio = 0.0
         except Exception:
-            pass
+            ratio_error = True
+            cache_ratio = None
 
-        total_queries = 0
+        total_queries: int | None = 0
         try:
             res_total = await self.session.scalar(text("SELECT count(*) FROM pg_stat_statements;"))
-            total_queries = int(res_total or 0)
+            if res_total is not None:
+                total_queries = int(res_total)
         except Exception:
-            pass
+            total_queries = 0 if not ratio_error else None
 
         col_orden = "total_exec_time DESC"
         if ordenar_por == "tiempo_medio":
@@ -87,14 +92,17 @@ class HealthRepository:
         try:
             rows = await self.session.execute(text(query_sql), {"limite": limite})
             for r in rows.mappings():
-                top_queries.append({
-                    "query": str(r["query"]),
-                    "calls": int(r["calls"]),
-                    "total_ms": float(r["total_ms"] or 0.0),
-                    "mean_ms": float(r["mean_ms"] or 0.0),
-                    "rows": int(r["rows"] or 0),
-                    "hit_ratio_pct": float(r["hit_ratio_pct"] or 100.0),
-                })
+                hit_val = float(r["hit_ratio_pct"]) if r["hit_ratio_pct"] is not None else 100.0
+                top_queries.append(
+                    {
+                        "query": str(r["query"]),
+                        "calls": int(r["calls"]),
+                        "total_ms": float(r["total_ms"] or 0.0),
+                        "mean_ms": float(r["mean_ms"] or 0.0),
+                        "rows": int(r["rows"] or 0),
+                        "hit_ratio_pct": hit_val,
+                    }
+                )
         except Exception:
             pass
 

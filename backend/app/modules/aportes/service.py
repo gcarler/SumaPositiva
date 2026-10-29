@@ -2,6 +2,7 @@
 
 import logging
 import uuid
+from types import SimpleNamespace
 
 from fastapi import HTTPException, status
 
@@ -15,18 +16,36 @@ from app.modules.aportes.schemas import (
     PropuestaCiudadanaUpdate,
     PropuestasPaginadasRead,
     RespuestaToggleApoyo,
+    proyectar_metadatos_publicos,
 )
 from app.modules.sesion.schemas import SesionContexto
 
 logger = logging.getLogger("polis.aportes.service")
 
 
+def _devolucion_publica(registro):
+    """Validar la lectura cerrada sin alterar la decisión ni el JSON del ORM."""
+    from app.modules.auditoria.schemas import DevolucionRazonRespuesta
+
+    return DevolucionRazonRespuesta.model_validate(
+        SimpleNamespace(
+            id=registro.id,
+            tabla_afectada=registro.tabla_afectada,
+            registro_id=registro.registro_id,
+            accion=registro.accion,
+            usuario_id=registro.usuario_id,
+            causal=registro.causal,
+            justificacion_motivada=registro.justificacion_motivada,
+            metadatos=proyectar_metadatos_publicos(registro.metadatos),
+            creado_en=registro.creado_en,
+        )
+    )
+
+
 class AporteService:
     """Lógica de negocio para aportes ciudadanos con enfoque diferencial."""
 
-    def __init__(
-        self, repository: AporteRepository, settings: Settings | None = None
-    ) -> None:
+    def __init__(self, repository: AporteRepository, settings: Settings | None = None) -> None:
         self.repository = repository
         self.settings = settings or Settings()
 
@@ -37,6 +56,8 @@ class AporteService:
     ) -> PropuestaCiudadanaRead:
         """Valida y registra un nuevo aporte ciudadano con enfoque diferencial."""
         async with transaction(self.repository.session):
+            if datos.estado not in {"borrador", "publicado"}:
+                raise HTTPException(422, "El canal ciudadano solo admite alta en borrador o publicado")
             # Salvaguarda de anonimato ciudadano
             if datos.es_anonimo and (not datos.autor_nombre or datos.autor_nombre == ""):
                 datos.autor_nombre = "Ciudadano Anónimo"
@@ -74,25 +95,16 @@ class AporteService:
             propuesta = await self.repository.crear(datos, sesion_contexto=sesion_contexto)
 
             if correo_notif:
-                try:
-                    from app.modules.notificaciones.service import NotificacionService
+                from app.modules.notificaciones.service import NotificacionService
 
-                    notif_service = NotificacionService(
-                        self.repository.session, settings=self.settings
-                    )
-                    await notif_service.enviar_constancia_radicacion(
-                        destinatario=correo_notif,
-                        radicado=propuesta.codigo_radicado,
-                        titulo=propuesta.titulo,
-                        descripcion=propuesta.descripcion,
-                        autor=propuesta.autor_nombre,
-                    )
-                except Exception as err:
-                    logger.warning(
-                        "Fallo no bloqueante al registrar notificacion para radicado %s: %s",
-                        propuesta.codigo_radicado,
-                        err,
-                    )
+                notif_service = NotificacionService(self.repository.session, settings=self.settings)
+                await notif_service.enviar_constancia_radicacion(
+                    destinatario=correo_notif,
+                    radicado=propuesta.codigo_radicado,
+                    titulo=propuesta.titulo,
+                    descripcion=propuesta.descripcion,
+                    autor=propuesta.autor_nombre,
+                )
 
             return PropuestaCiudadanaRead.model_validate(propuesta)
 
@@ -168,7 +180,7 @@ class AporteService:
                     ),
                 )
 
-            propuesta_previa = await self.repository.obtener_por_id(aporte_id, incluir_inactivos=True)
+            propuesta_previa = await self.repository.obtener_por_id(aporte_id, incluir_inactivos=True, bloquear=True)
             if not propuesta_previa:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -184,27 +196,18 @@ class AporteService:
                 )
 
             if cambios.estado and cambios.estado != estado_anterior:
-                correo = (propuesta.metadatos or {}).get("correo_contacto")
+                correo = propuesta.correo_contacto
                 if correo:
-                    try:
-                        from app.modules.notificaciones.service import NotificacionService
+                    from app.modules.notificaciones.service import NotificacionService
 
-                        notif_service = NotificacionService(
-                            self.repository.session, settings=self.settings
-                        )
-                        await notif_service.enviar_notificacion_cambio_estado(
-                            destinatario=correo,
-                            radicado=propuesta.codigo_radicado,
-                            titulo=propuesta.titulo,
-                            nuevo_estado=cambios.estado,
-                            observaciones="Actualización en el estado de tramitación en POLIS.",
-                        )
-                    except Exception as err:
-                        logger.warning(
-                            "Fallo no bloqueante al notificar cambio de estado para radicado %s: %s",
-                            propuesta.codigo_radicado,
-                            err,
-                        )
+                    notif_service = NotificacionService(self.repository.session, settings=self.settings)
+                    await notif_service.enviar_notificacion_cambio_estado(
+                        destinatario=correo,
+                        radicado=propuesta.codigo_radicado,
+                        titulo=propuesta.titulo,
+                        nuevo_estado=cambios.estado,
+                        observaciones="Actualización en el estado de tramitación en POLIS.",
+                    )
 
             return PropuestaCiudadanaRead.model_validate(propuesta)
 
@@ -215,9 +218,7 @@ class AporteService:
             if not desactivado:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail=(
-                        f"Propuesta ciudadana con ID {aporte_id} no encontrada para desactivación"
-                    ),
+                    detail=(f"Propuesta ciudadana con ID {aporte_id} no encontrada para desactivación"),
                 )
 
     async def apoyar_propuesta(self, aporte_id: uuid.UUID, sujeto) -> PropuestaCiudadanaRead:
@@ -250,9 +251,7 @@ class AporteService:
                     detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
                 )
             mensaje = (
-                "¡Respaldo ciudadano registrado con éxito!"
-                if apoyado
-                else "Respaldo ciudadano retirado con éxito"
+                "¡Respaldo ciudadano registrado con éxito!" if apoyado else "Respaldo ciudadano retirado con éxito"
             )
             return RespuestaToggleApoyo(
                 propuesta_id=propuesta.id,
@@ -277,7 +276,6 @@ class AporteService:
         ids = await self.repository.obtener_apoyos_sujeto(sujeto)
         return MisApoyosRespuesta(propuestas_apoyadas=ids)
 
-
     async def registrar_devolucion_motivada(
         self,
         aporte_id: uuid.UUID,
@@ -286,7 +284,7 @@ class AporteService:
     ):
         """Registra una devolución motivada (Sentencia C-150 de 2015)."""
         async with transaction(self.repository.session):
-            propuesta = await self.repository.obtener_por_id(aporte_id)
+            propuesta = await self.repository.obtener_por_id(aporte_id, bloquear=True)
             if not propuesta:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -320,9 +318,7 @@ class AporteService:
             await self.repository.session.flush()
             await self.repository.session.refresh(registro)
 
-            from app.modules.auditoria.schemas import DevolucionRazonRespuesta
-
-            return DevolucionRazonRespuesta.model_validate(registro)
+            return _devolucion_publica(registro)
 
     async def consultar_historial_devolucion(self, aporte_id: uuid.UUID):
         """Obtiene las razones de rechazo/archivo de la propuesta."""
@@ -343,6 +339,4 @@ class AporteService:
         result = await self.repository.session.execute(stmt)
         registros = result.scalars().all()
 
-        from app.modules.auditoria.schemas import DevolucionRazonRespuesta
-
-        return [DevolucionRazonRespuesta.model_validate(r) for r in registros]
+        return [_devolucion_publica(registro) for registro in registros]

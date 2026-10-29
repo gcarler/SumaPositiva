@@ -72,19 +72,13 @@ def test_database_queries_ordenamiento(sync_client):
 
 def test_database_queries_validacion_parametros(sync_client):
     """Verifica que parámetros inválidos sean rechazados con HTTP 422."""
-    resp_limite_alto = sync_client.get(
-        "/api/v1/health/database/queries", params={"limite": 100}
-    )
+    resp_limite_alto = sync_client.get("/api/v1/health/database/queries", params={"limite": 100})
     assert resp_limite_alto.status_code == 422
 
-    resp_limite_cero = sync_client.get(
-        "/api/v1/health/database/queries", params={"limite": 0}
-    )
+    resp_limite_cero = sync_client.get("/api/v1/health/database/queries", params={"limite": 0})
     assert resp_limite_cero.status_code == 422
 
-    resp_orden_invalido = sync_client.get(
-        "/api/v1/health/database/queries", params={"ordenar_por": "inventado"}
-    )
+    resp_orden_invalido = sync_client.get("/api/v1/health/database/queries", params={"ordenar_por": "inventado"})
     assert resp_orden_invalido.status_code == 422
 
 
@@ -111,7 +105,6 @@ def test_sanitizar_consulta_sql_unit():
     assert "clave12345" not in sanitizado_clave
     assert "clave='***'" in sanitizado_clave
 
-
     # 3. Recorte a máximo 200 caracteres con puntos suspensivos
     larga = "SELECT " + ", ".join([f"campo_{i} AS alias_muy_largo_{i}" for i in range(50)]) + " FROM gran_tabla"
     sanitizada_larga = sanitizar_consulta_sql(larga, max_chars=200)
@@ -125,14 +118,14 @@ def test_sanitizar_consulta_sql_unit():
 def test_database_queries_telemetry_resilience(sync_client):
     """Verifica que si la BD o pg_stat_statements arroja excepción, el servicio responda con status 'unavailable'."""
     from unittest.mock import AsyncMock
+
     from sqlalchemy.exc import OperationalError
+
     from app.modules.health.router import get_health_service
     from app.modules.health.service import HealthService
 
     mock_repo = AsyncMock()
-    mock_repo.obtener_telemetria_consultas.side_effect = OperationalError(
-        "SELECT *", {}, Exception("DB down")
-    )
+    mock_repo.obtener_telemetria_consultas.side_effect = OperationalError("SELECT *", {}, Exception("DB down"))
 
     sync_client.app.dependency_overrides[get_health_service] = lambda: HealthService(mock_repo)
     try:
@@ -143,4 +136,3 @@ def test_database_queries_telemetry_resilience(sync_client):
         assert data["top_queries"] == []
     finally:
         sync_client.app.dependency_overrides.pop(get_health_service, None)
-

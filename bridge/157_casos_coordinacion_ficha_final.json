@@ -1,0 +1,78 @@
+{
+  "tipo": "datos_sinteticos_no_fuentes_reales",
+  "casos": [
+    {
+      "caso": "otra_serie_existente",
+      "rechazada": true
+    },
+    {
+      "caso": "anio",
+      "literal": "",
+      "filtro": false,
+      "observaciones": 1,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "",
+      "filtro": true,
+      "observaciones": 0,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "²",
+      "filtro": false,
+      "observaciones": 1,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "²",
+      "filtro": true,
+      "observaciones": 0,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "20200",
+      "filtro": false,
+      "observaciones": 1,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "20200",
+      "filtro": true,
+      "observaciones": 0,
+      "anios_resumidos": [],
+      "estado_fuente": "anio_no_conforme"
+    },
+    {
+      "caso": "anio",
+      "literal": "٢٠٢٠",
+      "filtro": false,
+      "observaciones": 1,
+      "anios_resumidos": [
+        2020
+      ],
+      "estado_fuente": "declarada_sin_regla_proveedor"
+    },
+    {
+      "caso": "anio",
+      "literal": "٢٠٢٠",
+      "filtro": true,
+      "observaciones": 1,
+      "anios_resumidos": [
+        2020
+      ],
+      "estado_fuente": "declarada_sin_regla_proveedor"
+    }
+  ],
+  "nota": "El patrón del parser es \\d{4}; acepta dígitos decimales Unicode. Se conserva ese contrato; no se impuso ASCII ni se corrigieron los literales."
+}

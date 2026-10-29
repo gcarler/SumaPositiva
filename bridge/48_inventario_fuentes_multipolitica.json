@@ -1,0 +1,2869 @@
+{
+  "esquema": "polis.inventario_fuentes_multipolitica_revision.v1",
+  "generado_utc": "2026-10-23T16:38:56.400476+00:00",
+  "metodo": "revision_local_sin_SQL_red_tests_ni_cambios_en_datos",
+  "referencia_inventario": {
+    "ruta": "data/fuentes_versiones/inventarios/5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+    "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "generado_utc": "2026-10-23T03:48:48.585974+00:00"
+  },
+  "consolidado": {
+    "ruta": "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv",
+    "sha256": "935d6d13a162466d1636a58dceacefb127db4bdf10eb25cbcce54a983fa4c9b9",
+    "filas": 2340,
+    "claves": 43
+  },
+  "serie_canonica": {
+    "ruta": "data/capas_analiticas/indicadores_7d/d5fd1fa37a5c615def5daa59abd8ee7c81131ff760d837afc0f90f34246ff54f.jsonl",
+    "sha256": "d5fd1fa37a5c615def5daa59abd8ee7c81131ff760d837afc0f90f34246ff54f",
+    "filas": 2340,
+    "claves": 43,
+    "condicion_actual": "clasificacion_SH_incorporada_no_contrato_neutro",
+    "unidades_observacion": {
+      "tasa": 402,
+      "medicion": 156,
+      "persona": 465,
+      "oferta": 71,
+      "hecho": 647,
+      "proceso": 381,
+      "superficie": 7,
+      "evento": 179,
+      "indice": 15,
+      "dinero": 12,
+      "solicitud": 5
+    },
+    "clasificacion_tematica_actual": {
+      "exacta": 1984,
+      "no_medible_con_esta_fuente": 93,
+      "respuesta_publica": 96,
+      "sin_clasificar": 144,
+      "total_multidimensional": 23
+    },
+    "filas_con_tasa_municipal": 908,
+    "filas_provisionales": 107
+  },
+  "integridad": {
+    "artefactos_inventariados": 1829,
+    "discrepancias": []
+  },
+  "claves_de_serie": 43,
+  "regla_conteo": "claves_de_serie_no_instituciones_independientes_ni_total_fuentes_de_todos_los_sectores",
+  "licencias": {
+    "por_verificar": 43
+  },
+  "promocion": {
+    "pendiente_validacion": 43
+  },
+  "fuentes": {
+    "dane_ecsc_2024": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "anex-ECSC-2024.xlsx"
+      ],
+      "indicadores": [
+        "percepcion_inseguridad_barrio",
+        "percepcion_inseguridad_ciudad",
+        "victimas_que_denunciaron",
+        "victimas_que_no_denunciaron",
+        "victimizacion_algun_delito",
+        "victimizacion_extorsion_o_intento",
+        "victimizacion_hurto_personas"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "cabecera"
+      ],
+      "anios": [
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc"
+      ],
+      "filas_en_inventario": 7,
+      "filas_en_consolidado": 7,
+      "filas_en_serie": 7,
+      "version_id": "51b4987474c042ea",
+      "sha256_contenido_declarado": "51b4987474c042ea1855f786812ce929e2f1642fb5ae1965cb046075ee68ec61",
+      "calidad_declarada": [
+        "anexo_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Estimación muestral; intervalo y CVE del anexo DANE; sin desagregación por UCG; CVE=1.801; IC=[72.462,77.765]",
+        "Estimación muestral; intervalo y CVE del anexo DANE; sin desagregación por UCG; CVE=13.535; IC=[1.38,2.377]",
+        "Estimación muestral; intervalo y CVE del anexo DANE; sin desagregación por UCG; CVE=3.383; IC=[69.656,79.55]",
+        "Estimación muestral; intervalo y CVE del anexo DANE; sin desagregación por UCG; CVE=5.011; IC=[33.975,41.375]"
+      ]
+    },
+    "dane_geih_cartagena": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "anex-GEIH-ago2026.xlsx"
+      ],
+      "indicadores": [
+        "tasa_desocupacion",
+        "tasa_global_participacion",
+        "tasa_ocupacion"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIH-ago2026.xlsx"
+      ],
+      "filas_en_inventario": 45,
+      "filas_en_consolidado": 45,
+      "filas_en_serie": 45,
+      "version_id": "87363dbbbb154880",
+      "sha256_contenido_declarado": "87363dbbbb1548806ebf9af739a124ce710e40d6aca5d81ad0668c6c086e5ae9",
+      "calidad_declarada": [
+        "anexo_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Trimestre móvil; oct-dic es corte de cierre, no promedio anual; 2026 jun-ago es parcial"
+      ]
+    },
+    "dane_geih_informalidad_cartagena": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "anex-GEIHEISS-jun-ago2026.xlsx"
+      ],
+      "indicadores": [
+        "proporcion_informalidad"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx"
+      ],
+      "filas_en_inventario": 6,
+      "filas_en_consolidado": 6,
+      "filas_en_serie": 6,
+      "version_id": "bc70bc2d8af9d634",
+      "sha256_contenido_declarado": "bc70bc2d8af9d634af50c45a37b3d2850fd23ad4da8f8cceb9a166a4d0ab3baf",
+      "calidad_declarada": [
+        "anexo_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Trimestre móvil; oct-dic es corte de cierre, no promedio anual; 2026 jun-ago es parcial"
+      ]
+    },
+    "dane_nbi_cnpv2018": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "CNPV-2018-NBI.xlsx"
+      ],
+      "indicadores": [
+        "nbi_dependencia_economica",
+        "nbi_hacinamiento",
+        "nbi_inasistencia_escolar",
+        "nbi_personas_miseria",
+        "nbi_personas_nbi",
+        "nbi_servicios",
+        "nbi_vivienda"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2018"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/necesidades-basicas-insatisfechas-nbi"
+      ],
+      "filas_en_inventario": 21,
+      "filas_en_consolidado": 21,
+      "filas_en_serie": 21,
+      "version_id": "4bf461864cbafcaa",
+      "sha256_contenido_declarado": "4bf461864cbafcaa60e46509b638f7bb678e76b6ee19ca0fd8974dfa3cb118a7",
+      "calidad_declarada": [
+        "anexo_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "CNPV 2018: línea base censal, no serie anual"
+      ]
+    },
+    "dane_poblacion_municipal": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "municipal_2005_2017+2018_2042"
+      ],
+      "indicadores": [
+        "poblacion_cabecera",
+        "poblacion_centros_rural",
+        "poblacion_total"
+      ],
+      "unidades_originales": [
+        "personas"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026",
+        "2027"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion"
+      ],
+      "filas_en_inventario": 48,
+      "filas_en_consolidado": 48,
+      "filas_en_serie": 48,
+      "version_id": "d82164a540ae01e4",
+      "sha256_contenido_declarado": "d82164a540ae01e4be9aa08c84b337f8cd87ee4ed9ec2f575bee291628a7606d",
+      "calidad_declarada": [
+        "anexo_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Proyección/retroproyección municipal, base CNPV 2018; versión del anexo 2025"
+      ]
+    },
+    "dane_poblacion_vigencia_censal": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "dane_base_censo_2005_municipal_area_1985_2020.xls",
+        "dane_poblacion_municipal_2018_2042.xlsx"
+      ],
+      "indicadores": [
+        "poblacion_cabecera",
+        "poblacion_centros_rural",
+        "poblacion_total"
+      ],
+      "unidades_originales": [
+        "personas"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+        "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion"
+      ],
+      "filas_en_inventario": 45,
+      "filas_en_consolidado": 45,
+      "filas_en_serie": 45,
+      "version_id": "2a0604b48b38049d",
+      "sha256_contenido_declarado": "2a0604b48b38049deb38f294ef73249cc2c06ca6eba496a45b8a495895332738",
+      "calidad_declarada": [
+        "serie_municipal_cambio_base_2018"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "proyeccion_actualizada_2025; Anexo DANE actualizado 30 julio 2025; base CNPV 2018; denominador municipal: si. No distribuir a UCG o barrio; total no sumar a cabecera y rural.",
+        "proyeccion_historica_vigente; A junio 30; base Censo General 2005; denominador municipal: si. No distribuir a UCG o barrio; total no sumar a cabecera y rural."
+      ]
+    },
+    "dane_pobreza_monetaria": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "pres-PM-2025.pdf"
+      ],
+      "indicadores": [
+        "incidencia_pobreza_monetaria"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "url_referencias": [
+        "https://www.dane.gov.co/files/operaciones/PM/pres-PM-2025.pdf"
+      ],
+      "filas_en_inventario": 3,
+      "filas_en_consolidado": 3,
+      "filas_en_serie": 3,
+      "version_id": "4ed47c5a7b69e6b7",
+      "sha256_contenido_declarado": "4ed47c5a7b69e6b7bb099378c2f11114f16805378b97f13c8b85ea6deb034d50",
+      "calidad_declarada": [
+        "tabla_oficial_extraida"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Serie 2023–2025 publicada en presentación PM 2025"
+      ]
+    },
+    "dane_sae_fies_pobreza_cartagena": {
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "datasets_declarados": [
+        "SAE-FIES-PM-IPM-2022-2024"
+      ],
+      "indicadores": [
+        "inseguridad_alimentaria_moderada_grave_sae",
+        "pobreza_monetaria_sae",
+        "pobreza_multidimensional_sae"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2022",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://sitios.dane.gov.co/EstimacionesModeloSAE/"
+      ],
+      "filas_en_inventario": 6,
+      "filas_en_consolidado": 6,
+      "filas_en_serie": 6,
+      "version_id": "077c4dac481ca973",
+      "sha256_contenido_declarado": "077c4dac481ca973e7a221a9023cc48a64a0ea05fc41d3793476f7aaed07abd5",
+      "calidad_declarada": [
+        "xlsx_oficial_estimacion_experimental"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "IC 17.251–27.059; hoja FIES 2022 fila 151; estimación experimental",
+        "IC 23.418–32.775; hoja FIES 2024 fila 151; estimación experimental",
+        "IC 41.006–41.194; hoja Monetaria 2024 fila 151; estimación experimental",
+        "IC 43.505–43.695; hoja Monetaria 2022 fila 151; estimación experimental"
+      ]
+    },
+    "dnp_terridata_13001": {
+      "custodios_declarados": [
+        "DNP / custodios originales"
+      ],
+      "datasets_declarados": [
+        "TerriData13001.xlsx.zip"
+      ],
+      "indicadores": [
+        "area_deforestada",
+        "eventos_inundacion",
+        "homicidio_intencional_tasa",
+        "incidencia_dengue",
+        "incidencia_pobreza_monetaria_terridata",
+        "indice_participacion_institucional",
+        "indice_transparencia_institucional",
+        "mortalidad_desnutricion_menores_5",
+        "victimas_desplazamiento_ubicadas",
+        "violencia_intrafamiliar_tasa"
+      ],
+      "unidades_originales": [
+        "Casos por cada 1.000 nacidos vivos",
+        "Casos por cada 100.000 habitantes en riesgo",
+        "Eventos",
+        "Hectáreas",
+        "Personas",
+        "Porcentaje (el valor esta multiplicado por 100)",
+        "Puntos",
+        "Tasa por cada 100.000 habitantes"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "url_referencias": [
+        "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip"
+      ],
+      "filas_en_inventario": 82,
+      "filas_en_consolidado": 82,
+      "filas_en_serie": 82,
+      "version_id": "42d3ce651e73063f",
+      "sha256_contenido_declarado": "42d3ce651e73063fc9c5105ade5f951376b2eedfd5dc2ddc4caf3bebd6df6963",
+      "calidad_declarada": [
+        "archivo_municipal_oficial_extraido"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "DANE - Gran Encuesta Integrada de Hogares (GEIH); TerriData replica al custodio original; escala municipal; no sumar con series fuente. Desplazamiento: víctimas ubicadas, no alertas SAT.",
+        "DANE: Recolecta y procesa los datos a través del registro de Estadísticas Vitales (certificados de defunción).   MinSalud: Analiza y establece los lineamientos de política pública en salud para el seguimiento y control de este indicador ; TerriData replica al custodio original; escala municipal; no sumar con series fuente. Desplazamiento: víctimas ubicadas, no alertas SAT.",
+        "DNP a partir de  información en la Unidad Nacional para la Gestión del Riesgo de Desastres; TerriData replica al custodio original; escala municipal; no sumar con series fuente. Desplazamiento: víctimas ubicadas, no alertas SAT.",
+        "DNP, con datos de MinDefensa y DANE; TerriData replica al custodio original; escala municipal; no sumar con series fuente. Desplazamiento: víctimas ubicadas, no alertas SAT."
+      ]
+    },
+    "drive_delito_sexual": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "delito_sexual"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 12,
+      "filas_en_consolidado": 12,
+      "filas_en_serie": 12,
+      "version_id": "83c9a9034eae9707",
+      "sha256_contenido_declarado": "83c9a9034eae9707b5598f04c29aa58a2147d836e6b9745c3854f4bf89f1a4cd",
+      "calidad_declarada": [
+        "cotejado_medicina_legal_2015_2024",
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "drive_excel_policial_11_delitos": {
+      "custodios_declarados": [
+        "archivo compartido atribuido a Policía Nacional; sin acreditar"
+      ],
+      "datasets_declarados": [
+        "C.S_DELICTIVO_MENSUAL_ANUAL_2020_2026.xlsx"
+      ],
+      "indicadores": [
+        "amenaza",
+        "extorsion",
+        "homicidio_intencional",
+        "homicidio_transito",
+        "hurtos_total",
+        "lesiones_personales",
+        "lesiones_transito",
+        "secuestro",
+        "terrorismo",
+        "violencia_intrafamiliar",
+        "violencia_sexual"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4"
+      ],
+      "filas_en_inventario": 77,
+      "filas_en_consolidado": 77,
+      "filas_en_serie": 77,
+      "version_id": "f3c9a35a1431da98",
+      "sha256_contenido_declarado": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069",
+      "calidad_declarada": [
+        "fuente_institucional_pendiente",
+        "fuente_institucional_pendiente;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Celda ASL164 de Cuadro 10; no sumar a SIEDCO hasta acreditar procedencia y deduplicar.",
+        "Celda BPC164 de Cuadro 10; no sumar a SIEDCO hasta acreditar procedencia y deduplicar.",
+        "Celda BY164 de Cuadro 11; no sumar a SIEDCO hasta acreditar procedencia y deduplicar.",
+        "Celda BY164 de Cuadro 12; no sumar a SIEDCO hasta acreditar procedencia y deduplicar."
+      ]
+    },
+    "drive_extorsion": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "extorsion"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 9,
+      "filas_en_consolidado": 9,
+      "filas_en_serie": 9,
+      "version_id": "3c380d1f458992fd",
+      "sha256_contenido_declarado": "3c380d1f458992fd7b4cc349e9eef54a3de1576c17c4ed70c0d30fc6983d38c3",
+      "calidad_declarada": [
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "drive_homicidios": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "homicidios"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 12,
+      "filas_en_consolidado": 12,
+      "filas_en_serie": 12,
+      "version_id": "8bf3c16419379f63",
+      "sha256_contenido_declarado": "8bf3c16419379f63ca8ce130802baea6baf0c3e086f7b1bc99688c496ed01780",
+      "calidad_declarada": [
+        "cotejado_medicina_legal_2015_2024",
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "drive_muertes_transporte": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "muertes_transporte"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 12,
+      "filas_en_consolidado": 12,
+      "filas_en_serie": 12,
+      "version_id": "c0bfd81ab1ecd595",
+      "sha256_contenido_declarado": "c0bfd81ab1ecd59524b0bd4ce14eb709a52a5fb961afc8e0e37986e141d60811",
+      "calidad_declarada": [
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "drive_suicidios": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "suicidios"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 12,
+      "filas_en_consolidado": 12,
+      "filas_en_serie": 12,
+      "version_id": "e195eee916d9c728",
+      "sha256_contenido_declarado": "e195eee916d9c728d4e1bd8fa5d7f94a70caa94f760b8d3428d5bca483a44e29",
+      "calidad_declarada": [
+        "cotejado_medicina_legal_2015_2024",
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "drive_violencia_intrafamiliar": {
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "datasets_declarados": [
+        "violencia_intrafamiliar"
+      ],
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "unidades_originales": [
+        "casos_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_con_desglose_urbano_rural"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4"
+      ],
+      "filas_en_inventario": 12,
+      "filas_en_consolidado": 12,
+      "filas_en_serie": 12,
+      "version_id": "56fd37d4b7007790",
+      "sha256_contenido_declarado": "56fd37d4b70077902107b6c02efa4cd8fd68388106e341c870f775ece1e13591",
+      "calidad_declarada": [
+        "cotejado_medicina_legal_2015_2024",
+        "sin_ficha_institucional",
+        "sin_ficha_institucional;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "GeoJSON por zona, no punto de incidente; no sumar a Medicina Legal sin deduplicación."
+      ]
+    },
+    "fiscalia_spoa_busquedas_por_anio_hecho": {
+      "custodios_declarados": [
+        "Fiscalía General de la Nación"
+      ],
+      "datasets_declarados": [
+        "tablero_publico_spoa_busquedas_textuales"
+      ],
+      "indicadores": [
+        "procesos_coincidentes_con_termino"
+      ],
+      "unidades_originales": [
+        "procesos"
+      ],
+      "ambitos_originales": [
+        "municipio_hecho_cartagena"
+      ],
+      "anios": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9"
+      ],
+      "filas_en_inventario": 358,
+      "filas_en_consolidado": 358,
+      "filas_en_serie": 358,
+      "version_id": "5add443e1f0ebce7",
+      "sha256_contenido_declarado": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83",
+      "calidad_declarada": [
+        "busqueda_textual_superpuesta",
+        "busqueda_textual_superpuesta;anio_parcial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Término 'acceso carnal' con operador Contains any; año del hecho, corte 30/09/2026. Las búsquedas se solapan; no sumarlas entre términos ni al total SPOA.",
+        "Término 'acto sexual' con operador Contains any; año del hecho, corte 30/09/2026. Las búsquedas se solapan; no sumarlas entre términos ni al total SPOA.",
+        "Término 'amenazas' con operador Contains any; año del hecho, corte 30/09/2026. Las búsquedas se solapan; no sumarlas entre términos ni al total SPOA.",
+        "Término 'armas de fuego' con operador Contains any; año del hecho, corte 30/09/2026. Las búsquedas se solapan; no sumarlas entre términos ni al total SPOA."
+      ]
+    },
+    "fiscalia_spoa_procesos_por_anio_hecho": {
+      "custodios_declarados": [
+        "Fiscalía General de la Nación"
+      ],
+      "datasets_declarados": [
+        "tablero_publico_spoa"
+      ],
+      "indicadores": [
+        "procesos_penales_registrados"
+      ],
+      "unidades_originales": [
+        "procesos"
+      ],
+      "ambitos_originales": [
+        "municipio_hecho_cartagena"
+      ],
+      "anios": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9"
+      ],
+      "filas_en_inventario": 23,
+      "filas_en_consolidado": 23,
+      "filas_en_serie": 23,
+      "version_id": "4b20bf8e7d753f14",
+      "sha256_contenido_declarado": "4b20bf8e7d753f142527107f9f7a902f2b3c3e40aa2201f073b412f6bb96ecb6",
+      "calidad_declarada": [
+        "anio_parcial",
+        "tablero_publico"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Año del hecho; corte 30/09/2026. Total del tablero menos suma anual visible: 235; no imputar residuo. No equivale a víctimas ni a condenas."
+      ]
+    },
+    "icbf_bienestarina": {
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "datasets_declarados": [
+        "crxh-as6c"
+      ],
+      "indicadores": [
+        "bienestarina"
+      ],
+      "unidades_originales": [
+        "puntos_distintos"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/crxh-as6c"
+      ],
+      "filas_en_inventario": 5,
+      "filas_en_consolidado": 5,
+      "filas_en_serie": 5,
+      "version_id": "f192c00a696b2f10",
+      "sha256_contenido_declarado": "f192c00a696b2f100d4073e060bd3a628d3f4a48c4566af4a2ac2f7a36eec9ec",
+      "calidad_declarada": [
+        "oferta_no_resultado"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "195 filas agregadas; no implica personas únicas ni casos evitados.",
+        "202 filas agregadas; no implica personas únicas ni casos evitados.",
+        "203 filas agregadas; no implica personas únicas ni casos evitados.",
+        "206 filas agregadas; no implica personas únicas ni casos evitados."
+      ]
+    },
+    "icbf_prevencion": {
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "datasets_declarados": [
+        "g58z-k6f6"
+      ],
+      "indicadores": [
+        "prevencion"
+      ],
+      "unidades_originales": [
+        "beneficiarios_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/g58z-k6f6"
+      ],
+      "filas_en_inventario": 35,
+      "filas_en_consolidado": 35,
+      "filas_en_serie": 35,
+      "version_id": "804c8035eb23dae1",
+      "sha256_contenido_declarado": "804c8035eb23dae13357a781f202f377be7be3a3906e1d2ceb6ab6804752944d",
+      "calidad_declarada": [
+        "oferta_no_resultado"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "104 filas agregadas; no implica personas únicas ni casos evitados.",
+        "108 filas agregadas; no implica personas únicas ni casos evitados.",
+        "116 filas agregadas; no implica personas únicas ni casos evitados.",
+        "1164 filas agregadas; no implica personas únicas ni casos evitados."
+      ]
+    },
+    "icbf_primera_infancia": {
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "datasets_declarados": [
+        "5akr-u7t8"
+      ],
+      "indicadores": [
+        "primera_infancia"
+      ],
+      "unidades_originales": [
+        "beneficiarios_reportados"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2025"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/5akr-u7t8"
+      ],
+      "filas_en_inventario": 6,
+      "filas_en_consolidado": 6,
+      "filas_en_serie": 6,
+      "version_id": "65b23a78a86d7b69",
+      "sha256_contenido_declarado": "65b23a78a86d7b695bb4b0668a82687704b25c69b01b19142512f240c854d041",
+      "calidad_declarada": [
+        "oferta_no_resultado"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "11 filas agregadas; no implica personas únicas ni casos evitados.",
+        "1300 filas agregadas; no implica personas únicas ni casos evitados.",
+        "15 filas agregadas; no implica personas únicas ni casos evitados.",
+        "31 filas agregadas; no implica personas únicas ni casos evitados."
+      ]
+    },
+    "icbf_rpc_cartagena": {
+      "custodios_declarados": [
+        "DANE",
+        "ICBF",
+        "INMLyCF",
+        "INS",
+        "MEN",
+        "MSPS",
+        "RNEC",
+        "SSPD",
+        "UARIV"
+      ],
+      "datasets_declarados": [
+        "v9qk-hdcc"
+      ],
+      "indicadores": [
+        "Calidad de agua",
+        "Cobertura de inmunización contra el triple viral (tv) de un año",
+        "Cobertura de vacunación con BCG en nacidos vivos",
+        "Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año",
+        "Cobertura escolar bruta en educación básica secundaria",
+        "Cobertura escolar bruta en transición",
+        "Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",
+        "Número de niños y niñas menores de 1 año con registro civil por lugar de residencia",
+        "Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",
+        "Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado",
+        "Porcentaje de atención institucional al parto por personal calificado",
+        "Porcentaje de cobertura del servicio de acueducto",
+        "Porcentaje de nacidos vivos con 4 o más controles prenatales",
+        "Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado",
+        "Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS",
+        "Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS",
+        "Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS",
+        "Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado",
+        "Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención Integral que cuentan con seis o más atenciones.",
+        "Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.",
+        "Razón de mortalidad materna por 100.000 nacidos vivos",
+        "Tasa de Cobertura escolar bruta en educación básica primaria",
+        "Tasa de Cobertura escolar bruta en educación media",
+        "Tasa de deserción en educación básica primaria",
+        "Tasa de deserción en educación básica secundaria",
+        "Tasa de deserción en educación media",
+        "Tasa de exámenes médico legales por presunto delito sexual contra adolescentes",
+        "Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años",
+        "Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años",
+        "Tasa de fecundidad especifica en niños y niñas de 10 a 14 años",
+        "Tasa de homicidios en adolescentes (12 a 17 años)",
+        "Tasa de homicidios en niños y niñas de 0 a 5 años",
+        "Tasa de homicidios en niños y niñas de 6 a 11 años",
+        "Tasa de mortalidad en menores de 1 año (por mil nacidos vivos)",
+        "Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "Tasa de mortalidad por desnutrición en menores de 5 años.",
+        "Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años)",
+        "Tasa de muertes por eventos de transporte en niños y niñas de 0 a 5 años",
+        "Tasa de muertes por eventos de transporte en niños y niñas de 6 a 11 años",
+        "Tasa de repitencia en educación básica primaria",
+        "Tasa de repitencia en educación básica secundaria",
+        "Tasa de repitencia en educación media",
+        "Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años)",
+        "Tasa de violencia contra adolescentes 12 a 17 años.",
+        "Tasa de violencia contra niños y niñas de 6 a 11 años",
+        "Tasa de violencia contra niños y niñas de primera infancia",
+        "Tasa de violencia de pareja cuando la víctima es menor de 18 años",
+        "Tasa de violencia intrafamiliar en adolescentes (12 a 17 años)",
+        "Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años",
+        "Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años"
+      ],
+      "unidades_originales": [
+        "Número",
+        "Porcentaje",
+        "Tasa",
+        "Tasa por 1.000",
+        "Tasa por 100.000",
+        "Tasa por 100.000 habitantes"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/v9qk-hdcc"
+      ],
+      "filas_en_inventario": 230,
+      "filas_en_consolidado": 230,
+      "filas_en_serie": 230,
+      "version_id": "0bac1bbfa0ac65f0",
+      "sha256_contenido_declarado": "0bac1bbfa0ac65f024a6fec52475a94f8c2fb1ab34ea565ae4d4ca3b175a3029",
+      "calidad_declarada": [
+        "duplicado_identico",
+        "sin_duplicado",
+        "valores_conflictivos"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Indicador compilado por ICBF; verificar custodio y no sumar con su fuente original."
+      ]
+    },
+    "icbf_uds": {
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "datasets_declarados": [
+        "i8ww-5mcf"
+      ],
+      "indicadores": [
+        "uds"
+      ],
+      "unidades_originales": [
+        "puntos_distintos"
+      ],
+      "ambitos_originales": [
+        "municipio_13001"
+      ],
+      "anios": [
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/i8ww-5mcf"
+      ],
+      "filas_en_inventario": 3,
+      "filas_en_consolidado": 3,
+      "filas_en_serie": 3,
+      "version_id": "fa944e84a449d5b7",
+      "sha256_contenido_declarado": "fa944e84a449d5b73c42800052d77ed8db49d52d242d5d143cab3d9cf422f030",
+      "calidad_declarada": [
+        "oferta_no_resultado"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "1567 filas agregadas; no implica personas únicas ni casos evitados.",
+        "34 filas agregadas; no implica personas únicas ni casos evitados.",
+        "80 filas agregadas; no implica personas únicas ni casos evitados."
+      ]
+    },
+    "ideam_calidad_aire": {
+      "custodios_declarados": [
+        "IDEAM / SISAIRE"
+      ],
+      "datasets_declarados": [
+        "kekd-7v7h"
+      ],
+      "indicadores": [
+        "concentracion_media_estacion"
+      ],
+      "unidades_originales": [
+        "Celsius",
+        "mmHg",
+        "ugm3"
+      ],
+      "ambitos_originales": [
+        "estacion"
+      ],
+      "anios": [
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/kekd-7v7h"
+      ],
+      "filas_en_inventario": 156,
+      "filas_en_consolidado": 156,
+      "filas_en_serie": 156,
+      "version_id": "2cbb9ebcb46d5a68",
+      "sha256_contenido_declarado": "2cbb9ebcb46d5a684b0883d68314b0a103c5a12168a6f449e1fdfda2ca685259",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "0",
+        "1",
+        "10",
+        "100"
+      ]
+    },
+    "ins_calidad_agua": {
+      "custodios_declarados": [
+        "INS / SIVICAP"
+      ],
+      "datasets_declarados": [
+        "nxt2-39c3"
+      ],
+      "indicadores": [
+        "irca"
+      ],
+      "unidades_originales": [
+        "%"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/nxt2-39c3"
+      ],
+      "filas_en_inventario": 38,
+      "filas_en_consolidado": 38,
+      "filas_en_serie": 38,
+      "version_id": "3164eca822c27fd7",
+      "sha256_contenido_declarado": "3164eca822c27fd7717c808b3e0cf928e5f79ae1dfeec7f52b9417d9a9b0773b",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Sin riesgo"
+      ]
+    },
+    "medicina_examenes_sexuales": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "hyqu-diue"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/hyqu-diue"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "50247cb74e935d85",
+      "sha256_contenido_declarado": "50247cb74e935d851d7d408fb7aa7d9a75fa05f8007fbe0455e0ddf9a4552c6e",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_homicidios": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "vtub-3de2"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/vtub-3de2"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "eebf4aa5d07e79f7",
+      "sha256_contenido_declarado": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_lesiones_accidentales": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "6cjn-eevd"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/6cjn-eevd"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "867fcb6ad495a008",
+      "sha256_contenido_declarado": "867fcb6ad495a008b15d32dfd66a1a170e0597f8a5cacb539cdde46c92d0b8eb",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_lesiones_transporte": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "ezhf-hscf"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/ezhf-hscf"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "80a74e15b1c05840",
+      "sha256_contenido_declarado": "80a74e15b1c0584040c9de2c5ad556bca2a9ee866e363937e89c7d6af0abaa13",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_suicidios": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "f75u-mirk"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/f75u-mirk"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "53d6e358b14b5922",
+      "sha256_contenido_declarado": "53d6e358b14b5922107bafedeb240892ab2d5aa676520c4cd904dfc771ea6bf3",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_violencia_interpersonal": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "e3xi-4zq5"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/e3xi-4zq5"
+      ],
+      "filas_en_inventario": 10,
+      "filas_en_consolidado": 10,
+      "filas_en_serie": 10,
+      "version_id": "37a7bb357ea8ba19",
+      "sha256_contenido_declarado": "37a7bb357ea8ba19106b835bfc4798606bfb895dd27c9e824ec25c294b1f26f7",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "medicina_violencia_intrafamiliar": {
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "datasets_declarados": [
+        "ers2-kerr"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/ers2-kerr"
+      ],
+      "filas_en_inventario": 30,
+      "filas_en_consolidado": 30,
+      "filas_en_serie": 30,
+      "version_id": "9a6ca64538035e8e",
+      "sha256_contenido_declarado": "9a6ca64538035e8e03ee489bfef99a35ade7225e3c4d370ecae9d38e1affefc4",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_amenazas": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "meew-mguv"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/meew-mguv"
+      ],
+      "filas_en_inventario": 17,
+      "filas_en_consolidado": 17,
+      "filas_en_serie": 17,
+      "version_id": "e5e1c2e64aa88721",
+      "sha256_contenido_declarado": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_delitos_sexuales": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "fpe5-yrmw"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/fpe5-yrmw"
+      ],
+      "filas_en_inventario": 204,
+      "filas_en_consolidado": 204,
+      "filas_en_serie": 204,
+      "version_id": "852b7128b8277bfa",
+      "sha256_contenido_declarado": "852b7128b8277bfad0a69252b169ea7a7a465f3e8f133be01b03dffd9703e589",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_homicidios": {
+      "custodios_declarados": [
+        "Policía Nacional / MinDefensa"
+      ],
+      "datasets_declarados": [
+        "m8fd-ahd9"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/m8fd-ahd9"
+      ],
+      "filas_en_inventario": 26,
+      "filas_en_consolidado": 26,
+      "filas_en_serie": 26,
+      "version_id": "c617b872f9b5c348",
+      "sha256_contenido_declarado": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_hurto_vehiculos": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "9vha-vh9n"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/9vha-vh9n"
+      ],
+      "filas_en_inventario": 34,
+      "filas_en_consolidado": 34,
+      "filas_en_serie": 34,
+      "version_id": "eefbdd4da5dd9d1a",
+      "sha256_contenido_declarado": "eefbdd4da5dd9d1afa584f6de364b7fc91ae60d61f60f9c0a27c2baba49e3c70",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_hurto_vivienda_comercio": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "6sqw-8cg5"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/6sqw-8cg5"
+      ],
+      "filas_en_inventario": 20,
+      "filas_en_consolidado": 20,
+      "filas_en_serie": 20,
+      "version_id": "5b465f75b9f42c2b",
+      "sha256_contenido_declarado": "5b465f75b9f42c2bcce071bef78d0e11b5c19db55c5d05d45b275a8cdd772644",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_lesiones": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "72sg-cybi"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/72sg-cybi"
+      ],
+      "filas_en_inventario": 93,
+      "filas_en_consolidado": 93,
+      "filas_en_serie": 93,
+      "version_id": "326ab1843fc7e382",
+      "sha256_contenido_declarado": "326ab1843fc7e382a3353e15d737da3fa8d61dd2adbf756e1d6e546ed18262b0",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "policia_violencia_intrafamiliar": {
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "datasets_declarados": [
+        "vuyt-mqpw"
+      ],
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "unidades_originales": [
+        "casos"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://www.datos.gov.co/d/vuyt-mqpw"
+      ],
+      "filas_en_inventario": 17,
+      "filas_en_consolidado": 17,
+      "filas_en_serie": 17,
+      "version_id": "3dceda7836845dca",
+      "sha256_contenido_declarado": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5",
+      "calidad_declarada": [
+        "disponible"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": []
+    },
+    "procuraduria_pqrsdf_cartagena": {
+      "custodios_declarados": [
+        "Procuraduría General de la Nación"
+      ],
+      "datasets_declarados": [
+        "s226-fj9i"
+      ],
+      "indicadores": [
+        "pqrsdf_radicadas"
+      ],
+      "unidades_originales": [
+        "solicitudes"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2024"
+      ],
+      "url_referencias": [
+        "https://www.procuraduria.gov.co/Pages/datos-abiertos.aspx"
+      ],
+      "filas_en_inventario": 5,
+      "filas_en_consolidado": 5,
+      "filas_en_serie": 5,
+      "version_id": "3dbee229983a8e86",
+      "sha256_contenido_declarado": "3dbee229983a8e86d806a0ca597641a18e0847573ff11d81873faf85e32ac8b6",
+      "calidad_declarada": [
+        "agregados_por_tipo_y_anio"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Municipio informado CARTAGENA, BOLIVAR; no es localización de un hecho"
+      ]
+    },
+    "unidad_victimas_indemnizaciones_cartagena": {
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "datasets_declarados": [
+        "Indemnizaciones-MapServer-1"
+      ],
+      "indicadores": [
+        "giros_indemnizacion",
+        "personas_indemnizadas",
+        "valor_indemnizaciones"
+      ],
+      "unidades_originales": [
+        "giros",
+        "millones COP",
+        "personas"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "url_referencias": [
+        "https://datospaz.unidadvictimas.gov.co/mapa-indemnizacion/"
+      ],
+      "filas_en_inventario": 36,
+      "filas_en_consolidado": 36,
+      "filas_en_serie": 36,
+      "version_id": "744bab3432d63d75",
+      "sha256_contenido_declarado": "744bab3432d63d759e41c880f65ed20f08b76bdcb6d0b177931aebdf913113a7",
+      "calidad_declarada": [
+        "servicio_municipal_2024_excluido_por_discrepancia"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Vigencia de indemnización; capa general municipal; sin corte explícito en el servicio"
+      ]
+    },
+    "unidad_victimas_irv_cartagena": {
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "datasets_declarados": [
+        "IRV-MapServer-2012-2025"
+      ],
+      "indicadores": [
+        "indice_riesgo_victimizacion"
+      ],
+      "unidades_originales": [
+        "índice 0–1"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "url_referencias": [
+        "https://datospaz.unidadvictimas.gov.co/indice-de-riesgo-de-victimizacion/"
+      ],
+      "filas_en_inventario": 13,
+      "filas_en_consolidado": 13,
+      "filas_en_serie": 13,
+      "version_id": "bf0fc1d148236b4b",
+      "sha256_contenido_declarado": "bf0fc1d148236b4b4b3ffeb98bd160349a23d90ed157a67ff8807039112b3686",
+      "calidad_declarada": [
+        "servicio_municipal_oficial"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Medición 2012; capa 2; no mide casos observados",
+        "Medición 2013; capa 3; no mide casos observados",
+        "Medición 2014; capa 4; no mide casos observados",
+        "Medición 2015; capa 5; no mide casos observados"
+      ]
+    },
+    "unidad_victimas_ruv_cartagena": {
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "datasets_declarados": [
+        "RUV-reporte-5"
+      ],
+      "indicadores": [
+        "eventos_reportados",
+        "personas_por_declaracion",
+        "personas_por_ocurrencia"
+      ],
+      "unidades_originales": [
+        "eventos",
+        "personas"
+      ],
+      "ambitos_originales": [
+        "municipio_o_subtipo"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "url_referencias": [
+        "https://datospaz.unidadvictimas.gov.co/registro-unico-de-victimas/"
+      ],
+      "filas_en_inventario": 522,
+      "filas_en_consolidado": 522,
+      "filas_en_serie": 522,
+      "version_id": "efc5e08a6eaa8cd1",
+      "sha256_contenido_declarado": "efc5e08a6eaa8cd15325bd3c6b1d378d656d91ea2c2deda2f4b6e6defa5235af",
+      "calidad_declarada": [
+        "corte_30-09-2026"
+      ],
+      "licencia": "por_verificar",
+      "estado_promocion": "pendiente_validacion",
+      "contrato_actual": "observacion_agregada_v1",
+      "alcance_verificacion": "presencia_integridad_y_cobertura_local_sin_reextraer_institucion",
+      "actualizacion_automatizada_verificada_en_este_ciclo": false,
+      "apta_para_otra_politica": "pendiente_pregunta_unidad_cobertura_y_revision_semantica",
+      "limitaciones_originales_muestra": [
+        "Corte 30/09/2026; Vigencia según el reporte RUV; ocurrencia, declaración y eventos son universos distintos. Personas por hecho/año no son personas únicas entre hechos o años. Fecha de corte del registro, no fecha del hecho."
+      ]
+    }
+  },
+  "paquetes_artefactos": {
+    "banco_local": {
+      "descripcion": "Archivos locales de extracción, revisión y consolidación de indicadores",
+      "artefactos": 131
+    },
+    "cartografia_recepcion": {
+      "descripcion": "Capas recibidas, versiones curadas y auditorías cartográficas",
+      "artefactos": 39
+    },
+    "analisis_derivados": {
+      "descripcion": "Informes y gráficas derivados de análisis previos",
+      "artefactos": 29
+    },
+    "planes_locales": {
+      "descripcion": "Documentos y extracciones de planes de desarrollo y acción",
+      "artefactos": 44
+    },
+    "planes_accion": {
+      "descripcion": "Planes de acción recibidos, catálogo Drive y extracciones documentales",
+      "artefactos": 1421
+    },
+    "analitica_canonica": {
+      "descripcion": "Cortes derivados tipados y manifiestos de calidad",
+      "artefactos": 90
+    },
+    "geodatos_recepcion": {
+      "descripcion": "Paquete cartográfico recibido y sus componentes de formato",
+      "artefactos": 70
+    },
+    "geodatos_publicados": {
+      "descripcion": "Copias técnicas de geodatos para la interfaz",
+      "artefactos": 5
+    }
+  },
+  "cartografia": {
+    "ruta_inventario": "data/cartografia_fuentes/drive_pshc_insumos/inventario_capas.json",
+    "sha256": "cd28514bab58affefacc13ccb90473876a337a05484eb956eb56c9d359891777",
+    "capas_declaradas": 14,
+    "capas": [
+      {
+        "archivo": "ANMProyectado2040.zip",
+        "registros": 51,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "fid_1",
+          "nom_barrio",
+          "shape_leng",
+          "ucg",
+          "playa_m",
+          "m2",
+          "e_pl",
+          "costero",
+          "m2_anm",
+          "optim",
+          "shape_le_1",
+          "shape_area"
+        ]
+      },
+      {
+        "archivo": "Dane_Manzanas_Censo_2018.zip",
+        "registros": 10057,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "cod_dane_a",
+          "dpto_ccdgo",
+          "mpio_ccdgo",
+          "mpio_cdpmp",
+          "clas_ccdgo",
+          "setr_ccdgo",
+          "setr_ccnct",
+          "secr_ccdgo",
+          "secr_ccnct",
+          "zu_ccdgo",
+          "zu_cdivi",
+          "setu_ccdgo",
+          "setu_ccnct",
+          "secu_ccdgo",
+          "secu_ccnct",
+          "manz_ccdgo",
+          "ag_ccdgo",
+          "dato_anm",
+          "version",
+          "area",
+          "latitud",
+          "longitud",
+          "densidad",
+          "ctnencuest",
+          "tp3_1_si",
+          "tp3_2_no",
+          "tp3a_ri",
+          "tp3b_tcn",
+          "tp4_1_si",
+          "tp4_2_no",
+          "tp9_1_uso",
+          "tp9_2_uso",
+          "tp9_3_uso",
+          "tp9_4_uso",
+          "tp9_2_1_mi",
+          "tp9_2_2_mi",
+          "tp9_2_3_mi",
+          "tp9_2_4_mi",
+          "tp9_2_9_mi",
+          "tp9_3_1_no",
+          "tp9_3_2_no",
+          "tp9_3_3_no",
+          "tp9_3_4_no",
+          "tp9_3_5_no",
+          "tp9_3_6_no",
+          "tp9_3_7_no",
+          "tp9_3_8_no",
+          "tp9_3_9_no",
+          "tp9_3_10_n",
+          "tp9_3_99_n",
+          "tvivienda",
+          "tp14_1_tip",
+          "tp14_2_tip",
+          "tp14_3_tip",
+          "tp14_4_tip",
+          "tp14_5_tip",
+          "tp14_6_tip",
+          "tp15_1_ocu",
+          "tp15_2_ocu",
+          "tp15_3_ocu",
+          "tp15_4_ocu",
+          "tp16_hog",
+          "tp19_ee_1",
+          "tp19_ee_2",
+          "tp19_ee_e1",
+          "tp19_ee_e2",
+          "tp19_ee_e3",
+          "tp19_ee_e4",
+          "tp19_ee_e5",
+          "tp19_ee_e6",
+          "tp19_ee_e9",
+          "tp19_acu_1",
+          "tp19_acu_2",
+          "tp19_alc_1",
+          "tp19_alc_2",
+          "tp19_gas_1",
+          "tp19_gas_2",
+          "tp19_gas_9",
+          "tp19_recb1",
+          "tp19_recb2",
+          "tp19_inte1",
+          "tp19_inte2",
+          "tp19_inte9",
+          "tp27_perso",
+          "personas_l",
+          "personas_s",
+          "tp32_1_sex",
+          "tp32_2_sex",
+          "tp34_1_eda",
+          "tp34_2_eda",
+          "tp34_3_eda",
+          "tp34_4_eda",
+          "tp34_5_eda",
+          "tp34_6_eda",
+          "tp34_7_eda",
+          "tp34_8_eda",
+          "tp34_9_eda",
+          "tp51primar",
+          "tp51secund",
+          "tp51superi",
+          "tp51postgr",
+          "tp51_13_ed",
+          "tp51_99_ed",
+          "cd_lc_cm",
+          "nmb_lc_cm",
+          "tp_lc_cm",
+          "shape_leng",
+          "shape_area",
+          "cod_rdtm",
+          "coddane",
+          "territorio",
+          "clase_dane",
+          "loc_sig",
+          "coddane_si",
+          "tper_2018",
+          "tsex2_2018",
+          "tsex1_2018",
+          "ucg_sig"
+        ]
+      },
+      {
+        "archivo": "Distriseguridad_Cuadrantes_Policia.zip",
+        "registros": 106,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "id",
+          "unidad",
+          "distrito",
+          "telefono_d",
+          "estacion",
+          "telefono_e",
+          "tipo_unida",
+          "unidad_pol",
+          "telefono_s",
+          "latitud",
+          "longuitud",
+          "codigos_cu",
+          "numero_uni",
+          "jurisdicci",
+          "loc",
+          "ucg",
+          "barrio"
+        ]
+      },
+      {
+        "archivo": "Distriseguridad_Estaciones_Policia.zip",
+        "registros": 13,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "id",
+          "unidad",
+          "distrito",
+          "telefono_d",
+          "estacion",
+          "telefono",
+          "tipo_unida",
+          "unidad_pol",
+          "latitud",
+          "longuitud",
+          "loc",
+          "ucg",
+          "barrio"
+        ]
+      },
+      {
+        "archivo": "Distriseguridad_Sistema_Video_Vigilancia.zip",
+        "registros": 475,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "no",
+          "direccion",
+          "lat",
+          "lon",
+          "observacio",
+          "loc",
+          "ucg",
+          "barrio"
+        ]
+      },
+      {
+        "archivo": "Division_Politica_Corregimientos.zip",
+        "registros": 15,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "localidad",
+          "corregimie",
+          "shape_leng",
+          "shape_area",
+          "fuente",
+          "area_ha"
+        ]
+      },
+      {
+        "archivo": "Division_Politica_Limite_Distrital.zip",
+        "registros": 94,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "mpnombre",
+          "area_ha",
+          "mpnorma",
+          "nombre_ent",
+          "observacio",
+          "tipo_limit",
+          "shape_leng",
+          "shape_area"
+        ]
+      },
+      {
+        "archivo": "Division_Politica_Perimetro_Urbano.zip",
+        "registros": 1,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "area_ha",
+          "shape_leng",
+          "shape_le_1",
+          "shape_area",
+          "fuente"
+        ]
+      },
+      {
+        "archivo": "Division_Politica_UCG (1).zip",
+        "registros": 19,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "ucg",
+          "cod_ucg",
+          "localidad",
+          "area_ha",
+          "shape_leng",
+          "shape_area",
+          "fuente"
+        ]
+      },
+      {
+        "archivo": "Division_Politica_UCG.zip",
+        "registros": 19,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "ucg",
+          "cod_ucg",
+          "localidad",
+          "area_ha",
+          "shape_leng",
+          "shape_area",
+          "fuente"
+        ]
+      },
+      {
+        "archivo": "Inspecciones.zip",
+        "registros": 34,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "refcatas",
+          "drnpredial",
+          "barrio",
+          "ucg",
+          "loc",
+          "inspeccion",
+          "inspector",
+          "cedula",
+          "telefono",
+          "correo"
+        ]
+      },
+      {
+        "archivo": "VulBioEscOpt2040.zip",
+        "registros": 1043,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "cla_fh",
+          "caract_fis",
+          "coberturas",
+          "etiqueta",
+          "fid_mangla",
+          "oc",
+          "inund_mod",
+          "geoamenaza",
+          "tipo_amen",
+          "inund_pluv",
+          "inund_fuer",
+          "area_total",
+          "localidad",
+          "ucg",
+          "ucgu_r",
+          "urb_rral",
+          "cobert_2",
+          "union",
+          "iaee",
+          "is_",
+          "id_cobert",
+          "escenario1",
+          "isaesc1_19",
+          "v_esc1_19",
+          "isaesc1_40",
+          "v_esc1_40",
+          "escenario2",
+          "isaesc2_19",
+          "v_esc2_19",
+          "isaesc2_40",
+          "v_esc2_40",
+          "shape_leng",
+          "shape_area"
+        ]
+      },
+      {
+        "archivo": "VulBioEscPes2040.zip",
+        "registros": 909,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid",
+          "cla_fh",
+          "caract_fis",
+          "coberturas",
+          "etiqueta",
+          "fid_mangla",
+          "oc",
+          "inund_mod",
+          "geoamenaza",
+          "tipo_amen",
+          "inund_pluv",
+          "inund_fuer",
+          "area_total",
+          "localidad",
+          "ucg",
+          "ucgu_r",
+          "urb_rral",
+          "cobert_2",
+          "union",
+          "iaee",
+          "is_",
+          "id_cobert",
+          "escenario1",
+          "isaesc1_19",
+          "v_esc1_19",
+          "isaesc1_40",
+          "v_esc1_40",
+          "escenario2",
+          "isaesc2_19",
+          "v_esc2_19",
+          "isaesc2_40",
+          "v_esc2_40",
+          "shape_leng",
+          "shape_area"
+        ]
+      },
+      {
+        "archivo": "VulPes2040.zip",
+        "registros": 464,
+        "crs": "EPSG:4326",
+        "columnas": [
+          "gid",
+          "objectid_1",
+          "fid_barrio",
+          "fid_1",
+          "nom_barrio",
+          "shape_leng",
+          "ucg",
+          "playa_m",
+          "m2",
+          "e_pl",
+          "costero",
+          "person",
+          "viviend",
+          "dens_pob",
+          "patrimonio",
+          "vivlincos",
+          "dengue",
+          "___inundac",
+          "hab_en_ár",
+          "___inundfu",
+          "hab_en_á_",
+          "hab_en_á_1",
+          "hab_en_á_2",
+          "hab_en_á_3",
+          "cat_alc",
+          "cat_acu",
+          "cat_viv",
+          "cat_est",
+          "ind_vul",
+          "indvul",
+          "uso_suelo",
+          "dengu2019",
+          "dengu2040",
+          "nom_barr_1",
+          "unidad_com",
+          "personas",
+          "hogar",
+          "viviendas",
+          "cobertura",
+          "cobertur_1",
+          "vivienda_1",
+          "___estrato",
+          "indice_vul",
+          "fid_anmfue",
+          "objectid",
+          "Área_ha",
+          "fuentes",
+          "inund_fuer",
+          "shape_le_1",
+          "shape_ar_1",
+          "vul2040",
+          "fid_inunds",
+          "fid_12",
+          "nom_barr_2",
+          "ucg_1",
+          "m2_1",
+          "costero_1",
+          "m2_inund",
+          "optim",
+          "m2_anm",
+          "personas_1",
+          "hogar_1",
+          "vivienda_2",
+          "cobertur_2",
+          "cobertur_3",
+          "vivienda_3",
+          "___estra_1",
+          "indice_v_1",
+          "vulpes2040",
+          "area_ha_",
+          "shape_le_2",
+          "shape_area"
+        ]
+      }
+    ],
+    "limite": "inventario_existente_describe_capas_recibidas_no_acredita_version_legal_custodio_o_uso_en_POT"
+  },
+  "planeacion_congelada": {
+    "corte": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+    "planes": 8,
+    "nodos": 1573,
+    "metas": 4637,
+    "evidencia": "bridge/42_evidencia_integracion_ppi_corte.json",
+    "limite": "validado_para_catalogo_PDD_PDL_y_PPI_no_instrumento_universal"
+  },
+  "fuentes_sectoriales_adicionales": "pendientes_de_delimitar_con_segundo_caso_no_inferidas_por_nombre",
+  "estado_publicacion": "no_publicable"
+}

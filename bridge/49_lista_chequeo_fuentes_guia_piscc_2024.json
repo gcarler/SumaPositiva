@@ -1,0 +1,4477 @@
+{
+  "esquema": "polis.checklist_fuentes_guia_piscc_2024.v1",
+  "fecha": "2026-10-23",
+  "documento": {
+    "ruta": "bridge/44_guia_metodologica_piscc_2024.pdf",
+    "sha256": "fc9c2e993afdb83de2428f075585a03b296c4c648dbc7a19569e9f388694f5eb",
+    "paginas": 110,
+    "url_usuario": "https://drive.google.com/file/d/1Vq3IpA4BgiVd0g4NzfVuBLxgqK9pHbVf/view?usp=sharing"
+  },
+  "alcance": "menciones_de_fuentes_datos_registros_insumos_fuentes_financieras_encuestas_anexos_directorio_y_referencias_separadas",
+  "total_items": 168,
+  "conteos_por_grupo": {
+    "A · Fuentes de diagnóstico, registros y sistemas": 44,
+    "B · Insumos territoriales y recolección local": 12,
+    "C · Fuentes de planeación, financiación y ejecución": 15,
+    "D · Encuestas y referencias por ciudad del anexo4": 32,
+    "E · Directorio institucional del anexo5": 35,
+    "F · Referencias metodológicas, catálogos y literatura": 21,
+    "G · Otros enlaces normativos originales del PDF": 9
+  },
+  "completados": 0,
+  "regla_cierre": "Casilla pendiente hasta comprobar el producto concreto, pertinencia territorial/temporal y etapas aplicables con evidencia; no cerrar por coincidencia de institución.",
+  "items": [
+    {
+      "id": "F-001",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DANE · Pobreza monetaria y multidimensional (referencia de la guía: 2016)",
+      "paginas": [
+        32
+      ],
+      "informacion_o_uso": "Pobreza y factores económicos; comprobar edición y cobertura adecuadas.",
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/pobreza-y-desigualdad/pobreza-monetaria-y-multidimensional-en-colombia-2016",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [
+        "dane_pobreza_monetaria",
+        "dane_nbi_cnpv2018"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-002",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "INS / Ministerio de Salud · Boletín Epidemiológico",
+      "paginas": [
+        32
+      ],
+      "informacion_o_uso": "Desnutrición y riesgos de salud pública.",
+      "url": "https://www.ins.gov.co/buscador-eventos/Paginas/Vista-Boletin-Epidemilogico.aspx",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-003",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Salud · Observatorio de Convivencia y Salud Mental",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Salud mental y convivencia; la mención no trae URL propia.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-004",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "SISPRO · Sistema Integrado de Información de la Protección Social",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Indicadores del sector salud.",
+      "url": "https://www.sispro.gov.co/Pages/Home.aspx",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-005",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Encuesta Nacional de Consumo de Sustancias Psicoactivas",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Consumo de alcohol y SPA.",
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/salud/encuesta-nacional-de-consumo-de-sustancias-psicoactivas-encspa",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-006",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Medicina Legal · Boletines estadísticos y registros forenses",
+      "paginas": [
+        33,
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Muertes, lesiones y violencias; distinguir hechos, personas y exámenes.",
+      "url": "https://www.medicinalegal.gov.co/cifras-estadisticas/boletines-estadisticos-mensuales",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [
+        "medicina_examenes_sexuales",
+        "medicina_homicidios",
+        "medicina_lesiones_accidentales",
+        "medicina_lesiones_transporte",
+        "medicina_suicidios",
+        "medicina_violencia_interpersonal",
+        "medicina_violencia_intrafamiliar"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-007",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "ICBF · Sistema Nacional de Coordinación de Responsabilidad Penal para Adolescentes",
+      "paginas": [
+        33,
+        41
+      ],
+      "informacion_o_uso": "Información SRPA/SNCRPA; no equivale a tener todos los datos ICBF.",
+      "url": "https://www.icbf.gov.co/programas-y-estrategias/proteccion/sistema-de-responsabilidad-penal-para-adolescentes-srpa/sistema",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "La guía cita coordinación y remite al recurso SRPA/SNCRPA. Verificar producto concreto.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-008",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "IDEAM · Sistema de Monitoreo de Bosques y Carbono (SMByC)",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Bosques, deforestación y contexto ambiental.",
+      "url": "http://www.ideam.gov.co/web/siac/smbyc",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Disponer de calidad del aire no acredita disponer de SMByC.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-009",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Defensa · Observatorio de Derechos Humanos y Defensa Nacional",
+      "paginas": [
+        33,
+        34,
+        40,
+        41
+      ],
+      "informacion_o_uso": "Estadísticas y contexto de violencia y seguridad.",
+      "url": "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-010",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Defensoría del Pueblo · Sistema de Alertas Tempranas (SAT)",
+      "paginas": [
+        33,
+        38
+      ],
+      "informacion_o_uso": "Alertas, riesgos y notas de seguimiento.",
+      "url": "https://alertastempranas.defensoria.gov.co/Alerta/Tablero",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-011",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Justicia · Índice de Acceso Efectivo a la Justicia",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Acceso a justicia y barreras.",
+      "url": "https://minjusticia.gov.co/transparencia/Paginas/SEJ-Acceso-a-la-Justicia-indice-acceso-efectivo-a-la-justicia.aspx",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-012",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio del Interior · Sistema Nacional de Información de Trata de Personas",
+      "paginas": [
+        33
+      ],
+      "informacion_o_uso": "Trata de personas.",
+      "url": "https://www.mininterior.gov.co/grupo-de-lucha-contra-la-trata-de-personas/sistema-nacional-de-informacion-de-trata-de-personas-snitp/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-013",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Justicia · SUIN-JURISCOL",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Consulta normativa; fuente documental, no serie de casos.",
+      "url": "https://www.suin-juriscol.gov.co/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-014",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Justicia · Observatorio de Drogas de Colombia (ODC)",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Drogas y sus dinámicas.",
+      "url": "https://www.minjusticia.gov.co/programas-co/ODC",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-015",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Justicia · Observatorio de Política Criminal",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Información de política criminal.",
+      "url": "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-016",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "ARN / UNODC · Sistema de Análisis de Grupos Armados (SAGA)",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Información sobre grupos armados y contexto.",
+      "url": "https://saga.unodc.org.co/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-017",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Educación · Sistema de Información Unificado de Convivencia Escolar (SIUCE)",
+      "paginas": [
+        21,
+        34,
+        46
+      ],
+      "informacion_o_uso": "Convivencia y violencias escolares.",
+      "url": "https://www.mineducacion.gov.co/portal/salaprensa/Noticias/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-018",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Migración Colombia · Portal institucional",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Contexto de población migrante.",
+      "url": "https://www.migracioncolombia.gov.co/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-019",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Consejería para la Equidad de la Mujer · Observatorio Colombiano de Mujeres",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Brechas, violencias y enfoque de género.",
+      "url": "https://observatoriomujeres.gov.co/es/OAG",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-020",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "JEP · Mecanismo Unificado de Monitoreo de Riesgos",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Riesgos del Sistema Integral para la Paz.",
+      "url": "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-021",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "ART · Indicadores de los Planes de Acción para la Transformación Regional (PATR)",
+      "paginas": [
+        34
+      ],
+      "informacion_o_uso": "Avance PATR y contexto PDET.",
+      "url": "https://centralpdet.renovacionterritorio.gov.co/avance-patr/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Comprobar aplicabilidad al territorio; no asumir Cartagena como municipio PDET.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-022",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DNP · Índice de Desarrollo de Municipios Costeros (IDMC)",
+      "paginas": [
+        35
+      ],
+      "informacion_o_uso": "Contexto de municipios costeros.",
+      "url": "https://portalterritorial.dnp.gov.co/AdmCPBioceanica/iGrupoCMunicipios",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-023",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DNP · TerriData, seguridad integral marítima y fluvial",
+      "paginas": [
+        35
+      ],
+      "informacion_o_uso": "Indicadores territoriales; verificar variables específicas disponibles.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La extracción TerriData existente no acredita todas las variables referidas por la guía.",
+      "evidencia_local_relacionada": [
+        "dnp_terridata_13001"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-024",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Policía · Análisis Integral de Seguridad y Convivencia Ciudadana (AISEC)",
+      "paginas": [
+        35,
+        36,
+        99
+      ],
+      "informacion_o_uso": "Diagnóstico local y riesgos integrados.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía indica solicitar al comandante; anexo1 citado sin desarrollar contenido adicional en el PDF.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-025",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Policía · Comprensión contextual del territorio",
+      "paginas": [
+        35,
+        36,
+        99
+      ],
+      "informacion_o_uso": "Memoria local, características y capacidades.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía indica solicitar al comandante; anexo2 citado sin desarrollar contenido adicional en el PDF.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-026",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio de Justicia · Diagnóstico y matriz de conflictividades",
+      "paginas": [
+        36,
+        37,
+        38,
+        100
+      ],
+      "informacion_o_uso": "Conflictos, barreras de acceso y mapeo de actores.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Anexo3 es formato; disponer del formulario no significa tenerlo diligenciado para Cartagena.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-027",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Universidad Nacional · Observatorio de Conflictos Ambientales (OCA)",
+      "paginas": [
+        37
+      ],
+      "informacion_o_uso": "Conflictos ambientales.",
+      "url": "https://conflictosambientales.unal.edu.co/oca/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-028",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Indepaz · Informe de conflictos socioambientales (2022)",
+      "paginas": [
+        37
+      ],
+      "informacion_o_uso": "Conflictos socioambientales; referencia no gubernamental.",
+      "url": "https://indepaz.org.co/conflictos-socioambientales-en-colombia/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-029",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ministerio del Trabajo · Observatorio de Conflictos Sociolaborales",
+      "paginas": [
+        37
+      ],
+      "informacion_o_uso": "Conflictividades sociolaborales.",
+      "url": "https://www.mintrabajo.gov.co/relaciones-laborales/derechos-fundamentales-del-trabajo/observatorios",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-030",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Policía · Registro Nacional de Medidas Correctivas (RNMC)",
+      "paginas": [
+        38,
+        39
+      ],
+      "informacion_o_uso": "Comportamientos y medidas correctivas, fecha/lugar y características.",
+      "url": "https://www.policia.gov.co/contenido/estadistica-comportamientos-contrarios-convivencia-ley-1801-2016",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-031",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DNP · Informe municipal/departamental del Observatorio del Sistema de Ciudades",
+      "paginas": [
+        40
+      ],
+      "informacion_o_uso": "Diagnóstico comparado con departamento y nación.",
+      "url": "https://osc.dnp.gov.co/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-032",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DNP · SisPT, módulo PISCC",
+      "paginas": [
+        8,
+        30,
+        40,
+        90,
+        93
+      ],
+      "informacion_o_uso": "Diagnóstico y seguimiento físico/financiero.",
+      "url": "https://sispt.dnp.gov.co/piscc",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Portal relacionado también en la guía: https://portalterritorial.dnp.gov.co/kpt/ .",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-033",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Policía · SIEDCO / estadística delictiva",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Delitos de alto impacto; verificar unidades y periodos.",
+      "url": "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "",
+      "evidencia_local_relacionada": [
+        "policia_amenazas",
+        "policia_delitos_sexuales",
+        "policia_homicidios",
+        "policia_hurto_vehiculos",
+        "policia_hurto_vivienda_comercio",
+        "policia_lesiones",
+        "policia_violencia_intrafamiliar"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-034",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Fiscalía General de la Nación · Registros y estadísticas",
+      "paginas": [
+        41,
+        42
+      ],
+      "informacion_o_uso": "Delitos y procesos; la tabla no identifica un único dataset ni usa la sigla SPOA en esa mención.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [
+        "fiscalia_spoa_busquedas_por_anio_hecho",
+        "fiscalia_spoa_procesos_por_anio_hecho"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-035",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Inspecciones de Policía",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Registros locales de conflictos y conductas.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-036",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Personería",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Registros y atención de vulneraciones de derechos.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-037",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Defensoría del Pueblo · registros locales",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Registros complementarios distintos del tablero SAT.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-038",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Comisarías de Familia",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Registros de violencias y atención familiar.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-039",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Registros de medidas de protección decretadas y vigentes",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Medidas frente a violencia intrafamiliar; custodio/dataset específico por precisar.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-040",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Sistema Nacional de Registro, Monitoreo y Seguimiento de las Violencias Basadas en Género",
+      "paginas": [
+        40,
+        41,
+        42
+      ],
+      "informacion_o_uso": "Registros VBG; la tabla no da URL específica.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-041",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "DANE · Encuesta de Convivencia y Seguridad Ciudadana (ECSC)",
+      "paginas": [
+        37,
+        43,
+        101,
+        102
+      ],
+      "informacion_o_uso": "Victimización, percepción, denuncia y problemas justiciables.",
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Distinguir edición disponible localmente de las ediciones2021/2022 citadas.",
+      "evidencia_local_relacionada": [
+        "dane_ecsc_2024"
+      ],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-042",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Ejercicios y encuestas de percepción ¿Cómo Vamos?",
+      "paginas": [
+        43
+      ],
+      "informacion_o_uso": "Percepción y victimización; alcance local específico.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Las referencias concretas por ciudad se listan en el grupoD, incluido Cartagena.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-043",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Centros Automáticos de Despacho · CAD / SECAD",
+      "paginas": [
+        44
+      ],
+      "informacion_o_uso": "Registros de emergencias y atención institucional.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía indica solicitar al comandante de Policía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-044",
+      "grupo": "A · Fuentes de diagnóstico, registros y sistemas",
+      "nombre": "Línea de Emergencias 123",
+      "paginas": [
+        44
+      ],
+      "informacion_o_uso": "Emergencias, llamadas y respuesta institucional.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "No equiparar llamadas, eventos, personas y delitos; gestionar acceso y condiciones.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-045",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Caracterización geográfica local",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Topografía, clima, hidrografía, vegetación y fauna.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-046",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Caracterización demográfica local",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Población, distribución, edades, género y pertenencia étnica.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-047",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Caracterización de actividades económicas",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Agricultura, ganadería, comercio, industria, turismo y evolución.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-048",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Inventario de infraestructura y servicios",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Agua, acueducto, alcantarillado, transporte, vías, energía y conectividad.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-049",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Inventario de instituciones y oferta territorial",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Salud, educación, cultura, deporte y calidad de servicios.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-050",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Inventario de capacidades de seguridad",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Personal, vehículos, equipos, instalaciones y relación con comunidad.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-051",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Inventario de capacidades y oferta de justicia",
+      "paginas": [
+        35,
+        36
+      ],
+      "informacion_o_uso": "Comisarías, equipamientos, servicios y protección de poblaciones.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "La guía pide recopilar el insumo, sin asignar aquí una única fuente o API.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-052",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Grupos focales",
+      "paginas": [
+        30,
+        44,
+        47,
+        92
+      ],
+      "informacion_o_uso": "Percepciones y experiencias por grupos poblacionales.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Fuente primaria por producir/recopilar, con metodología y condiciones de uso; no un dataset descargable.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-053",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Encuestas propias de percepción",
+      "paginas": [
+        30,
+        44,
+        47,
+        92
+      ],
+      "informacion_o_uso": "Percepción y experiencia local con metodología documentada.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Fuente primaria por producir/recopilar, con metodología y condiciones de uso; no un dataset descargable.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-054",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Cartografía social",
+      "paginas": [
+        30,
+        44,
+        47,
+        92
+      ],
+      "informacion_o_uso": "Territorios, riesgos y lugares identificados participativamente.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Fuente primaria por producir/recopilar, con metodología y condiciones de uso; no un dataset descargable.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-055",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Entrevistas semiestructuradas / en profundidad",
+      "paginas": [
+        30,
+        44,
+        47,
+        92
+      ],
+      "informacion_o_uso": "Experiencias y explicaciones cualitativas.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Fuente primaria por producir/recopilar, con metodología y condiciones de uso; no un dataset descargable.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-056",
+      "grupo": "B · Insumos territoriales y recolección local",
+      "nombre": "Mesas de trabajo y aportes comunitarios",
+      "paginas": [
+        30,
+        44,
+        47,
+        92
+      ],
+      "informacion_o_uso": "JAC, organizaciones, academia, sector privado, grupos étnicos, mujeres y juventudes.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Fuente primaria por producir/recopilar, con metodología y condiciones de uso; no un dataset descargable.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-057",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Plan de Desarrollo Territorial y plan de inversiones",
+      "paginas": [
+        15,
+        70,
+        75
+      ],
+      "informacion_o_uso": "Objetivos, metas, inversiones y articulación con PISCC.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-058",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "POAI del PISCC y de la entidad territorial",
+      "paginas": [
+        70,
+        74,
+        75,
+        93
+      ],
+      "informacion_o_uso": "Programación anual física y financiera por proyecto y fuente.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-059",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Secretaría de Hacienda · Recursos y ejecución FONSET",
+      "paginas": [
+        80,
+        84,
+        90,
+        94
+      ],
+      "informacion_o_uso": "Disponibilidad, saldos, compromisos y ejecución.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-060",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Formato Único Territorial (FUT)",
+      "paginas": [
+        84,
+        94
+      ],
+      "informacion_o_uso": "Cargue periódico de ejecución referido por la guía; comprobar sistema/versión aplicable.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-061",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Actas y matrices de seguimiento de compromisos",
+      "paginas": [
+        82,
+        85,
+        87,
+        88
+      ],
+      "informacion_o_uso": "Decisiones, responsables, plazos y seguimiento.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-062",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "FONSET · Fondo territorial de seguridad",
+      "paginas": [
+        71,
+        72,
+        75
+      ],
+      "informacion_o_uso": "Fuente financiera e información presupuestal, no una API asumida.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-063",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "FONSECON · Fondo Nacional de Seguridad y Convivencia Ciudadana",
+      "paginas": [
+        71,
+        74,
+        77
+      ],
+      "informacion_o_uso": "Financiación y manual de proyectos.",
+      "url": "https://www.mininterior.gov.co/wp-content/uploads/2023/04/manual-fonsecon_v06.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-064",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Sistema General de Regalías / OCAD Paz",
+      "paginas": [
+        70,
+        71
+      ],
+      "informacion_o_uso": "Fuentes potenciales de financiación; verificar aplicabilidad territorial.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-065",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Fondo de Programas Especiales para la Paz",
+      "paginas": [
+        70
+      ],
+      "informacion_o_uso": "Fuente potencial de financiación mencionada.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-066",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Recursos propios, tasas y sobretasas",
+      "paginas": [
+        70,
+        71,
+        72
+      ],
+      "informacion_o_uso": "Financiación territorial mencionada; requiere verificación jurídica y presupuestal actual.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-067",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Cooperación internacional, aportes y financiación",
+      "paginas": [
+        70,
+        71
+      ],
+      "informacion_o_uso": "Instrumentos de financiación mencionados; identificar operaciones efectivas.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-068",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Sector privado y particulares: inversión y donaciones",
+      "paginas": [
+        70,
+        71
+      ],
+      "informacion_o_uso": "Instrumentos de financiación y aportes efectivos.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-069",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Convenios interadministrativos",
+      "paginas": [
+        70,
+        71
+      ],
+      "informacion_o_uso": "Acuerdos y financiación entre entidades.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-070",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "BPIM / SUIFP Territorio / PIIP",
+      "paginas": [
+        76
+      ],
+      "informacion_o_uso": "Programas y proyectos de inversión y transición referida por la guía2024.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-071",
+      "grupo": "C · Fuentes de planeación, financiación y ejecución",
+      "nombre": "Planes y registros de seguimiento físico-financiero SisPT",
+      "paginas": [
+        90,
+        91,
+        93
+      ],
+      "informacion_o_uso": "Metas, productos, actividades y ejecución por fuente y vigencia.",
+      "url": "https://sispt.dnp.gov.co/piscc",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Distinguir fuente financiera, instrumento y sistema de datos; no se acredita acceso, elegibilidad ni disponibilidad por figurar en la guía.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-072",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "DANE · Boletín ECSC2021",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2021/Bol_ECSC_2021.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "La cabecera del anexo se repite en páginas101–102; no es una encuesta nueva por ciudad.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-073",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Bogotá · percepción (MPDL)",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "http://www.mpdl.org/sites/default/files/220704-percepcion-seguridad-colombia.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Referencia compartida con la fila Cartagena.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-074",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Bogotá · percepción/victimización (CCB)",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://bibliotecadigital.ccb.org.co/items/94d96ed3-f99e-4b79-a529-8046e65ca73f",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-075",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Medellín · percepción/convivencia/victimización2018",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/10/Encuesta-de-Percepcion-de-Seguridad-Convivencia-y-Victimizacion-para-Medellin-2018_AnalisisSISC-1.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-076",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Medellín · percepción/victimización2014",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/10/Encuesta-de-Percepcion-y-Victimizacion-2014.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-077",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Barranquilla · referencia Asocapitales",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Atlantico-Barranquilla.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-078",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Cali · percepción2005–2014",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://red.uao.edu.co/bitstream/handle/10614/13193/00353_Percepci%C3%B3n%20de%20la%20seguridad%2C%20Cali%20-%20%202005-2014.pdf?sequence=1&isAllowed=y",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-079",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Cartagena · percepción (MPDL)",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "http://www.mpdl.org/sites/default/files/220704-percepcion-seguridad-colombia.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Mismo enlace de la fila Bogotá; verificar muestra y cobertura real.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-080",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Cartagena Cómo Vamos · EPCC2017",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cartagenacomovamos.org/wp-content/uploads/2018/05/RCCV_EPCC-2017_Mayo-2018-FINAL2.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Edición citada por la guía, no se presenta como actual.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-081",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Montería · percepciones (Universidad del Norte)",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://manglar.uninorte.edu.co/bitstream/handle/10584/7396/percepciones%20de%20seguridad.pdf?sequence=1&isAllowed=y",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-082",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Buenaventura · referencia CESED",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cesed.uniandes.edu.co/wp-content/uploads/2021/07/Graficaci%C3%B3n-Buenaventura-20210702.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-083",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Ibagué · PISCC2020–2023",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Ibagu%C3%A9%202020%20-%202023.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-084",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Santa Marta · enlace a informe Cartagena2017",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cartagenacomovamos.org/wp-content/uploads/2018/05/RCCV_EPCC-2017_Mayo-2018-FINAL2.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "ALERTA: la fila Santa Marta contiene una referencia de Cartagena. Conservar evidencia y confirmar pertinencia; no corregirla por suposición.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-085",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Santa Marta · ECSC2013",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2013/ECSC_Santa_Marta.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-086",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Cúcuta · referencia Asocapitales",
+      "paginas": [
+        101
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Norte-de-Santander-Cucuta.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-087",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Bucaramanga · PISCC2020–2023",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Bucaramanga%202020%20-%202023.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-088",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Villavicencio · referencia Asocapitales",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Meta-Villavicencio.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-089",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Villavicencio · referencia CEJ",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Referencia compartida con Manizales y Popayán.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-090",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Pereira · referencia Asocapitales",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/Risaralda-Pereira.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-091",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Valledupar · PISCC",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC-Valledupar.-1.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-092",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Valledupar · victimización2017",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://ccvalledupar.org.co/vitimizacion-y-percepcion-de-inseguridad-2017/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Se conserva vitimizacion tal como aparece en la URL.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-093",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Pasto · encuesta2008",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.pasto.gov.co/phocadownload/documentos2013/obsdelito/encuesta_victimizacion_pasto_2008.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-094",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Pasto · referencia Universidad del Valle",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "http://uvsalud.univalle.edu.co/pdf/simpsios/onceavo/salon_3023/victimizacion_percepcion_de_seguridad_confianza_y_temor_ciudadano.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Verificar correspondencia territorial; no inferir lugar por el rótulo de fila.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-095",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Manizales · referencia CEJ",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-096",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Neiva · PISCC2020–2023",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2021/03/PISCC%20Neiva%202020%20-%202023.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-097",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Popayán · PISCC2020–2023",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/PISCC-Popayan-2020-2023.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-098",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Popayán · referencia CEJ",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cej.org.co/sala-de-prensa/justiciometro/victimizacion-y-percepcion-de-inseguridad-en-colombia/",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-099",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Palmira · ECSC2012 Cali/Palmira",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/ECSC2012_Cali_Palmira.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-100",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Yopal · encuesta2018",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://cccasanare.co/wp-content/uploads/2023/03/2.-EPV-2018-I-1_compressed.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-101",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Sincelejo · ECSC2013",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.dane.gov.co/files/investigaciones/poblacion/convivencia/2013/ECSC_Sincelejo.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-102",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Sincelejo · PISCC2020–2023",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.asocapitales.co/nueva/wp-content/uploads/2020/06/PISCC-Sincelejo-2020-2023.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-103",
+      "grupo": "D · Encuestas y referencias por ciudad del anexo4",
+      "nombre": "Riohacha · percepción de seguridad La Guajira2021",
+      "paginas": [
+        102
+      ],
+      "informacion_o_uso": "Referencia del anexo4; verificar muestra, metodología, edición y territorio.",
+      "url": "https://www.camaraguajira.org/publicaciones/informes/encuesta-percepcion-de-seguridad-de-la-guajira-2021-1.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-104",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Agencia de Renovación del Territorio (ART)",
+      "paginas": [
+        103
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-105",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Agencia para la Reincorporación y la Normalización (ARN)",
+      "paginas": [
+        103
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-106",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Agencia Nacional de Seguridad Vial (ANSV)",
+      "paginas": [
+        103
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-107",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Armada Nacional de Colombia (ARC)",
+      "paginas": [
+        103
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-108",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Asociación Colombiana de Ciudades Capitales (Asocapitales)",
+      "paginas": [
+        104
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-109",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Asociación Colombiana de Ciudades Intermedias (Asointermedias)",
+      "paginas": [
+        104
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-110",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Comando General de las Fuerzas Militares",
+      "paginas": [
+        104
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-111",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Consejería Presidencial para la Juventud",
+      "paginas": [
+        104
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-112",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Consejería Presidencial para la Equidad de la Mujer",
+      "paginas": [
+        104
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-113",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Consejería Presidencial para la Reconciliación Nacional",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-114",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Contraloría General de la República",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-115",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Defensoría del Pueblo",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-116",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Departamento Administrativo de la Función Pública",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-117",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Departamento Administrativo Nacional de Estadística (DANE)",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-118",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Departamento Nacional de Planeación (DNP)",
+      "paginas": [
+        105
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-119",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ejército Nacional de Colombia",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-120",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Federación Colombiana de Municipios (Fedemunicipios)",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-121",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Federación Nacional de Departamentos",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-122",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Fiscalía General de la Nación",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-123",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Fondo Colombia en Paz",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-124",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Fuerza Aeroespacial Colombiana (FAC)",
+      "paginas": [
+        106
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-125",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Instituto Colombiano de Bienestar Familiar (ICBF)",
+      "paginas": [
+        107
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-126",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Migración Colombia",
+      "paginas": [
+        107
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-127",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio de Ambiente y Desarrollo Sostenible",
+      "paginas": [
+        107
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-128",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio de Defensa Nacional",
+      "paginas": [
+        107
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-129",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio de Educación Nacional",
+      "paginas": [
+        107
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-130",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio del Interior",
+      "paginas": [
+        108
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-131",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio de Justicia y del Derecho",
+      "paginas": [
+        108
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-132",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio de Salud y Protección Social",
+      "paginas": [
+        108
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-133",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Ministerio del Deporte",
+      "paginas": [
+        108
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-134",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Policía Nacional de Colombia",
+      "paginas": [
+        109
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-135",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Procuraduría General de la Nación",
+      "paginas": [
+        109
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-136",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Superintendencia de Vigilancia y Seguridad Privada",
+      "paginas": [
+        109
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-137",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Unidad de Implementación del Acuerdo de Paz",
+      "paginas": [
+        109
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-138",
+      "grupo": "E · Directorio institucional del anexo5",
+      "nombre": "Unidad Nacional de Protección (UNP)",
+      "paginas": [
+        109
+      ],
+      "informacion_o_uso": "Entidad de consulta, coordinación o gestión de información según directorio de la guía.",
+      "url": null,
+      "estado_enlace": "sitio_en_directorio_pendiente_transcripcion_y_verificacion",
+      "nota": "No es un dataset. Verificar vigencia institucional, contacto y producto concreto; teléfonos/correos2024 no se presentan como actuales. Ver página original para sitio/directorio.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-139",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "PNUD · Informe sobre Desarrollo Humano1994",
+      "paginas": [
+        10
+      ],
+      "informacion_o_uso": "Marco conceptual de seguridad humana.",
+      "url": "https://hdr.undp.org/system/files/documents/hdr1994escompletonostatspdf.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-140",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "DANE · Guía de enfoque diferencial e interseccional",
+      "paginas": [
+        17
+      ],
+      "informacion_o_uso": "Producción estadística con enfoque diferencial.",
+      "url": "https://www.dane.gov.co/files/investigaciones/genero/guia-inclusion-enfoque-difencias-intersecciones-produccion-estadistica-SEN.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-141",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Bennett, Holloway y Farrington2006 · Neighborhood watch",
+      "paginas": [
+        31,
+        99
+      ],
+      "informacion_o_uso": "Revisión sistemática/metaanálisis; no serie local.",
+      "url": "https://doi.org/10.1007/s11292-006-9018-5",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-142",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Donnelly y Ward2015 · Oxford Textbook of Violence Prevention",
+      "paginas": [
+        31,
+        99
+      ],
+      "informacion_o_uso": "Referencia bibliográfica, sin URL explícita en la guía.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-143",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Leach et al.2019 · Reading cities",
+      "paginas": [
+        40
+      ],
+      "informacion_o_uso": "Diagnóstico urbano; la URL impresa termina con punto.",
+      "url": "https://doi.org/10.1016/j.cities.2018.09.012.",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-144",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Vivo Delgadoa y Castro Toledo2020 · Urban security and crime prevention",
+      "paginas": [
+        40
+      ],
+      "informacion_o_uso": "Revisión sistemática citada, sin URL propia explícita.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-145",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Fiscalía · Guía de buenas prácticas sobre violencias por orientación sexual/identidad de género",
+      "paginas": [
+        43
+      ],
+      "informacion_o_uso": "Orientación metodológica de investigación y registro.",
+      "url": "https://www.fiscalia.gov.co/colombia/guia-de-buenas-practicas-para-la-investigacion-y-judicializacion-de-violencias-fundadas-en-la-orientacion-sexual-y-o-identidad-de-genero-real-o-percibida-de-la-victima/",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-146",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Centro de Estudios en Seguridad Ciudadana · Banco de buenas prácticas",
+      "paginas": [
+        58,
+        60
+      ],
+      "informacion_o_uso": "Referencia de experiencias; no datos de Cartagena.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-147",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Aulas en Paz · caso citado",
+      "paginas": [
+        60
+      ],
+      "informacion_o_uso": "Documento de experiencia preventiva.",
+      "url": "http://cesc.uchile.cl/buenaspracticasenprevencion/bbp_docs/08_aulas_en_paz_colombia.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-148",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Fuerza Joven · caso citado",
+      "paginas": [
+        60
+      ],
+      "informacion_o_uso": "Documento de experiencia preventiva.",
+      "url": "http://cesc.uchile.cl/buenaspracticasenprevencion/bbp_docs/10_fuerza_joven_colombia.pdf",
+      "estado_enlace": "transcripcion_del_texto_no_verificada",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-149",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Franco et al.2020 · ¿Cómo prevenir el delito?",
+      "paginas": [
+        60
+      ],
+      "informacion_o_uso": "Referencia de estrategias basadas en evidencia.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-150",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "DNP · Guía para construcción/análisis de indicadores",
+      "paginas": [
+        65,
+        99
+      ],
+      "informacion_o_uso": "Definición de indicadores y fichas técnicas.",
+      "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Guia_para_elaborar_Indicadores.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-151",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Función Pública · Guía de indicadores de gestión",
+      "paginas": [
+        65
+      ],
+      "informacion_o_uso": "Indicadores y medición de gestión.",
+      "url": "https://www.funcionpublica.gov.co/documents/418548/34150781/Gu%C3%ADa+para+la+construcci%C3%B3n+y+an%C3%A1lisis+de+Indicadores+de+Gesti%C3%B3n+-+Versi%C3%B3n+4+-+Mayo+2018.pdf/0e0d10e4-0ec0-6781-21e9-f2bedfd0e18a?t=1533038939417&download=true",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-152",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "DNP · Catálogo de Productos MGA",
+      "paginas": [
+        65
+      ],
+      "informacion_o_uso": "Productos/indicadores de inversión.",
+      "url": "https://mgaayuda.dnp.gov.co/Recursos/CATALOGO_DE_PRODUCTOS.xlsx",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-153",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "DNP · Documento conceptual MGA2023",
+      "paginas": [
+        77,
+        99
+      ],
+      "informacion_o_uso": "Metodología de formulación de proyectos.",
+      "url": "https://mgaayuda.dnp.gov.co/Recursos/Documento_conceptual_2023.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-154",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Ministerio del Interior · Manual FONSECON versión6",
+      "paginas": [
+        77
+      ],
+      "informacion_o_uso": "Proyectos y financiación.",
+      "url": "https://www.mininterior.gov.co/wp-content/uploads/2023/04/manual-fonsecon_v06.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-155",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Fuentes de financiación/cofinanciación para cárceles territoriales",
+      "paginas": [
+        79
+      ],
+      "informacion_o_uso": "Referencia financiera específica.",
+      "url": "https://www.politicacriminal.gov.co/Portals/0/32566/Fuentes%20de%20financiacio%C2%B4n%20y%20cofinanciacio%C2%B4n%20para%20ca%C2%B4rceles%20a%20cargo%20de%20entidades%20territoriales-comprimido.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-156",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "DNP · Guía seguimiento y evaluación2013",
+      "paginas": [
+        92
+      ],
+      "informacion_o_uso": "Tipos y métodos de evaluación.",
+      "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Cartilla%20Guia%20para%20Seguimiento%20y%20Evaluaci%C3%B3n%20Ago%2013.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-157",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "United Nations Development Group2005 · Indicators for Policy Management",
+      "paginas": [
+        63,
+        99
+      ],
+      "informacion_o_uso": "Guía de indicadores.",
+      "url": "https://www.undp.org/sites/g/files/zskgke326/files/publications/Indicators_for_Policy_Management.pdf",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-158",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Ortegón et al.2005 · Marco lógico",
+      "paginas": [
+        76
+      ],
+      "informacion_o_uso": "Referencia metodológica citada sin URL específica.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-159",
+      "grupo": "F · Referencias metodológicas, catálogos y literatura",
+      "nombre": "Gertler et al.2011 · referencia sobre evaluación",
+      "paginas": [
+        89
+      ],
+      "informacion_o_uso": "Referencia citada para cadena de valor/evaluación; sin URL específica.",
+      "url": null,
+      "estado_enlace": "sin_url_especifica_en_la_mencion",
+      "nota": "Recurso metodológico/bibliográfico; no se acredita como observación estadística descargada ni como norma vigente.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-160",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        12,
+        26
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=1572",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-161",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        14
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=80538",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-162",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        16
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=176406",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-163",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        27
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=6372",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-164",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        27
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=197883",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-165",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        27
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=329",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-166",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        27
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=48267",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-167",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        28
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41004",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    },
+    {
+      "id": "F-168",
+      "grupo": "G · Otros enlaces normativos originales del PDF",
+      "nombre": "Referencia normativa en Función Pública",
+      "paginas": [
+        28
+      ],
+      "informacion_o_uso": "Referencia de consulta tal como está enlazada en el PDF.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41658",
+      "estado_enlace": "original_pdf_no_verificado_en_red",
+      "nota": "No se verifica vigencia jurídica ni se convierte en fuente de datos; consultar texto/página antes de usar.",
+      "evidencia_local_relacionada": [],
+      "identificada_en_guia": true,
+      "completada": false,
+      "verificaciones": {
+        "acceso_vigente": null,
+        "cobertura_territorial_temporal": null,
+        "solicitada_o_descargada": null,
+        "versionada_con_sha": null,
+        "normalizada_con_unidades": null,
+        "integrada_y_probada": null,
+        "condiciones_de_uso": null
+      }
+    }
+  ],
+  "enlaces_incrustados_originales": [
+    {
+      "url": "https://hdr.undp.org/system/files/documents/hdr1994escompletonostatspdf.pdf",
+      "paginas": [
+        10
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=1572",
+      "paginas": [
+        12,
+        26
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=80538",
+      "paginas": [
+        14
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=176406",
+      "paginas": [
+        16
+      ]
+    },
+    {
+      "url": "https://www.dane.gov.co/files/investigaciones/genero/guia-inclusion-enfoque-difencias-intersecciones-produccion-estadistica-SEN.pdf",
+      "paginas": [
+        17
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=6372",
+      "paginas": [
+        27
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=197883",
+      "paginas": [
+        27
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=329",
+      "paginas": [
+        27
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=48267",
+      "paginas": [
+        27
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41004",
+      "paginas": [
+        28
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41658",
+      "paginas": [
+        28
+      ]
+    },
+    {
+      "url": "https://doi.org/10.1007/s11292-006-9018-5",
+      "paginas": [
+        31,
+        99
+      ]
+    },
+    {
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/pobreza-y-desigualdad/pobreza-monetaria-y-multidimensional-en-colombia-2016",
+      "paginas": [
+        32
+      ]
+    },
+    {
+      "url": "https://www.ins.gov.co/buscador-eventos/Paginas/Vista-Boletin-Epidemilogico.aspx",
+      "paginas": [
+        32
+      ]
+    },
+    {
+      "url": "https://www.sispro.gov.co/Pages/Home.aspx",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/salud/encuesta-nacional-de-consumo-de-sustancias-psicoactivas-encspa",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.medicinalegal.gov.co/cifras-estadisticas/boletines-estadisticos-mensuales",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.icbf.gov.co/programas-y-estrategias/proteccion/sistema-de-responsabilidad-penal-para-adolescentes-srpa/sistema",
+      "paginas": [
+        33,
+        41
+      ]
+    },
+    {
+      "url": "http://www.ideam.gov.co/web/siac/smbyc",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3",
+      "paginas": [
+        33,
+        34,
+        40
+      ]
+    },
+    {
+      "url": "https://alertastempranas.defensoria.gov.co/Alerta/Tablero",
+      "paginas": [
+        33,
+        38
+      ]
+    },
+    {
+      "url": "https://minjusticia.gov.co/transparencia/Paginas/SEJ-Acceso-a-la-Justicia-indice-acceso-efectivo-a-la-justicia.aspx",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.mininterior.gov.co/grupo-de-lucha-contra-la-trata-de-personas/sistema-nacional-de-informacion-de-trata-de-personas-snitp/",
+      "paginas": [
+        33
+      ]
+    },
+    {
+      "url": "https://www.suin-juriscol.gov.co/",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.minjusticia.gov.co/programas-co/ODC",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://saga.unodc.org.co/",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.mineducacion.gov.co/portal/salaprensa/Noticias/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.migracioncolombia.gov.co/",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://observatoriomujeres.gov.co/es/OAG",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://centralpdet.renovacionterritorio.gov.co/avance-patr/",
+      "paginas": [
+        34
+      ]
+    },
+    {
+      "url": "https://www.policia.gov.co/contenido/estadistica-comportamientos-contrarios-convivencia-ley-1801-2016",
+      "paginas": [
+        39
+      ]
+    },
+    {
+      "url": "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva",
+      "paginas": [
+        40
+      ]
+    },
+    {
+      "url": "https://doi.org/10.1016/j.cities.2018.09.012.",
+      "paginas": [
+        40
+      ]
+    },
+    {
+      "url": "https://osc.dnp.gov.co/",
+      "paginas": [
+        40
+      ]
+    },
+    {
+      "url": "https://sispt.dnp.gov.co/piscc",
+      "paginas": [
+        40,
+        90
+      ]
+    },
+    {
+      "url": "https://www.fiscalia.gov.co/colombia/guia-de-buenas-practicas-para-la-investigacion-y-judicializacion-de-violencias-fundadas-en-la-orientacion-sexual-y-o-identidad-de-genero-real-o-percibida-de-la-victima/",
+      "paginas": [
+        43
+      ]
+    },
+    {
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+      "paginas": [
+        43
+      ]
+    },
+    {
+      "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Guia_para_elaborar_Indicadores.pdf",
+      "paginas": [
+        65,
+        99
+      ]
+    },
+    {
+      "url": "https://www.funcionpublica.gov.co/documents/418548/34150781/Gu%C3%ADa+para+la+construcci%C3%B3n+y+an%C3%A1lisis+de+Indicadores+de+Gesti%C3%B3n+-+Versi%C3%B3n+4+-+Mayo+2018.pdf/0e0d10e4-0ec0-6781-21e9-f2bedfd0e18a?t=1533038939417&download=true",
+      "paginas": [
+        65
+      ]
+    },
+    {
+      "url": "https://mgaayuda.dnp.gov.co/Recursos/CATALOGO_DE_PRODUCTOS.xlsx",
+      "paginas": [
+        65
+      ]
+    },
+    {
+      "url": "https://mgaayuda.dnp.gov.co/Recursos/Documento_conceptual_2023.pdf",
+      "paginas": [
+        77,
+        99
+      ]
+    },
+    {
+      "url": "https://www.mininterior.gov.co/wp-content/uploads/2023/04/manual-fonsecon_v06.pdf",
+      "paginas": [
+        77
+      ]
+    },
+    {
+      "url": "https://www.politicacriminal.gov.co/Portals/0/32566/Fuentes%20de%20financiacio%C2%B4n%20y%20cofinanciacio%C2%B4n%20para%20ca%C2%B4rceles%20a%20cargo%20de%20entidades%20territoriales-comprimido.pdf",
+      "paginas": [
+        79
+      ]
+    },
+    {
+      "url": "https://colaboracion.dnp.gov.co/CDT/Sinergia/Documentos/Cartilla%20Guia%20para%20Seguimiento%20y%20Evaluaci%C3%B3n%20Ago%2013.pdf",
+      "paginas": [
+        92
+      ]
+    },
+    {
+      "url": "https://www.undp.org/sites/g/files/zskgke326/files/publications/Indicators_for_Policy_Management.pdf",
+      "paginas": [
+        99
+      ]
+    }
+  ],
+  "limites": [
+    "No se solicitaron ni descargaron datos de las entidades en este ciclo.",
+    "No se verificaron URLs en red: pueden estar desactualizadas.",
+    "Las URL visibles sin enlace se transcribieron uniendo saltos tipográficos; requieren cotejo.",
+    "Los nombres institucionales y ediciones son los de la guía2024, no se certifican vigentes.",
+    "Directorio, referencias bibliográficas, normas y fuentes financieras no son datasets estadísticos adicionales.",
+    "El listado no es un inventario jurídico exhaustivo de cada norma mencionada en el capítulo2."
+  ]
+}

@@ -17,6 +17,8 @@ export default defineConfig({
           environment: "node",
           include: [
             "src/features/plataforma/**/*.test.ts",
+            "src/features/proyectos/**/*.test.ts",
+            "src/features/proyectos/**/*.test.tsx",
             "src/features/fuentes/**/*.test.ts",
             "src/features/actores/**/*.test.ts",
             "src/features/diagnostico/**/*.test.ts",

@@ -237,7 +237,7 @@ export function GoogleWorkspaceSyncCard({
               {metricas.mesas_oficiales_censo}
             </div>
             <p className="text-[10px] text-text-secondary">
-              15 corregimientos oficiales + 3 terr. + 8 pob. + 11 sec. ({metricas.agendas_oficiales_censo} agendas)
+              11 corregimientos oficiales + 3 terr. + 9 pob. + 12 sec. ({metricas.agendas_oficiales_censo} agendas)
             </p>
           </div>
         </div>

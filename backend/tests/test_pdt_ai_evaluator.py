@@ -50,9 +50,7 @@ def test_specification_covers_methodology_and_sectors():
         "ISRI",
     ):
         assert metric.casefold() in str(specification).casefold()
-    assert (
-        r"\sum_{j=1}^{n} \lambda_j = 1" == specification["ecuaciones_latex"]["dea_bcc_convexidad"]
-    )
+    assert r"\sum_{j=1}^{n} \lambda_j = 1" == specification["ecuaciones_latex"]["dea_bcc_convexidad"]
     assert "0.45" in str(specification)
     assert "0.4" in str(specification)
 
@@ -77,9 +75,7 @@ def test_revision_por_meta_route_normalizes_legacy_builder(monkeypatch):
         }
 
     monkeypatch.setattr(router, "_cargar_revision_por_meta_fn", lambda: (builder, FakeModule))
-    result = asyncio.run(
-        router.pdt_ai_evaluator_revision_por_meta(object(), "PDD_TEST", None, "Salud", 25, False)
-    )
+    result = asyncio.run(router.pdt_ai_evaluator_revision_por_meta(object(), "PDD_TEST", None, "Salud", 25, False))
 
     assert result["sistema"] == "PDT-AI-EVALUATOR-REVISION-10D-META"
     assert result["total_metas_evaluadas"] == 1
@@ -110,27 +106,14 @@ def test_dea_cartagena_routes_delegate_orientations_and_tablero(monkeypatch):
 
     monkeypatch.setattr(router, "obtener_dea_cartagena_4_niveles", levels)
     monkeypatch.setattr(router, "obtener_tablero_dea_cartagena", dashboard)
-    assert (
-        asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "input", None))[
-            "orientacion"
-        ]
-        == "input"
-    )
-    assert (
-        asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "output", None))[
-            "orientacion"
-        ]
-        == "output"
-    )
+    assert asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "input", None))["orientacion"] == "input"
+    assert asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "output", None))["orientacion"] == "output"
     result = asyncio.run(router.pdt_dea_cartagena_tablero_alcalde(object(), "input", None))
     assert result["total_alertas_falso_cumplimiento_nominal"] == 1
     assert len(calls) == 3
     paths = {route.path for route in router.router.routes}
     assert "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/4-niveles" in paths
-    assert (
-        "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion"
-        in paths
-    )
+    assert "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion" in paths
 
 
 def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
@@ -150,8 +133,7 @@ def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
                 "total_planes_oficiales": 8,
                 "total_metas_historicas_y_locales": 4637,
                 "planes": [
-                    {"codigo_plan": f"PLAN_{index}", "periodo": "2012–2027", "tipo_plan": "PDD"}
-                    for index in range(8)
+                    {"codigo_plan": f"PLAN_{index}", "periodo": "2012–2027", "tipo_plan": "PDD"} for index in range(8)
                 ],
             },
             "tablero_alcalde_alertas_desperdicio": {},
@@ -200,9 +182,7 @@ def test_sispt_dnp_seguimiento_endpoint_uses_fallback_when_module_missing(monkey
     app = FastAPI()
     app.include_router(router.router, prefix="/api/v1")
     with TestClient(app) as client:
-        response = client.get(
-            "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento"
-        )
+        response = client.get("/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento")
     assert response.status_code == 200
     result = response.json()
     assert result["total_planes"] == 8
@@ -255,10 +235,7 @@ def test_diagnostico_pshc_google_doc_endpoint_entrega_seis_capitulos():
     assert response.status_code == 200
     payload = response.json()
     assert payload["capitulos"] == ["I", "II", "III", "IV", "V", "VI"]
-    assert all(
-        f"{chapter}." in payload["html_google_doc"]
-        for chapter in ("I", "II", "III", "IV", "V", "VI")
-    )
+    assert all(f"{chapter}." in payload["html_google_doc"] for chapter in ("I", "II", "III", "IV", "V", "VI"))
     for color in ("#0B2545", "#134074", "#8DA9C4", "#F4F6F8", "#FAFAFA"):
         assert color in payload["html_google_doc"]
     assert payload["markdown_ejecutivo"]
@@ -311,9 +288,7 @@ def test_system_prompt_matches_knowledge_specification():
     from pathlib import Path
 
     knowledge = (
-        Path(__file__).resolve().parents[2]
-        / "knowledge-base"
-        / "13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md"
+        Path(__file__).resolve().parents[2] / "knowledge-base" / "13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md"
     )
     content = knowledge.read_text()
     expected = re.search(r"```markdown\n(.*?)\n```", content, re.S).group(1)
@@ -322,9 +297,7 @@ def test_system_prompt_matches_knowledge_specification():
 
 def test_graph_executes_analytical_nodes_and_returns_pending_for_empty_data():
     graph = evaluator._make_graph()
-    result = asyncio.run(
-        graph.ainvoke(_state(), {"configurable": {"thread_id": "test-empty-data"}})
-    )
+    result = asyncio.run(graph.ainvoke(_state(), {"configurable": {"thread_id": "test-empty-data"}}))
     executed = {entry["nodo"] for entry in result["trace"]}
     assert {
         "nodo_supervisor",
@@ -340,21 +313,15 @@ def test_graph_executes_analytical_nodes_and_returns_pending_for_empty_data():
 
 
 def test_dea_scores_and_chow_are_calculated():
-    score, lambdas, status = evaluator._dea_solve(
-        [100.0, 200.0], [[10.0, 10.0], [10.0, 20.0]], 0, True
-    )
+    score, lambdas, status = evaluator._dea_solve([100.0, 200.0], [[10.0, 10.0], [10.0, 20.0]], 0, True)
     assert score is not None and 0 <= score <= 1
     assert sum(lambdas) == pytest.approx(1.0)
     assert status == "ESTIMADO"
-    pulp_score, _, pulp_status = evaluator._dea_solve_pulp(
-        [100.0, 200.0], [[10.0, 10.0], [10.0, 20.0]], 0, True
-    )
+    pulp_score, _, pulp_status = evaluator._dea_solve_pulp([100.0, 200.0], [[10.0, 10.0], [10.0, 20.0]], 0, True)
     assert pulp_status.startswith("ESTIMADO")
     assert pulp_score == pytest.approx(score, abs=1e-7)
     assert (
-        evaluator._chow_test(
-            list(range(2017, 2026)), [1, 2, 4, 3, 5, 11, 10, 13, 12], break_year=2022
-        )["estadistico_f"]
+        evaluator._chow_test(list(range(2017, 2026)), [1, 2, 4, 3, 5, 11, 10, 13, 12], break_year=2022)["estadistico_f"]
         is not None
     )
 
@@ -379,12 +346,8 @@ def test_durable_human_validation_updates_checkpoint(tmp_path, monkeypatch):
 
 def test_nlp_spatial_and_forecast_metrics_are_exposed():
     state = _state()
-    state["goal_records"] = [
-        {"codigo": "G1", "nombre": "mejorar cobertura educativa escolar", "codigo_plan": "P"}
-    ]
-    state["activity_records"] = [
-        {"descripcion_actividad": "mejorar cobertura educativa escolar", "codigo_bpim": "BP1"}
-    ]
+    state["goal_records"] = [{"codigo": "G1", "nombre": "mejorar cobertura educativa escolar", "codigo_plan": "P"}]
+    state["activity_records"] = [{"descripcion_actividad": "mejorar cobertura educativa escolar", "codigo_bpim": "BP1"}]
     nlp = evaluator._nlp_node(state)["nlp_coherence"]
     assert "ponderacion_c_tfidf" in nlp
     assert "similaridad_coseno" in nlp
@@ -509,9 +472,7 @@ def test_dea_eficiencia_invariante_a_unidad_monetaria_comun():
     baseline = evaluator._dea_node(state)["dea_scores"]["resultados_dmu"]
     scaled_state = {
         **state,
-        "df_financial": [
-            {**row, "insumo_cop": row["insumo_cop"] * 1000} for row in state["df_financial"]
-        ],
+        "df_financial": [{**row, "insumo_cop": row["insumo_cop"] * 1000} for row in state["df_financial"]],
     }
     scaled = evaluator._dea_node(scaled_state)["dea_scores"]["resultados_dmu"]
     for left, right in zip(baseline, scaled, strict=True):

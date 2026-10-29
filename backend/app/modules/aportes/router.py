@@ -25,9 +25,7 @@ from app.modules.sesion.deps import SesionRequeridaDep
 router = APIRouter(prefix="/aportes", tags=["aportes-ciudadanos"])
 
 
-def get_aporte_service(
-    session: SessionDependency, request: Request
-) -> AporteService:
+def get_aporte_service(session: SessionDependency, request: Request) -> AporteService:
     """Inyección de dependencias para el servicio de aportes ciudadanos."""
     settings = getattr(request.app.state, "settings", None)
     return AporteService(AporteRepository(session), settings=settings)
@@ -41,10 +39,7 @@ AporteServiceDep = Annotated[AporteService, Depends(get_aporte_service)]
     response_model=PropuestaCiudadanaRead,
     status_code=status.HTTP_201_CREATED,
     summary="Registrar aporte ciudadano",
-    description=(
-        "Crea una propuesta, observación o alerta ciudadana "
-        "con enfoque diferencial y anclaje territorial."
-    ),
+    description=("Crea una propuesta, observación o alerta ciudadana con enfoque diferencial y anclaje territorial."),
 )
 async def crear_aporte(
     datos: PropuestaCiudadanaCreate,
@@ -59,10 +54,7 @@ async def crear_aporte(
     response_model=PropuestasPaginadasRead,
     status_code=status.HTTP_200_OK,
     summary="Listar aportes ciudadanos",
-    description=(
-        "Retorna aportes paginados con filtros opcionales "
-        "por dimensión, territorio y enfoque diferencial."
-    ),
+    description=("Retorna aportes paginados con filtros opcionales por dimensión, territorio y enfoque diferencial."),
 )
 async def listar_aportes(
     service: AporteServiceDep,
@@ -231,7 +223,6 @@ async def retirar_apoyo_aporte(
     service: AporteServiceDep,
 ) -> PropuestaCiudadanaRead:
     return await service.retirar_apoyo(aporte_id, sesion)
-
 
 
 @router.post(

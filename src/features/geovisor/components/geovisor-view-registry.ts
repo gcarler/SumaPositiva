@@ -7,6 +7,7 @@ import {
   SlidersHorizontal,
   TableProperties,
   ShieldAlert,
+  Database,
   type LucideIcon,
 } from "lucide-react";
 import type { DockPanelId, GeovisorViewId } from "../state/geovisor-layout-store";
@@ -86,6 +87,14 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
     description: "Estadísticas SIEDCO de hurto a motos, comercio y residencias",
     icon: ShieldAlert,
     tone: "text-[var(--danger)]",
+  },
+  fuentes: {
+    id: "fuentes",
+    title: "Banco Multifuente (2.449 Indicadores)",
+    short: "Multifuente",
+    description: "28 datasets oficiales: DANE, Medicina Legal, TerriData, RUV, ICBF, INS en 7 dimensiones",
+    icon: Database,
+    tone: "text-[var(--ember)]",
   },
 };
 

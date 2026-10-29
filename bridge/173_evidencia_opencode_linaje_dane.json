@@ -1,0 +1,63 @@
+{
+  "esquema": "polis.evidencia_opencode_linaje_dane.v1",
+  "tarea": "OP-DEMO-QA-01",
+  "fecha_utc": "2026-10-26T04:13:48Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "precisiones_documentales_completadas",
+  "alcance": "Solo lectura de 141/165 y originales 165. Sin modificar 165, sin red/SQL/tests/app/frontend/banco.",
+  "archivos_consultados": [
+    "bridge/172_tarea_opencode_precision_linaje_dane.md",
+    "bridge/165_revision_freebuff_linaje_demografico.md",
+    "bridge/165_evidencia_linaje_demografico/manifiesto.json",
+    "bridge/165_evidencia_linaje_demografico/extraccion_vinculos_165.json",
+    "bridge/165_evidencia_linaje_demografico/originales/proyecciones_de_poblacion.html",
+    "bridge/165_evidencia_linaje_demografico/originales/censo_general_2005_1.html",
+    "bridge/141_evidencia_demografica.json"
+  ],
+  "comandos_ejecutados": [
+    "grep fechas originales",
+    "conteos 141"
+  ],
+  "fechas": {
+    "ruta_original": "/root/polis/bridge/165_evidencia_linaje_demografico/originales/proyecciones_de_poblacion.html",
+    "datePublished_dateModified": false,
+    "literales_julio_agosto_2025_en_original": false,
+    "last_modified_manifest": "2026-10-26T03:43:16 GMT",
+    "nota": "Fechas 18-julio-2025/8-agosto-2025 no localizadas en original 165; nombres con 2025 son indicios"
+  },
+  "etiquetas_fuente": {
+    "fuentes_literales_distintas": 19,
+    "pares_dimension_fuente": 19,
+    "filas_tabla_165": 18,
+    "agrupamiento": "fila 10 de 165 agrupa las dos variantes ONM con/sin espacio final",
+    "variantes_onm": [
+      "DNP (Observatorio Nacional de Migraciones)",
+      "DNP (Observatorio Nacional de Migraciones) "
+    ],
+    "universo": {
+      "series": 354,
+      "filas": 5835
+    }
+  },
+  "linaje": {
+    "coincidencia_valor_basta": false,
+    "tipo": "corroboracion_candidata_no_prueba",
+    "verificaciones_minimas": [
+      "identidad territorial",
+      "indicador/definicion/unidad/universo",
+      "periodo",
+      "base/edicion",
+      "transformaciones DNP",
+      "evidencia de vinculo con producto",
+      "retroproyecciones para años < 2018"
+    ]
+  },
+  "conservados": [
+    "bridge/165_revision_freebuff_linaje_demografico.md",
+    "bridge/165_evidencia_linaje_demografico/"
+  ],
+  "salidas": [
+    "bridge/173_precision_opencode_linaje_dane.md",
+    "bridge/173_evidencia_opencode_linaje_dane.json"
+  ]
+}

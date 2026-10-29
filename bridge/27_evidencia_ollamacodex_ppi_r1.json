@@ -1,0 +1,104 @@
+{
+  "esquema": "polis.ollamacodex.pp_r1.v1",
+  "tarea": "OL-CODEX-02-R1",
+  "fecha": "2026-10-22",
+  "estado": "PENDIENTE_REVISION_INTEGRACION",
+  "alcance": {
+    "componente": "captura_cruda_ppi_planeacion",
+    "estado_publicacion": "no_publicable",
+    "captura_productiva": "no_ejecutada"
+  },
+  "archivos_tocados": {
+    "modificados": [
+      {
+        "ruta": "backend/app/modules/compromisos/ppi_planeacion_corte_polis.py",
+        "sha256": "f7b0d90316f69a3dd1af83c5480a9909e0afe9f13cd7137b1413326b9f75fac7"
+      },
+      {
+        "ruta": "backend/scripts/congelar_ppi_planeacion_polis.py",
+        "sha256": "f8327da54782970c97b98515aed617830cf75123921463a7920889aa84e53ce3"
+      },
+      {
+        "ruta": "backend/tests/test_ppi_planeacion_corte_polis.py",
+        "sha256": "b2d7a71bda1021cc893ac6720a54ad488a6e79a7b2db6f6a6cfd1480480cb088"
+      }
+    ],
+    "creados": [
+      "bridge/27_entrega_ollamacodex_ppi_r1.md",
+      "bridge/27_evidencia_ollamacodex_ppi_r1.json"
+    ],
+    "historial_preservado": [
+      "bridge/25_entrega_ollamacodex_ppi.md",
+      "bridge/25_evidencia_ollamacodex_ppi.json",
+      "bridge/26_revision_tarea_ollamacodex_ppi_r1.md"
+    ]
+  },
+  "garantias": {
+    "importes": {
+      "entrada_aceptada": ["Decimal", "int", "str_decimal", "None"],
+      "entrada_rechazada": ["float", "bool", "no_finitos", "cadena_invalida"],
+      "cero_vs_none": "distinguibles"
+    },
+    "jsonb": {
+      "contrato": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "validador": "solo_texto_crudo_o_sql_null",
+      "decoder": "json.loads(parse_float=Decimal, parse_int=int, parse_constant=error)",
+      "no_finitos": "rechazados",
+      "sql_null_vs_json_null": "preservados"
+    },
+    "captura": {
+      "esquema": "polis.ppi_planeacion.v2",
+      "rechazo_vacia": true,
+      "conteo_nodos_verificado": true,
+      "conteo_metas": "solo_informe_sql_sin_validacion_corpus"
+    },
+    "exportador": {
+      "base_usada": "polis_test_orq_v5_20261022",
+      "dsn_no_prueba_rechazado": true,
+      "transaccion": "REPEATABLE READ READ ONLY",
+      "lectura": "misma_conexion_del_exportador",
+      "delete_prueba": "rechazada_DBAPIError",
+      "salida_al_rechazo": "sin_archivo",
+      "idempotencia": "sha_y_bytes_iguales"
+    }
+  },
+  "pruebas": {
+    "ruff_check": {
+      "orden": "ruff check backend/app/modules/compromisos/ppi_planeacion_corte_polis.py backend/scripts/congelar_ppi_planeacion_polis.py backend/tests/test_ppi_planeacion_corte_polis.py",
+      "resultado": "exit 0"
+    },
+    "ruff_format_check": {
+      "orden": "ruff format --check backend/app/modules/compromisos/ppi_planeacion_corte_polis.py backend/scripts/congelar_ppi_planeacion_polis.py backend/tests/test_ppi_planeacion_corte_polis.py",
+      "resultado": "exit 0"
+    },
+    "pytest_directo": {
+      "orden": "pytest -q backend/tests/test_ppi_planeacion_corte_polis.py",
+      "dsn": "polis_test_orq_v5_20261022",
+      "resultado": "48 passed in 1.72s"
+    },
+    "suite_integral": "no_ejecutada",
+    "asyncpg_exceptions_import": false
+  },
+  "verificacion_fixture": {
+    "importe_corriente": "4000000000000000.01",
+    "importe_constante": "9007199254740993.01",
+    "jsonb_decimal": "9007199254740993.01",
+    "jsonb_decimal_pequeno": "0.000001",
+    "jsonb_entero": "9007199254740993",
+    "json_null_preservado": true,
+    "sql_null_preservado": true
+  },
+  "fuera_de_alcance": {
+    "src": "no_tocado",
+    "data": "no_tocado",
+    "configuracion": "no_tocada",
+    "dependencias": "no_tocadas",
+    "modelos_orm": "no_tocados",
+    "migraciones": "no_tocadas",
+    "agentes_compartidos": "no_tocados",
+    "bd_csh": "no_usada",
+    "produccion": "no_usada",
+    "commit": "no_ejecutado",
+    "push": "no_ejecutado"
+  }
+}

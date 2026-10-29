@@ -15,20 +15,12 @@ from app.modules.compromisos.schemas import (
 BASE_TRANSPARENCIA = "https://www.cartagena.gov.co/transparencia"
 BASE_CATEGORIAS = "https://www.cartagena.gov.co/Transparencia/Planeación"
 PAGINA_PLANES_2026 = (
-    f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
-    "planes-accion-institucionales-2026"
+    f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026"
 )
 FUENTES_HISTORICAS = {
-    2018: (
-        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/"
-        "seguimiento-planes-accion-2018"
-    ),
-    2019: (
-        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2019"
-    ),
-    2020: (
-        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2020"
-    ),
+    2018: (f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/seguimiento-planes-accion-2018"),
+    2019: (f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2019"),
+    2020: (f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2020"),
     2021: (
         f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
         "planes-institucionales-del-modelo-integrado-planeacion-gestion-mipg-2021"
@@ -37,13 +29,8 @@ FUENTES_HISTORICAS = {
         f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-e-informes/43-plan-accion/"
         "seguimientos-planes-accion-diciembre-31-2022"
     ),
-    2023: (
-        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-2023"
-    ),
-    2024: (
-        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
-        "planes-accion-2024-formulado"
-    ),
+    2023: (f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-2023"),
+    2024: (f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-2024-formulado"),
     2025: (
         f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
         "seguimientos-planes-accion-corte-30-junio-2025"
@@ -107,8 +94,7 @@ def obtener_catalogo_transparencia() -> dict[str, Any]:
     return {
         "url_base": BASE_TRANSPARENCIA,
         "categorias": [
-            {**item, "url": f"{BASE_CATEGORIAS}?categoria={item['categoria']}"}
-            for item in CATEGORIAS_TRANSPARENCIA
+            {**item, "url": f"{BASE_CATEGORIAS}?categoria={item['categoria']}"} for item in CATEGORIAS_TRANSPARENCIA
         ],
         "planes_accion_2026": {
             "url_fuente": PAGINA_PLANES_2026,
@@ -155,8 +141,7 @@ def obtener_catalogo_transparencia() -> dict[str, Any]:
             "url": f"{BASE_CATEGORIAS}?categoria=53",
         },
         "estado_verificacion": (
-            "inventario proporcionado en asignación; enlaces adjuntos sujetos "
-            "a descubrimiento en vivo"
+            "inventario proporcionado en asignación; enlaces adjuntos sujetos a descubrimiento en vivo"
         ),
     }
 
@@ -170,9 +155,7 @@ def motor_plan_desarrollo(metas: list[MetaEstrategicaTriada]) -> dict[str, Any]:
             "entidad": entidad,
             "linea_estrategica": linea,
             "metas": len(items),
-            "avance_estrategico_pct": round(
-                sum(i.avance_estrategico_pct for i in items) / len(items), 2
-            ),
+            "avance_estrategico_pct": round(sum(i.avance_estrategico_pct for i in items) / len(items), 2),
         }
         for (entidad, linea), items in sorted(agrupado.items())
     ]
@@ -188,12 +171,8 @@ def motor_plan_accion(actividades: list[ActividadOperativaTriada]) -> dict[str, 
             "entidad": entidad,
             "linea_estrategica": linea,
             "actividades": len(items),
-            "avance_operativo_fisico_pct": round(
-                sum(i.avance_operativo_fisico_pct for i in items) / len(items), 2
-            ),
-            "porcentaje_verbos_fuertes_dnp": round(
-                sum(i.porcentaje_verbos_fuertes_dnp for i in items) / len(items), 2
-            ),
+            "avance_operativo_fisico_pct": round(sum(i.avance_operativo_fisico_pct for i in items) / len(items), 2),
+            "porcentaje_verbos_fuertes_dnp": round(sum(i.porcentaje_verbos_fuertes_dnp for i in items) / len(items), 2),
         }
         for (entidad, linea), items in sorted(agrupado.items())
     ]
@@ -212,9 +191,7 @@ def motor_inversion_presupuestal(
                 "ejecucion_compromisos_pct": round(100 * dato.compromisos_rp_cop / apropiacion, 2)
                 if apropiacion
                 else None,
-                "giro_efectivo_pct": round(100 * dato.pagos_tesoreria_cop / apropiacion, 2)
-                if apropiacion
-                else None,
+                "giro_efectivo_pct": round(100 * dato.pagos_tesoreria_cop / apropiacion, 2) if apropiacion else None,
             }
         )
     return {
@@ -273,9 +250,7 @@ def cruzar_tres_lecturas(
     for key in keys:
         strategic, operational, financial = (m.get(key, []) for m in maps)
         strategy_pct = (
-            round(sum(x.avance_estrategico_pct for x in strategic) / len(strategic), 2)
-            if strategic
-            else None
+            round(sum(x.avance_estrategico_pct for x in strategic) / len(strategic), 2) if strategic else None
         )
         physical_pct = (
             round(sum(x.avance_operativo_fisico_pct for x in operational) / len(operational), 2)
@@ -287,11 +262,7 @@ def cruzar_tres_lecturas(
         payments = sum(x.pagos_tesoreria_cop for x in financial)
         financial_pct = round(100 * rp / appropriation, 2) if appropriation else None
         payout_pct = round(100 * payments / appropriation, 2) if appropriation else None
-        gap = (
-            round(financial_pct - physical_pct, 2)
-            if financial_pct is not None and physical_pct is not None
-            else None
-        )
+        gap = round(financial_pct - physical_pct, 2) if financial_pct is not None and physical_pct is not None else None
         differences = [
             abs(a - b)
             for a, b in (
@@ -301,41 +272,27 @@ def cruzar_tres_lecturas(
             )
             if a is not None and b is not None
         ]
-        index = (
-            round(max(0.0, 100 - sum(differences) / len(differences)), 2) if differences else None
-        )
+        index = round(max(0.0, 100 - sum(differences) / len(differences)), 2) if differences else None
         if strategy_pct is not None and (physical_pct is None or strategy_pct - physical_pct >= 20):
             state = "META_PDD_SUBOPERACIONALIZADA"
-            finding = (
-                "El avance estratégico supera en 20 puntos o más el avance operativo reportado."
-            )
-            recommendation = (
-                "Revisar la desagregación anual de metas y responsables del Plan de Acción."
-            )
+            finding = "El avance estratégico supera en 20 puntos o más el avance operativo reportado."
+            recommendation = "Revisar la desagregación anual de metas y responsables del Plan de Acción."
         elif gap is not None and gap >= 20:
             state = "DESFASE_CRITICO_SOBREEJECUCION"
             finding = "La ejecución de compromisos RP supera en 20 puntos o más el avance físico."
-            recommendation = (
-                "Conciliar registros RP, obligaciones, pagos y evidencia física del proyecto."
-            )
+            recommendation = "Conciliar registros RP, obligaciones, pagos y evidencia física del proyecto."
         elif gap is not None and gap <= -20:
             state = "REZAGO_CONTRACTUAL_INVERSION"
             finding = "El avance físico supera en 20 puntos o más los compromisos RP."
-            recommendation = (
-                "Verificar CDP/RP y oportunidad de contratación frente a la meta física."
-            )
+            recommendation = "Verificar CDP/RP y oportunidad de contratación frente a la meta física."
         elif len(strategic) and len(operational) and len(financial):
             state = "COHERENCIA_INTEGRAL_ALTA"
-            finding = (
-                "Las tres lecturas tienen registros coincidentes; no se detecta brecha crítica."
-            )
+            finding = "Las tres lecturas tienen registros coincidentes; no se detecta brecha crítica."
             recommendation = "Mantener seguimiento conjunto de metas, ejecución y pagos."
         else:
             state = "DATOS_INCOMPLETOS"
             finding = "Falta al menos una lectura para emitir semáforo integral."
-            recommendation = (
-                "Completar las fuentes estratégica, operativa y financiera para esta llave."
-            )
+            recommendation = "Completar las fuentes estratégica, operativa y financiera para esta llave."
         cruce = {
             "entidad": key[0],
             "linea_estrategica": key[1],
@@ -354,4 +311,17 @@ def cruzar_tres_lecturas(
         cruces.append(cruce)
         if state != "COHERENCIA_INTEGRAL_ALTA":
             alertas.append(cruce)
-    return {"total_cruces": len(cruces), "cruces": cruces, "alertas": alertas}
+
+    resumen_semaforo = {
+        "coherencia_alta": sum(1 for c in cruces if c["estado_semaforo"] == "COHERENCIA_INTEGRAL_ALTA"),
+        "desfase_sobreejecucion": sum(1 for c in cruces if c["estado_semaforo"] == "DESFASE_CRITICO_SOBREEJECUCION"),
+        "rezago_contractual": sum(1 for c in cruces if c["estado_semaforo"] == "REZAGO_CONTRACTUAL_INVERSION"),
+        "meta_suboperacionalizada": sum(1 for c in cruces if c["estado_semaforo"] == "META_PDD_SUBOPERACIONALIZADA"),
+    }
+    return {
+        "total_cruces": len(cruces),
+        "totales_evaluados": len(cruces),
+        "cruces": cruces,
+        "alertas": alertas,
+        "resumen_semaforo": resumen_semaforo,
+    }

@@ -286,9 +286,7 @@ for _canon, _alias_list in ENTIDADES_CANONICAS_CARTAGENA.items():
         _ALIAS_ENTIDAD_CANONICA[_normalizar(_alias)] = _canon
 _ALIASES_ORDENADOS = sorted(_ALIAS_ENTIDAD_CANONICA, key=len, reverse=True)
 _ENTIDAD_REGEX = re.compile(
-    r"\b(?:"
-    + "|".join(r"\s+".join(map(re.escape, alias.split())) for alias in _ALIASES_ORDENADOS)
-    + r")\b"
+    r"\b(?:" + "|".join(r"\s+".join(map(re.escape, alias.split())) for alias in _ALIASES_ORDENADOS) + r")\b"
 )
 
 
@@ -333,11 +331,7 @@ def huella_tabular_sha256(hojas: list[HojaLeida]) -> str:
     for hoja in hojas:
         for fila in hoja.filas:
             valores = {
-                campo: (
-                    _normalizar(fila[campo])
-                    if isinstance(fila.get(campo), str)
-                    else fila.get(campo)
-                )
+                campo: (_normalizar(fila[campo]) if isinstance(fila.get(campo), str) else fila.get(campo))
                 for campo in campos
             }
             filas.append(
@@ -360,9 +354,7 @@ def huella_tabular_sha256(hojas: list[HojaLeida]) -> str:
             json.dumps(fila[5], sort_keys=True, ensure_ascii=False, default=str),
         )
     )
-    payload = json.dumps(
-        filas, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str
-    )
+    payload = json.dumps(filas, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -388,8 +380,7 @@ def _mapear(encabezados: list[str]) -> dict[str, int]:
     resultado: dict[str, int] = {}
     normalizados = [_normalizar(valor) for valor in encabezados]
     alias_normalizados = {
-        campo: tuple(_normalizar(alias) for alias in alias)
-        for campo, alias in SINONIMOS_COLUMNAS.items()
+        campo: tuple(_normalizar(alias) for alias in alias) for campo, alias in SINONIMOS_COLUMNAS.items()
     }
     for campo, aliases in alias_normalizados.items():
         candidatos = [
@@ -400,9 +391,7 @@ def _mapear(encabezados: list[str]) -> dict[str, int]:
             and (alias == header or alias in header)
             and not (
                 campo in {"codigo_meta_pdd", "indicador"}
-                and all(
-                    part in header for part in ("componente impulsor", "programa", "meta producto")
-                )
+                and all(part in header for part in ("componente impulsor", "programa", "meta producto"))
             )
             and not (campo == "linea_estrategica" and header.startswith("ponderador "))
         ]
@@ -432,9 +421,7 @@ def buscar_fila_encabezado(filas: list[list[Any]]) -> tuple[int | None, dict[str
     score, _, mapeo, headers = candidatas[idx]
     if score < 2:
         return None, {}, []
-    row_index = [
-        i for i, row in enumerate(filas) if any(v is not None and str(v).strip() for v in row)
-    ][:25][idx]
+    row_index = [i for i, row in enumerate(filas) if any(v is not None and str(v).strip() for v in row)][:25][idx]
     return row_index, mapeo, headers
 
 
@@ -483,9 +470,7 @@ def _clasificar(
     hoja = _normalizar(nombre_hoja)
     motores: list[str] = []
     has_meta = any(k in mapeo for k in ("codigo_meta_pdd", "indicador", "avance_estrategico_pct"))
-    if has_meta and (
-        "linea_estrategica" in mapeo or "codigo_meta_pdd" in mapeo or "indicador" in mapeo
-    ):
+    if has_meta and ("linea_estrategica" in mapeo or "codigo_meta_pdd" in mapeo or "indicador" in mapeo):
         motores.append("PLAN_DESARROLLO")
     has_operacion = "descripcion_actividad" in mapeo or "meta_programada_anual" in mapeo
     is_pdd_matrix = "pdd" in _normalizar(nombre_archivo) and "matriz" in _normalizar(nombre_archivo)
@@ -494,10 +479,7 @@ def _clasificar(
         and not is_pdd_matrix
         and "ejecucion presupuestal" not in hoja
         and "poai" not in hoja
-        and (
-            "plan accion" in _normalizar(nombre_archivo)
-            or _normalizar(nombre_archivo).startswith("pa ")
-        )
+        and ("plan accion" in _normalizar(nombre_archivo) or _normalizar(nombre_archivo).startswith("pa "))
         and "matriz seguimiento pdd" not in _normalizar(nombre_archivo)
     )
     action_sheet = any(
@@ -510,11 +492,7 @@ def _clasificar(
             "cartagena contingente",
         )
     )
-    if (
-        (has_operacion and not is_pdd_matrix)
-        or legacy_action_table
-        or (action_sheet and not is_pdd_matrix)
-    ):
+    if (has_operacion and not is_pdd_matrix) or legacy_action_table or (action_sheet and not is_pdd_matrix):
         motores.append("PLAN_ACCION")
     has_finanzas = any(
         k in mapeo
@@ -584,12 +562,8 @@ class IngestorBinarioTriada:
         if len(contenido) > MAX_BYTES_ZIP:
             raise ValueError("El archivo supera el límite de 150 MiB.")
         if nombre.lower().endswith(".zip"):
-            return self._leer_zip(
-                nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente
-            )
-        return [
-            self._leer_archivo(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)
-        ]
+            return self._leer_zip(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)
+        return [self._leer_archivo(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)]
 
     def _leer_zip(
         self,
@@ -672,10 +646,7 @@ class IngestorBinarioTriada:
 
             with zipfile.ZipFile(io.BytesIO(raw)) as workbook_zip:
                 miembros = workbook_zip.infolist()
-                if (
-                    len(miembros) > 20_000
-                    or sum(item.file_size for item in miembros) > MAX_BYTES_ZIP
-                ):
+                if len(miembros) > 20_000 or sum(item.file_size for item in miembros) > MAX_BYTES_ZIP:
                     raise ValueError("El libro .xlsx supera los límites de expansión permitidos.")
             libro = load_workbook(io.BytesIO(raw), data_only=True, read_only=True)
             try:
@@ -684,9 +655,7 @@ class IngestorBinarioTriada:
                     limite_filas = (
                         islice(iterator, MAX_FILAS)
                         if sheet.max_row is None
-                        else sheet.iter_rows(
-                            max_row=min(sheet.max_row, MAX_FILAS), values_only=True
-                        )
+                        else sheet.iter_rows(max_row=min(sheet.max_row, MAX_FILAS), values_only=True)
                     )
                     filas = [list(row) for row in limite_filas]
                     hojas_crudas.append((sheet.title, filas))
@@ -742,10 +711,7 @@ class IngestorBinarioTriada:
             for pos_fila, valores in enumerate(rows[encabezado + 1 :], start=encabezado + 2):
                 if not any(v is not None and str(v).strip() for v in valores):
                     continue
-                fila = {
-                    campo: (valores[idx] if idx < len(valores) else None)
-                    for campo, idx in mapping.items()
-                }
+                fila = {campo: (valores[idx] if idx < len(valores) else None) for campo, idx in mapping.items()}
                 if _es_pie_o_subtotal(fila):
                     continue
                 entidad_celda_raw = str(fila.get("entidad") or "").strip()
@@ -758,15 +724,11 @@ class IngestorBinarioTriada:
                     {
                         "entidad_normalizada": entidad,
                         "descripcion_actividad": descripcion or None,
-                        "verbo_detectado": _normalizar(descripcion).split(" ", maxsplit=1)[0]
-                        if descripcion
-                        else None,
+                        "verbo_detectado": _normalizar(descripcion).split(" ", maxsplit=1)[0] if descripcion else None,
                         "hoja_origen": sheet_name,
                         "fila_origen_num": pos_fila,
                         "datos_origen": {
-                            str(k): v
-                            for k, v in zip(headers, valores, strict=False)
-                            if k and v is not None
+                            str(k): v for k, v in zip(headers, valores, strict=False) if k and v is not None
                         },
                     }
                 )
@@ -774,11 +736,7 @@ class IngestorBinarioTriada:
                     fila["datos_origen"]["_responsable_celda"] = entidad_celda_raw
                 verbo = fila["verbo_detectado"]
                 fila["verbo_fuerte_dnp"] = (
-                    bool(
-                        verbo
-                        and verbo.endswith(("ar", "er", "ir"))
-                        and verbo not in VERBOS_DEBILES_DNP
-                    )
+                    bool(verbo and verbo.endswith(("ar", "er", "ir")) and verbo not in VERBOS_DEBILES_DNP)
                     if verbo
                     else None
                 )
@@ -799,18 +757,14 @@ class IngestorBinarioTriada:
                     if porcentaje is None:
                         continue
                     header = _normalizar(nombres_canonicos.get(campo_pct, ""))
-                    if 0 <= porcentaje <= 1 and any(
-                        token in header for token in ("porcentaje", " pct", " percent")
-                    ):
+                    if 0 <= porcentaje <= 1 and any(token in header for token in ("porcentaje", " pct", " percent")):
                         porcentaje *= 100
                     fila[campo_pct] = porcentaje if 0 <= porcentaje <= 100 else None
                 if fila.get("avance_fisico_pct") is None:
                     trimestre = [fila.get(f"avance_t{i}") for i in range(1, 5)]
                     nums = [v for v in trimestre if v is not None]
                     fila["avance_fisico_pct"] = sum(nums) / len(nums) if nums else None
-                if fila.get("avance_fisico_pct") is not None and not (
-                    0 <= fila["avance_fisico_pct"] <= 100
-                ):
+                if fila.get("avance_fisico_pct") is not None and not (0 <= fila["avance_fisico_pct"] <= 100):
                     fila["avance_fisico_pct"] = None
                 motores = _clasificar(sheet_name, mapping, fila, nombre_corto)
                 if not motores:
@@ -830,10 +784,7 @@ class IngestorBinarioTriada:
                 )
         sample_names = " ".join(h.nombre.lower() for h in hojas)
         if not hojas:
-            raise ValueError(
-                "No se encontró una hoja con columnas semánticas y filas "
-                "que alimentar a los motores."
-            )
+            raise ValueError("No se encontró una hoja con columnas semánticas y filas que alimentar a los motores.")
         nombre_normalizado = _normalizar(nombre_corto)
         if "ejecucion presupuestal" in sample_names or "poai" in nombre_normalizado:
             perfil = "EJECUCION_PRESUPUESTAL_HACIENDA"
@@ -863,12 +814,7 @@ class IngestorBinarioTriada:
             corte,
             entidad_archivo
             or next(
-                (
-                    f["entidad_normalizada"]
-                    for h in hojas
-                    for f in h.filas
-                    if f.get("entidad_normalizada")
-                ),
+                (f["entidad_normalizada"] for h in hojas for f in h.filas if f.get("entidad_normalizada")),
                 None,
             ),
             hojas,

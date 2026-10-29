@@ -19,9 +19,7 @@ contexto = contexto_base
 @pytest.fixture
 def reporte(contexto, database_url):
     client, admin = contexto
-    doc = json.loads(
-        (Path(__file__).parents[1] / "alembic/data/0031_reporte_inseguridad.json").read_text()
-    )
+    doc = json.loads((Path(__file__).parents[1] / "alembic/data/0031_reporte_inseguridad.json").read_text())
     doc["titulo"] = "QA geoespacial " + uuid.uuid4().hex
     r = client.post("/api/v1/formularios/constructor", headers=admin, json=doc)
     assert r.status_code == 201, r.text
@@ -35,16 +33,11 @@ def reporte(contexto, database_url):
             try:
                 async with engine.begin() as c:
                     await c.execute(
-                        text(
-                            "DELETE FROM participacion_ciudadana.respuestas_formulario "
-                            "WHERE formulario_id=:id"
-                        ),
+                        text("DELETE FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id"),
                         {"id": form["id"]},
                     )
                     await c.execute(
-                        text(
-                            "DELETE FROM participacion_ciudadana.formularios_consulta WHERE id=:id"
-                        ),
+                        text("DELETE FROM participacion_ciudadana.formularios_consulta WHERE id=:id"),
                         {"id": form["id"]},
                     )
             finally:
@@ -104,8 +97,7 @@ def test_respuesta_invalida_no_deja_filas(reporte, database_url, campo, valor):
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 0
@@ -120,29 +112,18 @@ def test_crud_y_conservacion(reporte, database_url):
     assert r.status_code == 201
     assert client.post(ruta(form) + "/respuestas", headers=token, json=datos()).status_code == 409
     editado = {**form, "titulo": "Nombre actualizado", "estado": "cerrado"}
-    actualizado = client.put(
-        "/api/v1/formularios/constructor/" + form["id"], headers=admin, json=editado
-    )
+    actualizado = client.put("/api/v1/formularios/constructor/" + form["id"], headers=admin, json=editado)
     assert actualizado.status_code == 200, actualizado.text
     assert actualizado.json()["configuracion"]["slug"] == slug
     cambiado = json.loads(json.dumps(editado))
     cambiado["preguntas"][0]["tipo"] = "texto_corto"
-    assert (
-        client.put(
-            "/api/v1/formularios/constructor/" + form["id"], headers=admin, json=cambiado
-        ).status_code
-        == 409
-    )
+    assert client.put("/api/v1/formularios/constructor/" + form["id"], headers=admin, json=cambiado).status_code == 409
     assert client.delete(ruta(form), headers=admin).status_code == 409
-    assert (
-        client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos()).status_code
-        == 400
-    )
+    assert client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos()).status_code == 400
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 1
@@ -152,10 +133,7 @@ def test_crud_y_conservacion(reporte, database_url):
 def test_delete_sin_respuestas_y_404(reporte):
     client, admin, form = reporte
     assert client.delete(ruta(form), headers=admin).status_code == 200
-    assert (
-        client.get("/api/v1/formularios/publicos/" + form["configuracion"]["slug"]).status_code
-        == 404
-    )
+    assert client.get("/api/v1/formularios/publicos/" + form["configuracion"]["slug"]).status_code == 404
     assert client.delete(ruta(form), headers=admin).status_code == 404
 
 
@@ -189,20 +167,13 @@ def test_contrato_permisos_endpoint(reporte, operacion):
 def test_dos_envios_simultaneos_sin_exceder_limite(reporte, database_url, mismo_sujeto):
     client, admin, form = reporte
     form["configuracion"]["limiteRespuestas"] = 1
-    assert (
-        client.put(
-            "/api/v1/formularios/constructor/" + form["id"], headers=admin, json=form
-        ).status_code
-        == 200
-    )
+    assert client.put("/api/v1/formularios/constructor/" + form["id"], headers=admin, json=form).status_code == 200
     primero = anonimo(client)
     cabeceras = [primero, primero if mismo_sujeto else anonimo(client)]
     with ThreadPoolExecutor(max_workers=2) as pool:
         resultados = list(
             pool.map(
-                lambda h: (
-                    client.post(ruta(form) + "/respuestas", headers=h, json=datos()).status_code
-                ),
+                lambda h: client.post(ruta(form) + "/respuestas", headers=h, json=datos()).status_code,
                 cabeceras,
             )
         )
@@ -210,8 +181,7 @@ def test_dos_envios_simultaneos_sin_exceder_limite(reporte, database_url, mismo_
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 1
@@ -222,9 +192,7 @@ def test_enfoque_no_admite_objetos_que_rompen_analitica(reporte):
     client, _, form = reporte
     p = datos()
     p["datos_enfoque"] = {"etnia": ["no", "válido"]}
-    assert (
-        client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code == 422
-    )
+    assert client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code == 422
 
 
 @pytest.mark.parametrize("caso", ["editar", "eliminar", "commit", "cancelar"])
@@ -303,8 +271,7 @@ def test_rollback_completo_despues_de_escritura(reporte, database_url, monkeypat
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 0
@@ -330,11 +297,7 @@ def test_restricciones_sql_conservan_formulario(reporte, database_url, columna, 
             with pytest.raises(IntegrityError):
                 async with engine.begin() as c:
                     await c.execute(
-                        text(
-                            "UPDATE participacion_ciudadana.formularios_consulta "
-                            f"SET {columna}={valor} "
-                            "WHERE id=:id"
-                        ),
+                        text(f"UPDATE participacion_ciudadana.formularios_consulta SET {columna}={valor} WHERE id=:id"),
                         {"id": form["id"]},
                     )
         finally:
@@ -361,8 +324,7 @@ def test_territorio_inexistente_es_422_y_no_duplicado(reporte, database_url):
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 0
@@ -376,10 +338,7 @@ def test_porcentaje_condicional_no_usa_el_total_del_formulario(reporte):
         p["datos_respuesta"]["P1"] = f"d{d}"
         p["datos_respuesta"].pop("P2-D1")
         p["datos_respuesta"][f"P2-D{d}"] = f"d{d}-1"
-        assert (
-            client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code
-            == 201
-        )
+        assert client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code == 201
     r = client.get(ruta(form) + "/analitica", headers=admin)
     assert r.status_code == 200
     assert r.json()["total_respuestas"] == 2
@@ -391,12 +350,7 @@ def test_porcentaje_condicional_no_usa_el_total_del_formulario(reporte):
 def test_edicion_permitida_conserva_id_y_conteo(reporte):
     client, admin, form = reporte
     form["configuracion"]["permitirEdicion"] = True
-    assert (
-        client.put(
-            "/api/v1/formularios/constructor/" + form["id"], headers=admin, json=form
-        ).status_code
-        == 200
-    )
+    assert client.put("/api/v1/formularios/constructor/" + form["id"], headers=admin, json=form).status_code == 200
     token = anonimo(client)
     primero = client.post(ruta(form) + "/respuestas", headers=token, json=datos())
     p = datos()
@@ -442,9 +396,7 @@ def test_sql_rechaza_respuesta_con_json_incompatible(reporte, database_url, colu
 
 
 def test_funcion_uuid_y_claves_unicas(database_url):
-    filas = consultar(
-        database_url, "SELECT public.generar_uuid_v7() AS id FROM generate_series(1,100)"
-    )
+    filas = consultar(database_url, "SELECT public.generar_uuid_v7() AS id FROM generate_series(1,100)")
     ids = [f["id"] for f in filas]
     assert len(set(ids)) == 100
     assert all(i.version == 7 for i in ids)
@@ -467,10 +419,7 @@ def test_sql_no_borra_reportes_en_cascada(reporte, database_url):
     from sqlalchemy.exc import IntegrityError
 
     client, _, form = reporte
-    assert (
-        client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos()).status_code
-        == 201
-    )
+    assert client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos()).status_code == 201
 
     async def borrar():
         engine = create_async_engine(database_url)
@@ -478,9 +427,7 @@ def test_sql_no_borra_reportes_en_cascada(reporte, database_url):
             with pytest.raises(IntegrityError):
                 async with engine.begin() as c:
                     await c.execute(
-                        text(
-                            "DELETE FROM participacion_ciudadana.formularios_consulta WHERE id=:id"
-                        ),
+                        text("DELETE FROM participacion_ciudadana.formularios_consulta WHERE id=:id"),
                         {"id": form["id"]},
                     )
         finally:
@@ -490,14 +437,14 @@ def test_sql_no_borra_reportes_en_cascada(reporte, database_url):
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 1
     )
 
 
+@pytest.mark.migration
 def test_migraciones_preservan_registros_existentes(reporte, database_url):
     from alembic.config import Config
 
@@ -506,10 +453,7 @@ def test_migraciones_preservan_registros_existentes(reporte, database_url):
     client, _, form = reporte
     r = client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos([foto()]))
     assert r.status_code == 201
-    sql = (
-        "SELECT id,datos_respuesta FROM participacion_ciudadana.respuestas_formulario "
-        "WHERE formulario_id=:id"
-    )
+    sql = "SELECT id,datos_respuesta FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id"
     antes = consultar(database_url, sql, {"id": form["id"]})
     config = Config(str(Path(__file__).parents[1] / "alembic.ini"))
     command.downgrade(config, "0031_reporte_inseguridad")
@@ -519,9 +463,7 @@ def test_migraciones_preservan_registros_existentes(reporte, database_url):
     assert consultar(database_url, sql, {"id": form["id"]}) == antes
 
 
-@pytest.mark.parametrize(
-    "defecto", ["orden", "sin_opciones", "es_otro", "rango", "dimension", "localidad", "anonimo"]
-)
+@pytest.mark.parametrize("defecto", ["orden", "sin_opciones", "es_otro", "rango", "dimension", "localidad", "anonimo"])
 def test_constructor_rechaza_contrato_inconsistente(reporte, database_url, defecto):
     client, admin, form = reporte
     doc = json.loads(json.dumps(form))
@@ -541,8 +483,7 @@ def test_constructor_rechaza_contrato_inconsistente(reporte, database_url, defec
         doc["configuracion"]["requiereAutenticacion"] = True
     antes = consultar(
         database_url,
-        "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta "
-        "WHERE id=:id",
+        "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta WHERE id=:id",
         {"id": form["id"]},
     )
     r = client.put("/api/v1/formularios/constructor/" + form["id"], headers=admin, json=doc)
@@ -550,8 +491,7 @@ def test_constructor_rechaza_contrato_inconsistente(reporte, database_url, defec
     assert (
         consultar(
             database_url,
-            "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta "
-            "WHERE id=:id",
+            "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta WHERE id=:id",
             {"id": form["id"]},
         )
         == antes
@@ -578,8 +518,7 @@ def test_metadatos_autoritativos_no_se_toman_del_cliente(reporte, database_url):
     assert r.json()["respuestasCount"] == 0
     doc = consultar(
         database_url,
-        "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta "
-        "WHERE id=:id",
+        "SELECT documento_constructor FROM participacion_ciudadana.formularios_consulta WHERE id=:id",
         {"id": form["id"]},
     )[0]["documento_constructor"]
     assert not {
@@ -603,8 +542,7 @@ def test_foto_superior_a_cinco_mb_no_se_registra(reporte, database_url):
     assert (
         consultar(
             database_url,
-            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario "
-            "WHERE formulario_id=:id",
+            "SELECT count(*) AS n FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id",
             {"id": form["id"]},
         )[0]["n"]
         == 0
@@ -629,9 +567,7 @@ def test_contrato_geografico_estructurado_se_conserva(reporte, database_url):
     assert fila["P5"] == punto
 
 
-@pytest.mark.parametrize(
-    "campo,valor", [("estado", "INVENTADO"), ("titulo", "   "), ("codigo", "")]
-)
+@pytest.mark.parametrize("campo,valor", [("estado", "INVENTADO"), ("titulo", "   "), ("codigo", "")])
 def test_crud_legado_rechaza_estado_o_identidad_vacios(contexto, campo, valor):
     client, admin = contexto
     doc = {
@@ -648,9 +584,7 @@ def test_evidencias_no_pueden_eludir_limites_de_pregunta(reporte):
     client, _, form = reporte
     p = datos()
     p["evidencias"] = [{"foto": foto()}] * 6
-    assert (
-        client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code == 422
-    )
+    assert client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=p).status_code == 422
 
 
 @pytest.mark.parametrize("respuesta", ["6", False, "fuera_de_escala"])
@@ -674,6 +608,4 @@ def test_legado_valida_escala_no_solo_campo_obligatorio(contexto, respuesta):
             == 422
         )
     finally:
-        assert (
-            client.delete("/api/v1/formularios/" + f.json()["id"], headers=admin).status_code == 200
-        )
+        assert client.delete("/api/v1/formularios/" + f.json()["id"], headers=admin).status_code == 200

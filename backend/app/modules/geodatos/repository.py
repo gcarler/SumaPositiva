@@ -1,4 +1,5 @@
 import json
+import logging
 import uuid
 from collections.abc import Sequence
 from typing import Any
@@ -9,9 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.geodatos.models import (
     CapaGeovisor,
     EstadisticaHurto,
-    PoligonoAnaliticaHurto,
+    IndicadorTerritorio,
     Territorio,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class GeodatosRepository:
@@ -34,14 +37,13 @@ class GeodatosRepository:
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
-    async def obtener_territorios_geojson(self) -> dict:
-        # Generar un FeatureCollection de GeoJSON usando SQLAlchemy
-        # En la vida real haríamos JOIN a tabla propuestas
-        # SELECT jsonb_build_object(
-        #    'type', 'FeatureCollection',
-        #    'features', jsonb_agg(ST_AsGeoJSON(t.*)::jsonb)
-        # ) FROM territorios t
-
+    async def obtener_territorios_geojson(
+        self,
+        tipo_territorio: str | None = None,
+        busqueda: str | None = None,
+        es_zona_sat: bool | None = None,
+        es_zona_etnica: bool | None = None,
+    ) -> dict:
         stmt = select(
             Territorio.id,
             Territorio.codigo,
@@ -50,6 +52,29 @@ class GeodatosRepository:
             func.ST_AsGeoJSON(Territorio.geometria).label("geom_json"),
             func.ST_AsGeoJSON(Territorio.centroide).label("centroide_json"),
         ).where(Territorio.geometria.is_not(None))
+
+        if tipo_territorio and tipo_territorio != "todos":
+            stmt = stmt.where(Territorio.tipo_territorio == tipo_territorio)
+        if busqueda:
+            term = f"%{busqueda.strip()}%"
+            stmt = stmt.where(
+                or_(
+                    Territorio.nombre.ilike(term),
+                    Territorio.codigo.ilike(term),
+                )
+            )
+        if es_zona_etnica is not None:
+            stmt = stmt.where(Territorio.es_zona_etnica == es_zona_etnica)
+        if es_zona_sat is not None:
+            if es_zona_sat:
+                stmt = stmt.where(Territorio.metadatos["es_zona_sat"].as_boolean().is_(True))
+            else:
+                stmt = stmt.where(
+                    or_(
+                        Territorio.metadatos["es_zona_sat"].as_boolean().is_(False),
+                        Territorio.metadatos["es_zona_sat"].is_(None),
+                    )
+                )
 
         res = await self.session.execute(stmt)
         features = []
@@ -83,14 +108,134 @@ class GeodatosRepository:
         res = await self.session.execute(stmt)
         return res.scalars().all()
 
+    async def listar_indicadores_territorio(
+        self,
+        territorio_id: uuid.UUID | None = None,
+        codigo_territorio: str | None = None,
+        dimension_id: uuid.UUID | None = None,
+        dimension: str | None = None,
+        fuente_datos: str | None = None,
+        anio_corte: int | None = None,
+        codigo_indicador: str | None = None,
+        busqueda: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> tuple[int, list[dict[str, Any]]]:
+        from app.modules.politicas.models import DimensionSeguridadHumana
+
+        query = (
+            select(
+                IndicadorTerritorio,
+                Territorio.codigo.label("codigo_territorio"),
+                Territorio.nombre.label("nombre_territorio"),
+                DimensionSeguridadHumana.codigo.label("codigo_dimension"),
+                DimensionSeguridadHumana.nombre.label("nombre_dimension"),
+            )
+            .join(Territorio, IndicadorTerritorio.territorio_id == Territorio.id)
+            .outerjoin(
+                DimensionSeguridadHumana,
+                IndicadorTerritorio.dimension_id == DimensionSeguridadHumana.id,
+            )
+        )
+
+        count_query = (
+            select(func.count(IndicadorTerritorio.id))
+            .join(Territorio, IndicadorTerritorio.territorio_id == Territorio.id)
+            .outerjoin(
+                DimensionSeguridadHumana,
+                IndicadorTerritorio.dimension_id == DimensionSeguridadHumana.id,
+            )
+        )
+
+        filtros = []
+        if territorio_id:
+            filtros.append(IndicadorTerritorio.territorio_id == territorio_id)
+        if codigo_territorio:
+            filtros.append(Territorio.codigo.ilike(f"%{codigo_territorio.strip()}%"))
+        if dimension_id:
+            filtros.append(IndicadorTerritorio.dimension_id == dimension_id)
+        if dimension:
+            dim_str = dimension.strip()
+            filtros.append(
+                or_(
+                    DimensionSeguridadHumana.codigo.ilike(f"%{dim_str}%"),
+                    DimensionSeguridadHumana.nombre.ilike(f"%{dim_str}%"),
+                )
+            )
+        if fuente_datos:
+            filtros.append(IndicadorTerritorio.fuente_datos.ilike(f"%{fuente_datos.strip()}%"))
+        if anio_corte:
+            filtros.append(IndicadorTerritorio.anio_corte == anio_corte)
+        if codigo_indicador:
+            filtros.append(IndicadorTerritorio.codigo_indicador.ilike(f"%{codigo_indicador.strip()}%"))
+        if busqueda:
+            b_str = busqueda.strip()
+            filtros.append(
+                or_(
+                    IndicadorTerritorio.nombre_indicador.ilike(f"%{b_str}%"),
+                    IndicadorTerritorio.codigo_indicador.ilike(f"%{b_str}%"),
+                )
+            )
+
+        if filtros:
+            query = query.where(*filtros)
+            count_query = count_query.where(*filtros)
+
+        total = (await self.session.execute(count_query)).scalar() or 0
+
+        query = (
+            query.order_by(IndicadorTerritorio.anio_corte.desc(), IndicadorTerritorio.codigo_indicador.asc())
+            .offset(offset)
+            .limit(limit)
+        )
+
+        res = await self.session.execute(query)
+        items: list[dict[str, Any]] = []
+        for row in res.all():
+            ind = row[0]
+            items.append(
+                {
+                    "id": ind.id,
+                    "territorio_id": ind.territorio_id,
+                    "dimension_id": ind.dimension_id,
+                    "codigo_indicador": ind.codigo_indicador,
+                    "nombre_indicador": ind.nombre_indicador,
+                    "valor": ind.valor,
+                    "unidad_medida": ind.unidad_medida,
+                    "nivel_riesgo": ind.nivel_riesgo,
+                    "anio_corte": ind.anio_corte,
+                    "fuente_datos": ind.fuente_datos,
+                    "metadatos": ind.metadatos,
+                    "creado_en": ind.creado_en,
+                    "actualizado_en": ind.actualizado_en,
+                    "codigo_territorio": row.codigo_territorio,
+                    "nombre_territorio": row.nombre_territorio,
+                    "codigo_dimension": row.codigo_dimension,
+                    "nombre_dimension": row.nombre_dimension,
+                }
+            )
+
+        return total, items
+
     async def parse_with_address_standardizer(self, direccion_raw: str) -> dict | None:
-        """Invoca la función parse_address() de la extensión PostGIS address_standardizer."""
+        """Invoca la función parse_address() de la extensión PostGIS address_standardizer.
+
+        Consulta auxiliar de solo lectura: se ejecuta en una segunda sesión del
+        mismo motor (patrón de la consulta pericial de `ambito_territorial`),
+        de manera que un fallo de la extensión o del texto analizado nunca
+        contamina la transacción principal del caso de uso (evita hoy el
+        `InFailedSQLTransactionError` en la consulta siguiente). Los
+        repositorios nunca manejan transacciones (docs/transacciones.md): aquí
+        no hay `commit`/`rollback` del límite ni anidación del caso de uso.
+        El fallo queda registrado para diagnóstico.
+        """
         try:
             from sqlalchemy import text
 
             stmt = text("SELECT * FROM parse_address(:addr)")
-            res = await self.session.execute(stmt, {"addr": direccion_raw})
-            row = res.fetchone()
+            async with AsyncSession(self.session.bind, expire_on_commit=False) as auxiliar:
+                res = await auxiliar.execute(stmt, {"addr": direccion_raw})
+                row = res.fetchone()
             if row:
                 return {
                     "num": row[0],
@@ -102,7 +247,10 @@ class GeodatosRepository:
                     "country": row[8] if len(row) > 8 else None,
                 }
         except Exception:
-            pass
+            logger.warning(
+                "parse_address no disponible o fallo al estandarizar; se usa el normalizador interno",
+                exc_info=True,
+            )
         return None
 
     async def buscar_territorios_por_nombre(
@@ -115,18 +263,13 @@ class GeodatosRepository:
                 func.ST_Y(Territorio.centroide).label("lat"),
                 func.ST_X(Territorio.centroide).label("lon"),
             )
-            .where(
-                (func.similarity(Territorio.nombre, nombre) > 0.15)
-                | Territorio.nombre.ilike(f"%{nombre}%")
-            )
+            .where((func.similarity(Territorio.nombre, nombre) > 0.15) | Territorio.nombre.ilike(f"%{nombre}%"))
             .order_by(func.similarity(Territorio.nombre, nombre).desc())
         )
         res = await self.session.execute(stmt)
         return res.all()
 
-    async def obtener_territorio_por_codigo(
-        self, codigo: str
-    ) -> tuple[Territorio, float | None, float | None] | None:
+    async def obtener_territorio_por_codigo(self, codigo: str) -> tuple[Territorio, float | None, float | None] | None:
         """Obtiene un territorio específico por su código oficial con coordenadas del centroide."""
         stmt = select(
             Territorio,
@@ -146,9 +289,7 @@ class GeodatosRepository:
         except Exception:
             return None
 
-    async def generar_isocrona_postgis(
-        self, lon: float, lat: float, radio_metros: float
-    ) -> dict[str, Any] | None:
+    async def generar_isocrona_postgis(self, lon: float, lat: float, radio_metros: float) -> dict[str, Any] | None:
         """Genera la geometría poligonal de una isócrona usando PostGIS ST_Buffer sobre geografía."""
         try:
             stmt = text(
@@ -161,9 +302,7 @@ class GeodatosRepository:
                 ) as geojson;
                 """
             )
-            res = await self.session.execute(
-                stmt, {"lon": lon, "lat": lat, "radio": radio_metros}
-            )
+            res = await self.session.execute(stmt, {"lon": lon, "lat": lat, "radio": radio_metros})
             row = res.first()
             if row and row[0]:
                 return json.loads(row[0])
@@ -219,17 +358,24 @@ class GeodatosRepository:
         ]
 
         # 3. Serie mensual (Enero a Diciembre)
-        stmt_mensual = (
-            select(EstadisticaHurto.mes, func.sum(EstadisticaHurto.cantidad))
-            .group_by(EstadisticaHurto.mes)
-        )
+        stmt_mensual = select(EstadisticaHurto.mes, func.sum(EstadisticaHurto.cantidad)).group_by(EstadisticaHurto.mes)
         if condiciones:
             stmt_mensual = stmt_mensual.where(*condiciones)
         res_mensual = await self.session.execute(stmt_mensual)
         dict_mensual = {r[0]: int(r[1]) for r in res_mensual.all()}
         meses_orden = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre",
         ]
         serie_mensual = [
             {
@@ -282,10 +428,7 @@ class GeodatosRepository:
         ]
 
         # 6. Distribución por zona
-        stmt_zona = (
-            select(EstadisticaHurto.zona, func.sum(EstadisticaHurto.cantidad))
-            .group_by(EstadisticaHurto.zona)
-        )
+        stmt_zona = select(EstadisticaHurto.zona, func.sum(EstadisticaHurto.cantidad)).group_by(EstadisticaHurto.zona)
         if condiciones:
             stmt_zona = stmt_zona.where(*condiciones)
         res_zona = await self.session.execute(stmt_zona)
@@ -532,21 +675,27 @@ class GeodatosRepository:
                 "categoria": str(r.categoria) if r.categoria is not None else "SIN DATO",
                 "registros": int(r.registros),
                 "incidentes": int(r.incidentes),
-                "porcentaje": round((int(r.incidentes) / total_incidentes * 100), 2)
-                if total_incidentes > 0
-                else 0.0,
+                "porcentaje": round((int(r.incidentes) / total_incidentes * 100), 2) if total_incidentes > 0 else 0.0,
             }
             for r in res_agrup.all()
         ]
 
         # 5. Catálogos para selectores
         meses = [
-            "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-            "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+            "ENERO",
+            "FEBRERO",
+            "MARZO",
+            "ABRIL",
+            "MAYO",
+            "JUNIO",
+            "JULIO",
+            "AGOSTO",
+            "SEPTIEMBRE",
+            "OCTUBRE",
+            "NOVIEMBRE",
+            "DICIEMBRE",
         ]
-        dias_semana = [
-            "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"
-        ]
+        dias_semana = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"]
 
         stmt_armas = (
             select(EstadisticaHurto.armas_medios)
@@ -580,4 +729,3 @@ class GeodatosRepository:
                 "top_clases_sitio": top_sitios,
             },
         }
-

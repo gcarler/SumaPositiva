@@ -102,23 +102,16 @@ def test_crud_metadatos_y_persistencia(linea, database_url):
     assert resp.json()["orden"] == 8
     assert resp.json()["entidades_coresponsables"] == ["Entidad histórica"]
     assert item["id"] in [
-        elemento["id"]
-        for elemento in client.get("/api/v1/politicas/lineas/gestion", headers=headers).json()
+        elemento["id"] for elemento in client.get("/api/v1/politicas/lineas/gestion", headers=headers).json()
     ]
-    assert item["id"] not in [
-        elemento["id"] for elemento in client.get("/api/v1/politicas/lineas").json()
-    ]
-    assert (
-        client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code == 200
-    )
+    assert item["id"] not in [elemento["id"] for elemento in client.get("/api/v1/politicas/lineas").json()]
+    assert client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code == 200
     assert not consultar(
         database_url,
         "SELECT id FROM motor_politicas.lineas_estrategicas WHERE id=:id",
         {"id": uuid.UUID(item["id"])},
     )
-    assert (
-        client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code == 404
-    )
+    assert client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code == 404
 
 
 @pytest.mark.parametrize(
@@ -226,10 +219,7 @@ def test_bloqueo_registro_set_null(linea, database_url, tabla, campo, sql):
     try:
         escribir(database_url, sql, parametros)
         assert consultar(database_url, f"SELECT {campo} FROM {tabla} WHERE {campo}=:id", parametros)
-        assert (
-            client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code
-            == 409
-        )
+        assert client.delete(f"/api/v1/politicas/lineas/{item['id']}", headers=headers).status_code == 409
         assert consultar(database_url, f"SELECT {campo} FROM {tabla} WHERE {campo}=:id", parametros)
     finally:
         escribir(database_url, f"DELETE FROM {tabla} WHERE {campo}=:id", parametros)
@@ -245,9 +235,7 @@ def test_rollback_despues_flush(linea, database_url, monkeypatch, operacion):
         await original(self, objeto)
         raise RuntimeError("Fallo QA después de flush")
 
-    monkeypatch.setattr(
-        LineaRepository, "eliminar" if operacion == "eliminar" else "guardar", fallar
-    )
+    monkeypatch.setattr(LineaRepository, "eliminar" if operacion == "eliminar" else "guardar", fallar)
     with pytest.raises(RuntimeError, match="Fallo QA"):
         if operacion == "crear":
             client.post("/api/v1/politicas/lineas", json=datos, headers=headers)
@@ -301,10 +289,7 @@ def test_codigos_concurrentes_unicos_por_fase(linea, database_url):
 def test_permisos_reales(linea, method, path):
     client, headers, datos, _ = linea
     ruta = "/api/v1/politicas" + path
-    assert (
-        client.request(method, ruta, json=datos if method in ("POST", "PUT") else None).status_code
-        == 401
-    )
+    assert client.request(method, ruta, json=datos if method in ("POST", "PUT") else None).status_code == 401
     anon = client.post("/api/v1/sesion/anonima").json()
     assert (
         client.request(
@@ -380,14 +365,9 @@ def test_auditor_real_solo_lectura(linea, database_url, provisionar_usuario_sync
         assert login.status_code == 200
         headers = {"Authorization": "Bearer " + login.json()["token_acceso"]}
         assert client.get("/api/v1/politicas/lineas/gestion", headers=headers).status_code == 200
-        assert (
-            client.post("/api/v1/politicas/lineas", json=datos, headers=headers).status_code == 403
-        )
+        assert client.post("/api/v1/politicas/lineas", json=datos, headers=headers).status_code == 403
         id = str(uuid.uuid4())
-        assert (
-            client.put(f"/api/v1/politicas/lineas/{id}", json=datos, headers=headers).status_code
-            == 403
-        )
+        assert client.put(f"/api/v1/politicas/lineas/{id}", json=datos, headers=headers).status_code == 403
         assert client.delete(f"/api/v1/politicas/lineas/{id}", headers=headers).status_code == 403
     finally:
         escribir(

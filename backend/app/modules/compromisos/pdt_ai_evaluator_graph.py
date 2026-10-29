@@ -7,10 +7,12 @@ en la respuesta; no se fabrican indicadores ni geometrías.
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import importlib
 import inspect
 import json
+import logging
 import math
 import os
 import re
@@ -46,6 +48,8 @@ from statsmodels.tsa.arima.model import ARIMA
 
 ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = ROOT / "data" / "planes_desarrollo"
+
+logger = logging.getLogger("polis.compromisos.pdt_ai_evaluator_graph")
 CACHE_PATH = DATA_DIR / "cache_pdt_ai_evaluator.json"
 CHECKPOINT_PATH = DATA_DIR / "checkpoints_pdt_ai_evaluator.json"
 BOOTSTRAP_REPLICATES = 1000
@@ -328,8 +332,7 @@ def obtener_especificacion_pdt_ai_evaluator() -> dict[str, Any]:
             "persistencia_durable": str(CHECKPOINT_PATH),
         },
         "matriz_multisectorial": [
-            {key: value for key, value in sector.items() if key != "keywords"}
-            for sector in SECTORES_PRIORITARIOS
+            {key: value for key, value in sector.items() if key != "keywords"} for sector in SECTORES_PRIORITARIOS
         ],
         "dimensiones_seguridad_humana": DIMENSIONES_SEGURIDAD_HUMANA.copy(),
         "umbrales": {
@@ -342,14 +345,8 @@ def obtener_especificacion_pdt_ai_evaluator() -> dict[str, Any]:
         "system_instructions": SYSTEM_INSTRUCTIONS_PDT_AI_EVALUATOR,
         "notas_metodologicas": [
             "Las estimaciones usan solo observaciones disponibles en bd_csh.",
-            (
-                "DEA y series requieren DMU/periodos comparables; "
-                "con insuficiencia devuelven PENDIENTE."
-            ),
-            (
-                "Si no existen geometrías e indicadores territoriales vinculables, "
-                "Moran/LISA no se estiman."
-            ),
+            ("DEA y series requieren DMU/periodos comparables; con insuficiencia devuelven PENDIENTE."),
+            ("Si no existen geometrías e indicadores territoriales vinculables, Moran/LISA no se estiman."),
             (
                 "NLP ejecuta TF-IDF, SVD, HDBSCAN y c-TF-IDF; corpus <10 documentos "
                 "queda etiquetado como ruido en vez de forzar clusters."
@@ -406,9 +403,7 @@ def _cache_key(jurisdiction: str, time_horizon: str, thread_id: str) -> str:
     return hashlib.sha256(material.encode()).hexdigest()
 
 
-def _append_trace(
-    state: AgentState, node: str, started: float, message: str
-) -> list[dict[str, Any]]:
+def _append_trace(state: AgentState, node: str, started: float, message: str) -> list[dict[str, Any]]:
     trace = list(state.get("trace", []))
     trace.append(
         {
@@ -482,9 +477,7 @@ _STOPWORDS = {
 
 
 def _tokens(value: str) -> list[str]:
-    return [
-        token for token in re.findall(r"[a-z0-9]{3,}", _normalize(value)) if token not in _STOPWORDS
-    ]
+    return [token for token in re.findall(r"[a-z0-9]{3,}", _normalize(value)) if token not in _STOPWORDS]
 
 
 def _cosine(left: Counter[str], right: Counter[str]) -> float:
@@ -537,9 +530,7 @@ def _load_corpus(db: AsyncSession) -> Any:
                 )
             )
         )
-        evidence_count = await db.scalar(
-            text("SELECT count(*) FROM seguimiento.pdd_evidencia_paginas")
-        )
+        evidence_count = await db.scalar(text("SELECT count(*) FROM seguimiento.pdd_evidencia_paginas"))
         nodes = _records(
             await db.execute(
                 text(
@@ -574,9 +565,7 @@ def _load_corpus(db: AsyncSession) -> Any:
                 )
             )
         )
-        normalized_count = await db.scalar(
-            text("SELECT count(*) FROM seguimiento.registros_triada_normalizados")
-        )
+        normalized_count = await db.scalar(text("SELECT count(*) FROM seguimiento.registros_triada_normalizados"))
         normalized = _records(
             await db.execute(
                 text(
@@ -657,7 +646,10 @@ def _load_corpus(db: AsyncSession) -> Any:
                 )
             )
         except Exception:
-            await db.rollback()
+            logger.warning(
+                "Consulta de territorios PDT no disponible: continúa el caso de uso y el límite transaccional decide",
+                exc_info=True,
+            )
         return {
             "plans": plans,
             "documents": documents,
@@ -773,8 +765,7 @@ async def _optional_pdt_enrichment(function_name: str, context: dict[str, Any]) 
                 name
                 for name, parameter in parameters.items()
                 if parameter.default is inspect.Parameter.empty
-                and parameter.kind
-                not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                and parameter.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
                 and name not in kwargs
             ]
             if missing:
@@ -787,30 +778,23 @@ async def _optional_pdt_enrichment(function_name: str, context: dict[str, Any]) 
         return None
 
 
-def _build_state(
-    data: dict[str, Any], jurisdiction: str, time_horizon: str, thread_id: str
-) -> AgentState:
+def _build_state(data: dict[str, Any], jurisdiction: str, time_horizon: str, thread_id: str) -> AgentState:
     plans = data["plans"]
     goals = data["goals"]
     nodes = data["nodes"]
     activities = data["activities"]
     normalized = data["normalized"]
-    corpus_by_plan = {
-        item["codigo_plan"]: item.get("contenido") or "" for item in data["documents"]
-    }
+    corpus_by_plan = {item["codigo_plan"]: item.get("contenido") or "" for item in data["documents"]}
     raw_corpus = {
         "plan_indicativo": "\n".join(
-            f"{node.get('codigo_plan')} | {node.get('nivel')} | {node.get('nombre')}"
-            for node in nodes
+            f"{node.get('codigo_plan')} | {node.get('nivel')} | {node.get('nombre')}" for node in nodes
         ),
         "matrices_plan_accion": "\n".join(
-            f"{item.get('codigo')} | {item.get('entidad_responsable')} | "
-            f"{item.get('descripcion_actividad')}"
+            f"{item.get('codigo')} | {item.get('entidad_responsable')} | {item.get('descripcion_actividad')}"
             for item in activities
         ),
         "mir_mga_sispt": "\n".join(
-            f"{item.get('codigo_plan')} | {item.get('nombre')} | {item.get('indicador')}"
-            for item in goals
+            f"{item.get('codigo_plan')} | {item.get('nombre')} | {item.get('indicador')}" for item in goals
         ),
         **{f"documento:{code}": value for code, value in corpus_by_plan.items()},
     }
@@ -827,9 +811,7 @@ def _build_state(
         )
     }
     fingerprint_sources = hashlib.sha256(
-        json.dumps(
-            _plain(fingerprint_payload), sort_keys=True, ensure_ascii=False, default=str
-        ).encode()
+        json.dumps(_plain(fingerprint_payload), sort_keys=True, ensure_ascii=False, default=str).encode()
     ).hexdigest()
     grouped: dict[tuple[str, int | None], dict[str, Any]] = {}
     observed_positive_years: set[int] = set()
@@ -889,10 +871,7 @@ def _build_state(
                 "codigo_metas": [item.get("codigo") for item in plan_goals if item.get("codigo")],
                 "origen_insumo": "ppi_oficial_desagregado_pdd",
                 "codigo_plan": code,
-                "nota_producto": (
-                    "conteo_lineas_programaticas_con_PPI; proxy de estructura, "
-                    "no producto ejecutado"
-                ),
+                "nota_producto": ("conteo_lineas_programaticas_con_PPI; proxy de estructura, no producto ejecutado"),
             }
     dmus = []
     for dmu in grouped.values():
@@ -924,9 +903,7 @@ def _build_state(
                 "ejecutado": dmu["producto_ejecutado"],
                 "ejecutado_pct": dmu.get("resultado_pct"),
                 "grupo_comparabilidad_dea": dmu["grupo_comparabilidad_dea"],
-                "fuente_producto": dmu.get(
-                    "nota_producto", "seguimiento.registros_triada_normalizados"
-                ),
+                "fuente_producto": dmu.get("nota_producto", "seguimiento.registros_triada_normalizados"),
                 "codigo_plan": dmu.get("codigo_plan"),
             }
         )
@@ -948,15 +925,11 @@ def _build_state(
         "seguimiento.pdd_lineas_y_programas": len(nodes),
         "seguimiento.pdd_metas_oficiales": len(goals),
         "seguimiento.actividades_plan_accion": len(activities),
-        "seguimiento.registros_triada_normalizados": int(
-            data.get("normalized_count") or len(normalized)
-        ),
+        "seguimiento.registros_triada_normalizados": int(data.get("normalized_count") or len(normalized)),
         "dmu_ppi_oficial_desagregado_pdd": sum(
             item.get("origen_insumo") == "ppi_oficial_desagregado_pdd" for item in finances
         ),
-        "geodatos.territorios_con_indicadores": sum(
-            item.get("valor") is not None for item in data["territories"]
-        ),
+        "geodatos.territorios_con_indicadores": sum(item.get("valor") is not None for item in data["territories"]),
     }
     return {
         "jurisdiction": jurisdiction,
@@ -1004,8 +977,7 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
     activities = state["activity_records"]
     norm_records = state["normalized_records"]
     objective_texts = [
-        " ".join(str(goal.get(key) or "") for key in ("nombre", "indicador", "linea_nombre"))
-        for goal in goals
+        " ".join(str(goal.get(key) or "") for key in ("nombre", "indicador", "linea_nombre")) for goal in goals
     ]
     action_texts: list[str] = []
     text_to_index: dict[str, int] = {}
@@ -1075,16 +1047,12 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                 warnings.filterwarnings(
                     "ignore", message="invalid value encountered in divide", category=RuntimeWarning
                 )
-                embeddings = TruncatedSVD(n_components=n_components, random_state=42).fit_transform(
-                    tfidf
-                )
+                embeddings = TruncatedSVD(n_components=n_components, random_state=42).fit_transform(tfidf)
         else:
             embeddings = tfidf.toarray()
         if len(corpus) >= 10:
             try:
-                cluster_labels = (
-                    HDBSCAN(min_cluster_size=5, copy=True).fit_predict(embeddings).tolist()
-                )
+                cluster_labels = HDBSCAN(min_cluster_size=5, copy=True).fit_predict(embeddings).tolist()
             except (ValueError, TypeError):
                 cluster_labels = [-1] * len(corpus)
         else:
@@ -1092,12 +1060,8 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
         tokens_by_doc = [_tokens(value) for value in corpus.tolist()]
         cluster_frequencies = {}
         for label in sorted(set(cluster_labels) - {-1}):
-            docs = [
-                tokens_by_doc[index] for index, item in enumerate(cluster_labels) if item == label
-            ]
-            cluster_frequencies[f"cluster_{label}"] = Counter(
-                token for doc in docs for token in doc
-            )
+            docs = [tokens_by_doc[index] for index, item in enumerate(cluster_labels) if item == label]
+            cluster_frequencies[f"cluster_{label}"] = Counter(token for doc in docs for token in doc)
         topic_terms = _ctfidf_by_class(cluster_frequencies)
 
         if goals and action_texts:
@@ -1123,21 +1087,15 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                     }
                     pairs.append(pair)
                     if score < COSINE_ALERT_THRESHOLD:
-                        alerts.append(
-                            {**pair, "alerta": "Desalineación Estratégica / Mission Creep"}
-                        )
+                        alerts.append({**pair, "alerta": "Desalineación Estratégica / Mission Creep"})
     sectors = []
     sector_docs: dict[str, list[list[str]]] = {}
-    tokenized_corpus = [_tokens(value) for value in objective_texts] + [
-        _tokens(value) for value in action_texts
-    ]
+    tokenized_corpus = [_tokens(value) for value in objective_texts] + [_tokens(value) for value in action_texts]
     tokenized_sets = [set(doc) for doc in tokenized_corpus]
     for sector in SECTORES_PRIORITARIOS:
         keywords = set(sector["keywords"])
         matching_docs = [
-            doc
-            for doc, tok_set in zip(tokenized_corpus, tokenized_sets, strict=False)
-            if keywords & tok_set
+            doc for doc, tok_set in zip(tokenized_corpus, tokenized_sets, strict=False) if keywords & tok_set
         ]
         sector_docs[sector["sector"]] = matching_docs
         sectors.append(
@@ -1186,9 +1144,7 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                 "almacenamiento": "sparse por bloques; se conserva el mejor par por meta",
             },
             "pares_evaluados": len(pairs),
-            "promedio": round(
-                float(np.mean([item["similaridad_coseno_lexica"] for item in pairs])), 6
-            )
+            "promedio": round(float(np.mean([item["similaridad_coseno_lexica"] for item in pairs])), 6)
             if pairs
             else None,
             "muestra": pairs[:100],
@@ -1223,9 +1179,7 @@ def _dea_solve(
     inequalities = []
     rhs = []
     for output_index in range(output_count):
-        inequalities.append(
-            [-float(outputs[index][output_index]) for index in range(count)] + [0.0]
-        )
+        inequalities.append([-float(outputs[index][output_index]) for index in range(count)] + [0.0])
         rhs.append(-float(outputs[target][output_index]))
     inequalities.append([float(value) for value in inputs] + [-float(inputs[target])])
     rhs.append(0.0)
@@ -1265,9 +1219,9 @@ def _dea_solve_pulp(
     else:
         model += theta
     for output_idx in range(len(outputs[0])):
-        constraint = pulp.lpSum(
-            lambdas[idx] * float(outputs[idx][output_idx]) for idx in valid_peers
-        ) >= float(outputs[target][output_idx])
+        constraint = pulp.lpSum(lambdas[idx] * float(outputs[idx][output_idx]) for idx in valid_peers) >= float(
+            outputs[target][output_idx]
+        )
         model.add(constraint) if hasattr(model, "add") else model.__iadd__(constraint)
     input_constraint = pulp.lpSum(lambdas[idx] * float(inputs[idx]) for idx in valid_peers) <= (
         theta * float(inputs[target])
@@ -1306,11 +1260,7 @@ def _dea_cross_distance(
     *,
     bcc: bool = False,
 ) -> float | None:
-    peers = [
-        idx
-        for idx, amount in enumerate(technology_inputs)
-        if amount > 0 and any(technology_outputs[idx])
-    ]
+    peers = [idx for idx, amount in enumerate(technology_inputs) if amount > 0 and any(technology_outputs[idx])]
     if not peers or target_input <= 0 or not any(target_output):
         return None
     objective = [0.0] * len(peers) + [1.0]
@@ -1333,9 +1283,7 @@ def _dea_cross_distance(
     return float(result.x[-1]) if result.success else None
 
 
-def _simar_wilson_bootstrap(
-    scores: dict[str, float], replicates: int = BOOTSTRAP_REPLICATES
-) -> dict[str, Any]:
+def _simar_wilson_bootstrap(scores: dict[str, float], replicates: int = BOOTSTRAP_REPLICATES) -> dict[str, Any]:
     if len(scores) < 2:
         return {
             "replicaciones": replicates,
@@ -1385,9 +1333,7 @@ def _simar_wilson_bootstrap(
             "sesgo_estimado": round(boot_mean - observed_mean, 8),
             "ic_95_pct": ic_95,
         },
-        "metodo": (
-            "bootstrap suavizado con reflexión de Silverman en theta=1; estimación aproximada"
-        ),
+        "metodo": ("bootstrap suavizado con reflexión de Silverman en theta=1; estimación aproximada"),
         "estado": "ESTIMADO",
     }
 
@@ -1411,19 +1357,13 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             subset_state = {
                 **state,
                 "df_financial": [
-                    row
-                    for row in state["df_financial"]
-                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                    row for row in state["df_financial"] if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
                 ],
                 "df_outputs": [
-                    row
-                    for row in state["df_outputs"]
-                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                    row for row in state["df_outputs"] if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
                 ],
                 "df_outcomes": [
-                    row
-                    for row in state["df_outcomes"]
-                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                    row for row in state["df_outcomes"] if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
                 ],
             }
             group_results.append((group, _dea_node(subset_state)["dea_scores"]))
@@ -1434,18 +1374,13 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         ]
         combined = dict(group_results[0][1])
         combined["resultados_dmu"] = combined_rows
-        combined["grupos_comparabilidad"] = {
-            group: result.get("estado") for group, result in group_results
-        }
+        combined["grupos_comparabilidad"] = {group: result.get("estado") for group, result in group_results}
         combined["unidades_dmu"] = len(combined_rows)
         combined["unidades_eficientes"] = sum(
-            row.get("theta_bcc") is not None and row["theta_bcc"] >= 1 - 1e-6
-            for row in combined_rows
+            row.get("theta_bcc") is not None and row["theta_bcc"] >= 1 - 1e-6 for row in combined_rows
         )
         combined["unidades_ineficientes"] = [
-            row["dmu"]
-            for row in combined_rows
-            if row.get("theta_bcc") is not None and row["theta_bcc"] < 1 - 1e-6
+            row["dmu"] for row in combined_rows if row.get("theta_bcc") is not None and row["theta_bcc"] < 1 - 1e-6
         ]
         combined["bootstrap_suavizado"] = {
             "estado": "ESTIMADO_POR_GRUPO",
@@ -1459,11 +1394,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         combined["bias_corrected"] = combined["bootstrap_suavizado"]
         combined["malmquist"] = {
             **group_results[0][1].get("malmquist", {}),
-            "pares": [
-                pair
-                for _, result in group_results
-                for pair in result.get("malmquist", {}).get("pares", [])
-            ],
+            "pares": [pair for _, result in group_results for pair in result.get("malmquist", {}).get("pares", [])],
             "estado": "ESTIMADO_POR_GRUPO",
         }
         solver_checks = [
@@ -1473,9 +1404,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         ]
         combined["equivalencia_solvers"] = {
             "pulp_cbc_vs_scipy_highs": solver_checks,
-            "equivalencia_total": all(
-                check["ccr_equivalente"] and check["bcc_equivalente"] for check in solver_checks
-            ),
+            "equivalencia_total": all(check["ccr_equivalente"] and check["bcc_equivalente"] for check in solver_checks),
         }
         return {
             "dea_scores": combined,
@@ -1484,21 +1413,13 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
                 *state["messages"],
                 f"DEA: fronteras separadas en {len(group_results)} grupos.",
             ],
-            "trace": _append_trace(
-                state, "nodo_dea", started, "Fronteras separadas por comparabilidad"
-            ),
+            "trace": _append_trace(state, "nodo_dea", started, "Fronteras separadas por comparabilidad"),
         }
-    outputs_by_dmu = {
-        item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outputs"]
-    }
-    outcomes_by_dmu = {
-        item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outcomes"]
-    }
+    outputs_by_dmu = {item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outputs"]}
+    outcomes_by_dmu = {item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outcomes"]}
     labels = [item["dmu"] + "|" + str(item["vigencia"]) for item in dmus]
     origins_by_label = {
-        item["dmu"] + "|" + str(item["vigencia"]): item.get(
-            "origen_insumo", "apropiacion_definitiva_cop"
-        )
+        item["dmu"] + "|" + str(item["vigencia"]): item.get("origen_insumo", "apropiacion_definitiva_cop")
         for item in dmus
     }
     raw_inputs = [max(0.0, float(item.get("insumo_cop") or 0)) for item in dmus]
@@ -1524,12 +1445,8 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
     for index, label in enumerate(labels):
         ccr, ccr_lambdas, ccr_status = _dea_solve(inputs, output_matrix, index, False)
         bcc, bcc_lambdas, bcc_status = _dea_solve(inputs, output_matrix, index, True)
-        pulp_ccr, pulp_ccr_lambdas, pulp_ccr_status = _dea_solve_pulp(
-            inputs, output_matrix, index, False
-        )
-        pulp_bcc, pulp_bcc_lambdas, pulp_bcc_status = _dea_solve_pulp(
-            inputs, output_matrix, index, True
-        )
+        pulp_ccr, pulp_ccr_lambdas, pulp_ccr_status = _dea_solve_pulp(inputs, output_matrix, index, False)
+        pulp_bcc, pulp_bcc_lambdas, pulp_bcc_status = _dea_solve_pulp(inputs, output_matrix, index, True)
         solver_checks.append(
             {
                 "dmu": label,
@@ -1552,8 +1469,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             [
                 max(
                     0.0,
-                    (ccr or 0.0) * inputs[index]
-                    - sum(ccr_lambdas[peer] * inputs[peer] for peer in range(len(inputs))),
+                    (ccr or 0.0) * inputs[index] - sum(ccr_lambdas[peer] * inputs[peer] for peer in range(len(inputs))),
                 )
             ]
             if ccr is not None
@@ -1563,10 +1479,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             [
                 max(
                     0.0,
-                    sum(
-                        ccr_lambdas[peer] * output_matrix[peer][output_idx]
-                        for peer in range(len(inputs))
-                    )
+                    sum(ccr_lambdas[peer] * output_matrix[peer][output_idx] for peer in range(len(inputs)))
                     - output_matrix[index][output_idx],
                 )
                 for output_idx in range(len(output_matrix[index]))
@@ -1611,11 +1524,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         if ccr is not None:
             scores.append(ccr)
     bootstrap = _simar_wilson_bootstrap(
-        {
-            label: efficiency
-            for label, efficiency in efficiency_by_label.items()
-            if efficiency is not None
-        }
+        {label: efficiency for label, efficiency in efficiency_by_label.items() if efficiency is not None}
     )
     periods: dict[int, list[int]] = defaultdict(list)
     for index, record in enumerate(dmus):
@@ -1670,10 +1579,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             ):
                 continue
             pech = float(bcc_t1) / float(bcc_t)
-            techch = math.sqrt(
-                (float(tech_t_x_t) / float(tech_t1_x_t))
-                * (float(tech_t_x_t1) / float(tech_t1_x_t1))
-            )
+            techch = math.sqrt((float(tech_t_x_t) / float(tech_t1_x_t)) * (float(tech_t_x_t1) / float(tech_t1_x_t1)))
             malmquist.append(
                 {
                     "unidad": entity,
@@ -1699,14 +1605,10 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         "slacks": {row["dmu"]: row["slacks"] for row in results},
         "equivalencia_solvers": {
             "pulp_cbc_vs_scipy_highs": solver_checks,
-            "equivalencia_total": all(
-                item["ccr_equivalente"] and item["bcc_equivalente"] for item in solver_checks
-            ),
+            "equivalencia_total": all(item["ccr_equivalente"] and item["bcc_equivalente"] for item in solver_checks),
         },
         "unidades_ineficientes": [
-            item["dmu"]
-            for item in results
-            if item["theta_bcc"] is not None and item["theta_bcc"] < 1 - 1e-6
+            item["dmu"] for item in results if item["theta_bcc"] is not None and item["theta_bcc"] < 1 - 1e-6
         ],
         "clasificacion_irs_crs_drs": {item["dmu"]: item["rendimientos_escala"] for item in results},
         "malmquist": {
@@ -1737,14 +1639,10 @@ def _knn_weights(points: list[tuple[float, float]], k: int = 4) -> list[dict[int
     matrix = []
     for index, point in enumerate(points):
         distances = [
-            (math.dist(point, other), other_index)
-            for other_index, other in enumerate(points)
-            if other_index != index
+            (math.dist(point, other), other_index) for other_index, other in enumerate(points) if other_index != index
         ]
         neighbors = [other for _, other in sorted(distances)[: min(k, len(distances))]]
-        matrix.append(
-            {neighbor: 1.0 / len(neighbors) for neighbor in neighbors} if neighbors else {}
-        )
+        matrix.append({neighbor: 1.0 / len(neighbors) for neighbor in neighbors} if neighbors else {})
     return matrix
 
 
@@ -1771,16 +1669,12 @@ def _moran_lisa(
 
     def global_i(sample: np.ndarray) -> float:
         z = sample - sample.mean()
-        numerator = sum(
-            z[i] * sum(weight * z[j] for j, weight in row.items()) for i, row in enumerate(weights)
-        )
+        numerator = sum(z[i] * sum(weight * z[j] for j, weight in row.items()) for i, row in enumerate(weights))
         return count / s0 * numerator / float(np.sum(z**2)) if s0 and np.sum(z**2) else 0.0
 
     observed = global_i(numbers)
     rng = np.random.default_rng(20261018)
-    extreme = sum(
-        abs(global_i(rng.permutation(numbers))) >= abs(observed) for _ in range(permutations)
-    )
+    extreme = sum(abs(global_i(rng.permutation(numbers))) >= abs(observed) for _ in range(permutations))
     p_value = (extreme + 1) / (permutations + 1)
     std = float(numbers.std())
     z_scores = centered / std
@@ -1793,12 +1687,8 @@ def _moran_lisa(
         null_values = []
         for _ in range(min(permutations, 199)):
             permuted = local_rng.permutation(centered)
-            null_values.append(
-                float(permuted[index] * sum(weight * permuted[j] for j, weight in row.items()) / m2)
-            )
-        local_p = (sum(abs(value) >= abs(local_i) for value in null_values) + 1) / (
-            len(null_values) + 1
-        )
+            null_values.append(float(permuted[index] * sum(weight * permuted[j] for j, weight in row.items()) / m2))
+        local_p = (sum(abs(value) >= abs(local_i) for value in null_values) + 1) / (len(null_values) + 1)
         is_significant = local_p <= 0.05
         if is_significant and z_scores[index] >= 0 and lag >= 0:
             cluster = "Alto-Alto (Hotspots)"
@@ -1905,20 +1795,14 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
             "moran_global_i": None,
             "p_valor_permutacion": None,
             "lisa": [],
-            "observacion": (
-                "La BD no ofrece al menos cinco territorios con geometría y un indicador "
-                "comparable."
-            ),
+            "observacion": ("La BD no ofrece al menos cinco territorios con geometría y un indicador comparable."),
         }
     coldspots = {item["unidad"] for item in lisa.get("lisa", []) if "Bajo-Bajo" in item["cluster"]}
     inefficient = set(state["dea_scores"].get("unidades_ineficientes", []))
     traps = [
         unit
         for unit in inefficient
-        if any(
-            name.casefold() in unit.casefold() or unit.casefold() in name.casefold()
-            for name in coldspots
-        )
+        if any(name.casefold() in unit.casefold() or unit.casefold() in name.casefold() for name in coldspots)
     ]
     result = _plain(
         {
@@ -1936,12 +1820,8 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
                 }
                 for unit in traps
             ],
-            "geometrias": (
-                "ST_AsGeoJSON de polígonos PostGIS simplificados y centroides EPSG:4326"
-            ),
-            "motor_geoespacial": (
-                f"GeoPandas GeoDataFrame ({len(territories)} territorios, EPSG:4326)"
-            ),
+            "geometrias": ("ST_AsGeoJSON de polígonos PostGIS simplificados y centroides EPSG:4326"),
+            "motor_geoespacial": (f"GeoPandas GeoDataFrame ({len(territories)} territorios, EPSG:4326)"),
         }
     )
     external = await _optional_pdt_enrichment(
@@ -1967,12 +1847,8 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
 
 
 def _chow_test(years: list[int], values: list[float], break_year: int = 2024) -> dict[str, Any]:
-    before = [
-        (year, value) for year, value in zip(years, values, strict=False) if year < break_year
-    ]
-    after = [
-        (year, value) for year, value in zip(years, values, strict=False) if year >= break_year
-    ]
+    before = [(year, value) for year, value in zip(years, values, strict=False) if year < break_year]
+    after = [(year, value) for year, value in zip(years, values, strict=False) if year >= break_year]
     if len(before) < 3 or len(after) < 2:
         return {
             "estado": "PENDIENTE_SERIE_CORTA",
@@ -2000,9 +1876,7 @@ def _chow_test(years: list[int], values: list[float], break_year: int = 2024) ->
             "estadistico_f": None,
             "p_valor": None,
         }
-    statistic = max(0.0, (rss_restricted - rss_unrestricted) / numerator_df) / (
-        rss_unrestricted / denominator_df
-    )
+    statistic = max(0.0, (rss_restricted - rss_unrestricted) / numerator_df) / (rss_unrestricted / denominator_df)
     return {
         "estado": "ESTIMADO",
         "anio_ruptura": break_year,
@@ -2091,27 +1965,19 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
             "hurto",
             "rezago",
         )
-        direction = (
-            "REDUCCION"
-            if any(term in _normalize(indicator) for term in reduction_terms)
-            else "INCREMENTO"
-        )
+        direction = "REDUCCION" if any(term in _normalize(indicator) for term in reduction_terms) else "INCREMENTO"
         if forecast_sigma > 0:
             z_value = (target - forecast) / forecast_sigma
             probability_meet = float(norm.cdf(z_value if direction == "REDUCCION" else -z_value))
         else:
-            probability_meet = float(
-                forecast <= target if direction == "REDUCCION" else forecast >= target
-            )
+            probability_meet = float(forecast <= target if direction == "REDUCCION" else forecast >= target)
         isri = max(0.0, min(1.0, 1.0 - probability_meet))
         holdout = None
         if len(values) >= 4:
             train = np.asarray(values[:-1], dtype=float)
             observed = float(values[-1])
             last_value = float(train[-1])
-            holdout_prediction = float(
-                np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train))
-            )
+            holdout_prediction = float(np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train)))
             holdout = {
                 "vigencia_holdout": years[-1],
                 "mae_holdout": round(abs(observed - holdout_prediction), 6),
@@ -2126,10 +1992,7 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
                 "sentido_indicador": direction,
                 "estado": "ESTIMADO",
                 "n_observaciones": len(years),
-                "serie": [
-                    {"vigencia": year, "valor": value}
-                    for year, value in zip(years, values, strict=True)
-                ],
+                "serie": [{"vigencia": year, "valor": value} for year, value in zip(years, values, strict=True)],
                 "modelo_solicitado": "ARIMA/VAR",
                 "modelo_aplicado": model_name,
                 "pronostico_arima_var": {"vigencia": final_year, "valor": round(forecast, 6)},
@@ -2175,11 +2038,7 @@ async def _predictive_node(state: AgentState) -> dict[str, Any]:
         forecast = external.get("time_series_forecast", external)
     else:
         forecast = _forecast_series(state)
-    risky = [
-        item
-        for item in forecast.get("series", [])
-        if (item.get("ISRI") or 0) > ISRI_ALERT_THRESHOLD
-    ]
+    risky = [item for item in forecast.get("series", []) if (item.get("ISRI") or 0) > ISRI_ALERT_THRESHOLD]
     coldspots = set(state["spatial_lisa"].get("coldspots", []))
     high_execution_entities = set()
     by_entity: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -2220,9 +2079,7 @@ async def _predictive_node(state: AgentState) -> dict[str, Any]:
             )
     output = {
         **forecast,
-        "alto_riesgo_indicadores": (
-            forecast.get("alto_riesgo_indicadores") or [item["indicador"] for item in risky]
-        ),
+        "alto_riesgo_indicadores": (forecast.get("alto_riesgo_indicadores") or [item["indicador"] for item in risky]),
         "entidades_ejecucion_alta": sorted(high_execution_entities),
         "patrones_compuestos_criticos": compound,
         "requiere_auditoria_humana": bool(compound),
@@ -2273,9 +2130,7 @@ def _make_graph():
                 "trace": _append_trace(state, "nodo_supervisor", started, message),
             }
         if state["requires_human_review"] and state["cycle_count"] < 1:
-            message = (
-                "Patrón crítico detectado; solicita una pasada de recalibración antes de HITL."
-            )
+            message = "Patrón crítico detectado; solicita una pasada de recalibración antes de HITL."
             return {
                 "next_node": "nodo_nlp",
                 "cycle_count": state["cycle_count"] + 1,
@@ -2307,9 +2162,7 @@ def _make_graph():
             {
                 "thread_id": state["thread_id"],
                 "estado": "CONGELADO_PARA_AUDITORIA_HUMANA",
-                "patrones_criticos": state["time_series_forecast"].get(
-                    "patrones_compuestos_criticos", []
-                ),
+                "patrones_criticos": state["time_series_forecast"].get("patrones_compuestos_criticos", []),
                 "recomendaciones_propuestas": state["recommendations"],
             }
         )
@@ -2323,12 +2176,9 @@ def _make_graph():
             "next_node": END,
             "messages": [
                 *state["messages"],
-                f"Auditor {decision.get('auditor')}: "
-                f"{'aprobó' if approved else 'rechazó'} el dictamen.",
+                f"Auditor {decision.get('auditor')}: {'aprobó' if approved else 'rechazó'} el dictamen.",
             ],
-            "trace": _append_trace(
-                state, "nodo_human_in_loop", started, "Validación de auditor recibida."
-            ),
+            "trace": _append_trace(state, "nodo_human_in_loop", started, "Validación de auditor recibida."),
         }
 
     graph.add_node("nodo_supervisor", supervisor)
@@ -2411,8 +2261,7 @@ async def _public_result(state: AgentState) -> dict[str, Any]:
         "messages": state["messages"],
         "estado_checkpointer": state["estado_checkpointer"],
         "is_valid_human": state["is_valid_human"],
-        "requiere_validacion_humana": state["requires_human_review"]
-        and not state["is_valid_human"],
+        "requiere_validacion_humana": state["requires_human_review"] and not state["is_valid_human"],
         "recommendations": state["recommendations"],
         "gobernanza_institucional": GOVERNANCE_PHASES,
         "generado_en": datetime.now(UTC).isoformat(),
@@ -2511,16 +2360,11 @@ async def ejecutar_pdt_ai_evaluator(
         _save_cached(cache_key, thread_id, result)
         if isinstance(db, AsyncSession):
             try:
-                from .pdt_persistencia_pg import (
-                    guardar_evaluacion_pdt_pg,
-                    registrar_checkpoint_hitl_pdt_pg,
-                )
+                from .pdt_persistencia_pg import persistir_evaluacion_y_checkpoint_pdt_pg
 
-                pg_eval = await guardar_evaluacion_pdt_pg(result, db=db)
-                patrones = (result_state.get("time_series_forecast") or {}).get(
-                    "patrones_compuestos_criticos", []
-                )
-                pg_ckpt = await registrar_checkpoint_hitl_pdt_pg(
+                patrones = (result_state.get("time_series_forecast") or {}).get("patrones_compuestos_criticos", [])
+                pg_eval, pg_ckpt = await persistir_evaluacion_y_checkpoint_pdt_pg(
+                    payload_resumen=result,
                     thread_id=thread_id,
                     estado=ckpt_status,
                     aprobado=None,
@@ -2528,20 +2372,18 @@ async def ejecutar_pdt_ai_evaluator(
                     observaciones=result_state.get("observaciones_auditor") or None,
                     patrones_criticos=patrones,
                     recomendaciones=result_state.get("recommendations", []),
-                    db=db,
+                    db=db if isinstance(db, AsyncSession) else None,
                 )
-                if owns_engine:
-                    await db.commit()
                 result["persistencia_pg"] = {
                     "estado": "SINCRONIZADO_PG",
                     "sha256_payload": pg_eval.get("sha256_payload"),
                     "sha256_checkpoint": pg_ckpt.get("sha256_checkpoint"),
                 }
             except Exception:
-                try:
-                    await db.rollback()
-                except Exception:
-                    pass
+                logger.warning(
+                    "Persistencia de corrida PDT-AI-EVALUATOR no completada; rollback a cargo del límite",
+                    exc_info=True,
+                )
         return result
     finally:
         if owns_engine and engine is not None:
@@ -2559,6 +2401,9 @@ async def validar_checkpoint_pdt_ai_evaluator(
 ) -> dict[str, Any]:
     """Registra dictamen humano y descongela el checkpoint durable asociado al hilo."""
     checkpoints = _safe_json_read(CHECKPOINT_PATH, {"version": 1, "threads": {}})
+    import copy
+
+    previous_checkpoints = copy.deepcopy(checkpoints)
     entry = checkpoints.get("threads", {}).get(thread_id)
     if entry is None:
         raise ValueError(f"No existe checkpoint PDT pendiente para thread_id={thread_id}.")
@@ -2570,8 +2415,7 @@ async def validar_checkpoint_pdt_ai_evaluator(
     state["messages"] = [
         *state.get("messages", []),
         (
-            f"Auditor {auditor.strip()}: {'aprobó' if aprobado else 'rechazó'} el análisis. "
-            f"{observaciones.strip()}"
+            f"Auditor {auditor.strip()}: {'aprobó' if aprobado else 'rechazó'} el análisis. {observaciones.strip()}"
         ).strip(),
     ]
     recommendations = state.get("recommendations", [])
@@ -2590,54 +2434,49 @@ async def validar_checkpoint_pdt_ai_evaluator(
     checkpoints["threads"][thread_id] = entry
     _atomic_json_write(CHECKPOINT_PATH, checkpoints)
 
-    resumed = False
-    graph = _compiled_graph()
-    config = {"configurable": {"thread_id": thread_id}}
     try:
-        snapshot = await graph.aget_state(config)
-        if snapshot is not None and snapshot.tasks:
-            resumed_state = await graph.ainvoke(
-                Command(
-                    resume={
-                        "aprobado": bool(aprobado),
-                        "auditor": auditor.strip(),
-                        "observaciones": observaciones.strip(),
-                    }
-                ),
-                config,
-            )
-            state = _compact_checkpoint_state(resumed_state)
-            resumed = True
-            entry["state"] = state
-            entry["status"] = state.get("estado_checkpointer", entry["status"])
-            entry["saved_at"] = datetime.now(UTC).isoformat()
-            checkpoints["threads"][thread_id] = entry
-            _atomic_json_write(CHECKPOINT_PATH, checkpoints)
-    except (KeyError, RuntimeError, ValueError):
-        # The durable checkpoint is authoritative when this request reaches another worker.
-        pass
-    cache_key = _cache_key(state["jurisdiction"], state["time_horizon"], thread_id)
-    result = await _public_result(state)
-    result["cache"] = {"estado": "CHECKPOINT_VALIDADO", "ruta": str(CACHE_PATH)}
-    result["auditoria_humana"] = {
-        "auditor": auditor.strip(),
-        "aprobado": bool(aprobado),
-        "observaciones": observaciones.strip(),
-        "recomendaciones_operativas": decision_recommendations,
-        "reanudado_en_memory_saver": resumed,
-        "persistencia": str(CHECKPOINT_PATH),
-    }
-    _save_cached(cache_key, thread_id, result)
-    try:
-        from .pdt_persistencia_pg import (
-            guardar_evaluacion_pdt_pg,
-            registrar_checkpoint_hitl_pdt_pg,
-        )
+        resumed = False
+        graph = _compiled_graph()
+        config = {"configurable": {"thread_id": thread_id}}
+        try:
+            snapshot = await graph.aget_state(config)
+            if snapshot is not None and snapshot.tasks:
+                resumed_state = await graph.ainvoke(
+                    Command(
+                        resume={
+                            "aprobado": bool(aprobado),
+                            "auditor": auditor.strip(),
+                            "observaciones": observaciones.strip(),
+                        }
+                    ),
+                    config,
+                )
+                state = _compact_checkpoint_state(resumed_state)
+                resumed = True
+                entry["state"] = state
+                entry["status"] = state.get("estado_checkpointer", entry["status"])
+                entry["saved_at"] = datetime.now(UTC).isoformat()
+                checkpoints["threads"][thread_id] = entry
+                _atomic_json_write(CHECKPOINT_PATH, checkpoints)
+        except (KeyError, RuntimeError, ValueError):
+            # The durable checkpoint is authoritative when this request reaches another worker.
+            pass
+        cache_key = _cache_key(state["jurisdiction"], state["time_horizon"], thread_id)
+        result = await _public_result(state)
+        result["cache"] = {"estado": "CHECKPOINT_VALIDADO", "ruta": str(CACHE_PATH)}
+        result["auditoria_humana"] = {
+            "auditor": auditor.strip(),
+            "aprobado": bool(aprobado),
+            "observaciones": observaciones.strip(),
+            "recomendaciones_operativas": decision_recommendations,
+            "reanudado_en_memory_saver": resumed,
+            "persistencia": str(CHECKPOINT_PATH),
+        }
+        from .pdt_persistencia_pg import persistir_evaluacion_y_checkpoint_pdt_pg
 
-        pg_session = db if isinstance(db, AsyncSession) else None
-        pg_eval = await guardar_evaluacion_pdt_pg(result, db=pg_session)
         patrones = (state.get("time_series_forecast") or {}).get("patrones_compuestos_criticos", [])
-        pg_ckpt = await registrar_checkpoint_hitl_pdt_pg(
+        pg_eval, pg_ckpt = await persistir_evaluacion_y_checkpoint_pdt_pg(
+            payload_resumen=result,
             thread_id=thread_id,
             estado=str(state.get("estado_checkpointer") or "APROBADO_POR_AUDITOR"),
             aprobado=bool(aprobado),
@@ -2645,16 +2484,29 @@ async def validar_checkpoint_pdt_ai_evaluator(
             observaciones=observaciones.strip(),
             patrones_criticos=patrones,
             recomendaciones=decision_recommendations,
-            db=pg_session,
+            db=db if isinstance(db, AsyncSession) else None,
         )
-        if pg_session is not None:
-            await pg_session.commit()
         result["auditoria_humana"]["sha256_checkpoint"] = pg_ckpt.get("sha256_checkpoint")
         result["auditoria_humana"]["sha256_payload"] = pg_eval.get("sha256_payload")
-    except Exception:
-        if isinstance(db, AsyncSession):
-            try:
-                await db.rollback()
-            except Exception:
-                pass
+    except (Exception, asyncio.CancelledError) as exc:
+        logger.error(
+            "Validación HITL o persistencia no completada; revirtiendo checkpoint de disco: %s",
+            exc,
+            exc_info=True,
+        )
+        _atomic_json_write(CHECKPOINT_PATH, previous_checkpoints)
+        if isinstance(exc, asyncio.CancelledError):
+            raise
+        raise RuntimeError(f"Fallo en persistencia transaccional del checkpoint en base de datos: {exc}") from exc
+
+    # Escritura de caché desacoplada: el fallo de caché no degrada la persistencia duradera en BD y disco
+    try:
+        _save_cached(cache_key, thread_id, result)
+    except Exception as cache_exc:
+        logger.warning(
+            "No se pudo guardar la caché del checkpoint validado (%s); "
+            "persistencia duradera en BD y disco garantizada: %s",
+            thread_id,
+            cache_exc,
+        )
     return result

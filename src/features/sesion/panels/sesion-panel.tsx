@@ -39,6 +39,32 @@ const TITULOS: Record<Vista, string> = {
   mfa: "Verificación en dos pasos (MFA)",
 };
 
+/**
+ * Continúa tras una respuesta de login conforme al contrato con EDD (181):
+ * - Desafío MFA vigente (mfa_requerido + token_desafio_mfa): pide el código.
+ * - Sesión limitada al enrolamiento (mfa_enrolamiento_requerido): guarda la
+ *   sesión pero NO anuncia acceso pleno ni navega; mantiene el panel abierto
+ *   para configurar el factor.
+ * - Sesión plena: siembra la sesión, anuncia el acceso y navega.
+ */
+function continuarTrasLogin(
+  resp: ReturnType<typeof identidadApi.login> extends Promise<infer R> ? R : never,
+  anuncioPleno: string,
+  navegar: (ruta: string) => void,
+  cerrarPanel: () => void,
+): "desafio" | "enrolamiento" | "pleno" {
+  if (resp.mfa_requerido && resp.token_desafio_mfa) return "desafio";
+  if (resp.mfa_enrolamiento_requerido) {
+    useSesionStore.getState().iniciarSesion(resp);
+    return "enrolamiento";
+  }
+  useSesionStore.getState().iniciarSesion(resp);
+  toast.success(anuncioPleno);
+  navegar(resp.rol === "ciudadano" ? "/" : "/plataforma");
+  cerrarPanel();
+  return "pleno";
+}
+
 export function SesionPanel({
   entryKey,
   props = {},
@@ -63,41 +89,52 @@ export function SesionPanel({
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [tokenDesafioMfa, setTokenDesafioMfa] = useState<string | null>(null);
+  /* Consumo del Magic Link (hallazgo 3 de EAF-ID-06): se marca alutzen una
+   * única vez; tras el consumo la ficha pasa a Mi cuenta (si hay sesión) o
+   * permite solicitar otro enlace (si el consumo falló). El props.token no
+   * reactiva el consumo ni re-anuncia sesión plena. */
+  const [enlaceConsumido, setEnlaceConsumido] = useState<
+    "desafio" | "enrolamiento" | "pleno" | "fallado" | null
+  >(null);
   const tieneAccion =
     vista === "restablecer" ||
     vista === "verificar" ||
     vista === "mfa" ||
-    (props.accion === "magic_link" && !!props.token);
+    (props.accion === "magic_link" && !!props.token && !enlaceConsumido);
 
   useEffect(() => {
-    if (props.accion === "magic_link" && props.token) {
+    if (props.accion === "magic_link" && props.token && !enlaceConsumido) {
       setOcupado(true);
       setError("");
-      identidadApi
-        .confirmarMagicLink(props.token)
-        .then((resp) => {
-          if (resp.mfa_requerido && resp.token_desafio_mfa) {
-            setTokenDesafioMfa(resp.token_desafio_mfa);
-            setVista("mfa");
-            return;
-          }
-          useSesionStore.getState().iniciarSesion(resp);
-          toast.success("¡Bienvenido! Sesión iniciada con enlace directo.");
-          router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
-          closeTop();
-        })
-        .catch((err) => {
+    identidadApi
+      .confirmarMagicLink(props.token)
+      .then((resp) => {
+        const resultado =
+          continuarTrasLogin(
+            resp,
+            "¡Bienvenido! Sesión iniciada con enlace directo.",
+            router.push.bind(router),
+            closeTop,
+          );
+        setEnlaceConsumido(resultado);
+        if (resultado === "desafio") {
+          setTokenDesafioMfa(resp.token_desafio_mfa ?? null);
+          setVista("mfa");
+        }
+      })
+      .catch((err) => {
           setError(
             err instanceof Error
               ? err.message
               : "El enlace de acceso es inválido o ha caducado",
           );
+          setEnlaceConsumido("fallado");
         })
         .finally(() => {
           setOcupado(false);
         });
     }
-  }, [props.accion, props.token, router, closeTop]);
+  }, [props.accion, props.token, router, closeTop, enlaceConsumido]);
 
   function cambiar(v: Vista) {
     setVista(v);
@@ -118,15 +155,17 @@ export function SesionPanel({
     setError("");
     try {
       const resp = await identidadApi.loginGoogle(credential.credential);
-      if (resp.mfa_requerido && resp.token_desafio_mfa) {
-        setTokenDesafioMfa(resp.token_desafio_mfa);
+      if (
+        continuarTrasLogin(
+          resp,
+          "Sesión iniciada con Google",
+          router.push.bind(router),
+          closeTop,
+        ) === "desafio"
+      ) {
+        setTokenDesafioMfa(resp.token_desafio_mfa ?? null);
         setVista("mfa");
-        return;
       }
-      useSesionStore.getState().iniciarSesion(resp);
-      toast.success("Sesión iniciada con Google");
-      router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
-      closeTop();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error con Google");
     } finally {
@@ -146,15 +185,22 @@ export function SesionPanel({
           textoFormulario(datos, "correo"),
           textoFormulario(datos, "contrasena"),
         );
-        if (respuesta.mfa_requerido && respuesta.token_desafio_mfa) {
-          setTokenDesafioMfa(respuesta.token_desafio_mfa);
+        if (
+          continuarTrasLogin(
+            respuesta,
+            "Sesión iniciada",
+            router.push.bind(router),
+            closeTop,
+          ) === "desafio"
+        ) {
+          setTokenDesafioMfa(respuesta.token_desafio_mfa ?? null);
           setVista("mfa");
-          return;
+        } else if (respuesta.mfa_enrolamiento_requerido) {
+          setMensaje("");
+          toast.warning(
+            "Sesión limitada: configura la verificación en dos pasos para completar tu acceso.",
+          );
         }
-        useSesionStore.getState().iniciarSesion(respuesta);
-        toast.success("Sesión iniciada");
-        router.push(respuesta.rol === "ciudadano" ? "/" : "/plataforma");
-        closeTop();
       } else if (vista === "mfa") {
         const codigo = textoFormulario(datos, "codigo_mfa").trim();
         if (!tokenDesafioMfa) {
@@ -163,10 +209,17 @@ export function SesionPanel({
           return;
         }
         const resp = await identidadApi.mfaVerificar(tokenDesafioMfa, codigo);
-        useSesionStore.getState().iniciarSesion(resp);
-        toast.success("Verificación de dos pasos completada");
-        router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
-        closeTop();
+        if (
+          continuarTrasLogin(
+            resp,
+            "Verificación de dos pasos completada",
+            router.push.bind(router),
+            closeTop,
+          ) === "desafio"
+        ) {
+          setTokenDesafioMfa(resp.token_desafio_mfa ?? null);
+          setVista("mfa");
+        }
       } else if (vista === "registro") {
         const contrasena = comprobarContrasena(datos);
         await identidadApi.registrar({
@@ -338,7 +391,7 @@ export function SesionPanel({
                   Confirma la verificación del correo asociado a este enlace.
                 </p>
               )}
-              {vista === "mfa" && (
+              {              vista === "mfa" && (
                 <div className="space-y-4">
                   <p className="text-sm text-text-secondary">
                     Introduce el código de 6 dígitos generado por tu aplicación autenticadora (TOTP) o uno de tus códigos de recuperación de respaldo de 8 caracteres.
@@ -351,7 +404,7 @@ export function SesionPanel({
                     placeholder="123456 o ABCD-EFGH"
                     required
                   />
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex flex-wrap gap-2 pt-2">
                     <Button type="submit" disabled={ocupado}>
                       {ocupado ? "Verificando…" : "Verificar y entrar"}
                     </Button>

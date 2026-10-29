@@ -1,0 +1,1126 @@
+{
+  "esquema": "polis.contraste_retrospectivo.v1",
+  "estado": "prototipo_pendiente_revision_e_integracion",
+  "api_publica": {
+    "funcion": "contrastar_fuentes_por_periodo",
+    "entrada": "SolicitudContraste",
+    "salida": "ResultadoContraste",
+    "comportamiento": "Comparacion conservadora por definicion metodologica y celdas declaradas completas, resta decimal exacta cuando esta autorizada, sin consolidacion, inferencia causal, conversion de unidades ni verificacion de bytes. producto_id es procedencia informativa y no bloquea. La regla de FechaReferencia es compartida entre _diferencias_metodicas y _celda_identica."
+  },
+  "limites": {
+    "MAXIMO_OBSERVACIONES": 256,
+    "MAXIMO_PARES": 5000,
+    "MAXIMO_DIGITOS_DECIMAL": 48,
+    "MAXIMO_EXPONENTE_DECIMAL": 100,
+    "MINIMO_EXPONENTE_DECIMAL": -100,
+    "MAXIMO_DIGITOS_DIFERENCIA": 256,
+    "MAXIMO_EXPONENTE_DIFERENCIA": 100,
+    "MINIMO_EXPONENTE_DIFERENCIA": -100,
+    "MAXIMO_BYTES_ENTRADA": 2000000
+  },
+  "verificacion_nucleo": {
+    "metadatos_declarados": "revisados_contra_valores_aportados",
+    "bytes_originales": "no_verificados",
+    "evidencias_externas": "no_verificadas",
+    "urls_y_bases_externas": "no_abiertas",
+    "variables_de_credenciales": "no_consumidas"
+  },
+  "modelos": {
+    "$defs": {
+      "EvidenciaDeclarada": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "ruta": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Ruta"
+          },
+          "sha256_declarado": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sha256 Declarado"
+          },
+          "estado_lectura": {
+            "default": "no_verificado",
+            "enum": [
+              "no_verificado",
+              "leida_por_fuente",
+              "leida_por_tercero"
+            ],
+            "title": "Estado Lectura",
+            "type": "string"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nota"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "EvidenciaDeclarada",
+        "type": "object"
+      },
+      "ExplicacionAportada": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "grado": {
+            "enum": [
+              "documentada_por_fuente",
+              "verificada_por_tercero",
+              "hipotesis",
+              "sin_explicacion"
+            ],
+            "title": "Grado",
+            "type": "string"
+          },
+          "texto": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Texto"
+          },
+          "autor": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Autor"
+          },
+          "evidencia_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidencia Id"
+          }
+        },
+        "required": [
+          "id",
+          "grado"
+        ],
+        "title": "ExplicacionAportada",
+        "type": "object"
+      },
+      "FechaProceso": {
+        "additionalProperties": false,
+        "properties": {
+          "tipo": {
+            "enum": [
+              "registro",
+              "corte",
+              "extraccion",
+              "fallecimiento",
+              "pericia",
+              "reclasificacion"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "fecha": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fecha"
+          },
+          "granularidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Granularidad"
+          }
+        },
+        "required": [
+          "tipo"
+        ],
+        "title": "FechaProceso",
+        "type": "object"
+      },
+      "FechaReferencia": {
+        "additionalProperties": false,
+        "properties": {
+          "tipo": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tipo"
+          },
+          "fecha": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fecha"
+          },
+          "precision": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Precision"
+          }
+        },
+        "title": "FechaReferencia",
+        "type": "object"
+      },
+      "ObservacionRetrospectiva": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "fuente_id": {
+            "minLength": 1,
+            "title": "Fuente Id",
+            "type": "string"
+          },
+          "producto_id": {
+            "minLength": 1,
+            "title": "Producto Id",
+            "type": "string"
+          },
+          "version_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Version Id"
+          },
+          "version_sha256_declarado": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Version Sha256 Declarado"
+          },
+          "indicador_fenomeno": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Indicador Fenomeno"
+          },
+          "definicion_metodologica": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Definicion Metodologica"
+          },
+          "unidad_observacion": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unidad Observacion"
+          },
+          "unidad_medida": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unidad Medida"
+          },
+          "universo": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Universo"
+          },
+          "poblacion": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Poblacion"
+          },
+          "criterio_localizacion": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Criterio Localizacion"
+          },
+          "territorio": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Territorio"
+          },
+          "periodo_fenomeno": {
+            "$ref": "#/$defs/PeriodoTemporal"
+          },
+          "fecha_referencia": {
+            "$ref": "#/$defs/FechaReferencia"
+          },
+          "fechas_proceso": {
+            "items": {
+              "$ref": "#/$defs/FechaProceso"
+            },
+            "title": "Fechas Proceso",
+            "type": "array"
+          },
+          "evidencias": {
+            "items": {
+              "$ref": "#/$defs/EvidenciaDeclarada"
+            },
+            "title": "Evidencias",
+            "type": "array"
+          },
+          "explicaciones": {
+            "items": {
+              "$ref": "#/$defs/ExplicacionAportada"
+            },
+            "title": "Explicaciones",
+            "type": "array"
+          },
+          "valor_original": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valor Original"
+          },
+          "valor_original_texto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valor Original Texto"
+          }
+        },
+        "required": [
+          "id",
+          "fuente_id",
+          "producto_id",
+          "periodo_fenomeno",
+          "fecha_referencia"
+        ],
+        "title": "ObservacionRetrospectiva",
+        "type": "object"
+      },
+      "ParSolicitado": {
+        "additionalProperties": false,
+        "properties": {
+          "observacion_a_id": {
+            "minLength": 1,
+            "title": "Observacion A Id",
+            "type": "string"
+          },
+          "observacion_b_id": {
+            "minLength": 1,
+            "title": "Observacion B Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "observacion_a_id",
+          "observacion_b_id"
+        ],
+        "title": "ParSolicitado",
+        "type": "object"
+      },
+      "PeriodoTemporal": {
+        "additionalProperties": false,
+        "properties": {
+          "tipo": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tipo"
+          },
+          "inicio": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Inicio"
+          },
+          "fin": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fin"
+          },
+          "granularidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Granularidad"
+          }
+        },
+        "title": "PeriodoTemporal",
+        "type": "object"
+      },
+      "ConteosContraste": {
+        "additionalProperties": false,
+        "properties": {
+          "observaciones_declaradas": {
+            "title": "Observaciones Declaradas",
+            "type": "integer"
+          },
+          "pares_emitidos": {
+            "title": "Pares Emitidos",
+            "type": "integer"
+          },
+          "pares_comparables": {
+            "title": "Pares Comparables",
+            "type": "integer"
+          },
+          "pares_pendientes": {
+            "title": "Pares Pendientes",
+            "type": "integer"
+          },
+          "pares_no_comparables": {
+            "title": "Pares No Comparables",
+            "type": "integer"
+          },
+          "pares_inter_fuentes": {
+            "title": "Pares Inter Fuentes",
+            "type": "integer"
+          },
+          "pares_entre_productos": {
+            "title": "Pares Entre Productos",
+            "type": "integer"
+          },
+          "pares_revision_interna": {
+            "title": "Pares Revision Interna",
+            "type": "integer"
+          },
+          "pares_revision_interna_con_cambio_metodologico": {
+            "title": "Pares Revision Interna Con Cambio Metodologico",
+            "type": "integer"
+          },
+          "pares_revision_conflicto_version": {
+            "title": "Pares Revision Conflicto Version",
+            "type": "integer"
+          },
+          "pares_revision_version_desconocida": {
+            "title": "Pares Revision Version Desconocida",
+            "type": "integer"
+          },
+          "pares_con_diferencia_numerica": {
+            "title": "Pares Con Diferencia Numerica",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "observaciones_declaradas",
+          "pares_emitidos",
+          "pares_comparables",
+          "pares_pendientes",
+          "pares_no_comparables",
+          "pares_inter_fuentes",
+          "pares_entre_productos",
+          "pares_revision_interna",
+          "pares_revision_interna_con_cambio_metodologico",
+          "pares_revision_conflicto_version",
+          "pares_revision_version_desconocida",
+          "pares_con_diferencia_numerica"
+        ],
+        "title": "ConteosContraste",
+        "type": "object"
+      },
+      "DiferenciaMetadato": {
+        "additionalProperties": false,
+        "properties": {
+          "campo": {
+            "title": "Campo",
+            "type": "string"
+          },
+          "estado": {
+            "enum": [
+              "coincidente",
+              "distinto",
+              "pendiente",
+              "informativo"
+            ],
+            "title": "Estado",
+            "type": "string"
+          },
+          "a": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "A"
+          },
+          "b": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "B"
+          },
+          "requiere_igualdad": {
+            "title": "Requiere Igualdad",
+            "type": "boolean"
+          },
+          "bloquea_comparabilidad": {
+            "title": "Bloquea Comparabilidad",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "campo",
+          "estado",
+          "a",
+          "b",
+          "requiere_igualdad",
+          "bloquea_comparabilidad"
+        ],
+        "title": "DiferenciaMetadato",
+        "type": "object"
+      },
+      "DiferenciaValor": {
+        "additionalProperties": false,
+        "properties": {
+          "tipo": {
+            "const": "resta_decimal_exacta",
+            "title": "Tipo",
+            "type": "string"
+          },
+          "diferencia_texto": {
+            "title": "Diferencia Texto",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo",
+          "diferencia_texto"
+        ],
+        "title": "DiferenciaValor",
+        "type": "object"
+      },
+      "ExplicacionDelPar": {
+        "additionalProperties": false,
+        "description": "Explicación con origen de observación; los IDs locales no son globales.",
+        "properties": {
+          "observacion_id": {
+            "minLength": 1,
+            "title": "Observacion Id",
+            "type": "string"
+          },
+          "explicacion": {
+            "$ref": "#/$defs/ExplicacionAportada"
+          }
+        },
+        "required": [
+          "observacion_id",
+          "explicacion"
+        ],
+        "title": "ExplicacionDelPar",
+        "type": "object"
+      },
+      "ParContrastado": {
+        "additionalProperties": false,
+        "properties": {
+          "tipo": {
+            "enum": [
+              "contraste_inter_fuentes",
+              "contraste_entre_productos",
+              "revision_interna_de_fuente",
+              "pareo_interno",
+              "revision_conflicto_version"
+            ],
+            "title": "Tipo",
+            "type": "string"
+          },
+          "estado_revision": {
+            "enum": [
+              "no_revision",
+              "pareo_interno",
+              "revision_identificada",
+              "revision_con_cambio_metodologico",
+              "revision_conflicto_version",
+              "revision_version_desconocida"
+            ],
+            "title": "Estado Revision",
+            "type": "string"
+          },
+          "observacion_a_id": {
+            "title": "Observacion A Id",
+            "type": "string"
+          },
+          "observacion_b_id": {
+            "title": "Observacion B Id",
+            "type": "string"
+          },
+          "estado_comparabilidad": {
+            "enum": [
+              "comparable_segun_metadatos_declarados",
+              "pendiente",
+              "no_comparable"
+            ],
+            "title": "Estado Comparabilidad",
+            "type": "string"
+          },
+          "diferencias_metadatos": {
+            "items": {
+              "$ref": "#/$defs/DiferenciaMetadato"
+            },
+            "title": "Diferencias Metadatos",
+            "type": "array"
+          },
+          "diferencia_valor": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DiferenciaValor"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "razones_abstencion": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Razones Abstencion",
+            "type": "array"
+          },
+          "explicaciones": {
+            "items": {
+              "$ref": "#/$defs/ExplicacionDelPar"
+            },
+            "title": "Explicaciones",
+            "type": "array"
+          }
+        },
+        "required": [
+          "tipo",
+          "estado_revision",
+          "observacion_a_id",
+          "observacion_b_id",
+          "estado_comparabilidad",
+          "diferencias_metadatos",
+          "diferencia_valor",
+          "razones_abstencion",
+          "explicaciones"
+        ],
+        "title": "ParContrastado",
+        "type": "object"
+      },
+      "RevisadoPorNucleo": {
+        "additionalProperties": false,
+        "properties": {
+          "metadatos_declarados": {
+            "const": "revisados_contra_valores_aportados",
+            "title": "Metadatos Declarados",
+            "type": "string"
+          },
+          "bytes_originales": {
+            "const": "no_verificados",
+            "default": "no_verificados",
+            "title": "Bytes Originales",
+            "type": "string"
+          },
+          "evidencias_externas": {
+            "const": "no_verificadas",
+            "default": "no_verificadas",
+            "title": "Evidencias Externas",
+            "type": "string"
+          }
+        },
+        "required": [
+          "metadatos_declarados"
+        ],
+        "title": "RevisadoPorNucleo",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "observaciones": {
+        "items": {
+          "$ref": "#/$defs/ObservacionRetrospectiva"
+        },
+        "maxItems": 256,
+        "title": "Observaciones",
+        "type": "array"
+      },
+      "pares_solicitados": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/$defs/ParSolicitado"
+            },
+            "maxItems": 5000,
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Pares Solicitados"
+      },
+      "modo_pareo": {
+        "default": "pares_solicitados",
+        "enum": [
+          "pares_solicitados",
+          "todas_las_combinaciones"
+        ],
+        "title": "Modo Pareo",
+        "type": "string"
+      }
+    },
+    "required": [
+      "observaciones"
+    ],
+    "title": "SolicitudContraste",
+    "type": "object"
+  },
+  "salida": {
+    "campos_obligatorios": [
+      "esquema",
+      "estado",
+      "metodo",
+      "modo_pareo",
+      "conteos",
+      "pares",
+      "observaciones_declaradas",
+      "verificacion",
+      "pendientes",
+      "limites"
+    ],
+    "campos_por_par": [
+      "tipo",
+      "estado_revision",
+      "observacion_a_id",
+      "observacion_b_id",
+      "estado_comparabilidad",
+      "diferencias_metadatos",
+      "diferencia_valor",
+      "razones_abstencion",
+      "explicaciones"
+    ],
+    "no_salida": [
+      "cifra unica",
+      "promedios",
+      "eleccion de fuente",
+      "causalidad",
+      "subregistro",
+      "conversion de unidades",
+      "conciliacion de personas",
+      "integracion de agentes"
+    ],
+    "criterios_comparabilidad": [
+      "definicion_metodologica",
+      "indicador_fenomeno",
+      "unidad_observacion",
+      "unidad_medida",
+      "universo",
+      "poblacion",
+      "territorio",
+      "criterio_localizacion",
+      "periodo_fenomeno",
+      "fecha_referencia"
+    ],
+    "procedencia_informativa": [
+      "producto_id"
+    ],
+    "conteo_estados": "Cada contador se obtiene del estado emitido; conflicto o version desconocida bloquea solo la resta numerica y no convierte el par en no_comparable.",
+    "referencias_explicaciones": "Cada explicacion del par tiene observacion_id explicito; los IDs de explicaciones y evidencias son locales a su observacion.",
+    "completitud_temporal": {
+      "periodo_fenomeno": {
+        "obligatorios": [
+          "tipo",
+          "inicio",
+          "fin",
+          "granularidad"
+        ],
+        "regla": "Dos extremos ausentes pero iguales no acreditan el mismo periodo ni habilitan resta."
+      },
+      "fecha_referencia": {
+        "obligatorios": [
+          "tipo"
+        ],
+        "opcionales": [
+          "fecha",
+          "precision"
+        ],
+        "regla": "No imputar fecha de extraccion o proceso como fecha del fenomeno."
+      },
+      "otras_celdas_declaradas": "Cadena nula o vacia es incompleta y produce pendiente; contexto no critico no bloquea un periodo completo."
+    },
+    "reglas_comparacion": {
+      "fecha_referencia": {
+        "obligatorio": [
+          "tipo"
+        ],
+        "opcionales": [
+          "fecha",
+          "precision"
+        ],
+        "regla": "Falta de tipo en cualquiera de las observaciones produce pendiente. Tipos declarados distintos producen no_comparable. Con mismo tipo y periodo completo/compatible, la ausencia unilateral o bilateral de fecha/precision emite diferencias informativas y no bloquea. Si ambos declaran el mismo campo y difieren, conservan bloqueo.",
+        "detalle_en_salida": [
+          "fecha_referencia.tipo",
+          "fecha_referencia.fecha",
+          "fecha_referencia.precision"
+        ]
+      }
+    },
+    "precedencia_tipo_par": {
+      "orden": [
+        "fuente_id",
+        "producto_id",
+        "version_id",
+        "version_id/sha256"
+      ],
+      "regla": "Los ids de version se interpretan dentro de la identidad fuente/producto. No se propagan conflictos de version entre espacios de identidad distintos."
+    },
+    "estado_revision_identificada": "Acredita dos versiones identificadas de la misma celda. No valida definicion ni habilita comparabilidad numerica por si sola.",
+    "diferencia_numerica_texto": "Representacion exacta coeficienteEexponente de la resta A menos B; sin notacion decimal normalizada ni redondeo."
+  },
+  "casos_aceptacion": [
+    {
+      "id": "productos_distintos_compatibles",
+      "entrada": "Dos observaciones con producto_id distinto pero definicion_metodologica y todas las celdas declaradas idénticos.",
+      "esperado": "estado_comparabilidad=comparable_segun_metadatos_declarados; diferencia numerica permitida; producto_id aparece como diferencia informativa y no bloquea."
+    },
+    {
+      "id": "version_desconocida",
+      "entrada": "Dos observaciones con misma fuente/producto/celula y version_id nulo, o una version_id nula y otra conocida.",
+      "esperado": "tipo=pareo_interno; estado_revision=revision_version_desconocida; pares_revision_version_desconocida incrementa en uno; diferencia_valor=null; no se cuenta como revision interna."
+    },
+    {
+      "id": "conflicto_hash",
+      "entrada": "Mismo version_id conocido con version_sha256_declarado distinto.",
+      "esperado": "tipo=revision_conflicto_version; diferencia_valor=null y razones_abstencion incluye version_no_comparable. version_id distinta con hash igual no es conflicto: con celda completa puede ser revision_identificada si las versiones son distintas."
+    },
+    {
+      "id": "cambio_metodologico",
+      "entrada": "Misma fuente/producto/celula y versiones distintas, con definición metodológica distinta y las demás celdas iguales.",
+      "esperado": "tipo=revision_interna_de_fuente; estado_revision=revision_con_cambio_metodologico; sin diferencia numérica."
+    },
+    {
+      "id": "nulos",
+      "entrada": "valor_original null y metadatos comparables.",
+      "esperado": "diferencia_valor=null; razones_abstencion incluye valor_nulo_no_comparado; sin equivalencia con cero."
+    },
+    {
+      "id": "precision_decimal",
+      "entrada": "Valores exactos con escalas distintas y contexto externo Decimal reducido.",
+      "esperado": "diferencia_texto exacta desde Decimal; sin uso del contexto ambiental."
+    },
+    {
+      "id": "periodo_invertido",
+      "entrada": "PeriodoTemporal con inicio posterior a fin.",
+      "esperado": "error de validacion; sin salida ni truncamiento."
+    },
+    {
+      "id": "fecha_numero_ambiguo",
+      "entrada": "Campo de fecha recibido como número o fecha sin formato ISO estricto.",
+      "esperado": "error de entrada ValueError; sin coercion silenciosa."
+    },
+    {
+      "id": "duplicados",
+      "entrada": "ID de observación, evidence o explanation duplicado.",
+      "esperado": "error de validacion; sin salida."
+    },
+    {
+      "id": "hash_bytes_procesados",
+      "entrada": "Archivo JSON cambiado después de lectura.",
+      "esperado": "manifiesto calcula hash de los bytes capturados en la misma lectura."
+    },
+    {
+      "id": "escritura_fallida",
+      "entrada": "Fallo al escribir resultado o manifiesto.",
+      "esperado": "ningun par publicado; se conserva carpeta temporal reconocible con estado incompleto en lugar de carpeta final."
+    },
+    {
+      "id": "sobrelimite",
+      "entrada": "observaciones, pares, dígitos, exponente o bytes superiores a límites.",
+      "esperado": "error visible; sin truncamiento ni muestreo."
+    },
+    {
+      "id": "definicion_distinta_bloquea",
+      "entrada": "Dos observaciones con misma fuente/producto y todas las celdas iguales pero definicion_metodologica distinta.",
+      "esperado": "estado_comparabilidad=no_comparable; sin diferencia numerica; revision interna con cambio metodologico cuando ambas versiones son conocidas y distintas."
+    },
+    {
+      "id": "conteos_consistentes",
+      "entrada": "Pares comparables en cuya revision hay conflicto de version o version desconocida.",
+      "esperado": "estado_comparabilidad=comparable_segun_metadatos_declarados; pares_comparables los cuenta; diferencia_valor=null; contador de revision correspondiente en uno."
+    },
+    {
+      "id": "explicaciones_con_origen",
+      "entrada": "Dos observaciones con IDs locales de explicación o evidencia iguales y contenidos distintos.",
+      "esperado": "Cada explicacion en el par conserva observacion_id y su contenido tipado original; sin resolver referencia por ID sin origen."
+    },
+    {
+      "id": "periodo_parcial_identico",
+      "entrada": "Dos observaciones con PeriodoTemporal del mismo tipo pero inicio, fin o granularidad nulos; demas criterios iguales.",
+      "esperado": "estado_comparabilidad=pendiente; diferencia numerica no calculada; extremos nulos iguales no acreditan periodo."
+    },
+    {
+      "id": "periodo_completo_opcionales_ausentes",
+      "entrada": "Dos observaciones con inicio, fin y granularidad declarados y con fecha/precision de referencia ausentes cuando el tipo de referencia es inequivoco.",
+      "esperado": "Ausencia de campos opcionales no produce pendiente por esa sola causa; la comparabilidad depende de los demas criterios."
+    },
+    {
+      "id": "fecha_referencia_tipo_ausente",
+      "entrada": "Falta tipo en una de las FechaReferencia; demas criterios completos/compatibles.",
+      "esperado": "fecha_referencia.tipo=pendiente; estado_comparabilidad=pendiente; sin resta."
+    },
+    {
+      "id": "fecha_referencia_tipos_distintos",
+      "entrada": "Tipo declarado en ambas observaciones pero distinto; demas criterios completos/compatibles.",
+      "esperado": "fecha_referencia.tipo=distinto; estado_comparabilidad=no_comparable; sin resta."
+    },
+    {
+      "id": "fecha_referencia_opcionales_ausentes_bilateral",
+      "entrada": "Fecha y precision ausentes en ambas observaciones; mismo tipo y periodo completo/compatible.",
+      "esperado": "diferencias opcionales informativas; estado_comparabilidad=comparable_segun_metadatos_declarados si los demas criterios lo permiten; sin bloqueo por ausencia."
+    },
+    {
+      "id": "fecha_referencia_opcionales_ausentes_unilateral",
+      "entrada": "Fecha o precision declarada solo en una observacion; mismo tipo y periodo completo/compatible.",
+      "esperado": "Diferencias informativas por campo ausente; sin bloqueo por ausencia; valores originales preservados."
+    },
+    {
+      "id": "fecha_referencia_opcionales_iguales",
+      "entrada": "Fecha y precision declaradas iguales en ambas observaciones; mismo tipo y periodo completo/compatible.",
+      "esperado": "Diferencias opcionales coincidentes; sin bloqueo por ese campo."
+    },
+    {
+      "id": "fecha_referencia_opcionales_distintas",
+      "entrada": "Fecha o precision declaradas en ambas observaciones y distintas; mismo tipo y periodo completo/compatible.",
+      "esperado": "Diferencia por campo declarado distinto con bloqueo_comparabilidad=true; estado_comparabilidad=no_comparable; sin resta y sin imputacion."
+    },
+    {
+      "id": "revision_interna_fecha_referencia_informativa",
+      "entrada": "Misma fuente/producto/celda y versiones distintas con misma FechaReferencia tipo y opcionales ausentes.",
+      "esperado": "La ausencia opcional no separa la celda; con definicion y demas celdas iguales puede ser revision_identificada. La resta depende de valor_original y no de ausencia."
+    },
+    {
+      "id": "revision_interna_fecha_referencia_distinta",
+      "entrada": "Misma fuente/producto y versiones distintas, con opcionales de FechaReferencia declarados distintos.",
+      "esperado": "La celda no se reconoce como identica; no revision_identificada; estado_comparabilidad bloqueado y sin resta."
+    },
+    {
+      "id": "version_id_reutilizado_entre_productos",
+      "entrada": "version_id igual o hash id en dos productos distintos.",
+      "esperado": "No se propaga conflicto de version fuera de la identificacion fuente/producto; el tipo de par sigue precedencia fuente/producto."
+    }
+  ],
+  "cli": {
+    "lectura_unica": true,
+    "parseo_estricto": true,
+    "extras_rechazados": true,
+    "publicacion_por_renombrado": true,
+    "destino": "bridge/",
+    "no_data": true,
+    "no_sql": true,
+    "no_red": true,
+    "no_integracion_productiva": true,
+    "validacion_antes_publicacion": true,
+    "carpeta_temporal": ".concilia-tmp-<uuid>",
+    "semantica_carpeta_temporal": "incompleta_por_convencion",
+    "archivos_obligatorios_publicacion": [
+      "resultado.json",
+      "manifiesto.json"
+    ]
+  }
+}

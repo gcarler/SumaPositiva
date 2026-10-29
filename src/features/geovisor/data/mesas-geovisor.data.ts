@@ -31,7 +31,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 80,
+    aforo: 350,
   },
   "mt-002": {
     lat: 10.4045,
@@ -41,7 +41,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 120,
+    aforo: 400,
   },
   "mt-003": {
     lat: 10.3620,
@@ -51,7 +51,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 100,
+    aforo: 350,
   },
 
   // Mesas Rurales e Insulares
@@ -73,7 +73,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 50,
+    aforo: 25,
   },
   "mr-003": {
     lat: 10.5400,
@@ -83,7 +83,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 50,
+    aforo: 20,
   },
   "mr-004": {
     lat: 10.5200,
@@ -93,7 +93,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 70,
+    aforo: 65,
   },
   "mr-005": {
     lat: 10.2800,
@@ -103,7 +103,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 80,
+    aforo: 50,
   },
   "mr-006": {
     lat: 10.6300,
@@ -113,7 +113,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 50,
+    aforo: 25,
   },
   "mr-007": {
     lat: 10.2550,
@@ -123,7 +123,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 50,
+    aforo: 30,
   },
   "mr-008": {
     lat: 10.3400,
@@ -133,7 +133,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 60,
+    aforo: 30,
   },
   "mr-009": {
     lat: 10.3200,
@@ -143,7 +143,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 55,
+    aforo: 30,
   },
   "mr-010": {
     lat: 10.1800,
@@ -153,7 +153,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 45,
+    aforo: 20,
   },
   "mr-011": {
     lat: 10.1450,
@@ -163,47 +163,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 40,
-  },
-  "mr-012": {
-    lat: 10.1456,
-    lng: -75.6761,
-    territorioCodigo: "loc-1",
-    territorioNombre: "Corregimiento de Barú",
-    estadoDefault: "PROGRAMADA",
-    realizada: false,
-    totalAsistentes: 0,
-    aforo: 65,
-  },
-  "mr-013": {
-    lat: 10.2730,
-    lng: -75.5240,
-    territorioCodigo: "loc-1",
-    territorioNombre: "Corregimiento de Ararca",
-    estadoDefault: "PROGRAMADA",
-    realizada: false,
-    totalAsistentes: 0,
-    aforo: 55,
-  },
-  "mr-014": {
-    lat: 10.3420,
-    lng: -75.5410,
-    territorioCodigo: "loc-1",
-    territorioNombre: "Corregimiento Caño del Oro",
-    estadoDefault: "PROGRAMADA",
-    realizada: false,
-    totalAsistentes: 0,
-    aforo: 55,
-  },
-  "mr-015": {
-    lat: 10.5250,
-    lng: -75.4020,
-    territorioCodigo: "loc-2",
-    territorioNombre: "Corregimiento de Pontezuela",
-    estadoDefault: "PROGRAMADA",
-    realizada: false,
-    totalAsistentes: 0,
-    aforo: 60,
+    aforo: 25,
   },
 
   // Mesas Poblacionales
@@ -215,7 +175,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 75,
+    aforo: 65,
   },
   "mp-002": {
     lat: 10.4180,
@@ -225,7 +185,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 70,
+    aforo: 75,
   },
   "mp-003": {
     lat: 10.4050,
@@ -235,7 +195,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 60,
+    aforo: 40,
   },
   "mp-004": {
     lat: 10.4040,
@@ -245,7 +205,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 60,
+    aforo: 45,
   },
   "mp-005": {
     lat: 10.4175,
@@ -255,7 +215,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 85,
+    aforo: 80,
   },
   "mp-006": {
     lat: 10.4242,
@@ -265,7 +225,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 90,
+    aforo: 100,
   },
   "mp-007": {
     lat: 10.4100,
@@ -275,7 +235,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 70,
+    aforo: 60,
   },
   "mp-008": {
     lat: 10.4080,
@@ -287,6 +247,16 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     totalAsistentes: 0,
     aforo: 80,
   },
+  "mp-009": {
+    lat: 10.4220,
+    lng: -75.5485,
+    territorioCodigo: "loc-1",
+    territorioNombre: "Distrito de Cartagena — Centro",
+    estadoDefault: "PROGRAMADA",
+    realizada: false,
+    totalAsistentes: 0,
+    aforo: 55,
+  },
 
   // Mesas Sectoriales
   "ms-001": {
@@ -297,7 +267,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 90,
+    aforo: 30,
   },
   "ms-002": {
     lat: 10.3950,
@@ -307,7 +277,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 80,
+    aforo: 30,
   },
   "ms-003": {
     lat: 10.4230,
@@ -317,7 +287,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 75,
+    aforo: 30,
   },
   "ms-004": {
     lat: 10.4150,
@@ -327,7 +297,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 85,
+    aforo: 35,
   },
   "ms-005": {
     lat: 10.4234,
@@ -337,7 +307,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 80,
+    aforo: 30,
   },
   "ms-006": {
     lat: 10.4210,
@@ -347,7 +317,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 65,
+    aforo: 35,
   },
   "ms-007": {
     lat: 10.4238,
@@ -357,7 +327,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 85,
+    aforo: 40,
   },
   "ms-008": {
     lat: 10.4240,
@@ -367,7 +337,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 80,
+    aforo: 40,
   },
   "ms-009": {
     lat: 10.4245,
@@ -377,7 +347,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 90,
+    aforo: 40,
   },
   "ms-010": {
     lat: 10.4232,
@@ -387,7 +357,7 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 70,
+    aforo: 45,
   },
   "ms-011": {
     lat: 10.4120,
@@ -397,7 +367,17 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
-    aforo: 60,
+    aforo: 35,
+  },
+  "ms-012": {
+    lat: 10.4235,
+    lng: -75.5512,
+    territorioCodigo: "loc-1",
+    territorioNombre: "Distrito de Cartagena — Plaza Aduana",
+    estadoDefault: "PROGRAMADA",
+    realizada: false,
+    totalAsistentes: 0,
+    aforo: 30,
   },
 
   // Plenaria de Cierre
@@ -425,6 +405,7 @@ export const MAPA_AGENDA_A_CODIGO_OFICIAL: Record<string, string> = {
   "mp-006": "MP-POB-06",
   "mp-007": "MP-POB-07",
   "mp-008": "MP-ETN-08",
+  "mp-009": "MP-POB-09",
   "ms-001": "MS-SEC-01",
   "ms-002": "MS-SEC-02",
   "ms-003": "MS-SEC-03",
@@ -436,6 +417,7 @@ export const MAPA_AGENDA_A_CODIGO_OFICIAL: Record<string, string> = {
   "ms-009": "MS-SEC-09",
   "ms-010": "MS-SEC-10",
   "ms-011": "MS-SEC-11",
+  "ms-012": "MS-SEC-12",
   "mr-001": "MR-RUR-01",
   "mr-002": "MR-RUR-02",
   "mr-003": "MR-RUR-03",
@@ -447,10 +429,6 @@ export const MAPA_AGENDA_A_CODIGO_OFICIAL: Record<string, string> = {
   "mr-009": "MR-ISL-09",
   "mr-010": "MR-ISL-10",
   "mr-011": "MR-ISL-11",
-  "mr-012": "MR-ISL-12",
-  "mr-013": "MR-ISL-13",
-  "mr-014": "MR-ISL-14",
-  "mr-015": "MR-RUR-15",
 };
 
 export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
@@ -465,6 +443,7 @@ export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
   "MP-POB-06": "mp-006",
   "MP-POB-07": "mp-007",
   "MP-ETN-08": "mp-008",
+  "MP-POB-09": "mp-009",
   "MS-SEC-01": "ms-001",
   "MS-SEC-02": "ms-002",
   "MS-SEC-03": "ms-003",
@@ -476,6 +455,7 @@ export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
   "MS-SEC-09": "ms-009",
   "MS-SEC-10": "ms-010",
   "MS-SEC-11": "ms-011",
+  "MS-SEC-12": "ms-012",
   "MR-RUR-01": "mr-001",
   "MR-RUR-02": "mr-002",
   "MR-RUR-03": "mr-003",
@@ -487,10 +467,6 @@ export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
   "MR-ISL-09": "mr-009",
   "MR-ISL-10": "mr-010",
   "MR-ISL-11": "mr-011",
-  "MR-ISL-12": "mr-012",
-  "MR-ISL-13": "mr-013",
-  "MR-ISL-14": "mr-014",
-  "MR-RUR-15": "mr-015",
 };
 
 export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
@@ -505,6 +481,7 @@ export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
   "MP106": "mp-006",
   "MP107": "mp-007",
   "MP108": "mp-008",
+  "MP109": "mp-009",
   "MS101": "ms-001",
   "MS102": "ms-002",
   "MS103": "ms-003",
@@ -516,6 +493,7 @@ export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
   "MS109": "ms-009",
   "MS110": "ms-010",
   "MS111": "ms-011",
+  "MS112": "ms-012",
   "MR101": "mr-001",
   "MR102": "mr-002",
   "MR103": "mr-003",
@@ -527,10 +505,6 @@ export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
   "MR109": "mr-009",
   "MR110": "mr-010",
   "MR111": "mr-011",
-  "MR112": "mr-012",
-  "MR113": "mr-013",
-  "MR114": "mr-014",
-  "MR115": "mr-015",
 };
 
 export const MAPA_UUID_A_AGENDA: Record<string, string> = {
@@ -545,6 +519,7 @@ export const MAPA_UUID_A_AGENDA: Record<string, string> = {
   "01a0f5fe-86e3-7ece-aa45-f734eaf5d4dd": "mp-006",
   "01a0f5fe-86e3-7e68-89c5-7cc6c9cc4ce8": "mp-007",
   "01a0f5fe-86e3-7bca-a222-69ddd0da41f4": "mp-008",
+  "01a0f5fe-86e2-7209-9001-000000000009": "mp-009",
   "01a0f5fe-86e4-7462-9bf4-7fba713251dd": "ms-001",
   "01a0f5fe-86e4-7a89-a279-abfbadfa1e91": "ms-002",
   "01a0f5fe-86e5-7ff9-a971-27375ae9f301": "ms-003",
@@ -556,6 +531,7 @@ export const MAPA_UUID_A_AGENDA: Record<string, string> = {
   "01a0f5fe-86e5-7d46-8bfb-527585d6d433": "ms-009",
   "01a0f5fe-86e5-7322-953d-72489185aead": "ms-010",
   "01a0f5fe-86e5-767a-8851-6b6a5eb052e6": "ms-011",
+  "01a0f5fe-86e5-7ff9-a971-000000000012": "ms-012",
   "01a0f5fe-86e2-7b56-b70b-aa6b3c6feb08": "mr-001",
   "01a0f5fe-86e2-7eb8-85f0-7f8edbd8d441": "mr-002",
   "01a0f5fe-86e2-7b3a-99ca-973a388ae602": "mr-003",
@@ -567,10 +543,6 @@ export const MAPA_UUID_A_AGENDA: Record<string, string> = {
   "01a0f5fe-86e2-70f0-84de-854dae52dc89": "mr-009",
   "01a0f5fe-86e2-7c68-a9f7-4ecbfa5236b5": "mr-010",
   "01a0f5fe-86e3-7288-8425-1317a98eebd4": "mr-011",
-  "01a0f5fe-86e3-7312-9001-000000000012": "mr-012",
-  "01a0f5fe-86e3-7313-9001-000000000013": "mr-013",
-  "01a0f5fe-86e3-7314-9001-000000000014": "mr-014",
-  "01a0f5fe-86e3-7315-9001-000000000015": "mr-015",
 };
 
 export function buscarCoordenadasMesa(identificador: {
@@ -634,11 +606,15 @@ export function obtenerMesasGeovisorOficiales(
     else if (m.estado === "realizada") estadoCalculado = "ACTA_CONCERTADA";
     else if (m.estado === "reprogramada") estadoCalculado = "CONVOCADA";
 
+    const horarioStr = (m.horaInicio && m.horaInicio !== "Por definir")
+      ? `${m.horaInicio} – ${m.horaFin}`
+      : "Por definir";
+
     return {
       id: m.id,
       nombre: m.nombre,
-      fecha: m.fecha,
-      horario: `${m.horaInicio} – ${m.horaFin}`,
+      fecha: (m.fecha && m.fecha !== "Por definir") ? m.fecha : null,
+      horario: horarioStr,
       estado: estadoCalculado,
       realizada: m.estado === "realizada" || geo.realizada,
       total_asistentes: geo.totalAsistentes,

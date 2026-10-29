@@ -11,17 +11,17 @@ restantes para las dimensiones de Seguridad Alimentaria, Seguridad en Salud y
 Seguridad Política del Distrito de Cartagena de Indias.
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+
+from sqlalchemy.sql import text
 
 from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision: str = "0050_lineas_alim_salud_pol"
-down_revision: Union[str, None] = "0049_fuentes_distritales_esp"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "0049_fuentes_distritales_esp"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 LINEAS_RESTANTES = [
     {
@@ -55,7 +55,10 @@ LINEAS_RESTANTES = [
         "dimension_codigo": "salud",
         "fallback_dimension_id": "01a0f5dd-532e-7910-8a72-9b61f5ad2a24",
         "entidad_lider": "Departamento Administrativo Distrital de Salud (DADIS)",
-        "entidades_coresponsables": ["Secretaría de Participación y Desarrollo Social", "ESE Hospital Local Cartagena de Indias"],
+        "entidades_coresponsables": [
+            "Secretaría de Participación y Desarrollo Social",
+            "ESE Hospital Local Cartagena de Indias",
+        ],
         "fuentes_financiacion": ["SGP", "RECURSOS_PROPIOS", "FONSET"],
         "costo_estimado": 22000000000.00,
         "orden": 6,

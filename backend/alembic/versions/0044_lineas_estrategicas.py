@@ -11,17 +11,17 @@ canónicas del Distrito de Cartagena de Indias, resolviendo foreign keys dinámi
 hacia motor_politicas.fases_politica y motor_politicas.dimensiones_seguridad_humana.
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+
+from sqlalchemy.sql import text
 
 from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision: str = "0044_lineas_estrategicas"
-down_revision: Union[str, None] = "0043_modulo_banco_alternativas"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "0043_modulo_banco_alternativas"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 LINEAS_CANONICAS = [
     {

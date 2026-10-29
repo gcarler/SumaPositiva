@@ -15,8 +15,10 @@ import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
+import { CollectionLayout, type CollectionViewMode } from "@/shared/ui/collection-view";
 
 interface LineaBaseTablaProps {
+  vista?: CollectionViewMode;
   indicadores: FichaIndicador[];
   onMedicionRegistrada?: () => void;
   onFichaActualizada?: () => void;
@@ -55,6 +57,7 @@ function formatearTipo(tipo: TipoIndicador): {
 }
 
 export function LineaBaseTabla({
+  vista = "lista",
   indicadores,
   onMedicionRegistrada,
   onFichaActualizada,
@@ -81,6 +84,34 @@ export function LineaBaseTabla({
       onGuardado: onFichaActualizada,
     });
   };
+
+  if (vista === "tarjetas") {
+    return (
+      <CollectionLayout view={vista} aria-label="Tarjetas de indicadores de línea base">
+        {indicadores.length === 0 && <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-text-secondary sm:col-span-2 xl:col-span-3">No se encontraron indicadores que coincidan con los filtros aplicados.</p>}
+        {indicadores.map((ind) => {
+          const tipo = formatearTipo(ind.tipo_indicador);
+          return (
+            <article key={ind.id} className="flex flex-col gap-4 rounded-xl border border-border bg-surface-1 p-5">
+              <div className="space-y-2"><p className="font-mono text-xs text-text-tertiary">{ind.codigo}</p><h2 className="break-words font-semibold">{ind.nombre}</h2><Badge variant={tipo.variante}>{tipo.etiqueta}</Badge><p className="text-sm text-text-secondary">{ind.definicion}</p></div>
+              <dl className="grid grid-cols-2 gap-3 text-sm">
+                <div><dt className="text-xs text-text-tertiary">Línea base ({ind.linea_base_anio})</dt><dd>{formatearValor(ind.linea_base_valor, ind.unidad_medida)}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Valor actual</dt><dd>{parseFloat(String(ind.valor_actual || 0)) > 0 ? formatearValor(ind.valor_actual, ind.unidad_medida) : "Sin reporte"}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Meta cuatrienio</dt><dd>{formatearValor(ind.meta_cuatrienio, ind.unidad_medida)}</dd></div>
+                <div><dt className="text-xs text-text-tertiary">Avance</dt><dd>{parseFloat(String(ind.porcentaje_avance || 0)).toFixed(0)}%</dd></div>
+              </dl>
+              <p className="text-xs text-text-secondary">{ind.periodicidad} · {ind.sentido_esperado === "descendente" ? "Reducción esperada" : "Incremento esperado"}</p>
+              <div className="text-xs text-text-secondary"><p className="font-medium">{ind.fuente_datos}</p><p>{ind.responsable_reporte}</p></div>
+              <div className="mt-auto flex flex-wrap gap-2">
+                {puedeGestionar && <Button variant="ghost" size="sm" onClick={() => handleEditarFicha(ind)} aria-label={`Editar ficha ${ind.codigo}`}>Editar</Button>}
+                <Button variant="outline" size="sm" onClick={() => handleAbrirMedicion(ind)} aria-label={`Medición de ${ind.codigo}`}>Medición</Button>
+              </div>
+            </article>
+          );
+        })}
+      </CollectionLayout>
+    );
+  }
 
   return (
     <div className="rounded-xl border border-border bg-surface-1 overflow-hidden">

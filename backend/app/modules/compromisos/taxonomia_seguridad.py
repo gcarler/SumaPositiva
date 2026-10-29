@@ -21,9 +21,7 @@ PERIODOS = ("ANTES_2020", "2020_2023", "2024_2027")
 
 
 def _normalizar(texto: str) -> str:
-    return " ".join(
-        unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower().split()
-    )
+    return " ".join(unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower().split())
 
 
 def inferir_taxonomia(ruta: str, nombre: str = "") -> dict[str, Any]:
@@ -33,13 +31,9 @@ def inferir_taxonomia(ruta: str, nombre: str = "") -> dict[str, Any]:
     normalizadas = [_normalizar(p) for p in carpetas]
     texto = _normalizar(" ".join((*carpetas, nombre)))
     vigencias_ruta = [
-        int(match.group())
-        for parte in carpetas
-        if (match := re.fullmatch(r"20(?:1[6-9]|2[0-7])", parte.strip()))
+        int(match.group()) for parte in carpetas if (match := re.fullmatch(r"20(?:1[6-9]|2[0-7])", parte.strip()))
     ]
-    vigencias_nombre = [
-        int(match) for match in re.findall(r"(?<!\d)20(?:1[6-9]|2[0-7])(?!\d)", nombre)
-    ]
+    vigencias_nombre = [int(match) for match in re.findall(r"(?<!\d)20(?:1[6-9]|2[0-7])(?!\d)", nombre)]
     vigencia = (vigencias_ruta or vigencias_nombre or [None])[-1]
     dimensiones = []
     for dimension in DIMENSIONES:
@@ -70,7 +64,5 @@ def enriquecer_entrada_catalogo(entrada: dict[str, Any]) -> dict[str, Any]:
     return {
         **entrada,
         **metadatos,
-        "drive_file_ids": [entrada["id"]]
-        if entrada.get("id") and not entrada.get("is_folder")
-        else [],
+        "drive_file_ids": [entrada["id"]] if entrada.get("id") and not entrada.get("is_folder") else [],
     }

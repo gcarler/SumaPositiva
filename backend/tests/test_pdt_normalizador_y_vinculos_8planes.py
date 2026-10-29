@@ -37,9 +37,7 @@ def test_parser_numerico_ocr_metas_y_linea_base() -> None:
     """Verifica extracción numérica de paréntesis, comas, miles, ceros con fuente y palabras."""
     assert extraer_valor_numerico_meta("Implementar cuatro (4) estrategias") == pytest.approx(4.0)
     assert extraer_valor_numerico_meta("Asistir cien (100) empresas") == pytest.approx(100.0)
-    assert extraer_valor_numerico_linea_base(
-        "0 Fuente: Secretaría de Hacienda 2023"
-    ) == pytest.approx(0.0)
+    assert extraer_valor_numerico_linea_base("0 Fuente: Secretaría de Hacienda 2023") == pytest.approx(0.0)
     assert extraer_valor_numerico_meta("Disminuir a 0,4 la tasa") == pytest.approx(0.4)
     assert extraer_valor_numerico_linea_base(
         "0.78 homicidios por cada 100 mil habitantes en la Localidad FUENTE: Policía"
@@ -97,7 +95,7 @@ def test_normalizar_meta_oficial_ocr_llaves_fragmentadas_pdl() -> None:
     assert pdl3["meta_cuatrienio_numerica"] == pytest.approx(4.0)
 
 
-def test_pdd_metas_oficiales_4637_normalizadas_en_8_planes_bd_csh() -> None:
+def test_pdd_metas_oficiales_4637_normalizadas_en_8_planes_bd_csh(corpus_analitica) -> None:
     """Verifica que las 4,637 metas en seguimiento.pdd_metas_oficiales estén 100% normalizadas."""
 
     async def _check() -> None:
@@ -146,8 +144,14 @@ def test_pdd_metas_oficiales_4637_normalizadas_en_8_planes_bd_csh() -> None:
     asyncio.run(_check())
 
 
-def test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh() -> None:
+def test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh(corpus_analitica) -> None:
     """Verifica que pdd_vinculos_meta_pa_triada contenga las 4,637 metas de los 8 planes."""
+
+    from app.modules.compromisos.pdt_conciliador_vinculos_pa_triada import (
+        conciliar_y_poblar_vinculos_meta_pa_triada_async,
+    )
+
+    asyncio.run(conciliar_y_poblar_vinculos_meta_pa_triada_async())
 
     async def _check() -> None:
         engine = create_async_engine(_resolver_url_bd_csh())
@@ -160,13 +164,35 @@ def test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh() -> None:
                                 """
                         SELECT codigo_plan,
                                COUNT(*) AS total,
-                               SUM(CASE WHEN apropiacion_definitiva_cop IS NOT NULL
+                               SUM(CASE WHEN v.apropiacion_definitiva_cop IS NOT NULL
                                    THEN 1 ELSE 0 END) AS con_aprop,
-                               SUM(CASE WHEN avance_fisico_pct IS NOT NULL
+                               SUM(CASE WHEN v.avance_fisico_pct IS NOT NULL
                                    THEN 1 ELSE 0 END) AS con_avance,
-                               SUM(CASE WHEN (evidencia_cruce->>'cruce_hermano_motores')::boolean
-                                   IS TRUE THEN 1 ELSE 0 END) AS con_cruce_hermano
-                        FROM seguimiento.pdd_vinculos_meta_pa_triada
+                               SUM(CASE WHEN (v.evidencia_cruce->>'cruce_hermano_motores')::boolean
+                                   IS TRUE THEN 1 ELSE 0 END) AS con_cruce_hermano,
+                               SUM(CASE WHEN v.tipo_vinculo NOT IN
+                                   ('EXACTO_CODIGO_META', 'EXACTO_BPIM_PROYECTO')
+                                   AND (v.apropiacion_definitiva_cop IS NOT NULL
+                                        OR v.avance_fisico_pct IS NOT NULL)
+                                   AND (
+                                        (v.registro_triada_id IS NULL AND v.actividad_pa_id IS NULL)
+                                        OR (
+                                            v.registro_triada_id IS NOT NULL
+                                            AND NOT (
+                                                COALESCE(v.apropiacion_definitiva_cop, -1) =
+                                                   COALESCE(r.apropiacion_definitiva_cop, -1)
+                                                AND COALESCE(v.avance_fisico_pct, -1) =
+                                                   COALESCE(r.avance_fisico_pct, -1)
+                                            )
+                                        )
+                                   )
+                                   THEN 1 ELSE 0 END) AS imputacion_no_acreditada,
+                               SUM(CASE WHEN (v.evidencia_cruce->>'cruce_hermano_motores')::boolean
+                                   IS TRUE AND NULLIF(v.evidencia_cruce->>'registro_hermano_triada_id', '') IS NULL
+                                   THEN 1 ELSE 0 END) AS cruce_hermano_sin_id
+                        FROM seguimiento.pdd_vinculos_meta_pa_triada v
+                            LEFT JOIN seguimiento.registros_triada_normalizados r
+                            ON r.id = v.registro_triada_id::uuid
                             GROUP BY codigo_plan
                             ORDER BY codigo_plan
                             """
@@ -185,17 +211,16 @@ def test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh() -> None:
         for plan, esperado in CONTEOS_CANONICOS_8_PLANES.items():
             assert por_plan[plan]["total"] == esperado
 
-        # El cruce hermano de los 3 motores debe elevar la cobertura financiera y física
-        assert por_plan["PDD_2024_2027"]["con_aprop"] >= 900
-        assert por_plan["PDD_2024_2027"]["con_avance"] >= 900
-        assert por_plan["PDD_2020_2023"]["con_aprop"] >= 700
-        assert por_plan["PDD_2020_2023"]["con_avance"] >= 700
-        assert sum(r["con_cruce_hermano"] for r in por_plan.values()) >= 1500
+        # La cobertura no sustituye evidencia: en vínculos no exactos las
+        # cifras deben provenir del registro pareado (procedencia + igualdad
+        # de métricas), nunca materializarse de la nada.
+        assert all(r["imputacion_no_acreditada"] == 0 for r in por_plan.values())
+        assert all(r["cruce_hermano_sin_id"] == 0 for r in por_plan.values())
 
     asyncio.run(_check())
 
 
-def test_preservacion_estricta_ceros_observados_vs_none_en_8_planes() -> None:
+def test_preservacion_estricta_ceros_observados_vs_none_en_8_planes(corpus_analitica) -> None:
     """Verifica que los ceros observados (0.0) se preserven sin confundirse con None."""
     assert _to_float_preserve_zero(0) == 0.0
     assert _to_float_preserve_zero("0.0") == 0.0

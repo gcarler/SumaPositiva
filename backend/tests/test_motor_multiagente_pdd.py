@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import json
+
+from app.modules.compromisos import motor_multiagente_pdd as multiagente_module
 from app.modules.compromisos.motor_multiagente_pdd import (
     EstadoSistemaPDD,
     ResultadoAgente,
@@ -43,9 +47,7 @@ def test_rutas_multiagente_publican_estado_y_cruce(monkeypatch):
         }
 
     monkeypatch.setattr(router_module, "obtener_estado_sistema_multiagente_pdd", fake_state)
-    monkeypatch.setattr(
-        router_module.AgenteArticulacionPlanAccionBPIM, "ejecutar", lambda self: fake_cross()
-    )
+    monkeypatch.setattr(router_module.AgenteArticulacionPlanAccionBPIM, "ejecutar", lambda self: fake_cross())
     with TestClient(create_app(Settings(_env_file=None, environment="test"))) as client:
         state_response = client.get("/api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente")
         cross_response = client.get("/api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim")
@@ -53,9 +55,7 @@ def test_rutas_multiagente_publican_estado_y_cruce(monkeypatch):
     assert state_response.json()["estado"] == "COMPLETADO"
     assert len(state_response.json()["puertas"]) == 6
     assert cross_response.status_code == 200
-    assert [
-        item["dimension"] for item in cross_response.json()["articulacion_por_dimension_sh"]
-    ] == dimensions
+    assert [item["dimension"] for item in cross_response.json()["articulacion_por_dimension_sh"]] == dimensions
     assert cross_response.json()["articulacion_por_entidad"]
     assert cross_response.json()["matriz_trazabilidad_pa_bpim"]
 
@@ -92,9 +92,7 @@ def test_comparativo_http_es_compacto_por_defecto_y_detalle_optativo(monkeypatch
 
     with TestClient(create_app(Settings(_env_file=None, environment="test"))) as client:
         compact = client.get("/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo")
-        detailed = client.get(
-            "/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo?incluir_detalle=true"
-        )
+        detailed = client.get("/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo?incluir_detalle=true")
 
     assert compact.status_code == 200
     assert len(compact.content) < 300_000
@@ -143,6 +141,16 @@ def test_estado_compartido_serializa_bitacora_de_agente_sin_contenido_de_fuentes
     assert payload["run_id"] == "PDD17-test"
     assert payload["auditoria_agentes"][0]["metricas"]["paginas_absorbidas"] == 161
     assert "paginas" not in payload
+    assert payload["version_financiera"] == 12
+
+
+def test_estado_persistido_anterior_exige_revalidacion_financiera(tmp_path, monkeypatch):
+    ruta = tmp_path / "estado.json"
+    ruta.write_text(json.dumps({"estado": "COMPLETADO", "puertas": {"D_CONCILIACION_PPI": {"estado": "APROBADA"}}}))
+    monkeypatch.setattr(multiagente_module, "STATE_PATH", ruta)
+    estado = asyncio.run(multiagente_module.obtener_estado_sistema_multiagente_pdd())
+    assert estado["estado"] == "REQUIERE_REVALIDACION_FINANCIERA"
+    assert estado["puertas"]["D_CONCILIACION_PPI"]["estado"] == "BLOQUEADA"
 
 
 def test_json_structurado_cuenta_registros_anidados():
@@ -176,9 +184,7 @@ def test_catalogo_profundo_recupera_pdd_historicos_y_conserva_padres_validos():
 
 
 def test_taxonomia_clasifica_los_ejes_historicos_en_frontalidad_y_determinantes():
-    direct_grade, _, direct_weights = _classify(
-        "Eje 5. Seguridad Ciudadana y Buen Gobierno", "EJE", {}
-    )
+    direct_grade, _, direct_weights = _classify("Eje 5. Seguridad Ciudadana y Buen Gobierno", "EJE", {})
     determinant_grade, _, determinant_weights = _classify(
         "Programa de superación de pobreza y generación de ingresos", "PROGRAMA", {}
     )

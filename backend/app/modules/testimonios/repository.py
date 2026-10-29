@@ -135,6 +135,8 @@ class TestimoniosRepository:
         self, testimonio: TestimonioComunitario, datos: dict[str, Any]
     ) -> TestimonioComunitario:
         for campo, valor in datos.items():
+            if campo == "estado" and valor is None:
+                continue
             setattr(testimonio, campo, valor)
         await self.session.flush()
         await self.session.refresh(testimonio)
@@ -148,7 +150,8 @@ class TestimoniosRepository:
                 COUNT(*) FILTER (WHERE estado = 'APROBADO') AS aprobados,
                 COUNT(*) FILTER (WHERE estado = 'DESTACADO') AS destacados,
                 COUNT(*) FILTER (WHERE estado = 'PENDIENTE') AS pendientes,
-                COUNT(*) FILTER (WHERE estado = 'RECHAZADO') AS rechazados
+                COUNT(*) FILTER (WHERE estado = 'RECHAZADO') AS rechazados,
+                COUNT(*) FILTER (WHERE estado = 'BORRADOR') AS borradores
             FROM participacion_ciudadana.testimonios_comunitarios
             WHERE activo = true;
         """)
@@ -158,6 +161,7 @@ class TestimoniosRepository:
         destacados = row[2] or 0
         pendientes = row[3] or 0
         rechazados = row[4] or 0
+        borradores = row[5] or 0
 
         sql_territorios = text("""
             SELECT 
@@ -185,6 +189,7 @@ class TestimoniosRepository:
 
         return {
             "total_testimonios": total,
+            "borradores": borradores,
             "aprobados": aprobados,
             "destacados": destacados,
             "pendientes": pendientes,

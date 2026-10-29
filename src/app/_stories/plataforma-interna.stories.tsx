@@ -14,6 +14,10 @@ import { GeovisorAdministrativoView } from "@/features/plataforma/views/geovisor
 import { ContenidoView } from "@/features/plataforma/views/contenido-view";
 import { NoticiasPlataformaView } from "@/features/plataforma/views/noticias-view";
 import { TestimoniosPlataformaView } from "@/features/plataforma/views/testimonios-view";
+import { ComunicacionesView } from "@/features/comunicaciones/views/comunicaciones-view";
+import type { TareaComunicacion } from "@/features/comunicaciones/models/tarea-comunicacion";
+import { ProyectosView } from "@/features/proyectos/views/proyectos-view";
+import type { ActividadProyecto } from "@/features/proyectos/models/actividad-proyecto";
 import { ConfiguracionView } from "@/features/plataforma/views/configuracion-view";
 import { PlataformaSidebar } from "@/features/plataforma/components/plataforma-sidebar";
 import { PlataformaHeader } from "@/features/plataforma/components/plataforma-header";
@@ -46,6 +50,12 @@ const perfil: Usuario = {
     "formularios:leer",
     "identidad:auditar",
     "auditoria:leer",
+    "comunicaciones:gestionar",
+    "comunicaciones:leer",
+    "proyectos:leer",
+    "mesas:abrir",
+    "mesas:leer",
+    "seguimiento:gestionar",
   ],
 };
 const apiOriginal = { ...plataformaApi };
@@ -282,9 +292,12 @@ export const FormulariosFacilitador: Story = {
     await expect(
       c.queryByRole("button", { name: "Crear Formulario" }),
     ).toBeNull();
-    await expect(
-      c.getAllByRole("button", { name: "Vista previa" }),
-    ).toHaveLength(2);
+    const botones = await c.findAllByRole(
+      "button",
+      { name: "Vista previa" },
+      { timeout: 10000 },
+    );
+    await expect(botones).toHaveLength(2);
   },
 };
 export const FormulariosAuditor: Story = {
@@ -580,6 +593,389 @@ export const MotorPlanAccionDNP: Story = {
         { timeout: 10000 }
       )
     ).toBeVisible();
+  },
+};
+
+/* Mock de la API de comunicaciones para la historia de gestión tipo proyectos.
+   Las mutaciones de la prueba mutan un clon local; el cleanup restaura. */
+const TAREAS_BASE: TareaComunicacion[] = [
+  {
+    id: "tc-01",
+    codigo: "TC-01",
+    etapa: "Etapa 1: Pre-Producción y Banco de Evidencias",
+    territorio: "Sala de Redacción",
+    titulo: "Alineación técnica del equipo",
+    descripcion: "Guiones de entrevistas",
+    entregables: "Guion oficial",
+    fecha_inicio: "2026-10-06",
+    fecha_fin: "2026-10-06",
+    estado: "pendiente",
+    responsable: "Equipo de Comunicaciones",
+    orden: 1,
+  },
+  {
+    id: "tc-02",
+    codigo: "TC-02",
+    etapa: "Etapa 2: Gran Hito Inaugural",
+    territorio: "Portal de los Dulces",
+    titulo: "Cobertura audiovisual inauguración",
+    descripcion: "Streaming institucional",
+    entregables: "Link de transmisión",
+    fecha_inicio: "2026-10-15",
+    fecha_fin: "2026-10-15",
+    estado: "en_progreso",
+    responsable: "Equipo Audiovisual",
+    orden: 2,
+  },
+  {
+    id: "tc-03",
+    codigo: "TC-03",
+    etapa: "Etapa 2: Gran Hito Inaugural",
+    territorio: "Centro Histórico",
+    titulo: "Plan de medios del hito",
+    descripcion: "Convocatoria de prensa",
+    entregables: "Boletín distrital",
+    fecha_inicio: "2026-10-14",
+    fecha_fin: "2026-10-16",
+    estado: "completada",
+    responsable: "Gabinete de Comunicaciones",
+    orden: 3,
+  },
+  // En-rango de la Fase de Diagnóstico (27-oct → 31-dic): espejo de la semilla TC-13
+  {
+    id: "tc-04",
+    codigo: "TC-04",
+    etapa: "Etapa 3: Despliegue Territorial y Temático",
+    territorio: "Localidad 3: Industrial y de la Bahía",
+    titulo: "Mesas territoriales de Bahía e Industrial",
+    descripcion: "Cobertura del ciclo de mesas de la Localidad 3",
+    entregables: "2 boletines + cápsulas testimoniales",
+    fecha_inicio: "2026-11-01",
+    fecha_fin: "2026-11-07",
+    estado: "pendiente",
+    responsable: "Reportero Asignado Localidad 3",
+    orden: 4,
+  },
+];
+function simularApiComunicaciones() {
+  const fetchOriginal = window.fetch;
+  let tareasActuales: TareaComunicacion[] = structuredClone(TAREAS_BASE);
+  window.fetch = async (input, opciones) => {
+    const url = new URL(
+      typeof input === "string" ? input : input instanceof URL ? input.href : input.url,
+      window.location.origin,
+    );
+    if (url.pathname === "/api/v1/comunicaciones/tareas") {
+      if (opciones?.method === "POST") {
+        const nueva = JSON.parse(String(opciones.body)) as TareaComunicacion;
+        const guardada = { ...nueva, id: `tc-nuevo-${Date.now().toString(36)}` };
+        tareasActuales = [...tareasActuales, guardada];
+        return Response.json(guardada, { status: 201 });
+      }
+      return Response.json(tareasActuales);
+    }
+    const edicion = url.pathname.match(/^\/api\/v1\/comunicaciones\/tareas\/([^/]+)$/);
+    if (edicion) {
+      const id = edicion[1];
+      const actual = tareasActuales.find((t) => t.id === id);
+      if (!actual) return Response.json({ detalle: "ya no existe" }, { status: 404 });
+      if (opciones?.method === "DELETE") {
+        tareasActuales = tareasActuales.filter((t) => t.id !== id);
+        return new Response(null, { status: 204 });
+      }
+      const cambios = opciones?.body
+        ? (JSON.parse(String(opciones.body)) as Partial<TareaComunicacion>)
+        : {};
+      const actualizada = { ...actual, ...cambios };
+      tareasActuales = tareasActuales.map((t) => (t.id === id ? actualizada : t));
+      return Response.json(actualizada);
+    }
+    return fetchOriginal(input, opciones);
+  };
+  return () => {
+    window.fetch = fetchOriginal;
+    tareasActuales = structuredClone(TAREAS_BASE);
+  };
+}
+
+export const ComunicacionesGestion: Story = {
+  parameters: {
+    nextjs: { navigation: { pathname: "/plataforma/comunicaciones" } },
+  },
+  beforeEach: () => simularApiComunicaciones(),
+  render: () => (
+    <QueryProvider>
+      <PlataformaShell>
+        <ComunicacionesView />
+      </PlataformaShell>
+      <PanelHost />
+    </QueryProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    // Sin editor inline al abrir: el foco del usuario se conserva (listado intacto
+    // y en su posición de scroll)
+    await expect(c.queryByText("Editor de Tarea y Fechas")).toBeNull();
+    await expect(await c.findByText("TC-01", {}, { timeout: 10000 })).toBeVisible();
+    await expect(c.getByText("TC-02")).toBeVisible();
+    await expect(c.getByText("TC-03")).toBeVisible();
+
+    // Métricas ejecutivas: barra de progreso global accesible
+    await expect(
+      c.getByRole("progressbar", { name: "Avance global del plan de comunicaciones" }),
+    ).toBeVisible();
+    await expect(c.getByText("1 de 4 actividades completadas (25%)")).toBeVisible();
+
+    // Tablero Kanban por estado
+    await userEvent.click(c.getByRole("tab", { name: /Tablero Kanban/ }));
+    await expect(
+      await c.findByText("Cobertura audiovisual inauguración", {}, { timeout: 10000 }),
+    ).toBeVisible();
+
+    // Editar tarea abre el editor en el panel lateral Zero-Modals
+    await userEvent.click(c.getByRole("button", { name: "Editar tarea TC-02" }));
+    await expect(
+      await c.findByRole("dialog", { name: "Editar tarea TC-02" }, { timeout: 10000 }),
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await expect(await c.findByText("Cobertura audiovisual inauguración")).toBeVisible();
+
+    // Cambio rápido de estado desde la tarjeta del cronograma (sin abrir formulario)
+    await userEvent.click(c.getByRole("tab", { name: /Cronograma/ }));
+    await expect(await c.findByText("TC-01", {}, { timeout: 10000 })).toBeVisible();
+    await userEvent.click(
+      c.getAllByRole("button", { name: "✓ Marcar lista" })[0]!,
+    );
+    // El estado persiste en la API mock y recalcula métricas sin abrir editor
+    await expect(
+      await c.findByText("2 de 4 actividades completadas (50%)", {}, { timeout: 10000 }),
+    ).toBeVisible();
+
+    // Diagrama de Gantt: ventana de la Fase de Diagnóstico 27-oct → 31-dic
+    await userEvent.click(c.getByRole("tab", { name: /Diagrama de Gantt/ }));
+    await expect(
+      await c.findByRole("region", { name: "Diagrama de Gantt del cronograma" }, { timeout: 10000 }),
+    ).toBeVisible();
+    // Escala temporal visible con extremos y verdad de la fase
+    await expect(c.getByText("Fase de Diagnóstico")).toBeVisible();
+    await expect(c.getByText("27 Octubre – 31 Diciembre 2026")).toBeVisible();
+    // Indicador accesible de «Hoy» (la fase inició hoy)
+    await expect(c.getByText("Hoy: 28 oct")).toBeVisible();
+    // Proyección de tareas sobre la ventana (rango real visible en la barra)
+    await expect(
+      c.getByRole("button", { name: "TC-02: Cobertura audiovisual inauguración. Del 2026-10-15 al 2026-10-15. Estado: En progreso" }),
+    ).toBeVisible();
+    // Cada barra muestra su rango de fechas en formato corto
+    await expect(
+      c.getByText("15/10 – 15/10"),
+    ).toBeVisible();
+    // La tarea en-rango TC-04 se proyecta con barra proporcional completa (1–7 nov)
+    await expect(
+      c.getByRole("button", { name: "TC-04: Mesas territoriales de Bahía e Industrial. Del 2026-11-01 al 2026-11-07. Estado: Pendiente" }),
+    ).toBeVisible();
+    await expect(c.getByText("01/11 – 07/11")).toBeVisible();
+
+    // Clic en la fila de la izquierda abre el SidePanel del editor (Encargo 255)
+    await userEvent.click(
+      c.getByRole("button", { name: "Editar tarea TC-02: Cobertura audiovisual inauguración, estado En progreso" }),
+    );
+    await expect(
+      await c.findByRole("dialog", { name: "Editar tarea TC-02" }, { timeout: 10000 }),
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await expect(
+      await c.findByRole("region", { name: "Diagrama de Gantt del cronograma" }),
+    ).toBeVisible();
+  },
+};
+
+/* Mock de la API agregada de Proyectos (read-only): una actividad por fuente. */
+const ACTIVIDADES_BASE: ActividadProyecto[] = [
+  {
+    id: "comunicaciones:tc-04",
+    modulo_dueno: "comunicaciones",
+    recurso_id: "tc-04",
+    codigo: "TC-04",
+    titulo: "Mesas territoriales de Bahía e Industrial",
+    descripcion: "Cobertura del ciclo de mesas de la Localidad 3",
+    etapa: "Etapa 3: Despliegue Territorial y Temático",
+    territorio: "Localidad 3: Industrial y de la Bahía",
+    lugar: null,
+    fecha_inicio: "2026-11-01",
+    fecha_fin: "2026-11-07",
+    hora_inicio: null,
+    hora_fin: null,
+    estado_nativo: "pendiente",
+    estado_canonico: "pendiente",
+    avance_pct: 0,
+    responsable: "Reportero Asignado Localidad 3",
+    permiso_editar: "comunicaciones:gestionar",
+  },
+  {
+    id: "mesas:AG-2026-0117",
+    modulo_dueno: "mesas",
+    recurso_id: "AG-2026-0117",
+    codigo: "AG-2026-0117",
+    titulo: "Mesa territorial de Bahía: navegación y drenajes",
+    descripcion: "Sesión de concertación;z de agenda",
+    etapa: "Mesa de Trabajo",
+    territorio: "Bahía",
+    lugar: "Plaza de Mercado Bazurto",
+    fecha_inicio: "2026-11-05",
+    fecha_fin: "2026-11-05",
+    hora_inicio: "08:30",
+    hora_fin: "12:00",
+    estado_nativo: "programada",
+    estado_canonico: "programada",
+    avance_pct: 0,
+    responsable: "Facilitador de Mesa",
+    permiso_editar: "mesas:abrir",
+  },
+  {
+    id: "formularios:fq-01",
+    modulo_dueno: "formularios",
+    recurso_id: "fq-01",
+    codigo: "FQ-01",
+    titulo: "Encuesta de percepción de seguridad",
+    descripcion: "Fase 1 del ciclo — web",
+    etapa: null,
+    territorio: "",
+    lugar: null,
+    fecha_inicio: "2026-10-20",
+    fecha_fin: "2026-12-15",
+    hora_inicio: null,
+    hora_fin: null,
+    estado_nativo: "PUBLICADO",
+    estado_canonico: "en_progreso",
+    avance_pct: 0,
+    responsable: "",
+    permiso_editar: "formularios:gestionar",
+  },
+  {
+    id: "comunicaciones:tc-07",
+    modulo_dueno: "comunicaciones",
+    recurso_id: "tc-07",
+    codigo: "TC-07",
+    titulo: "Barrido de narrativa comunitaria en Localidad 4",
+    descripcion: "Historias y voces del ciclo de participación",
+    etapa: "Etapa 2: Historias y voces",
+    territorio: "Localidad 4: San Luis",
+    lugar: null,
+    fecha_inicio: "2026-10-01",
+    fecha_fin: "2026-11-30",
+    hora_inicio: null,
+    hora_fin: null,
+    estado_nativo: "pendiente",
+    estado_canonico: "en_progreso",
+    avance_pct: 45,
+    responsable: "Reportero Asignado Localidad 4",
+    permiso_editar: "comunicaciones:gestionar",
+  },
+];
+function simularApiProyectos() {
+  const fetchOriginal = window.fetch;
+  window.fetch = async (input, opciones) => {
+    const url = new URL(
+      typeof input === "string" ? input : input instanceof URL ? input.href : input.url,
+      window.location.origin,
+    );
+    if (url.pathname === "/api/v1/proyectos/actividades") {
+      const modulo = url.searchParams.get("modulo");
+      const datos = modulo ? ACTIVIDADES_BASE.filter((a) => a.modulo_dueno === modulo) : ACTIVIDADES_BASE;
+      return Response.json(datos);
+    }
+    return fetchOriginal(input, opciones);
+  };
+  return () => {
+    window.fetch = fetchOriginal;
+  };
+}
+
+export const ProyectosGestion: Story = {
+  parameters: {
+    nextjs: { navigation: { pathname: "/plataforma/proyectos" } },
+  },
+  beforeEach: () => simularApiProyectos(),
+  render: () => (
+    <QueryProvider>
+      <PlataformaShell>
+        <ProyectosView />
+      </PlataformaShell>
+      <PanelHost />
+    </QueryProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    // KPIs agregados a partir de las 4 fuentes simuladas
+    await expect(await c.findByText("Total actividades", {}, { timeout: 10000 })).toBeVisible();
+    const cuatros = await c.findAllByText("4", {}, { timeout: 10000 });
+    await expect(cuatros.length).toBeGreaterThan(0);
+
+    // Gantt agregado con ventana calculada (oct–nov de las actividades)
+    await userEvent.click(c.getByRole("tab", { name: "Gantt" }));
+    const ganttRegion = await c.findByRole(
+      "region",
+      { name: "Diagrama de Gantt de proyectos" },
+      { timeout: 10000 },
+    );
+    await expect(ganttRegion).toBeVisible();
+    const g = within(ganttRegion);
+    // Fila visible por módulo con chip de origen (Regla 6)
+    await expect(g.getByText("Mesas")).toBeVisible();
+    const ganttComunicaciones = await g.findAllByText("Comunicaciones");
+    await expect(ganttComunicaciones.length).toBeGreaterThan(0);
+
+    // Kanban agrupado por estado canónico
+    await userEvent.click(c.getByRole("tab", { name: "Kanban" }));
+    await expect(
+      await c.findByText("Mesa territorial de Bahía: navegación y drenajes", {}, { timeout: 10000 }),
+    ).toBeVisible();
+
+    // Calendario del mes en curso con chip de la agenda de mesas
+    await userEvent.click(c.getByRole("tab", { name: "Calendario" }));
+    await expect(
+      await c.findByRole("region", { name: "Calendario mensual de proyectos" }, { timeout: 10000 }),
+    ).toBeVisible();
+    await expect(
+      await c.findByText(/Calendario mensual/i, {}, { timeout: 10000 }),
+    ).toBeVisible();
+
+    // Lista: abre la ficha de la actividad y desde ella el editor nativo del
+    // módulo comunicaciones (ficha → botón Editar → editor TC-04).
+    await userEvent.click(c.getByRole("tab", { name: "Lista" }));
+    await expect(
+      await c.findByText("Mesas territoriales de Bahía e Industrial", {}, { timeout: 10000 }),
+    ).toBeVisible();
+    const itemBtn = await c.findByRole(
+      "button",
+      { name: "Mesas territoriales de Bahía e Industrial" },
+      { timeout: 10000 },
+    );
+    await userEvent.click(itemBtn);
+    const fichaDialog = await c.findByRole(
+      "dialog",
+      { name: /Mesas territoriales de Bahía e Industrial/ },
+      { timeout: 10000 },
+    );
+    await expect(fichaDialog).toBeVisible();
+    await userEvent.click(
+      await within(fichaDialog).findByRole("button", { name: /Editar en Comunicaciones/ }),
+    );
+    await expect(
+      await c.findByRole("dialog", { name: "Editar tarea TC-04" }, { timeout: 10000 }),
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await userEvent.keyboard("{Escape}");
+
+    // Filtro por módulo reduce el listado
+    await userEvent.click(c.getByRole("combobox", { name: "Filtrar por módulo" }));
+    const opcionComunicaciones = await within(document.body).findByRole(
+      "option",
+      { name: /Comunicaciones/ },
+      { timeout: 10000 },
+    );
+    await userEvent.click(opcionComunicaciones);
+    await expect(await c.findByText("Barrido de narrativa comunitaria en Localidad 4")).toBeVisible();
   },
 };
 

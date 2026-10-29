@@ -1,0 +1,154 @@
+{
+  "fecha": "2026-10-24",
+  "estado": "requiere_correccion_semantica_R2_no_integrado",
+  "schema_errores": 0,
+  "invariantes": {
+    "ids_exactos": true,
+    "urls_pr_conservadas": true,
+    "capturas_28": true
+  },
+  "pendientes": {
+    "PR_con_anio_2026_sin_soporte": [
+      "PR-01",
+      "PR-02",
+      "PR-03",
+      "PR-04",
+      "PR-05",
+      "PR-06",
+      "PR-07",
+      "PR-08",
+      "PR-09",
+      "PR-10",
+      "PR-11",
+      "PR-12",
+      "PR-13",
+      "PR-14",
+      "PR-15",
+      "PR-16",
+      "PR-17",
+      "PR-18",
+      "PR-19",
+      "PR-20"
+    ],
+    "PR_sin_hash_de_origen": [
+      "PR-01",
+      "PR-02",
+      "PR-03",
+      "PR-04",
+      "PR-05",
+      "PR-06",
+      "PR-07",
+      "PR-08",
+      "PR-09",
+      "PR-10",
+      "PR-11",
+      "PR-12",
+      "PR-13",
+      "PR-14",
+      "PR-15",
+      "PR-16",
+      "PR-17",
+      "PR-18",
+      "PR-19",
+      "PR-20"
+    ],
+    "series_locales_clasificadas_institucion_territorial": [
+      "local:dane_ecsc_2024",
+      "local:dane_geih_cartagena",
+      "local:dane_geih_informalidad_cartagena",
+      "local:dane_nbi_cnpv2018",
+      "local:dane_poblacion_municipal",
+      "local:dane_poblacion_vigencia_censal",
+      "local:dane_pobreza_monetaria",
+      "local:dane_sae_fies_pobreza_cartagena",
+      "local:dnp_terridata_13001",
+      "local:drive_delito_sexual",
+      "local:drive_excel_policial_11_delitos",
+      "local:drive_extorsion",
+      "local:drive_homicidios",
+      "local:drive_muertes_transporte",
+      "local:drive_suicidios",
+      "local:drive_violencia_intrafamiliar",
+      "local:fiscalia_spoa_busquedas_por_anio_hecho",
+      "local:fiscalia_spoa_procesos_por_anio_hecho",
+      "local:icbf_bienestarina",
+      "local:icbf_prevencion",
+      "local:icbf_primera_infancia",
+      "local:icbf_rpc_cartagena",
+      "local:icbf_uds",
+      "local:ideam_calidad_aire",
+      "local:ins_calidad_agua",
+      "local:medicina_examenes_sexuales",
+      "local:medicina_homicidios",
+      "local:medicina_lesiones_accidentales",
+      "local:medicina_lesiones_transporte",
+      "local:medicina_suicidios",
+      "local:medicina_violencia_interpersonal",
+      "local:medicina_violencia_intrafamiliar",
+      "local:policia_amenazas",
+      "local:policia_delitos_sexuales",
+      "local:policia_homicidios",
+      "local:policia_hurto_vehiculos",
+      "local:policia_hurto_vivienda_comercio",
+      "local:policia_lesiones",
+      "local:policia_violencia_intrafamiliar",
+      "local:procuraduria_pqrsdf_cartagena",
+      "local:unidad_victimas_indemnizaciones_cartagena",
+      "local:unidad_victimas_irv_cartagena",
+      "local:unidad_victimas_ruv_cartagena"
+    ],
+    "unidades_originales_perdidas": [
+      {
+        "id": "local:dnp_terridata_13001",
+        "unidades_perdidas": [
+          "Casos por cada 100.000 habitantes en riesgo",
+          "Eventos",
+          "Hectáreas",
+          "Personas",
+          "Porcentaje (el valor esta multiplicado por 100)",
+          "Puntos",
+          "Tasa por cada 100.000 habitantes"
+        ]
+      },
+      {
+        "id": "local:icbf_rpc_cartagena",
+        "unidades_perdidas": [
+          "Porcentaje",
+          "Tasa",
+          "Tasa por 1.000",
+          "Tasa por 100.000",
+          "Tasa por 100.000 habitantes"
+        ]
+      },
+      {
+        "id": "local:ideam_calidad_aire",
+        "unidades_perdidas": [
+          "mmHg",
+          "ugm3"
+        ]
+      },
+      {
+        "id": "local:unidad_victimas_indemnizaciones_cartagena",
+        "unidades_perdidas": [
+          "millones COP",
+          "personas"
+        ]
+      },
+      {
+        "id": "local:unidad_victimas_ruv_cartagena",
+        "unidades_perdidas": [
+          "personas"
+        ]
+      }
+    ],
+    "contrato_modificado_desde_primera_entrega": false,
+    "contrato_contiene_nombre_inexistente_PoliticaFuentes": true
+  },
+  "sha_revisados": {
+    "65_catalogo_clasificado_fuentes_ollamacodex.json": "9ba29561c07ebbe219e31f7b448fd35bb3420dae0b8b05853d674422b2eb2383",
+    "65_schema_clasificacion_fuentes_ollamacodex.json": "ef51bf0a883dcd9e037035a9838f2023872f29252d571c60fba66e8439ce016d",
+    "65_entrega_ollamacodex_clasificacion_fuentes.md": "cad17a451d4d9c85b06c9bb941d970ab0eb1b936aeed98d0834687562752591e",
+    "65_contrato_ciclo_fuentes_ollamacodex.md": "b663461102dde1f4faf735c988a8b51058553a2acc1ece083855ea4f53db751f"
+  },
+  "limite": "Validación documental; sin pruebas de aplicación ni análisis de datos."
+}

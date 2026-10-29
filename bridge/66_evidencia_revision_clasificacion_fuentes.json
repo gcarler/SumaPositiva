@@ -1,0 +1,1653 @@
+{
+  "fecha": "2026-10-24",
+  "tipo": "revision_documental_coordinador_no_dictamen_EAF",
+  "estado": "requiere_R1_no_integrado",
+  "sha_entrega_revisada": {
+    "65_schema_clasificacion_fuentes_ollamacodex.json": "b9de171c029bb14bf5c683062efd885a555b53dcb8b1ae949958a91b1ce04ccb",
+    "65_catalogo_clasificado_fuentes_ollamacodex.json": "8e7345fc027de0e639bdda60637bbb9c27fee9ffb898216855e9079a62f7bd12",
+    "65_contrato_ciclo_fuentes_ollamacodex.md": "b663461102dde1f4faf735c988a8b51058553a2acc1ece083855ea4f53db751f",
+    "65_entrega_ollamacodex_clasificacion_fuentes.md": "83b3e00be591b8fcd3b1bc09e9486a9f6651e0ea8a4d5af5eed728575fb486a1"
+  },
+  "schema_errores": 181,
+  "errores": [
+    {
+      "ruta": [
+        "fichas",
+        20
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        20,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        20,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        20,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        20,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        21
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        21,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        21,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        21,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        21,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        22
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        22,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        22,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        22,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        22,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        23
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        23,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        23,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        23,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        23,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        24
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        24,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        24,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        24,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        24,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        25
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        25,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        25,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        25,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        25,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        26
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        26,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        26,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        26,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        26,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        27
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        27,
+        "clase_registro"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie' is not one of ['institucion', 'sistema', 'portal', 'encuesta', 'indicador', 'documento', 'por_determinar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        27,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        27,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        27,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        28
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        28,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        28,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        28,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        29
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        29,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        29,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        29,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        30
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        30,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        30,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        30,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        31
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        31,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        31,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        31,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        32
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        32,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        32,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        32,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        33
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        33,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        33,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        33,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        34
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        34,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        34,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        34,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        35
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        35,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        35,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        35,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        36
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        36,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        36,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        36,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        37
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        37,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        37,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        37,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        38
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        38,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        38,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        38,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        39
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        39,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        39,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        39,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        40
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        40,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        40,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        40,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        41
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        41,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        41,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        41,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        42
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        42,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        42,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        42,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        43
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        43,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        43,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        43,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        44
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        44,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        44,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        44,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        45
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        45,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        45,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        45,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        46
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        46,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        46,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        46,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        47
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        47,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        47,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        47,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        48
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        48,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        48,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        48,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        49
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        49,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        49,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        49,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        50
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        50,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        50,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        50,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        51
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        51,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        51,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        51,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        52
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        52,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        52,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        52,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        53
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        53,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        53,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        53,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        54
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        54,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        54,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        54,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        55
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        55,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        55,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        55,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        56
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        56,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        56,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        56,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        57
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        57,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        57,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        57,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        58
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        58,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        58,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        58,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        59
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        59,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        59,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        59,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        60
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        60,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        60,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        60,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        61
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        61,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        61,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        61,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [
+        "fichas",
+        62
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('captura_2026-10-23', 'capturas_58' were unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        62,
+        "ambito_institucional"
+      ],
+      "regla": "enum",
+      "mensaje": "'serie_municipal' is not one of ['nacional', 'territorial', 'cooperacion', 'portal', 'serie', 'portal_municipal', 'portal_academic', 'desconocido', 'por_verificar']"
+    },
+    {
+      "ruta": [
+        "fichas",
+        62,
+        "estado"
+      ],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('accesso' was unexpected)"
+    },
+    {
+      "ruta": [
+        "fichas",
+        62,
+        "estado"
+      ],
+      "regla": "required",
+      "mensaje": "'acceso' is a required property"
+    },
+    {
+      "ruta": [],
+      "regla": "additionalProperties",
+      "mensaje": "Additional properties are not allowed ('capturas_53', 'capturas_58', 'capturas_58_aportadas', 'capturas_58_ids', 'capturas_58_local', 'capturas_58_verificadas', 'enlaces_pr', 'esquema', 'estado_publicacion', 'fichas_locales', 'fichas_pr', 'generado', 'ids_unicos', 'limite', 'productos_locales_sin_captura_nueva', 'productos_locales_sin_captura_nueva_count', 'relaciones_candidatas', 'series_48', 'total_fichas', 'version' were unexpected)"
+    }
+  ],
+  "invariantes": {
+    "63_ids_correctos": true,
+    "21_urls_PR_conservadas": true,
+    "28_ids_captura_cotejados": true,
+    "15_locales_sin_captura_nueva": true
+  },
+  "hallazgos_semanticos": {
+    "PR_anio_2026_sin_soporte": [
+      "PR-01",
+      "PR-02",
+      "PR-03",
+      "PR-04",
+      "PR-05",
+      "PR-06",
+      "PR-07",
+      "PR-08",
+      "PR-09",
+      "PR-10",
+      "PR-11",
+      "PR-12",
+      "PR-13",
+      "PR-14",
+      "PR-15",
+      "PR-16",
+      "PR-17",
+      "PR-18",
+      "PR-19",
+      "PR-20"
+    ],
+    "PR_sin_SHA_entrada": [
+      "PR-01",
+      "PR-02",
+      "PR-03",
+      "PR-04",
+      "PR-05",
+      "PR-06",
+      "PR-07",
+      "PR-08",
+      "PR-09",
+      "PR-10",
+      "PR-11",
+      "PR-12",
+      "PR-13",
+      "PR-14",
+      "PR-15",
+      "PR-16",
+      "PR-17",
+      "PR-18",
+      "PR-19",
+      "PR-20"
+    ],
+    "ambito_institucional_confundido_con_serie_municipal": 43,
+    "cobertura_estacion_reducida_a_municipal": "municipal",
+    "poblacion_total_impuesta_en_locales": 43,
+    "esquema_sin_vinculos_rol_entidad_competencia": true
+  },
+  "nota": "Comprobación JSON Schema y cotejos documentales locales; no se ejecutaron pruebas de aplicación, red, SQL ni promoción."
+}

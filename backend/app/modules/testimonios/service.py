@@ -42,9 +42,7 @@ class TestimoniosService:
     ) -> list[TestimonioLectura]:
         """Consulta para el panel de curaduría y moderación de funcionarios."""
         async with transaction(self.session):
-            testimonios = await self.repository.listar_gestion(
-                estado=estado, territorio_id=territorio_id
-            )
+            testimonios = await self.repository.listar_gestion(estado=estado, territorio_id=territorio_id)
             return [self._mapear_testimonio(t) for t in testimonios]
 
     async def obtener_por_id(self, id: uuid.UUID) -> TestimonioLectura:
@@ -71,9 +69,22 @@ class TestimoniosService:
         self,
         datos: TestimonioCrear,
         sujeto_id: uuid.UUID | None = None,
+        puede_moderar: bool = False,
     ) -> TestimonioLectura:
-        """Registra un nuevo relato de memoria social. Ingresa en estado PENDIENTE."""
+        """Registra un nuevo relato de memoria social. Admite BORRADOR, PENDIENTE o APROBADO directo."""
         async with transaction(self.session):
+            estado_deseado = (datos.estado or "PENDIENTE").upper()
+            if estado_deseado not in ("BORRADOR", "PENDIENTE", "APROBADO", "DESTACADO"):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Estado inicial inválido. Debe ser BORRADOR, PENDIENTE o APROBADO.",
+                )
+            if estado_deseado in ("APROBADO", "DESTACADO") and not puede_moderar:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="No tienes permisos para publicar testimonios directamente sin moderación.",
+                )
+
             codigo = await self.repository.obtener_siguiente_codigo()
             testimonio = TestimonioComunitario(
                 codigo_unico=codigo,
@@ -87,7 +98,7 @@ class TestimoniosService:
                 url_foto=datos.url_foto,
                 url_audio_video=datos.url_audio_video,
                 metadatos_enfoque=datos.metadatos_enfoque,
-                estado="PENDIENTE",
+                estado=estado_deseado,
             )
             creado = await self.repository.crear(testimonio)
             await self.session.refresh(creado)
@@ -99,7 +110,7 @@ class TestimoniosService:
         moderacion: TestimonioModeracion,
         moderador_id: uuid.UUID | None = None,
     ) -> TestimonioLectura:
-        """Modera un testimonio comunitario (APROBADO, DESTACADO o RECHAZADO con motivo)."""
+        """Modera un testimonio comunitario (BORRADOR, PENDIENTE, APROBADO, DESTACADO o RECHAZADO con motivo)."""
         async with transaction(self.session):
             testimonio = await self.repository.obtener_por_id(id)
             if not testimonio:
@@ -109,11 +120,11 @@ class TestimoniosService:
                 )
 
             nuevo_estado = moderacion.estado.upper()
-            if nuevo_estado not in ("APROBADO", "DESTACADO", "RECHAZADO"):
+            if nuevo_estado not in ("BORRADOR", "PENDIENTE", "APROBADO", "DESTACADO", "RECHAZADO"):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=(
-                        "Estado de moderación inválido. Debe ser APROBADO, DESTACADO o RECHAZADO."
+                        "Estado de moderación inválido. Debe ser BORRADOR, PENDIENTE, APROBADO, DESTACADO o RECHAZADO."
                     ),
                 )
 
@@ -122,10 +133,7 @@ class TestimoniosService:
             ):
                 raise HTTPException(
                     status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                    detail=(
-                        "El rechazo de un testimonio comunitario exige un motivo de moderación "
-                        "fundamentado."
-                    ),
+                    detail=("El rechazo de un testimonio comunitario exige un motivo de moderación fundamentado."),
                 )
 
             moderado = await self.repository.moderar(
@@ -138,7 +146,7 @@ class TestimoniosService:
             return self._mapear_testimonio(moderado)
 
     async def editar_testimonio(self, id: uuid.UUID, datos: TestimonioEdicion) -> TestimonioLectura:
-        """Actualiza campos editoriales sin alterar el estado de moderación."""
+        """Actualiza campos editoriales y opcionalmente el estado del testimonio."""
         async with transaction(self.session):
             testimonio = await self.repository.obtener_por_id(id)
             if not testimonio:
@@ -146,7 +154,16 @@ class TestimoniosService:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Testimonio comunitario con ID {id} no encontrado",
                 )
-            actualizado = await self.repository.actualizar_contenido(testimonio, datos.model_dump())
+            datos_dict = datos.model_dump()
+            if datos.estado:
+                estado_upper = datos.estado.upper()
+                if estado_upper not in ("BORRADOR", "PENDIENTE", "APROBADO", "DESTACADO", "RECHAZADO"):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Estado inválido. Debe ser BORRADOR, PENDIENTE, APROBADO, DESTACADO o RECHAZADO.",
+                    )
+                datos_dict["estado"] = estado_upper
+            actualizado = await self.repository.actualizar_contenido(testimonio, datos_dict)
             return self._mapear_testimonio(actualizado)
 
     async def obtener_resumen_metricas(self) -> ResumenTestimonios:

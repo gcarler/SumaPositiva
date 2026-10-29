@@ -33,14 +33,13 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import Settings
 from app.modules.compromisos.pdt_sispt_dnp_evaluador import (
     calcular_eficacia_indicador_sispt,
     determinar_tipologia_indicador_sispt,
 )
+from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh
 
 PLANES_8_ORDEN: tuple[str, ...] = (
     "PDD_2012_2015",
@@ -76,9 +75,7 @@ CATALOGO_8_PLANES_METADATA: dict[str, dict[str, Any]] = {
         "metas_canonicas": 898,
     },
     "PDD_2020_2023": {
-        "nombre_plan": (
-            "Salvemos Juntos a Cartagena — Por una Cartagena Libre y Resiliente (2020–2023)"
-        ),
+        "nombre_plan": ("Salvemos Juntos a Cartagena — Por una Cartagena Libre y Resiliente (2020–2023)"),
         "acuerdo_norma": "Acuerdo Distrital 025 de 2020",
         "periodo": "2020–2023",
         "ppi_referencia_cop": 6_022_982_600_000.0,
@@ -344,10 +341,7 @@ CATALOGO_7_DIMENSIONES_SH: tuple[dict[str, Any], ...] = (
             "Plan Maestro de Drenajes Pluviales y Limpieza de Canales",
             "Macroproyecto de Protección Costera y Adaptación al Cambio Climático",
             "Recuperación Integral de la Ciénaga de la Virgen y Caños Internos (EPA)",
-            (
-                "Gestión Integral del Riesgo de Desastres (OAGRD) y "
-                "Mejoramiento de Vivienda (Corvivienda)"
-            ),
+            ("Gestión Integral del Riesgo de Desastres (OAGRD) y Mejoramiento de Vivienda (Corvivienda)"),
         ],
         "indicadores_trazadores_resultado": [
             {
@@ -422,10 +416,7 @@ CATALOGO_7_DIMENSIONES_SH: tuple[dict[str, Any], ...] = (
         ),
         "programas_emblematicos_cartagena": [
             "Plan Titán 24 y PISCC (Secretaría del Interior y Convivencia Ciudadana)",
-            (
-                "Sistema Integrado de Emergencias y Seguridad SIES / Línea 123 "
-                "y Videovigilancia (Distriseguridad)"
-            ),
+            ("Sistema Integrado de Emergencias y Seguridad SIES / Línea 123 y Videovigilancia (Distriseguridad)"),
             "Casas de Refugio, Patrulla Púrpura y Ruta de Atención VBG (Mujer)",
             "Seguridad Vial y Reducción de Letalidad en Siniestros de Tránsito (DATT)",
         ],
@@ -517,9 +508,7 @@ CATALOGO_7_DIMENSIONES_SH: tuple[dict[str, Any], ...] = (
                 "fuente": "Secretaría del Interior — Asuntos Étnicos",
             },
             {
-                "indicador": (
-                    "Juntas de Acción Comunal con Proyectos Ejecutados por Convenio Solidario"
-                ),
+                "indicador": ("Juntas de Acción Comunal con Proyectos Ejecutados por Convenio Solidario"),
                 "linea_base_2023": "25",
                 "meta_cuatrienio_2027": "120",
                 "sentido": "ASCENDENTE (INCREMENTO_ACUMULATIVO_FLUJO)",
@@ -579,16 +568,11 @@ CATALOGO_7_DIMENSIONES_SH: tuple[dict[str, Any], ...] = (
             "Ruta Distrital de Protección a Líderes Sociales y Defensores de DDHH",
             "Modernización de Comisarías de Familia, Inspecciones de Policía y Casas de Justicia",
             "Gobierno Abierto, Índice de Transparencia y Acceso a la Información (ITA)",
-            (
-                "Presupuestos Participativos y Fortalecimiento de los Fondos "
-                "de Desarrollo Local (FDL 1..3)"
-            ),
+            ("Presupuestos Participativos y Fortalecimiento de los Fondos de Desarrollo Local (FDL 1..3)"),
         ],
         "indicadores_trazadores_resultado": [
             {
-                "indicador": (
-                    "Índice de Transparencia y Acceso a la Información Pública (ITA — PGN)"
-                ),
+                "indicador": ("Índice de Transparencia y Acceso a la Información Pública (ITA — PGN)"),
                 "linea_base_2023": "74,0",
                 "meta_cuatrienio_2027": "92,0",
                 "sentido": "ASCENDENTE (INCREMENTO_NO_ACUMULATIVO_CAPACIDAD)",
@@ -640,12 +624,8 @@ CATALOGO_7_DIMENSIONES_SH: tuple[dict[str, Any], ...] = (
     },
 )
 
-MAPA_NOMBRE_BD_A_COD_DIM: dict[str, str] = {
-    d["nombre_bd"]: d["codigo_dimension"] for d in CATALOGO_7_DIMENSIONES_SH
-}
-MAPA_COD_DIM_A_INFO: dict[str, dict[str, Any]] = {
-    d["codigo_dimension"]: d for d in CATALOGO_7_DIMENSIONES_SH
-}
+MAPA_NOMBRE_BD_A_COD_DIM: dict[str, str] = {d["nombre_bd"]: d["codigo_dimension"] for d in CATALOGO_7_DIMENSIONES_SH}
+MAPA_COD_DIM_A_INFO: dict[str, dict[str, Any]] = {d["codigo_dimension"]: d for d in CATALOGO_7_DIMENSIONES_SH}
 
 KEYWORDS_ETAPA_2_DERECHOS_SOCIALES: tuple[str, ...] = (
     "educac",
@@ -686,11 +666,8 @@ _CACHE_DIAGNOSTICO_PSHC: dict[str, dict[str, Any]] = {}
 
 
 def _resolver_url_bd_csh() -> str:
-    raw_url = Settings().async_database_url
-    parsed = make_url(raw_url)
-    if (parsed.database or "").startswith("polis_test"):
-        return parsed.set(database="bd_csh").render_as_string(hide_password=False)
-    return raw_url
+    # Guardia central (hallazgo HALL-03): jamás redirige polis_test* a bd_csh.
+    return resolver_url_bd_csh()
 
 
 def _normalizar_ascii(valor: Any) -> str:
@@ -727,9 +704,7 @@ def _semaforo_mdm(eficacia: float) -> str:
 
 def clasificar_meta_embudo_seguridad_humana_7d(meta_row: dict[str, Any]) -> dict[str, Any]:
     """Clasifica una meta en el Embudo de 3 Etapas y en las 7 Dimensiones de Seguridad Humana."""
-    datos_of = (
-        meta_row.get("datos_oficiales") if isinstance(meta_row.get("datos_oficiales"), dict) else {}
-    )
+    datos_of = meta_row.get("datos_oficiales") if isinstance(meta_row.get("datos_oficiales"), dict) else {}
     grado_bd = str(datos_of.get("grado_frontalidad_sh") or "").strip()
     dim_bd = str(datos_of.get("dimension_sh_primaria") or "").strip()
 
@@ -742,10 +717,7 @@ def clasificar_meta_embudo_seguridad_humana_7d(meta_row: dict[str, Any]) -> dict
 
     # 1. ¿Pertenece a Etapa 3 (Núcleo Directo de las 7 Dimensiones de Seguridad Humana)?
     cod_dim_asignada: str | None = None
-    if (
-        grado_bd in {"A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO"}
-        and dim_bd in MAPA_NOMBRE_BD_A_COD_DIM
-    ):
+    if grado_bd in {"A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO"} and dim_bd in MAPA_NOMBRE_BD_A_COD_DIM:
         cod_dim_asignada = MAPA_NOMBRE_BD_A_COD_DIM[dim_bd]
     else:
         mejor_dim: str | None = None
@@ -779,10 +751,109 @@ def clasificar_meta_embudo_seguridad_humana_7d(meta_row: dict[str, Any]) -> dict
     }
 
 
+async def _consultar_datos_territorio_reales(
+    engine,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Consulta solo lectura a indicadores territoriales y estadísticas de hurtos."""
+    try:
+        async with engine.connect() as conn:
+            res = await conn.execute(
+                text(
+                    """
+                    SELECT t.codigo,
+                           i.codigo_indicador,
+                           i.nombre_indicador,
+                           i.valor,
+                           i.unidad_medida,
+                           i.anio_corte,
+                           i.nivel_riesgo,
+                           i.fuente_datos,
+                           i.metadatos
+                    FROM geodatos.indicadores_territorio i
+                    JOIN geodatos.territorios t ON t.id=i.territorio_id
+                    WHERE t.tipo_territorio IN ('localidad','ucg')
+                    ORDER BY t.codigo,
+                             i.anio_corte DESC,
+                             i.codigo_indicador
+                    """
+                ),
+            )
+            indicadores = [dict(r) for r in res.mappings().all()]
+            hurtos = (
+                (
+                    await conn.execute(
+                        text(
+                            """
+                        SELECT h.anio,
+                               h.mes,
+                               h.zona,
+                               h.poligono_id,
+                               h.armas_medios,
+                               h.clase_sitio,
+                               h.dia_semana,
+                               sum(h.cantidad) AS casos
+                        FROM geodatos.estadisticas_hurtos h
+                        JOIN geodatos.poligonos_analitica_hurtos p ON p.id=h.poligono_id
+                        GROUP BY h.anio,
+                                 h.mes,
+                                 h.zona,
+                                 h.poligono_id,
+                                 h.armas_medios,
+                                 h.clase_sitio,
+                                 h.dia_semana
+                        ORDER BY h.anio,
+                                 h.mes,
+                                 h.zona,
+                                 h.poligono_id,
+                                 h.armas_medios
+                        """
+                        ),
+                    )
+                )
+                .mappings()
+                .all()
+            )
+            return indicadores, [dict(r) for r in hurtos]
+    except Exception:
+        return [], []
+
+
+def _valor_indicador_real(
+    indicadores: list[dict[str, Any]],
+    territorio: str,
+    codigo_indicador: str,
+) -> float:
+    """Tomar el último valor disponible del indicador y devolver el valor numérico."""
+    for row in sorted(
+        indicadores,
+        key=lambda r: (str(r.get("anio_corte") or 0), str(r.get("created") or "")),
+        reverse=True,
+    ):
+        if str(row.get("codigo") or "") != territorio:
+            continue
+        if str(row.get("codigo_indicador") or "") != codigo_indicador:
+            continue
+        valor = _to_float_preserve_zero(row.get("valor"))
+        if valor is not None:
+            return float(valor)
+    return 0.0
+
+
+def _casos_hurtos(
+    hurtos: list[dict[str, Any]],
+    zona: str,
+) -> int:
+    """Sumar casos de hurtos para la zona solicitada."""
+    return sum(int(row.get("casos") or 0) for row in hurtos if str(row.get("zona") or "").strip() == zona.strip())
+
+
 def _construir_econometria_espacial_lisa_15_ucg(
     ucgs_bd: list[dict[str, Any]],
     total_metas_nucleo: int,
     presupuesto_nucleo_cop: float,
+    *,
+    indicadores_territorio: list[dict[str, Any]] | None = None,
+    estadisticas_hurtos: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Construye el modelo espacial Moran's I y LISA en las 3 Localidades y 15 UCGs de Cartagena."""
     perfiles_ucg_canonicos: dict[str, dict[str, Any]] = {
@@ -938,10 +1009,22 @@ def _construir_econometria_espacial_lisa_15_ucg(
         perf = perfiles_ucg_canonicos[code]
         row_bd = bd_map.get(code, {})
         poblacion = int(row_bd.get("poblacion_estimada") or (48_000 + idx * 3_200))
+        tasa_real = _valor_indicador_real(indicadores_territorio or [], code, "TASA_HOMICIDIOS_100K")
+        pobreza_real = _valor_indicador_real(indicadores_territorio or [], code, "POBREZA_EXTREMA_PCT")
+        riesgo_real = _valor_indicador_real(indicadores_territorio or [], code, "RIESGO_AMBIENTAL_PCT")
+        hurtos_zona = sum(
+            int(r.get("casos") or 0)
+            for r in (estadisticas_hurtos or [])
+            if str(r.get("zona") or "").strip().casefold() == code.strip().casefold()
+            or (str(r.get("zona") or "").strip().casefold() == f"{code.strip().casefold()}-s")
+        )
+        tasa_real_eff = float(tasa_real) if tasa_real else float(perf["tasa_homicidios_100k"])
+        pobreza_real_eff = float(pobreza_real) if pobreza_real else float(perf["pobreza_extrema_pct"])
+        riesgo_real_eff = float(riesgo_real) if riesgo_real else float(perf["riesgo_ambiental_pct"])
+        if hurtos_zona:
+            tasa_real_eff = round((hurtos_zona / max(poblacion, 1)) * 100_000.0, 2)
         vuln_compuesta = round(
-            0.40 * perf["tasa_homicidios_100k"]
-            + 0.35 * perf["pobreza_extrema_pct"]
-            + 0.25 * perf["riesgo_ambiental_pct"],
+            0.40 * tasa_real_eff + 0.35 * pobreza_real_eff + 0.25 * riesgo_real_eff,
             2,
         )
         # En las trampas High-Low la vulnerabilidad es máxima pero la inversión per cápita es menor
@@ -955,9 +1038,9 @@ def _construir_econometria_espacial_lisa_15_ucg(
             "nombre_ucg": perf["nombre"],
             "localidad": perf["localidad"],
             "poblacion_estimada": poblacion,
-            "tasa_homicidios_100k": perf["tasa_homicidios_100k"],
-            "pobreza_extrema_pct": perf["pobreza_extrema_pct"],
-            "riesgo_ambiental_inundacion_pct": perf["riesgo_ambiental_pct"],
+            "tasa_homicidios_100k": tasa_real_eff,
+            "pobreza_extrema_pct": pobreza_real_eff,
+            "riesgo_ambiental_inundacion_pct": riesgo_real_eff,
             "indice_vulnerabilidad_multidimensional": vuln_compuesta,
             "metas_seguridad_humana_focalizadas": metas_territorializadas,
             "presupuesto_seguridad_humana_cop": presupuesto_ucg,
@@ -975,8 +1058,7 @@ def _construir_econometria_espacial_lisa_15_ucg(
             "nombre_localidad": "Localidad 1: Histórica y del Caribe Norte",
             "ucgs_integradas": ["UCG-01", "UCG-02", "UCG-03", "UCG-08", "UCG-09", "UCG-10"],
             "patron_espacial_predominante": (
-                "Dualidad centro turístico consolidado (Low-Low) vs Faldas de "
-                "la Popa y Zona Insular (High-Low)."
+                "Dualidad centro turístico consolidado (Low-Low) vs Faldas de la Popa y Zona Insular (High-Low)."
             ),
         },
         {
@@ -993,8 +1075,7 @@ def _construir_econometria_espacial_lisa_15_ucg(
             "nombre_localidad": "Localidad 3: Industrial y de la Bahía",
             "ucgs_integradas": ["UCG-11", "UCG-12", "UCG-13", "UCG-14", "UCG-15"],
             "patron_espacial_predominante": (
-                "Concentración crítica de violencia y pobreza en UCG 14 (Nelson "
-                "Mandela) y UCG 15 (Pasacaballos)."
+                "Concentración crítica de violencia y pobreza en UCG 14 (Nelson Mandela) y UCG 15 (Pasacaballos)."
             ),
         },
     ]
@@ -1147,19 +1228,11 @@ def _mapear_tipo_vinculo_canonico(tipo_raw: Any, row_id: int) -> str:
 
 def _clasificar_tipo_actividad_pa_4d(texto: str, tiene_presupuesto: bool) -> str:
     norm = _normalizar_ascii(texto)
-    if any(
-        k in norm
-        for k in ("decreto", "acuerdo", "reglament", "estatuto", "normativa", "resolucion")
-    ):
+    if any(k in norm for k in ("decreto", "acuerdo", "reglament", "estatuto", "normativa", "resolucion")):
         return "TIPO_4_REGULATORIA_SIN_PRESUPUESTO"
-    if any(
-        k in norm
-        for k in ("mesa", "comite", "articulacion", "campana", "capacitacion", "socializacion")
-    ):
+    if any(k in norm for k in ("mesa", "comite", "articulacion", "campana", "capacitacion", "socializacion")):
         return "TIPO_3_GESTION_INSTITUCIONAL"
-    if not tiene_presupuesto or any(
-        k in norm for k in ("funcionamiento", "operacion", "mantenimiento administrativo")
-    ):
+    if not tiene_presupuesto or any(k in norm for k in ("funcionamiento", "operacion", "mantenimiento administrativo")):
         return "TIPO_2_FUNCIONAMIENTO_ASOCIADO"
     return "TIPO_1_INVERSION_PROYECTO_MGA"
 
@@ -1188,9 +1261,7 @@ def _construir_analisis_doctrinal_plan_4_parrafos(
     nombre_p = meta_cat["nombre_plan"]
     norma_p = meta_cat["acuerdo_norma"]
     periodo_p = meta_cat["periodo"]
-    lineas_txt = ", ".join(
-        f"'{x['linea_estrategica']}' ({x['metas_totales']} metas)" for x in top_lineas[:4]
-    )
+    lineas_txt = ", ".join(f"'{x['linea_estrategica']}' ({x['metas_totales']} metas)" for x in top_lineas[:4])
     p1 = (
         f"1. Arquitectura Programática y Diseño Institucional ({nombre_p} — {norma_p}): "
         f"Durante el periodo {periodo_p}, el instrumento de planificación consolidó un universo "
@@ -1270,9 +1341,7 @@ def _construir_monografia_doctrinal_dimension_6_parrafos(
     cod_d = d_cat["codigo_dimension"]
     ods_txt = ", ".join(d_cat["ods_asociados"])
     progs_txt = "; ".join(d_cat["programas_emblematicos_cartagena"])
-    deps_txt = ", ".join(
-        f"{x['dependencia']} ({x['metas_nucleo']} metas)" for x in top_deps_dim[:4]
-    )
+    deps_txt = ", ".join(f"{x['dependencia']} ({x['metas_nucleo']} metas)" for x in top_deps_dim[:4])
     traz_txt = "; ".join(
         f"{t['indicador']} (LB: {t['linea_base_2023']} -> Meta 2027: {t['meta_cuatrienio_2027']})"
         for t in d_cat["indicadores_trazadores_resultado"]
@@ -1378,15 +1447,9 @@ def _construir_hoja_de_ruta_6_acciones_dimension(
     top_metas_dim: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     nom_d = d_cat["nombre_dimension"]
-    lider_1 = (
-        top_deps_dim[0]["dependencia"]
-        if top_deps_dim
-        else "Secretaría de Planeación Distrital (SPD)"
-    )
+    lider_1 = top_deps_dim[0]["dependencia"] if top_deps_dim else "Secretaría de Planeación Distrital (SPD)"
     lider_2 = (
-        top_deps_dim[1]["dependencia"]
-        if len(top_deps_dim) > 1
-        else "Secretaría del Interior y Convivencia Ciudadana"
+        top_deps_dim[1]["dependencia"] if len(top_deps_dim) > 1 else "Secretaría del Interior y Convivencia Ciudadana"
     )
     meta_ref_1 = (
         f"{top_metas_dim[0]['codigo_plan']}:{top_metas_dim[0]['codigo_meta']} — "
@@ -1605,15 +1668,12 @@ def _construir_perfiles_monograficos_18_territorios(
                 "estrato_predominante": int(row_bd.get("estrato_predominante") or estrato_def),
                 "ucgs_integradas": ucgs_loc,
                 "total_barrios": sum(
-                    int((mapa_bd.get(u, {}).get("metadatos") or {}).get("total_barrios", 10))
-                    for u in ucgs_loc
+                    int((mapa_bd.get(u, {}).get("metadatos") or {}).get("total_barrios", 10)) for u in ucgs_loc
                 ),
                 "barrios_referencia": [
                     b
                     for u in ucgs_loc[:3]
-                    for b in (
-                        (mapa_bd.get(u, {}).get("metadatos") or {}).get("barrios_muestra") or []
-                    )[:3]
+                    for b in ((mapa_bd.get(u, {}).get("metadatos") or {}).get("barrios_muestra") or [])[:3]
                 ],
                 "metas_sh_focalizadas": metas_loc,
                 "presupuesto_sh_estimado_cop": presup_loc,
@@ -1650,12 +1710,8 @@ def _construir_perfiles_monograficos_18_territorios(
             "D1_SEGURIDAD_ECONOMICA": round(min(99.0, vuln_u * 0.96), 1),
             "D2_SEGURIDAD_ALIMENTARIA": round(min(99.0, vuln_u * 0.99), 1),
             "D3_SEGURIDAD_SALUD": round(min(99.0, vuln_u * 0.78), 1),
-            "D4_SEGURIDAD_AMBIENTAL": round(
-                min(99.0, float(u_lisa["riesgo_ambiental_inundacion_pct"])), 1
-            ),
-            "D5_SEGURIDAD_PERSONAL": round(
-                min(99.0, float(u_lisa["tasa_homicidios_100k"]) * 1.45), 1
-            ),
+            "D4_SEGURIDAD_AMBIENTAL": round(min(99.0, float(u_lisa["riesgo_ambiental_inundacion_pct"])), 1),
+            "D5_SEGURIDAD_PERSONAL": round(min(99.0, float(u_lisa["tasa_homicidios_100k"]) * 1.45), 1),
             "D6_SEGURIDAD_COMUNITARIA": round(min(99.0, vuln_u * 0.91), 1),
             "D7_SEGURIDAD_POLITICA": round(min(99.0, vuln_u * 0.84), 1),
         }
@@ -1713,9 +1769,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
 ) -> dict[str, Any]:
     """Construye el diagnóstico V2 (+100 páginas) sobre las 4,637 metas de los 8 planes."""
     clave_cache = (
-        str(codigo_plan).strip().upper()
-        if codigo_plan and str(codigo_plan).strip().upper() != "TODOS"
-        else "TODOS"
+        str(codigo_plan).strip().upper() if codigo_plan and str(codigo_plan).strip().upper() != "TODOS" else "TODOS"
     )
     if clave_cache in _CACHE_DIAGNOSTICO_PSHC:
         return dict(_CACHE_DIAGNOSTICO_PSHC[clave_cache])
@@ -1804,12 +1858,9 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
         for cp in PLANES_8_ORDEN
     }
 
-    por_dim_metas: dict[str, list[dict[str, Any]]] = {
-        d["codigo_dimension"]: [] for d in CATALOGO_7_DIMENSIONES_SH
-    }
+    por_dim_metas: dict[str, list[dict[str, Any]]] = {d["codigo_dimension"]: [] for d in CATALOGO_7_DIMENSIONES_SH}
     por_dim_plan_counts: dict[str, Counter[str]] = {
-        d["codigo_dimension"]: Counter({cp: 0 for cp in PLANES_8_ORDEN})
-        for d in CATALOGO_7_DIMENSIONES_SH
+        d["codigo_dimension"]: Counter({cp: 0 for cp in PLANES_8_ORDEN}) for d in CATALOGO_7_DIMENSIONES_SH
     }
 
     lineas_por_plan_v2: dict[str, dict[str, dict[str, Any]]] = {cp: {} for cp in PLANES_8_ORDEN}
@@ -1850,13 +1901,9 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             continue
         row_id = int(row.get("id") or 1)
         clasif = clasificar_meta_embudo_seguridad_humana_7d(row)
-        datos_of = (
-            row.get("datos_oficiales") if isinstance(row.get("datos_oficiales"), dict) else {}
-        )
+        datos_of = row.get("datos_oficiales") if isinstance(row.get("datos_oficiales"), dict) else {}
         canonico = (
-            datos_of.get("_canonico_normalizado")
-            if isinstance(datos_of.get("_canonico_normalizado"), dict)
-            else {}
+            datos_of.get("_canonico_normalizado") if isinstance(datos_of.get("_canonico_normalizado"), dict) else {}
         )
 
         tip_sispt = determinar_tipologia_indicador_sispt(
@@ -1921,9 +1968,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             or "Línea Estratégica Transversal PDD"
         ).strip()
         dep_norm = _normalizar_dependencia_distrital(
-            row.get("dependencia_responsable")
-            or canonico.get("responsable_canonico")
-            or datos_of.get("responsable")
+            row.get("dependencia_responsable") or canonico.get("responsable_canonico") or datos_of.get("responsable")
         )
         vinculo_raw = str(row.get("tipo_vinculo") or "VINCULO_SECTORIAL_INFERIDO")
         vinculo_canon = _mapear_tipo_vinculo_canonico(vinculo_raw, row_id)
@@ -2010,9 +2055,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
 
         raw_nom = str(row.get("nombre") or "").strip()
         raw_ind = str(row.get("indicador") or "").strip()
-        raw_mc = str(
-            canonico.get("meta_cuatrienio_texto") or datos_of.get("meta_cuatrienio") or ""
-        ).strip()
+        raw_mc = str(canonico.get("meta_cuatrienio_texto") or datos_of.get("meta_cuatrienio") or "").strip()
         desc_meta_txt = (
             raw_nom
             if len(raw_nom) > 12
@@ -2024,16 +2067,10 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
         )
         ind_txt = str(row.get("indicador") or row.get("nombre") or "").strip()
         meta_prog_val = float(
-            _to_float_preserve_zero(
-                row.get("meta_programada_anual", canonico.get("meta_cuatrienio_numerica"))
-            )
-            or 100.0
+            _to_float_preserve_zero(row.get("meta_programada_anual", canonico.get("meta_cuatrienio_numerica"))) or 100.0
         )
         meta_ejec_val = round(
-            float(
-                _to_float_preserve_zero(row.get("meta_ejecutada_anual"))
-                or (meta_prog_val * (av_efectivo / 100.0))
-            ),
+            float(_to_float_preserve_zero(row.get("meta_ejecutada_anual")) or (meta_prog_val * (av_efectivo / 100.0))),
             2,
         )
         ejec_fin_fila_pct = round((comp_cop / max(aprop_cop, 1.0)) * 100.0, 2)
@@ -2069,9 +2106,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
 
             meta_item_enriq = {
                 "id_meta_bd": row_id,
-                "codigo_meta": str(
-                    row.get("codigo") or canonico.get("codigo_meta_canonico") or f"M-{row_id:04d}"
-                ),
+                "codigo_meta": str(row.get("codigo") or canonico.get("codigo_meta_canonico") or f"M-{row_id:04d}"),
                 "codigo_plan": cp,
                 "tipo_meta": "RESULTADO" if clasif["es_meta_resultado"] else "PRODUCTO",
                 "dependencia_responsable": dep_norm,
@@ -2081,18 +2116,14 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                 "descripcion_meta": desc_meta_txt[:220],
                 "nombre_meta": desc_meta_txt[:220],
                 "indicador": ind_txt[:180],
-                "linea_base": str(
-                    canonico.get("linea_base_texto") or datos_of.get("linea_base") or "0"
-                )[:80],
+                "linea_base": str(canonico.get("linea_base_texto") or datos_of.get("linea_base") or "0")[:80],
                 "meta_cuatrienio": str(
                     canonico.get("meta_cuatrienio_texto")
                     or datos_of.get("meta_cuatrienio")
                     or row.get("nombre")
                     or "100"
                 )[:120],
-                "unidad_medida": str(
-                    row.get("unidad_medida") or canonico.get("unidad_medida_canonica") or "Número"
-                ),
+                "unidad_medida": str(row.get("unidad_medida") or canonico.get("unidad_medida_canonica") or "Número"),
                 "meta_programada_anual": round(meta_prog_val, 2),
                 "meta_ejecutada_anual": meta_ejec_val,
                 "avance_fisico_pct": av_efectivo,
@@ -2106,9 +2137,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                 "eficacia_bruta_sispt_pct": ef_bruta_val,
                 "eficacia_truncada_sispt_pct": ef_trunc,
                 "tipologia_sispt": tip_sispt,
-                "tipo_actividad_pa": _clasificar_tipo_actividad_pa_4d(
-                    f"{desc_meta_txt} {ind_txt}", aprop_cop > 0
-                ),
+                "tipo_actividad_pa": _clasificar_tipo_actividad_pa_4d(f"{desc_meta_txt} {ind_txt}", aprop_cop > 0),
                 "rango_semaforo_sispt": _clasificar_rango_semaforo_sispt_v2(ef_trunc),
                 "tipo_vinculo": vinculo_canon,
                 "tipo_vinculo_bd": vinculo_raw,
@@ -2142,9 +2171,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
 
         efs = [x for x in st["eficacias_sispt"] if x >= 15.0]
         ef_ref_plan = round(71.5 + (PLANES_8_ORDEN.index(cp) * 1.8), 2)
-        ef_media_plan = (
-            round((sum(efs) / len(efs)) * 0.45 + ef_ref_plan * 0.55, 2) if efs else ef_ref_plan
-        )
+        ef_media_plan = round((sum(efs) / len(efs)) * 0.45 + ef_ref_plan * 0.55, 2) if efs else ef_ref_plan
 
         evolucion_8_planes.append(
             {
@@ -2211,9 +2238,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "apropiacion_cop": round(float(slot_d["apropiacion_cop"]), 2),
                     "compromisos_rp_cop": round(float(slot_d["compromisos_rp_cop"]), 2),
                     "pagos_cop": round(float(slot_d["pagos_cop"]), 2),
-                    "avance_fisico_medio_pct": (
-                        round(sum(avs_d_p) / len(avs_d_p), 2) if avs_d_p else ef_media_plan
-                    ),
+                    "avance_fisico_medio_pct": (round(sum(avs_d_p) / len(avs_d_p), 2) if avs_d_p else ef_media_plan),
                 }
             )
 
@@ -2327,14 +2352,10 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                 "obligaciones_cop": round(ap_e * 0.76, 2),
                 "pagos_tesoreria_cop": round(ap_e * 0.71, 2),
                 "avances": [68.5 + (idx_ec % 14)],
-                "dims_counter": Counter(
-                    {CATALOGO_7_DIMENSIONES_SH[idx_ec % 7]["codigo_dimension"]: 7}
-                ),
+                "dims_counter": Counter({CATALOGO_7_DIMENSIONES_SH[idx_ec % 7]["codigo_dimension"]: 7}),
             }
 
-    nombres_dim_corto = {
-        d["codigo_dimension"]: d["nombre_dimension"] for d in CATALOGO_7_DIMENSIONES_SH
-    }
+    nombres_dim_corto = {d["codigo_dimension"]: d["nombre_dimension"] for d in CATALOGO_7_DIMENSIONES_SH}
     matriz_secretarias_30: list[dict[str, Any]] = []
     for idx_s, (_, s_info) in enumerate(
         sorted(
@@ -2354,9 +2375,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
         av_med_s = round(sum(avs_s) / len(avs_s), 2) if avs_s else 72.0
         brecha_s = round(tasa_comp_s - av_med_s, 2)
         dim_pred_cod = (
-            s_info["dims_counter"].most_common(1)[0][0]
-            if s_info["dims_counter"]
-            else "D7_SEGURIDAD_POLITICA"
+            s_info["dims_counter"].most_common(1)[0][0] if s_info["dims_counter"] else "D7_SEGURIDAD_POLITICA"
         )
         matriz_secretarias_30.append(
             {
@@ -2380,10 +2399,21 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             }
         )
 
+    indicadores_territorio = []
+    estadisticas_hurtos = []
+    try:
+        engine_datos = create_async_engine(_resolver_url_bd_csh(), pool_pre_ping=True)
+        indicadores_territorio, estadisticas_hurtos = await _consultar_datos_territorio_reales(engine_datos)
+        await engine_datos.dispose()
+    except Exception:
+        pass
+
     espacial_lisa = _construir_econometria_espacial_lisa_15_ucg(
         ucgs_bd=ucgs_bd,
         total_metas_nucleo=etapa_3_total,
         presupuesto_nucleo_cop=presupuesto_sh_8_planes_cop,
+        indicadores_territorio=indicadores_territorio,
+        estadisticas_hurtos=estadisticas_hurtos,
     )
     perfiles_18_territorios = _construir_perfiles_monograficos_18_territorios(
         territorios_bd=territorios_bd,
@@ -2417,13 +2447,10 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
         efs_d = [
             float(m["eficacia_truncada_sispt_pct"])
             for m in metas_d
-            if m["eficacia_truncada_sispt_pct"] is not None
-            and float(m["eficacia_truncada_sispt_pct"]) >= 15.0
+            if m["eficacia_truncada_sispt_pct"] is not None and float(m["eficacia_truncada_sispt_pct"]) >= 15.0
         ]
         ef_base_d = round(float(d_cat["probabilidad_cumplimiento_2027_pct"]), 2)
-        ef_media_d = (
-            round((sum(efs_d) / len(efs_d)) * 0.4 + ef_base_d * 0.6, 2) if efs_d else ef_base_d
-        )
+        ef_media_d = round((sum(efs_d) / len(efs_d)) * 0.4 + ef_base_d * 0.6, 2) if efs_d else ef_base_d
         aprop_obs_d = sum(float(m["apropiacion_definitiva_cop"]) for m in metas_d)
         peso_d = tot_d / max(etapa_3_total, 1)
         presup_d = round(max(aprop_obs_d, presupuesto_sh_8_planes_cop * peso_d), 2)
@@ -2434,17 +2461,14 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             metas_d,
             key=lambda x: (
                 1
-                if x["codigo_plan"]
-                in {"PDD_2024_2027", "PDL_1_2024_2027", "PDL_2_2024_2027", "PDL_3_2024_2027"}
+                if x["codigo_plan"] in {"PDD_2024_2027", "PDL_1_2024_2027", "PDL_2_2024_2027", "PDL_3_2024_2027"}
                 else 0,
                 float(x["apropiacion_definitiva_cop"] or 0.0),
                 float(x["eficacia_truncada_sispt_pct"] or 0.0),
             ),
             reverse=True,
         )
-        catalogo_top_25_presup = [
-            {k: v for k, v in m.items() if k != "es_resultado"} for m in metas_ord_presup[:25]
-        ]
+        catalogo_top_25_presup = [{k: v for k, v in m.items() if k != "es_resultado"} for m in metas_ord_presup[:25]]
         metas_emblematicas = catalogo_top_25_presup[:10]
 
         metas_ord_criticas = sorted(
@@ -2534,9 +2558,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             cp_sd = round(float(sd["compromisos_rp_cop"]), 2)
             pg_sd = round(float(sd["pagos_tesoreria_cop"]), 2)
             ej_fin_sd = round((cp_sd / max(ap_sd, 1.0)) * 100.0, 2)
-            av_sd = (
-                round(sum(sd["avances"]) / len(sd["avances"]), 2) if sd["avances"] else ef_media_d
-            )
+            av_sd = round(sum(sd["avances"]) / len(sd["avances"]), 2) if sd["avances"] else ef_media_d
             br_sd = round(ej_fin_sd - av_sd, 2)
             desempeno_secretarias_dim.append(
                 {
@@ -2603,9 +2625,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "metas_nucleo": int(lp["metas_nucleo"]),
                     "apropiacion_definitiva_cop": round(float(lp["apropiacion_definitiva_cop"]), 2),
                     "compromisos_rp_cop": round(float(lp["compromisos_rp_cop"]), 2),
-                    "avance_fisico_medio_pct": round(
-                        sum(lp["avances"]) / max(len(lp["avances"]), 1), 2
-                    ),
+                    "avance_fisico_medio_pct": round(sum(lp["avances"]) / max(len(lp["avances"]), 1), 2),
                     "cluster_bertopic": f"Cluster NLP-{idx_dim}.{idx_lp:02d}: {cluster_topic}",
                 }
             )
@@ -2626,15 +2646,9 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "formula_indicador": f_corta,
                     "tipologia_sispt_oficial": f_larga,
                     "conteo_metas": len(sub_f),
-                    "apropiacion_definitiva_cop": round(
-                        sum(float(m["apropiacion_definitiva_cop"]) for m in sub_f), 2
-                    ),
-                    "eficacia_media_sin_truncar_pct": (
-                        round(sum(br_f) / len(br_f), 2) if br_f else ef_media_d
-                    ),
-                    "eficacia_media_truncada_sispt_pct": (
-                        round(sum(tr_f) / len(tr_f), 2) if tr_f else ef_media_d
-                    ),
+                    "apropiacion_definitiva_cop": round(sum(float(m["apropiacion_definitiva_cop"]) for m in sub_f), 2),
+                    "eficacia_media_sin_truncar_pct": (round(sum(br_f) / len(br_f), 2) if br_f else ef_media_d),
+                    "eficacia_media_truncada_sispt_pct": (round(sum(tr_f) / len(tr_f), 2) if tr_f else ef_media_d),
                     "metas_con_sobreejecucion_truncada": sum(
                         1 for m in sub_f if float(m["eficacia_bruta_sispt_pct"]) > 100.0
                     ),
@@ -2654,12 +2668,8 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                 {
                     "tipo_actividad_pa": t_act,
                     "conteo_metas": len(sub_a),
-                    "apropiacion_definitiva_cop": round(
-                        sum(float(m["apropiacion_definitiva_cop"]) for m in sub_a), 2
-                    ),
-                    "avance_fisico_medio_pct": (
-                        round(sum(av_a) / len(av_a), 2) if av_a else ef_media_d
-                    ),
+                    "apropiacion_definitiva_cop": round(sum(float(m["apropiacion_definitiva_cop"]) for m in sub_a), 2),
+                    "avance_fisico_medio_pct": (round(sum(av_a) / len(av_a), 2) if av_a else ef_media_d),
                 }
             )
 
@@ -2677,9 +2687,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "rango_semaforo": r_sem,
                     "conteo_metas": len(sub_s),
                     "participacion_pct": round((len(sub_s) / max(tot_d, 1)) * 100.0, 2),
-                    "apropiacion_definitiva_cop": round(
-                        sum(float(m["apropiacion_definitiva_cop"]) for m in sub_s), 2
-                    ),
+                    "apropiacion_definitiva_cop": round(sum(float(m["apropiacion_definitiva_cop"]) for m in sub_s), 2),
                     "avance_fisico_medio_pct": (round(sum(av_s) / len(av_s), 2) if av_s else 0.0),
                 }
             )
@@ -2851,9 +2859,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
             "hoja_de_ruta_sectorial_dimension": hoja_ruta_6_dim,
         }
         diagnostico_micro_7d_raw.append(dim_entry)
-        resumen_7_dimensiones_map[alias_nombres_doc.get(cod_d, d_cat["nombre_dimension"])] = (
-            dim_entry
-        )
+        resumen_7_dimensiones_map[alias_nombres_doc.get(cod_d, d_cat["nombre_dimension"])] = dim_entry
         resumen_7_dimensiones_map[d_cat["nombre_dimension"]] = dim_entry
         resumen_7_dimensiones_map[cod_d] = dim_entry
         resumen_7_dimensiones_map[sh_code] = dim_entry
@@ -2864,9 +2870,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
 
     porcentaje_etapa_2 = round((etapa_2_total / max(etapa_1_total, 1)) * 100.0, 2)
     porcentaje_etapa_3 = round((etapa_3_total / max(etapa_1_total, 1)) * 100.0, 2)
-    porcentaje_ppi_sh = round(
-        (presupuesto_sh_8_planes_cop / max(presupuesto_ppi_8_planes_cop, 1.0)) * 100.0, 2
-    )
+    porcentaje_ppi_sh = round((presupuesto_sh_8_planes_cop / max(presupuesto_ppi_8_planes_cop, 1.0)) * 100.0, 2)
     presupuesto_etapa_2_cop = round(presupuesto_ppi_8_planes_cop * 0.684, 2)
 
     embudo_sintesis = {
@@ -2979,8 +2983,7 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
         "estado": "DIAGNOSTICO_MULTIDIMENSIONAL_SEGURIDAD_HUMANA_8_PLANES_COMPLETO",
         "version_editorial": "V2_MONOGRAFIA_EXHAUSTIVA_100_PAGINAS",
         "titulo_documento": (
-            "EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD HUMANA EN 8 "
-            "PLANES DE DESARROLLO DE CARTAGENA"
+            "EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD HUMANA EN 8 PLANES DE DESARROLLO DE CARTAGENA"
         ),
         "subtitulo_documento": (
             "Análisis Longitudinal, Econométrico y de Coherencia Presupuestal (2012–2027) "
@@ -3021,26 +3024,14 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "a la necesidad y Libertad para vivir con dignidad."
                 ),
                 "instrumentos_normativos_vinculantes": [
-                    (
-                        "Informe sobre Desarrollo Humano PNUD (1994) — Las 7 "
-                        "Dimensiones de la Seguridad Humana."
-                    ),
-                    (
-                        "Resolución 66/290 de la Asamblea General de la ONU (2012) — "
-                        "Marco común de Seguridad Humana."
-                    ),
+                    ("Informe sobre Desarrollo Humano PNUD (1994) — Las 7 Dimensiones de la Seguridad Humana."),
+                    ("Resolución 66/290 de la Asamblea General de la ONU (2012) — Marco común de Seguridad Humana."),
                     (
                         "Ley 2294 de 2022 — Plan Nacional de Desarrollo 2022–2026 "
                         "'Colombia, Potencia Mundial de la Vida'."
                     ),
-                    (
-                        "Acuerdo Distrital 139 de 2024 — PDD 2024–2027 "
-                        "'Cartagena, Ciudad de Derechos'."
-                    ),
-                    (
-                        "Decreto Distrital 037 de 2026 — Política Pública de "
-                        "Seguridad Humana y Convivencia (PSHC)."
-                    ),
+                    ("Acuerdo Distrital 139 de 2024 — PDD 2024–2027 'Cartagena, Ciudad de Derechos'."),
+                    ("Decreto Distrital 037 de 2026 — Política Pública de Seguridad Humana y Convivencia (PSHC)."),
                 ],
             },
             "articulacion_agenda_2030_y_dnp": {
@@ -3069,12 +3060,8 @@ async def construir_diagnostico_seguridad_humana_8planes_async(
                     "seguimiento)."
                 ),
                 "universo_base_datos_bd_csh": {
-                    "tabla_metas_oficiales": (
-                        "seguimiento.pdd_metas_oficiales (4,637 metas en 8 planes)"
-                    ),
-                    "tabla_vinculos_triada": (
-                        "seguimiento.pdd_vinculos_meta_pa_triada (4,637 vínculos conciliados)"
-                    ),
+                    "tabla_metas_oficiales": ("seguimiento.pdd_metas_oficiales (4,637 metas en 8 planes)"),
+                    "tabla_vinculos_triada": ("seguimiento.pdd_vinculos_meta_pa_triada (4,637 vínculos conciliados)"),
                     "tabla_registros_triada": (
                         "seguimiento.registros_triada_normalizados (225,380 registros en 3 motores)"
                     ),

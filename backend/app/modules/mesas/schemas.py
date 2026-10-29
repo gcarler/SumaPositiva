@@ -6,9 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 TipoMesaLiteral = Literal["TERRITORIAL", "RURAL_INSULAR", "POBLACIONAL", "SECTORIAL", "ESPECIAL"]
 ModalidadLiteral = Literal["PRESENCIAL", "VIRTUAL", "HIBRIDA_DIGITAL"]
-EstadoMesaLiteral = Literal[
-    "PROGRAMADA", "CONVOCADA", "EN_DELIBERACION", "ACTA_CONCERTADA", "FINALIZADA"
-]
+EstadoMesaLiteral = Literal["PROGRAMADA", "CONVOCADA", "EN_DELIBERACION", "ACTA_CONCERTADA", "FINALIZADA"]
 RolMesaLiteral = Literal["facilitador", "relator", "delegado_institucional", "ciudadano"]
 EstadoActaLiteral = Literal["BORRADOR", "CONCERTADA", "PUBLICADA"]
 
@@ -214,19 +212,17 @@ class ActaRespuesta(BaseModel):
 # --- Schemas de Cronograma y Agenda de Mesas (EDIT-02) ---
 
 TipoAgendaLiteral = Literal["territorial", "rural_insular", "poblacional", "sectorial"]
-EstadoAgendaLiteral = Literal[
-    "programada", "en_curso", "realizada", "cancelada", "reprogramada"
-]
+EstadoAgendaLiteral = Literal["programada", "en_curso", "realizada", "cancelada", "reprogramada"]
 
 
 class AgendaBase(BaseModel):
     tipo: TipoAgendaLiteral
     nombre: str = Field(..., min_length=2, max_length=255)
     territorio: str = Field(default="", max_length=150)
-    lugar: str = Field(..., min_length=2, max_length=300)
-    fecha: date
-    hora_inicio: str = Field(default="08:30", max_length=20)
-    hora_fin: str = Field(default="12:00", max_length=20)
+    lugar: str = Field(default="Por definir", max_length=300)
+    fecha: date | None = None
+    hora_inicio: str = Field(default="Por definir", max_length=20)
+    hora_fin: str = Field(default="Por definir", max_length=20)
     estado: EstadoAgendaLiteral = "programada"
     dimensiones_onu: list[str] = Field(default_factory=list)
     responsable: str | None = Field(default=None, max_length=255)
@@ -259,4 +255,3 @@ class AgendaRespuesta(AgendaBase):
     actualizado_en: datetime
 
     model_config = ConfigDict(from_attributes=True)
-

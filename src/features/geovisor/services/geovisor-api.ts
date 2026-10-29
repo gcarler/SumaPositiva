@@ -1,5 +1,13 @@
 import { apiFetch } from "@/core/http/api-client";
-import type { FeatureCollection, CapaEspacial, TerritorioDetalle, FiltroTerritorial } from "../models/geovisor";
+import type {
+  FeatureCollection,
+  CapaEspacial,
+  TerritorioDetalle,
+  FiltroTerritorial,
+  IndicadorMultifuente,
+  IndicadorFiltros,
+  RespuestaIndicadores,
+} from "../models/geovisor";
 
 export async function listarTerritoriosGeoJSON(filtros?: FiltroTerritorial): Promise<FeatureCollection> {
   const params = new URLSearchParams();
@@ -19,6 +27,33 @@ export async function listarCapas(): Promise<CapaEspacial[]> {
 export async function obtenerTerritorio(id: string): Promise<TerritorioDetalle> {
   return apiFetch<TerritorioDetalle>(`/geodatos/territorios/${id}`);
 }
+
+/**
+ * Consulta del Banco Multifuente de Seguridad Humana:
+ * 28 datasets oficiales y 2.449 indicadores indexados (DANE, Medicina Legal, DNP TerriData, RUV, ICBF, INS).
+ * Conecta con backend FastAPI: GET /api/v1/geodatos/indicadores
+ */
+export async function listarIndicadores(filtros?: IndicadorFiltros): Promise<RespuestaIndicadores> {
+  const params = new URLSearchParams();
+  if (filtros?.limit !== undefined) params.append("limit", String(filtros.limit));
+  if (filtros?.offset !== undefined) params.append("offset", String(filtros.offset));
+  if (filtros?.dimension) params.append("dimension", filtros.dimension);
+  if (filtros?.fuente_datos) params.append("fuente_datos", filtros.fuente_datos);
+  if (filtros?.codigo_territorio) params.append("codigo_territorio", filtros.codigo_territorio);
+  if (filtros?.territorio_id) params.append("territorio_id", filtros.territorio_id);
+  if (filtros?.anio_corte) params.append("anio_corte", String(filtros.anio_corte));
+  if (filtros?.busqueda) params.append("busqueda", filtros.busqueda);
+  const q = params.toString();
+  return apiFetch<RespuestaIndicadores>(`/geodatos/indicadores${q ? `?${q}` : ""}`);
+}
+
+/**
+ * Indicadores multifuente específicos de un territorio (Distrito, Localidad, UCG, etc.)
+ */
+export async function listarIndicadoresTerritorio(territorioId: string): Promise<IndicadorMultifuente[]> {
+  return apiFetch<IndicadorMultifuente[]>(`/geodatos/territorios/${territorioId}/indicadores`);
+}
+
 
 export interface TerritorioResultadoCoordenada {
   id: string;
@@ -88,7 +123,7 @@ export async function estandarizarDireccion(
   try {
     return await apiFetch<DireccionEstandarizada>("/geodatos/estandarizar-direccion", {
       method: "POST",
-      body: JSON.stringify({ direccion_raw: limpia }),
+      body: { direccion_raw: limpia },
     });
   } catch (err) {
     console.warn("Fallo al estandarizar dirección:", err);

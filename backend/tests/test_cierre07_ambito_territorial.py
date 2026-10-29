@@ -10,20 +10,18 @@ Verifica rigurosamente:
 7. Herencia de localidad en submesas cuando no definen territorio directo.
 """
 
-import os
 import uuid
 from datetime import UTC, datetime
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import delete, select, text
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from app.core.config import Settings
 from app.main import create_app
 from app.modules.identidad import models as id_models
 from app.modules.identidad.ambito_territorial import (
-    obtener_ambitos_activos,
     resolver_info_territorial_mesa,
     resolver_localidad_territorio,
     verificar_ambito_territorial,
@@ -127,9 +125,7 @@ async def test_cierre07_resolucion_mesa_y_herencia_submesa(database_url: str):
     engine = create_async_engine(database_url)
     async with AsyncSession(engine, expire_on_commit=False) as session:
         # Obtener ID de BARRIO-OLAYA (LOC-2)
-        res = await session.execute(
-            text("SELECT id FROM geodatos.territorios WHERE codigo = 'BARRIO-OLAYA';")
-        )
+        res = await session.execute(text("SELECT id FROM geodatos.territorios WHERE codigo = 'BARRIO-OLAYA';"))
         olaya_id = res.scalar_one()
 
         # Crear mesa raíz de prueba vinculada a BARRIO-OLAYA
@@ -320,6 +316,7 @@ async def test_cierre07_pbac_localidad_denegacion_y_auditoria(database_url: str)
 
         # 2. Mutar mesa en LOC-2 -> DENEGADO (HTTP 403)
         from fastapi import HTTPException
+
         with pytest.raises(HTTPException) as exc_info:
             await verificar_ambito_territorial(
                 session,
@@ -427,10 +424,9 @@ async def test_cierre07_pbac_ambito_mesa_especifica(database_url: str):
 
         # Denegado en m_otra (misma localidad pero distinta mesa)
         from fastapi import HTTPException
+
         with pytest.raises(HTTPException) as exc:
-            await verificar_ambito_territorial(
-                session, sujeto, mesa_id=m_otra.id, metodo_http="PATCH"
-            )
+            await verificar_ambito_territorial(session, sujeto, mesa_id=m_otra.id, metodo_http="PATCH")
         assert exc.value.status_code == 403
 
     await engine.dispose()
@@ -479,7 +475,9 @@ async def test_cierre07_endpoints_administrativos_ambitos(app, settings, databas
     engine = create_async_engine(database_url)
     async with AsyncSession(engine, expire_on_commit=False) as session:
         # 1. Crear administrador_identidades dedicado para la prueba
-        rol_admin = (await session.execute(select(id_models.Rol).where(id_models.Rol.codigo == "administrador_identidades"))).scalar_one()
+        rol_admin = (
+            await session.execute(select(id_models.Rol).where(id_models.Rol.codigo == "administrador_identidades"))
+        ).scalar_one()
         admin_id = uuid.uuid4()
         admin_correo = f"admin_cierre07_{uuid.uuid4().hex[:6]}@cartagena.gov.co"
         admin_u = id_models.Usuario(
@@ -495,7 +493,9 @@ async def test_cierre07_endpoints_administrativos_ambitos(app, settings, databas
         session.add(admin_u)
 
         # Crear usuario objetivo (facilitador)
-        rol_fac = (await session.execute(select(id_models.Rol).where(id_models.Rol.codigo == "facilitador_mesa"))).scalar_one()
+        rol_fac = (
+            await session.execute(select(id_models.Rol).where(id_models.Rol.codigo == "facilitador_mesa"))
+        ).scalar_one()
         obj_id = uuid.uuid4()
         usuario_obj = id_models.Usuario(
             id=obj_id,
@@ -511,6 +511,7 @@ async def test_cierre07_endpoints_administrativos_ambitos(app, settings, databas
         await session.commit()
 
         from datetime import timedelta
+
         from app.modules.identidad.repository import IdentidadRepository
 
         repo = IdentidadRepository(session)

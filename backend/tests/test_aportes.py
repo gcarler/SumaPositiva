@@ -311,9 +311,30 @@ def test_api_endpoints_aportes_ciclo_completo(database_url: str, cabeceras_gesti
         assert data_post["metadata_enfoque"]["poblacion_campesina"] is True
         assert data_post["metadata_enfoque"]["etnia"] == "palenquero"
         assert data_post["activo"] is True
-        # Trazabilidad obligatoria de sesión conforme a Ley 1581/2012
-        assert data_post["sesion_id"] == data_sesion["sesion_id"]
-        assert data_post["huella_hash"] == data_sesion["huella_hash"]
+        # La trazabilidad se conserva privada, fuera de la respuesta pública.
+        assert "sesion_id" not in data_post and "huella_hash" not in data_post
+
+        async def comprobar_trazabilidad_privada():
+            from sqlalchemy import text
+
+            db = Database(settings)
+            try:
+                async with db.sessions() as session:
+                    fila = (
+                        await session.execute(
+                            text(
+                                "SELECT sesion_id,huella_hash FROM participacion_ciudadana.propuestas_ciudadanas "
+                                "WHERE id=CAST(:id AS uuid)"
+                            ),
+                            {"id": aporte_id},
+                        )
+                    ).one()
+                    assert str(fila.sesion_id) == data_sesion["sesion_id"]
+                    assert fila.huella_hash == data_sesion["huella_hash"]
+            finally:
+                await db.engine.dispose()
+
+        asyncio.run(comprobar_trazabilidad_privada())
 
         # 2. GET /api/v1/aportes (Paginado)
         resp_get = client.get("/api/v1/aportes?limite=10&desplazamiento=0")

@@ -37,6 +37,7 @@ PERMISOS = {
     "alternativas:gestionar": "Gestionar alternativas e iniciativas MGA",
     "comunicaciones:leer": "Consultar plan de trabajo y tareas de comunicaciones",
     "comunicaciones:gestionar": "Gestionar y editar tareas y cronograma de comunicaciones",
+    "proyectos:leer": "Consultar la vista agregada de proyectos de la política",
 }
 ROLES_SISTEMA = {
     "ciudadano",

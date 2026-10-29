@@ -141,11 +141,7 @@ def _canonical_pdfs() -> list[dict[str, Any]]:
             {file_id for alias in aliases for file_id in alias.get("drive_file_ids", [alias["id"]])}
         )
         row["all_dimensions"] = sorted(
-            {
-                dimension
-                for alias in aliases
-                for dimension in alias.get("dimensiones_seguridad_humana", [])
-            }
+            {dimension for alias in aliases for dimension in alias.get("dimensiones_seguridad_humana", [])}
         )
         canonical.append(row)
     return canonical
@@ -226,9 +222,7 @@ def _extract_text(path: Path) -> str:
 
 def _entity(name: str) -> str | None:
     normalized = re.sub(r"\s+", " ", name.upper()).replace("Ã", "A")
-    for alias, entity in sorted(
-        ENTITY_ALIASES.items(), key=lambda item: len(item[0]), reverse=True
-    ):
+    for alias, entity in sorted(ENTITY_ALIASES.items(), key=lambda item: len(item[0]), reverse=True):
         if re.search(rf"(?<!\w){re.escape(alias)}(?!\w)", normalized):
             return entity
     return None
@@ -239,9 +233,7 @@ def _document_type(row: dict[str, Any], pdf_text: str) -> str:
     # sufficient evidence because action-plan reports cite the governing PDD.
     del pdf_text
     title = row["name"].casefold()
-    return (
-        "PLAN_DESARROLLO" if re.search(r"plan\s+de\s+desarrollo|\bpdd\b", title) else "PLAN_ACCION"
-    )
+    return "PLAN_DESARROLLO" if re.search(r"plan\s+de\s+desarrollo|\bpdd\b", title) else "PLAN_ACCION"
 
 
 def _entity_from_evidence(name: str, pdf_text: str) -> str | None:
@@ -397,17 +389,11 @@ async def ingest() -> dict[str, Any]:
                         {
                             "profile": f"PDF_{item['motor']}_OFICIAL",
                             "year": item["year"],
-                            "cut": (
-                                "CORTE_30_JUN_2025"
-                                if item["year"] == 2025
-                                else f"ANUAL_{item['year']}"
-                            ),
+                            "cut": ("CORTE_30_JUN_2025" if item["year"] == 2025 else f"ANUAL_{item['year']}"),
                             "dimensions": json.dumps(item["dimensions"], ensure_ascii=False),
                             "period": _period(item["year"]),
                             "entity": item["entity"],
-                            "metadata": json.dumps(
-                                {"tipo_documento": item["motor"], "reclasificado": True}
-                            ),
+                            "metadata": json.dumps({"tipo_documento": item["motor"], "reclasificado": True}),
                             "id": existing_id,
                         },
                     )
@@ -434,13 +420,7 @@ async def ingest() -> dict[str, Any]:
                 entity = item["entity"]
                 dimensions = item["dimensions"]
                 record_rows = item["records"]
-                cut = (
-                    "ANUAL_2018"
-                    if year == 2018
-                    else "CORTE_30_JUN_2025"
-                    if year == 2025
-                    else f"ANUAL_{year}"
-                )
+                cut = "ANUAL_2018" if year == 2018 else "CORTE_30_JUN_2025" if year == 2025 else f"ANUAL_{year}"
                 file_id = await connection.scalar(
                     text("""
                         INSERT INTO seguimiento.archivos_plan_ingeridos (
@@ -464,9 +444,7 @@ async def ingest() -> dict[str, Any]:
                         "dimensions": json.dumps(dimensions, ensure_ascii=False),
                         "period": _period(year),
                         "entity": entity,
-                        "pages": json.dumps(
-                            [{"pagina": index + 1} for index in range(item["text"].count("\f") + 1)]
-                        ),
+                        "pages": json.dumps([{"pagina": index + 1} for index in range(item["text"].count("\f") + 1)]),
                         "mapping": json.dumps(
                             {"extraccion": "pdftotext -layout", "entidad_resuelta": entity},
                             ensure_ascii=False,
@@ -475,9 +453,7 @@ async def ingest() -> dict[str, Any]:
                         "metadata": json.dumps(
                             {
                                 "drive_ids": row["all_drive_ids"],
-                                "rutas_drive": [
-                                    alias.get("path") for alias in row["catalog_aliases"]
-                                ],
+                                "rutas_drive": [alias.get("path") for alias in row["catalog_aliases"]],
                                 "catalog_entries": len(row["catalog_aliases"]),
                                 "periodo_gobierno": _period(year),
                                 "dimensiones_seguridad_humana": dimensions,

@@ -4,9 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-CategoriaNoticia = Literal[
-    "avance_politica", "mesa_realizada", "acuerdo_distrital", "convocatoria", "informe", "logro"
-]
+CategoriaNoticia = Literal["avance_politica", "mesa_realizada", "acuerdo_distrital", "convocatoria", "informe", "logro"]
 EstadoNoticia = Literal["publicada", "borrador", "archivada"]
 
 

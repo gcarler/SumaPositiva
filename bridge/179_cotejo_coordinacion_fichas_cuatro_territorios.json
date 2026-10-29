@@ -1,0 +1,112 @@
+{
+  "fecha_utc": "2026-10-26T04:18:40.772787+00:00",
+  "tipo": "validacion_local_de_modelos_hashes_y_campos_contra_parser",
+  "resultados": [
+    {
+      "codigo": "13001",
+      "ficha_sha256": "95ff9a4afb18cdec329ff69bec2c4c386a776967a868d26d753c23afeb2809fc",
+      "filas_cotejadas": 12899,
+      "conteos": {
+        "filas_total": 12899,
+        "filas_contexto_general": 102,
+        "observaciones": 12797,
+        "filas_excluidas_seleccion": 0,
+        "series": 1423,
+        "duplicados_celda": 2,
+        "observaciones_aceptadas": 12133,
+        "observaciones_retenidas": 662,
+        "observaciones_rechazadas": 2,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      },
+      "identidad": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "disposicion_unica_completa": true,
+      "campos_contrastados_sin_diferencias": true
+    },
+    {
+      "codigo": "13673",
+      "ficha_sha256": "f1f873855577423a8762b0a945ec9270084d6d1f5e8873dd8e244aab79bbc208",
+      "filas_cotejadas": 12733,
+      "conteos": {
+        "filas_total": 12733,
+        "filas_contexto_general": 102,
+        "observaciones": 12631,
+        "filas_excluidas_seleccion": 0,
+        "series": 1429,
+        "duplicados_celda": 2,
+        "observaciones_aceptadas": 11295,
+        "observaciones_retenidas": 1334,
+        "observaciones_rechazadas": 2,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      },
+      "identidad": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "disposicion_unica_completa": true,
+      "campos_contrastados_sin_diferencias": true
+    },
+    {
+      "codigo": "23660",
+      "ficha_sha256": "13b61ae25c9d853dd2c15cfa9952da74d1e3b3430376a85432b105bb621c433d",
+      "filas_cotejadas": 12885,
+      "conteos": {
+        "filas_total": 12885,
+        "filas_contexto_general": 102,
+        "observaciones": 12783,
+        "filas_excluidas_seleccion": 0,
+        "series": 1452,
+        "duplicados_celda": 2,
+        "observaciones_aceptadas": 11382,
+        "observaciones_retenidas": 1399,
+        "observaciones_rechazadas": 2,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      },
+      "identidad": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "disposicion_unica_completa": true,
+      "campos_contrastados_sin_diferencias": true
+    },
+    {
+      "codigo": "11001",
+      "ficha_sha256": "6c5917e409323cf41fc72f4ec8ab711d191bc372482a50e82c9945d3120c3c82",
+      "filas_cotejadas": 13410,
+      "conteos": {
+        "filas_total": 13410,
+        "filas_contexto_general": 102,
+        "observaciones": 13308,
+        "filas_excluidas_seleccion": 0,
+        "series": 1487,
+        "duplicados_celda": 2,
+        "observaciones_aceptadas": 12521,
+        "observaciones_retenidas": 785,
+        "observaciones_rechazadas": 2,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      },
+      "identidad": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "disposicion_unica_completa": true,
+      "campos_contrastados_sin_diferencias": true
+    }
+  ],
+  "filas_total_cotejadas": 51927,
+  "no_es_integracion_productiva": true
+}

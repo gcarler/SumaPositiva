@@ -1,0 +1,96 @@
+{
+  "fecha": "2026-10-24",
+  "html_sha256": "904e4f4ad87cbdf68b8b827d9ee8bf9c2eef8815bc2f1198b70458fd2cfa4e2d",
+  "recibos": {
+    "nacionales": {
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "artifact": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/nacionales/nacionales.html",
+        "sha256": "00dbb1ff893c80901118089b31e2ccc44a6297fb34680a6befc0dd9a08ce38e4",
+        "bytes": 837715
+      },
+      "specification": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/nacionales/candidate.json",
+        "sha256": "70f09339fb1531ac5db98cf8e80188ef37fc7a042c9137d30a9c81b23b4076c6",
+        "bytes": 10968
+      }
+    },
+    "directorio": {
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "artifact": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/directorio/directorio.html",
+        "sha256": "c17d5e516d50fbd4795ab6593902b0f1709f4bbab597b55b34be36a1974f9b63",
+        "bytes": 831329
+      },
+      "specification": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/directorio/candidate.json",
+        "sha256": "488c85d6d232c12bcbed2181869eb473a0da07b0fc5cc1be4d646907fc0411db",
+        "bytes": 8982
+      }
+    },
+    "territoriales": {
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "artifact": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/territoriales/territoriales.html",
+        "sha256": "5ca14b49fe4be788be278c54b2a141ac420df163f4263b7fc51c517a75744d71",
+        "bytes": 822977
+      },
+      "specification": {
+        "path": "/root/polis/.archify/fuentes-nacionales-territoriales-20261024-143315/territoriales/candidate.json",
+        "sha256": "c465b8e528aa38eb2ed2db085c95b3d36f2027cc70ee6d6c2d0f4f26eb869b79",
+        "bytes": 6369
+      }
+    }
+  },
+  "portada": {
+    "views": [
+      {
+        "id": "panorama",
+        "title": "POLIS · de la necesidad pública a la evaluación"
+      },
+      {
+        "id": "fuentes",
+        "title": "Fuentes oficiales → captura → análisis"
+      },
+      {
+        "id": "nacionales",
+        "title": "Fuentes nacionales · entidades y sistemas"
+      },
+      {
+        "id": "directorio",
+        "title": "Directorio complementario · actores y referencias"
+      },
+      {
+        "id": "territoriales",
+        "title": "Roles territoriales · alias de Cartagena como ejemplo"
+      },
+      {
+        "id": "datos",
+        "title": "POLIS · fuentes, calidad y corte de análisis"
+      },
+      {
+        "id": "formulacion",
+        "title": "POLIS · formular, concertar y decidir"
+      }
+    ],
+    "errors": [],
+    "catalogue": 241,
+    "mobileOverflow": false
+  },
+  "alcance": "Modelo documental; resolución territorial en motores pendiente."
+}

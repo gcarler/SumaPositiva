@@ -3,6 +3,7 @@
 import {ArquitecturaPolitica} from "@/features/politicas/components/arquitectura-politica";
 
 import Link from "next/link";
+import Image from "next/image";
 import {useQuery} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {
@@ -41,8 +42,11 @@ import {useEliminarNoticia, useGuardarNoticia, useNoticiasGestion} from "@/featu
 import {plataformaApi} from "../services/plataforma-api";
 import {EstadoConsulta} from "../components/estado-consulta";
 import {puedeEditar} from "../models/acceso";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean } = {}) {
+  const [vista, setVista] = useCollectionView(soloNoticias ? "noticias" : "contenido", "lista");
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
   const esEditor = puedeEditar(sesion, "contenido");
@@ -139,6 +143,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
         }
       />
 
+      <CollectionViewToggle value={vista} onValueChange={setVista} label={soloNoticias ? "Vista de las noticias" : "Vista de los contenidos"} />
       <Tabs defaultValue={soloNoticias ? "noticias" : "arquitectura"} className="space-y-6">
         {!soloNoticias && (
           <TabsList className="h-auto flex-wrap">
@@ -155,7 +160,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
         )}
 
         {/* ================= PESTAÑA: NOTICIAS Y COMUNICADOS ================= */}
-        {!soloNoticias && <TabsContent value="arquitectura"><ArquitecturaPolitica /></TabsContent>}
+        {!soloNoticias && <TabsContent value="arquitectura"><ArquitecturaPolitica vista={vista} /></TabsContent>}
         <TabsContent value="noticias" className="space-y-6">
           {noticiasQuery.isError && <div role="alert" className="flex items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm"><span>No se pudieron cargar las noticias desde el servidor.</span><Button variant="outline" size="sm" onClick={() => void noticiasQuery.refetch()}>Reintentar</Button></div>}
           {/* Métricas editoriales */}
@@ -187,7 +192,27 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
           </div>
 
           {/* Tabla de Noticias */}
-          <div className="min-w-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
+          {vista === "tarjetas" && !noticiasQuery.isPending && noticias.length > 0 ? (
+            <CollectionLayout view={vista} aria-label="Tarjetas de noticias y comunicados">
+              {noticias.slice().sort((a, b) => (a.ordenPrioridad ?? 999) - (b.ordenPrioridad ?? 999)).map((n) => (
+                <article key={n.id} className="flex flex-col gap-4 overflow-hidden rounded-xl border border-border bg-surface-1 p-5">
+                  {n.imagenPortada && <Image unoptimized src={n.imagenPortada} alt={n.titulo} width={640} height={360} className="aspect-video w-full rounded-lg object-cover" />}
+                  <div className="flex flex-wrap gap-2"><Badge variant="outline">#{n.ordenPrioridad ?? 1}</Badge><Badge variant="secondary">{n.categoria.replaceAll("_", " ")}</Badge>{n.destacada && <Badge variant="ember">Destacada</Badge>}</div>
+                  <h2 className="break-words font-semibold">{n.titulo}</h2>
+                  <p className="text-xs text-text-secondary">{n.autor} · {new Date(n.publicadaEn).toLocaleDateString("es-CO", {day: "numeric", month: "short", year: "numeric"})}</p>
+                  <div className="flex flex-wrap gap-2"><StatusBadge tone={n.estado === "publicada" ? "success" : n.estado === "borrador" ? "warning" : "neutral"}>{n.estado.toUpperCase()}</StatusBadge>{n.videoUrl && <Badge variant="secondary">Video</Badge>}{!!n.galeria?.length && <Badge variant="secondary">Galería: {n.galeria.length}</Badge>}</div>
+                  <div className="mt-auto flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm" onClick={() => openPanel("noticia", { noticiaId: n.id })} aria-label={`Vista previa de ${n.titulo}`}>Vista previa</Button>
+                    {esEditor && <>
+                      <Button variant="outline" size="sm" onClick={() => openPanel("noticia-editor", { noticiaId: n.id })} aria-label={`Editar ${n.titulo}`}>Editar</Button>
+                      <Button variant="outline" size="sm" onClick={() => handleAlternarEstado(n)} aria-label={`Cambiar estado de ${n.titulo}`}>{n.estado === "publicada" ? "Pasar a borrador" : "Publicar"}</Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleEliminar(n.id, n.titulo)} aria-label={`Eliminar ${n.titulo}`} className="text-danger">Eliminar</Button>
+                    </>}
+                  </div>
+                </article>
+              ))}
+            </CollectionLayout>
+          ) : <div className="min-w-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -354,7 +379,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
                 )}
               </TableBody>
             </Table>
-          </div>
+          </div>}
         </TabsContent>
 
         {/* ================= PESTAÑA: ESTRUCTURA METODOLÓGICA ================= */}
@@ -366,7 +391,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
               error={fases.error}
               reintentar={fases.refetch}
             />
-            <ul className="space-y-3">
+            <ul className={vista === "tarjetas" ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3" : "space-y-3"}>
               {fases.data?.map((f) => (
                 <li key={f.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
                   <h3 className="font-medium text-[var(--text-primary)]">{f.nombre}</h3>
@@ -386,7 +411,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
               error={lineas.error}
               reintentar={lineas.refetch}
             />
-            <ul className="space-y-3">
+            <ul className={vista === "tarjetas" ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3" : "space-y-3"}>
               {lineas.data?.map((l) => (
                 <li key={l.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
                   <h3 className="font-medium text-[var(--text-primary)]">{l.titulo}</h3>
@@ -405,7 +430,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
               error={aportes.error}
               reintentar={aportes.refetch}
             />
-            <ul className="space-y-3">
+            <ul className={vista === "tarjetas" ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3" : "space-y-3"}>
               {aportes.data?.elementos.map((a) => (
                 <li key={a.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
                   <h3 className="font-medium text-[var(--text-primary)]">{a.titulo}</h3>

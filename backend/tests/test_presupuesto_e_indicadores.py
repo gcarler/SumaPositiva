@@ -1,10 +1,93 @@
+import asyncio
 from datetime import date, datetime
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import delete, func, select, update
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.pool import NullPool
 
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.indicadores.models import FichaTecnicaIndicador, MedicionIndicador
+
+
+@pytest.fixture
+def mediciones_aisladas(database_url):
+    """Restituir solo las dos fichas y mediciones identificadas, incluso ante fallo."""
+    fichas = FichaTecnicaIndicador.__table__
+    mediciones = MedicionIndicador.__table__
+    codigos = ("IND-INS-01", "IND-RES-01")
+    campos_mutables = {"valor_actual", "porcentaje_avance", "metadatos", "actualizado_en"}
+
+    async def capturar():
+        engine = create_async_engine(database_url, poolclass=NullPool, hide_parameters=True)
+        try:
+            async with engine.connect() as connection:
+                pid = await connection.scalar(select(func.pg_backend_pid()))
+                filas = [
+                    dict(f)
+                    for f in (await connection.execute(select(fichas).where(fichas.c.codigo.in_(codigos)))).mappings()
+                ]
+                assert len(filas) == 2
+                ids = [f["id"] for f in filas]
+                medidas = [
+                    dict(m)
+                    for m in (
+                        await connection.execute(select(mediciones).where(mediciones.c.indicador_id.in_(ids)))
+                    ).mappings()
+                ]
+                return pid, {f["id"]: f for f in filas}, {m["id"]: m for m in medidas}
+        finally:
+            await engine.dispose()
+
+    async def restaurar(anteriores, medidas_anteriores):
+        engine = create_async_engine(database_url, poolclass=NullPool, hide_parameters=True)
+        try:
+            async with engine.begin() as connection:
+                actuales = [
+                    dict(m)
+                    for m in (
+                        await connection.execute(select(mediciones).where(mediciones.c.indicador_id.in_(anteriores)))
+                    ).mappings()
+                ]
+                previas = {m["id"]: m for m in actuales if m["id"] in medidas_anteriores}
+                assert previas == medidas_anteriores
+                nuevas = [m for m in actuales if m["id"] not in medidas_anteriores]
+                esperadas = {
+                    (f["id"], "Q1", "Analista Juan")
+                    if f["codigo"] == "IND-INS-01"
+                    else (f["id"], "Mes 1", "Analista Maria")
+                    for f in anteriores.values()
+                }
+                identidades = [(m["indicador_id"], m["periodo"], m["registrado_por"]) for m in nuevas]
+                assert len(identidades) <= 2 and len(identidades) == len(set(identidades))
+                assert all(identidad in esperadas for identidad in identidades)
+                presentes = (await connection.execute(select(fichas).where(fichas.c.id.in_(anteriores)))).mappings()
+                for fila in presentes:
+                    assert all(
+                        fila[campo] == valor
+                        for campo, valor in anteriores[fila["id"]].items()
+                        if campo not in campos_mutables
+                    )
+                if nuevas:
+                    await connection.execute(delete(mediciones).where(mediciones.c.id.in_([m["id"] for m in nuevas])))
+                for identificador, fila in anteriores.items():
+                    await connection.execute(
+                        update(fichas)
+                        .where(fichas.c.id == identificador)
+                        .values(**{campo: fila[campo] for campo in campos_mutables})
+                    )
+        finally:
+            await engine.dispose()
+
+    pid, anteriores, medidas_anteriores = asyncio.run(capturar())
+    try:
+        yield
+    finally:
+        asyncio.run(restaurar(anteriores, medidas_anteriores))
+        observador, posteriores, medidas_posteriores = asyncio.run(capturar())
+        assert observador != pid and posteriores == anteriores and medidas_posteriores == medidas_anteriores
 
 
 @pytest.fixture
@@ -93,7 +176,7 @@ def test_presupuesto_asignaciones_y_costeo(sync_client):
     assert len(costeo["por_vigencia"]) >= 1
 
 
-def test_indicadores_cadena_valor_y_avance(sync_client):
+def test_indicadores_cadena_valor_y_avance(sync_client, mediciones_aisladas):
     # Probar que existan fichas sembradas
     resp_fichas = sync_client.get("/api/v1/indicadores/fichas")
     assert resp_fichas.status_code == 200

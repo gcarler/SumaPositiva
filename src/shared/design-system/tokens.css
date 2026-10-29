@@ -24,9 +24,11 @@
   --text-tertiary: oklch(0.5 0.008 90);
   --text-inverse: oklch(0.985 0.002 90);
 
-  /* Bordes — hairlines */
+  /* Bordes — hairlines (decorativos, contraste regido por su contrato propio) */
   --border: oklch(0.155 0.005 90 / 9%);
   --border-strong: oklch(0.155 0.005 90 / 22%);
+  /* Límite sólido de control de campo: ≥ 3:1 sobre las superficies del tema (F05, 1.4.11) */
+  --border-control: oklch(0.64 0.004 90); /* ≈ #8c8c8c: 3,4:1 sobre blanco/superficies claras */
 
   /* Acento ember — uso mínimo y preciso */
   --ember: oklch(0.53 0.17 41);
@@ -58,7 +60,7 @@
   --accent: var(--surface-3);
   --accent-foreground: var(--text-primary);
   --destructive: var(--danger);
-  --input: var(--border-strong);
+  --input: var(--border-control);
   --ring: var(--ember);
 
   --scrollbar-thumb: oklch(0.155 0.005 90 / 18%);
@@ -79,6 +81,8 @@
 
   --border: oklch(1 0 0 / 8%);
   --border-strong: oklch(1 0 0 / 20%);
+  /* Límite sólido de control de campo: ≥ 4:1 sobre superficies oscuras (F05, 1.4.11) */
+  --border-control: oklch(0.70 0.006 270); /* ≈ #a4a4ab */
 
   --ember: oklch(0.7 0.185 45);
   --ember-soft: oklch(0.7 0.185 45 / 14%);
@@ -188,6 +192,7 @@
   --role-authority: oklch(0.38 0.18 300);
 
   --ring: oklch(0 0 0);
+  --border-control: oklch(0 0 0);
   --input: oklch(0 0 0);
 }
 
@@ -219,5 +224,6 @@ html.dark[data-a11y-contrast="alto"] {
   --role-authority: oklch(0.85 0.16 300);
 
   --ring: oklch(1 0 0);
+  --border-control: oklch(1 0 0);
   --input: oklch(1 0 0);
 }

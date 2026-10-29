@@ -13,10 +13,12 @@ import { FormField } from "@/shared/ui/form-field";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
-import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus } from "lucide-react";
+import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus, FileText, Send } from "lucide-react";
 import type { EstadoTestimonio } from "../models/testimonio";
 
 import { FotosMesasModeracion } from "@/features/evidencias/components/fotos-mesas-moderacion";
+import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
   const { closeTop } = usePanels();
@@ -60,6 +62,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
 }
 
 export function TestimoniosModeracionContenido() {
+  const [vista, setVista] = useCollectionView("testimonios", "lista");
   const { openPanel } = usePanels();
   const [tabEstado, setTabEstado] = useState<string>("PENDIENTE");
   const [rechazandoId, setRechazandoId] = useState<string | null>(null);
@@ -95,6 +98,10 @@ export function TestimoniosModeracionContenido() {
           ? "aprobado para publicación"
           : nuevoEstado === "DESTACADO"
           ? "marcado como destacado"
+          : nuevoEstado === "BORRADOR"
+          ? "guardado en borradores"
+          : nuevoEstado === "PENDIENTE"
+          ? "enviado a pendientes"
           : "rechazado con motivo justificado";
 
       toast.success("Moderación aplicada", {
@@ -112,6 +119,8 @@ export function TestimoniosModeracionContenido() {
 
   return (
       <div className="space-y-6 p-4 sm:p-6">
+        <h2 className="text-lg font-semibold text-text-primary">Cola de moderación</h2>
+        <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de los testimonios" />
         {isError && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-text-primary">
             <p role="alert">No se pudieron cargar los testimonios para moderación.</p>
@@ -121,7 +130,10 @@ export function TestimoniosModeracionContenido() {
           </div>
         )}
         <Tabs value={tabEstado} onValueChange={setTabEstado} className="w-full">
-          <TabsList className="mb-4 grid w-full grid-cols-2 sm:grid-cols-4">
+          <TabsList className="mb-4 grid w-full grid-cols-2 sm:grid-cols-5">
+            <TabsTrigger value="BORRADOR" className="text-xs">
+              Borradores
+            </TabsTrigger>
             <TabsTrigger value="PENDIENTE" className="text-xs">
               Pendientes
             </TabsTrigger>
@@ -147,17 +159,18 @@ export function TestimoniosModeracionContenido() {
                 ))}
               </div>
             ) : testimonios && testimonios.length > 0 ? (
-              testimonios.map((t) => (
+              <CollectionLayout view={vista} className="xl:grid-cols-2">
+              {testimonios.map((t) => (
                 <article
                   key={t.id}
                   className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-sm text-[var(--text-primary)]">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-semibold text-sm text-[var(--text-primary)]">
                           {t.nombre_autor}
-                        </h4>
+                        </h3>
                         <span className="text-[10px] font-mono text-[var(--text-secondary)] px-1.5 py-0.5 rounded bg-[var(--surface-2)]">
                           {t.codigo_unico}
                         </span>
@@ -173,9 +186,9 @@ export function TestimoniosModeracionContenido() {
                   </div>
 
                   <div className="space-y-1">
-                    <h5 className="text-xs font-semibold text-[var(--text-primary)]">
+                    <h4 className="text-xs font-semibold text-[var(--text-primary)]">
                       {t.titulo}
-                    </h5>
+                    </h4>
                     <blockquote className="text-xs text-[var(--text-secondary)] leading-relaxed italic border-l-2 border-[var(--border)] pl-2.5">
                       &ldquo;{t.relato}&rdquo;
                     </blockquote>
@@ -191,7 +204,7 @@ export function TestimoniosModeracionContenido() {
                   )}
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[var(--border)] text-[11px] text-[var(--text-secondary)]">
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       {t.territorio_nombre && (
                         <span className="flex items-center gap-1">
                           <MapPin className="size-3 text-[var(--ember)]" />
@@ -221,6 +234,33 @@ export function TestimoniosModeracionContenido() {
                       <Edit3 className="mr-1 size-3.5" />
                       Editar contenido
                     </Button>
+
+                    {t.estado !== "BORRADOR" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={moderarMutation.isPending}
+                        onClick={() => handleModerar(t.id, "BORRADOR")}
+                        className="text-xs h-8 text-[var(--text-secondary)] border-[var(--border)]"
+                      >
+                        <FileText className="mr-1 size-3.5" />
+                        Borrador
+                      </Button>
+                    )}
+
+                    {t.estado === "BORRADOR" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={moderarMutation.isPending}
+                        onClick={() => handleModerar(t.id, "PENDIENTE")}
+                        className="text-xs h-8 text-warning border-[var(--border)]"
+                      >
+                        <Send className="mr-1 size-3.5" />
+                        A Pendientes
+                      </Button>
+                    )}
+
                     {t.estado !== "APROBADO" && (
                       <Button
                         size="sm"
@@ -230,11 +270,11 @@ export function TestimoniosModeracionContenido() {
                         className="text-xs h-8"
                       >
                         <CheckCircle2 className="mr-1 size-3.5 text-primary" />
-                        Aprobar
+                        Aprobar y Publicar
                       </Button>
                     )}
 
-                    {t.estado !== "DESTACADO" && (
+                    {t.estado !== "DESTACADO" && t.estado !== "BORRADOR" && (
                       <Button
                         size="sm"
                         variant="outline"
@@ -311,7 +351,8 @@ export function TestimoniosModeracionContenido() {
                     </div>
                   )}
                 </article>
-              ))
+              ))}
+              </CollectionLayout>
             ) : (
               <div className="p-8 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)] space-y-3">
                 <p>No hay testimonios en estado {tabEstado.toLowerCase()} en este momento.</p>
@@ -342,6 +383,8 @@ function EstadoBadge({ estado }: { estado: EstadoTestimonio }) {
       return <StatusBadge tone="success">Aprobado</StatusBadge>;
     case "PENDIENTE":
       return <StatusBadge tone="warning">Pendiente</StatusBadge>;
+    case "BORRADOR":
+      return <StatusBadge tone="neutral">Borrador</StatusBadge>;
     case "RECHAZADO":
       return <StatusBadge tone="danger">Rechazado</StatusBadge>;
   }

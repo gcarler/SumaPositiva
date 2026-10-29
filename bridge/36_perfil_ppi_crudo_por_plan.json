@@ -1,0 +1,451 @@
+{
+  "esquema": "polis.perfil_ppi_crudo.v1",
+  "limite": "Solo lectura, sin SQL ni red; sin sumas jerárquicas ni interpretación causal.",
+  "planes": {
+    "PDD_2012_2015": {
+      "claves_metadatos": [
+        "base_constante",
+        "base_precios",
+        "pdd_only",
+        "ppi_estado",
+        "reconstruccion"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 146,
+        "ipc": 0,
+        "pesos_7d": 27
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 146,
+        "fuentes_plan": 146,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 5,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 469,
+      "nodos": 146,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "5657100631305.25",
+        "ppi_total_corriente_cop": "3049788268000.00"
+      }
+    },
+    "PDD_2013_2015": {
+      "claves_metadatos": [
+        "base_constante",
+        "norma_adopcion",
+        "nota",
+        "nota_vigencia",
+        "pdd_only",
+        "ppi_estado",
+        "reconstruccion",
+        "unidad_fuente"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 283,
+        "ipc": 0,
+        "pesos_7d": 50
+      },
+      "conflictos_declarados": [
+        "NOTA_DECLARADA"
+      ],
+      "fuente_presencia": {
+        "con_fuente": 283,
+        "fuentes_plan": 283,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 8,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 2,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 676,
+      "nodos": 283,
+      "tipos_valores_anuales": [
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "3348648877938.57",
+        "ppi_total_corriente_cop": "1874167605000.00"
+      }
+    },
+    "PDD_2016_2019": {
+      "claves_metadatos": [
+        "base_constante",
+        "base_precios",
+        "pdd_only",
+        "ppi_estado",
+        "reconstruccion"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 472,
+        "ipc": 0,
+        "pesos_7d": 101
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 472,
+        "fuentes_plan": 472,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 5,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 898,
+      "nodos": 472,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "6688427144190.21",
+        "ppi_total_corriente_cop": "4331941000000.00"
+      }
+    },
+    "PDD_2020_2023": {
+      "claves_metadatos": [
+        "base_constante",
+        "base_precios",
+        "pdd_only",
+        "ppi_estado",
+        "reconstruccion"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 313,
+        "ipc": 0,
+        "pesos_7d": 73
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 313,
+        "fuentes_plan": 313,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 5,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 947,
+      "nodos": 313,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "8834719279068.76",
+        "ppi_total_corriente_cop": "6022982660000.00"
+      }
+    },
+    "PDD_2024_2027": {
+      "claves_metadatos": [
+        "base_constante",
+        "impulsores_avance",
+        "lineas_estrategicas",
+        "pdd_only",
+        "ppi_estado",
+        "programas",
+        "reconstruccion"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 236,
+        "ipc": 0,
+        "pesos_7d": 49
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 236,
+        "fuentes_plan": 236,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 2,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 7,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 1246,
+      "nodos": 236,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "12967649450297.09",
+        "ppi_total_corriente_cop": "12800853474855.00"
+      }
+    },
+    "PDL_1_2024_2027": {
+      "claves_metadatos": [
+        "ppi_estado",
+        "ppi_funcionamiento_cop",
+        "ppi_inversion_cop"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 41,
+        "ipc": 0,
+        "pesos_7d": 7
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 41,
+        "fuentes_plan": 41,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 3,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 110,
+      "nodos": 41,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "98832943612.12",
+        "ppi_total_corriente_cop": "97691041529.00"
+      }
+    },
+    "PDL_2_2024_2027": {
+      "claves_metadatos": [
+        "ppi_estado",
+        "ppi_funcionamiento_cop",
+        "ppi_inversion_cop"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 23,
+        "ipc": 0,
+        "pesos_7d": 5
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 23,
+        "fuentes_plan": 23,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 3,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 89,
+      "nodos": 23,
+      "tipos_valores_anuales": [
+        "Decimal",
+        "Decimal",
+        "Decimal",
+        "Decimal"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "163174878179.53",
+        "ppi_total_corriente_cop": "161289996409.01"
+      }
+    },
+    "PDL_3_2024_2027": {
+      "claves_metadatos": [
+        "ppi_estado",
+        "ppi_funcionamiento_cop",
+        "ppi_inversion_cop",
+        "ppi_inversion_directa_cop"
+      ],
+      "claves_metadatos_grado_pesos_ipc": {
+        "grado_frontalidad_sh": 59,
+        "ipc": 0,
+        "pesos_7d": 11
+      },
+      "conflictos_declarados": [],
+      "fuente_presencia": {
+        "con_fuente": 59,
+        "fuentes_plan": 59,
+        "sin_fuente": 0
+      },
+      "jsonb": {
+        "fuentes": {
+          "cero": false,
+          "claves": 1,
+          "origen": "json",
+          "tipo": "list",
+          "vacio": false
+        },
+        "metadatos": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        },
+        "ppi_anual_cop": {
+          "cero": false,
+          "claves": 4,
+          "origen": "json",
+          "tipo": "dict",
+          "vacio": false
+        }
+      },
+      "metas": 202,
+      "nodos": 59,
+      "tipos_valores_anuales": [
+        "int",
+        "int",
+        "int",
+        "int"
+      ],
+      "totales_exactos": {
+        "ppi_total_constante_2025_cop": "46357000000.00",
+        "ppi_total_corriente_cop": "46000000000.00"
+      }
+    }
+  },
+  "rutas": [
+    "data/capas_analiticas/ppi_planeacion/ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e.json",
+    "bridge/36_perfil_ppi_crudo_por_plan.md"
+  ],
+  "sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e"
+}

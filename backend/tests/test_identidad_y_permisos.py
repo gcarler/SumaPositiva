@@ -28,9 +28,7 @@ def test_identidad_y_permisos(database_url: str):
         assert resp_reg.status_code == 201
 
         # 2. Login de usuario
-        resp_login = client.post(
-            "/api/v1/identidad/login", json={"correo": correo_test, "contrasena": "Secreta123*"}
-        )
+        resp_login = client.post("/api/v1/identidad/login", json={"correo": correo_test, "contrasena": "Secreta123*"})
         assert resp_login.status_code == 200
         token_data = resp_login.json()
         assert "token_acceso" in token_data

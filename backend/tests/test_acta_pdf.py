@@ -1,6 +1,7 @@
 """Pruebas de Integración para Generación y Descarga de Actas Oficiales en PDF (DOC-PDF-ACTAS-01)."""
 
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -92,9 +93,7 @@ async def test_descargar_acta_pdf_con_acta_cerrada(database_url: str, cabeceras_
                         "plazo": "Primer Semestre 2026",
                     }
                 ],
-                "compromisos_institucionales": [
-                    {"compromiso": "Rondas policiales diurnas y nocturnas"}
-                ],
+                "compromisos_institucionales": [{"compromiso": "Rondas policiales diurnas y nocturnas"}],
             },
         )
         assert resp_acta.status_code == 200
@@ -156,6 +155,7 @@ async def test_descargar_acta_pdf_acceso_publico_sin_token(database_url: str, ca
 def test_generar_acta_pdf_unitario_con_qr():
     """Valida la función pura generar_acta_pdf produciendo un binario PDF con ReportLab y QR."""
     from datetime import date
+
     from app.modules.mesas.acta_pdf import generar_acta_pdf
     from app.modules.mesas.models import ActaComunitaria, Mesa, ParticipanteMesa
 
@@ -174,7 +174,6 @@ def test_generar_acta_pdf_unitario_con_qr():
         modalidad="PRESENCIAL",
     )
 
-
     acta = ActaComunitaria(
         id=uuid.uuid4(),
         mesa_id=mesa.id,
@@ -188,9 +187,7 @@ def test_generar_acta_pdf_unitario_con_qr():
                 "plazo": "Noviembre 2026",
             }
         ],
-        compromisos_institucionales=[
-            {"compromiso": "Rondines preventivos de cuadrante policial"}
-        ],
+        compromisos_institucionales=[{"compromiso": "Rondines preventivos de cuadrante policial"}],
         nombre_facilitador_firma="Dr. Pericial",
         sha256_acta="a" * 64,
     )
@@ -204,7 +201,6 @@ def test_generar_acta_pdf_unitario_con_qr():
         asistencia_confirmada=True,
     )
 
-
     pdf_bytes = generar_acta_pdf(
         mesa=mesa,
         acta=acta,
@@ -215,4 +211,3 @@ def test_generar_acta_pdf_unitario_con_qr():
     assert isinstance(pdf_bytes, bytes)
     assert pdf_bytes.startswith(b"%PDF")
     assert len(pdf_bytes) > 2000
-

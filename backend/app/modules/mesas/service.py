@@ -89,9 +89,7 @@ class MesaService:
                 "total_participantes": acta.total_participantes,
             },
             "firma": {
-                "facilitador_id": (
-                    str(acta.facilitador_firma_id) if acta.facilitador_firma_id else None
-                ),
+                "facilitador_id": (str(acta.facilitador_firma_id) if acta.facilitador_firma_id else None),
                 "nombre_facilitador": acta.nombre_facilitador_firma,
             },
             "cierre": {
@@ -108,9 +106,7 @@ class MesaService:
             len(ruta) > 65_535
             or not etiquetas
             or any(
-                not etiqueta
-                or len(etiqueta) > 255
-                or re.fullmatch(r"[A-Za-z0-9_]+", etiqueta) is None
+                not etiqueta or len(etiqueta) > 255 or re.fullmatch(r"[A-Za-z0-9_]+", etiqueta) is None
                 for etiqueta in etiquetas
             )
         ):
@@ -121,9 +117,7 @@ class MesaService:
 
     def _evaluar_quorum(self, total_participantes: int, aforo_maximo: int) -> bool:
         # Quórum legal deliberativo: mínimo 3 participantes o al menos el 10% del aforo estimado
-        return total_participantes >= 3 or (
-            aforo_maximo > 0 and total_participantes >= aforo_maximo * 0.10
-        )
+        return total_participantes >= 3 or (aforo_maximo > 0 and total_participantes >= aforo_maximo * 0.10)
 
     async def crear_mesa_raiz(
         self,
@@ -218,9 +212,7 @@ class MesaService:
 
             datos_dict = datos.model_dump(exclude={"slug"})
             datos_dict["tipo_mesa"] = datos.tipo_mesa or padre.tipo_mesa
-            datos_dict["codigo_oficial"] = (
-                datos.codigo_oficial or f"{padre.codigo_oficial[:70]}-S{sufijo}"
-            )
+            datos_dict["codigo_oficial"] = datos.codigo_oficial or f"{padre.codigo_oficial[:70]}-S{sufijo}"
             datos_dict["shortcode_ciudadano"] = (
                 datos.shortcode_ciudadano or f"{padre.shortcode_ciudadano[:30]}-S{sufijo}"
             )
@@ -541,10 +533,7 @@ class MesaService:
             if acta and acta.estado in ("CONCERTADA", "PUBLICADA"):
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
-                    detail=(
-                        "Violación Forense (Sentencia C-150/15): El acta ya ha sido concertada y es"
-                        " inmutable."
-                    ),
+                    detail=("Violación Forense (Sentencia C-150/15): El acta ya ha sido concertada y es inmutable."),
                 )
 
             participantes = await self.repository.listar_participantes(mesa_uuid)
@@ -555,9 +544,7 @@ class MesaService:
                     "participante_id": str(participante.id),
                     "rol_en_mesa": participante.rol_en_mesa,
                     "asistencia_confirmada": participante.asistencia_confirmada,
-                    "hora_ingreso": participante.hora_ingreso.astimezone(UTC).isoformat(
-                        timespec="microseconds"
-                    ),
+                    "hora_ingreso": participante.hora_ingreso.astimezone(UTC).isoformat(timespec="microseconds"),
                 }
                 for participante in participantes
             ]
@@ -634,10 +621,7 @@ class MesaService:
             if acta.estado in ("CONCERTADA", "PUBLICADA"):
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
-                    detail=(
-                        "Violación Forense (Sentencia C-150/15): El acta ya se encuentra "
-                        "concertada."
-                    ),
+                    detail=("Violación Forense (Sentencia C-150/15): El acta ya se encuentra concertada."),
                 )
 
             if datos_cierre:
@@ -664,9 +648,7 @@ class MesaService:
                     "participante_id": str(participante.id),
                     "rol_en_mesa": participante.rol_en_mesa,
                     "asistencia_confirmada": participante.asistencia_confirmada,
-                    "hora_ingreso": participante.hora_ingreso.astimezone(UTC).isoformat(
-                        timespec="microseconds"
-                    ),
+                    "hora_ingreso": participante.hora_ingreso.astimezone(UTC).isoformat(timespec="microseconds"),
                 }
                 for participante in participantes
             ]
@@ -698,17 +680,12 @@ class MesaService:
         mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
         acta = await self.repository.obtener_acta_por_mesa(mesa_uuid)
         if not acta:
-            raise HTTPException(
-                status.HTTP_404_NOT_FOUND, detail="Acta no encontrada para esta mesa"
-            )
+            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Acta no encontrada para esta mesa")
 
         integridad = True
         if acta.estado in ("CONCERTADA", "PUBLICADA"):
             version = acta.metadatos_cierre.get("version")
-            integridad = (
-                version == "polis-acta-v2"
-                and self._calcular_hash_pericial(acta) == acta.sha256_acta
-            )
+            integridad = version == "polis-acta-v2" and self._calcular_hash_pericial(acta) == acta.sha256_acta
 
         resp = ActaRespuesta.model_validate(acta)
         resp.integridad_valida = integridad
@@ -775,7 +752,13 @@ class MesaService:
                 ruta_http="/api/v1/mesas/agendas",
             )
         elif datos.territorio:
-            loc_code = "LOC-1" if "1" in datos.territorio else ("LOC-2" if "2" in datos.territorio else ("LOC-3" if "3" in datos.territorio else datos.territorio))
+            loc_code = (
+                "LOC-1"
+                if "1" in datos.territorio
+                else (
+                    "LOC-2" if "2" in datos.territorio else ("LOC-3" if "3" in datos.territorio else datos.territorio)
+                )
+            )
             await verificar_ambito_territorial(
                 self.repository.session,
                 sujeto,
@@ -828,7 +811,9 @@ class MesaService:
     ) -> AgendaRespuesta:
         agenda_existente = await self.repository.obtener_agenda_por_id(agenda_id)
         if agenda_existente:
-            target_mesa_id = datos.mesa_id if "mesa_id" in datos.model_fields_set and datos.mesa_id else agenda_existente.mesa_id
+            target_mesa_id = (
+                datos.mesa_id if "mesa_id" in datos.model_fields_set and datos.mesa_id else agenda_existente.mesa_id
+            )
             target_territorio = datos.territorio if datos.territorio is not None else agenda_existente.territorio
             if target_mesa_id:
                 await verificar_ambito_territorial(
@@ -841,7 +826,15 @@ class MesaService:
                     ruta_http=f"/api/v1/mesas/agendas/{agenda_id}",
                 )
             elif target_territorio:
-                loc_code = "LOC-1" if "1" in target_territorio else ("LOC-2" if "2" in target_territorio else ("LOC-3" if "3" in target_territorio else target_territorio))
+                loc_code = (
+                    "LOC-1"
+                    if "1" in target_territorio
+                    else (
+                        "LOC-2"
+                        if "2" in target_territorio
+                        else ("LOC-3" if "3" in target_territorio else target_territorio)
+                    )
+                )
                 await verificar_ambito_territorial(
                     self.repository.session,
                     sujeto,
@@ -930,4 +923,3 @@ class MesaService:
             await self.repository.session.flush()
 
             return AgendaRespuesta.model_validate(actualizada)
-

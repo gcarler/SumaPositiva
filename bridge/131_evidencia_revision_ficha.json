@@ -1,0 +1,36 @@
+{
+  "fecha_utc": "2026-10-26T03:04:29.322816+00:00",
+  "estado": "ficha_devuelta_para_R1",
+  "suite_original": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "10",
+    "time": "5.455",
+    "timestamp": "2026-10-26T03:01:59.444311+00:00",
+    "hostname": "srv2006133"
+  },
+  "controles_sinteticos_reproducidos": {
+    "seleccion_pide_2021": {
+      "observaciones_emitidas": 1,
+      "anio_emitido": "2020",
+      "defecto": "seleccion_ignorada"
+    },
+    "atribucion_y_unidad": {
+      "fuente_contexto": "12",
+      "unidad_contexto": "DANE",
+      "fuente_original": "  DANE  ",
+      "unidad_original": "  casos  "
+    },
+    "preservacion_crudos": {
+      "fuente_antes": "  DANE  ",
+      "fuente_despues": "DANE",
+      "defecto": "strip_altera_original"
+    }
+  },
+  "revision": "bridge/131_revision_ficha_territorial_r1.md",
+  "sin_banco": true,
+  "SQL": false,
+  "red": false
+}

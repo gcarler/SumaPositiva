@@ -51,9 +51,7 @@ FIXTURES = Path(__file__).parent / "fixtures" / "triada"
 
 def test_entity_normalizer_is_closed_official_catalog_and_uses_word_boundaries():
     assert len(ENTIDADES_CANONICAS_CARTAGENA) >= 30
-    assert normalizar_entidad("VALORIZACION") == (
-        "Departamento Administrativo de Valorización Distrital"
-    )
+    assert normalizar_entidad("VALORIZACION") == ("Departamento Administrativo de Valorización Distrital")
     assert normalizar_entidad(None, "PLAN DE ACCION 2020 VALORIZACION - AJUSTADO.xlsx") == (
         "Departamento Administrativo de Valorización Distrital"
     )
@@ -89,10 +87,7 @@ def test_tabular_fingerprint_ignores_workbook_binary_metadata():
     first = IngestorBinarioTriada().leer_lote("PA_2026_DADIS.xlsx", _xlsx_multimotor())[0]
     second = IngestorBinarioTriada().leer_lote("PA_2026_DADIS.xlsx", _xlsx_multimotor())[0]
     assert first.sha256 != second.sha256
-    assert (
-        first.metadatos_fuente["huella_tabular_sha256"]
-        == second.metadatos_fuente["huella_tabular_sha256"]
-    )
+    assert first.metadatos_fuente["huella_tabular_sha256"] == second.metadatos_fuente["huella_tabular_sha256"]
 
 
 def test_tripartite_cross_rejects_placeholder_and_numeric_keys():
@@ -129,9 +124,7 @@ def test_tripartite_cross_rejects_placeholder_and_numeric_keys():
             ],
         )
 
-    valid = cruzar_tres_lecturas(
-        *records("Establecimiento Público Ambiental", "Ambiente", "BPIM-3")
-    )
+    valid = cruzar_tres_lecturas(*records("Establecimiento Público Ambiental", "Ambiente", "BPIM-3"))
     assert valid["total_cruces"] == 1
     for invalid in ("100", "21", "34569289.33"):
         assert cruzar_tres_lecturas(*records(invalid, "Ambiente", "BPIM-3"))["total_cruces"] == 0
@@ -239,10 +232,9 @@ def test_legacy_xls_opens_as_biff8_and_finds_shifted_header():
 
 
 def test_csv_sniffs_latin1_and_semicolon_delimiter():
-    raw = (
-        "Dependencia;Línea estratégica;Actividad;Meta programada anual\n"
-        "DADIS;Salud;Implementar acción;20\n"
-    ).encode("latin-1")
+    raw = ("Dependencia;Línea estratégica;Actividad;Meta programada anual\nDADIS;Salud;Implementar acción;20\n").encode(
+        "latin-1"
+    )
     result = IngestorBinarioTriada().leer_lote("PA_2024_DADIS.csv", raw)[0]
     assert result.vigencia == 2024
     assert result.hojas[0].filas[0]["descripcion_actividad"] == "Implementar acción"
@@ -256,9 +248,7 @@ def test_zip_processes_mixed_binary_members_and_skips_macos_metadata():
             "1. Seguridad Personal/2016/Plan_Accion_2016_DADIS.xls",
             (FIXTURES / "plan_accion_2016_dadis.xls").read_bytes(),
         )
-        bundle.writestr(
-            "8. Crisis/Periodo 2024 - 2027/2026/Plan_Accion_2026_DADIS.xlsx", _xlsx_multimotor()
-        )
+        bundle.writestr("8. Crisis/Periodo 2024 - 2027/2026/Plan_Accion_2026_DADIS.xlsx", _xlsx_multimotor())
         bundle.writestr("__MACOSX/._junk.csv", b"junk")
     result = IngestorBinarioTriada().leer_lote("planes.zip", archive.getvalue())
     assert len(result) == 2
@@ -290,26 +280,13 @@ def test_drive_taxonomy_infers_all_eight_dimensions_and_three_periods():
         assert tags["periodo_gobierno"] == (
             "ANTES_2020" if year < 2020 else "2020_2023" if year < 2024 else "2024_2027"
         )
-    assert (
-        inferir_taxonomia("Periodo Antes de 2020/2019/archivo.xlsx")["periodo_gobierno"]
-        == "ANTES_2020"
-    )
-    assert (
-        inferir_taxonomia("Periodo 2020 - 2023/2022/archivo.xlsx")["periodo_gobierno"]
-        == "2020_2023"
-    )
-    assert (
-        inferir_taxonomia("Periodo 2024 - 2027/2026/archivo.xlsx")["periodo_gobierno"]
-        == "2024_2027"
-    )
-    filename_prefix = inferir_taxonomia(
-        "Periodo 2020 - 2023/2023/Corte Junio/1. Seguimiento plan.xlsx"
-    )
+    assert inferir_taxonomia("Periodo Antes de 2020/2019/archivo.xlsx")["periodo_gobierno"] == "ANTES_2020"
+    assert inferir_taxonomia("Periodo 2020 - 2023/2022/archivo.xlsx")["periodo_gobierno"] == "2020_2023"
+    assert inferir_taxonomia("Periodo 2024 - 2027/2026/archivo.xlsx")["periodo_gobierno"] == "2024_2027"
+    filename_prefix = inferir_taxonomia("Periodo 2020 - 2023/2023/Corte Junio/1. Seguimiento plan.xlsx")
     assert filename_prefix["dimensiones_seguridad_humana"] == []
     assert filename_prefix["periodo_gobierno"] == "2020_2023"
-    quarter_folder = inferir_taxonomia(
-        "Periodo 2024 - 2027/Planes de Acción/2024/1. Enero - Marzo/archivo.xls"
-    )
+    quarter_folder = inferir_taxonomia("Periodo 2024 - 2027/Planes de Acción/2024/1. Enero - Marzo/archivo.xls")
     assert quarter_folder["dimensiones_seguridad_humana"] == []
     assert quarter_folder["periodo_gobierno"] == "2024_2027"
 
@@ -335,8 +312,7 @@ def test_drive_catalog_entries_keep_ids_paths_tags_and_hashes():
 
 def test_drive_inventory_dimension_and_period_folder_counts_match_master_tree():
     catalog_path = (
-        Path(__file__).resolve().parents[2]
-        / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
+        Path(__file__).resolve().parents[2] / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
     )
     entries = json.loads(catalog_path.read_text(encoding="utf-8"))
     roots = [entry["path"].split("/", 1)[0] for entry in entries]
@@ -379,13 +355,8 @@ def test_magic_bytes_detect_excel_even_without_filename_extension():
     assert detectar_extension_archivo("Plan de Acción Microsoft", xlsx) == ".xlsx"
     assert detectar_extension_archivo("Plan de Acción Microsoft", prefixed_xlsx) == ".xlsx"
     assert detectar_extension_archivo("Plan de Acción Microsoft", xls) == ".xls"
-    assert (
-        IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", xlsx)[0].extension == "xlsx"
-    )
-    assert (
-        IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", prefixed_xlsx)[0].extension
-        == "xlsx"
-    )
+    assert IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", xlsx)[0].extension == "xlsx"
+    assert IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", prefixed_xlsx)[0].extension == "xlsx"
     assert IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", xls)[0].extension == "xls"
 
 
@@ -432,9 +403,7 @@ def test_official_cartagena_corpus_detects_historical_profiles_and_three_engines
 
     assert books["PA_2018_SECRETARIA_GENERAL.xlsx"].entidad == "Secretaría General"
     assert books["PA_2019_DADIS.xls"].entidad == "Departamento Administrativo Distrital de Salud"
-    assert (
-        books["PA_2026_T2_DADIS.xlsx"].entidad == "Departamento Administrativo Distrital de Salud"
-    )
+    assert books["PA_2026_T2_DADIS.xlsx"].entidad == "Departamento Administrativo Distrital de Salud"
     assert books["PA_2026_T2_HACIENDA.xlsx"].entidad == "Secretaría de Hacienda"
     assert books["PA_2026_T2_INFRAESTRUCTURA.xlsx"].entidad == "Secretaría de Infraestructura"
     assert books["PA_2026_T2_PLANEACION.xlsx"].entidad == "Secretaría de Planeación"
@@ -449,11 +418,7 @@ def test_official_cartagena_corpus_detects_historical_profiles_and_three_engines
         for row in sheet.filas
     }
     assert pa_motors == {"PLAN_DESARROLLO", "PLAN_ACCION", "INVERSION_PRESUPUESTAL"}
-    pdd_motors = {
-        row["motor_destino"]
-        for sheet in books["PDD_2026_T2_MATRIZ.xlsx"].hojas
-        for row in sheet.filas
-    }
+    pdd_motors = {row["motor_destino"] for sheet in books["PDD_2026_T2_MATRIZ.xlsx"].hojas for row in sheet.filas}
     assert pdd_motors == {"PLAN_DESARROLLO"}
 
 
@@ -467,16 +432,12 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
         async with sessions() as session:
             old_files = list(
                 (
-                    await session.scalars(
-                        select(ArchivoPlanIngerido).where(ArchivoPlanIngerido.hash_sha256 == digest)
-                    )
+                    await session.scalars(select(ArchivoPlanIngerido).where(ArchivoPlanIngerido.hash_sha256 == digest))
                 ).all()
             )
             old_batch_ids = {item.lote_id for item in old_files}
             if old_batch_ids:
-                await session.execute(
-                    delete(LoteIngestaPlan).where(LoteIngestaPlan.id.in_(old_batch_ids))
-                )
+                await session.execute(delete(LoteIngestaPlan).where(LoteIngestaPlan.id.in_(old_batch_ids)))
                 await session.commit()
         async with sessions() as session:
             service = IngestaMasivaService(session)
@@ -503,9 +464,7 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
             rows = list(
                 (
                     await session.scalars(
-                        select(RegistroTriadaNormalizado).where(
-                            RegistroTriadaNormalizado.lote_id == lot.id
-                        )
+                        select(RegistroTriadaNormalizado).where(RegistroTriadaNormalizado.lote_id == lot.id)
                     )
                 ).all()
             )
@@ -545,9 +504,7 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
                 ],
             )
             assert filtered["filtros"]["dimension"] == "8. Crisis"
-            by_dimension = await IngestaMasivaService(session).resumen_dimensiones(
-                "1. Seguridad Personal", "2024_2027"
-            )
+            by_dimension = await IngestaMasivaService(session).resumen_dimensiones("1. Seguridad Personal", "2024_2027")
             assert by_dimension["1. Seguridad Personal"]["archivos_drive"] >= 1
             assert by_dimension["1. Seguridad Personal"]["registros_normalizados"] >= 4
         async with sessions() as session:
@@ -565,26 +522,20 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
                 origen="UPLOAD_ARCHIVO",
             )
             lot_cut = await session.scalar(
-                select(LoteIngestaPlan).where(
-                    LoteIngestaPlan.codigo_lote == cut_clone["codigo_lote"]
-                )
+                select(LoteIngestaPlan).where(LoteIngestaPlan.codigo_lote == cut_clone["codigo_lote"])
             )
             alert_archive = await session.scalar(
                 select(ArchivoPlanIngerido).where(ArchivoPlanIngerido.lote_id == lot_cut.id)
             )
             assert alert_archive.metadatos["alerta_calidad"] == ("CONTENIDO_IDENTICO_OTRO_CORTE")
-            all_cuts = await IngestaMasivaService(session).comparativa(
-                desde=2026, hasta=2026, bpim=f"BPIM-{marker}"
-            )
+            all_cuts = await IngestaMasivaService(session).comparativa(desde=2026, hasta=2026, bpim=f"BPIM-{marker}")
             selected_cut = await IngestaMasivaService(session).comparativa(
                 desde=2026, hasta=2026, bpim=f"BPIM-{marker}", corte="T1"
             )
             alert_row_ids = {
                 str(row.id)
                 for row in await session.scalars(
-                    select(RegistroTriadaNormalizado).where(
-                        RegistroTriadaNormalizado.archivo_id == alert_archive.id
-                    )
+                    select(RegistroTriadaNormalizado).where(RegistroTriadaNormalizado.archivo_id == alert_archive.id)
                 )
             }
             assert alert_row_ids.isdisjoint({row["id"] for row in all_cuts["registros"]})
@@ -706,9 +657,7 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
 
             archive_payload = io.BytesIO()
             with zipfile.ZipFile(archive_payload, "w", zipfile.ZIP_DEFLATED) as archive:
-                archive.writestr(
-                    f"2026/Plan_Accion_2026_DADIS_{marker}.xlsx", _xlsx_multimotor(marker)
-                )
+                archive.writestr(f"2026/Plan_Accion_2026_DADIS_{marker}.xlsx", _xlsx_multimotor(marker))
             zip_response = client.post(
                 "/api/v1/compromisos/triada/ingerir-archivos",
                 files={"files": ("planes.zip", archive_payload.getvalue(), "application/zip")},
@@ -732,17 +681,19 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
             engine = create_async_engine(database_url, hide_parameters=True)
             sessions = async_sessionmaker(engine, expire_on_commit=False)
             async with sessions() as session:
-                await session.execute(
-                    delete(LoteIngestaPlan).where(LoteIngestaPlan.codigo_lote.in_(lote_codes))
-                )
+                await session.execute(delete(LoteIngestaPlan).where(LoteIngestaPlan.codigo_lote.in_(lote_codes)))
                 await session.commit()
             await engine.dispose()
 
         asyncio.run(cleanup())
 
 
-def test_http_directory_ingest_reads_only_workspace_subdirectory(database_url):
-    base = Path("/root/polis/data/planes_accion")
+def test_http_directory_ingest_reads_only_workspace_subdirectory(database_url, tmp_path, monkeypatch):
+    from app.modules.compromisos import router as compromisos_router
+
+    base = tmp_path / "planes_accion"
+    base.mkdir()
+    monkeypatch.setattr(compromisos_router, "RAIZ_INGESTA", base.resolve())
     settings = Settings(
         _env_file=None,
         environment="test",

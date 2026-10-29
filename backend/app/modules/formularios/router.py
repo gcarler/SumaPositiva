@@ -55,9 +55,7 @@ async def listar_publicos(session: SessionDependency):
     return await ConstructorService(session).listar(publico=True)
 
 
-@router.get(
-    "/publicos/{slug}", response_model=DocumentoFormulario, response_model_exclude_none=True
-)
+@router.get("/publicos/{slug}", response_model=DocumentoFormulario, response_model_exclude_none=True)
 async def obtener_publico(slug: str, session: SessionDependency):
     return await ConstructorService(session).obtener(slug, publico=True)
 
@@ -99,9 +97,7 @@ async def crear_constructor(datos: DocumentoFormulario, session: SessionDependen
     response_model_exclude_none=True,
     dependencies=[Depends(requerir_permiso("formularios:gestionar", nivel_minimo="declarada"))],
 )
-async def actualizar_constructor(
-    id: uuid.UUID, datos: DocumentoFormulario, session: SessionDependency
-):
+async def actualizar_constructor(id: uuid.UUID, datos: DocumentoFormulario, session: SessionDependency):
     return await ConstructorService(session).guardar(datos, id)
 
 

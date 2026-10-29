@@ -63,9 +63,7 @@ class ConstructorService:
         doc.origenDatos = "api"
         doc.titulo, doc.descripcion = formulario.titulo, formulario.descripcion
         doc.estado = {v: k for k, v in ESTADOS.items()}[formulario.estado]
-        doc.configuracion.fechaCierre = (
-            formulario.fecha_cierre.isoformat() if formulario.fecha_cierre else None
-        )
+        doc.configuracion.fechaCierre = formulario.fecha_cierre.isoformat() if formulario.fecha_cierre else None
         doc.configuracion.slug = formulario.slug
         doc.configuracion.urlPublica = f"{ORIGEN}/f/{formulario.slug}"
         doc.creadoEn, doc.actualizadoEn = (
@@ -95,9 +93,7 @@ class ConstructorService:
                     if not f:
                         raise HTTPException(404, "Formulario no encontrado")
                 else:
-                    f = FormularioConsulta(
-                        codigo="FORM-" + uuid.uuid4().hex, slug=generar_slug(datos.titulo)
-                    )
+                    f = FormularioConsulta(codigo="FORM-" + uuid.uuid4().hex, slug=generar_slug(datos.titulo))
                 if formulario_id and await self.repo.contar_respuestas(f.id):
                     anterior = await self.documento(f)
                     if [p.model_dump(mode="json", exclude_none=True) for p in datos.preguntas] != [
@@ -110,9 +106,7 @@ class ConstructorService:
                 f.titulo, f.descripcion = datos.titulo.strip(), datos.descripcion
                 f.estado = ESTADOS[datos.estado]
                 fecha = datos.configuracion.fechaCierre
-                f.fecha_cierre = (
-                    datetime.fromisoformat(fecha.replace("Z", "+00:00")) if fecha else None
-                )
+                f.fecha_cierre = datetime.fromisoformat(fecha.replace("Z", "+00:00")) if fecha else None
                 f.actualizado_en = datetime.now(UTC)
                 datos.configuracion.slug = f.slug
                 datos.configuracion.urlPublica = f"{ORIGEN}/f/{f.slug}"
@@ -128,14 +122,10 @@ class ConstructorService:
                         "actualizadoEn",
                     },
                 )
-                f.esquema_preguntas = [
-                    p.model_dump(mode="json", exclude_none=True) for p in datos.preguntas
-                ]
+                f.esquema_preguntas = [p.model_dump(mode="json", exclude_none=True) for p in datos.preguntas]
                 if not formulario_id:
                     await self.repo.crear(f)
                 await self.repo.guardar(f)
                 return await self.documento(f)
         except IntegrityError as error:
-            raise error_integridad(
-                error, "El identificador del formulario ya está registrado"
-            ) from error
+            raise error_integridad(error, "El identificador del formulario ya está registrado") from error

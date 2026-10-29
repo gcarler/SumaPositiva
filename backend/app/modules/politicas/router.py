@@ -1,8 +1,12 @@
-from decimal import Decimal
+import json
 import logging
+import os
 import uuid
+from decimal import Decimal
+from pathlib import Path
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import func, select, text
 
 from app.core.database import SessionDependency
@@ -21,6 +25,8 @@ from app.modules.politicas.schemas import (
     FaseControlLectura,
     FasePoliticaRead,
     FasePoliticaResumen,
+    HerosConfigRead,
+    HerosConfigUpdate,
     LineaEstrategicaCreate,
     LineaEstrategicaRead,
     LineaEstrategicaUpdate,
@@ -50,7 +56,7 @@ async def listar_politicas(
     session: SessionDependency,
 ) -> list[PoliticaPublicaRead]:
     """Catálogo canónico oficial de la Política Pública de Cartagena de Indias.
-    
+
     Declara explícitamente los atributos identitarios de pol-001 (Decreto 037 de 2026),
     hidratando dinámicamente fases metodológicas DNP, líneas estratégicas, avance ponderado
     y el número consolidado de participantes únicos deduplicados entre canales.
@@ -91,11 +97,7 @@ async def listar_politicas(
     result_fases = await session.execute(stmt_fases)
     fases = result_fases.scalars().all()
 
-    stmt_lineas = (
-        select(LineaEstrategica)
-        .where(LineaEstrategica.activa.is_(True))
-        .order_by(LineaEstrategica.orden)
-    )
+    stmt_lineas = select(LineaEstrategica).where(LineaEstrategica.activa.is_(True)).order_by(LineaEstrategica.orden)
     result_lineas = await session.execute(stmt_lineas)
     lineas = result_lineas.scalars().all()
 
@@ -112,16 +114,16 @@ async def listar_politicas(
     conteos_aportes = dict(res_aportes.all())
 
     lineas_por_fase: dict[uuid.UUID, list[LineaPoliticaResumen]] = {}
-    for l in lineas:
-        lineas_por_fase.setdefault(l.fase_id, []).append(
+    for linea in lineas:
+        lineas_por_fase.setdefault(linea.fase_id, []).append(
             LineaPoliticaResumen(
-                id=str(l.id),
-                faseId=str(l.fase_id),
-                codigo=l.codigo,
-                titulo=l.titulo,
-                descripcion=l.descripcion,
+                id=str(linea.id),
+                faseId=str(linea.fase_id),
+                codigo=linea.codigo,
+                titulo=linea.titulo,
+                descripcion=linea.descripcion,
                 aportes=[],
-                aportesCount=conteos_aportes.get(l.id, 0),
+                aportesCount=conteos_aportes.get(linea.id, 0),
             )
         )
 
@@ -148,9 +150,7 @@ async def listar_politicas(
         prog_float = float(prog_final)
 
         estado_front = (
-            "activa"
-            if f.estado == "activa"
-            else ("completada" if f.estado in ("cerrada", "archivada") else "proxima")
+            "activa" if f.estado == "activa" else ("completada" if f.estado in ("cerrada", "archivada") else "proxima")
         )
         fases_resumen.append(
             FasePoliticaResumen(
@@ -227,11 +227,7 @@ async def listar_fases(
 async def listar_lineas(
     session: SessionDependency,
 ) -> list[LineaEstrategicaRead]:
-    stmt = (
-        select(LineaEstrategica)
-        .where(LineaEstrategica.activa.is_(True))
-        .order_by(LineaEstrategica.orden)
-    )
+    stmt = select(LineaEstrategica).where(LineaEstrategica.activa.is_(True)).order_by(LineaEstrategica.orden)
     result = await session.execute(stmt)
     lineas = result.scalars().all()
 
@@ -307,9 +303,7 @@ async def conmutar_fase(
     sujeto: SujetoAutenticadoDep,
 ) -> FaseControlLectura:
     async with transaction(session):
-        fase = await session.scalar(
-            select(FasePolitica).where(FasePolitica.id == fase_id).with_for_update()
-        )
+        fase = await session.scalar(select(FasePolitica).where(FasePolitica.id == fase_id).with_for_update())
         if not fase:
             raise HTTPException(status_code=404, detail="Fase de política no encontrada")
 
@@ -323,8 +317,7 @@ async def conmutar_fase(
             if datos.estado not in estados_validos:
                 raise HTTPException(
                     status_code=422,
-                    detail="Estado no válido. Debe ser uno de: "
-                    + ", ".join(sorted(estados_validos)),
+                    detail="Estado no válido. Debe ser uno de: " + ", ".join(sorted(estados_validos)),
                 )
             fase.estado = datos.estado
 
@@ -336,9 +329,7 @@ async def conmutar_fase(
         await session.flush()
 
         total_lineas = (
-            await session.scalar(
-                select(func.count(LineaEstrategica.id)).where(LineaEstrategica.fase_id == fase.id)
-            )
+            await session.scalar(select(func.count(LineaEstrategica.id)).where(LineaEstrategica.fase_id == fase.id))
             or 0
         )
 
@@ -396,10 +387,280 @@ async def eliminar_linea(
 @router.get(
     "/lineas/gestion",
     response_model=list[LineaEstrategicaRead],
-    dependencies=[
-        Depends(requerir_rol("autoridad_distrital", "administrador_identidades", "auditor_forense"))
-    ],
+    dependencies=[Depends(requerir_rol("autoridad_distrital", "administrador_identidades", "auditor_forense"))],
 )
 async def listar_lineas_gestion(session: SessionDependency):
     result = await session.execute(select(LineaEstrategica).order_by(LineaEstrategica.orden))
     return [LineaEstrategicaRead.model_validate(linea) for linea in result.scalars()]
+
+
+# ============================================================================
+# GESTIÓN Y PERSISTENCIA DE HEROS TERRITORIALES PÚBLICOS
+# ============================================================================
+
+DEFAULT_HERO_SLIDES = [
+    {
+        "id": "asamblea-claustro",
+        "titulo": "Cabildo Abierto y Foro Ciudadano",
+        "subtitulo": (
+            "Deliberación comunitaria vinculante y construcción colectiva de la "
+            "seguridad humana en Cartagena de Indias."
+        ),
+        "enfoque": "Cabildo Masivo Territorial",
+        "imagenFondo": "/images/hero/hero-asamblea-claustro.webp",
+        "ubicacionReal": "Claustro de la Merced — Centro Histórico",
+        "altura": "fullscreen",
+        "badgeTexto": "Participación Ciudadana Masiva",
+        "activa": True,
+        "accionPrimaria": {
+            "label": "Explorar Diagnóstico",
+            "href": "/fases",
+        },
+    },
+    {
+        "id": "dialogo-comunitario",
+        "titulo": "Diálogo Social y Escucha Barrial",
+        "subtitulo": (
+            "Encuentros cara a cara en los sectores populares para concertar "
+            "compromisos de bienestar y seguridad integral."
+        ),
+        "enfoque": "Diálogo Barrial Comunitario",
+        "imagenFondo": "/images/hero/hero-dialogo-comunitario.webp",
+        "ubicacionReal": "Sector El Pozón — Localidad 2 (De la Virgen y Turística)",
+        "altura": "fullscreen",
+        "badgeTexto": "Presencia Barrial Directa",
+        "activa": True,
+        "accionPrimaria": {
+            "label": "Modo Barrio",
+            "href": "/barrio",
+        },
+    },
+    {
+        "id": "enfoque-diferencial",
+        "titulo": "Enfoque Diferencial, Género y Juventud",
+        "subtitulo": (
+            "Garantía de derechos, equidad de género sustantiva y liderazgo "
+            "transformador de las nuevas generaciones cartageneras."
+        ),
+        "enfoque": "Mujeres, Jóvenes y Diversidad",
+        "imagenFondo": "/images/hero/hero-enfoque-diferencial.webp",
+        "ubicacionReal": "Casa de Justicia Chiquinquirá — Localidad 2",
+        "altura": "fullscreen",
+        "badgeTexto": "Enfoque Diferencial e Inclusivo",
+        "activa": True,
+        "accionPrimaria": {
+            "label": "Ver Compromisos",
+            "href": "/alternativas",
+        },
+    },
+    {
+        "id": "marco-logico",
+        "titulo": "Metodología y Proyectos Comunitarios",
+        "subtitulo": (
+            "Formulación técnica rigurosa con marco lógico, banco de iniciativas e impacto territorial verificable."
+        ),
+        "enfoque": "Proyectos Comunitarios y Marco Lógico",
+        "imagenFondo": "/images/hero/hero-marco-logico.webp",
+        "ubicacionReal": "Centro Comunitario Nelson Mandela — Localidad 3 (Industrial y de la Bahía)",
+        "altura": "fullscreen",
+        "badgeTexto": "Formulación Técnica Participativa",
+        "activa": True,
+        "accionPrimaria": {
+            "label": "Consultar Banco",
+            "href": "/fases",
+        },
+    },
+    {
+        "id": "mesa-deliberativa",
+        "titulo": "Mesa de Concertación y Transparencia",
+        "subtitulo": (
+            "Veeduría ciudadana activa, rendición de cuentas pública y trazabilidad institucional inalterable."
+        ),
+        "enfoque": "Transparencia y Control Social",
+        "imagenFondo": "/images/hero/hero-mesa-deliberativa.webp",
+        "ubicacionReal": "Palacio de la Proclamación — Plaza de Bolívar",
+        "altura": "fullscreen",
+        "badgeTexto": "Transparencia y Fe Pública",
+        "activa": True,
+        "accionPrimaria": {
+            "label": "Rendición de Cuentas",
+            "href": "/plataforma/rendicion",
+        },
+    },
+]
+
+DEFAULT_HERO_IMAGE_OPTIONS = [
+    {
+        "id": "asamblea-claustro",
+        "titulo": "Cabildo Abierto y Foro Ciudadano",
+        "descripcion": (
+            "Vista aérea de asamblea y cabildo masivo en patio colonial cartagenero con amplia deliberación ciudadana."
+        ),
+        "archivo": "/images/hero/hero-asamblea-claustro.webp",
+        "thumbnail": "/images/hero/hero-asamblea-claustro-thumb.webp",
+        "enfoque": "Cabildo Masivo Territorial",
+        "habilitada": True,
+        "heroImageId": "asamblea-claustro",
+    },
+    {
+        "id": "dialogo-comunitario",
+        "titulo": "Diálogo Social y Rendición de Cuentas",
+        "descripcion": (
+            "Conversatorio abierto al aire libre con micrófono ciudadano y concertación institucional directa."
+        ),
+        "archivo": "/images/hero/hero-dialogo-comunitario.webp",
+        "thumbnail": "/images/hero/hero-dialogo-comunitario-thumb.webp",
+        "enfoque": "Transparencia y Diálogo Directo",
+        "habilitada": True,
+        "heroImageId": "dialogo-comunitario",
+    },
+    {
+        "id": "enfoque-diferencial",
+        "titulo": "Taller Diferencial de Género y Juventud",
+        "descripcion": (
+            "Espacio inclusivo con el Observatorio de Equidad y organizaciones comunitarias de mujeres y jóvenes."
+        ),
+        "archivo": "/images/hero/hero-enfoque-diferencial.webp",
+        "thumbnail": "/images/hero/hero-enfoque-diferencial-thumb.webp",
+        "enfoque": "Inclusión y Género",
+        "habilitada": True,
+        "heroImageId": "enfoque-diferencial",
+    },
+    {
+        "id": "marco-logico",
+        "titulo": "Matriz de Marco Lógico y Proyectos",
+        "descripcion": (
+            "Mesa comunitaria con líderes y jóvenes formulando proyectos territoriales "
+            "con la matriz de relatoría técnica."
+        ),
+        "archivo": "/images/hero/hero-marco-logico.webp",
+        "thumbnail": "/images/hero/hero-marco-logico-thumb.webp",
+        "enfoque": "Metodología Participativa & Comunitaria",
+        "habilitada": True,
+        "heroImageId": "marco-logico",
+    },
+    {
+        "id": "mesa-deliberativa",
+        "titulo": "Mesa Redonda y Concertación Temática",
+        "descripcion": (
+            "Trabajo deliberativo en equipo con carpetas, relatoría y concertación de compromisos ciudadanos."
+        ),
+        "archivo": "/images/hero/hero-mesa-deliberativa.webp",
+        "thumbnail": "/images/hero/hero-mesa-deliberativa-thumb.webp",
+        "enfoque": "Mesas Temáticas POLIS",
+        "habilitada": True,
+        "heroImageId": "mesa-deliberativa",
+    },
+    {
+        "id": "ninguna",
+        "titulo": "Solo Retícula Institucional",
+        "descripcion": "Fondo minimalista oficial con retícula de puntos de alta legibilidad sin fotografía de fondo.",
+        "archivo": "",
+        "thumbnail": "",
+        "enfoque": "Fondo Minimalista Oficial",
+        "habilitada": True,
+        "heroImageId": "ninguna",
+    },
+]
+
+
+def _obtener_directorio_raiz() -> Path:
+    actual = Path(__file__).resolve()
+    for parent in actual.parents:
+        if (parent / "package.json").exists() and (parent / "backend").exists():
+            return parent
+    return Path("/root/polis")
+
+
+def _ruta_archivo_heros() -> Path:
+    return _obtener_directorio_raiz() / "data" / "heros_config.json"
+
+
+def _obtener_config_heros() -> dict:
+    ruta = _ruta_archivo_heros()
+    if ruta.exists():
+        try:
+            with open(ruta, encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict) and "slides" in data:
+                    return data
+        except Exception:
+            logger.exception("Error al leer heros_config.json, usando valores por defecto")
+    return {
+        "slides": DEFAULT_HERO_SLIDES,
+        "catalogoImagenes": DEFAULT_HERO_IMAGE_OPTIONS,
+        "opacidad": 80,
+        "modoCarrusel": True,
+        "intervaloSegundos": 7,
+        "heroImageId": "asamblea-claustro",
+        "pageImages": {},
+    }
+
+
+def _guardar_config_heros(data: dict) -> None:
+    ruta = _ruta_archivo_heros()
+    ruta_dir = ruta.parent
+    ruta_dir.mkdir(parents=True, exist_ok=True)
+    ruta_tmp = ruta_dir / f"{ruta.name}.tmp"
+    with open(ruta_tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    ruta_tmp.replace(ruta)
+
+
+@router.get(
+    "/heros",
+    response_model=HerosConfigRead,
+    summary="Obtener configuración y diapositivas de los Heros territoriales públicos",
+)
+async def obtener_heros_config() -> HerosConfigRead:
+    config = _obtener_config_heros()
+    return HerosConfigRead.model_validate(config)
+
+
+@router.put(
+    "/heros",
+    response_model=HerosConfigRead,
+    summary="Actualizar configuración y diapositivas de los Heros territoriales públicos",
+    dependencies=[Depends(requerir_rol("autoridad_distrital", "administrador_identidades", "auditor_forense"))],
+)
+async def actualizar_heros_config(datos: HerosConfigUpdate) -> HerosConfigRead:
+    payload = datos.model_dump(by_alias=True)
+    _guardar_config_heros(payload)
+    return HerosConfigRead.model_validate(payload)
+
+
+@router.post(
+    "/heros/subir-imagen",
+    summary="Subir fotografía territorial para el Hero",
+    dependencies=[Depends(requerir_rol("autoridad_distrital", "administrador_identidades", "auditor_forense"))],
+)
+async def subir_imagen_hero(
+    archivo: Annotated[UploadFile, File()],
+) -> dict:
+    if not archivo.content_type or not archivo.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Solo se permiten archivos de imagen (WebP, PNG, JPG, JPEG).",
+        )
+    extension = os.path.splitext(archivo.filename or "imagen.webp")[1].lower()
+    if extension not in [".webp", ".png", ".jpg", ".jpeg"]:
+        extension = ".webp"
+
+    nuevo_nombre = f"hero-custom-{uuid.uuid4().hex[:10]}{extension}"
+    base_dir = _obtener_directorio_raiz()
+
+    dest_public = base_dir / "public" / "images" / "hero"
+    dest_public.mkdir(parents=True, exist_ok=True)
+    dest_file = dest_public / nuevo_nombre
+
+    contenido = await archivo.read()
+    with open(dest_file, "wb") as f:
+        f.write(contenido)
+
+    dest_standalone = base_dir / ".next" / "standalone" / "public" / "images" / "hero"
+    if dest_standalone.exists():
+        with open(dest_standalone / nuevo_nombre, "wb") as f:
+            f.write(contenido)
+
+    url_publica = f"/images/hero/{nuevo_nombre}"
+    return {"url": url_publica, "nombre": nuevo_nombre}

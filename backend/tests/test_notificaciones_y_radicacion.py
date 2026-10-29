@@ -6,6 +6,7 @@ Plan Maestro: Fase 2 - Ingesta de Datos Vivos y Feedback Loop
 
 import re
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -22,7 +23,6 @@ from app.modules.aportes.service import AporteService
 from app.modules.geodatos.models import Territorio
 from app.modules.identidad.security import crear_token_acceso
 from app.modules.notificaciones.models import NotificacionTransaccional
-from app.modules.notificaciones.service import NotificacionService
 from app.modules.politicas.models import (
     DimensionSeguridadHumana,
     FasePolitica,
@@ -52,9 +52,7 @@ async def contexto_base(session):
     res_ter = await session.execute(select(Territorio).limit(1))
     territorio = res_ter.scalar_one()
 
-    res_linea = await session.execute(
-        select(LineaEstrategica).where(LineaEstrategica.fase_id == fase.id).limit(1)
-    )
+    res_linea = await session.execute(select(LineaEstrategica).where(LineaEstrategica.fase_id == fase.id).limit(1))
     linea = res_linea.scalar_one_or_none()
     if not linea:
         linea = LineaEstrategica(
@@ -140,7 +138,8 @@ async def test_despacho_resiliente_notificacion_radicacion(session, contexto_bas
     assert p.codigo_radicado in notif.asunto
     assert p.codigo_radicado in notif.cuerpo_html
     assert "Cartagena Ciudad de Derechos" in notif.cuerpo_html
-    assert notif.estado_envio in ("simulado", "enviado")
+    assert notif.estado_envio == "pendiente"
+    assert notif.enviado_en is None
 
 
 async def test_notificacion_cambio_estado(session, contexto_base):
@@ -166,12 +165,9 @@ async def test_notificacion_cambio_estado(session, contexto_base):
     )
 
     # Verificar que exista la notificación de cambio de estado
-    stmt = (
-        select(NotificacionTransaccional)
-        .where(
-            NotificacionTransaccional.codigo_radicado == propuesta.codigo_radicado,
-            NotificacionTransaccional.tipo_evento == "cambio_estado",
-        )
+    stmt = select(NotificacionTransaccional).where(
+        NotificacionTransaccional.codigo_radicado == propuesta.codigo_radicado,
+        NotificacionTransaccional.tipo_evento == "cambio_estado",
     )
     res = await session.execute(stmt)
     notif = res.scalar_one_or_none()

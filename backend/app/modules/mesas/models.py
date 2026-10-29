@@ -250,12 +250,8 @@ class ActaComunitaria(Base):
     quorum_alcanzado: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     total_participantes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     resumen_deliberacion: Mapped[str] = mapped_column(Text, nullable=False)
-    acuerdos: Mapped[list[Any]] = mapped_column(
-        JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
-    )
-    disensos: Mapped[list[Any]] = mapped_column(
-        JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
-    )
+    acuerdos: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False)
+    disensos: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False)
     compromisos_institucionales: Mapped[list[Any]] = mapped_column(
         JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
     )
@@ -306,10 +302,10 @@ class MesaAgenda(Base):
     tipo: Mapped[str] = mapped_column(String(50), nullable=False)
     nombre: Mapped[str] = mapped_column(String(255), nullable=False)
     territorio: Mapped[str] = mapped_column(String(150), default="", nullable=False)
-    lugar: Mapped[str] = mapped_column(String(300), nullable=False)
-    fecha: Mapped[date] = mapped_column(Date, nullable=False)
-    hora_inicio: Mapped[str] = mapped_column(String(20), default="08:30", nullable=False)
-    hora_fin: Mapped[str] = mapped_column(String(20), default="12:00", nullable=False)
+    lugar: Mapped[str] = mapped_column(String(300), default="Por definir", nullable=False)
+    fecha: Mapped[date | None] = mapped_column(Date, nullable=True)
+    hora_inicio: Mapped[str] = mapped_column(String(20), default="Por definir", nullable=False)
+    hora_fin: Mapped[str] = mapped_column(String(20), default="Por definir", nullable=False)
     estado: Mapped[str] = mapped_column(String(50), default="programada", nullable=False)
     dimensiones_onu: Mapped[list[Any]] = mapped_column(
         JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False

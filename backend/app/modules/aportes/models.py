@@ -16,6 +16,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.schema import conv
 
 from app.core.database import Base
 
@@ -34,13 +35,12 @@ class PropuestaCiudadana(Base):
     __tablename__ = "propuestas_ciudadanas"
     __table_args__ = (
         CheckConstraint(
-            "tipo_aporte IN ('propuesta', 'observacion', 'alerta_comunitaria', "
-            "'anotacion', 'pregunta')",
-            name="chk_tipo_aporte",
+            "tipo_aporte IN ('propuesta', 'observacion', 'alerta_comunitaria', 'anotacion', 'pregunta')",
+            name=conv("chk_tipo_aporte"),
         ),
         CheckConstraint(
             "estado IN ('borrador', 'publicado', 'en_revision', 'incorporado', 'rechazado')",
-            name="chk_estado_propuesta",
+            name=conv("chk_estado_propuesta"),
         ),
         Index(
             ("idx_prop_consulta_previa"),
@@ -121,9 +121,7 @@ class PropuestaCiudadana(Base):
         server_default=text("'Ciudadano Anónimo'"),
         nullable=False,
     )
-    es_anonimo: Mapped[bool] = mapped_column(
-        Boolean, default=True, server_default=text("true"), nullable=False
-    )
+    es_anonimo: Mapped[bool] = mapped_column(Boolean, default=True, server_default=text("true"), nullable=False)
     sesion_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         nullable=True,
@@ -150,9 +148,7 @@ class PropuestaCiudadana(Base):
         server_default=text("'[]'::jsonb"),
         nullable=False,
     )
-    apoyos_contador: Mapped[int] = mapped_column(
-        Integer, default=0, server_default=text("0"), nullable=False
-    )
+    apoyos_contador: Mapped[int] = mapped_column(Integer, default=0, server_default=text("0"), nullable=False)
     estado: Mapped[str] = mapped_column(
         String(50), default="publicado", server_default=text("'publicado'"), nullable=False
     )
@@ -178,10 +174,7 @@ class PropuestaCiudadana(Base):
         default=False,
         server_default=text("false"),
         nullable=False,
-        comment=(
-            "Bandera forense que previene la implementacion publica hasta no "
-            "agotar la ruta de consulta previa"
-        ),
+        comment=("Bandera forense que previene la implementacion publica hasta no agotar la ruta de consulta previa"),
     )
     ruta_etnica_diferenciada: Mapped[bool] = mapped_column(
         Boolean,
@@ -197,6 +190,9 @@ class PropuestaCiudadana(Base):
     )
     metadatos: Mapped[dict[str, Any]] = mapped_column(
         JSONB, default=dict, server_default=text("'{}'::jsonb"), nullable=False
+    )
+    correo_contacto: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, comment="Destino privado para constancias; excluido de la proyección pública"
     )
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -225,13 +221,12 @@ class PropuestaCiudadana(Base):
         if self.consejo_comunitario:
             return self.consejo_comunitario
         from sqlalchemy import inspect
+
         state = inspect(self)
         if "territorio" in state.dict:
             rel = state.dict["territorio"]
             if rel and hasattr(rel, "nombre"):
                 return rel.nombre
-        if isinstance(self.metadatos, dict) and self.metadatos.get("territorio"):
-            return str(self.metadatos["territorio"])
         return None
 
 
@@ -240,6 +235,7 @@ class ApoyoPropuesta(Base):
 
     __tablename__ = "apoyos_propuestas"
     __table_args__ = (
+        CheckConstraint("tipo_sujeto IN ('usuario', 'sesion_anonima')", name=conv("chk_tipo_sujeto")),
         Index("idx_apoyos_propuesta", "propuesta_id", postgresql_include=[]),
         Index("idx_apoyos_sujeto", "sujeto_id", postgresql_include=[]),
         UniqueConstraint("propuesta_id", "sujeto_id", name="uq_apoyo_propuesta_sujeto"),
@@ -261,8 +257,33 @@ class ApoyoPropuesta(Base):
     )
     sujeto_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     tipo_sujeto: Mapped[str] = mapped_column(String(20), nullable=False)
+    trazabilidad: Mapped[list[dict[str, Any]]] = mapped_column(
+        JSONB,
+        nullable=False,
+        server_default=text("'[]'::jsonb"),
+        default=list,
+        comment="Filas originales conservadas al consolidar apoyos de una cuenta",
+    )
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("clock_timestamp()"),
         nullable=False,
+    )
+
+
+class MigracionApoyos0084(Base):
+    """Evidencia durable de las equivalencias demostradas y diferencias de contador."""
+
+    __tablename__ = "migracion_apoyos_0084"
+    __table_args__ = {
+        "schema": "participacion_ciudadana",
+        "comment": "Antes y después de la consolidación de apoyos registrados en revisión0084",
+    }
+    propuesta_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    filas_antes: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, nullable=False)
+    filas_despues: Mapped[list[dict[str, Any]]] = mapped_column(JSONB, nullable=False)
+    contador_antes: Mapped[int] = mapped_column(Integer, nullable=False)
+    contador_despues: Mapped[int] = mapped_column(Integer, nullable=False)
+    capturado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
     )

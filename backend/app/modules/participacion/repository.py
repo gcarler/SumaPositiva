@@ -1,8 +1,7 @@
 import uuid
-from datetime import date
 from typing import Any
 
-from sqlalchemy import func, select, text
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -118,8 +117,7 @@ class ParticipacionRepository:
         """)
         territorios_res = (await self.session.execute(sql_territorial)).fetchall()
         desglose_territorial = [
-            {"territorio": r[0], "codigo": r[1], "total_participacion": int(r[2])}
-            for r in territorios_res
+            {"territorio": r[0], "codigo": r[1], "total_participacion": int(r[2])} for r in territorios_res
         ]
 
         # Porcentajes relativos

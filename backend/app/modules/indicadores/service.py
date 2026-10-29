@@ -1,6 +1,6 @@
-from datetime import UTC, datetime
 import uuid
 from collections.abc import Sequence
+from datetime import UTC, datetime
 from decimal import Decimal
 
 from fastapi import HTTPException, status
@@ -53,12 +53,14 @@ class IndicadoresService:
             )
 
         if datos.metadatos and any(
-            k in datos.metadatos
-            for k in ("linea_base_valor", "linea_base_anio", "metodo_calculo", "formula")
+            k in datos.metadatos for k in ("linea_base_valor", "linea_base_anio", "metodo_calculo", "formula")
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Salvaguarda institucional: Prohibido sobreescribir atributos matemáticos o línea base oficial en metadatos.",
+                detail=(
+                    "Salvaguarda institucional: Prohibido sobreescribir atributos "
+                    "matemáticos o línea base oficial en metadatos."
+                ),
             )
 
         async with transaction(self.repository.session):
@@ -92,7 +94,9 @@ class IndicadoresService:
                 accion="ACTUALIZAR_METADATOS_FICHA_INDICADOR",
                 usuario_id=usuario_id,
                 causal="tecnica",
-                justificacion_motivada=f"Actualización de metadatos institucionales de ficha técnica {resultado.codigo}",
+                justificacion_motivada=(
+                    f"Actualización de metadatos institucionales de ficha técnica {resultado.codigo}"
+                ),
                 metadatos={
                     "ficha_id": str(resultado.id),
                     "codigo": resultado.codigo,
@@ -134,9 +138,7 @@ class IndicadoresService:
             resultado = await self.repository.crear_ficha(ficha)
             return FichaIndicadorRespuesta.model_validate(resultado)
 
-    async def registrar_medicion(
-        self, id: uuid.UUID, datos: MedicionIndicadorCrear
-    ) -> MedicionIndicadorRespuesta:
+    async def registrar_medicion(self, id: uuid.UUID, datos: MedicionIndicadorCrear) -> MedicionIndicadorRespuesta:
         async with transaction(self.repository.session):
             ficha = await self.repository.obtener_ficha(id)
             if not ficha:
@@ -147,13 +149,11 @@ class IndicadoresService:
             else:
                 if ficha.sentido_esperado == "ascendente":
                     porcentaje = (
-                        (datos.valor_medido - ficha.linea_base_valor)
-                        / (ficha.meta_cuatrienio - ficha.linea_base_valor)
+                        (datos.valor_medido - ficha.linea_base_valor) / (ficha.meta_cuatrienio - ficha.linea_base_valor)
                     ) * 100
                 else:
                     porcentaje = (
-                        (ficha.linea_base_valor - datos.valor_medido)
-                        / (ficha.linea_base_valor - ficha.meta_cuatrienio)
+                        (ficha.linea_base_valor - datos.valor_medido) / (ficha.linea_base_valor - ficha.meta_cuatrienio)
                     ) * 100
 
             ficha.valor_actual = datos.valor_medido
@@ -181,6 +181,4 @@ class IndicadoresService:
 
     async def obtener_cadena_valor(self) -> CadenaValorRespuesta:
         res = await self.repository.obtener_cadena_valor()
-        return CadenaValorRespuesta(
-            insumo=res["insumo"], producto=res["producto"], resultado=res["resultado"]
-        )
+        return CadenaValorRespuesta(insumo=res["insumo"], producto=res["producto"], resultado=res["resultado"])

@@ -22,7 +22,7 @@ El plan responde a cuatro asuntos observados en el snapshot de referencia:
 - El frontend contiene rutas App Router, funcionalidades bajo `src/features`, infraestructura bajo `src/core` y componentes reutilizables bajo `src/shared/ui`.
 - La composición de paneles está centralizada en `src/app/_composition`; el contrato global y el store están en `src/core/panels/panel-store.ts`.
 - El backend agrupa routers y módulos por dominio bajo `backend/app/modules`, con ensamblaje en `backend/app/api/router.py`.
-- Alembic informa una única cabeza: `0062_motor_plan_accion_dnp`.
+- Alembic informa una única cabeza: `0062_motor_plan_accion_dnp` (estado inicial del 2026-10-14; cabeza vigente verificada el 2026-10-27 por el encargo 244: `0084_aportes_colas_y_apoyos`, evolución 0063–0084 en [arquitectura.md](arquitectura.md)).
 - En la línea base, `package.json` conservaba `@prisma/client`, `prisma` y scripts `db:*`; `src/core/database/legacy-prisma.ts` instanciaba un cliente Prisma. La búsqueda inicial omitió `.zscripts`, donde `dev.sh` y `build.sh` invocaban `db:push`; durante la ejecución se retiró también ese flujo SQLite para completar el retiro del starter.
 - CI contiene trabajos separados para frontend y backend, con PostgreSQL/PostGIS para sus pruebas.
 - ESLint excluye actualmente `src/features/noticias/**` y `src/features/testimonios/**`; esas exclusiones se retirarán y se corregirán los hallazgos.
@@ -68,7 +68,7 @@ Al cerrar el plan:
 3. Ejecutar los checks vigentes sin modificar código y guardar comandos, salida, duración y variables de entorno relevantes, ocultando credenciales.
 4. Confirmar la cabeza de Alembic y el estado de drift contra una base exclusiva `polis_test*`.
 5. Anotar fallos preexistentes y qué suites no pudieron correr. No cambiar o reducir guardas para obtener un resultado verde.
-6. Registrar versiones y hashes de frontend/backend, distinguir directorios frontend, módulos backend con router y routers efectivamente montados; verificar la cabeza Alembic `0062_motor_plan_accion_dnp`.
+6. Registrar versiones y hashes de frontend/backend, distinguir directorios frontend, módulos backend con router y routers efectivamente montados; verificar la cabeza Alembic vigente (`0084_aportes_colas_y_apoyos` desde 2026-10-27; el snapshot del 2026-10-14 citaba `0062_motor_plan_accion_dnp`).
 
 **Entregables**
 

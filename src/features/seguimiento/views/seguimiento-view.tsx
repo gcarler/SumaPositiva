@@ -58,8 +58,11 @@ import {
   ENTIDADES_DISTRITALES_CARTAGENA,
 } from "../models/compromiso";
 import { sanitizarCsv } from "@/shared/lib/csv";
+import { CollectionViewToggle } from "@/shared/ui/collection-view";
+import { useCollectionView } from "@/core/preferences/collection-view-store";
 
 export function SeguimientoView() {
+  const [vista, setVista] = useCollectionView("seguimiento", "lista");
   const [tabActiva, setTabActiva] = useState<string>("matriz_compromisos");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
@@ -453,7 +456,9 @@ export function SeguimientoView() {
           </div>
 
           {/* DataGrid interactivo de Compromisos */}
+          <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de los compromisos PAS" />
           <CompromisosTabla
+            vista={vista}
             compromisos={compromisosFiltrados}
             puedeEditar={puedeEditarEfectivo}
           />
