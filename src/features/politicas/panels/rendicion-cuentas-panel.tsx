@@ -72,6 +72,25 @@ export function RendicionCuentasPanel({
   const [filtroLinea, setFiltroLinea] = useState<string>("todas");
   const [busquedaPA, setBusquedaPA] = useState<string>("");
 
+  // El catálogo canónico siempre incluye las 28 líneas; actividades del backend pueden ampliarlo.
+  const lineasEstrategicasFiltrables = useMemo(() => {
+    const codigos = new Set<string>();
+    for (let indice = 1; indice <= 28; indice += 1) {
+      codigos.add(`LE-${String(indice).padStart(2, "0")}`);
+    }
+    for (const actividad of actividadesPA) {
+      if (actividad.linea_estrategica_codigo) {
+        codigos.add(actividad.linea_estrategica_codigo);
+      }
+    }
+    return [
+      { id: "todas", label: "Todas" },
+      ...Array.from(codigos)
+        .sort()
+        .map((codigo) => ({ id: codigo, label: codigo })),
+    ];
+  }, [actividadesPA]);
+
   useEffect(() => {
     let montado = true;
     obtenerMatrizPlanAccionApi({ vigencia: 2026 })
@@ -617,17 +636,7 @@ export function RendicionCuentasPanel({
 
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-xs font-semibold text-text-tertiary mr-1">Línea Estratégica:</span>
-                {[
-                  { id: "todas", label: "Todas" },
-                  { id: "LE-01", label: "LE-01" },
-                  { id: "LE-02", label: "LE-02" },
-                  { id: "LE-03", label: "LE-03" },
-                  { id: "LE-04", label: "LE-04" },
-                  { id: "LE-05", label: "LE-05" },
-                  { id: "LE-06", label: "LE-06" },
-                  { id: "LE-07", label: "LE-07" },
-                  { id: "LE-08", label: "LE-08" },
-                ].map((f) => {
+                {lineasEstrategicasFiltrables.map((f) => {
                   const esActivo = filtroLinea === f.id;
                   return (
                     <Button

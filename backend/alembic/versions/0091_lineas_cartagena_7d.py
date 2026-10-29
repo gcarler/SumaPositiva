@@ -1,12 +1,11 @@
 """Sembrar 21 lineas estrategicas por eje para Cartagena (LE-08..LE-28).
 
-Revision ID: 0091_lineas_estrategicas_cartagena_7d
+Revision ID: 0091_lineas_cartagena_7d
 Revises: 0090_anexos_actividades
 Create Date: 2026-10-29 10:38:00.000000
 """
 
 import json
-import uuid
 from collections.abc import Sequence
 
 from sqlalchemy.sql import text
@@ -32,7 +31,11 @@ LINEAS_NUEVAS = [
         "objetivo_especifico": "Reducir la tasa de homicidios y delitos de alto impacto mediante despliegue operacional y vigilancia con analítica de inteligencia artificial.",
         "dimension_codigo": "personal",
         "entidad_lider": "Secretaría del Interior y Convivencia Ciudadana",
-        "entidades_coresponsables": ["Policía Metropolitana de Cartagena (MECAR)", "Armada Nacional", "Fiscalía General de la Nación"],
+        "entidades_coresponsables": [
+            "Policía Metropolitana de Cartagena (MECAR)",
+            "Armada Nacional",
+            "Fiscalía General de la Nación",
+        ],
         "fuentes_financiacion": ["FONSET", "RECURSOS_PROPIOS"],
         "costo_estimado": 48500000000.00,
         "orden": 8,
@@ -143,7 +146,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 2. SEGURIDAD COMUNITARIA (comunitaria) - LE-11, LE-12, LE-13
     # =========================================================================
@@ -236,7 +238,10 @@ LINEAS_NUEVAS = [
         "objetivo_especifico": "Proveer alternativas formativas y recreativas continuas para 30.000 jóvenes en situación de vulnerabilidad extrema.",
         "dimension_codigo": "comunitaria",
         "entidad_lider": "Instituto Distrital de Deporte y Recreación (IDER)",
-        "entidades_coresponsables": ["Instituto de Patrimonio y Cultura de Cartagena (IPCC)", "Secretaría de Participación"],
+        "entidades_coresponsables": [
+            "Instituto de Patrimonio y Cultura de Cartagena (IPCC)",
+            "Secretaría de Participación",
+        ],
         "fuentes_financiacion": ["SGP", "RECURSOS_PROPIOS"],
         "costo_estimado": 22700000000.00,
         "orden": 13,
@@ -267,7 +272,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 3. SEGURIDAD AMBIENTAL (ambiental) - LE-14, LE-15, LE-16
     # =========================================================================
@@ -280,7 +284,10 @@ LINEAS_NUEVAS = [
         "objetivo_especifico": "Evitar pérdidas de vidas y viviendas mitigando el riesgo de inundación pluvial y mareal en Cartagena.",
         "dimension_codigo": "ambiental",
         "entidad_lider": "Secretaría de Infraestructura",
-        "entidades_coresponsables": ["Oficina Asesora para la Gestión del Riesgo de Desastres (OAGRD)", "EPA Cartagena"],
+        "entidades_coresponsables": [
+            "Oficina Asesora para la Gestión del Riesgo de Desastres (OAGRD)",
+            "EPA Cartagena",
+        ],
         "fuentes_financiacion": ["SGR", "RECURSOS_PROPIOS"],
         "costo_estimado": 95000000000.00,
         "orden": 14,
@@ -391,7 +398,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 4. SEGURIDAD ECONÓMICA (economica) - LE-17, LE-18, LE-19
     # =========================================================================
@@ -515,7 +521,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 5. SEGURIDAD ALIMENTARIA (alimentaria) - LE-20, LE-21, LE-22
     # =========================================================================
@@ -639,7 +644,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 6. SEGURIDAD EN SALUD (salud) - LE-23, LE-24, LE-25
     # =========================================================================
@@ -763,7 +767,6 @@ LINEAS_NUEVAS = [
             },
         ],
     },
-
     # =========================================================================
     # 7. SEGURIDAD POLÍTICA (politica) - LE-26, LE-27, LE-28
     # =========================================================================
@@ -856,7 +859,11 @@ LINEAS_NUEVAS = [
         "objetivo_especifico": "Restituir los derechos fundamentales individuales y colectivos de las poblaciones étnicas y víctimas del conflicto.",
         "dimension_codigo": "politica",
         "entidad_lider": "Secretaría del Interior y Convivencia Ciudadana",
-        "entidades_coresponsables": ["Unidad para las Víctimas", "Ministerio del Interior", "Secretaría de Participación"],
+        "entidades_coresponsables": [
+            "Unidad para las Víctimas",
+            "Ministerio del Interior",
+            "Secretaría de Participación",
+        ],
         "fuentes_financiacion": ["RECURSOS_PROPIOS", "SGP", "SGR"],
         "costo_estimado": 26000000000.00,
         "orden": 28,
@@ -968,7 +975,5 @@ def upgrade() -> None:
 def downgrade() -> None:
     codigos = [linea["codigo"] for linea in LINEAS_NUEVAS]
     op.execute(
-        text("DELETE FROM motor_politicas.lineas_estrategicas WHERE codigo = ANY(:codigos)").bindparams(
-            codigos=codigos
-        )
+        text("DELETE FROM motor_politicas.lineas_estrategicas WHERE codigo = ANY(:codigos)").bindparams(codigos=codigos)
     )
