@@ -31,14 +31,30 @@ export function Footer() {
           >
             Modo Barrio (Bajo consumo)
           </Link>
-          {["Datos abiertos", "Trazabilidad", "Marco legal", "Contacto"].map((l) => (
-            <span
-              key={l}
-              className="label-micro text-[var(--text-tertiary)]"
-            >
-              {l} <span className="whitespace-nowrap">(en preparación)</span>
-            </span>
-          ))}
+          <Link
+            href="/geovisor"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
+          >
+            Datos abiertos
+          </Link>
+          <span
+            key="preparacion"
+            className="label-micro text-[var(--text-tertiary)]"
+          >
+            Trazabilidad <span className="whitespace-nowrap">(en preparación)</span>
+          </span>
+          <Link
+            href="/marco-legal"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
+          >
+            Marco legal
+          </Link>
+          <Link
+            href="/contacto"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
+          >
+            Contacto
+          </Link>
         </nav>
 
         <p className="text-[11px] text-[var(--text-tertiary)] tabular">
