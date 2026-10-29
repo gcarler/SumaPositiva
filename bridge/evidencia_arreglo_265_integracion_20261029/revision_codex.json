@@ -16,15 +16,19 @@
     },
     {
       "path": "docs/proyectos-anexos-operacion.md",
-      "sha256": "4e88810e79efbf0adc89366627949fdc77c5e7958784dc9f8f621d62dc869640"
+      "sha256": "168a38c127b6b48fb7d127fd1aa9fc5b5598b011b3a301fbee26ba7f19adfad9"
     },
     {
       "path": "bridge/265_revision_codex_streaming_purga_20261029.md",
-      "sha256": "54602ee6665c5aa43be730bf013569e2fcb2633b64e6357727696b1b4b644055"
+      "sha256": "b164dcc6f890f90693d59553954d592324052702e541fd12afb6ae6d503ff50b"
     },
     {
       "path": "backend/tests/test_proyectos_anexos.py",
       "sha256": "b0c43dbbe53377eaa66237b34b327cf4e421a8919117a9715e9767dab52ad10f"
+    },
+    {
+      "path": "scripts/purga_programada_anexos.sh",
+      "sha256": "8d3cd0dd598f8b81e3499f6e8693aa83cb6198afc5a64063c84526c424fa7e8d"
     }
   ],
   "checks": {
@@ -41,11 +45,11 @@
       "deleted_files": 0,
       "errors": 0
     },
-    "local_functional_suites": "No ejecutadas en esta revisión; las evidencias de Freebuff corresponden a la versión recibida anterior a estas guardas"
+    "local_functional_suites": "No ejecutadas en esta revisión; las evidencias de Freebuff corresponden a la versión recibida anterior a estas guardas",
+    "bash_n_purga_programada": 0
   },
   "retention_min_days": 30,
   "purge_default_mode": "previsualizacion",
-  "cron_installed": false,
   "frontend_changed": false,
   "provided_test_cases": 8,
   "original_patch_archive": {
@@ -53,5 +57,15 @@
     "sha256": "a9022f8c7bb43beaac950dd7de32ee05f19b1390d1151382c3a3cab21b9844a8",
     "uncompressed_sha256": "dc399e355c204f8e36816531c0bb3ed86e9bd35fc23dd27361fee739bbc78cae",
     "original_preserved": true
-  }
+  },
+  "cron_at_initial_review": false,
+  "cron_observed_after_review": {
+    "present": true,
+    "schedule": "30 3 * * 0",
+    "installed_by": "Freebuff, con posterioridad a la revisión inicial",
+    "modified_by_codex": false
+  },
+  "ops_wrapper_reviewed_at": "2026-10-29T10:33:51.122699+00:00",
+  "wrapper_executed_by_codex": false,
+  "purge_applied_by_codex": false
 }

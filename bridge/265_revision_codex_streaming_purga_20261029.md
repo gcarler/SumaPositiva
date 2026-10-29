@@ -66,3 +66,17 @@ El comando permite identificar residuos antiguos de ese tipo.
 Los respaldos de PostgreSQL no contienen el volumen de documentos. La
 operación de purga física requiere conservar además ese volumen y revisar
 la retención aplicable, como detalla la guía de operación.
+
+## Actualización operativa posterior: OPS-PURGA-01
+
+Después de la revisión inicial, Freebuff añadió un wrapper y programó una
+corrida semanal en el crontab de operación (`30 3 * * 0`). Se observó esa
+entrada mediante lectura del cron; Codex no creó ni modificó la programación.
+
+Se integra `scripts/purga_programada_anexos.sh`, reforzado con respaldo del
+volumen completo, SHA-256 y lectura del catálogo antes de `--aplicar`, cerrojo
+de concurrencia, permisos privados y uso directo del intérprete instalado.
+El wrapper recibido no contenía ese respaldo pese a describirlo en la guía.
+Codex comprobó su sintaxis con `bash -n`; no ejecutó la purga física ni el
+wrapper durante esta revisión. Las cifras de la primera corrida son las
+reportadas por Freebuff en la guía de operación.

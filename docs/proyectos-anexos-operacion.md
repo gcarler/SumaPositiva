@@ -52,6 +52,26 @@ manifiestos en un directorio privado y permisos 0600. La entrega proporciona el
 comando para uso bajo demanda; la programación periódica requiere configurar
 su entorno y retención en la operación del servicio.
 
+## Programación semanal instalada (OPS-PURGA-01)
+
+En este entorno la purga quedó programada mediante el wrapper
+`scripts/purga_programada_anexos.sh` (identificador OPS-PURGA-01), primera
+corrida real del 29-oct-2026: 0 candidatos, 0 errores, 0 purgados. El cron
+semanal (domingos 03:30, retención de 30 días) quedó registrada en el crontab
+del usuario de operación, con log en `backups/purga_anexos.log` y manifiestos
+con permisos 0600 en `backups/purga_anexos/`.
+
+El wrapper ejecuta siempre una previsualización previa; solo pasa a
+`--aplicar` si el manifiesto no reporta errores y tras respaldar el volumen.
+El respaldo es un archivo tar comprimido del volumen completo, con SHA-256 y
+lectura de catálogo verificados antes de borrar. Un cerrojo evita corridas
+superpuestas; se usa el intérprete del entorno instalado, sin sincronizar
+dependencias durante el cron.
+Consume `POLIS_DATABASE_URL` del entorno o de `backend/.env` y desactiva
+explícitamente `POLIS_TEST_DATABASE_URL`. Otras instalaciones de POLIS deben
+replicar este patrón de guardas antes de programarla; el cron no es parte del
+repositorio ni se activa por sí solo en cada checkout.
+
 ## Aislamiento de ensayos
 
 Con `POLIS_TEST_DATABASE_URL` explícita sobre una base `polis_test*`, es
