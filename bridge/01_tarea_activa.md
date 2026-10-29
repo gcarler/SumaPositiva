@@ -2,23 +2,16 @@
 
 ---
 
-## Encargo 269 (EN PROCESO): `ollamacodex` — Creación de 21 Nuevas Líneas por Eje para Cartagena
-- **Asignado a:** `ollamacodex` (`=ollamacodex:0.0`)
-- **Especificación completa:** [`/root/polis/bridge/269_tarea_ollamacodex_creacion_lineas_por_eje_cartagena.md`](file:///root/polis/bridge/269_tarea_ollamacodex_creacion_lineas_por_eje_cartagena.md)
-- **Alcance:** Creación de 21 nuevas líneas estratégicas (`LE-08` a `LE-28`, 3 por cada una de las 7 Dimensiones de Seguridad Humana) con sublíneas jerárquicas formales, metadatos, migración Alembic `0091_lineas_estrategicas_cartagena_7d.py`, presupuestos reales y entidades líderes distritales.
-- **Regla de flujo:** NO commitear directo. Notificar a `agy:0.0` para revisión de calidad antes de autorizar commit.
-
----
-
-## Encargo 266 (COMPLETADO): `agy2` — Geovisor Capas Multifuente y Zona Insular
+## Encargo 270 (COMPLETADO Y AUDITADO): `agy2` — Vista Adaptativa Responsive para Marco Legal
 - **Asignado a:** `agy2` (`=agy2:0.0`)
-- **Especificación completa:** [`/root/polis/bridge/266_tarea_agy2_geovisor_capas_multifuente_y_zona_insular.md`](file:///root/polis/bridge/266_tarea_agy2_geovisor_capas_multifuente_y_zona_insular.md)
-- **Informe de entrega:** [`/root/polis/bridge/266_entrega_agy2_geovisor_capas_multifuente_y_zona_insular.md`](file:///root/polis/bridge/266_entrega_agy2_geovisor_capas_multifuente_y_zona_insular.md)
-- **Alcance:** Proyección en mapa de capas multifuente (nivel distrito abarca perímetro urbano y rural) y corrección de coordenadas insulares (`rural-insular` a `[-75.64, 10.22]`). Verificado con `bun run check` (0 errores), 154 tests aprobados y build en producción.
+- **Especificación completa:** [`/root/polis/bridge/270_tarea_agy2_marco_legal_responsive.md`](file:///root/polis/bridge/270_tarea_agy2_marco_legal_responsive.md)
+- **Informe de entrega:** [`/root/polis/bridge/270_entrega_agy2_marco_legal_responsive.md`](file:///root/polis/bridge/270_entrega_agy2_marco_legal_responsive.md)
+- **Alcance cumplido:** Layout centrado `max-w-7xl mx-auto`, cuadrícula 12 columnas con sidebar sticky de índice normativo y contexto institucional en desktop (`lg:`), navegación horizontal fluida por pestañas en móvil/tablet, tarjetas normativas con chips/badges de nivel y diseño tipográfico adaptativo. Calidad verificada al 100% (`ui-policy`, `typecheck`, `eslint` y build limpio).
 
 ---
 
-## Encargo 268 (EN VERIFICACIÓN): `freebuff` — Marco Legal y Contacto en Footer
-- **Asignado a:** `freebuff` (`=freebuff:0.0`)
-- **Especificación completa:** [`/root/polis/bridge/268_tarea_freebuff_marco_legal_y_contacto_footer.md`](file:///root/polis/bridge/268_tarea_freebuff_marco_legal_y_contacto_footer.md)
-- **Alcance:** Rutas `/marco-legal` y `/contacto` creadas y conectadas en el footer institucional.
+## Encargos Previos Cerrados y Publicados en Producción (`origin/main`)
+- **Encargo 265 (`codex`):** Streaming y purga de actividades en proyectos. Commit `1539c7d` y `6a21cbc`.
+- **Encargo 266 (`agy2`):** Capas multifuente en mapa y corrección insular. Commit `0c56362`.
+- **Encargos 267 y 268 (`ollamacodex` y `freebuff`):** Enlace datos abiertos, páginas `/marco-legal` y `/contacto`. Commit `25654f4`.
+- **Encargo 269 (`ollamacodex` y coordinación):** 21 líneas estratégicas por eje (`LE-08` a `LE-28`), migración 0091 y filtros dinámicos. Commits `157b2be` y `c561489`.
