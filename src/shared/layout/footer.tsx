@@ -37,12 +37,12 @@ export function Footer() {
           >
             Datos abiertos
           </Link>
-          <span
-            key="preparacion"
-            className="label-micro text-[var(--text-tertiary)]"
+          <Link
+            href="/trazabilidad"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
           >
-            Trazabilidad <span className="whitespace-nowrap">(en preparación)</span>
-          </span>
+            Trazabilidad
+          </Link>
           <Link
             href="/marco-legal"
             className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"

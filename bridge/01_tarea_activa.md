@@ -1,12 +1,19 @@
 # Tareas Activas — Coordinación Antigravity
 
+## Encargo 271 (COMPLETADO Y AUDITADO): `freebuff` — Vista de Trazabilidad y Diagrama UML del Ciclo de Vida de una Política Pública
+- **Asignado a:** `freebuff` (`=freebuff:0.0`)
+- **Especificación completa:** [`/root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md`](file:///root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md)
+- **Informe de entrega:** [`/root/polis/bridge/271_entrega_freebuff_trazabilidad_uml_politica_publica.md`](file:///root/polis/bridge/271_entrega_freebuff_trazabilidad_uml_politica_publica.md)
+- **Alcance cumplido:** Enlace `/trazabilidad` activo en `src/shared/layout/footer.tsx`, nueva página institucional `src/app/trazabilidad/page.tsx` con diagrama UML interactivo de actividades y carriles (5 swimlanes de actores × 5 fases metodológicas DNP / Decreto Distrital 037/2026), matriz detallada con marco legal y data lineage de radicado único. Control de calidad 100% aprobado (ui-policy, typecheck, eslint y prerender estático). Listo para producción.
+
 ---
 
-## Encargo 270 (COMPLETADO Y AUDITADO): `agy2` — Vista Adaptativa Responsive para Marco Legal
+## Encargo 270 (COMPLETADO Y CERRADO): `agy2` — Vista Adaptativa Responsive para Marco Legal
 - **Asignado a:** `agy2` (`=agy2:0.0`)
 - **Especificación completa:** [`/root/polis/bridge/270_tarea_agy2_marco_legal_responsive.md`](file:///root/polis/bridge/270_tarea_agy2_marco_legal_responsive.md)
 - **Informe de entrega:** [`/root/polis/bridge/270_entrega_agy2_marco_legal_responsive.md`](file:///root/polis/bridge/270_entrega_agy2_marco_legal_responsive.md)
-- **Alcance cumplido:** Layout centrado `max-w-7xl mx-auto`, cuadrícula 12 columnas con sidebar sticky de índice normativo y contexto institucional en desktop (`lg:`), navegación horizontal fluida por pestañas en móvil/tablet, tarjetas normativas con chips/badges de nivel y diseño tipográfico adaptativo. Calidad verificada al 100% (`ui-policy`, `typecheck`, `eslint` y build limpio).
+- **Commit en main:** `e0be3e8`
+- **Alcance cumplido:** Layout centrado `max-w-7xl mx-auto`, cuadrícula 12 columnas con sidebar sticky de índice normativo y contexto institucional en desktop (`lg:`), navegación horizontal fluida por pestañas en móvil/tablet, tarjetas normativas con chips/badges de nivel y diseño tipográfico adaptativo. Calidad verificada al 100% (`ui-policy`, `typecheck`, `eslint` y build limpio). Desplegado en producción.
 
 ---
 
