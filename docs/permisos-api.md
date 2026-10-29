@@ -452,3 +452,19 @@ controles propios.
 | --- | --- | --- | --- |
 | GET | /api/v1/proyectos/actividades | permiso:proyectos:leer@declarada | Proyección agregada read-only de actividades de la política; filtra por módulo y rango de fechas sin mutación. |
 | GET | /api/v1/proyectos/resumen | permiso:proyectos:leer@declarada | Resumen agregado por módulo y por estado canónico; derivado de la misma proyección read-only. |
+
+### Anexos de actividades — decisión de producto encargo 265 (2026-10-29)
+
+Gestión documental adjunta a actividades de la proyección de proyectos. La
+escritura combina guardas de rol institucional (`administrador_identidades`,
+`autoridad_distrital`, `facilitador_mesa`) con permisos del módulo dueño
+(`proyectos:escribir`, `comunicaciones:gestionar`, `mesas:abrir`,
+`formularios:gestionar`); por esa combinación se clasifican como `sujeto` con
+la guarda explícita descrita en el motivo.
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/proyectos/actividades/{actividad_id}/anexos | permiso:proyectos:leer@declarada | Lectura del listado de anexos activos de la actividad; archivado con soft-delete en `eliminado_en`. |
+| POST | /api/v1/proyectos/actividades/{actividad_id}/anexos | sujeto | Guarda institucional por rol o permiso del módulo dueño; valida extensión permitida, límite de 25 MB y registra hash SHA-256 y auditoría del sujeto. |
+| GET | /api/v1/proyectos/actividades/{actividad_id}/anexos/{anexo_id}/archivo | permiso:proyectos:leer@declarada | Descarga física del anexo con nombre original y `content-disposition: attachment`; exige actividad y anexo activos. |
+| DELETE | /api/v1/proyectos/actividades/{actividad_id}/anexos/{anexo_id} | sujeto | Guarda institucional por rol o permiso del módulo dueño; soft-delete auditable, sin borrado físico inmediato. |

@@ -149,88 +149,99 @@ class ProyectosService:
         descripcion: str | None,
         sujeto: SujetoAutenticadoContexto,
     ) -> AnexoActividadLectura:
-        async with transaction(self.session):
-            existe, modulo_dueno, recurso_id = await self.repository.existe_actividad(actividad_id)
-            if not existe:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"La actividad '{actividad_id}' no existe o no es válida.",
+        ruta_disco: Path | None = None
+        try:
+            async with transaction(self.session):
+                existe, modulo_dueno, recurso_id = await self.repository.existe_actividad(actividad_id)
+                if not existe:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail=f"La actividad '{actividad_id}' no existe o no es válida.",
+                    )
+
+                nombre_original = archivo.filename or "archivo_sin_nombre"
+                nombre_sanitizado = _sanitizar_nombre_archivo(nombre_original)
+                ext = Path(nombre_sanitizado).suffix.lower()
+
+                if ext not in EXTENSIONES_PERMITIDAS:
+                    raise HTTPException(
+                        status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                        detail=(
+                            f"Extensión '{ext}' no permitida. Formatos admitidos: documentos "
+                            "(PDF, Word, Excel, PowerPoint, TXT, CSV, ZIP) e imágenes (JPG, PNG, WEBP, GIF, SVG)."
+                        ),
+                    )
+
+                tipo_mime = archivo.content_type or "application/octet-stream"
+                contenido = await archivo.read()
+
+                if len(contenido) == 0:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="El archivo proporcionado está vacío.",
+                    )
+
+                if len(contenido) > MAX_BYTES_ANEXO:
+                    raise HTTPException(
+                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                        detail=(
+                            f"El archivo excede el tamaño máximo permitido de 25 MB ({len(contenido)} bytes recibidos)."
+                        ),
+                    )
+
+                hash_sha256 = hashlib.sha256(contenido).hexdigest()
+                id_anexo = uuid.uuid4()
+                nombre_seguro = f"{id_anexo.hex}_{nombre_sanitizado}"
+                ruta_disco = DIRECTORIO_ANEXOS / nombre_seguro
+
+                # Escribir archivo físico
+                try:
+                    ruta_disco.write_bytes(contenido)
+                except Exception as e:
+                    logger.exception("Error al escribir archivo de anexo en disco")
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="No se pudo almacenar el archivo en disco.",
+                    ) from e
+
+                # Obtener nombre legible del usuario si está disponible
+                subido_por_nombre = sujeto.rol
+                subido_por_id = None
+                if not sujeto.es_anonimo:
+                    subido_por_id = sujeto.sujeto_id
+                    from app.modules.identidad.models import Usuario
+
+                    res_u = (
+                        await self.session.execute(Usuario.__table__.select().where(Usuario.id == subido_por_id))
+                    ).first()
+                    if res_u:
+                        subido_por_nombre = f"{res_u.nombres} {res_u.apellidos}".strip() or sujeto.rol
+
+                anexo = ActividadAnexo(
+                    id=id_anexo,
+                    actividad_id=actividad_id,
+                    modulo_dueno=modulo_dueno,
+                    recurso_id=recurso_id,
+                    nombre_archivo_original=nombre_original,
+                    nombre_archivo_seguro=nombre_seguro,
+                    ruta_almacenamiento=str(ruta_disco),
+                    tipo_mime=tipo_mime,
+                    tamano_bytes=len(contenido),
+                    hash_sha256=hash_sha256,
+                    descripcion=descripcion.strip() if descripcion else None,
+                    subido_por_sujeto_id=subido_por_id,
+                    subido_por_nombre=subido_por_nombre,
                 )
 
-            nombre_original = archivo.filename or "archivo_sin_nombre"
-            nombre_sanitizado = _sanitizar_nombre_archivo(nombre_original)
-            ext = Path(nombre_sanitizado).suffix.lower()
-
-            if ext not in EXTENSIONES_PERMITIDAS:
-                raise HTTPException(
-                    status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-                    detail=(
-                        f"Extensión '{ext}' no permitida. Formatos admitidos: documentos "
-                        "(PDF, Word, Excel, PowerPoint, TXT, CSV, ZIP) e imágenes (JPG, PNG, WEBP, GIF, SVG)."
-                    ),
-                )
-
-            tipo_mime = archivo.content_type or "application/octet-stream"
-            contenido = await archivo.read()
-
-            if len(contenido) == 0:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="El archivo proporcionado está vacío.",
-                )
-
-            if len(contenido) > MAX_BYTES_ANEXO:
-                raise HTTPException(
-                    status_code=status.HTTP_413_CONTENT_TOO_LARGE,
-                    detail=f"El archivo excede el tamaño máximo permitido de 25 MB ({len(contenido)} bytes recibidos).",
-                )
-
-            hash_sha256 = hashlib.sha256(contenido).hexdigest()
-            id_anexo = uuid.uuid4()
-            nombre_seguro = f"{id_anexo.hex}_{nombre_sanitizado}"
-            ruta_disco = DIRECTORIO_ANEXOS / nombre_seguro
-
-            # Escribir archivo físico
-            try:
-                ruta_disco.write_bytes(contenido)
-            except Exception as e:
-                logger.exception("Error al escribir archivo de anexo en disco")
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="No se pudo almacenar el archivo en disco.",
-                ) from e
-
-            # Obtener nombre legible del usuario si está disponible
-            subido_por_nombre = sujeto.rol
-            subido_por_id = None
-            if not sujeto.es_anonimo:
-                subido_por_id = sujeto.sujeto_id
-                from app.modules.identidad.models import Usuario
-
-                res_u = (
-                    await self.session.execute(Usuario.__table__.select().where(Usuario.id == subido_por_id))
-                ).first()
-                if res_u:
-                    subido_por_nombre = f"{res_u.nombres} {res_u.apellidos}".strip() or sujeto.rol
-
-            anexo = ActividadAnexo(
-                id=id_anexo,
-                actividad_id=actividad_id,
-                modulo_dueno=modulo_dueno,
-                recurso_id=recurso_id,
-                nombre_archivo_original=nombre_original,
-                nombre_archivo_seguro=nombre_seguro,
-                ruta_almacenamiento=str(ruta_disco),
-                tipo_mime=tipo_mime,
-                tamano_bytes=len(contenido),
-                hash_sha256=hash_sha256,
-                descripcion=descripcion.strip() if descripcion else None,
-                subido_por_sujeto_id=subido_por_id,
-                subido_por_nombre=subido_por_nombre,
-            )
-
-            anexo = await self.repository.crear_anexo(anexo)
-            return self._mapear_anexo_lectura(anexo)
+                anexo = await self.repository.crear_anexo(anexo)
+                return self._mapear_anexo_lectura(anexo)
+        except BaseException:
+            # Compensación de archivo: si el caso de uso revierte (validación,
+            # fallo de persistencia o de commit) después de escribir el fichero
+            # físico, se elimina el huérfano para no dejar basura en el volumen.
+            if ruta_disco is not None:
+                ruta_disco.unlink(missing_ok=True)
+            raise
 
     async def obtener_anexo_para_descarga(
         self,
