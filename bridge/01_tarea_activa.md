@@ -1,10 +1,11 @@
 # Tareas Activas — Coordinación Antigravity
 
-## Encargo 271 (COMPLETADO Y AUDITADO): `freebuff` — Vista de Trazabilidad y Diagrama UML del Ciclo de Vida de una Política Pública
+## Encargo 271 (COMPLETADO Y CERRADO): `freebuff` — Vista de Trazabilidad y Diagrama UML del Ciclo de Vida de una Política Pública
 - **Asignado a:** `freebuff` (`=freebuff:0.0`)
 - **Especificación completa:** [`/root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md`](file:///root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md)
 - **Informe de entrega:** [`/root/polis/bridge/271_entrega_freebuff_trazabilidad_uml_politica_publica.md`](file:///root/polis/bridge/271_entrega_freebuff_trazabilidad_uml_politica_publica.md)
-- **Alcance cumplido:** Enlace `/trazabilidad` activo en `src/shared/layout/footer.tsx`, nueva página institucional `src/app/trazabilidad/page.tsx` con diagrama UML interactivo de actividades y carriles (5 swimlanes de actores × 5 fases metodológicas DNP / Decreto Distrital 037/2026), matriz detallada con marco legal y data lineage de radicado único. Control de calidad 100% aprobado (ui-policy, typecheck, eslint y prerender estático). Listo para producción.
+- **Commit en main:** `c5c99c9`
+- **Alcance cumplido:** Enlace `/trazabilidad` activo en `src/shared/layout/footer.tsx`, nueva página institucional `src/app/trazabilidad/page.tsx` con diagrama UML interactivo de actividades y carriles (5 swimlanes de actores × 5 fases metodológicas DNP / Decreto Distrital 037/2026), matriz detallada con marco legal y data lineage de radicado único. Control de calidad 100% aprobado (ui-policy, typecheck, eslint y prerender estático). Desplegado en producción.
 
 ---
 
