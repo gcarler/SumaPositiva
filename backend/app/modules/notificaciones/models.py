@@ -25,7 +25,8 @@ class NotificacionTransaccional(Base):
     __tablename__ = "notificaciones_transaccionales"
     __table_args__ = (
         CheckConstraint(
-            "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion')",
+            "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion', 'registro_bienvenida', "
+            "'recuperacion_contrasena', 'apoyo_propuesta', 'actividad_ciudadana')",
             name=conv("chk_notificaciones_tipo_evento"),
         ),
         CheckConstraint(

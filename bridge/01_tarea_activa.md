@@ -1,5 +1,13 @@
 # Tareas Activas — Coordinación Antigravity
 
+## Encargo 272 (COMPLETADO Y CERRADO): `freebuff` — Servicio de Correo Transaccional (Registro, Clave, Propuesta, Me Gusta y Actividades)
+- **Asignado a:** `freebuff` (`=freebuff:0.0`)
+- **Especificación completa:** [`/root/polis/bridge/272_tarea_freebuff_servicio_correo_transaccional.md`](file:///root/polis/bridge/272_tarea_freebuff_servicio_correo_transaccional.md)
+- **Informe de entrega:** [`/root/polis/bridge/272_entrega_freebuff_servicio_correo_transaccional.md`](file:///root/polis/bridge/272_entrega_freebuff_servicio_correo_transaccional.md)
+- **Alcance cumplido:** Servicio de correo transaccional para los 4 flujos (registro+verificación, recuperación de contraseña, creación de propuesta, respaldo ciudadano/actividades sobre patrón Outbox existente), plantillas HTML institucionales nuevas (bienvenida, recuperación, actividad_apoyo), migración Alembic 0092 que amplía `chk_notificaciones_tipo_evento`, y suite nueva `backend/tests/test_servicio_correo_transaccional.py` (12/12 OK). Calidad 100% verificada, migración aplicada en `bd_csh`, backend reiniciado y en producción.
+
+---
+
 ## Encargo 271 (COMPLETADO Y CERRADO): `freebuff` — Vista de Trazabilidad y Diagrama UML del Ciclo de Vida de una Política Pública
 - **Asignado a:** `freebuff` (`=freebuff:0.0`)
 - **Especificación completa:** [`/root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md`](file:///root/polis/bridge/271_tarea_freebuff_trazabilidad_uml_politica_publica.md)

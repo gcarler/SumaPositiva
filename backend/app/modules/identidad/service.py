@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import uuid
 from datetime import UTC, datetime, timedelta
+from urllib.parse import urlencode
 
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -58,9 +59,9 @@ class IdentidadService:
         self.settings = settings or Settings()
 
     async def registrar_usuario(self, datos: UsuarioCreacion) -> UsuarioLectura:
-        return await self._crear_usuario(datos, None, codigo_rol="ciudadano")
+        return await self._crear_usuario(datos, None, codigo_rol="ciudadano", bienvenida=True)
 
-    async def _crear_usuario(self, datos, actor, *, codigo_rol: str) -> UsuarioLectura:
+    async def _crear_usuario(self, datos, actor, *, codigo_rol: str, bienvenida: bool = False) -> UsuarioLectura:
         try:
             async with transaction(self.repo.session):
                 if actor:
@@ -81,9 +82,49 @@ class IdentidadService:
                     usuario.id,
                     {"rol": rol.codigo, "motivo": getattr(datos, "motivo", "Registro ciudadano")},
                 )
+                # El correo va en el outbox dentro de la MISMA transacción: si el
+                # alta se revierte, nunca llega una invitación a cuenta inexistente.
+                if bienvenida:
+                    await self._encolar_bienvenida_y_verificacion(usuario)
                 return UsuarioLectura.model_validate(usuario)
         except IntegrityError as error:
             raise HTTPException(409, "El correo ya se encuentra registrado") from error
+
+    def _enlace_accion(self, proposito: str, token: str) -> str:
+        """Enlace con fragmento de uso único idéntico al de la cola de identidad."""
+        fragmento = urlencode({"accion": proposito, "token": token})
+        return f"{self.settings.identidad_url_publica.rstrip('/')}#{fragmento}"
+
+    async def _encolar_bienvenida_y_verificacion(self, usuario):
+        """Alta de cuenta ciudadana: token 'verificar' + plantilla HTML de bienvenida (outbox)."""
+        nonce = uuid.uuid4()
+        token = token_para_correo(nonce, self.settings)
+        hash_token = hashlib.sha256(token.encode()).hexdigest()
+        await self.repo.crear_token(
+            hash_token,
+            usuario.id,
+            "verificar",
+            datetime.now(UTC) + timedelta(minutes=self.settings.identidad_token_minutos),
+            nonce,
+        )
+        # La entrega real la hace el outbox transaccional (NotificacionWorker);
+        # la cola legacy de identidad no debe reenviar este correo de bienvenida.
+        registro = await self.repo.obtener_token(hash_token, "verificar")
+        registro.enviado_en = datetime.now(UTC)
+        from app.modules.notificaciones.service import NotificacionService
+
+        await NotificacionService(self.repo.session, settings=self.settings).enviar_bienvenida_registro(
+            destinatario=usuario.correo,
+            nombre=usuario.nombres,
+            enlace_verificacion=self._enlace_accion("verificar", token),
+            minutos=self.settings.identidad_token_minutos,
+        )
+        await self.repo.registrar_evento(
+            "correo_bienvenida_emitido",
+            None,
+            usuario.id,
+            {"proposito": "verificar", "canal": "outbox_transaccional"},
+        )
 
     async def crear_usuario_administrado(self, datos: UsuarioAltaAdministrativa, actor):
         rol = await self.repo.obtener_rol_por_codigo(datos.codigo_rol)
@@ -313,6 +354,14 @@ class IdentidadService:
                     usuario.id,
                     {"proposito": proposito},
                 )
+                if proposito == "recuperar":
+                    from app.modules.notificaciones.service import NotificacionService
+
+                    await NotificacionService(self.repo.session, settings=self.settings).enviar_recuperacion_contrasena(
+                        destinatario=usuario.correo,
+                        enlace_restablecer=self._enlace_accion("recuperar", token),
+                        minutos=self.settings.identidad_token_minutos,
+                    )
             # El worker entrega después del commit. La respuesta pública no incluye token,
             # existencia de cuenta ni depende del tiempo de entrega SMTP.
             return MensajeRespuesta(mensaje=("Si la cuenta cumple los requisitos, recibirás un enlace por correo"))

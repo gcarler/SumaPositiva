@@ -1,6 +1,7 @@
 """Servicio de lógica de negocio para notificaciones transaccionales y fe pública de radicación."""
 
 import logging
+import uuid
 from collections.abc import Sequence
 
 from fastapi import HTTPException, status
@@ -15,6 +16,11 @@ from app.modules.notificaciones.correo import (
     generar_html_constancia_radicacion,
 )
 from app.modules.notificaciones.models import NotificacionTransaccional
+from app.modules.notificaciones.plantillas_eventos import (
+    generar_html_actividad_apoyo,
+    generar_html_bienvenida_registro,
+    generar_html_recuperacion_contrasena,
+)
 from app.modules.notificaciones.schemas import ConsultaRadicadoRespuesta
 
 logger = logging.getLogger("polis.notificaciones.service")
@@ -94,6 +100,134 @@ class NotificacionService:
         await self.session.flush()
         await self.session.refresh(notificacion)
         return notificacion
+
+    async def _encolar(
+        self,
+        *,
+        destinatario: str,
+        tipo_evento: str,
+        asunto: str,
+        cuerpo_html: str,
+        codigo_radicado: str,
+    ) -> NotificacionTransaccional:
+        """Persiste la intención dentro de la transacción del llamador (patrón outbox)."""
+        notificacion = NotificacionTransaccional(
+            codigo_radicado=codigo_radicado,
+            destinatario_correo=destinatario,
+            tipo_evento=tipo_evento,
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            estado_envio="pendiente",
+        )
+        self.session.add(notificacion)
+        await self.session.flush()
+        await self.session.refresh(notificacion)
+        return notificacion
+
+    async def enviar_bienvenida_registro(
+        self,
+        destinatario: str,
+        nombre: str,
+        enlace_verificacion: str,
+        minutos: int,
+    ) -> NotificacionTransaccional:
+        """Flujo 1: bienvenida institucional con enlace de verificación de uso único.
+
+        Se persiste junto al alta del usuario: si el rollback la cancela, nunca se
+        recibe una invitación a una cuenta inexistente.
+        """
+        asunto = "POLIS: Bienvenido(a) a la plataforma distrital - Verifique su cuenta"
+        cuerpo_html = generar_html_bienvenida_registro(
+            nombre=nombre,
+            enlace_verificacion=enlace_verificacion,
+            minutos=minutos,
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento="registro_bienvenida",
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=f"BIENVENIDA-{uuid.uuid4().hex[:12].upper()}",
+        )
+
+    async def enviar_recuperacion_contrasena(
+        self,
+        destinatario: str,
+        enlace_restablecer: str,
+        minutos: int,
+        nombre_destinatario: str | None = None,
+    ) -> NotificacionTransaccional:
+        """Flujo 2: solicitud de restablecimiento con enlace de uso único caducable."""
+        asunto = "POLIS: Restablecer su contraseña"
+        cuerpo_html = generar_html_recuperacion_contrasena(
+            enlace_restablecer=enlace_restablecer,
+            minutos=minutos,
+            nombre_destinatario=nombre_destinatario,
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento="recuperacion_contrasena",
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=f"RECUPERACION-{uuid.uuid4().hex[:12].upper()}",
+        )
+
+    async def enviar_aviso_nuevo_apoyo_autor(
+        self,
+        correo_autor: str,
+        radicado: str,
+        titulo: str,
+        apoyos_totales: int,
+        enlace_seguimiento: str,
+    ) -> NotificacionTransaccional:
+        """Flujo 4a: notifica al autor que su propuesta recibió un respaldo ciudadano."""
+        asunto = f"POLIS: Su propuesta {radicado} recibió un nuevo respaldo ciudadano"
+        cuerpo_html = generar_html_actividad_apoyo(
+            rol_destinatario="autor",
+            radicado=radicado,
+            titulo=titulo,
+            apoyos_totales=apoyos_totales,
+            enlace_seguimiento=enlace_seguimiento,
+        )
+        return await self._encolar(
+            destinatario=correo_autor,
+            tipo_evento="apoyo_propuesta",
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=radicado,
+        )
+
+    async def enviar_constancia_actividad_apoyo(
+        self,
+        correo_participante: str,
+        radicado: str,
+        titulo: str,
+        apoyos_totales: int,
+        enlace_seguimiento: str,
+        *,
+        nombre_participante: str | None = None,
+        dimension_titulo: str | None = None,
+        enlace_actividades: str | None = None,
+    ) -> NotificacionTransaccional:
+        """Flujo 4b: constancia de respaldo y resumen de actividad del participante."""
+        asunto = f"POLIS: Constancia de su respaldo a la propuesta {radicado}"
+        cuerpo_html = generar_html_actividad_apoyo(
+            rol_destinatario="participante",
+            radicado=radicado,
+            titulo=titulo,
+            apoyos_totales=apoyos_totales,
+            enlace_seguimiento=enlace_seguimiento,
+            nombre_destinatario=nombre_participante,
+            dimension_titulo=dimension_titulo,
+            enlace_actividades=enlace_actividades,
+        )
+        return await self._encolar(
+            destinatario=correo_participante,
+            tipo_evento="actividad_ciudadana",
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=radicado,
+        )
 
     async def consultar_por_radicado(self, codigo_radicado: str) -> ConsultaRadicadoRespuesta:
         """Permite a cualquier ciudadano verificar el estado de su propuesta mediante su radicado."""

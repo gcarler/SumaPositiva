@@ -49,6 +49,65 @@ class AporteService:
         self.repository = repository
         self.settings = settings or Settings()
 
+    async def _notificar_respaldo(self, propuesta, sujeto) -> None:
+        """Flujo 4 del correo transaccional (Encargo 272): apoyo ciudadano.
+
+        Avisa al autor (si su propuesta tiene correo de contacto) y emite la
+        constancia de actividad al participante autenticado con correo conocido.
+        Se persiste junto al apoyo: si el rollback la cancela, no hay correo espúrio.
+        """
+        if not self.settings.identidad_url_publica:
+            return
+        from sqlalchemy import select
+
+        from app.modules.notificaciones.service import NotificacionService
+
+        url_base = self.settings.identidad_url_publica.rstrip("/")
+        enlace_seguimiento = f"{url_base}/seguimiento?radicado={propuesta.codigo_radicado}"
+        enlace_actividades = f"{url_base}/plataforma"
+        notif_service = NotificacionService(self.repository.session, settings=self.settings)
+
+        if propuesta.correo_contacto:
+            await notif_service.enviar_aviso_nuevo_apoyo_autor(
+                correo_autor=propuesta.correo_contacto,
+                radicado=propuesta.codigo_radicado,
+                titulo=propuesta.titulo,
+                apoyos_totales=propuesta.apoyos_contador,
+                enlace_seguimiento=enlace_seguimiento,
+            )
+
+        if getattr(sujeto, "es_anonimo", True) is False:
+            from app.modules.identidad.models import Usuario
+
+            resultado = await self.repository.session.execute(
+                select(Usuario.correo, Usuario.nombres).where(
+                    Usuario.id == getattr(sujeto, "sujeto_id", None),
+                    Usuario.activo.is_(True),
+                )
+            )
+            fila = resultado.one_or_none()
+            if fila is not None:
+                dimension_titulo = None
+                if propuesta.dimension_id:
+                    from app.modules.politicas.models import DimensionSeguridadHumana
+
+                    res_dim = await self.repository.session.execute(
+                        select(DimensionSeguridadHumana.titulo).where(
+                            DimensionSeguridadHumana.id == propuesta.dimension_id
+                        )
+                    )
+                    dimension_titulo = res_dim.scalar_one_or_none()
+                await notif_service.enviar_constancia_actividad_apoyo(
+                    correo_participante=fila.correo,
+                    radicado=propuesta.codigo_radicado,
+                    titulo=propuesta.titulo,
+                    apoyos_totales=propuesta.apoyos_contador,
+                    enlace_seguimiento=enlace_seguimiento,
+                    nombre_participante=fila.nombres,
+                    dimension_titulo=dimension_titulo,
+                    enlace_actividades=enlace_actividades,
+                )
+
     async def crear_propuesta(
         self,
         datos: PropuestaCiudadanaCreate,
@@ -239,6 +298,7 @@ class AporteService:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
                 )
+            await self._notificar_respaldo(propuesta, sujeto)
             return PropuestaCiudadanaRead.model_validate(propuesta)
 
     async def alternar_apoyo(self, aporte_id: uuid.UUID, sujeto) -> RespuestaToggleApoyo:
@@ -253,6 +313,8 @@ class AporteService:
             mensaje = (
                 "¡Respaldo ciudadano registrado con éxito!" if apoyado else "Respaldo ciudadano retirado con éxito"
             )
+            if apoyado:
+                await self._notificar_respaldo(propuesta, sujeto)
             return RespuestaToggleApoyo(
                 propuesta_id=propuesta.id,
                 apoyado=apoyado,
