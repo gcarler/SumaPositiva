@@ -7,6 +7,14 @@ import { usePanels } from "@/core/panels/panel-store";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { StatusBadge } from "@/shared/ui/status-badge";
+import { Badge } from "@/shared/ui/badge";
+import {
+  ShieldCheck,
+  MailCheck,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { VisorNotificacionesHerald } from "@/features/notificaciones/components/visor-notificaciones-herald";
 import { identidadApi, type MfaIniciar } from "@/features/sesion/services/identidad-api";
 import { sincronizarRestriccionMfa } from "@/features/sesion/services/sincronizar-sesion";
 import {
@@ -21,10 +29,13 @@ import {
 
 export function CuentaUsuario() {
   const sesion = useSesionStore((s) => s.sesion);
-  const { closeAll } = usePanels();
+  const { openPanel, closeAll } = usePanels();
   const cache = useQueryClient();
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [avisoHerald, setAvisoHerald] = useState<string | null>(null);
+  const [contrasenaCambiada, setContrasenaCambiada] = useState(false);
+  const [visorHeraldAbierto, setVisorHeraldAbierto] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [mfaSetup, setMfaSetup] = useState<MfaIniciar | null>(null);
   const [codigosGenerados, setCodigosGenerados] = useState<string[] | null>(null);
@@ -43,6 +54,7 @@ export function CuentaUsuario() {
     setOcupado(true);
     setError("");
     setMensaje("");
+    setAvisoHerald(null);
     try {
       await accion();
       await cache.invalidateQueries({ queryKey: ["identidad"] });
@@ -63,7 +75,10 @@ export function CuentaUsuario() {
         textoFormulario(datos, "apellidos"),
       );
       useSesionStore.getState().actualizarPerfil(nuevo);
-      setMensaje("Perfil actualizado");
+      setMensaje("Perfil actualizado con éxito.");
+      setAvisoHerald(
+        "Se ha emitido y enviado una constancia oficial de seguridad a su correo electrónico registrado por POLIS Herald.",
+      );
     });
   }
   function contrasena(event: FormEvent<HTMLFormElement>) {
@@ -76,6 +91,7 @@ export function CuentaUsuario() {
       );
       useSesionStore.getState().limpiarSesion();
       cache.clear();
+      setContrasenaCambiada(true);
     });
   }
   function iniciarMfa() {
@@ -143,6 +159,31 @@ export function CuentaUsuario() {
       await mfaEstado.refetch();
     });
   }
+  if (contrasenaCambiada) {
+    return (
+      <div className="space-y-6">
+        <Notice tone="success" title="Contraseña modificada con éxito">
+          <p className="text-sm">
+            Se ha emitido y enviado una constancia oficial de seguridad a su correo electrónico registrado por POLIS Herald.
+          </p>
+          <p className="mt-2 text-xs text-text-secondary">
+            Por motivos de seguridad institucional y salvaguarda de credenciales, todas las sesiones activas han sido cerradas.
+          </p>
+        </Notice>
+        <div className="pt-2">
+          <Button
+            onClick={() => {
+              closeAll();
+              openPanel("sesion", {});
+            }}
+          >
+            Iniciar sesión nuevamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!usuario) return null;
   return (
     <div className="space-y-6" aria-busy={ocupado}>
@@ -152,6 +193,14 @@ export function CuentaUsuario() {
         </Notice>
       )}
       {mensaje && <Notice tone="success" title={mensaje} />}
+      {avisoHerald && (
+        <Notice tone="info" title="Constancia de seguridad emitida">
+          <p className="text-sm">{avisoHerald}</p>
+          <p className="mt-1 text-2xs text-text-tertiary">
+            POLIS Herald · Despacho transaccional inmutable con fe pública (Sentencia C-150 de 2015).
+          </p>
+        </Notice>
+      )}
       {/* Enrolamiento exigido: sesión limitada a configurar MFA (contrato con
        * EDD 181). No presenta permisos plenos ni navegación administrativa. */}
       {mfaEstado.data && !mfaEstado.data.activo && mfaEstado.data.exigido_por_rol && (
@@ -268,6 +317,94 @@ export function CuentaUsuario() {
             Cambiar contraseña y cerrar sesiones
           </Button>
         </form>
+      </section>
+
+      {/* POLIS Herald — Fe Pública y Notificaciones */}
+      <section className="space-y-4 rounded-xl border border-border bg-card p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--accent)] border border-border">
+              <ShieldCheck className="size-4 text-[var(--accent)]" aria-hidden="true" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-text-primary">
+                POLIS Herald — Fe Pública y Notificaciones
+              </h3>
+              <p className="text-xs text-text-secondary">
+                Sistema institucional de constancias transaccionales y fe pública
+              </p>
+            </div>
+          </div>
+          <Badge variant="outline" className="text-xs font-mono">
+            Sentencia C-150 de 2015
+          </Badge>
+        </div>
+
+        <div className="space-y-2 text-xs text-text-secondary leading-relaxed">
+          <p>
+            En cumplimiento del mandato constitucional de proscripción del silencio administrativo y debido proceso,
+            cada acción ejecutada en POLIS genera una constancia oficial con valor probatorio institucional.
+          </p>
+          <p>
+            Las actualizaciones de perfil, modificaciones de credenciales, radicación de propuestas y gestiones institucionales
+            se despachan de forma inmutable a su correo oficial <strong>{usuario.correo}</strong> bajo el patrón de despacho transaccional (Transactional Outbox).
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-[var(--surface-2)] p-3 text-xs">
+          <div className="flex items-center gap-2">
+            <MailCheck className="size-4 text-[var(--accent)] shrink-0" aria-hidden="true" />
+            <span>
+              Canal de despacho: <strong className="text-text-primary">{usuario.correo}</strong>
+            </span>
+          </div>
+          <StatusBadge tone={usuario.correo_verificado_en ? "success" : "warning"}>
+            {usuario.correo_verificado_en ? "Canal verificado con fe pública" : "Pendiente de verificación"}
+          </StatusBadge>
+        </div>
+
+        {(tienePermiso(sesion, "auditoria:leer") ||
+          sesion?.rol === "administrador_sistema" ||
+          sesion?.rol === "auditor" ||
+          sesion?.rol === "administrador_identidades") && (
+          <div className="pt-2 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="text-xs font-semibold text-text-primary">
+                  Supervisión Institucional de Envíos
+                </p>
+                <p className="text-2xs text-text-secondary">
+                  Tu rol institucional cuenta con atribuciones para auditar las constancias despachadas por POLIS Herald.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setVisorHeraldAbierto((prev) => !prev)}
+                className="h-8 gap-1.5 text-xs border-border"
+              >
+                {visorHeraldAbierto ? (
+                  <>
+                    <ChevronUp className="size-3.5" aria-hidden="true" />
+                    <span>Ocultar visor de auditoría</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="size-3.5" aria-hidden="true" />
+                    <span>Desplegar visor de auditoría</span>
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {visorHeraldAbierto && (
+              <div className="pt-2 animate-in fade-in">
+                <VisorNotificacionesHerald />
+              </div>
+            )}
+          </div>
+        )}
       </section>
       <section className="space-y-4 rounded-lg border border-border p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">

@@ -1,5 +1,21 @@
 # Tareas Activas — Coordinación Antigravity
 
+## Encargo 274 (COMPLETADO Y CERRADO): `agy2` — Integración Frontend de POLIS Herald: Visor de Fe Pública, Constancias y Avisos de Despacho
+- **Asignado a:** `agy2` (`=agy2:0.0`)
+- **Especificación completa:** [`/root/polis/bridge/274_tarea_agy2_herald_frontend_visor.md`](file:///root/polis/bridge/274_tarea_agy2_herald_frontend_visor.md)
+- **Informe de entrega:** [`/root/polis/bridge/274_entrega_agy2_herald_frontend_visor.md`](file:///root/polis/bridge/274_entrega_agy2_herald_frontend_visor.md)
+- **Alcance cumplido:** Avisos de despacho de constancia en cuenta de usuario (actualización de perfil y clave), tarjeta institucional de fe pública (Sentencia C-150 de 2015), visor interactivo para supervisión forense de notificaciones (/api/v1/notificaciones/historial) para roles con permiso `auditoria:leer`, confirmaciones visuales al radicar propuestas en AporteEditorPanel y Modo Barrio. 100% de cumplimiento en `ui-policy`, `typecheck`, `eslint` y pruebas.
+
+---
+
+## Encargo 273 (COMPLETADO Y CERRADO): `freebuff` — POLIS Herald Fase 2: Trazabilidad y Fe Pública por Correo (Usuarios Internos y Externos)
+- **Asignado a:** `freebuff` (`=freebuff:0.0`)
+- **Especificación completa:** [`/root/polis/bridge/273_tarea_freebuff_polis_herald_fase2.md`](file:///root/polis/bridge/273_tarea_freebuff_polis_herald_fase2.md)
+- **Informe de entrega:** [`/root/polis/bridge/273_entrega_freebuff_polis_herald_fase2.md`](file:///root/polis/bridge/273_entrega_freebuff_polis_herald_fase2.md)
+- **Alcance cumplido:** Consolidación de POLIS Herald para usuarios externos (aviso inmediato de cambios en perfil, contraseña y actualización de propuestas con sello UTC y radicado) y usuarios internos (gestores de mesas, comunicadores, administradores con comprobante de acción y resumen de pendientes asociados). Patrón Transactional Outbox, migración Alembic 0093 con los 12 tipos de evento aplicada en base de datos de producción `bd_csh`, suite de 11 pruebas automatizadas nuevas (11/11 OK) y 0 errores en ruff.
+
+---
+
 ## Encargo 272 (COMPLETADO Y CERRADO): `freebuff` — Servicio de Correo Transaccional (Registro, Clave, Propuesta, Me Gusta y Actividades)
 - **Asignado a:** `freebuff` (`=freebuff:0.0`)
 - **Especificación completa:** [`/root/polis/bridge/272_tarea_freebuff_servicio_correo_transaccional.md`](file:///root/polis/bridge/272_tarea_freebuff_servicio_correo_transaccional.md)

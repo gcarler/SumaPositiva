@@ -177,7 +177,9 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
       setDireccionNormalizada(null);
       setAutorNombre("");
       setTelefono("");
-      toast.success("¡Propuesta radicada exitosamente!");
+      toast.success("¡Propuesta radicada exitosamente!", {
+        description: `Constancia oficial emitida a su correo con código ${res.codigo_radicado}`,
+      });
     } catch {
       // Fallback ante desconexión o fallo de red en vuelo
       const sufijo = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -294,6 +296,15 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
               <span>Copiar</span>
             </Button>
           </div>
+
+          {!radicadoExitoso.codigo.includes("OFFLINE") && (
+            <div className="mt-2.5 flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-2.5 text-xs text-[var(--text-secondary)]">
+              <ShieldCheck className="size-4 text-[var(--accent)] shrink-0" aria-hidden="true" />
+              <span>
+                Constancia oficial emitida a su correo con código <strong>{radicadoExitoso.codigo}</strong> por POLIS Herald.
+              </span>
+            </div>
+          )}
 
           <div className="mt-3 flex flex-wrap gap-2">
             <Button

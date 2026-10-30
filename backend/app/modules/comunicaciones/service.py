@@ -19,6 +19,18 @@ class ComunicacionesService:
         self.session = session
         self.repository = ComunicacionesRepository(session)
 
+    async def _comprobante_gestion(self, sujeto, accion: str, detalle: str) -> None:
+        """POLIS Herald Fase 2: comprobante de la acción del comunicador (outbox)."""
+        if sujeto is None or getattr(sujeto, "es_anonimo", True):
+            return
+        from app.modules.notificaciones.service import NotificacionService
+
+        await NotificacionService(self.session).comprobante_para_sujeto(
+            sujeto,
+            accion=accion,
+            detalle_accion=detalle,
+        )
+
     async def listar(
         self,
         *,
@@ -39,7 +51,7 @@ class ComunicacionesService:
                 )
             return TareaComunicacionLectura.model_validate(tarea)
 
-    async def crear(self, datos: TareaComunicacionCrear) -> TareaComunicacionLectura:
+    async def crear(self, datos: TareaComunicacionCrear, sujeto=None) -> TareaComunicacionLectura:
         async with transaction(self.session):
             existente = await self.repository.obtener_por_codigo(datos.codigo)
             if existente is not None:
@@ -62,9 +74,17 @@ class ComunicacionesService:
                     detail="Error de integridad al registrar la tarea",
                 ) from exc
 
+            await self._comprobante_gestion(
+                sujeto,
+                "Publicación de tarea de comunicación",
+                f"Tarea {tarea.codigo} — {tarea.titulo} registrada en la etapa '{tarea.etapa}'.",
+            )
+
             return TareaComunicacionLectura.model_validate(tarea)
 
-    async def actualizar(self, id: uuid.UUID, datos: TareaComunicacionActualizar) -> TareaComunicacionLectura:
+    async def actualizar(
+        self, id: uuid.UUID, datos: TareaComunicacionActualizar, sujeto=None
+    ) -> TareaComunicacionLectura:
         async with transaction(self.session):
             tarea = await self.repository.obtener_por_id(id)
             if tarea is None:
@@ -105,6 +125,12 @@ class ComunicacionesService:
                     status_code=status.HTTP_409_CONFLICT,
                     detail="Error de integridad al actualizar la tarea",
                 ) from exc
+
+            await self._comprobante_gestion(
+                sujeto,
+                "Actualización de tarea de comunicación",
+                f"Tarea {tarea.codigo}: campos modificados {', '.join(sorted(datos_dict))}.",
+            )
 
             return TareaComunicacionLectura.model_validate(tarea)
 

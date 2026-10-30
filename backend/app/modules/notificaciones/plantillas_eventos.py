@@ -210,3 +210,123 @@ def generar_html_actividad_apoyo(
         contenido,
         "Respaldo único por persona (1 ciudadano = 1 voto), Ley 1755 de 2015.",
     )
+
+
+def _lista(items: list[str]) -> str:
+    filas = "".join(
+        f'<li style="margin:0 0 6px 0; font-size:13px; line-height:1.5; color:#334155;">{html.escape(item)}</li>'
+        for item in items
+    )
+    return f'<ul style="margin:0 0 16px 0; padding-left:20px;">{filas}</ul>'
+
+
+def _sello_utc() -> str:
+    return datetime.now(UTC).strftime("%d/%m/%Y %H:%M UTC")
+
+
+def generar_html_seguridad_perfil(
+    nombre: str,
+    accion: str,
+    campos: list[str],
+    enlace_panel: str | None = None,
+) -> str:
+    """Aviso de seguridad: actualización de perfil o cambio de contraseña (Herald Fase 2)."""
+    contenido = (
+        _destacado("#fff7ed", "#fed7aa", "#9a3412", "Aviso de seguridad de su cuenta")
+        + _parrafo(
+            f"Estimado(a) <strong>{html.escape(nombre)}</strong>: se ejecutó la siguiente acción "
+            "en su cuenta del Sistema Distrital POLIS:"
+        )
+        + _tarjeta(
+            [
+                ("Acción ejecutada", accion),
+                ("Campos modificados", ", ".join(campos) if campos else "Ninguno"),
+                ("Fecha y hora oficial", _sello_utc()),
+            ]
+        )
+        + _parrafo(
+            "<strong>Si usted no reconoció esta acción:</strong> cambie su contraseña de inmediato "
+            "y active el cierre de sesiones desde su panel. La plataforma nunca le solicitará "
+            "contraseñas ni tokens por correo."
+        )
+    )
+    if enlace_panel:
+        contenido += _boton(enlace_panel, "Revisar mi cuenta")
+    return _cuerpo_institucional(
+        f"Aviso de seguridad - {accion}",
+        "Cartagena Ciudad de Derechos · Seguridad de la Cuenta",
+        contenido,
+        "Tratamiento de datos conforme a la Ley 1581 de 2012 (Habeas Data).",
+    )
+
+
+def generar_html_gestion_institucional(
+    nombre_funcionario: str,
+    rol: str,
+    accion: str,
+    detalle_accion: str,
+    pendientes_asociados: list[str],
+    enlace_panel: str,
+) -> str:
+    """Comprobante de acción interna y bitácora del funcionario con pendientes (Herald Fase 2)."""
+    contenido = (
+        _destacado("#eef2ff", "#c7d2fe", "#3730a3", "Comprobante de gestión institucional")
+        + _parrafo(
+            f"Estimado(a) <strong>{html.escape(nombre_funcionario)}</strong>: la plataforma registró "
+            "la acción ejecutada bajo su responsabilidad con sello de tiempo distrital:"
+        )
+        + _tarjeta(
+            [
+                ("Funcionario", nombre_funcionario),
+                ("Rol institucional", rol),
+                ("Acción ejecutada", accion),
+                ("Detalle de la acción", detalle_accion),
+                ("Sello de tiempo oficial", _sello_utc()),
+            ]
+        )
+    )
+    if pendientes_asociados:
+        contenido += _parrafo(
+            '<strong style="text-transform:uppercase; letter-spacing:0.05em; font-size:12px; '
+            'color:#475569;">Pendientes asociados a su gestión</strong>'
+        )
+        contenido += _lista(list(pendientes_asociados))
+    contenido += _boton(enlace_panel, "Abrir panel de gestión")
+    return _cuerpo_institucional(
+        f"Comprobante de gestión - {accion}",
+        "Cartagena Ciudad de Derechos · Bitácora Institucional",
+        contenido,
+        "Registro de fe pública conforme a la Sentencia C-150 de 2015 y el Decreto 037 de 2026.",
+    )
+
+
+def generar_html_constancia_actualizacion_propuesta(
+    radicado: str,
+    titulo: str,
+    campos_modificados: list[str],
+    enlace_seguimiento: str,
+) -> str:
+    """Constancia de edición o complementación de una propuesta ya radicada (Herald Fase 2)."""
+    contenido = (
+        _destacado("#f0f9ff", "#bae6fd", "#0369a1", "Actualización de su propuesta radicada")
+        + _parrafo(
+            "Su propuesta ciudadana fue editada o complementada. Esta constancia registra los "
+            "cambios aplicados sobre el radicado unívoco:"
+        )
+        + _tarjeta(
+            [
+                ("Radicado", radicado),
+                ("Propuesta", titulo),
+                ("Fecha y hora oficial", _sello_utc()),
+            ]
+        )
+        + _parrafo("<strong>Campos actualizados:</strong>")
+        + _lista(campos_modificados)
+        + _boton(enlace_seguimiento, "Consultar el seguimiento de mi propuesta")
+    )
+    return _cuerpo_institucional(
+        f"Actualización de propuesta {radicado}",
+        "Cartagena Ciudad de Derechos · Participación Vinculante",
+        contenido,
+        "Radicado único e inmutable; fe pública conforme a la Sentencia C-150 de 2015.",
+    )

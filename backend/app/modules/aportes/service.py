@@ -22,6 +22,25 @@ from app.modules.sesion.schemas import SesionContexto
 
 logger = logging.getLogger("polis.aportes.service")
 
+# Herald Fase 2: etiquetas legibles de los campos editables para la constancia
+# de actualización de una propuesta ya radicada.
+ETIQUETAS_CAMPOS_PROPUESTA = {
+    "titulo": "Título",
+    "descripcion": "Descripción",
+    "linea_id": "Línea estratégica",
+    "dimension_id": "Dimensión de Seguridad Humana",
+    "territorio_id": "Territorio",
+    "tipo_aporte": "Tipo de aporte",
+    "metadata_enfoque": "Enfoque diferencial",
+    "archivos_adjuntos": "Anexos",
+    "activo": "Estado de publicación",
+    "es_territorio_etnico": "Territorio étnico",
+    "requiere_consulta_previa": "Consulta previa",
+    "ruta_etnica_diferenciada": "Ruta étnica diferenciada",
+    "consejo_comunitario": "Consejo comunitario",
+    "metadatos": "Metadatos complementarios",
+}
+
 
 def _devolucion_publica(registro):
     """Validar la lectura cerrada sin alterar la decisión ni el JSON del ORM."""
@@ -165,7 +184,45 @@ class AporteService:
                     autor=propuesta.autor_nombre,
                 )
 
+            # POLIS Herald Fase 2: los gestores de mesa reciben el pendiente legal
+            # asociado a toda radicación pública (Sentencia C-150 de 2015).
+            if propuesta.estado == "publicado":
+                await self._alertar_pendientes_gestores(propuesta)
+
             return PropuestaCiudadanaRead.model_validate(propuesta)
+
+    async def _alertar_pendientes_gestores(self, propuesta) -> None:
+        """Encola la alerta de pendientes hacia los facilitadores de mesa activos."""
+        from sqlalchemy import select
+
+        from app.modules.identidad.models import Rol, Usuario
+
+        resultado = await self.repository.session.execute(
+            select(Usuario.correo, Usuario.nombres)
+            .join(Rol, Rol.id == Usuario.rol_id)
+            .where(Rol.codigo == "facilitador_mesa", Usuario.activo.is_(True))
+        )
+        destinatarios = resultado.all()
+        if not destinatarios:
+            return
+
+        from app.modules.notificaciones.service import NotificacionService
+
+        notif_service = NotificacionService(self.repository.session, settings=self.settings)
+        enlace = f"{self.settings.identidad_url_publica.rstrip('/')}/seguimiento?radicado={propuesta.codigo_radicado}"
+        pendiente = (
+            f"Concepto técnico pendiente para {propuesta.codigo_radicado} dentro del término legal"
+            " (Sentencia C-150 de 2015)"
+        )
+        for correo, nombres in destinatarios:
+            await notif_service.enviar_alerta_pendientes(
+                destinatario=correo,
+                nombre_destinatario=nombres,
+                accion="Nueva propuesta radicada en su ámbito de competencia",
+                detalle=f"{propuesta.codigo_radicado} — {propuesta.titulo}",
+                pendientes=[pendiente],
+                enlace_panel=enlace,
+            )
 
     async def obtener_propuesta(self, aporte_id: uuid.UUID) -> PropuestaCiudadanaRead:
         """Obtiene un aporte por su ID o lanza 404 si no existe o fue desactivado."""
@@ -267,6 +324,27 @@ class AporteService:
                         nuevo_estado=cambios.estado,
                         observaciones="Actualización en el estado de tramitación en POLIS.",
                     )
+
+            # POLIS Herald Fase 2: constancia de la edición de la propuesta radicada.
+            campos_editados = [
+                ETIQUETAS_CAMPOS_PROPUESTA.get(campo, campo)
+                for campo in cambios.model_dump(exclude_unset=True)
+                if campo != "estado"
+            ]
+            if campos_editados and propuesta.correo_contacto:
+                from app.modules.notificaciones.service import NotificacionService
+
+                notif_service = NotificacionService(self.repository.session, settings=self.settings)
+                await notif_service.enviar_constancia_actualizacion_propuesta(
+                    destinatario=propuesta.correo_contacto,
+                    radicado=propuesta.codigo_radicado,
+                    titulo=propuesta.titulo,
+                    campos_modificados=campos_editados,
+                    enlace_seguimiento=(
+                        f"{self.settings.identidad_url_publica.rstrip('/')}"
+                        f"/seguimiento?radicado={propuesta.codigo_radicado}"
+                    ),
+                )
 
             return PropuestaCiudadanaRead.model_validate(propuesta)
 

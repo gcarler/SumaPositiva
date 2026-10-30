@@ -61,7 +61,15 @@ class IdentidadService:
     async def registrar_usuario(self, datos: UsuarioCreacion) -> UsuarioLectura:
         return await self._crear_usuario(datos, None, codigo_rol="ciudadano", bienvenida=True)
 
-    async def _crear_usuario(self, datos, actor, *, codigo_rol: str, bienvenida: bool = False) -> UsuarioLectura:
+    async def _crear_usuario(
+        self,
+        datos,
+        actor,
+        *,
+        codigo_rol: str,
+        bienvenida: bool = False,
+        actor_rol: str | None = None,
+    ) -> UsuarioLectura:
         try:
             async with transaction(self.repo.session):
                 if actor:
@@ -86,6 +94,17 @@ class IdentidadService:
                 # alta se revierte, nunca llega una invitación a cuenta inexistente.
                 if bienvenida:
                     await self._encolar_bienvenida_y_verificacion(usuario)
+                elif actor:
+                    # Herald Fase 2: alta administrativa ⇒ comprobante hacia el administrador.
+                    await self._comprobante_administracion(
+                        actor,
+                        accion="Alta de usuario administrado",
+                        detalle=(
+                            f"Cuenta {usuario.correo} creada con rol {codigo_rol}. "
+                            f"Motivo: {getattr(datos, 'motivo', '')}"
+                        ),
+                        rol=actor_rol or "Administración de identidades",
+                    )
                 return UsuarioLectura.model_validate(usuario)
         except IntegrityError as error:
             raise HTTPException(409, "El correo ya se encuentra registrado") from error
@@ -130,7 +149,12 @@ class IdentidadService:
         rol = await self.repo.obtener_rol_por_codigo(datos.codigo_rol)
         if rol:
             self._validar_permisos(rol.permisos, actor)
-        return await self._crear_usuario(datos, actor.sujeto_id, codigo_rol=datos.codigo_rol)
+        return await self._crear_usuario(
+            datos,
+            actor.sujeto_id,
+            codigo_rol=datos.codigo_rol,
+            actor_rol=actor.rol,
+        )
 
     async def autenticar_usuario(self, peticion: LoginPeticion) -> TokenRespuesta:
         async with transaction(self.repo.session):
@@ -287,10 +311,26 @@ class IdentidadService:
     async def editar_perfil(self, datos: PerfilEdicion, actor):
         async with transaction(self.repo.session):
             usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            campos = [
+                etiqueta
+                for etiqueta, antes, despues in (
+                    ("Nombres", usuario.nombres, datos.nombres),
+                    ("Apellidos", usuario.apellidos, datos.apellidos),
+                )
+                if antes != despues
+            ]
             usuario.nombres, usuario.apellidos = datos.nombres, datos.apellidos
             usuario.actualizado_en = datetime.now(UTC)
             await self.repo.guardar()
             await self.repo.registrar_evento("perfil_editado", actor.sujeto_id, usuario.id)
+            if campos:
+                # POLIS Herald: el aviso de seguridad viaja en la MISMA transacción.
+                await self._avisar_seguridad(
+                    destinatario=usuario.correo,
+                    nombre=usuario.nombres,
+                    accion="Actualización de datos de perfil",
+                    campos=campos,
+                )
             return UsuarioLectura.model_validate(usuario)
 
     async def cerrar_sesiones(self, actor, sesion_id=None):
@@ -320,7 +360,58 @@ class IdentidadService:
             if not await asyncio.to_thread(verificar_contrasena, datos.contrasena_actual, usuario.hash_contrasena):
                 raise HTTPException(400, "La contraseña actual no es correcta")
             await self._actualizar_contrasena(usuario, datos.contrasena, actor.sujeto_id)
+            await self._avisar_seguridad(
+                destinatario=usuario.correo,
+                nombre=usuario.nombres,
+                accion="Cambio de contraseña con cierre de sesiones",
+                campos=["Contraseña actualizada", "Sesiones activas revocadas"],
+                evento="contrasena_cambiada",
+            )
             return MensajeRespuesta(mensaje="Contraseña actualizada. Inicia sesión de nuevo")
+
+    async def _avisar_seguridad(
+        self,
+        *,
+        destinatario: str,
+        nombre: str,
+        accion: str,
+        campos: list[str],
+        evento: str = "perfil_actualizado",
+    ) -> None:
+        """Encola el aviso de seguridad Herald dentro de la transacción del caso de uso."""
+        from app.modules.notificaciones.service import NotificacionService
+
+        await NotificacionService(self.repo.session, settings=self.settings).enviar_aviso_seguridad_perfil(
+            destinatario=destinatario,
+            nombre=nombre,
+            accion=accion,
+            campos=campos,
+            evento=evento,
+        )
+
+    async def _comprobante_administracion(
+        self,
+        actor_id,
+        *,
+        accion: str,
+        detalle: str,
+        pendientes: list[str] | None = None,
+        rol: str = "Administración de identidades",
+    ) -> None:
+        """Bitácora de gestión interna: el administrador recibe su propio comprobante."""
+        actor_usuario = await self.repo.obtener_usuario_por_id(actor_id)
+        if not actor_usuario:
+            return
+        from app.modules.notificaciones.service import NotificacionService
+
+        await NotificacionService(self.repo.session, settings=self.settings).enviar_comprobante_gestion_interna(
+            destinatario=actor_usuario.correo,
+            nombre_actor=f"{actor_usuario.nombres} {actor_usuario.apellidos}".strip(),
+            rol=rol,
+            accion=accion,
+            detalle_accion=detalle,
+            pendientes=pendientes,
+        )
 
     async def _actualizar_contrasena(self, usuario, contrasena, actor_id):
         usuario.hash_contrasena = await asyncio.to_thread(obtener_hash_contrasena, contrasena)
@@ -490,13 +581,30 @@ class IdentidadService:
                     "motivo": datos.motivo,
                 },
             )
+            await self._comprobante_administracion(
+                actor.sujeto_id,
+                accion="Modificación de usuario administrado",
+                detalle=(
+                    f"Usuario {usuario.correo}: rol {anterior['rol']} → {rol.codigo}; "
+                    f"activo {anterior['activo']} → {datos.activo}. Motivo: {datos.motivo}"
+                ),
+                pendientes=["Sesiones del usuario administrado revocadas; confirme su reingreso"],
+                rol=actor.rol,
+            )
             return UsuarioLectura.model_validate(usuario)
 
     async def revocar_usuario(self, usuario_id, actor):
         async with transaction(self.repo.session):
-            await self._usuario(usuario_id, bloquear=True)
+            usuario = await self._usuario(usuario_id, bloquear=True)
             await self.repo.revocar_sesiones(usuario_id)
             await self.repo.registrar_evento("sesiones_revocadas_admin", actor.sujeto_id, usuario_id)
+            await self._comprobante_administracion(
+                actor.sujeto_id,
+                accion="Revocación de sesiones de usuario",
+                detalle=f"Se revocaron las sesiones del usuario {usuario.correo}",
+                pendientes=["El usuario afectado quedó sin sesiones activas"],
+                rol=actor.rol,
+            )
             return MensajeRespuesta(mensaje="Sesiones del usuario revocadas")
 
     async def listar_eventos(self, limite, desplazamiento):

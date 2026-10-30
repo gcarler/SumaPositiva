@@ -41,6 +41,29 @@ class MesaService:
         saneado = re.sub(r"[^A-Za-z0-9_]", "_", etiqueta).lower()
         return saneado[:255]
 
+    async def _comprobante_gestion(
+        self,
+        sujeto: SujetoAutenticadoContexto | None,
+        accion: str,
+        detalle: str,
+        pendientes: list[str] | None = None,
+    ) -> None:
+        """POLIS Herald Fase 2: comprobante de la acción institucional hacia el gestor.
+
+        Se encola dentro de la transacción del caso de uso; si la operación
+        sobre la mesa revierte, el comprobante también desaparece.
+        """
+        if sujeto is None or sujeto.es_anonimo:
+            return
+        from app.modules.notificaciones.service import NotificacionService
+
+        await NotificacionService(self.repository.session).comprobante_para_sujeto(
+            sujeto,
+            accion=accion,
+            detalle_accion=detalle,
+            pendientes=pendientes,
+        )
+
     def _canonizar_json(self, dato: Any) -> str:
         def normalizar(valor: Any) -> Any:
             if isinstance(valor, str):
@@ -183,6 +206,15 @@ class MesaService:
             self.repository.session.add(auditoria)
             await self.repository.session.flush()
 
+            await self._comprobante_gestion(
+                sujeto,
+                "Creación de mesa de trabajo",
+                (
+                    f"Se creó la mesa {mesa_creada.codigo_oficial or mesa_creada.nombre} "
+                    f"({mesa_creada.nombre}) con shortcode {mesa_creada.shortcode_ciudadano}."
+                ),
+            )
+
             return MesaRespuesta.model_validate(mesa_creada)
 
     async def crear_submesa(
@@ -223,6 +255,11 @@ class MesaService:
             mesa.ruta_jerarquica = ruta
 
             mesa_creada = await self.repository.crear(mesa)
+            await self._comprobante_gestion(
+                sujeto,
+                "Creación de submesa",
+                f"Se creó la submesa {mesa_creada.nombre} bajo la mesa {padre.nombre}.",
+            )
             return MesaRespuesta.model_validate(mesa_creada)
 
     async def actualizar_submesa(
@@ -396,6 +433,16 @@ class MesaService:
             await self.repository.session.flush()
             if "facilitador_id" in campos_modificados:
                 await self.repository.session.refresh(mesa_actualizada, attribute_names=["facilitador"])
+
+            if campos_modificados:
+                await self._comprobante_gestion(
+                    sujeto,
+                    "Actualización de mesa",
+                    (
+                        f"Mesa {mesa_actualizada.codigo_oficial or mesa_actualizada.nombre}: "
+                        f"campos modificados {', '.join(campos_modificados)}."
+                    ),
+                )
 
             return MesaRespuesta.model_validate(mesa_actualizada)
 
@@ -586,6 +633,19 @@ class MesaService:
             acta_guardada = await self.repository.guardar_acta(acta)
             acta_guardada.sha256_acta = self._calcular_hash_pericial(acta_guardada)
             acta_guardada = await self.repository.guardar_acta(acta_guardada)
+            await self._comprobante_gestion(
+                sujeto,
+                "Registro de acta comunitaria",
+                (
+                    f"Acta {acta_guardada.numero_acta} de la mesa guardada en estado "
+                    f"{acta_guardada.estado} con sello pericial {acta_guardada.sha256_acta[:16]}."
+                ),
+                pendientes=(
+                    ["Acta en borrador pendiente de cierre y concertación"]
+                    if acta_guardada.estado == "BORRADOR"
+                    else None
+                ),
+            )
             resp = ActaRespuesta.model_validate(acta_guardada)
             resp.integridad_valida = True
             return resp

@@ -25,6 +25,7 @@ import {
   Check,
   Copy,
   FileCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels, usePanelStore } from "@/core/panels/panel-store";
@@ -340,10 +341,11 @@ export function AporteEditorPanel({
         codigo_radicado: nuevoAporte.codigo_radicado,
       });
 
+      const confirmacionHerald = `Constancia oficial emitida a su correo con código ${nuevoAporte.codigo_radicado}`;
       toast.success(`Aporte recibido bajo radicado ${nuevoAporte.codigo_radicado}`, {
         description: correoFinal
-          ? `Constancia oficial despachada a ${correoFinal}.`
-          : "Guarda tu código para consulta y seguimiento ciudadano.",
+          ? `${confirmacionHerald} por POLIS Herald.`
+          : `${confirmacionHerald}.`,
       });
 
       setRadicadoConfirmado(nuevoAporte.codigo_radicado);
@@ -402,14 +404,14 @@ export function AporteEditorPanel({
             </p>
           </div>
 
-          <div className="rounded-xl border border-[var(--border-strong)] bg-[var(--surface-2)] p-5 shadow-sm">
+          <div className="rounded-xl border border-[var(--border-strong)] bg-[var(--surface-2)] p-5 shadow-sm space-y-3">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
               Código Único de Radicado
             </p>
-            <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-[var(--text-primary)]">
+            <p className="font-mono text-2xl font-extrabold tracking-widest text-[var(--text-primary)]">
               {radicadoConfirmado}
             </p>
-            <div className="mt-4 flex justify-center">
+            <div className="flex justify-center">
               <Button
                 variant="outline"
                 size="sm"
@@ -429,6 +431,18 @@ export function AporteEditorPanel({
                   </>
                 )}
               </Button>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-3 text-xs text-[var(--text-secondary)] flex items-start gap-2.5 text-left">
+            <ShieldCheck className="size-4 text-[var(--accent)] shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <p className="font-semibold text-[var(--text-primary)]">
+                POLIS Herald — Fe Pública y Notificaciones
+              </p>
+              <p className="mt-0.5">
+                Constancia oficial emitida a su correo con código <strong>{radicadoConfirmado}</strong>.
+              </p>
             </div>
           </div>
 

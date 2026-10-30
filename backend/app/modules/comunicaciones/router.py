@@ -11,6 +11,7 @@ from app.modules.comunicaciones.schemas import (
 )
 from app.modules.comunicaciones.service import ComunicacionesService
 from app.modules.identidad.deps import requerir_permiso
+from app.modules.identidad.schemas import SujetoAutenticadoContexto
 
 router = APIRouter(prefix="/comunicaciones", tags=["Comunicaciones y Cronograma"])
 
@@ -22,6 +23,12 @@ def get_comunicaciones_service(session: SessionDependency) -> ComunicacionesServ
 ComunicacionesServiceDep = Annotated[ComunicacionesService, Depends(get_comunicaciones_service)]
 PuedeLeerComunicaciones = Depends(requerir_permiso("comunicaciones:leer", nivel_minimo="declarada"))
 PuedeGestionarComunicaciones = Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))
+# Herald Fase 2: el sujeto autenticado se inyecta para enviar el comprobante
+# de gestión al comunicador que ejecuta la acción.
+PuedeGestionarComunicacionesSujeto = Annotated[
+    SujetoAutenticadoContexto,
+    Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada")),
+]
 
 
 @router.get(
@@ -55,42 +62,42 @@ async def obtener_tarea(
     "/tareas",
     response_model=TareaComunicacionLectura,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[PuedeGestionarComunicaciones],
 )
 async def crear_tarea(
     datos: TareaComunicacionCrear,
     service: ComunicacionesServiceDep,
+    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Crea una nueva tarea en el cronograma de comunicaciones."""
-    return await service.crear(datos)
+    return await service.crear(datos, sujeto)
 
 
 @router.put(
     "/tareas/{id}",
     response_model=TareaComunicacionLectura,
-    dependencies=[PuedeGestionarComunicaciones],
 )
 async def actualizar_tarea(
     id: uuid.UUID,
     datos: TareaComunicacionActualizar,
     service: ComunicacionesServiceDep,
+    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Actualiza una tarea del cronograma (fechas, entregables, descripción, estado)."""
-    return await service.actualizar(id, datos)
+    return await service.actualizar(id, datos, sujeto)
 
 
 @router.patch(
     "/tareas/{id}",
     response_model=TareaComunicacionLectura,
-    dependencies=[PuedeGestionarComunicaciones],
 )
 async def parchear_tarea(
     id: uuid.UUID,
     datos: TareaComunicacionActualizar,
     service: ComunicacionesServiceDep,
+    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Actualización parcial de una tarea del cronograma."""
-    return await service.actualizar(id, datos)
+    return await service.actualizar(id, datos, sujeto)
 
 
 @router.delete(

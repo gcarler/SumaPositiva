@@ -19,7 +19,10 @@ from app.modules.notificaciones.models import NotificacionTransaccional
 from app.modules.notificaciones.plantillas_eventos import (
     generar_html_actividad_apoyo,
     generar_html_bienvenida_registro,
+    generar_html_constancia_actualizacion_propuesta,
+    generar_html_gestion_institucional,
     generar_html_recuperacion_contrasena,
+    generar_html_seguridad_perfil,
 )
 from app.modules.notificaciones.schemas import ConsultaRadicadoRespuesta
 
@@ -227,6 +230,153 @@ class NotificacionService:
             asunto=asunto,
             cuerpo_html=cuerpo_html,
             codigo_radicado=radicado,
+        )
+
+    def _enlace_panel(self) -> str:
+        return f"{self.settings.identidad_url_publica.rstrip('/')}/plataforma"
+
+    async def enviar_aviso_seguridad_perfil(
+        self,
+        destinatario: str,
+        nombre: str,
+        accion: str,
+        campos: Sequence[str],
+        *,
+        evento: str = "perfil_actualizado",
+    ) -> NotificacionTransaccional:
+        """Herald Fase 2 (externo): aviso de seguridad de perfil o contraseña.
+
+        Se persiste dentro de la transacción del caso de uso: si la edición se
+        revierte, nunca llega un aviso de una modificación que no ocurrió.
+        """
+        cuerpo_html = generar_html_seguridad_perfil(
+            nombre=nombre,
+            accion=accion,
+            campos=list(campos),
+            enlace_panel=self._enlace_panel(),
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento=evento,
+            asunto=f"POLIS: {accion}"[:250],
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=f"SEGURIDAD-{uuid.uuid4().hex[:12].upper()}",
+        )
+
+    async def enviar_comprobante_gestion_interna(
+        self,
+        destinatario: str,
+        nombre_actor: str,
+        rol: str,
+        accion: str,
+        detalle_accion: str,
+        pendientes: Sequence[str] | None = None,
+        enlace_panel: str | None = None,
+    ) -> NotificacionTransaccional:
+        """Herald Fase 2 (interno): comprobante de la acción ejecutada por el funcionario."""
+        cuerpo_html = generar_html_gestion_institucional(
+            nombre_funcionario=nombre_actor,
+            rol=rol,
+            accion=accion,
+            detalle_accion=detalle_accion,
+            pendientes_asociados=list(pendientes or []),
+            enlace_panel=enlace_panel or self._enlace_panel(),
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento="gestion_institucional",
+            asunto=f"POLIS: Comprobante de gestión - {accion}"[:250],
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=f"GESTION-{uuid.uuid4().hex[:12].upper()}",
+        )
+
+    async def enviar_alerta_pendientes(
+        self,
+        destinatario: str,
+        nombre_destinatario: str,
+        accion: str,
+        detalle: str,
+        pendientes: Sequence[str],
+        *,
+        rol: str = "Facilitación de mesa",
+        enlace_panel: str | None = None,
+    ) -> NotificacionTransaccional:
+        """Herald Fase 2 (interno): pendientes que exigen concepto o validación a término legal."""
+        cuerpo_html = generar_html_gestion_institucional(
+            nombre_funcionario=nombre_destinatario,
+            rol=rol,
+            accion=accion,
+            detalle_accion=detalle,
+            pendientes_asociados=list(pendientes),
+            enlace_panel=enlace_panel or self._enlace_panel(),
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento="alerta_pendientes",
+            asunto=f"POLIS: Pendientes institucionales - {accion}"[:250],
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=f"PENDIENTES-{uuid.uuid4().hex[:12].upper()}",
+        )
+
+    async def enviar_constancia_actualizacion_propuesta(
+        self,
+        destinatario: str,
+        radicado: str,
+        titulo: str,
+        campos_modificados: Sequence[str],
+        enlace_seguimiento: str,
+    ) -> NotificacionTransaccional:
+        """Herald Fase 2 (externo): constancia de edición de una propuesta radicada."""
+        asunto = f"POLIS: Actualización de su propuesta {radicado}"[:250]
+        cuerpo_html = generar_html_constancia_actualizacion_propuesta(
+            radicado=radicado,
+            titulo=titulo,
+            campos_modificados=list(campos_modificados),
+            enlace_seguimiento=enlace_seguimiento,
+        )
+        return await self._encolar(
+            destinatario=destinatario,
+            tipo_evento="propuesta_actualizada",
+            asunto=asunto,
+            cuerpo_html=cuerpo_html,
+            codigo_radicado=radicado,
+        )
+
+    async def correo_de_actor(self, sujeto) -> tuple[str, str] | None:
+        """(correo, nombre) del usuario autenticado; None para sesiones anónimas."""
+        if sujeto is None or getattr(sujeto, "es_anonimo", True):
+            return None
+        from app.modules.identidad.models import Usuario
+
+        resultado = await self.session.execute(select(Usuario).where(Usuario.id == sujeto.sujeto_id))
+        usuario = resultado.scalar_one_or_none()
+        if usuario is None or not usuario.activo:
+            return None
+        nombre = f"{usuario.nombres} {usuario.apellidos}".strip()
+        return usuario.correo, nombre
+
+    async def comprobante_para_sujeto(
+        self,
+        sujeto,
+        *,
+        accion: str,
+        detalle_accion: str,
+        pendientes: Sequence[str] | None = None,
+        enlace_panel: str | None = None,
+    ) -> NotificacionTransaccional | None:
+        """Encola el comprobante de gestión para el funcionario; None si no hay destinatario."""
+        destinatario = await self.correo_de_actor(sujeto)
+        if destinatario is None:
+            return None
+        correo, nombre = destinatario
+        return await self.enviar_comprobante_gestion_interna(
+            destinatario=correo,
+            nombre_actor=nombre,
+            rol=getattr(sujeto, "rol", "institucional"),
+            accion=accion,
+            detalle_accion=detalle_accion,
+            pendientes=pendientes,
+            enlace_panel=enlace_panel,
         )
 
     async def consultar_por_radicado(self, codigo_radicado: str) -> ConsultaRadicadoRespuesta:
