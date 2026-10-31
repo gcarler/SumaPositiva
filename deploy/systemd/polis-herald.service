@@ -1,0 +1,17 @@
+[Unit]
+Description=POLIS Herald - ejecutor del outbox de correo transaccional
+After=network.target postgresql.service polis-backend.service
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/polis/backend
+EnvironmentFile=/root/polis/backend/.env
+ExecStart=/root/polis/backend/.venv/bin/python -m app.modules.notificaciones.worker_cli
+Restart=on-failure
+RestartSec=10
+# Código 2 = configuración SMTP ausente/inválida: no reiniciar en bucle, esperar corrección humana.
+RestartPreventExitStatus=2
+
+[Install]
+WantedBy=multi-user.target

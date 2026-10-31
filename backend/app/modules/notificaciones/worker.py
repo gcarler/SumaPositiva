@@ -7,6 +7,7 @@ El Message-ID estable permite correlacionarla, sin garantizar deduplicación del
 import uuid
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime, timedelta
+from email.utils import parseaddr
 
 from pydantic import BaseModel
 from sqlalchemy import and_, or_, select
@@ -16,6 +17,19 @@ from app.core.config import Settings
 from app.core.transactions import transaction
 from app.modules.notificaciones.correo import despachar_correo
 from app.modules.notificaciones.models import NotificacionTransaccional
+
+# Tope de intentos por notificación: superado, la fila queda en 'fallido' como registro
+# terminal auditable (visible en el historial) y deja de reintentarse. Sin este tope una
+# dirección inválida se reintentaba cada hora indefinidamente, dañando la reputación del remitente.
+MAX_INTENTOS = 8
+
+
+def dominio_remitente(settings: Settings) -> str:
+    """Dominio del remitente configurado, para un Message-ID alineado con SPF/DKIM."""
+    _, direccion = parseaddr(settings.smtp_remitente)
+    if "@" not in direccion:
+        return "polis.invalid"
+    return direccion.rpartition("@")[2].strip().lower() or "polis.invalid"
 
 
 class EntregaResultado(BaseModel):
@@ -48,6 +62,7 @@ class NotificacionWorker:
                     or_(
                         and_(
                             NotificacionTransaccional.estado_envio.in_(["pendiente", "fallido"]),
+                            NotificacionTransaccional.intentos < MAX_INTENTOS,
                             or_(
                                 NotificacionTransaccional.proximo_intento_en.is_(None),
                                 NotificacionTransaccional.proximo_intento_en <= ahora,
@@ -75,7 +90,7 @@ class NotificacionWorker:
             registro.error_detalle = None
             await self.session.flush()
             entrega_id, intentos = registro.id, registro.intentos
-            message_id = f"<polis-notificacion-{entrega_id}@polis.invalid>"
+            message_id = f"<polis-notificacion-{entrega_id}@{dominio_remitente(self.settings)}>"
             argumentos = dict(
                 destinatario=registro.destinatario_correo,
                 asunto=registro.asunto,

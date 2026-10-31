@@ -7,6 +7,8 @@ import smtplib
 import ssl
 from datetime import UTC, datetime
 from email.message import EmailMessage
+from email.utils import formatdate
+from html.parser import HTMLParser
 
 from app.core.config import Settings
 
@@ -226,6 +228,57 @@ def generar_html_cambio_estado(
 """
 
 
+class _ExtractorTexto(HTMLParser):
+    """Convierte el HTML institucional en texto plano legible (parte text/plain)."""
+
+    _BLOQUES = {"p", "div", "tr", "h1", "h2", "h3", "li", "br", "table"}
+    _OMITIR = {"style", "script", "title", "head"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self._partes: list[str] = []
+        self._omitir = 0
+        self._enlace: str | None = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self._OMITIR:
+            self._omitir += 1
+        elif tag in self._BLOQUES:
+            self._partes.append("\n")
+        elif tag == "a":
+            self._enlace = dict(attrs).get("href")
+
+    def handle_endtag(self, tag):
+        if tag in self._OMITIR:
+            self._omitir = max(0, self._omitir - 1)
+        elif tag in self._BLOQUES:
+            self._partes.append("\n")
+        elif tag == "a" and self._enlace:
+            self._partes.append(f" ({self._enlace})")
+            self._enlace = None
+
+    def handle_data(self, data):
+        if not self._omitir and data.strip():
+            self._partes.append(" ".join(data.split()))
+
+    def texto(self) -> str:
+        crudo = " ".join(self._partes)
+        lineas = [" ".join(linea.split()) for linea in crudo.splitlines()]
+        compacto: list[str] = []
+        for linea in lineas:
+            if linea or (compacto and compacto[-1]):
+                compacto.append(linea)
+        return "\n".join(compacto).strip()
+
+
+def texto_plano_desde_html(cuerpo_html: str) -> str:
+    """Alternativa text/plain fiel al contenido del evento (no una frase genérica)."""
+    extractor = _ExtractorTexto()
+    extractor.feed(cuerpo_html)
+    extractor.close()
+    return extractor.texto() or "Mensaje institucional de POLIS. Acceda a la plataforma para consultar el detalle."
+
+
 async def despachar_correo(
     destinatario: str,
     asunto: str,
@@ -248,17 +301,24 @@ async def despachar_correo(
     mensaje["From"] = settings.smtp_remitente
     mensaje["To"] = destinatario
     mensaje["Subject"] = asunto
+    mensaje["Date"] = formatdate(usegmt=True)
+    # RFC 3834: evita respuestas automáticas (vacaciones, rebotes en bucle) a un correo del sistema.
+    mensaje["Auto-Submitted"] = "auto-generated"
     if identificador_mensaje:
         mensaje["Message-ID"] = identificador_mensaje
-    mensaje.set_content(
-        "Su cliente de correo no soporta visualización HTML. Por favor acceda a la plataforma POLIS para consultar su radicado."
-    )
+    mensaje.set_content(texto_plano_desde_html(cuerpo_html))
     mensaje.add_alternative(cuerpo_html, subtype="html")
 
     def entregar():
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10) as smtp:
-            if settings.smtp_tls:
-                smtp.starttls(context=ssl.create_default_context())
+        contexto = ssl.create_default_context()
+        if settings.smtp_port == 465:
+            # SMTPS (TLS implícito): starttls() fallaría contra este puerto.
+            conexion = smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, timeout=10, context=contexto)
+        else:
+            conexion = smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10)
+        with conexion as smtp:
+            if settings.smtp_tls and settings.smtp_port != 465:
+                smtp.starttls(context=contexto)
             if settings.smtp_usuario:
                 smtp.login(settings.smtp_usuario, settings.smtp_contrasena or "")
             smtp.send_message(mensaje)
