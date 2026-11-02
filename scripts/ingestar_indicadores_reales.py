@@ -164,7 +164,10 @@ def obtener_url_bd():
                         url = line.strip().split("=", 1)[1].strip('"').strip("'")
                         break
     if not url:
-        url = "postgresql://polis:polis_cartagena_2026@127.0.0.1:5432/bd_csh"
+        raise RuntimeError(
+            "POLIS_DATABASE_URL no está disponible (ni en el entorno ni en backend/.env): "
+            "la ingesta no usa credenciales fijas en código (AUD-11/OBS-13)."
+        )
     # Convertir asyncpg SQLAlchemy URL a asyncpg puro
     url = url.replace("postgresql+asyncpg://", "postgresql://")
     return url

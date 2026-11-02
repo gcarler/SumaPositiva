@@ -12,6 +12,12 @@ MAX_DISK_PERCENT=90
 MAX_PG_CONN_PERCENT=85
 BACKEND_HEALTH_URL="http://127.0.0.1:8000/api/v1/health/live"
 BACKEND_SYSTEM_URL="http://127.0.0.1:8000/api/v1/health/system"
+HERALD_HEALTH_URL="http://127.0.0.1:8000/api/v1/health/herald"
+# Deduplicación temporal de la alerta de Herald (riesgo 4 de la entrega 275):
+# si la alerta ya se envió dentro de la ventana, la degradación sigue siendo
+# visible en tabular/JSON/log, pero el canal de alerta no se repite.
+HERALD_ALERT_COOLDOWN_SEGUNDOS=7200
+HERALD_ALERT_STATE_FILE=/var/cache/polis-monitor/herald_ultima_alerta
 FRONTEND_URL="http://127.0.0.1:3000/"
 LOG_FILE="/var/log/polis-monitor.log"
 
@@ -30,6 +36,13 @@ if [[ -f "/root/polis/backend/.env" ]]; then
   if [[ -z "${POLIS_TELEGRAM_CHAT_ID}" ]]; then
     POLIS_TELEGRAM_CHAT_ID=$(grep "^POLIS_TELEGRAM_CHAT_ID=" /root/polis/backend/.env 2>/dev/null | cut -d= -f2- || true)
   fi
+fi
+
+# Higiene AUD-11/OBS-13: la credencial de PostgreSQL se lee de backend/.env en cada
+# corrida (sin valores fijos en scripts versionados; rotación sin editar el script).
+POLIS_DB_PASSWORD="${POLIS_DB_PASSWORD:-}"
+if [[ -z "${POLIS_DB_PASSWORD}" && -f "/root/polis/backend/.env" ]]; then
+  POLIS_DB_PASSWORD=$(grep "^POLIS_DATABASE_URL=" /root/polis/backend/.env 2>/dev/null | head -n 1 | sed -E 's|^POLIS_DATABASE_URL=postgres(ql)?(\+asyncpg)?://[^:]+:([^@]+)@.*|\3|')
 fi
 
 MODO="check"
@@ -149,6 +162,52 @@ if [[ "$FRONTEND_HTTP_CODE" != "200" ]]; then
 fi
 
 # ------------------------------------------------------------------------------
+# 2.5 Verificación de Herald (entrega de correo transaccional)
+# Endpoint interno sin auth que devuelve solo {estado, motivos}: sin cifras ni PII.
+# Se reutiliza enviar_alerta_notificacion (único canal de alerta del watchdog);
+# el consolidado por corrida evita duplicar mensajes dentro de la misma ejecución
+# y el sello de cooldown (repositorio temporal en disco) evita repetir la alerta
+# en cada corrida del cron mientras ya exista una alarma por Herald no cerrada.
+# ------------------------------------------------------------------------------
+HERALD_ESTADO="no disponible"
+HERALD_MOTIVOS=""
+HERALD_ALERTA_SUPRIMIDA="NO"
+HERALD_BODY=$(curl -s --max-time 4 "$HERALD_HEALTH_URL" 2>/dev/null || true)
+if [[ -n "$HERALD_BODY" ]]; then
+  HERALD_ESTADO=$(echo "$HERALD_BODY" | sed -n 's/.*"estado"[[:space:]]*:[[:space:]]*"\([a-z]*\)".*/\1/p' | head -n 1)
+  [[ -z "$HERALD_ESTADO" ]] && HERALD_ESTADO="no disponible"
+  HERALD_MOTIVOS=$(echo "$HERALD_BODY" | sed -n 's/.*"motivos"[[:space:]]*:[[:space:]]*\[\([^]]*\)\].*/\1/p' | head -n 1)
+  # Motivos escapados para el bloque --json (hallazgo D-4 del dictamen EAF 275):
+  # una comilla o contrabarra futura en un motivo no corrompe el JSON del watchdog.
+  HERALD_MOTIVOS_JSON=$(printf '%s' "$HERALD_MOTIVOS" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
+fi
+
+if [[ "$HERALD_ESTADO" != "saludable" ]]; then
+  AHORA_EPOCH=$(date +%s)
+  ULTIMA_HERALD_ALERTA=$(cat "$HERALD_ALERT_STATE_FILE" 2>/dev/null || echo 0)
+  if [[ "$ULTIMA_HERALD_ALERTA" =~ ^[0-9]+$ ]] && (( AHORA_EPOCH - ULTIMA_HERALD_ALERTA < HERALD_ALERT_COOLDOWN_SEGUNDOS )); then
+    # Segunda alerta dentro de la ventana: visible (tabla/JSON/log), no repetida.
+    HERALD_ALERTA_SUPRIMIDA="SI"
+    if [[ "$MODO" == "cron" ]]; then
+      log_msg "INFO" "Herald en estado '${HERALD_ESTADO}': alerta suprimida por cooldown (${HERALD_ALERT_COOLDOWN_SEGUNDOS}s)."
+    fi
+  else
+    ESTADO_GLOBAL=1
+    DETALLES_FALLOS="${DETALLES_FALLOS} [Herald ${HERALD_ESTADO}]"
+    mkdir -p "$(dirname "$HERALD_ALERT_STATE_FILE")" 2>/dev/null || true
+    echo "$AHORA_EPOCH" > "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
+  fi
+else
+  # Recuperación: limpiar el sello para que la próxima degradación alerte de inmediato.
+  if [[ -f "$HERALD_ALERT_STATE_FILE" ]]; then
+    rm -f "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
+    if [[ "$MODO" == "cron" ]]; then
+      log_msg "INFO" "Herald recuperado (saludable); sello de cooldown eliminado."
+    fi
+  fi
+fi
+
+# ------------------------------------------------------------------------------
 # 3. Verificación de PostgreSQL (Conexiones activas vs max_connections)
 # ------------------------------------------------------------------------------
 PG_CONEXIONES_PCT=0
@@ -157,7 +216,7 @@ PG_MAX=100
 PG_PING_OK="SI"
 
 if command -v psql >/dev/null 2>&1; then
-  PG_DATA=$(PGPASSWORD=polis_cartagena_2026 psql -h 127.0.0.1 -U polis -d bd_csh -t -A -c "
+  PG_DATA=$(PGPASSWORD="${POLIS_DB_PASSWORD}" psql -h 127.0.0.1 -U polis -d bd_csh -t -A -c "
     SELECT count(*), current_setting('max_connections')::int 
     FROM pg_stat_activity 
     WHERE datname = 'bd_csh';
@@ -205,6 +264,11 @@ if [[ "$MODO" == "json" ]]; then
     "backend_http": "$BACKEND_HTTP_CODE",
     "frontend_http": "$FRONTEND_HTTP_CODE"
   },
+  "herald": {
+    "estado": "$HERALD_ESTADO",
+    "motivos": "$HERALD_MOTIVOS_JSON",
+    "alerta_suprimida": "$HERALD_ALERTA_SUPRIMIDA"
+  },
   "postgresql": {
     "disponible": "$PG_PING_OK",
     "conexiones_activas": $PG_ACTUALES,
@@ -241,6 +305,7 @@ else
   printf "%-30s | %-20s | %-12s | %-10s\n" "polis-frontend.service" "$FRONTEND_ACTIVE" "active" "$( [[ "$FRONTEND_ACTIVE" == "active" ]] && echo "OK" || echo "FAIL" )"
   printf "%-30s | %-20s | %-12s | %-10s\n" "FastAPI HTTP Endpoint" "HTTP $BACKEND_HTTP_CODE" "HTTP 200" "$( [[ "$BACKEND_HTTP_CODE" == "200" ]] && echo "OK" || echo "FAIL" )"
   printf "%-30s | %-20s | %-12s | %-10s\n" "Next.js HTTP Root" "HTTP $FRONTEND_HTTP_CODE" "HTTP 200" "$( [[ "$FRONTEND_HTTP_CODE" == "200" ]] && echo "OK" || echo "FAIL" )"
+  printf "%-30s | %-20s | %-12s | %-10s\n" "POLIS Herald (correo)" "$HERALD_ESTADO$([[ "$HERALD_ALERTA_SUPRIMIDA" == "SI" ]] && echo " (alerta suprimida)")" "saludable" "$( [[ "$HERALD_ESTADO" == "saludable" ]] && echo "OK" || echo "FAIL" )"
   printf "%-30s | %-20s | %-12s | %-10s\n" "PostgreSQL bd_csh Conx" "$PG_ACTUALES / $PG_MAX ($PG_CONEXIONES_PCT%)" "< ${MAX_PG_CONN_PERCENT}%" "$( [[ "$PG_CONEXIONES_PCT" -lt "$MAX_PG_CONN_PERCENT" && "$PG_PING_OK" == "SI" ]] && echo "OK" || echo "FAIL" )"
   printf "%-30s | %-20s | %-12s | %-10s\n" "Espacio en Disco (/)" "${DISK_USED_PCT}% (${DISK_FREE_GB} GB libre)" "< ${MAX_DISK_PERCENT}%" "$( [[ "$DISK_USED_PCT" -lt "$MAX_DISK_PERCENT" ]] && echo "OK" || echo "FAIL" )"
   echo "=============================================================================="
