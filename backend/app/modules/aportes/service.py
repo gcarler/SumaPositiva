@@ -82,7 +82,7 @@ class AporteService:
         from app.modules.notificaciones.service import NotificacionService
 
         url_base = self.settings.identidad_url_publica.rstrip("/")
-        enlace_seguimiento = f"{url_base}/seguimiento?radicado={propuesta.codigo_radicado}"
+        enlace_seguimiento = f"{url_base}/aportes/{propuesta.codigo_radicado}"
         enlace_actividades = f"{url_base}/plataforma"
         notif_service = NotificacionService(self.repository.session, settings=self.settings)
 
@@ -173,7 +173,33 @@ class AporteService:
             propuesta = await self.repository.crear(datos, sesion_contexto=sesion_contexto)
 
             if correo_notif:
+                from sqlalchemy import select
+
+                from app.modules.geodatos.models import Territorio
                 from app.modules.notificaciones.service import NotificacionService
+                from app.modules.politicas.models import DimensionSeguridadHumana
+
+                dimension_titulo: str | None = None
+                if propuesta.dimension_id:
+                    resDimension = await self.repository.session.execute(
+                        select(DimensionSeguridadHumana.titulo).where(
+                            DimensionSeguridadHumana.id == propuesta.dimension_id
+                        )
+                    )
+                    dimension_titulo = resDimension.scalar_one_or_none()
+
+                territory_nombre: str | None = None
+                if propuesta.territorio_id:
+                    resTerritorio = await self.repository.session.execute(
+                        select(Territorio.nombre).where(Territorio.id == propuesta.territorio_id)
+                    )
+                    territory_nombre = resTerritorio.scalar_one_or_none()
+
+                # La constancia prioriza la dimensión de Seguridad Humana; si el aporte no la
+                # tiene, la ubicación territorial es el ancla visible disponible.
+                descripcion_territorial = (
+                    dimension_titulo or territory_nombre or propuesta.territorio_nombre or "Participación ciudadana"
+                )
 
                 notif_service = NotificacionService(self.repository.session, settings=self.settings)
                 await notif_service.enviar_constancia_radicacion(
@@ -182,6 +208,7 @@ class AporteService:
                     titulo=propuesta.titulo,
                     descripcion=propuesta.descripcion,
                     autor=propuesta.autor_nombre,
+                    dimension=descripcion_territorial,
                 )
 
             # POLIS Herald Fase 2: los gestores de mesa reciben el pendiente legal
@@ -209,7 +236,7 @@ class AporteService:
         from app.modules.notificaciones.service import NotificacionService
 
         notif_service = NotificacionService(self.repository.session, settings=self.settings)
-        enlace = f"{self.settings.identidad_url_publica.rstrip('/')}/seguimiento?radicado={propuesta.codigo_radicado}"
+        enlace = f"{self.settings.identidad_url_publica.rstrip('/')}/aportes/{propuesta.codigo_radicado}"
         pendiente = (
             f"Concepto técnico pendiente para {propuesta.codigo_radicado} dentro del término legal"
             " (Sentencia C-150 de 2015)"
@@ -323,6 +350,7 @@ class AporteService:
                         titulo=propuesta.titulo,
                         nuevo_estado=cambios.estado,
                         observaciones="Actualización en el estado de tramitación en POLIS.",
+                        autor=propuesta.autor_nombre,
                     )
 
             # POLIS Herald Fase 2: constancia de la edición de la propuesta radicada.
@@ -341,8 +369,7 @@ class AporteService:
                     titulo=propuesta.titulo,
                     campos_modificados=campos_editados,
                     enlace_seguimiento=(
-                        f"{self.settings.identidad_url_publica.rstrip('/')}"
-                        f"/seguimiento?radicado={propuesta.codigo_radicado}"
+                        f"{self.settings.identidad_url_publica.rstrip('/')}/aportes/{propuesta.codigo_radicado}"
                     ),
                 )
 

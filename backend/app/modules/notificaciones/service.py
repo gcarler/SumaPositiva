@@ -11,18 +11,18 @@ from sqlalchemy.orm import selectinload
 
 from app.core.config import Settings
 from app.modules.aportes.models import PropuestaCiudadana
-from app.modules.notificaciones.correo import (
-    generar_html_cambio_estado,
-    generar_html_constancia_radicacion,
-)
 from app.modules.notificaciones.models import NotificacionTransaccional
 from app.modules.notificaciones.plantillas_eventos import (
     generar_html_actividad_apoyo,
-    generar_html_bienvenida_registro,
     generar_html_constancia_actualizacion_propuesta,
     generar_html_gestion_institucional,
     generar_html_recuperacion_contrasena,
     generar_html_seguridad_perfil,
+)
+from app.modules.notificaciones.plantillas_stack import (
+    generar_html_cambio_estado,
+    generar_html_constancia_radicacion,
+    generar_html_verificacion_correo,
 )
 from app.modules.notificaciones.schemas import ConsultaRadicadoRespuesta
 
@@ -43,18 +43,25 @@ class NotificacionService:
         titulo: str,
         descripcion: str,
         autor: str,
+        *,
+        dimension: str | None = None,
+        entidad: str | None = None,
+        politica: str | None = None,
     ) -> NotificacionTransaccional:
-        """Persiste la intención dentro de la transacción del llamador, sin transporte."""
+        """Persiste la constancia oficial en la transacción activa del llamador."""
         url_base = self.settings.identidad_url_publica.rstrip("/")
-        enlace_consulta = f"{url_base}/seguimiento?radicado={radicado}"
+        enlace_aporte = f"{url_base}/aportes/{radicado}"
 
-        asunto = f"POLIS: Constancia de Radicación {radicado} - Cartagena Ciudad de Derechos"
+        asunto = f"Constancia oficial de radicación {radicado} - POLIS"
         cuerpo_html = generar_html_constancia_radicacion(
             radicado=radicado,
             titulo=titulo,
             descripcion=descripcion,
             autor=autor,
-            enlace_consulta=enlace_consulta,
+            dimension=dimension or "Participación ciudadana",
+            enlace_verificacion=enlace_aporte,
+            entidad=entidad or "Alcaldía Mayor de Cartagena de Indias",
+            politica=politica,
         )
 
         notificacion = NotificacionTransaccional(
@@ -77,18 +84,21 @@ class NotificacionService:
         titulo: str,
         nuevo_estado: str,
         observaciones: str = "",
+        *,
+        autor: str = "Ciudadano participante",
     ) -> NotificacionTransaccional:
-        """Persiste el aviso junto al cambio de estado; un worker entrega tras el commit."""
+        """Persiste el aviso de cambio de estado en el outbox de la transacción."""
         url_base = self.settings.identidad_url_publica.rstrip("/")
-        enlace_consulta = f"{url_base}/seguimiento?radicado={radicado}"
+        enlace_aporte = f"{url_base}/aportes/{radicado}"
 
-        asunto = f"POLIS: Actualización de propuesta {radicado} - {nuevo_estado.replace('_', ' ').capitalize()}"
+        asunto = f"POLIS: Actualización en el estado de su radicado {radicado}"
         cuerpo_html = generar_html_cambio_estado(
             radicado=radicado,
             titulo=titulo,
+            autor=autor,
             nuevo_estado=nuevo_estado,
-            observaciones=observaciones or "Su propuesta ha avanzado en la ruta de tramitación institucional.",
-            enlace_consulta=enlace_consulta,
+            descripcion_estado=(observaciones or "Su propuesta ha avanzado en la ruta de tramitación institucional."),
+            enlace_seguimiento=enlace_aporte,
         )
 
         notificacion = NotificacionTransaccional(
@@ -139,11 +149,12 @@ class NotificacionService:
         Se persiste junto al alta del usuario: si el rollback la cancela, nunca se
         recibe una invitación a una cuenta inexistente.
         """
-        asunto = "POLIS: Bienvenido(a) a la plataforma distrital - Verifique su cuenta"
-        cuerpo_html = generar_html_bienvenida_registro(
+        asunto = "POLIS: Activa tu cuenta y verifica tu correo electrónico"
+        cuerpo_html = generar_html_verificacion_correo(
             nombre=nombre,
             enlace_verificacion=enlace_verificacion,
-            minutos=minutos,
+            minutos_expiracion=minutos,
+            aviso_spam=True,
         )
         return await self._encolar(
             destinatario=destinatario,
