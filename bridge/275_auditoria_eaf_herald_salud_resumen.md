@@ -278,7 +278,21 @@ La rotación indicada en la nota operacional anterior fue ejecutada y verificada
 
 ## Apéndice — Guion de verificación del primer disparo real del timer del resumen (programado: 2026-11-02 12:00 UTC / 07:00 America/Bogota)
 
-**Estado**: PROGRAMADO, no ejecutado en el 2026-11-01. Tras el disparo, ejecutar y registrar resultados:
+**Estado**: **EJECUTADO el 2026-11-03 10:01–10:02 UTC** sobre la corrida real del 2026-11-02 12:00:01 UTC. Resultados (PASS en los 7 pasos):
+
+| # | Comprobación | Resultado real |
+| --- | --- | --- |
+| 1 | Acuse del timer | `LAST = 2026-11-02 12:00:01 UTC` (list-timers; NEXT 2026-11-03 12:00 UTC) |
+| 2 | Resultado del oneshot | `Result=success`, `ExecMainStatus=0` |
+| 3 | Journal de encolado | `Resumen del día 02/11/2026 encolado para 1 destinatario(s) para el 2026-11-02` (correo omitido aquí por PII) |
+| 4 | Entrega en BD (solo lectura) | `estado_envio=enviado`, 1 fila; `creado_en=12:00:10.585Z`, `enviado_en=12:00:19.150Z` → **latencia real 8,6 s** |
+| 5 | Idempotencia | **1 fila / 1 destinatario distinto** — cero duplicados del índice único parcial |
+| 6 | Latido y salud post-rotación | `herald_latido` fresco (5,0 s al muestreo), `GET /health/herald` → `{"estado":"saludable","motivos":[]}` |
+| 7 | Monitor con credencial rotada | `--check` exit 0; `PostgreSQL bd_csh Conx 12/100 (12%) OK`, resto OK |
+
+**Conclusión del guion**: el primer disparo programado encoló, entregó y no duplicó; la rotación de la credencial no afectó al ciclo del resumen ni al ejecutor. Sin desviaciones. *(Pendiente de commit; la corrida del 2026-11-03 12:00 UTC es una segunda ejecución ordinaria, fuera de este guion.)*
+
+**Guion original (para referencia):**
 
 1. `systemctl list-timers polis-herald-resumen.timer --no-pager` → acuse real del disparo (LAST pasando de `-`).
 2. `systemctl show -p Result,ExecMainStatus polis-herald-resumen.service` → `Result=success`, `ExecMainStatus=0`.
