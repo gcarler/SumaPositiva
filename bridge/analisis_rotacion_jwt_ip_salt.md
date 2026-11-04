@@ -130,7 +130,7 @@ ventana.
 
 La ventana queda **bloqueada hasta cumplir tres condiciones** (no se ejecuta en automático):
 1. **Reinspección EAF del 275 cerrada** ✅ **CUMPLIDA (2026-11-03):** el dictamen final de Codex EAF es **APROBADO** (`bridge/275_cierre_eaf_codex_20261103/cierre_final.md`, §9): H275-01 cerrado con sus tres residuales (R1.1–R1.3) y conservados los cierres de H275-02 a H275-05. El dictamen aclaró que no se trata de autorización de despliegue ni de plataforma verde; eso corresponde a la decisión de producto de esta ventana.
-2. **Inventario MFA + flujo de regeneración de códigos de recuperación** verificado y auditado (§3.4): sin esto el corte de `POLIS_IP_SALT` inutiliza códigos de recuperación vigentes. ⏳ Abierta.
+2. **Inventario MFA + flujo de regeneración de códigos de recuperación** verificado y auditado (§3.4): sin esto el corte de `POLIS_IP_SALT` inutiliza códigos de recuperación vigentes. ✅ **CUMPLIDA (2026-11-04, ver §7.2).**
 3. **Ningún despliegue del 275 en la misma ventana** (evitar mezclar evidencia de un reinicio con un cambio funcional pendiente de dictamen). ⏳ Abierta: coordinar con agy2/codex/ollamacodex que ninguna entrega despliegue el 2026-11-05 en esa franja.
 
 Sin las tres condiciones, la ejecución se pospone manteniendo la opción A ya decidida. El rollback (§5) es restaurar el `.env.bak` y reiniciar.
@@ -143,4 +143,55 @@ Confirmado por el responsable de producto en la decisión del día:
 - **Ventana confirmada:** jueves **2026-11-05, 03:00 UTC** (22:00 Bogotá del miércoles 4), sujeta a las condiciones 2 y 3 de arriba.
 - **Regeneración preventiva de códigos de recuperación MFA: OBLIGATORIA antes del corte** (§3.4 / §6.4): se ejecutará el inventario de usuarios con MFA activo y la verificación del flujo auditado de regeneración como prerrequisito de la ventana, no como aceptación de riesgo.
 
-Resta para poder girar la ventana: completar el punto 2 (inventario y flujo de regeneración MFA) y el punto 3 (coordenadas de ventanas con los demás equipos de trabajo), más la vista de producto del reinicio único (~1–2 min de API).
+### 7.2. Cumplimiento de la condición 2 (2026-11-04)
+
+**Flujo verificado.** El endpoint ya existe y es auditado desde la entrega CIERRE-06: `POST /api/v1/identidad/mfa/recuperacion/regenerar` (`backend/app/modules/identidad/router.py:428`), exige usuario autenticado y un código TOTP vigente con antirreplay RFC 6238 §5.2; el servicio (`backend/app/modules/identidad/service.py:803`) regenera 8 códigos, re-hashea con el salt vigente y escribe el evento de auditoría `mfa_codigos_regenerados` en `autenticacion.eventos_identidad` dentro de la misma transacción. El consumo de un código ya escribe `mfa_codigo_recuperacion_usado`.
+
+**Prueba con base exclusiva.** Se creó y migró `polis_test_mfa_20261105` (cabeza 0094) y se ejecutó `backend/tests/test_cierre06_mfa_totp.py` con `POLIS_TEST_DATABASE_URL`: **5 aprobadas / 0 fallidas**, incluido el flujo completo con BD (activar → usar código de recuperación → regenerar → desactivar). La base de prueba retiene la evidencia: en `autenticacion.eventos_identidad` quedaron escritos `mfa_activado` (1), `mfa_codigo_recuperacion_usado` (1), `mfa_codigos_regenerados` (1) y `mfa_desactivado` (1) — la auditoría de la regeneración es durable y sobrevive al commit.
+
+**Inventario de producción (solo lectura, bd_csh).**
+
+| Métrica | Valor |
+| --- | --- |
+| Factores `usuarios_mfa` con `activo=true` | **0** |
+| Factores iniciados que nunca se activaron | 1 (sin códigos vigentes que cuidar) |
+| Usuarios activos en total | 44 |
+| Regeneraciones auditadas históricas | 0 |
+
+**Conclusión:** no hay códigos de recuperación vigentes en producción que el corte del salt pueda inutilizar; el flujo para los usuarios que activen MFA antes de la ventana queda disponible, probado y con su evento de auditoría verificado de extremo a extremo. Aun así, para la ventana se declara el protocolo operativo: si entre hoy y la ejecución alguien activa MFA, avisar a ese usuario para que regenere códigos justo antes del corte, con verificación post-corte del evento en `eventos_identidad`. Esto se re-chequea en el preflight del guion (§8).
+
+Resta para poder girar la ventana: el punto 3 (coordenadas de ventanas con los demás equipos de trabajo), más la vista de producto del reinicio único (~1–2 min de API).
+
+---
+
+## 8. Guion de ejecución y rollback (2026-11-05, 03:00 UTC)
+
+**Preflight (h-2, ~02:00 UTC, sin tocar nada).** En el host:
+1. Re-chequeo del inventario: la consulta del §7.2 sobre `bd_csh`; si aparece algún `activo=true`, activar protocolo de regeneración antes del corte.
+2. Confirmar ventana despejada: sin despliegues propios ni ajenos en curso (coordenadas pactadas con agy2/codex/ollamacodex) y sin trabajos programados del respaldo en esa franja (revisar `scripts/respaldo_*.sh` en cron).
+3. Estado de servicios: confirmar que `polis-backend.service` está `active` y el `Result` del último oneshot de herald es OK.
+4. Respaldo atómico del `.env` actual: `cp --preserve=000 backend/.env backend/.env.bak_pre_rotacion_jwt_$(date -u +%Y%m%d_%H%M%S)` con `chmod 0600` verificado en ambos.
+5. Generar en memoria, sin imprimir en terminal ni logs: `VALOR_JWT=$(python3 -c 'import secrets; print(secrets.token_hex(32))')` y `VALOR_SALT=$(python3 -c 'import secrets; print(secrets.token_hex(32))')`.
+
+**Ejecución (03:00 UTC, ~2 min de ventana).**
+6. Barrido previo de sesiones largas: registrar hora de corte para el aviso de re-login forzado.
+7. Reemplazo de los dos valores en `backend/.env`: sustituir las líneas `POLIS_JWT_SECRET_KEY` y `POLIS_IP_SALT` con los nuevos valores — nunca ejecutar `echo` de los secretos (los imprime en journald/shell history); escribir con `sed -i` sobre el archivo ya respaldado o, preferible, regenerar el archivo en un `tmp` con `umask 077` y `mv` atómico en su lugar. Verificar permisos 0600 del resultado.
+8. `systemctl restart polis-backend.service` — reinicio único que carga ambos secretos. Verificar: `systemctl show -p ActiveState -p Result polis-backend.service`.
+9. Espera y observación: `/health/live` HTTP 200 y `GET /health/herald` → `saludable` en < 60 s.
+10. Corrida del monitor `scripts/monitor_sistema_polis.sh --check` — debe salir exit 0 ("Todos OK") por la ruta nueva.
+
+**Post-verificación (03:05–03:30 UTC).**
+11. **Login institucional:** con una cuenta administrativa — tiene que rehacer login (el token viejo responde 401) y el nuevo token tiene que pasar todas las rutas habitualmente usadas.
+12. **Sesión anónima cívica:** emitir un token nuevo (mutación de sesión anónima por API), confirmar que la fila nueva en `sesiones` tiene huella con el salt nuevo (distinta de cualquier huella histórica).
+13. **Enlace fuera de banda nuevo:** solicitar y consumir, con cuenta de prueba, un enlace de verificación de correo / recuperación; otro emitido antes del corte debe responder 401/inválido.
+14. **MFA:** si hay algún usuario con MFA activo (preflight lo diría), ejecutar regeneración verificada y confirmar el evento en `eventos_identidad`.
+15. **Rate-limits:** un par de hits del endpoint público anónimo para confirmar que los contadores con la clave nueva no pierden; revisar 403 esperados y cero error 500.
+16. **Registro del corte:** archivo de ejecución en `bridge/293_ejecucion_rotacion_jwt_ip_salt/` con los resultados de 1–15, con líneas de tiempo (timestamps) y hashes del snapshot de código; examen general de salud de las otras unidades (herald, respaldo) sin conexión a `bd_csh`.
+
+**Rollback (si algo falla en 8–15).**
+- Restaurar: `cp backend/.env.bak_pre_rotacion_jwt_<timestamp> backend/.env` (mantener permisos 0600) y `systemctl restart polis-backend.service`.
+- Verificar de nuevo 8–10 (health, monitor).
+- Los tokens emitidos en la ventana con la clave nueva mueren al restaurar; comunicar el nuevo re-login o esperar que cada quien se re-loginee la próxima sesión.
+- Registrar la hora y motivo del rollback en el archivo de ejecución (§8.16).
+
+
