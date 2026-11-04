@@ -2,7 +2,7 @@
 
 **De:** `freebuff:0.0` (EDD)
 **Fecha:** 2026-11-01
-**Estado:** Análisis abierto — **no ejecuta nada**; la opción se recomienda, la decisión es de producto
+**Estado:** **DECIDIDO Y CONFIRMADO (2026-11-03): Opción A — corte absoluto, ventana jueves 2026-11-05 03:00 UTC (22:00 Bogotá del miércoles 4)**, con condiciones de giro (ver §7). No se ha ejecutado nada.
 **Origen:** límite (b) del cierre de rotación de credencial de BD en `bridge/275_auditoria_eaf_herald_salud_resumen.md` y paso 2 de `docs/plan-consolidacion-git.md` ("Pendiente de ejecución al crear remoto").
 **Normativa aplicable:** `docs/identidad.md`, `docs/despliegue-produccion.md`, `docs/rotacion-secretos.md`, Ley 1581/2012 (Habeas Data), `bridge/reauditorias/reauditoria_E1.md` (hallazgo ALTA sobre secretos).
 
@@ -116,3 +116,31 @@ ventana.
 ---
 
 *Análisis con lectura de código del HEAD `64e818f`. Ningún secreto fue generado, impreso ni rotado a la fecha. `scripts/rotar_secretos_produccion.py` sigue siendo la herramienta oficiosa prevista; en caso de aprobarse se reutilizará el mismo enfoque silencioso ya probado en la rotación de la credencial de BD.*
+
+---
+
+## 7. Decisión adoptada (2026-11-03)
+
+**Opción A — corte absoluto.** Se descartan B y C para esta rotación:
+- **B** mantiene el salt viejo válido para enlazar, lo que neutraliza justo el beneficio de la rotación y deja vivo el riesgo de re-identificación si el material se filtra.
+- **C** es la solución correcta a largo plazo, pero requiere migración de esquema y su propio encargo con pruebas y dictamen EAF; no debe colarse en una ventana de emergencia.
+- La opción A es la ya prescrita por `docs/rotacion-secretos.md` y `docs/plan-consolidacion-git.md` (paso 2), no añade superficie de código y deja el corte documentado como límite explícito. El dictamen EAF independiente del 275 (H275-05) tampoco exige una rotación nueva sin evidencia de exposición actual: pide retirar los literales históricos (en curso) y decidir el tratamiento del historial con coordinación.
+
+**Ventana: jueves 2026-11-05, 03:00 UTC (22:00 Bogotá del miércoles 4), condicionada.**
+
+La ventana queda **bloqueada hasta cumplir tres condiciones** (no se ejecuta en automático):
+1. **Reinspección EAF del 275 cerrada** ✅ **CUMPLIDA (2026-11-03):** el dictamen final de Codex EAF es **APROBADO** (`bridge/275_cierre_eaf_codex_20261103/cierre_final.md`, §9): H275-01 cerrado con sus tres residuales (R1.1–R1.3) y conservados los cierres de H275-02 a H275-05. El dictamen aclaró que no se trata de autorización de despliegue ni de plataforma verde; eso corresponde a la decisión de producto de esta ventana.
+2. **Inventario MFA + flujo de regeneración de códigos de recuperación** verificado y auditado (§3.4): sin esto el corte de `POLIS_IP_SALT` inutiliza códigos de recuperación vigentes. ⏳ Abierta.
+3. **Ningún despliegue del 275 en la misma ventana** (evitar mezclar evidencia de un reinicio con un cambio funcional pendiente de dictamen). ⏳ Abierta: coordinar con agy2/codex/ollamacodex que ninguna entrega despliegue el 2026-11-05 en esa franja.
+
+Sin las tres condiciones, la ejecución se pospone manteniendo la opción A ya decidida. El rollback (§5) es restaurar el `.env.bak` y reiniciar.
+
+**Consecuencia documentada:** el corte de huellas IP queda registrado como límite del dictamen operativo (dos poblaciones no comparables antes/después), y los usuarios institucionales y anónimos deberán renovar sesión una sola vez.
+
+### 7.1. Confirmación operativa (2026-11-03)
+
+Confirmado por el responsable de producto en la decisión del día:
+- **Ventana confirmada:** jueves **2026-11-05, 03:00 UTC** (22:00 Bogotá del miércoles 4), sujeta a las condiciones 2 y 3 de arriba.
+- **Regeneración preventiva de códigos de recuperación MFA: OBLIGATORIA antes del corte** (§3.4 / §6.4): se ejecutará el inventario de usuarios con MFA activo y la verificación del flujo auditado de regeneración como prerrequisito de la ventana, no como aceptación de riesgo.
+
+Resta para poder girar la ventana: completar el punto 2 (inventario y flujo de regeneración MFA) y el punto 3 (coordenadas de ventanas con los demás equipos de trabajo), más la vista de producto del reinicio único (~1–2 min de API).
