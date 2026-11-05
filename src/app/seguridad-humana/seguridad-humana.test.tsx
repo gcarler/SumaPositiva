@@ -141,6 +141,15 @@ describe("Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-29
     expect(text).toContain("34,6%");
   });
 
+  test("11. La matriz refleja los datos disponibles en el banco: dengue, IRCA e informalidad 2026", () => {
+    const filePath = path.resolve(process.cwd(), "public/docs/MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf");
+    const text = execSync(`pdftotext "${filePath}" -`).toString();
+    expect(text).toContain("713,24");
+    expect(text).toContain("IRCA");
+    expect(text).toContain("2,8");
+    expect(text).toContain("47,5");
+  });
+
   test("10. Los documentos de la caja de herramientas no contienen cifras sin fuente ni dominio ajeno", () => {
     const docs = [
       "ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf",

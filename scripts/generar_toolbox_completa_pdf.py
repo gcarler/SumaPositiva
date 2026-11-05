@@ -355,7 +355,7 @@ def generar_doc_abc():
         [Paragraph("<b>Marco Internacional ONU:</b>", st["TableCellBold"]),
          Paragraph("Resolución 66/290 de la Asamblea General de las Naciones Unidas (2012) sobre el paradigma de Seguridad Humana; Informe PNUD 1994 sobre las 7 dimensiones vitales.", st["TableCell"])],
         [Paragraph("<b>Ámbito Territorial:</b>", st["TableCellBold"]),
-         Paragraph("Distrito Turístico y Cultural de Cartagena de Indias: 3 Localidades, 15 Unidades Comuneras de Gobierno (UCG), y los 205 barrios, corregimientos y zonas insulares del POT.", st["TableCell"])],
+         Paragraph("Distrito Turístico y Cultural de Cartagena de Indias: 3 Localidades, 15 Unidades Comuneras de Gobierno (UCG) y los 205 barrios, corregimientos y zonas insulares, según el catálogo territorial de POLIS derivado del POT. Las 35 mesas son las programadas, no las realizadas.", st["TableCell"])],
         [Paragraph("<b>Finalidad del Documento:</b>", st["TableCellBold"]),
          Paragraph("Instrumento pedagógico vinculante y de consulta ciudadana para líderes comunales, Juntas de Acción Comunal (JAC), ediles de JAL, organizaciones sociales, veedurías y servidores públicos distritales.", st["TableCell"])],
         [Paragraph("<b>Garantía de Fe Pública:</b>", st["TableCellBold"]),
@@ -594,7 +594,7 @@ def generar_doc_abc():
         ],
         [
             Paragraph("<b>1. Económica</b>", st["TableCellBold"]),
-            Paragraph("Desocupación de 14,1 % e informalidad de 50,2 % (oct–dic 2025, GEIH-DANE, cabecera de Cartagena).", st["TableCell"]),
+            Paragraph("Desocupación de 14,1 % e informalidad de 50,2 % (oct–dic 2025, GEIH-DANE, cabecera); la informalidad fue 47,5 % en jun–ago 2026 (parcial).", st["TableCell"]),
             Paragraph("Bancos barriales de microcrédito productivo para sustituir el 'gota a gota' y empleo joven.", st["TableCell"]),
             Paragraph("Secretaría de Hacienda / Desarrollo Económico", st["TableCell"])
         ],
@@ -606,13 +606,13 @@ def generar_doc_abc():
         ],
         [
             Paragraph("<b>3. En Salud</b>", st["TableCellBold"]),
-            Paragraph("Sin línea base verificada en el banco de fuentes; pendiente de DADIS y estadísticas vitales (DANE).", st["TableCell"]),
+            Paragraph("Incidencia de dengue de 713,24 por 100.000 hab. en riesgo en 2024 (INS-SIVIGILA, vía TerriData). Mortalidad materna: pendiente de estadísticas vitales (DANE).", st["TableCell"]),
             Paragraph("Equipos extramurales de salud mental barrial y mejoramiento de infraestructura básica del CAP.", st["TableCell"]),
             Paragraph("DADIS (Departamento Administrativo de Salud)", st["TableCell"])
         ],
         [
             Paragraph("<b>4. Ambiental</b>", st["TableCellBold"]),
-            Paragraph("Sin inventario verificado de puntos críticos; pendiente de la Oficina de Gestión del Riesgo y la cartografía distrital.", st["TableCell"]),
+            Paragraph("IRCA de 2,8 en 2024, nivel «Sin riesgo» (INS-SIVICAP). El inventario de puntos críticos de inundación sigue pendiente (Oficina de Gestión del Riesgo).", st["TableCell"]),
             Paragraph("Limpieza comunitaria de caños, alertas tempranas por lluvia y dragado de canales pluviales.", st["TableCell"]),
             Paragraph("OAGRD / EPA Cartagena / Sec. de Infraestructura", st["TableCell"])
         ],
@@ -1003,7 +1003,7 @@ def generar_doc_presentacion():
     kpi1 = Table([
         [Paragraph("<font color='#DC2626'><b>14,1%</b></font>", st["SlideKpiNum"])],
         [Paragraph("TASA DE DESOCUPACIÓN", st["SlideKpiTitle"])],
-        [Paragraph("Trimestre móvil oct–dic 2025, cabecera de Cartagena (GEIH, DANE). La informalidad es de 50,2 %. El dato por edad no está en el banco de fuentes.", st["SlideKpiText"])],
+        [Paragraph("Trimestre móvil oct–dic 2025, cabecera de Cartagena (GEIH, DANE). La informalidad fue 50,2 % (oct–dic 2025) y 47,5 % (jun–ago 2026, parcial). El dato por edad no está en el banco de fuentes.", st["SlideKpiText"])],
     ], colWidths=[226], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3.5, C_ROSE),
@@ -1109,7 +1109,7 @@ def generar_doc_presentacion():
 
     d_card3 = Table([
         [Paragraph("<font color='#D97706'><b>3. Económica</b></font>", st["CardTitleSm"])],
-        [Paragraph("• <b>Línea Base:</b> 14,1% desocupación; 50,2% informalidad (oct–dic 2025)<br/>• <b>Meta:</b> por fijar<br/>• <b>Líder propuesto:</b> por confirmar", st["CardTextSm"])],
+        [Paragraph("• <b>Línea Base:</b> 14,1% desocupación; 50,2% informalidad (oct–dic 2025; 47,5% jun–ago 2026, parcial)<br/>• <b>Meta:</b> por fijar<br/>• <b>Líder propuesto:</b> por confirmar", st["CardTextSm"])],
     ], colWidths=[168], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3, C_EMBER),
@@ -1119,7 +1119,7 @@ def generar_doc_presentacion():
 
     d_card4 = Table([
         [Paragraph("<font color='#059669'><b>4. Ambiental</b></font>", st["CardTitleSm"])],
-        [Paragraph("• <b>Línea Base:</b> sin inventario verificado<br/>• <b>Meta:</b> por fijar<br/>• <b>Líder propuesto:</b> OAGRD / Infraestructura", st["CardTextSm"])],
+        [Paragraph("• <b>Línea Base:</b> IRCA 2,8 (2024); inventario de inundaciones pendiente<br/>• <b>Meta:</b> por fijar<br/>• <b>Líder propuesto:</b> OAGRD / Infraestructura", st["CardTextSm"])],
     ], colWidths=[168], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3, C_EMERALD),
@@ -1147,7 +1147,7 @@ def generar_doc_presentacion():
 
     d_card6 = Table([
         [Paragraph("<font color='#0284C7'><b>6. Seguridad en Salud</b></font>", st["CardTitleSm"])],
-        [Paragraph("• <b>Línea Base:</b> sin dato verificado en el banco de fuentes.<br/>• <b>Meta:</b> por fijar.<br/>• <b>Dependencia líder propuesta:</b> DADIS", st["CardTextSm"])],
+        [Paragraph("• <b>Línea Base:</b> dengue 713,24 por 100 mil hab. en riesgo (2024).<br/>• <b>Meta:</b> por fijar.<br/>• <b>Dependencia líder propuesta:</b> DADIS", st["CardTextSm"])],
     ], colWidths=[226], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3, C_CYAN),
@@ -1555,7 +1555,8 @@ def generar_doc_matriz():
                 "• Policía y Medicina Legal miden universos distintos: <b>no se suman ni se comparan</b>.<br/>"
                 "• Los trimestres móviles de la GEIH no son promedios anuales; las estimaciones SAE son experimentales.<br/>"
                 "• Las tasas usan la población proyectada por el DANE para el año citado.<br/>"
-                "• Las cifras no establecen relaciones de causa y efecto.",
+                "• Las cifras no establecen relaciones de causa y efecto.<br/>"
+                "• Conteos territoriales: 3 localidades, 15 UCG (más la zona rural) y 205 barrios y corregimientos según el catálogo territorial de POLIS derivado del POT; las 35 mesas son las programadas, no las realizadas.",
                 st["TableCell"]
             )
         ]
@@ -1655,8 +1656,8 @@ def generar_doc_matriz():
          "DANE, GEIH. Cabecera de Cartagena. Trimestre móvil: no es un promedio anual.",
          "A", "Por confirmar (desarrollo económico)"),
         ("Económica", "Proporción de informalidad",
-         "50,2 % (oct–dic 2025)<br/>2024: 45,7 %",
-         "DANE, GEIH. Cabecera de Cartagena. Trimestre móvil.",
+         "50,2 % (oct–dic 2025)<br/>47,5 % (jun–ago 2026, parcial)<br/>2024: 45,7 %",
+         "DANE, GEIH. Cabecera de Cartagena. Trimestres móviles de ventanas distintas: no son equivalentes ni promedios anuales.",
          "A", "Por confirmar (desarrollo económico)"),
         ("Económica", "Pobreza monetaria",
          "34,6 % (2025)<br/>2024: 41,1 % · 2023: 42,8 %",
@@ -1670,9 +1671,17 @@ def generar_doc_matriz():
          "28,1 % (2024)<br/>IC 95 %: 23,4 a 32,8<br/>2022: 22,2 %",
          "DANE, Small Area Estimation (escala FIES). Estimación experimental municipal. Los intervalos se solapan: no concluir aumento.",
          "A", "Plan de Emergencia Social"),
+        ("Alimentaria y sanitaria", "Incidencia de dengue",
+         "713,24 casos por 100.000 hab. en riesgo (2024)<br/>2023: 242,31",
+         "INS (SIVIGILA), replicado por TerriData (DNP). Municipal. La base es la población en riesgo, no la población total.",
+         "A", "DADIS"),
+        ("Ambiental", "Índice de Riesgo de la Calidad del Agua (IRCA)",
+         "2,8 (2024, total)<br/>Urbano 2,9 · Rural 2,4",
+         "INS (SIVICAP). Municipal, con corte urbano y rural. Nivel publicado: «Sin riesgo».",
+         "A", "DADIS / Empresa de acueducto"),
     ]
     agregar_tabla_indicadores(
-        "Indicadores con línea base verificada (2/2): Seguridad Económica y Alimentaria",
+        "Indicadores con línea base verificada (2/2): Seguridad Económica, Alimentaria y Ambiental",
         "Estado A. Las encuestas y estimaciones tienen error estadístico; se citan con su salvedad:",
         filas_a2
     )
@@ -1682,17 +1691,9 @@ def generar_doc_matriz():
          "Sin línea base en el banco",
          "Fuente prevista: estadísticas vitales del DANE y DADIS. Municipal.",
          "B", "DADIS"),
-        ("Alimentaria y sanitaria", "Incidencia de dengue por 100.000 hab.",
-         "Sin línea base en el banco",
-         "Fuente prevista: Instituto Nacional de Salud (SIVIGILA). Municipal.",
-         "B", "DADIS"),
-        ("Ambiental", "Índice de Riesgo de la Calidad del Agua (IRCA)",
-         "Sin línea base en el banco",
-         "Fuente prevista: Instituto Nacional de Salud (SIVICAP). Municipal; revisar desagregación.",
-         "B", "DADIS / Empresa de acueducto"),
         ("Ambiental", "Puntos críticos de inundación georreferenciados",
          "Sin inventario verificado",
-         "Pendiente: inventario de la Oficina de Gestión del Riesgo y cartografía distrital. No se publica ninguna cifra.",
+         "Pendiente: inventario de la Oficina de Gestión del Riesgo y cartografía distrital. TerriData solo reporta eventos de inundación (1 en 2021), que no equivale a un inventario de puntos críticos.",
          "C", "Gestión del Riesgo (OAGRD)"),
         ("Alertas tempranas", "Alertas tempranas de la Defensoría con ficha para Cartagena",
          "2 fichas verificadas (001-17 y 002-20)",
