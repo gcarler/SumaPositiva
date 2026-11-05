@@ -181,8 +181,8 @@ Los controles de tasa por IP implementados en memoria de proceso (como `verifica
 ## Release web y fuente policial — 2026-11-05
 
 El frontend de este servidor usa el artefacto independiente
-`/root/polis-releases/policia_20261105_r3/standalone` (BUILD_ID
-`t_hB5NUNhAETptselQ5rf`, compilado desde el commit `51d985b`), seleccionado mediante
+`/root/polis-releases/policia_20261105_r4/standalone` (BUILD_ID
+`OAxfyeL6zYlliit_tjpTq`, compilado desde el commit `db13df2`), seleccionado mediante
 `/etc/systemd/system/polis-frontend.service.d/20261105-policia.conf`.
 El drop-in sustituye `WorkingDirectory` y vacía `ExecStartPre`: el artefacto ya
 incluye `public` y los estáticos correspondientes a su `distDir`. Reconstruir
@@ -194,15 +194,15 @@ ejecutar `daemon-reload` y reiniciar; conservar la release anterior para recuper
 
 | Release | BUILD_ID | Estado |
 | --- | --- | --- |
-| `policia_20261105_r3` | `t_hB5NUNhAETptselQ5rf` | **Activa.** Incluye el catálogo de indicadores (`/indicadores`) y el rótulo de menú «Datos». |
-| `policia_20261105_r2` | `4jHdMKefPyBO4zRFx1Qy0` | Anterior funcional. Para volver a ella, cambiar `WorkingDirectory` del drop-in a su directorio, `systemctl daemon-reload`, reiniciar y comprobar `/`, `/geovisor` y la API (al volver a `r2`, `/indicadores` deja de existir). |
+| `policia_20261105_r4` | `OAxfyeL6zYlliit_tjpTq` | **Activa.** Compilación desde `db13df2`; incluye catálogo/correcciones de indicadores y PDFs vigentes. |
+| `policia_20261105_r3` | `t_hB5NUNhAETptselQ5rf` | Anterior funcional. Para volver, cambiar `WorkingDirectory` del drop-in a su directorio, `systemctl daemon-reload`, reiniciar y comprobar `/`, `/indicadores` y la API. |
+| `policia_20261105_r2` | `4jHdMKefPyBO4zRFx1Qy0` | Anterior funcional. Al volver, `/indicadores` deja de existir. |
 | `policia_20261105` | — | Primera release de la integración policial. |
 
-**Archivos de `public/docs` en la release activa.** Los cuatro PDF de la caja de
-herramientas de Seguridad Humana se reemplazaron a mano en `r3` después de su
-compilación (copia directa desde `public/docs/` del repositorio), por lo que no coinciden
-con el commit `51d985b`; coinciden con el commit `5e39828`, que los incorpora. Los originales de `r3` están en
-`/root/polis-releases/policia_20261105_r3/_respaldo_docs_20261105_previo_rotulo_polis/`.
+**Archivos de `public/docs` en la release activa.** En `r4`, los cuatro PDF provienen
+directamente de la compilación desde `db13df2`; no requieren reemplazo manual posterior.
+El histórico `r3` se construyó con `5e39828` y luego tuvo copia manual; sus originales
+previos están en `/root/polis-releases/policia_20261105_r3/_respaldo_docs_20261105_previo_rotulo_polis/`.
 Los PDF se regeneran con `backend/.venv/bin/python scripts/generar_toolbox_completa_pdf.py`;
 ya no se rotulan con membrete de la Alcaldía sino como documentos de POLIS.
 
