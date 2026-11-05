@@ -1,0 +1,152 @@
+{
+  "backend/app/modules/indicadores/catalogo_polis.py": {
+    "sha256": "efea9b4ee761e55f1ced0d938d0ac672830bc5cef072f6adcc32a4625a23c4b3",
+    "bytes": 2686,
+    "mtime_utc": "2026-11-05T11:36:16.207869+00:00",
+    "versionado": true
+  },
+  "backend/app/modules/indicadores/router.py": {
+    "sha256": "234b1a494ae0aa64f41b9ea81d2c5bb60942dedbf4ece2d86a464cefcbc86ae9",
+    "bytes": 4666,
+    "mtime_utc": "2026-11-05T11:06:58.408062+00:00",
+    "versionado": true
+  },
+  "backend/tests/test_catalogo_indicadores_integridad.py": {
+    "sha256": "cd847eaeba72dff2a11f8c50b32a6a00c1a71e1f949a71f975a4aba311b7b945",
+    "bytes": 7333,
+    "mtime_utc": "2026-11-05T11:36:51.371925+00:00",
+    "versionado": false
+  },
+  "backend/tests/test_validar_catalogo_indicadores.py": {
+    "sha256": "41e88586aacb6bac6c3882e42b9c4d6a0b1757d70a6c98d2b34e7943686bbd40",
+    "bytes": 2391,
+    "mtime_utc": "2026-11-05T08:39:59.009318+00:00",
+    "versionado": false
+  },
+  "backend/tests/test_catalogo_indicadores_polis.py": {
+    "sha256": "f15424eaa73cc4247c46a9e094cdb128a68b2ac139a5abbf1c0560635f2721ba",
+    "bytes": 3327,
+    "mtime_utc": "2026-11-05T11:07:02.080068+00:00",
+    "versionado": false
+  },
+  "backend/tests/test_indicadores_canonicos_polis.py": {
+    "sha256": "9e18a456a94e0423b10111cc70885faf927fb24b5aa5d65895739aa9d4bcfb9c",
+    "bytes": 4027,
+    "mtime_utc": "2026-10-28T18:34:14.393259+00:00",
+    "versionado": true
+  },
+  "backend/tests/test_validar_cifras_publicadas.py": {
+    "sha256": "03f90d3592f530658eeadc3a1a6c997fbf718d2ca10f41ac10bf98b2fec0740f",
+    "bytes": 5573,
+    "mtime_utc": "2026-11-05T11:31:58.105457+00:00",
+    "versionado": false
+  },
+  "backend/tests/test_toolbox_linaje_territorial.py": {
+    "sha256": "c5f177f95260ba99f5ffbc8fcd54bce20ec4cbff4a0c05c41098a507446db9ea",
+    "bytes": 1862,
+    "mtime_utc": "2026-11-05T11:36:51.372925+00:00",
+    "versionado": false
+  },
+  "scripts/validar_catalogo_indicadores.py": {
+    "sha256": "b8f0d0a57848a76a4a58c2bea8a7de01b2e809433cbf0fa8a2fadbe2fa555bd3",
+    "bytes": 13373,
+    "mtime_utc": "2026-11-05T11:21:56.853498+00:00",
+    "versionado": true
+  },
+  "scripts/validar_cifras_publicadas.py": {
+    "sha256": "e2510f20980d83018e499b1e01b876b47da45fda9bed420741c7a145591bcb02",
+    "bytes": 14953,
+    "mtime_utc": "2026-11-05T11:29:45.803246+00:00",
+    "versionado": false
+  },
+  "scripts/generar_toolbox_completa_pdf.py": {
+    "sha256": "b09a2d10556a8931c7c8f7f1c75895e0a5890d763c53d38a75add089083a40ee",
+    "bytes": 125098,
+    "mtime_utc": "2026-11-05T11:36:51.385925+00:00",
+    "versionado": true
+  },
+  "data/capas_analiticas/catalogo_indicadores/catalogo.csv": {
+    "sha256": "e912cb7660072e6c941351e49413c53ba0f37c347b493d852351ef515d5d6f8b",
+    "bytes": 22106,
+    "mtime_utc": "2026-11-05T11:47:21.042655+00:00",
+    "versionado": true
+  },
+  "data/capas_analiticas/catalogo_indicadores/cifras_publicadas.csv": {
+    "sha256": "72e2655faf321f441018fcd2d5e346806bcba95facfcf138d6aff9898e3a36e8",
+    "bytes": 18796,
+    "mtime_utc": "2026-11-05T11:47:21.043108+00:00",
+    "versionado": false
+  },
+  "data/capas_analiticas/catalogo_indicadores/linaje_territorial_documentos.json": {
+    "sha256": "b829482508559d802fd7644fbda65423ef0100599c10bda90b4560a14edf9146",
+    "bytes": 2806,
+    "mtime_utc": "2026-11-05T11:20:20.354343+00:00",
+    "versionado": false
+  },
+  "data/capas_analiticas/catalogo_indicadores/README.md": {
+    "sha256": "7ca24e0f7508ab0f32a9fe7bb3711dae4825de5f31c48f835390dee8fe6eb560",
+    "bytes": 3400,
+    "mtime_utc": "2026-11-05T11:44:44.763679+00:00",
+    "versionado": false
+  },
+  "src/features/indicadores/views/indicadores-catalogo-view.tsx": {
+    "sha256": "8a8977c8903b95c305f69ac53f13f3605d3af040f62e31d783d1396b3f93cb28",
+    "bytes": 32981,
+    "mtime_utc": "2026-11-05T11:08:43.632230+00:00",
+    "versionado": true
+  },
+  "src/features/indicadores/views/indicadores-catalogo-view.test.tsx": {
+    "sha256": "6e70e18e71c0290610690ec1086f0f78864657602755623848d1b996bce89971",
+    "bytes": 17943,
+    "mtime_utc": "2026-11-05T11:12:04.014550+00:00",
+    "versionado": true
+  },
+  "src/features/indicadores/views/indicadores-interaccion.test.ts": {
+    "sha256": "86664332971ad3b15f77036baa070ebed8c415fd45409142acaadb5891cd7ec6",
+    "bytes": 17538,
+    "mtime_utc": "2026-11-05T11:26:47.912962+00:00",
+    "versionado": false
+  },
+  "src/app/indicadores/page.tsx": {
+    "sha256": "d8410de61ba1a92e641420f0046e28879e5325061503a31759aff7d7d0109176",
+    "bytes": 684,
+    "mtime_utc": "2026-11-05T11:48:44.621058+00:00",
+    "versionado": true
+  },
+  "src/app/indicadores/page.test.tsx": {
+    "sha256": "c40e3b9be6a773fa7a310bf28beea9d547a2a942fc65b450508aaf9618dcb821",
+    "bytes": 775,
+    "mtime_utc": "2026-11-05T11:48:44.622057+00:00",
+    "versionado": false
+  },
+  "public/docs/ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf": {
+    "sha256": "20782f34f6ccc1b83749acdde2d962cfdd1d176a81622582788b645543effbd7",
+    "bytes": 26982,
+    "mtime_utc": "2026-11-05T11:44:45.284680+00:00",
+    "versionado": true
+  },
+  "public/docs/PRESENTACION_DIAGNOSTICO_SEGURIDAD_HUMANA_CARTAGENA.pdf": {
+    "sha256": "dacd5972d39963653b8ef21f5e4981b6e4616731b9edc2c270d0c77835467d93",
+    "bytes": 27690,
+    "mtime_utc": "2026-11-05T11:44:45.487680+00:00",
+    "versionado": true
+  },
+  "public/docs/MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf": {
+    "sha256": "1adc5fabaf97d714b6223f8636c951534aa05ec23ebf2e613689f203d0df51e2",
+    "bytes": 16922,
+    "mtime_utc": "2026-11-05T11:44:45.618680+00:00",
+    "versionado": true
+  },
+  "public/docs/GUIA_FACILITADORES_MESAS_COMUNITARIAS.pdf": {
+    "sha256": "9e5ef402677e16b146deda881077143a2dbfb711efbddc25e4791377f9b763e4",
+    "bytes": 15435,
+    "mtime_utc": "2026-11-05T11:44:45.756680+00:00",
+    "versionado": true
+  },
+  "bridge/297_entrega_codex_qa_independiente_indicadores.md": {
+    "sha256": "23d98e0a55f5a118ab617d1868dd329d2fb9e773e2d0dff8096f15986e8aa744",
+    "bytes": 65107,
+    "mtime_utc": "2026-11-05T08:29:36.309719+00:00",
+    "versionado": false
+  }
+}

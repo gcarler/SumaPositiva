@@ -1,0 +1,81 @@
+{
+  "esquema": "polis.linaje_territorial_documentos.v1",
+  "verificado_utc": "2026-11-05T11:20:20.353570+00:00",
+  "capas": [
+    {
+      "id": "localidades",
+      "archivo": "data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson",
+      "sha256": "655376c642ff430fb1d316bec70b8a5fc9bf6231fc0ca452a7ec7074669b688e",
+      "cantidad_objetos": 3,
+      "fecha_vigencia_delimitacion": null,
+      "alcance": "Objetos de la capa recibida de localidades; no fija fecha de vigencia administrativa."
+    },
+    {
+      "id": "ucg_urbanas",
+      "archivo": "data/cartografia_fuentes/ucg_cartagena_15.geojson",
+      "sha256": "04dfec6e1fb8c634c0cf81dc85aa178d62e166a362b7ad4a2ac647d8938954ea",
+      "cantidad_objetos": 15,
+      "fecha_vigencia_delimitacion": null,
+      "alcance": "Capa de UCG urbanas recibida. El atributo fuente declara Acuerdo 006 de 2003; no se certifica aquí el acto jurídico.",
+      "cantidad_codigos_ucg_distintos": 15
+    },
+    {
+      "id": "barrios_geometrias",
+      "archivo": "data/cartografia_fuentes/curadas/cartagena_barrios/882553a8138b0ee7.geojson",
+      "sha256": "70859d9a369a51701bdc313fa0dfd2d0e3e68284b3b670904a00e5e695f592ad",
+      "cantidad_objetos": 217,
+      "fecha_vigencia_delimitacion": null,
+      "alcance": "Objetos geométricos de la capa de barrios recibida. No equivalen por sí solos a un censo de barrios canónicos del POT."
+    }
+  ],
+  "decision_unidades_analiticas": {
+    "cantidad_acordada": 17,
+    "origen": "Decisión expresa del usuario en la conversación del proyecto",
+    "estado": "decision_metodologica",
+    "alcance": "No equivale a 17 UCG administrativas; cada mapa debe declarar la capa y su corte."
+  },
+  "programacion_mesas": {
+    "archivo": "backend/alembic/versions/0095_sembrar_censo_35_mesas.py",
+    "sha256": "6c50a4559c15030b92997bb19f4dd4a414b94a0b6d2b0d8ba695edaf35bd966b",
+    "cantidad_codigos": 35,
+    "codigos": [
+      "MP-ETN-08",
+      "MP-POB-01",
+      "MP-POB-02",
+      "MP-POB-03",
+      "MP-POB-04",
+      "MP-POB-05",
+      "MP-POB-06",
+      "MP-POB-07",
+      "MP-POB-09",
+      "MR-ISL-07",
+      "MR-ISL-08",
+      "MR-ISL-09",
+      "MR-ISL-10",
+      "MR-ISL-11",
+      "MR-RUR-01",
+      "MR-RUR-02",
+      "MR-RUR-03",
+      "MR-RUR-04",
+      "MR-RUR-05",
+      "MR-RUR-06",
+      "MS-SEC-01",
+      "MS-SEC-02",
+      "MS-SEC-03",
+      "MS-SEC-04",
+      "MS-SEC-05",
+      "MS-SEC-06",
+      "MS-SEC-07",
+      "MS-SEC-08",
+      "MS-SEC-09",
+      "MS-SEC-10",
+      "MS-SEC-11",
+      "MS-SEC-12",
+      "MT-L01-01",
+      "MT-L02-01",
+      "MT-L03-01"
+    ],
+    "estado": "programacion_local",
+    "alcance": "Mesas poblacionales, rurales, sectoriales y territoriales configuradas como PROGRAMADA; no acredita convocatorias ni reuniones realizadas."
+  }
+}

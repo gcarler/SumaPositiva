@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -100,7 +100,8 @@ function BadgeEstado({ estado }: { estado: string }) {
 
 /**
  * Ficha metodológica detallada para inspección exhaustiva de cada indicador.
- * Expone los 15 campos metodológicos requeridos por el contrato de fe pública.
+ * Expone los 15 campos metodológicos requeridos por el contrato de fe pública
+ * garantizando estructura HTML5 semántica y accesible para axe (cero dlitem o definition-list inválidos).
  */
 export function IndicadorMetodologiaDetalle({
   indicador,
@@ -178,28 +179,26 @@ export function IndicadorMetodologiaDetalle({
             <FileText className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
             Construcción Matemática
           </h4>
-          <dl className="space-y-2 text-xs">
-            <div>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div className="sm:col-span-2">
               <dt className="font-medium text-[var(--text-tertiary)]">Fórmula de cálculo:</dt>
               <dd className="mt-0.5 font-mono text-xs leading-relaxed text-[var(--text-primary)] bg-[var(--surface-2)] p-1.5 rounded">
                 {indicador.formula || "Sin fórmula especificada"}
               </dd>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <dt className="font-medium text-[var(--text-tertiary)]">Numerador:</dt>
-                <dd className="mt-0.5 leading-snug text-[var(--text-secondary)]">
-                  {indicador.numerador || "N/A"}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-[var(--text-tertiary)]">Denominador:</dt>
-                <dd className="mt-0.5 leading-snug text-[var(--text-secondary)]">
-                  {indicador.denominador || "N/A"}
-                </dd>
-              </div>
+            <div>
+              <dt className="font-medium text-[var(--text-tertiary)]">Numerador:</dt>
+              <dd className="mt-0.5 leading-snug text-[var(--text-secondary)]">
+                {indicador.numerador || "N/A"}
+              </dd>
             </div>
             <div>
+              <dt className="font-medium text-[var(--text-tertiary)]">Denominador:</dt>
+              <dd className="mt-0.5 leading-snug text-[var(--text-secondary)]">
+                {indicador.denominador || "N/A"}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
               <dt className="font-medium text-[var(--text-tertiary)]">Unidad de medida:</dt>
               <dd className="mt-0.5 font-semibold text-[var(--text-primary)]">
                 {indicador.unidad || "No especificada"}
@@ -214,28 +213,26 @@ export function IndicadorMetodologiaDetalle({
             <ShieldCheck className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
             Cobertura y Temporalidad
           </h4>
-          <dl className="space-y-2 text-xs">
-            <div>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div className="sm:col-span-2">
               <dt className="font-medium text-[var(--text-tertiary)]">Tipo de territorio de fuente:</dt>
               <dd className="mt-0.5 text-[var(--text-primary)]">
                 {indicador.tipo_territorio_fuente || "No especificado"}
               </dd>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <dt className="font-medium text-[var(--text-tertiary)]">Periodicidad:</dt>
-                <dd className="mt-0.5 text-[var(--text-secondary)]">
-                  {indicador.periodicidad || "No registrada"}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-[var(--text-tertiary)]">Tipo de periodo:</dt>
-                <dd className="mt-0.5 text-[var(--text-secondary)]">
-                  {indicador.tipo_periodo || "No registrado"}
-                </dd>
-              </div>
+            <div>
+              <dt className="font-medium text-[var(--text-tertiary)]">Periodicidad:</dt>
+              <dd className="mt-0.5 text-[var(--text-secondary)]">
+                {indicador.periodicidad || "No registrada"}
+              </dd>
             </div>
             <div>
+              <dt className="font-medium text-[var(--text-tertiary)]">Tipo de periodo:</dt>
+              <dd className="mt-0.5 text-[var(--text-secondary)]">
+                {indicador.tipo_periodo || "No registrado"}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
               <dt className="font-medium text-[var(--text-tertiary)]">Año base de referencia:</dt>
               <dd className="mt-0.5 font-semibold text-[var(--text-primary)]">
                 {indicador.anio_base || "Pendiente"}
@@ -250,7 +247,7 @@ export function IndicadorMetodologiaDetalle({
             <Info className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
             Gobernanza, Custodio y Licencia
           </h4>
-          <div className="grid gap-3 sm:grid-cols-2 text-xs">
+          <dl className="grid gap-3 sm:grid-cols-2 text-xs">
             <div>
               <dt className="font-medium text-[var(--text-tertiary)]">Fuente primaria / oficial:</dt>
               <dd className="mt-0.5 font-medium text-[var(--text-primary)]">
@@ -289,7 +286,7 @@ export function IndicadorMetodologiaDetalle({
                 )}
               </dd>
             </div>
-          </div>
+          </dl>
         </div>
 
         {/* Bloque 5: Riesgo Metodológico y Estado */}
@@ -435,7 +432,7 @@ export function IndicadoresCatalogoView() {
         </div>
       </section>
 
-      {/* Filtros de consulta con ortografía corregida y debounce */}
+      {/* Filtros de consulta con ortografía corregida, debounce e id propagados por FormField */}
       <section
         aria-labelledby="filtros-catalogo"
         className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 sm:p-5"
@@ -450,10 +447,15 @@ export function IndicadoresCatalogoView() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          <FormField label="Dimensión">
-            {() => (
+          <FormField id="filtro-catalogo-dimension" label="Dimensión">
+            {(fieldProps) => (
               <Select value={dimension} onValueChange={setDimension}>
-                <SelectTrigger className="w-full" aria-label="Filtrar por dimensión">
+                <SelectTrigger
+                  id={fieldProps.id}
+                  aria-describedby={fieldProps["aria-describedby"]}
+                  className="w-full"
+                  aria-label="Filtrar por dimensión"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -469,10 +471,15 @@ export function IndicadoresCatalogoView() {
             )}
           </FormField>
 
-          <FormField label="Nivel Tier">
-            {() => (
+          <FormField id="filtro-catalogo-tier" label="Nivel Tier">
+            {(fieldProps) => (
               <Select value={tier} onValueChange={setTier}>
-                <SelectTrigger className="w-full" aria-label="Filtrar por nivel Tier">
+                <SelectTrigger
+                  id={fieldProps.id}
+                  aria-describedby={fieldProps["aria-describedby"]}
+                  className="w-full"
+                  aria-label="Filtrar por nivel Tier"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -488,14 +495,16 @@ export function IndicadoresCatalogoView() {
             )}
           </FormField>
 
-          <FormField label="Búsqueda" className="sm:col-span-2">
-            {() => (
+          <FormField id="filtro-catalogo-busqueda" label="Búsqueda" className="sm:col-span-2">
+            {(fieldProps) => (
               <div className="relative">
                 <Search
                   className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-[var(--text-tertiary)]"
                   aria-hidden="true"
                 />
                 <Input
+                  id={fieldProps.id}
+                  aria-describedby={fieldProps["aria-describedby"]}
                   value={busquedaInput}
                   onChange={(e) => setBusquedaInput(e.target.value)}
                   placeholder="Nombre, fórmula, fuente, custodio o variable…"
@@ -519,15 +528,22 @@ export function IndicadoresCatalogoView() {
           </FormField>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-2.5 text-xs text-[var(--text-tertiary)]">
+        {/* H297-06: Estado final coherente y región accesible role="status" */}
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-2.5 text-xs text-[var(--text-tertiary)]"
+        >
           <div className="flex items-center gap-2">
             <Filter className="size-3.5" aria-hidden="true" />
             <span>
-              {isLoading
-                ? "Consultando catálogo…"
-                : typeof data?.total === "number"
-                  ? `${data.total} ${data.total === 1 ? "indicador encontrado" : "indicadores encontrados"}`
-                  : "Consultando catálogo…"}
+              {isError
+                ? "No fue posible cargar el catálogo"
+                : isLoading
+                  ? "Consultando catálogo…"
+                  : typeof data?.total === "number"
+                    ? `${data.total} ${data.total === 1 ? "indicador encontrado" : "indicadores encontrados"}`
+                    : "No fue posible cargar el catálogo"}
             </span>
           </div>
           {(dimension !== "todas" || tier !== "todos" || busquedaInput.trim().length > 0) && (
@@ -547,7 +563,7 @@ export function IndicadoresCatalogoView() {
         </div>
       </section>
 
-      {/* Tabla principal de indicadores con fila expandible de metodología */}
+      {/* Tabla principal de indicadores con fila expandible de metodología y cero tbody > div (H297-05) */}
       <section aria-labelledby="tabla-catalogo" className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 id="tabla-catalogo" className="text-sm font-semibold text-[var(--text-primary)]">
@@ -559,16 +575,27 @@ export function IndicadoresCatalogoView() {
         </div>
 
         {isLoading ? (
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 text-sm text-[var(--text-secondary)]">
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 text-sm text-[var(--text-secondary)]"
+          >
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             <span>Cargando catálogo de indicadores…</span>
           </div>
         ) : isError ? (
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 text-sm text-[var(--danger)]">
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 text-sm text-[var(--danger)]"
+          >
             No fue posible consultar el catálogo de indicadores. Intente de nuevo más tarde.
           </div>
         ) : indicadores.length === 0 ? (
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-8 text-center text-sm text-[var(--text-secondary)]">
+          <div
+            role="status"
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-8 text-center text-sm text-[var(--text-secondary)]"
+          >
             <p className="font-semibold text-[var(--text-primary)]">
               Sin resultados en el catálogo para los filtros seleccionados
             </p>
@@ -598,7 +625,7 @@ export function IndicadoresCatalogoView() {
                   const tieneUrlHttps = esUrlHttpsSegura(indicador.url_fuente);
 
                   return (
-                    <div key={indicador.codigo} className="contents">
+                    <Fragment key={indicador.codigo}>
                       <TableRow
                         className={estaExpandida ? "bg-[var(--surface-2)]" : undefined}
                       >
@@ -685,7 +712,7 @@ export function IndicadoresCatalogoView() {
                         </TableCell>
                       </TableRow>
 
-                      {/* Fila expandible con la metodología completa (B-3) */}
+                      {/* Fila expandible con la metodología completa (B-3 y H297-05) */}
                       {estaExpandida && (
                         <TableRow
                           id={`metodologia-fila-${indicador.codigo}`}
@@ -696,7 +723,7 @@ export function IndicadoresCatalogoView() {
                           </TableCell>
                         </TableRow>
                       )}
-                    </div>
+                    </Fragment>
                   );
                 })}
               </TableBody>

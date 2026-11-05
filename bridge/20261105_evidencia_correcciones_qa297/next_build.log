@@ -1,0 +1,72 @@
+▲ Next.js 16.3.8 (webpack)
+✓ Running next.config.ts took 765ms
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "40mb"
+
+  Creating an optimized production build ...
+Found 5 warnings while optimizing generated CSS:
+
+Issue #1:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-cartesian-grid_line\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border\/50 {[22m
+[2m│[22m     & .recharts-cartesian-grid line[stroke=\"#ccc\"] {
+[2m┆[22m                                              [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│       @supports (color: color-mix(in lab, red, red)) {[22m
+
+Issue #2:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-dot\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {[22m
+[2m│[22m     & .recharts-dot[stroke=\"#fff\"] {
+[2m┆[22m                              [33m[2m^--[22m Unexpected token IDHash("fff\"")[39m
+[2m┆[22m
+[2m│       stroke: transparent;[22m
+[2m│     }[22m
+
+Issue #3:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-polar-grid_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {[22m
+[2m│[22m     & .recharts-polar-grid [stroke=\"#ccc\"] {
+[2m┆[22m                                      [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│     }[22m
+
+Issue #4:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-reference-line_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {[22m
+[2m│[22m     & .recharts-reference-line [stroke=\"#ccc\"] {
+[2m┆[22m                                          [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│     }[22m
+
+Issue #5:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-sector\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {[22m
+[2m│[22m     & .recharts-sector[stroke=\"#fff\"] {
+[2m┆[22m                                 [33m[2m^--[22m Unexpected token IDHash("fff\"")[39m
+[2m┆[22m
+[2m│       stroke: transparent;[22m
+[2m│     }[22m
+
+✓ Compiled successfully in 97s
+  Running TypeScript ...
+  Finished TypeScript in 59s ...
+  Collecting page data using 7 workers ...
+TypeError: fetch failed
+    at async l (.next/server/app/f/[slug]/page.js:1:31736)
+    at async q (.next/server/app/f/[slug]/page.js:1:32121) {
+  [cause]: Error: bad port
+      at <unknown> (.next/server/chunks/9071.js:32:28724)
+      at _ (.next/server/chunks/9071.js:165:19516)
+      at <unknown> (.next/server/chunks/9071.js:165:22239)
+      at async l (.next/server/app/f/[slug]/page.js:1:31736)
+}
+
+> Build error occurred
+Error: Failed to collect page data for /f/[slug]
+    at ignore-listed frames {
+  type: 'Error'
+}

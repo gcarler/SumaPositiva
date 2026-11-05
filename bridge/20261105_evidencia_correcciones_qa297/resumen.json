@@ -1,0 +1,208 @@
+{
+  "fecha_utc": "2026-11-05T11:54:01.869026+00:00",
+  "head": "bb2f597d9439575607c2ed8349e17558a091bab8",
+  "tipo": "remediacion_y_verificacion_del_implementador_no_dictamen_independiente",
+  "pytest": {
+    "passed": 190,
+    "skipped": 1,
+    "failed": 0,
+    "motivo_skip": "Integración de roles requiere POLIS_TEST_DATABASE_URL exclusiva polis_test*; no se configuró ni conectó PostgreSQL."
+  },
+  "bun_tests": {
+    "passed": 29,
+    "failed": 0
+  },
+  "bun_check_rc": 0,
+  "ruff_check_rc": 0,
+  "ruff_format_dirigido_rc": 0,
+  "catalogo": {
+    "filas": 29,
+    "tier_a": 27,
+    "tier_c": 2,
+    "todos_no_publicable": true,
+    "rc": 0
+  },
+  "cifras": {
+    "filas": 61,
+    "directas": 55,
+    "derivadas": 6,
+    "rc": 0
+  },
+  "builds": {
+    "next_webpack_rc": 0,
+    "paginas_estaticas": 207,
+    "storybook_rc": 0,
+    "formularios": "Fixture HTTP local vacío; no se utilizó backend productivo."
+  },
+  "browser_next": {
+    "inicio_utc": "2026-11-05T11:52:09.294Z",
+    "contexto": "Next standalone real compilado en copia aislada; API interceptada exclusivamente en navegador; no acceso a servicios productivos.",
+    "estado": "OK",
+    "status": 200,
+    "filas": 29,
+    "tbody_div": 0,
+    "axe": {
+      "violaciones": [],
+      "reglas_pasadas": 48
+    },
+    "errores": [],
+    "consola": [],
+    "fin_utc": "2026-11-05T11:52:11.386Z"
+  },
+  "browser_componente": {
+    "inicio_utc": "2026-11-05T11:43:50.433Z",
+    "contexto": "Componente React real y catálogo CSV actual; CSS de compilación Next aislada; API simulada localmente; sin shell completo de Next ni backend productivo.",
+    "casos": [
+      {
+        "ancho": 1440,
+        "tema": "light",
+        "movimiento": "reduce",
+        "filas": 29,
+        "tbody_div": 0,
+        "dimensiones": {
+          "viewport": 1440,
+          "scroll": 1440,
+          "body": 1440,
+          "background": "oklch(0.985 0.002 90)"
+        },
+        "axe": {
+          "violaciones": [],
+          "reglas_pasadas": 42,
+          "incompletas": [
+            "color-contrast"
+          ]
+        },
+        "errores": []
+      },
+      {
+        "ancho": 1440,
+        "tema": "dark",
+        "movimiento": "reduce",
+        "filas": 29,
+        "tbody_div": 0,
+        "dimensiones": {
+          "viewport": 1440,
+          "scroll": 1440,
+          "body": 1440,
+          "background": "oklch(0.13 0.004 270)"
+        },
+        "axe": {
+          "violaciones": [],
+          "reglas_pasadas": 42,
+          "incompletas": [
+            "color-contrast"
+          ]
+        },
+        "errores": []
+      },
+      {
+        "ancho": 320,
+        "tema": "light",
+        "movimiento": "reduce",
+        "filas": 29,
+        "tbody_div": 0,
+        "dimensiones": {
+          "viewport": 320,
+          "scroll": 320,
+          "body": 320,
+          "background": "oklch(0.985 0.002 90)"
+        },
+        "axe": {
+          "violaciones": [],
+          "reglas_pasadas": 42,
+          "incompletas": [
+            "color-contrast"
+          ]
+        },
+        "errores": []
+      },
+      {
+        "ancho": 320,
+        "tema": "dark",
+        "movimiento": "reduce",
+        "filas": 29,
+        "tbody_div": 0,
+        "dimensiones": {
+          "viewport": 320,
+          "scroll": 320,
+          "body": 320,
+          "background": "oklch(0.13 0.004 270)"
+        },
+        "axe": {
+          "violaciones": [],
+          "reglas_pasadas": 42,
+          "incompletas": [
+            "color-contrast"
+          ]
+        },
+        "errores": []
+      }
+    ],
+    "solicitudes": [
+      {
+        "utc": "2026-11-05T11:43:50.817Z",
+        "modo": "ok",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:43:53.251Z",
+        "modo": "ok",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:43:55.536Z",
+        "modo": "ok",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:43:57.460Z",
+        "modo": "ok",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:43:59.421Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:44:00.146Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:44:01.374Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:44:02.416Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:44:03.058Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      },
+      {
+        "utc": "2026-11-05T11:44:04.311Z",
+        "modo": "error",
+        "url": "/api/v1/indicadores/catalogo"
+      }
+    ],
+    "error_503": {
+      "alertas": 1,
+      "consultando": 0
+    },
+    "estado": "OK",
+    "fin_utc": "2026-11-05T11:44:04.577Z"
+  },
+  "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+  "banco_sin_cambios": true,
+  "qa297_original_sin_cambios": true,
+  "commit": false,
+  "push": false,
+  "despliegue": false,
+  "servicios_productivos_reiniciados": false,
+  "laboratorio_http_detenido": true
+}

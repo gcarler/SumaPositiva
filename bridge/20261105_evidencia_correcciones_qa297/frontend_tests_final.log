@@ -1,0 +1,43 @@
+bun test v1.4.2 (744846f84)
+
+src/features/indicadores/views/indicadores-catalogo-view.test.tsx:
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 1. (N-1) Utiliza el contenedor fluido del sitio (container-fluid w-full) [52.91ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 2. (N-9) Elimina el total hardcodeado '24' y muestra total dinámico de la API [8.00ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 3. (N-3) Presenta la leyenda cívica de Tiers (A, B, C) y explica 'no publicable' [10.09ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 4. (N-4) Utiliza las etiquetas canónicas de taxonomia_7d_polis.py con códigos visibles [7.81ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 5. (N-2) Corrige ortografía y tildes en textos visibles y aria-label [10.01ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 6. (N-6 y B-2) Las filas Tier C con NO_VERIFICADO no tienen enlace href; Tier A sí [9.12ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 7. (B-3) IndicadorMetodologiaDetalle muestra exhaustivamente los 15 campos metodológicos [6.23ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 8. Quita el truncado rígido del nombre para permitir lectura completa y accesible [23.61ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 9. Renderiza estados de carga, error y vacío con roles accesibles (H297-06) [11.47ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 10. (H297-05) Estructura de tabla válida sin 'div' dentro de 'tbody' (0 nodos tbody > div) [3.56ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 11. (H297-05) Listas de definición estrictamente conformes a HTML5 en la ficha metodológica [1.56ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 12. (H297-06) FormField propaga id y aria-describedby a los controles vinculando las etiquetas [6.69ms]
+
+src/features/indicadores/views/indicadores-interaccion.test.ts:
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 1. (H297-05) Render real en navegador: cero nodos tbody > div [378.23ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 2. (O297-02) Expansión y colapso interactivo con clic de ratón [268.17ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 3. (O297-02) Expansión y colapso interactivo con teclado (Enter y Espacio) [115.59ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 4. (O297-02) Filtrado interactivo por Tier y Dimensión [1068.77ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 5. (O297-02) Búsqueda con debounce: 0 peticiones durante tecleo y 1 petición tras 300 ms [1177.58ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 6. (H297-06) Estado de error 503: role='alert', anuncio y sin atasco en 'Consultando catálogo…' [5413.10ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 7. (O297-02, H297-05) Auditoría axe-core: cero violaciones serious o critical en tabla y detalle abierto [865.35ms]
+
+src/features/indicadores/services/indicadores-catalogo-api.test.ts:
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > esUrlHttpsSegura (N-6: Validación estricta de esquema seguro) > retorna true únicamente para URLs que inician con https:// [0.08ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > esUrlHttpsSegura (N-6: Validación estricta de esquema seguro) > retorna false para NO_VERIFICADO, http no seguro o entradas inválidas [0.04ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > retorna endpoint base sin parámetros cuando filtros no se proveen o están vacíos [0.08ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > omite comodines como 'todas', 'todos' y cadenas en blanco [0.03ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro dimension individual [0.03ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro tier individual [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro busqueda individual [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > combina múltiples parámetros simultáneos con codificación adecuada [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > obtenerCatalogoIndicadores (B-2: Consumo de cliente apiFetch) > invoca apiFetch con la URL construida a partir de los filtros [0.33ms]
+
+src/app/indicadores/page.test.tsx:
+(pass) la página declara una región principal y mantiene el pie fuera de ella [1.19ms]
+
+ 29 pass
+ 0 fail
+ 144 expect() calls
+Ran 29 tests across 4 files. [10.43s]

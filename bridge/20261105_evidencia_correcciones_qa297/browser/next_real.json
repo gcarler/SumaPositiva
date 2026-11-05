@@ -1,0 +1,15 @@
+{
+  "inicio_utc": "2026-11-05T11:52:09.294Z",
+  "contexto": "Next standalone real compilado en copia aislada; API interceptada exclusivamente en navegador; no acceso a servicios productivos.",
+  "estado": "OK",
+  "status": 200,
+  "filas": 29,
+  "tbody_div": 0,
+  "axe": {
+    "violaciones": [],
+    "reglas_pasadas": 48
+  },
+  "errores": [],
+  "consola": [],
+  "fin_utc": "2026-11-05T11:52:11.386Z"
+}

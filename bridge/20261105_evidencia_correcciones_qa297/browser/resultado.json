@@ -1,0 +1,148 @@
+{
+  "inicio_utc": "2026-11-05T11:43:50.433Z",
+  "contexto": "Componente React real y catálogo CSV actual; CSS de compilación Next aislada; API simulada localmente; sin shell completo de Next ni backend productivo.",
+  "casos": [
+    {
+      "ancho": 1440,
+      "tema": "light",
+      "movimiento": "reduce",
+      "filas": 29,
+      "tbody_div": 0,
+      "dimensiones": {
+        "viewport": 1440,
+        "scroll": 1440,
+        "body": 1440,
+        "background": "oklch(0.985 0.002 90)"
+      },
+      "axe": {
+        "violaciones": [],
+        "reglas_pasadas": 42,
+        "incompletas": [
+          "color-contrast"
+        ]
+      },
+      "errores": []
+    },
+    {
+      "ancho": 1440,
+      "tema": "dark",
+      "movimiento": "reduce",
+      "filas": 29,
+      "tbody_div": 0,
+      "dimensiones": {
+        "viewport": 1440,
+        "scroll": 1440,
+        "body": 1440,
+        "background": "oklch(0.13 0.004 270)"
+      },
+      "axe": {
+        "violaciones": [],
+        "reglas_pasadas": 42,
+        "incompletas": [
+          "color-contrast"
+        ]
+      },
+      "errores": []
+    },
+    {
+      "ancho": 320,
+      "tema": "light",
+      "movimiento": "reduce",
+      "filas": 29,
+      "tbody_div": 0,
+      "dimensiones": {
+        "viewport": 320,
+        "scroll": 320,
+        "body": 320,
+        "background": "oklch(0.985 0.002 90)"
+      },
+      "axe": {
+        "violaciones": [],
+        "reglas_pasadas": 42,
+        "incompletas": [
+          "color-contrast"
+        ]
+      },
+      "errores": []
+    },
+    {
+      "ancho": 320,
+      "tema": "dark",
+      "movimiento": "reduce",
+      "filas": 29,
+      "tbody_div": 0,
+      "dimensiones": {
+        "viewport": 320,
+        "scroll": 320,
+        "body": 320,
+        "background": "oklch(0.13 0.004 270)"
+      },
+      "axe": {
+        "violaciones": [],
+        "reglas_pasadas": 42,
+        "incompletas": [
+          "color-contrast"
+        ]
+      },
+      "errores": []
+    }
+  ],
+  "solicitudes": [
+    {
+      "utc": "2026-11-05T11:43:50.817Z",
+      "modo": "ok",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:43:53.251Z",
+      "modo": "ok",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:43:55.536Z",
+      "modo": "ok",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:43:57.460Z",
+      "modo": "ok",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:43:59.421Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:44:00.146Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:44:01.374Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:44:02.416Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:44:03.058Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    },
+    {
+      "utc": "2026-11-05T11:44:04.311Z",
+      "modo": "error",
+      "url": "/api/v1/indicadores/catalogo"
+    }
+  ],
+  "error_503": {
+    "alertas": 1,
+    "consultando": 0
+  },
+  "estado": "OK",
+  "fin_utc": "2026-11-05T11:44:04.577Z"
+}

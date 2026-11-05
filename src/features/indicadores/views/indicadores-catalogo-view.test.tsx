@@ -19,7 +19,7 @@ import type {
 } from "../services/indicadores-catalogo-api";
 import * as hookModulo from "../services/use-indicadores-catalogo";
 
-describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
+describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01]", () => {
   const indicadorTierA: CatalogoIndicador = {
     codigo: "SALUD_004",
     nombre: "Prevalencia de inseguridad alimentaria moderada o grave",
@@ -104,33 +104,106 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
     indicadores: [indicadorTierA, indicadorTierC_1, indicadorTierC_2],
   };
 
-  function crearMockQuery(
-    parcial: Partial<UseQueryResult<CatalogoIndicadoresRespuesta, Error>>,
+  /**
+   * O297-01: Fixtures coherentes y estrictamente tipados que implementan
+   * la unión discriminada de UseQueryResult sin conversiones 'as unknown as'.
+   */
+  function fixtureExito(
+    data: CatalogoIndicadoresRespuesta,
   ): UseQueryResult<CatalogoIndicadoresRespuesta, Error> {
     return {
-      data: undefined,
-      isLoading: false,
-      isError: false,
-      isPending: false,
-      isSuccess: true,
-      status: "success",
-      fetchStatus: "idle",
-      error: null,
+      data,
       dataUpdatedAt: Date.now(),
+      error: null,
       errorUpdatedAt: 0,
+      failureCount: 0,
+      failureReason: null,
+      errorUpdateCount: 0,
+      isError: false,
       isFetched: true,
       isFetchedAfterMount: true,
       isFetching: false,
+      isLoading: false,
       isLoadingError: false,
       isPaused: false,
+      isPending: false,
       isPlaceholderData: false,
       isRefetchError: false,
       isRefetching: false,
       isStale: false,
-      refetch: vi.fn(),
-      promise: Promise.resolve(mockRespuesta),
-      ...parcial,
-    } as unknown as UseQueryResult<CatalogoIndicadoresRespuesta, Error>;
+      isSuccess: true,
+      isInitialLoading: false,
+      isEnabled: true,
+      refetch: () => Promise.resolve({} as never),
+      status: "success",
+      fetchStatus: "idle",
+      promise: Promise.resolve(data),
+    };
+  }
+
+  function fixtureCarga(): UseQueryResult<CatalogoIndicadoresRespuesta, Error> {
+    return {
+      data: undefined,
+      dataUpdatedAt: 0,
+      error: null,
+      errorUpdatedAt: 0,
+      failureCount: 0,
+      failureReason: null,
+      errorUpdateCount: 0,
+      isError: false,
+      isFetched: false,
+      isFetchedAfterMount: false,
+      isFetching: true,
+      isLoading: true,
+      isLoadingError: false,
+      isPaused: false,
+      isPending: true,
+      isPlaceholderData: false,
+      isRefetchError: false,
+      isRefetching: false,
+      isStale: true,
+      isSuccess: false,
+      isInitialLoading: true,
+      isEnabled: true,
+      refetch: () => Promise.resolve({} as never),
+      status: "pending",
+      fetchStatus: "fetching",
+      promise: new Promise<CatalogoIndicadoresRespuesta>(() => {}),
+    };
+  }
+
+  function fixtureError(
+    mensaje: string = "Error al consultar catálogo",
+  ): UseQueryResult<CatalogoIndicadoresRespuesta, Error> {
+    const errorObj = new Error(mensaje);
+    return {
+      data: undefined,
+      dataUpdatedAt: 0,
+      error: errorObj,
+      errorUpdatedAt: Date.now(),
+      failureCount: 1,
+      failureReason: errorObj,
+      errorUpdateCount: 1,
+      isError: true,
+      isFetched: true,
+      isFetchedAfterMount: true,
+      isFetching: false,
+      isLoading: false,
+      isLoadingError: true,
+      isPaused: false,
+      isPending: false,
+      isPlaceholderData: false,
+      isRefetchError: false,
+      isRefetching: false,
+      isStale: true,
+      isSuccess: false,
+      isInitialLoading: false,
+      isEnabled: true,
+      refetch: () => Promise.resolve({} as never),
+      status: "error",
+      fetchStatus: "idle",
+      promise: Promise.resolve(undefined as never),
+    };
   }
 
   beforeEach(() => {
@@ -148,11 +221,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("1. (N-1) Utiliza el contenedor fluido del sitio (container-fluid w-full)", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -162,11 +231,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("2. (N-9) Elimina el total hardcodeado '24' y muestra total dinámico de la API", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -177,11 +242,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("3. (N-3) Presenta la leyenda cívica de Tiers (A, B, C) y explica 'no publicable'", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -205,11 +266,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("4. (N-4) Utiliza las etiquetas canónicas de taxonomia_7d_polis.py con códigos visibles", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     expect(DIMENSIONES).toContain("todas");
@@ -240,11 +297,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("5. (N-2) Corrige ortografía y tildes en textos visibles y aria-label", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -258,11 +311,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("6. (N-6 y B-2) Las filas Tier C con NO_VERIFICADO no tienen enlace href; Tier A sí", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -331,11 +380,7 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
 
   test("8. Quita el truncado rígido del nombre para permitir lectura completa y accesible", () => {
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: mockRespuesta,
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito(mockRespuesta),
     );
 
     const html = renderViewConQuery(<IndicadoresCatalogoView />);
@@ -345,50 +390,89 @@ describe("Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9]", () => {
     );
   });
 
-  test("9. Renderiza estados de carga, error y vacío de manera accesible", () => {
-    // Estado de carga
+  test("9. Renderiza estados de carga, error y vacío con roles accesibles (H297-06)", () => {
+    // Estado de carga con role="status" y aria-live="polite"
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: undefined,
-        isLoading: true,
-        isError: false,
-        status: "pending",
-        isPending: true,
-      }),
+      fixtureCarga(),
     );
 
     const htmlCarga = renderViewConQuery(<IndicadoresCatalogoView />);
+    expect(htmlCarga).toContain('role="status"');
+    expect(htmlCarga).toContain('aria-live="polite"');
     expect(htmlCarga).toContain("Cargando catálogo de indicadores…");
     expect(htmlCarga).toContain("Consultando catálogo…");
 
-    // Estado de error
+    // Estado de error con role="alert" y contador en "No fue posible cargar el catálogo"
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: undefined,
-        isLoading: false,
-        isError: true,
-        status: "error",
-      }),
+      fixtureError("Error 503"),
     );
 
     const htmlError = renderViewConQuery(<IndicadoresCatalogoView />);
+    expect(htmlError).toContain('role="alert"');
+    expect(htmlError).toContain('aria-live="assertive"');
     expect(htmlError).toContain(
       "No fue posible consultar el catálogo de indicadores. Intente de nuevo más tarde.",
     );
+    expect(htmlError).toContain("No fue posible cargar el catálogo");
+    expect(htmlError).not.toContain("Consultando catálogo…");
 
-    // Estado vacío
+    // Estado vacío con role="status"
     vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
-      crearMockQuery({
-        data: { total: 0, archivo_sha256: "sha_empty", indicadores: [] },
-        isLoading: false,
-        isError: false,
-      }),
+      fixtureExito({ total: 0, archivo_sha256: "sha_empty", indicadores: [] }),
     );
 
     const htmlVacio = renderViewConQuery(<IndicadoresCatalogoView />);
+    expect(htmlVacio).toContain('role="status"');
     expect(htmlVacio).toContain(
       "Sin resultados en el catálogo para los filtros seleccionados",
     );
     expect(htmlVacio).toContain("0 indicadores encontrados");
+  });
+
+  test("10. (H297-05) Estructura de tabla válida sin 'div' dentro de 'tbody' (0 nodos tbody > div)", () => {
+    vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
+      fixtureExito(mockRespuesta),
+    );
+
+    const html = renderViewConQuery(<IndicadoresCatalogoView />);
+
+    // TableBody debe envolver directamente los TableRow mediante Fragment, cero divs dentro de tbody
+    expect(html).not.toContain('<div class="contents">');
+    expect(html).not.toMatch(/<tbody[^>]*>[\s\r\n]*<div/);
+    expect(html).toMatch(/<tbody[^>]*>[\s\r\n]*<tr/);
+  });
+
+  test("11. (H297-05) Listas de definición estrictamente conformes a HTML5 en la ficha metodológica", () => {
+    const htmlA = renderToString(
+      <IndicadorMetodologiaDetalle indicador={indicadorTierA} />,
+    );
+
+    // En Bloque 4 (Gobernanza), los dt/dd deben estar contenidos en un dl
+    expect(htmlA).toContain('<dl class="grid gap-3 sm:grid-cols-2 text-xs">');
+
+    // No debe haber divs anidados dentro de dl que contengan otros divs (evita dlitem / definition-list violations de axe)
+    expect(htmlA).not.toContain('class="grid grid-cols-2 gap-2"');
+
+    // Cada dt debe corresponder con un dd
+    const dts = (htmlA.match(/<dt/g) || []).length;
+    const dds = (htmlA.match(/<dd/g) || []).length;
+    expect(dts).toBeGreaterThan(0);
+    expect(dts).toBe(dds);
+  });
+
+  test("12. (H297-06) FormField propaga id y aria-describedby a los controles vinculando las etiquetas", () => {
+    vi.spyOn(hookModulo, "useCatalogoIndicadores").mockReturnValue(
+      fixtureExito(mockRespuesta),
+    );
+
+    const html = renderViewConQuery(<IndicadoresCatalogoView />);
+
+    // Verifica que el id propagado por FormField esté presente en SelectTrigger y en Input
+    expect(html).toContain('id="filtro-catalogo-dimension"');
+    expect(html).toContain('for="filtro-catalogo-dimension"');
+    expect(html).toContain('id="filtro-catalogo-tier"');
+    expect(html).toContain('for="filtro-catalogo-tier"');
+    expect(html).toContain('id="filtro-catalogo-busqueda"');
+    expect(html).toContain('for="filtro-catalogo-busqueda"');
   });
 });

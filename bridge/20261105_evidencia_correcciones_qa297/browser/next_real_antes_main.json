@@ -1,0 +1,40 @@
+{
+  "inicio_utc": "2026-11-05T11:47:21.639Z",
+  "contexto": "Next standalone real compilado en copia aislada; API interceptada exclusivamente en navegador; no acceso a servicios productivos.",
+  "estado": "OK",
+  "status": 200,
+  "filas": 29,
+  "tbody_div": 0,
+  "axe": {
+    "violaciones": [
+      {
+        "id": "landmark-one-main",
+        "impacto": "moderate",
+        "nodos": [
+          {
+            "html": "<html lang=\"es\" class=\"light\" style=\"color-scheme: light;\" data-a11y-text-size=\"100\" data-a11y-contrast=\"normal\" data-a11y-grayscale=\"false\" data-a11y-line-spacing=\"normal\" data-a11y-letter-spacing=\"normal\" data-a11y-underline-links=\"false\" data-a11y-reduced-motion=\"false\">",
+            "resumen": "Fix all of the following:\n  Document does not have a main landmark"
+          }
+        ]
+      },
+      {
+        "id": "region",
+        "impacto": "moderate",
+        "nodos": [
+          {
+            "html": "<span>Inicio</span>",
+            "resumen": "Fix any of the following:\n  Some page content is not contained by landmarks"
+          },
+          {
+            "html": "<span class=\"font-medium text-[var(--text-primary)]\">Catálogo de indicadores</span>",
+            "resumen": "Fix any of the following:\n  Some page content is not contained by landmarks"
+          }
+        ]
+      }
+    ],
+    "reglas_pasadas": 46
+  },
+  "errores": [],
+  "consola": [],
+  "fin_utc": "2026-11-05T11:47:23.764Z"
+}

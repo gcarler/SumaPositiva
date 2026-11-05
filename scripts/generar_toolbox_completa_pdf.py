@@ -4,24 +4,88 @@ Generador Maestro de la Caja de Herramientas de Seguridad Humana Integral
 Distrito Turístico y Cultural de Cartagena de Indias - POLIS Plataforma
 
 Genera 4 documentos de POLIS multi-página, de alta calidad institucional y pedagógica:
-1. ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf (Cartilla pedagógica de 8 páginas)
-2. PRESENTACION_DIAGNOSTICO_SEGURIDAD_HUMANA_CARTAGENA.pdf (Deck de diapositivas horizontales de 9 láminas)
-3. MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf (Matriz técnica horizontal de 5 páginas con tablas)
-4. GUIA_FACILITADORES_MESAS_COMUNITARIAS.pdf (Manual metodológico para facilitadores de 5 páginas)
+1. ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf (Cartilla pedagógica de 8 páginas y referencias)
+2. PRESENTACION_DIAGNOSTICO_SEGURIDAD_HUMANA_CARTAGENA.pdf (Presentación ejecutiva de 10 láminas y referencias)
+3. MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf (Matriz técnica de 5 páginas y referencias)
+4. GUIA_FACILITADORES_MESAS_COMUNITARIAS.pdf (Manual de 5 páginas y referencias)
 """
 
+import argparse
+import hashlib
+import json
 import os
-import sys
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.lib import colors
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
-)
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.pdfgen import canvas
+import re
+from pathlib import Path
 
-OUTPUT_DIR = "/root/polis/public/docs"
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.pdfgen import canvas
+from reportlab.platypus import (
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
+RAIZ_REPO = Path(__file__).resolve().parents[1]
+OUTPUT_DIR = str(RAIZ_REPO / "public" / "docs")
+ARCHIVO_LINAJE = RAIZ_REPO / "data/capas_analiticas/catalogo_indicadores/linaje_territorial_documentos.json"
+
+
+def cargar_linaje_territorial():
+    """Verifica el corte geográfico y la programación local antes de generar PDF."""
+    linaje = json.loads(ARCHIVO_LINAJE.read_text(encoding="utf-8"))
+    for capa in linaje["capas"]:
+        original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+        if hashlib.sha256(original).hexdigest() != capa["sha256"]:
+            raise ValueError(f"La fuente territorial cambió: {capa['id']}; revise su linaje")
+        cantidad = len(json.loads(original)["features"])
+        if cantidad != capa["cantidad_objetos"]:
+            raise ValueError(f"El conteo territorial no coincide: {capa['id']}")
+    programacion = linaje["programacion_mesas"]
+    original = (RAIZ_REPO / programacion["archivo"]).read_bytes()
+    if hashlib.sha256(original).hexdigest() != programacion["sha256"]:
+        raise ValueError("Cambió el archivo de programación de mesas")
+    codigos = re.findall(r"\('[0-9a-f-]{36}', '([^']+)'", original.decode().split(") AS c(")[0])
+    if codigos != programacion["codigos"] or len(codigos) != programacion["cantidad_codigos"]:
+        raise ValueError("El conteo de mesas programadas no coincide con su evidencia")
+    return linaje
+
+
+def agregar_referencias_territoriales(story, estilos):
+    """Publica procedencia, universo y SHA; no presenta geometrías como barrios certificados."""
+    linaje = cargar_linaje_territorial()
+    story.append(PageBreak())
+    story.append(Paragraph("Fuentes territoriales y programación: corte verificable", estilos["H1"]))
+    story.append(Paragraph(
+        "Los conteos siguientes describen objetos de archivos recibidos. No acreditan por sí solos "
+        "vigencia de delimitaciones, un censo de barrios del POT o reuniones realizadas. "
+        "La selección analítica de 17 polígonos acordada para el mapa es una decisión metodológica; "
+        "no crea 17 UCG administrativas. Las cifras demográficas requieren su fuente y año propios.",
+        estilos["Body"],
+    ))
+    for capa in linaje["capas"]:
+        story.append(Paragraph(
+            f"<b>{capa['id']}: {capa['cantidad_objetos']} objetos.</b> {capa['alcance']}<br/>"
+            f"Archivo: {capa['archivo']}<br/>SHA-256: {capa['sha256']}",
+            estilos["TableCell"],
+        ))
+        story.append(Spacer(1, 8))
+    p = linaje["programacion_mesas"]
+    story.append(Paragraph(
+        f"<b>{p['cantidad_codigos']} mesas en la programación local.</b> {p['alcance']}<br/>"
+        f"Archivo: {p['archivo']}<br/>SHA-256: {p['sha256']}", estilos["TableCell"],
+    ))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph(
+        "Registro de estas referencias: data/capas_analiticas/catalogo_indicadores/"
+        f"linaje_territorial_documentos.json. Fecha de cotejo: {linaje['verificado_utc']}. "
+        "Una capa o programación nueva requiere actualizar el registro y comprobar sus conteos.",
+        estilos["TableCell"],
+    ))
 
 # ---------------------------------------------------------------------------
 # PALETA INSTITUCIONAL POLIS / CARTAGENA
@@ -355,7 +419,7 @@ def generar_doc_abc():
         [Paragraph("<b>Marco Internacional ONU:</b>", st["TableCellBold"]),
          Paragraph("Resolución 66/290 de la Asamblea General de las Naciones Unidas (2012) sobre el paradigma de Seguridad Humana; Informe PNUD 1994 sobre las 7 dimensiones vitales.", st["TableCell"])],
         [Paragraph("<b>Ámbito Territorial:</b>", st["TableCellBold"]),
-         Paragraph("Distrito Turístico y Cultural de Cartagena de Indias: 3 Localidades, 15 Unidades Comuneras de Gobierno (UCG) y los 205 barrios, corregimientos y zonas insulares, según el catálogo territorial de POLIS derivado del POT. Las 35 mesas son las programadas, no las realizadas.", st["TableCell"])],
+         Paragraph("Cartagena de Indias: localidades, UCG urbanas, barrios, corregimientos y zonas insulares. Los objetos de las capas recibidas se documentan en las referencias territoriales; no constituyen un censo de barrios del POT. La programación local contempla 35 mesas y no acredita reuniones realizadas.", st["TableCell"])],
         [Paragraph("<b>Finalidad del Documento:</b>", st["TableCellBold"]),
          Paragraph("Instrumento pedagógico vinculante y de consulta ciudadana para líderes comunales, Juntas de Acción Comunal (JAC), ediles de JAL, organizaciones sociales, veedurías y servidores públicos distritales.", st["TableCell"])],
         [Paragraph("<b>Garantía de Fe Pública:</b>", st["TableCellBold"]),
@@ -411,7 +475,7 @@ def generar_doc_abc():
         [Paragraph("<b>Capítulo 1:</b> El Tránsito Doctrinal hacia la Seguridad Humana", st["TableCellBold"]), Paragraph("Pág. 3", st["TableCell"])],
         [Paragraph("<b>Capítulo 2:</b> Cuadro Comparativo: ¿Qué NO es vs. ¿Qué SÍ es?", st["TableCellBold"]), Paragraph("Pág. 4", st["TableCell"])],
         [Paragraph("<b>Capítulo 3:</b> Las Siete (7) Dimensiones Integrales en Cartagena de Indias", st["TableCellBold"]), Paragraph("Pág. 5", st["TableCell"])],
-        [Paragraph("<b>Capítulo 4:</b> Metodología de las 35 Mesas Barriales y Radicación con Fe Pública", st["TableCellBold"]), Paragraph("Pág. 6", st["TableCell"])],
+        [Paragraph("<b>Capítulo 4:</b> Metodología de las mesas programadas y radicación", st["TableCellBold"]), Paragraph("Pág. 6", st["TableCell"])],
         [Paragraph("<b>Capítulo 5:</b> Las Diez (10) Preguntas Clave del ABC Ciudadano", st["TableCellBold"]), Paragraph("Pág. 7", st["TableCell"])],
         [Paragraph("<b>Capítulo 6:</b> Glosario Técnico, Directorio Distrital y Canales de Veeduría", st["TableCellBold"]), Paragraph("Pág. 8", st["TableCell"])],
     ]
@@ -551,7 +615,7 @@ def generar_doc_abc():
         [
             Paragraph("<b>Territorio</b>", st["TableCellBold"]),
             Paragraph("No es un programa centralista concentrado en el Centro Histórico y Bocagrande olvidando el cordón de pobreza.", st["TableCell"]),
-            Paragraph("Es presencia directa en los 205 barrios y corregimientos del POT: de Nelson Mandela a Tierrabomba y Bayunca.", st["TableCell"])
+            Paragraph("Se propone presencia en barrios, corregimientos e islas: de Nelson Mandela a Tierrabomba y Bayunca. La cobertura efectivamente alcanzada se verifica con actas y registros de cada corte.", st["TableCell"])
         ],
         [
             Paragraph("<b>Veeduría</b>", st["TableCellBold"]),
@@ -650,10 +714,10 @@ def generar_doc_abc():
     story.append(PageBreak())
 
     # ------------------ PÁGINA 6: CAPÍTULO 4 - METODOLOGÍA Y POLIS ------------------
-    story.append(Paragraph("Capítulo 4: Las 35 Mesas Comunitarias y la Plataforma POLIS", st["H1"]))
+    story.append(Paragraph("Capítulo 4: Programación de mesas comunitarias y POLIS", st["H1"]))
     story.append(Paragraph(
         "La Política de Seguridad Humana no se construye detrás de un escritorio ni mediante encuestas telefónicas. "
-        "Se formula y ejecuta a través de <b>35 Mesas Territoriales de Concertación</b> distribuidas estratégicamente "
+        "La programación local propone <b>35 mesas territoriales, rurales, sectoriales y poblacionales</b> "
         "en las tres localidades de Cartagena, los corregimientos rurales y el cordón insular.",
         st["Body"]
     ))
@@ -713,7 +777,7 @@ def generar_doc_abc():
         ("2. ¿Esto significa que ya no habrá policía ni capturas?",
          "No. La Policía Metropolitana y la Fiscalía continúan con su misión constitucional de combatir el delito. La Seguridad Humana complementa su labor atacando las causas del delito: sin hambre y con empleo juvenil, la criminalidad se desactiva."),
         ("3. ¿Quién puede radicar una propuesta en POLIS?",
-         "Cualquier ciudadano, Junta de Acción Comunal (JAC), organización de mujeres, jóvenes, pescadores o comerciantes de los 205 barrios y corregimientos del POT. No se requiere tramitador ni costo económico."),
+         "Cualquier ciudadano, Junta de Acción Comunal (JAC), organización de mujeres, jóvenes, pescadores o comerciantes de los barrios, corregimientos e islas de Cartagena. No se requiere tramitador ni costo económico."),
         ("4. ¿Qué significa que mi propuesta tenga 'Fe Pública'?",
          "Significa que tu radicado es una prueba legal oficial. La Alcaldía de Cartagena tiene la obligación jurídica de responderte por escrito explicando la viabilidad técnica y presupuestal de la obra solicitada."),
         ("5. ¿De dónde saldrá el dinero para financiar estas obras?",
@@ -758,7 +822,7 @@ def generar_doc_abc():
         ("Devolución Motivada:", "Obligación de la autoridad de fundamentar por escrito y con razones jurídicas y financieras cada respuesta a un aporte ciudadano."),
         ("FONSET:", "Fondo Territorial de Seguridad y Convivencia Ciudadana, cuenta especial para financiar obras preventivas y operativas."),
         ("Geovisor Territorial:", "Herramienta digital interactiva de POLIS que mapea riesgos socioambientales en tiempo real sobre el mapa de Cartagena."),
-        ("POT de Cartagena:", "Plan de Ordenamiento Territorial vigente que delimita las 3 Localidades, 15 UCGs y los 205 barrios y corregimientos distritales."),
+        ("POT de Cartagena:", "Instrumento de ordenamiento cuya delimitación y vigencia deben verificarse por versión. Los conteos de capas recibidas se identifican en las referencias territoriales de este documento."),
         ("Sentencia C-150 de 2015:", "Fallo de la Corte Constitucional que declaró la participación ciudadana como un derecho fundamental vinculante en Colombia."),
     ]
     g_cells = []
@@ -804,6 +868,7 @@ def generar_doc_abc():
     ]))
     story.append(t_fin)
 
+    agregar_referencias_territoriales(story, st)
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Generado exitosamente: {pdf_path}")
 
@@ -831,7 +896,7 @@ def generar_doc_presentacion():
             ], colWidths=[218]),
             Table([
                 [Paragraph("<font color='#F59E0B'><b>COBERTURA DISTRITAL</b></font>", st["CoverMetaCardTitle"])],
-                [Paragraph("3 Localidades • 15 UCGs • 35 Mesas de Concertación • 205 Barrios y Corregimientos", st["CoverMetaCardText"])],
+                [Paragraph("Cartagena • Programación local de 35 mesas • Cobertura territorial por verificar", st["CoverMetaCardText"])],
             ], colWidths=[218]),
             Table([
                 [Paragraph("<font color='#10B981'><b>FE PÚBLICA Y VINCULATORIEDAD</b></font>", st["CoverMetaCardTitle"])],
@@ -1053,9 +1118,9 @@ def generar_doc_presentacion():
     ])
 
     kpi5 = Table([
-        [Paragraph("<font color='#059669'><b>205 Barrios y Corregimientos</b></font>", st["SlideKpiNum"])],
-        [Paragraph("COBERTURA TERRITORIAL EN 35 MESAS", st["SlideKpiTitle"])],
-        [Paragraph("Convocatoria vinculante en las 3 Localidades para que ninguna comunidad quede desatendida.", st["SlideKpiText"])],
+        [Paragraph("<font color='#059669'><b>Barrios, corregimientos e islas</b></font>", st["SlideKpiNum"])],
+        [Paragraph("35 MESAS EN LA PROGRAMACIÓN LOCAL", st["SlideKpiTitle"])],
+        [Paragraph("Programación territorial, rural, sectorial y poblacional. La cobertura y las reuniones realizadas se acreditan con actas de cada corte.", st["SlideKpiText"])],
     ], colWidths=[345], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3.5, C_EMERALD),
@@ -1232,7 +1297,7 @@ def generar_doc_presentacion():
 
     geo4 = Table([
         [Paragraph("<font color='#059669'><b>CÓMO SE COMPLETA LA FOCALIZACIÓN</b></font><br/><font color='#64748B'>Ruta de trabajo</font>", st["CardTitleSm"])],
-        [Paragraph("• <b>Mesas barriales:</b> las 35 mesas aportan diagnóstico comunitario georreferenciado en el Geovisor.", st["CardTextSm"])],
+        [Paragraph("• <b>Mesas barriales:</b> la programación local contempla 35 mesas para recoger diagnóstico comunitario. La realización se acredita con actas; los aportes geográficos se consultan en Datos.", st["CardTextSm"])],
         [Paragraph("• <b>Acceso institucional:</b> se solicita a Policía y Fiscalía la desagregación por UCG; sin ella, el mapa de delitos se mantiene a escala distrital.", st["CardTextSm"])],
     ], colWidths=[345], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
@@ -1392,7 +1457,7 @@ def generar_doc_presentacion():
 
     phase1 = Table([
         [Paragraph("<font color='#0284C7'><b>FASE 1: DIAGNÓSTICO (2026-I)</b></font>", st["CardTitleSm"])],
-        [Paragraph("• Despliegue de las 35 Mesas Barriales en las 3 localidades, corregimientos e islas.<br/>• Consolidación de las propuestas radicadas con QR.<br/>• Gestión de recursos ante el FONSET y el SGP según disponibilidad presupuestal.", st["CardTextSm"])],
+        [Paragraph("• Programación propuesta de 35 mesas territoriales, rurales, sectoriales y poblacionales; ejecución sujeta a convocatoria y actas.<br/>• Consolidación de las propuestas radicadas con QR.<br/>• Gestión de recursos ante el FONSET y el SGP según disponibilidad presupuestal.", st["CardTextSm"])],
     ], colWidths=[226], style=[
         ('BACKGROUND', (0,0), (-1,-1), C_WHITE),
         ('LINEABOVE', (0,0), (-1,0), 3.5, C_CYAN),
@@ -1511,6 +1576,7 @@ def generar_doc_presentacion():
     ]))
     story.append(t_d10)
 
+    agregar_referencias_territoriales(story, st)
     doc.build(story, canvasmaker=SlideCanvas)
     print(f"Generado exitosamente: {pdf_path}")
 
@@ -1546,17 +1612,17 @@ def generar_doc_matriz():
                 "• <b>Estado A:</b> línea base verificada en el banco de fuentes oficiales de POLIS.<br/>"
                 "• <b>Estado B:</b> fuente pública identificada, aún no incorporada.<br/>"
                 "• <b>Estado C:</b> sin fuente verificada; no se publica ninguna cifra.<br/>"
-                "• <b>Escala:</b> todas las cifras de estado A son <b>municipales</b> (Cartagena en su conjunto).<br/>"
+                "• <b>Escala:</b> cada fila conserva su universo: <b>municipio, cabecera o estación</b>; no son intercambiables.<br/>"
                 "• <b>Entidad líder:</b> propuesta, por confirmar con cada dependencia.",
                 st["TableCell"]
             ),
             Paragraph(
                 "• Las cifras municipales <b>no se reparten entre barrios</b> ni sirven para ordenar territorios internos.<br/>"
-                "• Policía y Medicina Legal miden universos distintos: <b>no se suman ni se comparan</b>.<br/>"
+                "• Policía y Medicina Legal conservan universos distintos. Su contraste requiere armonizar periodo, territorio, unidad y criterio de registro; <b>no se suman</b>.<br/>"
                 "• Los trimestres móviles de la GEIH no son promedios anuales; las estimaciones SAE son experimentales.<br/>"
                 "• Las tasas usan la población proyectada por el DANE para el año citado.<br/>"
                 "• Las cifras no establecen relaciones de causa y efecto.<br/>"
-                "• Conteos territoriales: 3 localidades, 15 UCG (más la zona rural) y 205 barrios y corregimientos según el catálogo territorial de POLIS derivado del POT; las 35 mesas son las programadas, no las realizadas.",
+                "• Los conteos de objetos geográficos y sus SHA se documentan en las referencias. No equivalen a un censo del POT. Las 35 mesas corresponden a programación local, no a reuniones realizadas.",
                 st["TableCell"]
             )
         ]
@@ -1646,7 +1712,7 @@ def generar_doc_matriz():
     ]
     agregar_tabla_indicadores(
         "Indicadores con línea base verificada (1/2): Seguridad Personal y Comunitaria",
-        "Estado A. Todas las cifras son municipales y provienen del banco de fuentes oficiales de POLIS, con corte a octubre de 2026:",
+        "Estado A. Las cifras provienen del banco de fuentes oficiales de POLIS; cada fila declara su periodo y escala municipal o de cabecera:",
         filas_a1
     )
 
@@ -1755,6 +1821,7 @@ def generar_doc_matriz():
     ]))
     story.append(t_salv)
 
+    agregar_referencias_territoriales(story, st)
     doc.build(story, canvasmaker=SlideCanvas)
     print(f"Generado exitosamente: {pdf_path}")
 
@@ -1779,7 +1846,7 @@ def generar_doc_facilitadores():
 
     meta_fac = [
         [Paragraph("<b>Destinatarios:</b>", st["TableCellBold"]), Paragraph("Enlaces territoriales de la Secretaría del Interior, facilitadores de la Secretaría de Participación, presidentes y secretarios de Juntas de Acción Comunal (JAC), ediles y líderes barriales de Cartagena.", st["TableCell"])],
-        [Paragraph("<b>Objetivo del Manual:</b>", st["TableCellBold"]), Paragraph("Estandarizar las 35 Mesas de Concertación Barrial para que cada reunión comunitaria sea ordenada, rigurosa, libre de manipulación partidista y con entrega inmediata de comprobantes QR con valor vinculante.", st["TableCell"])],
+        [Paragraph("<b>Objetivo del Manual:</b>", st["TableCellBold"]), Paragraph("Orientar las 35 mesas de la programación local para que cada reunión comunitaria sea ordenada, rigurosa, libre de manipulación partidista y con entrega inmediata de comprobantes QR con valor vinculante.", st["TableCell"])],
         [Paragraph("<b>Principio de Neutralidad:</b>", st["TableCellBold"]), Paragraph("Queda prohibido el proselitismo político o electoral en las mesas. Toda deliberación tiene fines exclusivos de planeación del gasto público e inversión de la política de seguridad humana.", st["TableCell"])],
     ]
     t_mf = Table(meta_fac, colWidths=[140, 400])
@@ -1912,7 +1979,7 @@ def generar_doc_facilitadores():
 
     offline_steps = [
         ("Paso 1: Precarga de Datos en la Sede Distrital:",
-         "Antes de salir al territorio, el facilitador sincroniza su tablet o móvil en la red de la Alcaldía. El sistema precarga la base de datos canónica de los 205 barrios y corregimientos del POT."),
+         "Antes de salir al territorio, el facilitador sincroniza su tablet o móvil en la red de la Alcaldía. Antes de cada taller se verifica la versión del catálogo territorial disponible. La cobertura del archivo no acredita por sí sola un censo administrativo vigente."),
         ("Paso 2: Captura en Terreno sin Internet:",
          "Durante el taller, se diligencia la propuesta con el selector oficial de barrios. Se toma la evidencia fotográfica y los nombres de los voceros. El sistema genera un radicado criptográfico provisional en memoria local."),
         ("Paso 3: Sincronización Inmediata al Retornar:",
@@ -1936,7 +2003,7 @@ def generar_doc_facilitadores():
     story.append(Paragraph("Verificación de la Información Territorial", st["H2"]))
     story.append(Paragraph(
         "Es obligatorio verificar que el nombre del barrio seleccionado coincida exactamente con la nomenclatura del <b>Plan de Ordenamiento "
-        "Territorial (POT) de Cartagena</b> (catálogo oficial de 205 unidades territoriales). Si la comunidad denomina un sector por un "
+        "Territorial (POT) de Cartagena</b> y con la capa adoptada para el corte, identificada por archivo, fuente y SHA. El número de objetos geométricos no equivale a un censo de unidades administrativas. Si la comunidad denomina un sector por un "
         "nombre popular (ejemplo: 'Playas Blancas' o 'El Chivo'), se seleccionará el barrio canónico (ej. Olaya Herrera o La María) "
         "y se precisará el microsector en el cuerpo de la propuesta.",
         st["Body"]
@@ -2008,6 +2075,7 @@ def generar_doc_facilitadores():
     ]))
     story.append(t_fir)
 
+    agregar_referencias_territoriales(story, st)
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Generado exitosamente: {pdf_path}")
 
@@ -2016,6 +2084,12 @@ def generar_doc_facilitadores():
 # EJECUCIÓN PRINCIPAL
 # ===========================================================================
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--directorio-salida", type=Path, default=Path(OUTPUT_DIR))
+    opciones = parser.parse_args()
+    OUTPUT_DIR = str(opciones.directorio_salida)
+    cargar_linaje_territorial()
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     print("Iniciando generación institucional de los 4 documentos de la Caja de Herramientas...")
     generar_doc_abc()
     generar_doc_presentacion()

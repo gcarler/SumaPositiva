@@ -1,0 +1,62 @@
+▲ Next.js 16.3.8 (webpack)
+✓ Running next.config.ts took 68ms
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "40mb"
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 22.8s
+  Running TypeScript ...
+  Finished TypeScript in 9.1s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/207) ...
+  Generating static pages using 7 workers (51/207) 
+  Generating static pages using 7 workers (103/207) 
+  Generating static pages using 7 workers (155/207) 
+✓ Generating static pages using 7 workers (207/207) in 2.1s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /acerca
+├ ○ /acerca-de-polis
+├ ƒ /api/formularios/revalidar
+├ ƒ /aportes/[codigo]
+├   /asistencia/[mesaId]
+│ ├ ● /asistencia/mt-001
+│ ├ ● /asistencia/mt-002
+│ ├ ● /asistencia/mt-003
+│ └ ● [+173 more paths]
+├ ○ /barrio
+├ ○ /contacto
+├ ● /f/[slug]
+├ ○ /geovisor
+├ ○ /icon.svg
+├ ○ /indicadores
+├ ○ /marco-legal
+├ ○ /plataforma
+├ ○ /plataforma/actores
+├ ○ /plataforma/alternativas
+├ ○ /plataforma/comunicaciones
+├ ○ /plataforma/configuracion
+├ ○ /plataforma/contenido
+├ ○ /plataforma/diagnostico
+├ ○ /plataforma/formularios
+├ ○ /plataforma/fuentes
+├ ○ /plataforma/geovisor
+├ ○ /plataforma/mesas
+├ ○ /plataforma/noticias
+├ ○ /plataforma/proyectos
+├ ○ /plataforma/seguimiento
+├ ○ /plataforma/testimonios
+├ ○ /plataforma/usuarios
+├ ○ /seguridad-humana
+├ ○ /trazabilidad
+└ ƒ /verificar/[codigo]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

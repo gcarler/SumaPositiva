@@ -1,0 +1,98 @@
+{
+  "captura_utc": "2026-11-05T12:03:03.245131+00:00",
+  "motivo": "Cambios anteriores o ajenos al alcance verificado de remediación QA297; se preservan en el árbol, sin incorporarlos al commit.",
+  "total_fuera": 4643,
+  "borrados_previos": 4622,
+  "grupos_borrados": {
+    "bridge/20261105_visor_estadistico_evidencia/antes": 19,
+    "bridge/20261105_visor_estadistico_evidencia/compilacion_next": 4200,
+    "bridge/20261105_visor_estadistico_evidencia/compilacion_storybook": 403
+  },
+  "otros_cambios": [
+    {
+      "estado": " M",
+      "archivo": "bridge/01_tarea_activa.md"
+    },
+    {
+      "estado": " M",
+      "archivo": "bridge/20261105_plan_visor_estadistico_multifuente.md"
+    },
+    {
+      "estado": " M",
+      "archivo": "bridge/295_entrega_ollamacodex_indicadores_etapa1.md"
+    },
+    {
+      "estado": " M",
+      "archivo": "data/planes_desarrollo/cache_inteligencia_triada_6m.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_entrega_visor_estadistico_multifuente.md"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/archivos_fuente_cierre.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/artefactos_compilacion.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/cierre.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/codigo_fuente_cierre.zip"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/analitica_banco_real.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/comparacion_homicidios_real.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/resumen.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/diferencias_desde_copias.patch"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/estabilidad_fuentes_build.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/estado_api_tras_recarga_concurrente.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/estado_publicacion_http.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/fuentes_antes_build_final.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/manifest_sha256.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/procesar_captura.py"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/20261105_visor_estadistico_evidencia/release_frontend_activo.json"
+    },
+    {
+      "estado": "??",
+      "archivo": "bridge/282_suite_completa_20261105/exit_bd_fresca_final2.code"
+    }
+  ],
+  "inventario_fuera_sha256": "2cc03fb0ba2049a4c80c5c84906d303360ce02768523a0de9bdc9ee5e3bf31d2"
+}

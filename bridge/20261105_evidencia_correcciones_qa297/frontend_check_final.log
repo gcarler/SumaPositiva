@@ -1,0 +1,5 @@
+$ bun run ui:check && bun run typecheck && bun run lint
+$ node scripts/ui-policy.mjs
+POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+$ tsc --noEmit
+$ eslint .

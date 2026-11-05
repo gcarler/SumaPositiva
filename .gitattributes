@@ -1,0 +1,2 @@
+# Los PDF son binarios aunque sus flujos estén codificados como texto ASCII.
+*.pdf binary

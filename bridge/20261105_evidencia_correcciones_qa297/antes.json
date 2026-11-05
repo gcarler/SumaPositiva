@@ -1,0 +1,42 @@
+{
+  "scripts/validar_catalogo_indicadores.py": {
+    "sha256": "dd88234965b5996420bfaaa21885d19418a70df47785012bf3182a9e765990b8",
+    "mtime_utc": "2026-11-05T08:37:54.981130+00:00"
+  },
+  "scripts/validar_cifras_publicadas.py": {
+    "sha256": "1e4fed874c621f660e1bd1abb91e32085b6b005513fe158a4e1275077b2366d8",
+    "mtime_utc": "2026-11-05T08:33:15.925491+00:00"
+  },
+  "scripts/generar_toolbox_completa_pdf.py": {
+    "sha256": "a0a7181b5f9abd51db2e60f970cbaadc6065544c1d30b5ab4d68b373044ef7df",
+    "mtime_utc": "2026-11-05T08:25:44.493222+00:00"
+  },
+  "data/capas_analiticas/catalogo_indicadores/catalogo.csv": {
+    "sha256": "d002b4870a730b7077c2111a59e7ce304111c88df56f8668c2fe7655dc34c0ff",
+    "mtime_utc": "2026-11-05T08:37:54.957130+00:00"
+  },
+  "data/capas_analiticas/catalogo_indicadores/cifras_publicadas.csv": {
+    "sha256": "b1cb9a2bcbca7abd6efc5c1f387f966f7fc94e232fcd14e04d7b0355b40ecc99",
+    "mtime_utc": "2026-11-05T08:37:54.959696+00:00"
+  },
+  "backend/app/modules/indicadores/catalogo_polis.py": {
+    "sha256": "d4dea1f97b6f7b409637b9ef22e2f3467d42803c44d92c730c11070ae33a6499",
+    "mtime_utc": "2026-11-05T08:24:48.906912+00:00"
+  },
+  "backend/app/modules/indicadores/router.py": {
+    "sha256": "234b1a494ae0aa64f41b9ea81d2c5bb60942dedbf4ece2d86a464cefcbc86ae9",
+    "mtime_utc": "2026-11-05T11:06:58.408062+00:00"
+  },
+  "src/features/indicadores/views/indicadores-catalogo-view.tsx": {
+    "sha256": "8a8977c8903b95c305f69ac53f13f3605d3af040f62e31d783d1396b3f93cb28",
+    "mtime_utc": "2026-11-05T11:08:43.632230+00:00"
+  },
+  "src/features/indicadores/views/indicadores-catalogo-view.test.tsx": {
+    "sha256": "6e70e18e71c0290610690ec1086f0f78864657602755623848d1b996bce89971",
+    "mtime_utc": "2026-11-05T11:12:04.014550+00:00"
+  },
+  "bridge/297_entrega_codex_qa_independiente_indicadores.md": {
+    "sha256": "23d98e0a55f5a118ab617d1868dd329d2fb9e773e2d0dff8096f15986e8aa744",
+    "mtime_utc": "2026-11-05T08:29:36.309719+00:00"
+  }
+}

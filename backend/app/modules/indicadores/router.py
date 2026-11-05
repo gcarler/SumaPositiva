@@ -6,12 +6,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.core.database import SessionDependency
 from app.modules.identidad.deps import requerir_permiso
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
+from app.modules.indicadores.catalogo_polis import (
+    CatalogoIndicadoresInvalido,
+    leer_catalogo_indicadores,
+)
 from app.modules.indicadores.repository import IndicadoresRepository
-from app.modules.indicadores.catalogo_polis import leer_catalogo_indicadores
 from app.modules.indicadores.schemas import (
     CadenaValorRespuesta,
-    CatalogoIndicadorRead,
     CatalogoIndicadoresRespuesta,
+    CatalogoIndicadorRead,
     FichaIndicadorActualizar,
     FichaIndicadorCrear,
     FichaIndicadorRespuesta,
@@ -44,7 +47,16 @@ async def obtener_catalogo_indicadores(
     tier: str | None = None,
     busqueda: str | None = None,
 ) -> CatalogoIndicadoresRespuesta:
-    filas, archivo_sha256 = leer_catalogo_indicadores()
+    try:
+        filas, archivo_sha256 = leer_catalogo_indicadores()
+    except (CatalogoIndicadoresInvalido, FileNotFoundError) as error:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                "El catálogo metodológico de indicadores no está disponible "
+                "temporalmente por un problema de estructura."
+            ),
+        ) from error
     texto_busqueda = (busqueda or "").strip().lower()
     items = []
     for fila in filas:

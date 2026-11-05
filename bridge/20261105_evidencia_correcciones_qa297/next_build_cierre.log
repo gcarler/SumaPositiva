@@ -1,0 +1,109 @@
+▲ Next.js 16.3.8 (webpack)
+✓ Running next.config.ts took 44ms
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "40mb"
+
+  Creating an optimized production build ...
+Found 5 warnings while optimizing generated CSS:
+
+Issue #1:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-cartesian-grid_line\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border\/50 {[22m
+[2m│[22m     & .recharts-cartesian-grid line[stroke=\"#ccc\"] {
+[2m┆[22m                                              [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│       @supports (color: color-mix(in lab, red, red)) {[22m
+
+Issue #2:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-dot\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {[22m
+[2m│[22m     & .recharts-dot[stroke=\"#fff\"] {
+[2m┆[22m                              [33m[2m^--[22m Unexpected token IDHash("fff\"")[39m
+[2m┆[22m
+[2m│       stroke: transparent;[22m
+[2m│     }[22m
+
+Issue #3:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-polar-grid_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {[22m
+[2m│[22m     & .recharts-polar-grid [stroke=\"#ccc\"] {
+[2m┆[22m                                      [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│     }[22m
+
+Issue #4:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-reference-line_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {[22m
+[2m│[22m     & .recharts-reference-line [stroke=\"#ccc\"] {
+[2m┆[22m                                          [33m[2m^--[22m Unexpected token IDHash("ccc\"")[39m
+[2m┆[22m
+[2m│       stroke: var(--border);[22m
+[2m│     }[22m
+
+Issue #5:
+[2m│   }[22m
+[2m│   .\[\&_\.recharts-sector\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {[22m
+[2m│[22m     & .recharts-sector[stroke=\"#fff\"] {
+[2m┆[22m                                 [33m[2m^--[22m Unexpected token IDHash("fff\"")[39m
+[2m┆[22m
+[2m│       stroke: transparent;[22m
+[2m│     }[22m
+
+✓ Compiled successfully in 21.6s
+  Running TypeScript ...
+  Finished TypeScript in 8.0s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/207) ...
+  Generating static pages using 7 workers (51/207) 
+  Generating static pages using 7 workers (103/207) 
+  Generating static pages using 7 workers (155/207) 
+✓ Generating static pages using 7 workers (207/207) in 2.2s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /acerca
+├ ○ /acerca-de-polis
+├ ƒ /api/formularios/revalidar
+├ ƒ /aportes/[codigo]
+├   /asistencia/[mesaId]
+│ ├ ● /asistencia/mt-001
+│ ├ ● /asistencia/mt-002
+│ ├ ● /asistencia/mt-003
+│ └ ● [+173 more paths]
+├ ○ /barrio
+├ ○ /contacto
+├ ● /f/[slug]
+├ ○ /geovisor
+├ ○ /icon.svg
+├ ○ /indicadores
+├ ○ /marco-legal
+├ ○ /plataforma
+├ ○ /plataforma/actores
+├ ○ /plataforma/alternativas
+├ ○ /plataforma/comunicaciones
+├ ○ /plataforma/configuracion
+├ ○ /plataforma/contenido
+├ ○ /plataforma/diagnostico
+├ ○ /plataforma/formularios
+├ ○ /plataforma/fuentes
+├ ○ /plataforma/geovisor
+├ ○ /plataforma/mesas
+├ ○ /plataforma/noticias
+├ ○ /plataforma/proyectos
+├ ○ /plataforma/seguimiento
+├ ○ /plataforma/testimonios
+├ ○ /plataforma/usuarios
+├ ○ /seguridad-humana
+├ ○ /trazabilidad
+└ ƒ /verificar/[codigo]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
