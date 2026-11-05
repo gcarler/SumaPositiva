@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.geodatos.models import (
     CapaGeovisor,
     EstadisticaHurto,
+    GeometriaCapa,
     IndicadorTerritorio,
     Territorio,
 )
@@ -107,6 +108,85 @@ class GeodatosRepository:
         stmt = select(CapaGeovisor).where(CapaGeovisor.activa.is_(True))
         res = await self.session.execute(stmt)
         return res.scalars().all()
+
+    async def listar_fuentes_indicadores(self) -> list[dict[str, Any]]:
+        """Entidades fuente reales del banco multifuente."""
+        entidad = func.split_part(IndicadorTerritorio.fuente_datos, " - ", 1)
+        stmt = (
+            select(entidad.label("id"), func.count(IndicadorTerritorio.id).label("total"))
+            .group_by(entidad)
+            .order_by(func.count(IndicadorTerritorio.id).desc(), entidad.asc())
+        )
+        res = await self.session.execute(stmt)
+        return [{"id": row.id, "total": int(row.total)} for row in res.all()]
+
+    async def obtener_capa_geojson(self, codigo: str) -> dict[str, Any]:
+        """FeatureCollection dinámico de una capa oficial del Geovisor."""
+        stmt = select(
+            GeometriaCapa.id,
+            GeometriaCapa.nombre,
+            GeometriaCapa.descripcion,
+            GeometriaCapa.tipo_geometria,
+            GeometriaCapa.metadatos,
+            func.ST_AsGeoJSON(GeometriaCapa.geometria).label("geom_json"),
+        ).where(
+            or_(
+                GeometriaCapa.metadatos["capa_codigo"].astext == codigo.strip(),
+                GeometriaCapa.metadatos["capa_id"].astext == codigo.strip(),
+                GeometriaCapa.metadatos["codigo"].astext == codigo.strip(),
+                GeometriaCapa.categoria == codigo.strip(),
+            )
+        )
+        res = await self.session.execute(stmt)
+        features: list[dict[str, Any]] = []
+        for row in res.all():
+            if not row.geom_json:
+                continue
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": json.loads(row.geom_json),
+                    "properties": {
+                        "id": str(row.id),
+                        "nombre": row.nombre,
+                        "descripcion": row.descripcion,
+                        "tipo_geometria": row.tipo_geometria,
+                        "metadatos": row.metadatos,
+                        "capa_codigo": codigo.strip(),
+                    },
+                }
+            )
+        if features:
+            return {"type": "FeatureCollection", "features": features}
+
+        # Criterio ciudadano: si la capa no tiene hechos desagregados, pintar el polígono
+        # completo del Distrito. Esto mantiene visible cualquier dato de nivel ciudad.
+        stmt_distrito = select(
+            Territorio.id,
+            Territorio.codigo,
+            Territorio.nombre,
+            Territorio.tipo_territorio,
+            func.ST_AsGeoJSON(Territorio.geometria).label("geom_json"),
+        ).where(Territorio.codigo == "DISTRITO-CTG")
+        res_distrito = await self.session.execute(stmt_distrito)
+        for row in res_distrito.all():
+            if not row.geom_json:
+                continue
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": json.loads(row.geom_json),
+                    "properties": {
+                        "id": str(row.id),
+                        "nombre": row.nombre,
+                        "codigo": row.codigo,
+                        "tipo_territorio": row.tipo_territorio,
+                        "capa_codigo": codigo.strip(),
+                        "cobertura": "Distrito completo",
+                    },
+                }
+            )
+        return {"type": "FeatureCollection", "features": features}
 
     async def listar_indicadores_territorio(
         self,

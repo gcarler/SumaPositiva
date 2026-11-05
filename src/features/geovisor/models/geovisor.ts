@@ -1,4 +1,5 @@
-export type TipoTerritorio = "LOCALIDAD" | "UCOMUNERA" | "CORREGIMIENTO" | "ISLA";
+export type TipoTerritorio =
+  "LOCALIDAD" | "UCOMUNERA" | "CORREGIMIENTO" | "ISLA";
 
 export type GeoJSONPosition = [number, number] | [number, number, number];
 export type GeoJSONCoordinates =
@@ -8,7 +9,14 @@ export type GeoJSONCoordinates =
   | GeoJSONPosition[][][];
 
 export interface GeoJSONGeometry {
-  type: "Point" | "MultiPoint" | "LineString" | "MultiLineString" | "Polygon" | "MultiPolygon" | string;
+  type:
+    | "Point"
+    | "MultiPoint"
+    | "LineString"
+    | "MultiLineString"
+    | "Polygon"
+    | "MultiPolygon"
+    | string;
   coordinates: GeoJSONCoordinates;
 }
 
@@ -53,7 +61,8 @@ export interface CapaEspacial {
   descripcion: string;
   categoria?: string;
   tipo_geometria: "POLYGON" | "POINT" | "LINESTRING" | string;
-  color_hex: string;
+  color_hex?: string;
+  color_estilo?: string;
   activa: boolean;
 }
 
@@ -74,6 +83,11 @@ export interface TerritorioDetalle {
   indicadores: IndicadorSeguridad[];
   propuestas_count: number;
   descripcion: string;
+}
+
+export interface IndicadorFuente {
+  id: string;
+  total: number;
 }
 
 export interface IndicadorMultifuente {
@@ -120,4 +134,3 @@ export interface RespuestaIndicadores {
   offset: number;
   indicadores: IndicadorMultifuente[];
 }
-

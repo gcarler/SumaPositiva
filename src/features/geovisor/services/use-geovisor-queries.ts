@@ -3,17 +3,22 @@ import {
   listarTerritoriosGeoJSON,
   listarCapas,
   obtenerTerritorio,
+  listarFuentesIndicadores,
   listarIndicadores,
   listarIndicadoresTerritorio,
 } from "./geovisor-api";
 import type { FiltroTerritorial, IndicadorFiltros } from "../models/geovisor";
 
 export const GEOVISOR_KEYS = {
-  geojson: (filtros?: FiltroTerritorial) => ["geovisor", "geojson", filtros] as const,
+  geojson: (filtros?: FiltroTerritorial) =>
+    ["geovisor", "geojson", filtros] as const,
   capas: ["geovisor", "capas"] as const,
   detalle: (id: string) => ["geovisor", "detalle", id] as const,
-  indicadores: (filtros?: IndicadorFiltros) => ["geovisor", "indicadores", filtros] as const,
-  indicadoresTerritorio: (id?: string) => ["geovisor", "territorio-indicadores", id] as const,
+  fuentes: ["geovisor", "indicadores", "fuentes"] as const,
+  indicadores: (filtros?: IndicadorFiltros) =>
+    ["geovisor", "indicadores", filtros] as const,
+  indicadoresTerritorio: (id?: string) =>
+    ["geovisor", "territorio-indicadores", id] as const,
 };
 
 export function useTerritoriosGeoJSON(filtros?: FiltroTerritorial) {
@@ -47,6 +52,14 @@ export function useTerritorioDetalle(id: string) {
   });
 }
 
+export function useIndicadoresFuente() {
+  return useQuery({
+    queryKey: GEOVISOR_KEYS.fuentes,
+    queryFn: async () => await listarFuentesIndicadores(),
+    staleTime: 1000 * 60 * 5,
+  });
+}
+
 export function useIndicadoresGeovisor(filtros?: IndicadorFiltros) {
   return useQuery({
     queryKey: GEOVISOR_KEYS.indicadores(filtros),
@@ -68,4 +81,3 @@ export function useIndicadoresTerritorio(territorioId?: string) {
     staleTime: 1000 * 60 * 5,
   });
 }
-

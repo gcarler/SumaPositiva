@@ -59,7 +59,7 @@ export function GeovisorControles({
 
   // Clasificamos las capas de la API
   const capasOficiales = capasApi.filter(
-    (c: CapaEspacial) => !c.codigo?.startsWith("HURTO_")
+    (c: CapaEspacial) => !c.codigo?.startsWith("HURTO_"),
   );
 
   return (
@@ -151,7 +151,10 @@ export function GeovisorControles({
                     </div>
                     <span
                       className="size-2.5 rounded-full shrink-0 mt-1 shadow-xs"
-                      style={{ backgroundColor: c.color_hex || "var(--ember)" }}
+                      style={{
+                        backgroundColor:
+                          c.color_estilo ?? c.color_hex ?? "var(--ember)",
+                      }}
                     />
                   </Label>
                 );
@@ -204,7 +207,10 @@ export function GeovisorControles({
                   </span>
                 </span>
               </div>
-              <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: "#f97316" }} />
+              <span
+                className="size-2 rounded-full shrink-0"
+                style={{ backgroundColor: "#f97316" }}
+              />
             </Label>
 
             <Label
@@ -224,7 +230,10 @@ export function GeovisorControles({
                   </span>
                 </span>
               </div>
-              <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: "#8b5cf6" }} />
+              <span
+                className="size-2 rounded-full shrink-0"
+                style={{ backgroundColor: "#8b5cf6" }}
+              />
             </Label>
 
             <Label
@@ -244,7 +253,10 @@ export function GeovisorControles({
                   </span>
                 </span>
               </div>
-              <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: "#06b6d4" }} />
+              <span
+                className="size-2 rounded-full shrink-0"
+                style={{ backgroundColor: "#06b6d4" }}
+              />
             </Label>
 
             {/* Selector de Año Delictivo */}
@@ -257,7 +269,9 @@ export function GeovisorControles({
               </Label>
               <Select
                 value={anioHurto ? String(anioHurto) : "TODOS"}
-                onValueChange={(val) => onAnioHurtoChange?.(val === "TODOS" ? null : Number(val))}
+                onValueChange={(val) =>
+                  onAnioHurtoChange?.(val === "TODOS" ? null : Number(val))
+                }
               >
                 <SelectTrigger
                   id="select-filtro-anio-geovisor"
@@ -270,11 +284,13 @@ export function GeovisorControles({
                   <SelectItem value="TODOS" className="text-xs">
                     2018–2026 (Consolidado)
                   </SelectItem>
-                  {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((a) => (
-                    <SelectItem key={a} value={String(a)} className="text-xs">
-                      Año {a}
-                    </SelectItem>
-                  ))}
+                  {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map(
+                    (a) => (
+                      <SelectItem key={a} value={String(a)} className="text-xs">
+                        Año {a}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -296,7 +312,9 @@ export function GeovisorControles({
             />
             <span className="font-medium text-xs">Etiquetas de Polígonos</span>
           </div>
-          <span className="text-[10px] text-[var(--text-tertiary)] font-bold">Aa</span>
+          <span className="text-[10px] text-[var(--text-tertiary)] font-bold">
+            Aa
+          </span>
         </Label>
       </div>
     </div>

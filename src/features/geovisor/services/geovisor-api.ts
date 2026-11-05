@@ -2,6 +2,7 @@ import { apiFetch } from "@/core/http/api-client";
 import type {
   FeatureCollection,
   CapaEspacial,
+  IndicadorFuente,
   TerritorioDetalle,
   FiltroTerritorial,
   IndicadorMultifuente,
@@ -9,22 +10,35 @@ import type {
   RespuestaIndicadores,
 } from "../models/geovisor";
 
-export async function listarTerritoriosGeoJSON(filtros?: FiltroTerritorial): Promise<FeatureCollection> {
+export async function listarTerritoriosGeoJSON(
+  filtros?: FiltroTerritorial,
+): Promise<FeatureCollection> {
   const params = new URLSearchParams();
   if (filtros?.tipo) params.append("tipo", filtros.tipo);
   if (filtros?.es_zona_etnica) params.append("es_zona_etnica", "true");
   if (filtros?.alerta_sat) params.append("alerta_sat", "true");
   if (filtros?.busqueda) params.append("busqueda", filtros.busqueda);
-  
+
   const query = params.toString();
-  return apiFetch<FeatureCollection>(`/geodatos/territorios/geojson${query ? `?${query}` : ""}`);
+  return apiFetch<FeatureCollection>(
+    `/geodatos/territorios/geojson${query ? `?${query}` : ""}`,
+  );
 }
 
 export async function listarCapas(): Promise<CapaEspacial[]> {
   return apiFetch<CapaEspacial[]>("/geodatos/capas");
 }
 
-export async function obtenerTerritorio(id: string): Promise<TerritorioDetalle> {
+export async function listarCapaGeoJSON(
+  codigo: string,
+): Promise<FeatureCollection> {
+  return apiFetch<FeatureCollection>(
+    `/geodatos/capas/${encodeURIComponent(codigo)}/geojson`,
+  );
+}
+export async function obtenerTerritorio(
+  id: string,
+): Promise<TerritorioDetalle> {
   return apiFetch<TerritorioDetalle>(`/geodatos/territorios/${id}`);
 }
 
@@ -33,27 +47,44 @@ export async function obtenerTerritorio(id: string): Promise<TerritorioDetalle> 
  * 28 datasets oficiales y 2.449 indicadores indexados (DANE, Medicina Legal, DNP TerriData, RUV, ICBF, INS).
  * Conecta con backend FastAPI: GET /api/v1/geodatos/indicadores
  */
-export async function listarIndicadores(filtros?: IndicadorFiltros): Promise<RespuestaIndicadores> {
+export async function listarFuentesIndicadores(): Promise<IndicadorFuente[]> {
+  return apiFetch<IndicadorFuente[]>("/geodatos/indicadores/fuentes");
+}
+
+export async function listarIndicadores(
+  filtros?: IndicadorFiltros,
+): Promise<RespuestaIndicadores> {
   const params = new URLSearchParams();
-  if (filtros?.limit !== undefined) params.append("limit", String(filtros.limit));
-  if (filtros?.offset !== undefined) params.append("offset", String(filtros.offset));
+  if (filtros?.limit !== undefined)
+    params.append("limit", String(filtros.limit));
+  if (filtros?.offset !== undefined)
+    params.append("offset", String(filtros.offset));
   if (filtros?.dimension) params.append("dimension", filtros.dimension);
-  if (filtros?.fuente_datos) params.append("fuente_datos", filtros.fuente_datos);
-  if (filtros?.codigo_territorio) params.append("codigo_territorio", filtros.codigo_territorio);
-  if (filtros?.territorio_id) params.append("territorio_id", filtros.territorio_id);
-  if (filtros?.anio_corte) params.append("anio_corte", String(filtros.anio_corte));
+  if (filtros?.fuente_datos)
+    params.append("fuente_datos", filtros.fuente_datos);
+  if (filtros?.codigo_territorio)
+    params.append("codigo_territorio", filtros.codigo_territorio);
+  if (filtros?.territorio_id)
+    params.append("territorio_id", filtros.territorio_id);
+  if (filtros?.anio_corte)
+    params.append("anio_corte", String(filtros.anio_corte));
   if (filtros?.busqueda) params.append("busqueda", filtros.busqueda);
   const q = params.toString();
-  return apiFetch<RespuestaIndicadores>(`/geodatos/indicadores${q ? `?${q}` : ""}`);
+  return apiFetch<RespuestaIndicadores>(
+    `/geodatos/indicadores${q ? `?${q}` : ""}`,
+  );
 }
 
 /**
  * Indicadores multifuente específicos de un territorio (Distrito, Localidad, UCG, etc.)
  */
-export async function listarIndicadoresTerritorio(territorioId: string): Promise<IndicadorMultifuente[]> {
-  return apiFetch<IndicadorMultifuente[]>(`/geodatos/territorios/${territorioId}/indicadores`);
+export async function listarIndicadoresTerritorio(
+  territorioId: string,
+): Promise<IndicadorMultifuente[]> {
+  return apiFetch<IndicadorMultifuente[]>(
+    `/geodatos/territorios/${territorioId}/indicadores`,
+  );
 }
-
 
 export interface TerritorioResultadoCoordenada {
   id: string;
@@ -78,14 +109,17 @@ export interface TerritorioResultadoCoordenada {
  */
 export async function buscarTerritorioPorCoordenada(
   lat: number,
-  lon: number
+  lon: number,
 ): Promise<TerritorioResultadoCoordenada[]> {
   try {
     return await apiFetch<TerritorioResultadoCoordenada[]>(
-      `/geodatos/territorios/buscar-por-coordenada?lon=${lon}&lat=${lat}`
+      `/geodatos/territorios/buscar-por-coordenada?lon=${lon}&lat=${lat}`,
     );
   } catch (err) {
-    console.warn("Fallo al consultar /geodatos/territorios/buscar-por-coordenada:", err);
+    console.warn(
+      "Fallo al consultar /geodatos/territorios/buscar-por-coordenada:",
+      err,
+    );
     return [];
   }
 }
@@ -114,17 +148,20 @@ export interface DireccionEstandarizada {
  * Conecta con backend FastAPI: POST /api/v1/geodatos/estandarizar-direccion
  */
 export async function estandarizarDireccion(
-  direccionRaw: string
+  direccionRaw: string,
 ): Promise<DireccionEstandarizada | null> {
   const limpia = direccionRaw?.trim();
   if (!limpia) {
     return null;
   }
   try {
-    return await apiFetch<DireccionEstandarizada>("/geodatos/estandarizar-direccion", {
-      method: "POST",
-      body: { direccion_raw: limpia },
-    });
+    return await apiFetch<DireccionEstandarizada>(
+      "/geodatos/estandarizar-direccion",
+      {
+        method: "POST",
+        body: { direccion_raw: limpia },
+      },
+    );
   } catch (err) {
     console.warn("Fallo al estandarizar dirección:", err);
     return null;
@@ -171,7 +208,7 @@ export interface ParametrosIsocronas {
  * Conecta con backend FastAPI: GET /api/v1/geodatos/isocronas
  */
 export async function obtenerIsocronas(
-  params: ParametrosIsocronas
+  params: ParametrosIsocronas,
 ): Promise<IsocronasFeatureCollection | null> {
   const { lat, lon, modo = "pie", minutos = "5,10,15" } = params;
   try {
@@ -181,7 +218,9 @@ export async function obtenerIsocronas(
       modo,
       minutos,
     });
-    return await apiFetch<IsocronasFeatureCollection>(`/geodatos/isocronas?${query.toString()}`);
+    return await apiFetch<IsocronasFeatureCollection>(
+      `/geodatos/isocronas?${query.toString()}`,
+    );
   } catch (err) {
     console.warn("Fallo al consultar /geodatos/isocronas:", err);
     return null;
@@ -189,4 +228,3 @@ export async function obtenerIsocronas(
 }
 
 export * from "./hurtos-api";
-

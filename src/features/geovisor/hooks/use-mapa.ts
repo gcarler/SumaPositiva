@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState, useCallback} from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Feature from "ol/Feature";
 import Map from "ol/Map";
 import View from "ol/View";
@@ -14,28 +14,36 @@ import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
 import Text from "ol/style/Text";
-import {fromLonLat, toLonLat} from "ol/proj";
-import type {Geometry} from "ol/geom";
+import { fromLonLat, toLonLat } from "ol/proj";
+import type { Geometry } from "ol/geom";
 import Point from "ol/geom/Point";
-import {GEOJSON_TERRITORIOS} from "../data/territorios.geojson";
+import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
 import {
   type VariableMapa,
   VARIABLE_META,
   ESTADISTICAS_TERRITORIOS,
   obtenerValorVariable,
-  interpolarColor
+  interpolarColor,
 } from "../data/estadisticas.data";
-import {BARRIOS_CARTAGENA, type Barrio} from "../data/barrios.data";
-import type {CapasConfig} from "../components/geovisor-controles";
-import type {MesaGeovisor} from "../services/mesas-geovisor-api";
-import {buscarTerritorioPorCoordenada} from "../services/geovisor-api";
-import {obtenerPoligonosHurtosGeojson} from "../services/hurtos-api";
-import type {IndicadorMultifuente} from "../models/geovisor";
+import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
+import type { CapasConfig } from "../components/geovisor-controles";
+import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+import { buscarTerritorioPorCoordenada } from "../services/geovisor-api";
+import { obtenerPoligonosHurtosGeojson } from "../services/hurtos-api";
+import type { CapaEspacial, IndicadorMultifuente } from "../models/geovisor";
+import { listarCapaGeoJSON } from "../services/geovisor-api";
 
 export interface HoverInfo {
   id: string;
   nombre: string;
-  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa" | "hurto" | "multifuente";
+  tipo:
+    | "localidad"
+    | "corregimiento"
+    | "isla"
+    | "barrio"
+    | "mesa"
+    | "hurto"
+    | "multifuente";
   ish?: number;
   poblacion?: number;
   aportes?: number;
@@ -66,8 +74,18 @@ export interface HoverInfo {
     porcentaje_total: number;
     delito_etiqueta: string;
     anio_etiqueta: string;
-    top_armas: Array<{ arma?: string; categoria?: string; cantidad: number; porcentaje: number }>;
-    top_sitios: Array<{ sitio?: string; categoria?: string; cantidad: number; porcentaje: number }>;
+    top_armas: Array<{
+      arma?: string;
+      categoria?: string;
+      cantidad: number;
+      porcentaje: number;
+    }>;
+    top_sitios: Array<{
+      sitio?: string;
+      categoria?: string;
+      cantidad: number;
+      porcentaje: number;
+    }>;
   };
   multifuenteDetalle?: {
     id: string;
@@ -94,13 +112,18 @@ export interface UseMapaOptions {
   barrioSeleccionado?: string | null;
   variableMapa?: VariableMapa;
   capasVisibles?: CapasConfig;
+  capasOficiales?: CapaEspacial[];
   mesas?: MesaGeovisor[];
   mesaSeleccionadaId?: string | null;
   onSelectMesa?: (mesaId: string) => void;
   anioHurto?: number | null;
   delitoHurto?: string | null;
   onSelectHurto?: (poligonoId: number) => void;
-  capaPersonalizada?: { geojson: unknown; nombre?: string; color?: string } | null;
+  capaPersonalizada?: {
+    geojson: unknown;
+    nombre?: string;
+    color?: string;
+  } | null;
   indicadorMultifuente?: IndicadorMultifuente | null;
 }
 
@@ -221,6 +244,7 @@ export function useMapa({
   onSelectHurto,
   capaPersonalizada = null,
   indicadorMultifuente = null,
+  capasOficiales = [],
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -236,6 +260,7 @@ export function useMapa({
   const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
   const fuentePersonalizadaRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteCapasOficialesRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteMultifuenteRef = useRef<VectorSource<Feature> | null>(null);
   const mesasRef = useRef(mesas);
   const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
@@ -250,7 +275,7 @@ export function useMapa({
     const hayHurtos = Boolean(
       capasVisibles?.hurtoMotocicletas ||
       capasVisibles?.hurtoResidencias ||
-      capasVisibles?.hurtoComercio
+      capasVisibles?.hurtoComercio,
     );
     if (!fuenteHurtosRef.current) return;
 
@@ -267,11 +292,14 @@ export function useMapa({
     let delitoParam: string | undefined = undefined;
     if (numHurtosActivos === 1) {
       if (capasVisibles?.hurtoMotocicletas) delitoParam = "HURTO MOTOCICLETA";
-      else if (capasVisibles?.hurtoResidencias) delitoParam = "HURTO RESIDENCIAS";
+      else if (capasVisibles?.hurtoResidencias)
+        delitoParam = "HURTO RESIDENCIAS";
       else if (capasVisibles?.hurtoComercio) delitoParam = "HURTO COMERCIO";
     } else if (delitoHurto && delitoHurto !== "TODOS") {
-      if (delitoHurto === "hurto_motocicletas") delitoParam = "HURTO MOTOCICLETA";
-      else if (delitoHurto === "hurto_residencias") delitoParam = "HURTO RESIDENCIAS";
+      if (delitoHurto === "hurto_motocicletas")
+        delitoParam = "HURTO MOTOCICLETA";
+      else if (delitoHurto === "hurto_residencias")
+        delitoParam = "HURTO RESIDENCIAS";
       else if (delitoHurto === "hurto_comercio") delitoParam = "HURTO COMERCIO";
     }
 
@@ -321,32 +349,52 @@ export function useMapa({
 
     if (fuenteMesasRef.current) {
       fuenteMesasRef.current.clear(true);
-      const features = new GeoJSON().readFeatures({
-        type: "FeatureCollection",
-        features: mesas.map((mesa) => ({
-          type: "Feature",
-          id: mesa.id,
-          geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
-            ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
-            : null,
-          properties: {
-            id: mesa.id,
-            nombre: mesa.nombre,
-            realizada: mesa.realizada,
-            estado: mesa.estado,
-            total_asistentes: mesa.total_asistentes,
-            horario: mesa.horario,
-            fecha: mesa.fecha,
-            territorio_nombre: mesa.territorio_nombre,
-            aforo: mesa.aforo ?? 80,
-            tipo: "mesa",
-          },
-        })).filter((feature) => feature.geometry !== null),
-      }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
+      const features = new GeoJSON().readFeatures(
+        {
+          type: "FeatureCollection",
+          features: mesas
+            .map((mesa) => ({
+              type: "Feature",
+              id: mesa.id,
+              geometry:
+                mesa.longitud_referencia !== null &&
+                mesa.latitud_referencia !== null
+                  ? {
+                      type: "Point",
+                      coordinates: [
+                        mesa.longitud_referencia,
+                        mesa.latitud_referencia,
+                      ],
+                    }
+                  : null,
+              properties: {
+                id: mesa.id,
+                nombre: mesa.nombre,
+                realizada: mesa.realizada,
+                estado: mesa.estado,
+                total_asistentes: mesa.total_asistentes,
+                horario: mesa.horario,
+                fecha: mesa.fecha,
+                territorio_nombre: mesa.territorio_nombre,
+                aforo: mesa.aforo ?? 80,
+                tipo: "mesa",
+              },
+            }))
+            .filter((feature) => feature.geometry !== null),
+        },
+        { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
+      );
       fuenteMesasRef.current.addFeatures(features);
     }
     mapaRef.current?.getLayers().forEach((layer) => layer.changed());
-  }, [localidadId, barrioSeleccionado, variableMapa, capasVisibles, mesas, mesaSeleccionadaId]);
+  }, [
+    localidadId,
+    barrioSeleccionado,
+    variableMapa,
+    capasVisibles,
+    mesas,
+    mesaSeleccionadaId,
+  ]);
 
   // Manejo de foco al cambiar localidad
   useEffect(() => {
@@ -372,20 +420,31 @@ export function useMapa({
       }
       return;
     }
-    const punto = fuentePuntosRef.current?.getFeatures().find((feature) => feature.get("id") === localidadId);
+    const punto = fuentePuntosRef.current
+      ?.getFeatures()
+      .find((feature) => feature.get("id") === localidadId);
     const geometriaPunto = punto?.getGeometry();
-    const coordenada = geometriaPunto instanceof Point ? geometriaPunto.getCoordinates() : undefined;
-    if (coordenada) mapaRef.current.getView().animate({ center: coordenada, zoom: 13.5, duration: 500 });
+    const coordenada =
+      geometriaPunto instanceof Point
+        ? geometriaPunto.getCoordinates()
+        : undefined;
+    if (coordenada)
+      mapaRef.current
+        .getView()
+        .animate({ center: coordenada, zoom: 13.5, duration: 500 });
   }, [localidadId]);
 
   // Manejo de foco al seleccionar un barrio
   useEffect(() => {
-    if (!barrioSeleccionado || !mapaRef.current || !fuenteBarriosRef.current) return;
+    if (!barrioSeleccionado || !mapaRef.current || !fuenteBarriosRef.current)
+      return;
     const targetNombre = normalizar(barrioSeleccionado);
-    const featureEncontrada = fuenteBarriosRef.current.getFeatures().find((f) => {
-      const nom = normalizar(String(f.get("nombre") ?? ""));
-      return nom.includes(targetNombre) || targetNombre.includes(nom);
-    });
+    const featureEncontrada = fuenteBarriosRef.current
+      .getFeatures()
+      .find((f) => {
+        const nom = normalizar(String(f.get("nombre") ?? ""));
+        return nom.includes(targetNombre) || targetNombre.includes(nom);
+      });
 
     if (featureEncontrada) {
       const geom = featureEncontrada.getGeometry();
@@ -447,7 +506,9 @@ export function useMapa({
         const minVal = Math.min(...valores);
         const maxVal = Math.max(...valores);
 
-        const val = stats ? obtenerValorVariable(stats, variableRef.current) : 0;
+        const val = stats
+          ? obtenerValorVariable(stats, variableRef.current)
+          : 0;
         const colorChoropleth = interpolarColor(val, minVal, maxVal);
 
         const coincideLocalidad =
@@ -462,7 +523,9 @@ export function useMapa({
             : `${colorChoropleth}33`;
 
         const colorBorde =
-          hovered || esSeleccionado ? COLORES_MAPA.strokeHover : COLORES_MAPA.stroke;
+          hovered || esSeleccionado
+            ? COLORES_MAPA.strokeHover
+            : COLORES_MAPA.stroke;
 
         const meta = VARIABLE_META[variableRef.current];
 
@@ -499,7 +562,8 @@ export function useMapa({
         const targetNombre = normalizar(barrioRef.current ?? "");
         const esSeleccionado =
           Boolean(barrioRef.current) &&
-          (normalizar(nombre).includes(targetNombre) || targetNombre.includes(normalizar(nombre)));
+          (normalizar(nombre).includes(targetNombre) ||
+            targetNombre.includes(normalizar(nombre)));
 
         if (esSeleccionado || hovered) {
           return new Style({
@@ -518,7 +582,10 @@ export function useMapa({
         // Mostrar barrios a resolución detallada (zoom >= 13)
         if (resolution > 60) {
           return new Style({
-            stroke: new Stroke({ color: `${COLORES_MAPA.barrio}33`, width: 0.75 }),
+            stroke: new Stroke({
+              color: `${COLORES_MAPA.barrio}33`,
+              width: 0.75,
+            }),
           });
         }
 
@@ -541,28 +608,41 @@ export function useMapa({
     fuentePuntosRef.current = capaPuntos.getSource() ?? null;
     const fuenteMesas = new VectorSource<Feature>();
     fuenteMesasRef.current = fuenteMesas;
-    const puntosMesas = new GeoJSON().readFeatures({
-      type: "FeatureCollection",
-      features: mesasRef.current.map((mesa) => ({
-        type: "Feature",
-        id: mesa.id,
-        geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
-          ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
-          : null,
-        properties: {
-          id: mesa.id,
-          nombre: mesa.nombre,
-          realizada: mesa.realizada,
-          estado: mesa.estado,
-          total_asistentes: mesa.total_asistentes,
-          horario: mesa.horario,
-          fecha: mesa.fecha,
-          territorio_nombre: mesa.territorio_nombre,
-          aforo: mesa.aforo ?? 80,
-          tipo: "mesa",
-        },
-      })).filter((feature) => feature.geometry !== null),
-    }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
+    const puntosMesas = new GeoJSON().readFeatures(
+      {
+        type: "FeatureCollection",
+        features: mesasRef.current
+          .map((mesa) => ({
+            type: "Feature",
+            id: mesa.id,
+            geometry:
+              mesa.longitud_referencia !== null &&
+              mesa.latitud_referencia !== null
+                ? {
+                    type: "Point",
+                    coordinates: [
+                      mesa.longitud_referencia,
+                      mesa.latitud_referencia,
+                    ],
+                  }
+                : null,
+            properties: {
+              id: mesa.id,
+              nombre: mesa.nombre,
+              realizada: mesa.realizada,
+              estado: mesa.estado,
+              total_asistentes: mesa.total_asistentes,
+              horario: mesa.horario,
+              fecha: mesa.fecha,
+              territorio_nombre: mesa.territorio_nombre,
+              aforo: mesa.aforo ?? 80,
+              tipo: "mesa",
+            },
+          }))
+          .filter((feature) => feature.geometry !== null),
+      },
+      { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
+    );
     fuenteMesas.addFeatures(puntosMesas);
     const capaMesas = new VectorLayer({
       source: fuenteMesas,
@@ -576,18 +656,15 @@ export function useMapa({
           estado === "ACTA_CONCERTADA" ||
           estado === "REALIZADA";
         const enCurso = estado === "EN_DELIBERACION" || estado === "EN_CURSO";
-        const seleccionada = String(feature.get("id")) === mesaSeleccionadaRef.current;
+        const seleccionada =
+          String(feature.get("id")) === mesaSeleccionadaRef.current;
         const hovered = feature.get("hovered") === true;
 
         // Semáforo:
         // 🟢 Verde: Mesa Realizada / Cerrada
         // 🔵 Azul: Mesa en Curso
         // 🟡 Amarillo / Ember: Mesa Programada
-        const color = realizada
-          ? "#16a34a"
-          : enCurso
-          ? "#2563eb"
-          : "#e85d04";
+        const color = realizada ? "#16a34a" : enCurso ? "#2563eb" : "#e85d04";
 
         if (seleccionada) {
           // Estilo compuesto: Halo exterior luminoso + Núcleo destacado (GEO-DOCK-03)
@@ -677,22 +754,29 @@ export function useMapa({
         }
 
         const esUrbano = zona === "URBANA";
-        const esRural = !esUrbano || feature.get("codigo") === "CARTAGENA_RURAL";
+        const esRural =
+          !esUrbano || feature.get("codigo") === "CARTAGENA_RURAL";
         const opacidad = hovered ? "88" : esUrbano ? "55" : "28";
         const strokeColor = hovered ? "#1a1a2e" : baseColor;
         const strokeWidth = hovered ? 3.5 : esUrbano ? 2.5 : 2;
-        const lineDash = (!hovered && !esUrbano) ? [6, 4] : undefined;
+        const lineDash = !hovered && !esUrbano ? [6, 4] : undefined;
 
         const estiloBase = new Style({
           fill: new Fill({ color: `${baseColor}${opacidad}` }),
-          stroke: new Stroke({ color: strokeColor, width: strokeWidth, lineDash }),
+          stroke: new Stroke({
+            color: strokeColor,
+            width: strokeWidth,
+            lineDash,
+          }),
         });
 
         if (!capasRef.current.etiquetas) return estiloBase;
 
         const estiloTexto = new Style({
           // Si es rural o insular, proyectar la etiqueta en las coordenadas reales insulares [-75.64, 10.22]
-          geometry: esRural ? new Point(fromLonLat([-75.64, 10.22])) : undefined,
+          geometry: esRural
+            ? new Point(fromLonLat([-75.64, 10.22]))
+            : undefined,
           text: new Text({
             text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,
             font: "700 11.5px Geist, sans-serif",
@@ -726,7 +810,37 @@ export function useMapa({
       },
     });
 
-    /* 6. Capa Vectorial de Indicadores Multifuente */
+    /* 6a. Capa Vectorial Dinámica de Capas Oficiales */
+    const fuenteCapasOficiales = new VectorSource<Feature>();
+    fuenteCapasOficialesRef.current = fuenteCapasOficiales;
+    const capaCapasOficialesLayer = new VectorLayer({
+      source: fuenteCapasOficiales,
+      zIndex: 13,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const color = String(feature.get("customColor") ?? "#e85d04");
+        const nombre = String(feature.get("capa_nombre") ?? "");
+        const opacidad = hovered ? "88" : "46";
+        return new Style({
+          fill: new Fill({ color: `${color}${opacidad}` }),
+          stroke: new Stroke({
+            color: hovered ? "#0f172a" : color,
+            width: hovered ? 3.2 : 2.2,
+          }),
+          text:
+            capasRef.current.etiquetas && nombre
+              ? new Text({
+                  text: nombre,
+                  font: "600 10.5px Geist, sans-serif",
+                  fill: new Fill({ color: "#111827" }),
+                  stroke: new Stroke({ color: "#ffffff", width: 3 }),
+                  overflow: true,
+                })
+              : undefined,
+        });
+      },
+    });
+
     const fuenteMultifuente = new VectorSource<Feature>();
     fuenteMultifuenteRef.current = fuenteMultifuente;
     const capaMultifuenteLayer = new VectorLayer({
@@ -738,7 +852,9 @@ export function useMapa({
         const indNombre = String(feature.get("nombre_indicador") ?? "");
         const valor = String(feature.get("valor") ?? "");
         const unidad = String(feature.get("unidad_medida") ?? "");
-        const nivelRiesgo = String(feature.get("nivel_riesgo") ?? "").toUpperCase();
+        const nivelRiesgo = String(
+          feature.get("nivel_riesgo") ?? "",
+        ).toUpperCase();
 
         const opacidad = hovered ? "90" : "55";
         const strokeColor = hovered ? "#0f172a" : color;
@@ -767,10 +883,12 @@ export function useMapa({
         capaTerritorios,
         capaHurtos,
         capaMultifuenteLayer,
+        capaCapasOficialesLayer,
         capaBarrios,
         capaPuntos,
         capaMesas,
         capaPersonalizadaLayer,
+        capaCapasOficialesLayer,
       ],
       view: new View({
         center: fromLonLat([-75.5144, 10.391]),
@@ -820,18 +938,21 @@ export function useMapa({
                   (r) =>
                     r.tipo_territorio === "barrio" ||
                     r.tipo_territorio === "corregimiento" ||
-                    r.tipo_territorio === "zona_insular"
+                    r.tipo_territorio === "zona_insular",
                 ) ||
                 resultados.find((r) => r.tipo_territorio === "localidad") ||
                 resultados[0];
 
               if (territorio) {
-                const idCanonica = territorio.codigo.toLowerCase().replace("-", "");
+                const idCanonica = territorio.codigo
+                  .toLowerCase()
+                  .replace("-", "");
                 const local = ESTADISTICAS_TERRITORIOS.find(
                   (item) =>
                     item.id.toLowerCase() === idCanonica ||
                     item.id === territorio.id ||
-                    item.nombre.toLowerCase() === territorio.nombre.toLowerCase()
+                    item.nombre.toLowerCase() ===
+                      territorio.nombre.toLowerCase(),
                 );
                 onSelectTerritorio(local ? local.id : territorio.id);
                 if (onSelectBarrio && territorio.nombre) {
@@ -893,13 +1014,16 @@ export function useMapa({
         capaMesas,
       ];
       todasLasCapas.forEach((capa) => {
-        capa.getSource()?.getFeatures().forEach((elemento) => {
-          const hovered = elemento === feature;
-          if (elemento.get("hovered") !== hovered) {
-            elemento.set("hovered", hovered, true);
-            elemento.changed();
-          }
-        });
+        capa
+          .getSource()
+          ?.getFeatures()
+          .forEach((elemento) => {
+            const hovered = elemento === feature;
+            if (elemento.get("hovered") !== hovered) {
+              elemento.set("hovered", hovered, true);
+              elemento.changed();
+            }
+          });
       });
 
       if (!feature) {
@@ -910,7 +1034,9 @@ export function useMapa({
       if (feature.get("tipo") === "multifuente") {
         onHoverInfo({
           id: String(feature.get("id") ?? "multifuente"),
-          nombre: String(feature.get("nombre_indicador") ?? "Indicador Multifuente"),
+          nombre: String(
+            feature.get("nombre_indicador") ?? "Indicador Multifuente",
+          ),
           tipo: "multifuente",
           pixel,
           multifuenteDetalle: {
@@ -923,10 +1049,14 @@ export function useMapa({
             anio_corte: Number(feature.get("anio_corte") ?? 0),
             fuente_datos: String(feature.get("fuente_datos") ?? ""),
             territorio: String(
-              feature.get("nombre_territorio") ?? "Cartagena (Perímetro Urbano y Rural)",
+              feature.get("nombre_territorio") ??
+                "Cartagena (Perímetro Urbano y Rural)",
             ),
-            dimension: String(feature.get("nombre_dimension") ?? "Seguridad Humana"),
-            url_fuente: (feature.get("url_fuente") as string | undefined) ?? undefined,
+            dimension: String(
+              feature.get("nombre_dimension") ?? "Seguridad Humana",
+            ),
+            url_fuente:
+              (feature.get("url_fuente") as string | undefined) ?? undefined,
             nota: (feature.get("nota") as string | undefined) ?? undefined,
           },
         });
@@ -991,7 +1121,9 @@ export function useMapa({
           return;
         }
       }
-      const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id || t.nombre === nombre);
+      const stats = ESTADISTICAS_TERRITORIOS.find(
+        (t) => t.id === id || t.nombre === nombre,
+      );
 
       if (stats) {
         const meta = VARIABLE_META[variableRef.current];
@@ -1043,6 +1175,7 @@ export function useMapa({
       fuenteHurtosRef.current = null;
       fuentePersonalizadaRef.current = null;
       fuenteMultifuenteRef.current = null;
+      fuenteCapasOficialesRef.current = null;
     };
   }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
 
@@ -1055,7 +1188,9 @@ export function useMapa({
     try {
       const format = new GeoJSON();
       // Asignar color semántico según nivel de riesgo
-      const riesgo = String(indicadorMultifuente.nivel_riesgo || "").toLowerCase();
+      const riesgo = String(
+        indicadorMultifuente.nivel_riesgo || "",
+      ).toLowerCase();
       let colorRiesgo = "#2563eb"; // default azul institucional POLIS
       if (riesgo === "critico") colorRiesgo = "#dc2626";
       else if (riesgo === "alto") colorRiesgo = "#ea580c";
@@ -1109,15 +1244,25 @@ export function useMapa({
         f.set(
           "nombre_territorio",
           indicadorMultifuente.nombre_territorio ||
-            (esDesagregado ? f.get("nombre") : "Toda la ciudad (Perímetro Urbano y Rural)"),
+            (esDesagregado
+              ? f.get("nombre")
+              : "Toda la ciudad (Perímetro Urbano y Rural)"),
         );
         f.set(
           "nombre_dimension",
-          indicadorMultifuente.nombre_dimension ?? indicadorMultifuente.codigo_dimension ?? "Seguridad Humana",
+          indicadorMultifuente.nombre_dimension ??
+            indicadorMultifuente.codigo_dimension ??
+            "Seguridad Humana",
         );
         const meta = indicadorMultifuente.metadatos ?? {};
-        f.set("url_fuente", typeof meta.url_fuente === "string" ? meta.url_fuente : undefined);
-        f.set("nota", typeof meta.nota_origen === "string" ? meta.nota_origen : undefined);
+        f.set(
+          "url_fuente",
+          typeof meta.url_fuente === "string" ? meta.url_fuente : undefined,
+        );
+        f.set(
+          "nota",
+          typeof meta.nota_origen === "string" ? meta.nota_origen : undefined,
+        );
       });
 
       fuenteMultifuenteRef.current.addFeatures(featuresAUsar);
@@ -1135,6 +1280,61 @@ export function useMapa({
       console.warn("Fallo al proyectar capa multifuente en OpenLayers:", err);
     }
   }, [indicadorMultifuente]);
+
+  // Carga reactiva de capas oficiales desde /geodatos/capas
+  useEffect(() => {
+    if (!fuenteCapasOficialesRef.current || !mapaRef.current) return;
+    const fuente = fuenteCapasOficialesRef.current;
+    fuente.clear(true);
+    if (!capasOficiales.length) return;
+
+    const capasActivas = capasOficiales.filter(
+      (capa) =>
+        Boolean(capa.codigo) && Boolean(capasVisibles?.[capa.codigo ?? ""]),
+    );
+    if (!capasActivas.length) return;
+
+    let activo = true;
+    void (async () => {
+      try {
+        const resultados = await Promise.allSettled(
+          capasActivas.map(async (capa) => ({
+            capa,
+            geojson: await listarCapaGeoJSON(capa.codigo ?? String(capa.id)),
+          })),
+        );
+        if (!activo) return;
+        const format = new GeoJSON();
+        resultados.forEach((resultado) => {
+          if (resultado.status !== "fulfilled") return;
+          const feats = format.readFeatures(resultado.value.geojson, {
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:3857",
+          });
+          const color =
+            resultado.value.capa.color_estilo ??
+            resultado.value.capa.color_hex ??
+            "#e85d04";
+          feats.forEach((feature) => {
+            feature.set(
+              "capa_codigo",
+              resultado.value.capa.codigo ?? String(resultado.value.capa.id),
+            );
+            feature.set("capa_nombre", resultado.value.capa.nombre);
+            feature.set("customColor", color);
+          });
+          fuente.addFeatures(feats);
+        });
+        mapaRef.current?.renderSync();
+      } catch (err) {
+        console.warn("Fallo al proyectar capas oficiales en OpenLayers:", err);
+      }
+    })();
+
+    return () => {
+      activo = false;
+    };
+  }, [capasOficiales, capasVisibles]);
 
   // Carga reactiva de capa GeoJSON personalizada importada en el frontend
   useEffect(() => {
@@ -1188,19 +1388,24 @@ export function useMapa({
     });
   }, []);
 
-  const volarACoordenadas = useCallback((lon: number, lat: number, zoom = 15.5) => {
-    if (!mapaRef.current) return;
-    mapaRef.current.getView().animate({
-      center: fromLonLat([lon, lat]),
-      zoom,
-      duration: 600,
-    });
-  }, []);
+  const volarACoordenadas = useCallback(
+    (lon: number, lat: number, zoom = 15.5) => {
+      if (!mapaRef.current) return;
+      mapaRef.current.getView().animate({
+        center: fromLonLat([lon, lat]),
+        zoom,
+        duration: 600,
+      });
+    },
+    [],
+  );
 
   const exportarPng = useCallback(() => {
     if (!mapaRef.current) return;
     mapaRef.current.once("rendercomplete", () => {
-      const canvas = document.querySelector(".ol-viewport canvas") as HTMLCanvasElement;
+      const canvas = document.querySelector(
+        ".ol-viewport canvas",
+      ) as HTMLCanvasElement;
       if (!canvas) return;
       const link = document.createElement("a");
       link.download = `geovisor-cartagena-${new Date().toISOString().slice(0, 10)}.png`;
@@ -1210,5 +1415,12 @@ export function useMapa({
     mapaRef.current.renderSync();
   }, []);
 
-  return { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng, volarACoordenadas };
+  return {
+    cargando,
+    zoomIn,
+    zoomOut,
+    centrarCartagena,
+    exportarPng,
+    volarACoordenadas,
+  };
 }

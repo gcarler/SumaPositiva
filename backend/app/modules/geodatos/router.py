@@ -82,6 +82,18 @@ async def listar_capas(service: GeodatosServiceDep):
     return await service.listar_capas()
 
 
+@router.get("/capas/{codigo}/geojson")
+async def obtener_capa_geojson(codigo: str, service: GeodatosServiceDep):
+    """GeoJSON dinámico de capa oficial del Geovisor."""
+    return await service.obtener_capa_geojson(codigo)
+
+
+@router.get("/indicadores/fuentes")
+async def listar_fuentes_indicadores(service: GeodatosServiceDep):
+    """Entidades fuente reales del banco multifuente."""
+    return await service.listar_fuentes_indicadores()
+
+
 @router.get(
     "/indicadores",
     response_model=IndicadoresTerritorioResponse,

@@ -341,6 +341,12 @@ class GeodatosService:
     async def listar_capas(self) -> Sequence[CapaGeovisor]:
         return await self.repository.listar_capas()
 
+    async def obtener_capa_geojson(self, codigo: str) -> dict[str, Any]:
+        return await self.repository.obtener_capa_geojson(codigo)
+
+    async def listar_fuentes_indicadores(self) -> list[dict[str, Any]]:
+        return await self.repository.listar_fuentes_indicadores()
+
     async def listar_indicadores(
         self,
         territorio_id: uuid.UUID | None = None,

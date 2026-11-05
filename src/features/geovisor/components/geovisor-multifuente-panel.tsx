@@ -32,32 +32,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { useIndicadoresGeovisor } from "../services/use-geovisor-queries";
+import {
+  useIndicadoresGeovisor,
+  useIndicadoresFuente,
+} from "../services/use-geovisor-queries";
 import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
 import type { IndicadorMultifuente } from "../models/geovisor";
 
 const DIMENSIONES = [
-  { id: "todas", label: "Todas las Dimensiones", icon: Database, total: "2.449" },
+  {
+    id: "todas",
+    label: "Todas las Dimensiones",
+    icon: Database,
+    total: "2.449",
+  },
   { id: "personal", label: "Seguridad Personal", icon: Shield, total: "938" },
-  { id: "comunitaria", label: "Seguridad Comunitaria", icon: Users, total: "688" },
+  {
+    id: "comunitaria",
+    label: "Seguridad Comunitaria",
+    icon: Users,
+    total: "688",
+  },
   { id: "economica", label: "Seguridad Económica", icon: Coins, total: "457" },
-  { id: "ambiental", label: "Seguridad Ambiental", icon: TreePine, total: "221" },
+  {
+    id: "ambiental",
+    label: "Seguridad Ambiental",
+    icon: TreePine,
+    total: "221",
+  },
   { id: "salud", label: "Seguridad en Salud", icon: HeartPulse, total: "74" },
-  { id: "alimentaria", label: "Seguridad Alimentaria", icon: Utensils, total: "60" },
+  {
+    id: "alimentaria",
+    label: "Seguridad Alimentaria",
+    icon: Utensils,
+    total: "60",
+  },
   { id: "politica", label: "Seguridad Política", icon: Vote, total: "11" },
-] as const;
-
-const FUENTES_OFICIALES = [
-  { id: "todas", label: "Todas las Entidades Fuente" },
-  { id: "DANE", label: "DANE (Pobreza, Empleo, FIES, Demografía)" },
-  { id: "Medicina Legal", label: "Instituto Nacional de Medicina Legal (Forensis)" },
-  { id: "Policia", label: "Policía Nacional (SIEDCO)" },
-  { id: "Fiscalia", label: "Fiscalía General de la Nación (SPOA)" },
-  { id: "DNP", label: "DNP TerriData (Salud, Coberturas, Inversión)" },
-  { id: "Unidad", label: "Unidad para las Víctimas (RUV / IRV)" },
-  { id: "ICBF", label: "ICBF (Primera Infancia y Nutrición)" },
-  { id: "INS", label: "INS / SIVICAP (Calidad de Agua Potable IRCA)" },
-  { id: "Defensoria", label: "Defensoría del Pueblo (SAT Alertas Tempranas)" },
 ] as const;
 
 const TERRITORIOS = [
@@ -71,7 +81,12 @@ const TERRITORIOS = [
 export interface GeovisorMultifuentePanelProps {
   territorioId?: string;
   onSelectTerritorio?: (id: string) => void;
-  datosIniciales?: { total: number; limit: number; offset: number; indicadores: IndicadorMultifuente[] };
+  datosIniciales?: {
+    total: number;
+    limit: number;
+    offset: number;
+    indicadores: IndicadorMultifuente[];
+  };
   cargandoInicial?: boolean;
 }
 
@@ -84,14 +99,18 @@ export function GeovisorMultifuentePanel({
   const [dimension, setDimension] = useState<string>("todas");
   const [fuente, setFuente] = useState<string>("todas");
   const [territorioFiltro, setTerritorioFiltro] = useState<string>(
-    territorioId && territorioId !== "todas" ? territorioId : "todos"
+    territorioId && territorioId !== "todas" ? territorioId : "todos",
   );
   const [busqueda, setBusqueda] = useState<string>("");
   const [pagina, setPagina] = useState<number>(0);
   const limite = 30;
 
-  const indicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.indicadorMultifuenteActivo);
-  const setIndicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.setIndicadorMultifuenteActivo);
+  const indicadorMultifuenteActivo = useGeovisorLayoutStore(
+    (s) => s.indicadorMultifuenteActivo,
+  );
+  const setIndicadorMultifuenteActivo = useGeovisorLayoutStore(
+    (s) => s.setIndicadorMultifuenteActivo,
+  );
 
   const filtros = useMemo(() => {
     return {
@@ -99,12 +118,18 @@ export function GeovisorMultifuentePanel({
       offset: pagina * limite,
       dimension: dimension === "todas" ? undefined : dimension,
       fuente_datos: fuente === "todas" ? undefined : fuente,
-      codigo_territorio: territorioFiltro === "todos" ? undefined : territorioFiltro,
+      codigo_territorio:
+        territorioFiltro === "todos" ? undefined : territorioFiltro,
       busqueda: busqueda.trim() ? busqueda.trim() : undefined,
     };
   }, [dimension, fuente, territorioFiltro, busqueda, pagina]);
 
-  const { data: dataQuery, isLoading: isLoadingQuery, isError, refetch } = useIndicadoresGeovisor(filtros);
+  const {
+    data: dataQuery,
+    isLoading: isLoadingQuery,
+    isError,
+    refetch,
+  } = useIndicadoresGeovisor(filtros);
 
   const data = datosIniciales ?? dataQuery;
   const isLoading = cargandoInicial || (isLoadingQuery && !datosIniciales);
@@ -112,6 +137,15 @@ export function GeovisorMultifuentePanel({
   const indicadores: IndicadorMultifuente[] = data?.indicadores ?? [];
   const total = data?.total ?? 0;
   const totalPaginas = Math.ceil(total / limite);
+  const { data: fuentesApi = [] } = useIndicadoresFuente();
+  const fuentes = [
+    { id: "todas", label: "Todas las Entidades Fuente", total },
+    ...fuentesApi.map((item) => ({
+      id: item.id,
+      label: item.id,
+      total: item.total,
+    })),
+  ];
 
   const handleCambioDimension = (nuevaDim: string) => {
     setDimension(nuevaDim);
@@ -135,22 +169,32 @@ export function GeovisorMultifuentePanel({
     const n = nivel?.toLowerCase();
     if (n === "critico") {
       return (
-        <Badge variant="destructive" className="text-[10px] px-1.5 font-semibold">
+        <Badge
+          variant="destructive"
+          className="text-[10px] px-1.5 font-semibold"
+        >
           Crítico
         </Badge>
       );
     }
     if (n === "alto") {
       return (
-        <Badge variant="warning" className="text-[10px] px-1.5 font-semibold">Alto</Badge>
+        <Badge variant="warning" className="text-[10px] px-1.5 font-semibold">
+          Alto
+        </Badge>
       );
     }
     if (n === "medio") {
       return (
-        <Badge variant="info" className="text-[10px] px-1.5 font-semibold">Medio</Badge>
+        <Badge variant="info" className="text-[10px] px-1.5 font-semibold">
+          Medio
+        </Badge>
       );
     }
-    return (        <Badge variant="success" className="text-[10px] px-1.5 font-semibold">Bajo</Badge>
+    return (
+      <Badge variant="success" className="text-[10px] px-1.5 font-semibold">
+        Bajo
+      </Badge>
     );
   };
 
@@ -247,11 +291,14 @@ export function GeovisorMultifuentePanel({
 
         <div>
           <Select value={fuente} onValueChange={handleCambioFuente}>
-            <SelectTrigger className="h-8 text-[11px]" aria-label="Filtrar por entidad oficial">
+            <SelectTrigger
+              className="h-8 text-[11px]"
+              aria-label="Filtrar por entidad oficial"
+            >
               <SelectValue placeholder="Entidad Oficial" />
             </SelectTrigger>
             <SelectContent>
-              {FUENTES_OFICIALES.map((f) => (
+              {fuentes.map((f) => (
                 <SelectItem key={f.id} value={f.id} className="text-xs">
                   {f.label}
                 </SelectItem>
@@ -261,8 +308,14 @@ export function GeovisorMultifuentePanel({
         </div>
 
         <div>
-          <Select value={territorioFiltro} onValueChange={handleCambioTerritorio}>
-            <SelectTrigger className="h-8 text-[11px]" aria-label="Filtrar por territorio">
+          <Select
+            value={territorioFiltro}
+            onValueChange={handleCambioTerritorio}
+          >
+            <SelectTrigger
+              className="h-8 text-[11px]"
+              aria-label="Filtrar por territorio"
+            >
               <SelectValue placeholder="Territorio" />
             </SelectTrigger>
             <SelectContent>
@@ -286,32 +339,49 @@ export function GeovisorMultifuentePanel({
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-12 text-destructive gap-2">
             <AlertCircle className="size-6" />
-            <span>No fue posible cargar los indicadores desde el servidor.</span>
-            <Button variant="outline" size="sm" onClick={() => refetch()} className="text-xs mt-2">
+            <span>
+              No fue posible cargar los indicadores desde el servidor.
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetch()}
+              className="text-xs mt-2"
+            >
               Reintentar
             </Button>
           </div>
         ) : indicadores.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-[var(--text-secondary)] gap-2 text-center">
             <Filter className="size-7 text-[var(--text-tertiary)] opacity-60" />
-            <p className="font-medium text-xs">No se encontraron indicadores con los filtros actuales.</p>
+            <p className="font-medium text-xs">
+              No se encontraron indicadores con los filtros actuales.
+            </p>
             <p className="text-[11px] text-[var(--text-tertiary)]">
-              Prueba cambiando la dimensión, borrando la búsqueda o seleccionando todas las entidades.
+              Prueba cambiando la dimensión, borrando la búsqueda o
+              seleccionando todas las entidades.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
             {indicadores.map((ind) => {
-              const numValor = typeof ind.valor === "number" ? ind.valor : parseFloat(String(ind.valor));
+              const numValor =
+                typeof ind.valor === "number"
+                  ? ind.valor
+                  : parseFloat(String(ind.valor));
               const valorFormateado = !isNaN(numValor)
                 ? numValor % 1 === 0
                   ? numValor.toLocaleString("es-CO")
-                  : numValor.toLocaleString("es-CO", { maximumFractionDigits: 2 })
+                  : numValor.toLocaleString("es-CO", {
+                      maximumFractionDigits: 2,
+                    })
                 : String(ind.valor);
 
               const meta = ind.metadatos ?? {};
-              const urlFuente = typeof meta.url_fuente === "string" ? meta.url_fuente : null;
-              const nota = typeof meta.nota_origen === "string" ? meta.nota_origen : null;
+              const urlFuente =
+                typeof meta.url_fuente === "string" ? meta.url_fuente : null;
+              const nota =
+                typeof meta.nota_origen === "string" ? meta.nota_origen : null;
 
               return (
                 <article
@@ -321,7 +391,9 @@ export function GeovisorMultifuentePanel({
                   <div className="space-y-1.5">
                     <div className="flex items-start justify-between gap-1.5">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--ember)]">
-                        {ind.nombre_dimension ?? ind.codigo_dimension ?? "Seguridad Humana"}
+                        {ind.nombre_dimension ??
+                          ind.codigo_dimension ??
+                          "Seguridad Humana"}
                       </span>
                       <div className="flex items-center gap-1 shrink-0">
                         {renderBadgeRiesgo(ind.nivel_riesgo)}
@@ -331,7 +403,10 @@ export function GeovisorMultifuentePanel({
                       </div>
                     </div>
 
-                    <h3 className="text-xs font-semibold text-[var(--text-primary)] leading-snug line-clamp-2" title={ind.nombre_indicador}>
+                    <h3
+                      className="text-xs font-semibold text-[var(--text-primary)] leading-snug line-clamp-2"
+                      title={ind.nombre_indicador}
+                    >
                       {ind.nombre_indicador}
                     </h3>
                   </div>
@@ -347,11 +422,21 @@ export function GeovisorMultifuentePanel({
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] text-[var(--text-tertiary)] pt-1">
-                      <div className="flex items-center gap-1 truncate max-w-[70%]" title={ind.nombre_territorio ?? ind.codigo_territorio}>
+                      <div
+                        className="flex items-center gap-1 truncate max-w-[70%]"
+                        title={ind.nombre_territorio ?? ind.codigo_territorio}
+                      >
                         <Building2 className="size-3 shrink-0" />
-                        <span className="truncate">{ind.nombre_territorio ?? ind.codigo_territorio ?? "Distrito"}</span>
+                        <span className="truncate">
+                          {ind.nombre_territorio ??
+                            ind.codigo_territorio ??
+                            "Distrito"}
+                        </span>
                       </div>
-                      <span className="truncate text-right font-medium text-[var(--text-secondary)]" title={ind.fuente_datos}>
+                      <span
+                        className="truncate text-right font-medium text-[var(--text-secondary)]"
+                        title={ind.fuente_datos}
+                      >
                         {ind.fuente_datos?.split("-")[0]?.trim()}
                       </span>
                     </div>
@@ -359,7 +444,10 @@ export function GeovisorMultifuentePanel({
                     {(urlFuente || nota) && (
                       <div className="pt-1 flex items-center justify-between text-[10px]">
                         {nota && (
-                          <span className="text-[10px] text-[var(--text-tertiary)] truncate max-w-[85%]" title={nota}>
+                          <span
+                            className="text-[10px] text-[var(--text-tertiary)] truncate max-w-[85%]"
+                            title={nota}
+                          >
                             {nota}
                           </span>
                         )}
@@ -382,7 +470,11 @@ export function GeovisorMultifuentePanel({
                       <Button
                         type="button"
                         size="sm"
-                        variant={indicadorMultifuenteActivo?.id === ind.id ? "ember" : "outline"}
+                        variant={
+                          indicadorMultifuenteActivo?.id === ind.id
+                            ? "ember"
+                            : "outline"
+                        }
                         onClick={() => {
                           if (indicadorMultifuenteActivo?.id === ind.id) {
                             setIndicadorMultifuenteActivo(null);
@@ -422,7 +514,9 @@ export function GeovisorMultifuentePanel({
       {totalPaginas > 1 && (
         <div className="p-2.5 border-t border-[var(--border)] bg-[var(--surface-0)] flex items-center justify-between shrink-0">
           <span className="text-[11px] text-[var(--text-secondary)]">
-            Mostrando {pagina * limite + 1}–{Math.min((pagina + 1) * limite, total)} de {total.toLocaleString("es-CO")}
+            Mostrando {pagina * limite + 1}–
+            {Math.min((pagina + 1) * limite, total)} de{" "}
+            {total.toLocaleString("es-CO")}
           </span>
 
           <div className="flex items-center gap-1.5">
