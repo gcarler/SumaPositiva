@@ -6,10 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.core.database import SessionDependency
 from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.schemas import (
+    AnaliticaMultifuenteResponse,
     CapaGeovisorRead,
     DireccionEstandarizadaResponse,
     EstandarizarDireccionRequest,
     ExploradorHurtosResponse,
+    FiltrosMultifuente,
     HurtosFeatureCollection,
     IndicadoresTerritorioResponse,
     IndicadorTerritorioDetalladoRead,
@@ -27,6 +29,26 @@ def get_geodatos_service(session: SessionDependency) -> GeodatosService:
 
 
 GeodatosServiceDep = Annotated[GeodatosService, Depends(get_geodatos_service)]
+
+
+@router.get(
+    "/analitica/multifuente",
+    response_model=AnaliticaMultifuenteResponse,
+    summary="Series, cobertura y comparación descriptiva del banco público del Geovisor",
+)
+async def analizar_multifuente(
+    service: GeodatosServiceDep,
+    filtros: Annotated[FiltrosMultifuente, Depends()],
+    serie_x: Annotated[str | None, Query(pattern=r"^[a-f0-9]{64}$")] = None,
+    serie_y: Annotated[str | None, Query(pattern=r"^[a-f0-9]{64}$")] = None,
+    observacion_id: Annotated[uuid.UUID | None, Query()] = None,
+):
+    return await service.analizar_multifuente(
+        filtros,
+        serie_x=serie_x,
+        serie_y=serie_y,
+        observacion_id=str(observacion_id) if observacion_id else None,
+    )
 
 
 @router.get("/territorios", response_model=list[TerritorioRead])
@@ -116,6 +138,10 @@ async def listar_indicadores(
         str | None, Query(description="Filtro por entidad o fuente (DANE, Medicina Legal, ICBF, etc.)")
     ] = None,
     anio_corte: Annotated[int | None, Query(description="Año de corte del indicador")] = None,
+    anio_desde: Annotated[int | None, Query(ge=1900, le=2200)] = None,
+    anio_hasta: Annotated[int | None, Query(ge=1900, le=2200)] = None,
+    incluir_ediciones_previas: bool = True,
+    fuente_exacta: bool = False,
     codigo_indicador: Annotated[str | None, Query(description="Código del indicador o patrón")] = None,
     busqueda: Annotated[str | None, Query(description="Búsqueda de texto en nombre de indicador")] = None,
     limit: Annotated[int, Query(ge=1, le=1000, description="Límite de registros por página")] = 100,
@@ -127,6 +153,10 @@ async def listar_indicadores(
         dimension=dimension,
         fuente_datos=fuente_datos,
         anio_corte=anio_corte,
+        anio_desde=anio_desde,
+        anio_hasta=anio_hasta,
+        incluir_ediciones_previas=incluir_ediciones_previas,
+        fuente_exacta=fuente_exacta,
         codigo_indicador=codigo_indicador,
         busqueda=busqueda,
         limit=limit,

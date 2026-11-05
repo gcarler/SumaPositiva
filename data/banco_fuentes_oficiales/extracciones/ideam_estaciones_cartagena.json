@@ -1,0 +1,225 @@
+{
+  "dataset_id": "kekd-7v7h",
+  "rowsUpdatedAt": 1792422278,
+  "fuente": "https://www.datos.gov.co/d/kekd-7v7h",
+  "filas_consultadas": 156,
+  "estaciones": [
+    {
+      "anio": 2014,
+      "id_estacion": "31431",
+      "nombre": "BASE NAVAL",
+      "latitud": 10.413333,
+      "longitud": -75.549825
+    },
+    {
+      "anio": 2015,
+      "id_estacion": "31431",
+      "nombre": "BASE NAVAL",
+      "latitud": 10.413333,
+      "longitud": -75.549825
+    },
+    {
+      "anio": 2015,
+      "id_estacion": "31441",
+      "nombre": "ZONA FRANCA LA CANDELARIA",
+      "latitud": 10.32646,
+      "longitud": -75.489407
+    },
+    {
+      "anio": 2015,
+      "id_estacion": "31442",
+      "nombre": "EPA CARTAGENA",
+      "latitud": 10.413876,
+      "longitud": -75.540082
+    },
+    {
+      "anio": 2016,
+      "id_estacion": "31431",
+      "nombre": "BASE NAVAL",
+      "latitud": 10.413333,
+      "longitud": -75.549825
+    },
+    {
+      "anio": 2016,
+      "id_estacion": "31441",
+      "nombre": "ZONA FRANCA LA CANDELARIA",
+      "latitud": 10.32646,
+      "longitud": -75.489407
+    },
+    {
+      "anio": 2016,
+      "id_estacion": "31442",
+      "nombre": "EPA CARTAGENA",
+      "latitud": 10.413876,
+      "longitud": -75.540082
+    },
+    {
+      "anio": 2017,
+      "id_estacion": "31431",
+      "nombre": "BASE NAVAL",
+      "latitud": 10.413333,
+      "longitud": -75.549825
+    },
+    {
+      "anio": 2017,
+      "id_estacion": "31441",
+      "nombre": "ZONA FRANCA LA CANDELARIA",
+      "latitud": 10.32646,
+      "longitud": -75.489407
+    },
+    {
+      "anio": 2017,
+      "id_estacion": "31442",
+      "nombre": "EPA CARTAGENA",
+      "latitud": 10.413876,
+      "longitud": -75.540082
+    },
+    {
+      "anio": 2017,
+      "id_estacion": "31443",
+      "nombre": "CARDIQUE",
+      "latitud": 10.391717,
+      "longitud": -75.525014
+    },
+    {
+      "anio": 2017,
+      "id_estacion": "31445",
+      "nombre": "POLICÍA VIRGEN Y TURÍSTICA",
+      "latitud": 10.405539,
+      "longitud": -75.485317
+    },
+    {
+      "anio": 2018,
+      "id_estacion": "31441",
+      "nombre": "ZONA FRANCA LA CANDELARIA",
+      "latitud": 10.32646,
+      "longitud": -75.489407
+    },
+    {
+      "anio": 2018,
+      "id_estacion": "31442",
+      "nombre": "EPA CARTAGENA",
+      "latitud": 10.413876,
+      "longitud": -75.540082
+    },
+    {
+      "anio": 2018,
+      "id_estacion": "31444",
+      "nombre": "BOCANA",
+      "latitud": 10.452917,
+      "longitud": -75.50775
+    },
+    {
+      "anio": 2018,
+      "id_estacion": "31445",
+      "nombre": "POLICÍA VIRGEN Y TURÍSTICA",
+      "latitud": 10.405539,
+      "longitud": -75.485317
+    },
+    {
+      "anio": 2022,
+      "id_estacion": "31940",
+      "nombre": "CAR - CA4 PASACABALLOS",
+      "latitud": 10.283453,
+      "longitud": -75.518347
+    },
+    {
+      "anio": 2023,
+      "id_estacion": "31984",
+      "nombre": "CARDIQUE-RA-01",
+      "latitud": 10.290164,
+      "longitud": -75.515758
+    },
+    {
+      "anio": 2023,
+      "id_estacion": "31985",
+      "nombre": "CARDIQUE-RA-02",
+      "latitud": 10.3425,
+      "longitud": -75.4925
+    },
+    {
+      "anio": 2024,
+      "id_estacion": "31441",
+      "nombre": "Cartagena - ZF La Candelaria",
+      "latitud": 10.326556,
+      "longitud": -75.489222
+    },
+    {
+      "anio": 2024,
+      "id_estacion": "31443",
+      "nombre": "CARDIQUE",
+      "latitud": 10.391717,
+      "longitud": -75.525014
+    },
+    {
+      "anio": 2024,
+      "id_estacion": "31445",
+      "nombre": "Cartagena - Policía",
+      "latitud": 10.405539,
+      "longitud": -75.485317
+    },
+    {
+      "anio": 2024,
+      "id_estacion": "31984",
+      "nombre": "CARDIQUE-RA-01",
+      "latitud": 10.290164,
+      "longitud": -75.515758
+    },
+    {
+      "anio": 2024,
+      "id_estacion": "32001",
+      "nombre": "CARDIQUE-RA-05",
+      "latitud": 10.338193,
+      "longitud": -75.50972
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "31441",
+      "nombre": "Cartagena - ZF La Candelaria",
+      "latitud": 10.326556,
+      "longitud": -75.489222
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "31443",
+      "nombre": "CARDIQUE",
+      "latitud": 10.391717,
+      "longitud": -75.525014
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "31981",
+      "nombre": "P_GT1-ESTACION BOCANA",
+      "latitud": 10.453125,
+      "longitud": -75.507722
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "31984",
+      "nombre": "CARDIQUE-RA-01",
+      "latitud": 10.290164,
+      "longitud": -75.515758
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "32001",
+      "nombre": "CARDIQUE-RA-05",
+      "latitud": 10.338193,
+      "longitud": -75.50972
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "32065",
+      "nombre": "CARDIQUE-CA-04",
+      "latitud": 10.290164,
+      "longitud": -75.515758
+    },
+    {
+      "anio": 2025,
+      "id_estacion": "32066",
+      "nombre": "CARDIQUE-CA-01",
+      "latitud": 10.338192,
+      "longitud": -75.509719
+    }
+  ]
+}

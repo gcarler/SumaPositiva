@@ -1,0 +1,553 @@
+{
+  "id" : "meew-mguv",
+  "name" : "Amenazas Policía Nacional de Colombia",
+  "assetType" : "dataset",
+  "attribution" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+  "attributionLink" : "https://www.datos.gov.co/d/meew-mguv",
+  "averageRating" : 0,
+  "category" : "Seguridad y Defensa",
+  "createdAt" : 1613065843,
+  "description" : "En este conjunto de datos la ciudadanía puede encontrará información del delito Amenazas del  01 de enero del año 2010 al  31 de julio del año 2026.\n\nFuente: DIJIN - Policía Nacional. Datos extraídos el día 31 de agosto del 2026 a las 17:17 horas. Cifras sujetas a variación, en proceso de integración y consolidación con información de fiscalía general de la nación.  \n\nSeñor usuario si encuentra alguna inconsistencia en la información publicada, no la puede hacer saber atraves del correo electrónico Dijin.aicri-jef@policia.gov.co.\n\nNota: se ha realizado actualización en las cifras de todos los delitos, de acuerdo a la nueva metodología de validación de denuncias con la Fiscalía General de la Nación, la cual puede ser encontrada en el link https://www.policia.gov.co/grupo-informacion-criminalidad.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 1277,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 36422209,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1613066127,
+  "publicationGroup" : 18020390,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1788282306,
+  "rowsUpdatedBy" : "bn7v-9rpg",
+  "tableId" : 18020390,
+  "totalTimesRated" : 0,
+  "viewCount" : 6818,
+  "viewLastModified" : 1788282247,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1613145070,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 3221257,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1613066127,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1613145070,
+      "failureCount" : 0,
+      "startedAt" : 1613145070,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "bn7v-9rpg",
+      "displayName" : "DIJIN"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 524118696,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211260,
+    "cachedContents" : {
+      "non_null" : "668630",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "BOGOTA",
+        "count" : "115732"
+      }, {
+        "item" : "VALLE",
+        "count" : "74304"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "38952"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "38054"
+      }, {
+        "item" : "ATLÁNTICO",
+        "count" : "35062"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "32237"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "31313"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "26945"
+      }, {
+        "item" : "BOLÍVAR",
+        "count" : "26771"
+      }, {
+        "item" : "META",
+        "count" : "26705"
+      }, {
+        "item" : "HUILA",
+        "count" : "26027"
+      }, {
+        "item" : "CAUCA",
+        "count" : "23856"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "22302"
+      }, {
+        "item" : "CÓRDOBA",
+        "count" : "20318"
+      }, {
+        "item" : "CESAR",
+        "count" : "19389"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "17064"
+      }, {
+        "item" : "BOYACÁ",
+        "count" : "16704"
+      }, {
+        "item" : "SUCRE",
+        "count" : "12318"
+      }, {
+        "item" : "GUAJIRA",
+        "count" : "10773"
+      }, {
+        "item" : "CAQUETÁ",
+        "count" : "8350"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118697,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211261,
+    "cachedContents" : {
+      "non_null" : "668620",
+      "largest" : "Zona Bananera",
+      "null" : "10",
+      "top" : [ {
+        "item" : "Bogotá D.C. (CT)",
+        "count" : "115732"
+      }, {
+        "item" : "Cali (CT)",
+        "count" : "36490"
+      }, {
+        "item" : "Barranquilla (CT)",
+        "count" : "23385"
+      }, {
+        "item" : "Pasto (CT)",
+        "count" : "15073"
+      }, {
+        "item" : "Villavicencio (CT)",
+        "count" : "14555"
+      }, {
+        "item" : "Cartagena (CT)",
+        "count" : "14175"
+      }, {
+        "item" : "Medellín (CT)",
+        "count" : "14096"
+      }, {
+        "item" : "Cúcuta (CT)",
+        "count" : "13574"
+      }, {
+        "item" : "Bucaramanga (CT)",
+        "count" : "10627"
+      }, {
+        "item" : "Neiva (CT)",
+        "count" : "10157"
+      }, {
+        "item" : "Valledupar (CT)",
+        "count" : "10050"
+      }, {
+        "item" : "Ibagué (CT)",
+        "count" : "9430"
+      }, {
+        "item" : "Santa Marta (CT)",
+        "count" : "9164"
+      }, {
+        "item" : "Montería (CT)",
+        "count" : "8615"
+      }, {
+        "item" : "Barrancabermeja",
+        "count" : "8047"
+      }, {
+        "item" : "Soacha",
+        "count" : "7563"
+      }, {
+        "item" : "Popayán (CT)",
+        "count" : "6662"
+      }, {
+        "item" : "Palmira",
+        "count" : "5552"
+      }, {
+        "item" : "Sincelejo (CT)",
+        "count" : "5413"
+      }, {
+        "item" : "Buenaventura",
+        "count" : "5367"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118702,
+    "name" : "CODIGO DANE",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "codigo_dane",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211266,
+    "cachedContents" : {
+      "non_null" : "668630",
+      "largest" : "99773010",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001000",
+        "count" : "115732"
+      }, {
+        "item" : "76001000",
+        "count" : "36476"
+      }, {
+        "item" : "08001000",
+        "count" : "23371"
+      }, {
+        "item" : "52001000",
+        "count" : "15041"
+      }, {
+        "item" : "50001000",
+        "count" : "14533"
+      }, {
+        "item" : "13001000",
+        "count" : "14066"
+      }, {
+        "item" : "05001000",
+        "count" : "14026"
+      }, {
+        "item" : "54001000",
+        "count" : "13561"
+      }, {
+        "item" : "68001000",
+        "count" : "10627"
+      }, {
+        "item" : "41001000",
+        "count" : "10016"
+      }, {
+        "item" : "20001000",
+        "count" : "9934"
+      }, {
+        "item" : "73001000",
+        "count" : "9371"
+      }, {
+        "item" : "47001000",
+        "count" : "9090"
+      }, {
+        "item" : "23001000",
+        "count" : "8607"
+      }, {
+        "item" : "68081000",
+        "count" : "8016"
+      }, {
+        "item" : "25754000",
+        "count" : "7534"
+      }, {
+        "item" : "19001000",
+        "count" : "6658"
+      }, {
+        "item" : "76520000",
+        "count" : "5541"
+      }, {
+        "item" : "70001000",
+        "count" : "5366"
+      }, {
+        "item" : "76109000",
+        "count" : "5362"
+      } ],
+      "smallest" : "05001000",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118698,
+    "name" : "ARMAS MEDIOS",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "armas_medios",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211262,
+    "cachedContents" : {
+      "non_null" : "668630",
+      "largest" : "SIN EMPLEO DE ARMAS",
+      "null" : "0",
+      "top" : [ {
+        "item" : "SIN EMPLEO DE ARMAS",
+        "count" : "465433"
+      }, {
+        "item" : "NO REPORTADO",
+        "count" : "96689"
+      }, {
+        "item" : "ARMA DE FUEGO",
+        "count" : "42123"
+      }, {
+        "item" : "CONTUNDENTES",
+        "count" : "36733"
+      }, {
+        "item" : "ARMA BLANCA / CORTOPUNZANTE",
+        "count" : "27119"
+      }, {
+        "item" : "ESCOPOLAMINA",
+        "count" : "532"
+      }, {
+        "item" : "GRANADA DE MANO",
+        "count" : "1"
+      } ],
+      "smallest" : "ARMA BLANCA / CORTOPUNZANTE",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118695,
+    "name" : "FECHA HECHO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "fecha_hecho",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211259,
+    "cachedContents" : {
+      "non_null" : "668630",
+      "largest" : "31/12/2025",
+      "null" : "0",
+      "top" : [ {
+        "item" : "01/01/2022",
+        "count" : "364"
+      }, {
+        "item" : "01/03/2022",
+        "count" : "350"
+      }, {
+        "item" : "10/02/2022",
+        "count" : "341"
+      }, {
+        "item" : "01/02/2022",
+        "count" : "339"
+      }, {
+        "item" : "20/04/2022",
+        "count" : "334"
+      }, {
+        "item" : "01/11/2023",
+        "count" : "325"
+      }, {
+        "item" : "14/02/2022",
+        "count" : "322"
+      }, {
+        "item" : "07/03/2022",
+        "count" : "319"
+      }, {
+        "item" : "15/02/2022",
+        "count" : "315"
+      }, {
+        "item" : "01/04/2022",
+        "count" : "311"
+      }, {
+        "item" : "15/11/2023",
+        "count" : "311"
+      }, {
+        "item" : "01/08/2023",
+        "count" : "306"
+      }, {
+        "item" : "02/11/2023",
+        "count" : "305"
+      }, {
+        "item" : "01/09/2021",
+        "count" : "304"
+      }, {
+        "item" : "16/03/2022",
+        "count" : "301"
+      }, {
+        "item" : "18/04/2022",
+        "count" : "300"
+      }, {
+        "item" : "16/02/2022",
+        "count" : "296"
+      }, {
+        "item" : "29/10/2023",
+        "count" : "294"
+      }, {
+        "item" : "30/10/2023",
+        "count" : "294"
+      }, {
+        "item" : "22/02/2022",
+        "count" : "293"
+      } ],
+      "smallest" : "01/01/2010",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118699,
+    "name" : "GENERO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "genero",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211263,
+    "cachedContents" : {
+      "non_null" : "667316",
+      "largest" : "NO REPORTA",
+      "null" : "1314",
+      "top" : [ {
+        "item" : "MASCULINO",
+        "count" : "383307"
+      }, {
+        "item" : "FEMENINO",
+        "count" : "282478"
+      }, {
+        "item" : "NO REPORTA",
+        "count" : "1531"
+      } ],
+      "smallest" : "FEMENINO",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118700,
+    "name" : "GRUPO ETARIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "grupo_etario",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130211264,
+    "cachedContents" : {
+      "non_null" : "668249",
+      "largest" : "MENORES",
+      "null" : "381",
+      "top" : [ {
+        "item" : "ADULTOS",
+        "count" : "647469"
+      }, {
+        "item" : "ADOLESCENTES",
+        "count" : "14984"
+      }, {
+        "item" : "MENORES",
+        "count" : "5796"
+      } ],
+      "smallest" : "ADOLESCENTES",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  }, {
+    "id" : 524118701,
+    "name" : "CANTIDAD",
+    "dataTypeName" : "number",
+    "description" : "",
+    "fieldName" : "cantidad",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 130211265,
+    "cachedContents" : {
+      "non_null" : "668630",
+      "largest" : "1",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "668630"
+      } ],
+      "smallest" : "1",
+      "count" : "668630",
+      "cardinality" : "668630"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Defensa",
+        "Área o dependencia" : "Sector Defensa",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "amenaza", "delitos" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

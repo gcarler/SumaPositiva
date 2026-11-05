@@ -1,0 +1,297 @@
+divipola_municipio,departamento,municipio,nombre_indicador,fuente,derecho,ciclo_vital,anno_vigencia,valor_indicador,unidad_medida,estado_calidad
+13001,Bolívar,Cartagena De Indias,Calidad de agua,INS,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2019,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Calidad de agua,INS,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2021,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura de inmunización contra el triple viral (tv) de un año,MSPS,Derecho a la salud,Primera Infancia,2019,0.92,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura de inmunización contra el triple viral (tv) de un año,MSPS,Derecho a la salud,Primera Infancia,2020,0.87,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de inmunización contra el triple viral (tv) de un año,MSPS,Derecho a la salud,Primera Infancia,2020,0.87,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de inmunización contra el triple viral (tv) de un año,MSPS,Derecho a la salud,Primera Infancia,2021,0.83,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de inmunización contra el triple viral (tv) de un año,MSPS,Derecho a la salud,Primera Infancia,2021,0.83,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con BCG en nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2019,1.01,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con BCG en nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2020,1.02,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con BCG en nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2020,1.02,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con BCG en nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2021,1.02,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con BCG en nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2021,1.02,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año,MSPS,Derecho a la salud,Primera Infancia,2019,0.90,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año,MSPS,Derecho a la salud,Primera Infancia,2020,0.85,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año,MSPS,Derecho a la salud,Primera Infancia,2020,0.85,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año,MSPS,Derecho a la salud,Primera Infancia,2021,0.87,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año,MSPS,Derecho a la salud,Primera Infancia,2021,0.87,Porcentaje,duplicado_identico
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2018,1.21,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2019,1.23,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2020,1.24,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2021,1.26,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,1.28,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,1.26,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,"Derecho 
+a la educación",Primera Infancia,2018,1.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,"Derecho 
+a la educación",Primera Infancia,2019,1.09,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,"Derecho 
+a la educación",Primera Infancia,2020,1.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,"Derecho 
+a la educación",Primera Infancia,2021,0.94,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,1.05,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Cobertura escolar bruta en transición,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,1.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",ICBF,Derecho a la participación,"Primera Infancia
+Infancia
+Adolescencia",2019,1.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",ICBF,Derecho a la participación,"Primera Infancia
+Infancia
+Adolescencia",2020,1.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",ICBF,Derecho a la participación,"Primera Infancia
+Infancia
+Adolescencia",2021,1.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",ICBF,Derecho a la participación,"Primera Infancia
+Infancia
+Adolescencia",2022,1.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2018,23847.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2019,28582.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2020,28379.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2021,31404.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Educación Inicial,Primera Infancia,2022,36455.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,"Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",MEN,Educación Inicial,Primera Infancia,2023,39392.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Número de niños y niñas menores de 1 año con registro civil por lugar de residencia,RNEC,Derecho a la identidad,Primera Infancia,2019,18070.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Número de niños y niñas menores de 1 año con registro civil por lugar de residencia,RNEC,Derecho a la identidad,Primera Infancia,2020,15901.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Número de niños y niñas menores de 1 año con registro civil por lugar de residencia,RNEC,Derecho a la identidad,Primera Infancia,2021,17266.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Número de niños y niñas menores de 1 año con registro civil por lugar de residencia,RNEC,Derecho a la identidad,Primera Infancia,2022,14594.00,Número,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Adolescencia,2018,66.67,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Adolescencia,2019,83.33,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Adolescencia,2020,100.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Adolescencia,2021,100.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de atención institucional al parto por personal calificado,MSPS,Derecho a la salud,Primera Infancia,2017,1.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de atención institucional al parto por personal calificado,MSPS,Derecho a la salud,Primera Infancia,2018,1.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de atención institucional al parto por personal calificado,MSPS,Derecho a la salud,Primera Infancia,2019,1.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de atención institucional al parto por personal calificado,MSPS,Derecho a la salud,Primera Infancia,2020,1.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de atención institucional al parto por personal calificado,MSPS,Derecho a la salud,Primera Infancia,2021,1.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de cobertura del servicio de acueducto,SSPD,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2018,48.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de cobertura del servicio de acueducto,SSPD,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2019,45.25,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de cobertura del servicio de acueducto,SSPD,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2020,45.80,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de cobertura del servicio de acueducto,SSPD,Derecho  a un ambiente sano,"Primera Infancia
+Infancia
+Adolescencia
+juventud",2021,44.37,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de nacidos vivos con 4 o más controles prenatales,MSPS,Derecho a la salud,Primera Infancia,2017,0.90,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de nacidos vivos con 4 o más controles prenatales,MSPS,Derecho a la salud,Primera Infancia,2018,0.89,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de nacidos vivos con 4 o más controles prenatales,MSPS,Derecho a la salud,Primera Infancia,2019,0.90,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de nacidos vivos con 4 o más controles prenatales,MSPS,Derecho a la salud,Primera Infancia,2020,0.86,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de nacidos vivos con 4 o más controles prenatales,MSPS,Derecho a la salud,Primera Infancia,2021,0.90,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Infancia,2018,86.67,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Infancia,2019,88.89,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Infancia,2020,100.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Infancia,2021,100.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Primera Infancia,2018,88.24,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Primera Infancia,2019,92.31,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Primera Infancia,2020,80.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado,UARIV,Derechos a la protección,Primera Infancia,2021,100.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.,MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2018,0.95,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.,MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2019,0.91,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.,MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2020,0.65,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.,MEN,Derecho al desarrollo integral de la primera infancia,Primera Infancia,2021,0.84,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención Integral que cuentan con seis o más atenciones.,MEN,Desarrollo Integral,Primera Infancia,2022,0.91,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención Integral que cuentan con seis o más atenciones.,MEN,Desarrollo Integral,Primera Infancia,2023,0.90,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS,MSPS,Derecho a la salud,Primera Infancia,2018,1.01,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS,MSPS,Derecho a la salud,Primera Infancia,2019,0.99,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS,MSPS,Derecho a la salud,Primera Infancia,2020,0.93,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS,MSPS,Derecho a la salud,Primera Infancia,2021,0.93,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS,MSPS,Derecho a la salud,Adolescencia,2018,1.09,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS,MSPS,Derecho a la salud,Adolescencia,2019,1.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS,MSPS,Derecho a la salud,Adolescencia,2020,1.06,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS,MSPS,Derecho a la salud,Adolescencia,2021,1.10,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS,MSPS,Derecho a la salud,Infancia,2018,1.11,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS,MSPS,Derecho a la salud,Infancia,2019,1.11,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS,MSPS,Derecho a la salud,Infancia,2020,1.07,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS,MSPS,Derecho a la salud,Infancia,2021,1.07,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Razón de mortalidad materna por 100.000 nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2017,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Razón de mortalidad materna por 100.000 nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2018,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Razón de mortalidad materna por 100.000 nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2019,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Razón de mortalidad materna por 100.000 nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2020,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Razón de mortalidad materna por 100.000 nacidos vivos,MSPS,Derecho a la salud,Primera Infancia,2021,0.00,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2018,1.25,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2019,1.25,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2020,1.23,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2021,1.22,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,1.25,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,1.25,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2018,0.93,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2019,0.94,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2020,0.95,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2021,1.07,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,1.01,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de Cobertura escolar bruta en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,1.01,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2018,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2019,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2020,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2021,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2018,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2019,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2020,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2021,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2018,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2019,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2020,0.01,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2021,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.03,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de deserción en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra adolescentes,INMLyCF,Derechos a la protección,Adolescencia,2018,268.46,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra adolescentes,INMLyCF,Derechos a la protección,Adolescencia,2019,320.20,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra adolescentes,INMLyCF,Derechos a la protección,Adolescencia,2020,154.30,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra adolescentes,INMLyCF,Derechos a la protección,Adolescencia,2021,199.29,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años,INMLyCF,Derechos a la protección,Primera Infancia,2018,93.16,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años,INMLyCF,Derechos a la protección,Primera Infancia,2019,71.33,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años,INMLyCF,Derechos a la protección,Primera Infancia,2020,55.23,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años,INMLyCF,Derechos a la protección,Primera Infancia,2021,35.57,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2018,188.19,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2019,193.58,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2020,85.52,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2021,118.59,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de fecundidad especifica en niños y niñas de 10 a 14 años,MSPS,Derechos a la protección,Infancia y adolescencia,2017,3.50,Tasa,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de fecundidad especifica en niños y niñas de 10 a 14 años,MSPS,Derechos a la protección,Infancia y adolescencia,2018,3.63,Tasa,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de fecundidad especifica en niños y niñas de 10 a 14 años,MSPS,Derechos a la protección,Infancia y adolescencia,2019,2.82,Tasa,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de fecundidad especifica en niños y niñas de 10 a 14 años,MSPS,Derechos a la protección,Infancia y adolescencia,2020,2.41,Tasa,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de fecundidad especifica en niños y niñas de 10 a 14 años,MSPS,Derechos a la protección,Infancia y adolescencia,2021,2.09,Tasa,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2018,12.83,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2019,8.87,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2020,7.86,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2021,12.83,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2019,1.95,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2021,1.15,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en niños y niñas de 6 a 11 años,INMLyCF,Derecho a la integridad personal,Infancia,2018,0.98,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de homicidios en niños y niñas de 6 a 11 años,INMLyCF,Derecho a la integridad personal,Infancia,2019,1.01,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2018,12.93,Tasa por 1.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2019,11.86,Tasa por 1.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2020,12.66,Tasa por 1.000,sin_duplicado
+13001,Bolívar,Cartagena de Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2021,12.84,Tasa por 1.000,sin_duplicado
+13001,Bolívar,Cartagena de Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2022,14.20,Tasa por 1.000,valores_conflictivos
+13001,Bolívar,Cartagena de Indias,Tasa de mortalidad en menores de 1 año (por mil nacidos vivos),DANE,Derecho a la vida,Primera Infancia,2022,16.36,Tasa por 1.000,valores_conflictivos
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por desnutrición en menores de 5 años.,MSPS,Derecho a la salud,Primera Infancia,2017,4.91,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por desnutrición en menores de 5 años.,MSPS,Derecho a la salud,Primera Infancia,2018,8.41,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por desnutrición en menores de 5 años.,MSPS,Derecho a la salud,Primera Infancia,2019,7.02,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por desnutrición en menores de 5 años.,MSPS,Derecho a la salud,Primera Infancia,2020,5.75,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por desnutrición en menores de 5 años.,MSPS,Derecho a la salud,Primera Infancia,2021,6.90,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2017,1.23,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2018,1.20,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2019,7.02,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2020,2.30,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2021,1.15,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2017,19.64,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2018,40.85,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2019,15.20,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2020,13.80,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años,MSPS,Derecho a la salud,Primera Infancia,2021,12.66,Tasa por 100.000,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2018,2.75,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2019,3.94,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2020,2.95,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años),INMLyCF,Derecho a la integridad personal,Adolescencia,2021,1.97,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2019,2.35,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en niños y niñas de 6 a 11 años,INMLyCF,Derecho a la integridad personal,Infancia,2019,1.01,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de muertes por eventos de transporte en niños y niñas de 6 a 11 años,INMLyCF,Derecho a la integridad personal,Infancia,2021,0.99,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2018,0.07,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2019,0.06,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2020,0.06,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,"Derecho 
+a la educación",Infancia,2021,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.07,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica primaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2018,0.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2019,0.08,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2020,0.09,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,"Derecho 
+a la educación",Infancia y adolescencia,2021,0.06,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.09,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación básica secundaria,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.11,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2018,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2019,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2020,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,"Derecho 
+a la educación",Adolescencia,2021,0.02,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2022,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de repitencia en educación media,MEN,Educación,"Matrícula estadística educación preescolar, básica y media - EPBM",2023,0.04,Porcentaje,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2018,1.83,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2019,3.94,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2020,4.91,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2018,560.73,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2019,590.16,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2020,164.13,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2021,297.95,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2022,513.61,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra adolescentes 12 a 17 años.,ICBF,Derechos a la protección,Adolescencia,2023,470.58,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2018,243.13,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2019,240.97,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2020,34.80,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2021,141.31,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2022,181.20,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de 6 a 11 años,ICBF,Derechos a la protección,Infancia,2023,148.12,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2018,120.42,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2019,100.65,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2020,20.17,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2021,47.00,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2022,62.60,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia contra niños y niñas de primera infancia,ICBF,Derecho a la integridad personal,Primera Infancia,2023,58.17,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia de pareja cuando la víctima es menor de 18 años,INMLyCF,Derechos a la protección,Adolescencia,2018,21.07,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia de pareja cuando la víctima es menor de 18 años,INMLyCF,Derechos a la protección,Adolescencia,2019,17.73,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia de pareja cuando la víctima es menor de 18 años,INMLyCF,Derechos a la protección,Adolescencia,2020,19.66,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia de pareja cuando la víctima es menor de 18 años,INMLyCF,Derechos a la protección,Adolescencia,2021,7.89,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2018,74.22,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2019,61.08,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2020,48.16,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en adolescentes (12 a 17 años),INMLyCF,Derechos a la protección,Adolescencia,2021,34.53,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2018,22.52,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2019,19.54,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2020,7.68,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años,INMLyCF,Derecho a la integridad personal,Primera Infancia,2021,10.33,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2018,28.28,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2019,30.25,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2020,20.88,Tasa por 100.000 habitantes,sin_duplicado
+13001,Bolívar,Cartagena De Indias,Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años,INMLyCF,Derechos a la protección,Infancia,2021,13.83,Tasa por 100.000 habitantes,sin_duplicado

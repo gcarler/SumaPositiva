@@ -1,0 +1,39 @@
+{
+  "source_url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+  "source_owner": "Fiscalía General de la Nación",
+  "source_system": "SPOA",
+  "accessed_utc": "2026-10-21T23:08:52.945Z",
+  "cutoff": "30/09/2026",
+  "report_page": "¿Dónde ocurrieron los hechos? (2 de 7)",
+  "filters": {
+    "departamento": "Bolívar",
+    "municipio_hecho": "Cartagena De Indias",
+    "anio_hecho": "All"
+  },
+  "baseline_procesos": 502027,
+  "operator": "Contains any",
+  "rows": 18,
+  "query_terms": [
+    "homicidio",
+    "feminicidio",
+    "lesiones",
+    "hurto",
+    "extorsion",
+    "amenazas",
+    "secuestro",
+    "violencia intrafamiliar",
+    "acceso carnal",
+    "acto sexual",
+    "trata de personas",
+    "estafa",
+    "inasistencia alimentaria",
+    "estupefacientes",
+    "armas de fuego",
+    "desplazamiento forzado",
+    "contaminacion ambiental",
+    "corrupcion"
+  ],
+  "interpretation": "Cada cifra cuenta procesos cuyo delito coincide con la búsqueda textual. Las búsquedas pueden solaparse; no sumar filas ni tratarlas como categorías penales exhaustivas. La dimensión es una etiqueta orientativa, no clasificación oficial de Fiscalía.",
+  "limitations": "El tablero no expone en esta vista una descarga exhaustiva de delito por municipio y año. Procesos registrados no equivalen a hechos ocurridos, personas víctimas ni condenas.",
+  "csv_sha256": "f52033f25b2339d0e2aec279cdc304a29b30ff7cbbef9a8a90d75f61d36a876f"
+}

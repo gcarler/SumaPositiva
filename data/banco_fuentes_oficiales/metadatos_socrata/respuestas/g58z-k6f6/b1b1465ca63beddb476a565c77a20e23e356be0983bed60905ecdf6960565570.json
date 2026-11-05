@@ -1,0 +1,1077 @@
+{
+  "id" : "g58z-k6f6",
+  "name" : "Caracterización de Beneficiarios de las Modalidades de Prevención del ICBF",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+  "attributionLink" : "https://www.datos.gov.co/d/g58z-k6f6",
+  "averageRating" : 0,
+  "category" : "Inclusión Social y Reconciliación",
+  "createdAt" : 1601404648,
+  "description" : "Contiene la información que da cuenta del tipo de vinculaciones y tipo de beneficiarios atendidos durante una vigencia definida en las estrategias, modalidades y programas de prevención del ICBF.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 809,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 35361463,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1601432203,
+  "publicationGroup" : 17608517,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1790309326,
+  "rowsUpdatedBy" : "gk4s-qz54",
+  "tableId" : 17608517,
+  "totalTimesRated" : 0,
+  "viewCount" : 3573,
+  "viewLastModified" : 1790308544,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1601832185,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 2747074,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1601432203,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1601832185,
+      "failureCount" : 0,
+      "startedAt" : 1601832185,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "vdxn-ik82",
+      "displayName" : "ICBF"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 498725720,
+    "name" : "Año",
+    "dataTypeName" : "text",
+    "description" : "Año en el cual se registra la atención del beneficiario",
+    "fieldName" : "a_o",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354902,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "2025",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2022",
+        "count" : "598952"
+      }, {
+        "item" : "2019",
+        "count" : "534837"
+      }, {
+        "item" : "2021",
+        "count" : "526708"
+      }, {
+        "item" : "2020",
+        "count" : "465112"
+      }, {
+        "item" : "2023",
+        "count" : "459868"
+      }, {
+        "item" : "2024",
+        "count" : "458992"
+      }, {
+        "item" : "2025",
+        "count" : "383204"
+      }, {
+        "item" : "2018",
+        "count" : "353115"
+      } ],
+      "smallest" : "2018",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725719,
+    "name" : "Codigo Departamento Atención",
+    "dataTypeName" : "text",
+    "description" : "Código DANE del departamento donde se brindó la atención al beneficiario",
+    "fieldName" : "codigo_departamento_atenci",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354901,
+    "cachedContents" : {
+      "non_null" : "3768180",
+      "largest" : "NULL",
+      "null" : "12608",
+      "top" : [ {
+        "item" : "05",
+        "count" : "321176"
+      }, {
+        "item" : "52",
+        "count" : "236776"
+      }, {
+        "item" : "76",
+        "count" : "222932"
+      }, {
+        "item" : "19",
+        "count" : "204900"
+      }, {
+        "item" : "25",
+        "count" : "196328"
+      }, {
+        "item" : "27",
+        "count" : "195616"
+      }, {
+        "item" : "13",
+        "count" : "185292"
+      }, {
+        "item" : "68",
+        "count" : "169080"
+      }, {
+        "item" : "15",
+        "count" : "166088"
+      }, {
+        "item" : "23",
+        "count" : "157492"
+      }, {
+        "item" : "73",
+        "count" : "139116"
+      }, {
+        "item" : "54",
+        "count" : "136700"
+      }, {
+        "item" : "20",
+        "count" : "128100"
+      }, {
+        "item" : "47",
+        "count" : "126200"
+      }, {
+        "item" : "44",
+        "count" : "120824"
+      }, {
+        "item" : "41",
+        "count" : "112628"
+      }, {
+        "item" : "70",
+        "count" : "110680"
+      }, {
+        "item" : "50",
+        "count" : "100852"
+      }, {
+        "item" : "17",
+        "count" : "95676"
+      }, {
+        "item" : "86",
+        "count" : "82600"
+      } ],
+      "smallest" : "05",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725718,
+    "name" : "Departamento Atención",
+    "dataTypeName" : "text",
+    "description" : "Departamento donde se brindó la atención al beneficiario",
+    "fieldName" : "departamento_atenci_n",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354900,
+    "cachedContents" : {
+      "non_null" : "3768180",
+      "largest" : "Vichada",
+      "null" : "12608",
+      "top" : [ {
+        "item" : "Antioquia",
+        "count" : "385800"
+      }, {
+        "item" : "Nariño",
+        "count" : "236776"
+      }, {
+        "item" : "Valle Del Cauca",
+        "count" : "222932"
+      }, {
+        "item" : "Cauca",
+        "count" : "204900"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "196328"
+      }, {
+        "item" : "Chocó",
+        "count" : "195616"
+      }, {
+        "item" : "Bolívar",
+        "count" : "185292"
+      }, {
+        "item" : "Santander",
+        "count" : "169080"
+      }, {
+        "item" : "Boyacá",
+        "count" : "166088"
+      }, {
+        "item" : "Córdoba",
+        "count" : "157492"
+      }, {
+        "item" : "Tolima",
+        "count" : "139116"
+      }, {
+        "item" : "Norte De Santander",
+        "count" : "136700"
+      }, {
+        "item" : "Cesar",
+        "count" : "128100"
+      }, {
+        "item" : "Magdalena",
+        "count" : "126200"
+      }, {
+        "item" : "La Guajira",
+        "count" : "120824"
+      }, {
+        "item" : "Huila",
+        "count" : "112628"
+      }, {
+        "item" : "Sucre",
+        "count" : "110680"
+      }, {
+        "item" : "Meta",
+        "count" : "100852"
+      }, {
+        "item" : "Caldas",
+        "count" : "95676"
+      }, {
+        "item" : "Atlántico",
+        "count" : "85504"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725717,
+    "name" : "Codigo Municipio Atención",
+    "dataTypeName" : "text",
+    "description" : "Código DANE del municipio donde se brindó la atención al beneficiario",
+    "fieldName" : "codigo_municipio_atenci_n",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354899,
+    "cachedContents" : {
+      "non_null" : "3768180",
+      "largest" : "NULL",
+      "null" : "12608",
+      "top" : [ {
+        "item" : "76001",
+        "count" : "24092"
+      }, {
+        "item" : "11001",
+        "count" : "23252"
+      }, {
+        "item" : "76109",
+        "count" : "22872"
+      }, {
+        "item" : "52835",
+        "count" : "20440"
+      }, {
+        "item" : "44001",
+        "count" : "19300"
+      }, {
+        "item" : "27001",
+        "count" : "17780"
+      }, {
+        "item" : "13001",
+        "count" : "17368"
+      }, {
+        "item" : "20001",
+        "count" : "17252"
+      }, {
+        "item" : "44430",
+        "count" : "16296"
+      }, {
+        "item" : "19698",
+        "count" : "15056"
+      }, {
+        "item" : "54001",
+        "count" : "14272"
+      }, {
+        "item" : "05001",
+        "count" : "14132"
+      }, {
+        "item" : "66001",
+        "count" : "13112"
+      }, {
+        "item" : "76364",
+        "count" : "12604"
+      }, {
+        "item" : "19001",
+        "count" : "12532"
+      }, {
+        "item" : "70001",
+        "count" : "11792"
+      }, {
+        "item" : "63001",
+        "count" : "11576"
+      }, {
+        "item" : "52356",
+        "count" : "11404"
+      }, {
+        "item" : "50001",
+        "count" : "11316"
+      }, {
+        "item" : "47001",
+        "count" : "11312"
+      } ],
+      "smallest" : "05001",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725716,
+    "name" : "Municipio Atención",
+    "dataTypeName" : "text",
+    "description" : "Municipio donde se brindó la atención al beneficiario",
+    "fieldName" : "municipio_atenci_n",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354898,
+    "cachedContents" : {
+      "non_null" : "3768180",
+      "largest" : "Zona Bananera",
+      "null" : "12608",
+      "top" : [ {
+        "item" : "Cali",
+        "count" : "24092"
+      }, {
+        "item" : "Bogota, D.C.",
+        "count" : "23252"
+      }, {
+        "item" : "Buenaventura",
+        "count" : "22872"
+      }, {
+        "item" : "San Andres De Tumaco",
+        "count" : "20440"
+      }, {
+        "item" : "Riohacha",
+        "count" : "19300"
+      }, {
+        "item" : "Riosucio",
+        "count" : "18180"
+      }, {
+        "item" : "Quibdo",
+        "count" : "17780"
+      }, {
+        "item" : "Cartagena De Indias",
+        "count" : "17368"
+      }, {
+        "item" : "Valledupar",
+        "count" : "17252"
+      }, {
+        "item" : "Maicao",
+        "count" : "16296"
+      }, {
+        "item" : "Medellin",
+        "count" : "16252"
+      }, {
+        "item" : "Santander De Quilichao",
+        "count" : "15056"
+      }, {
+        "item" : "Cucuta",
+        "count" : "14272"
+      }, {
+        "item" : "Villanueva",
+        "count" : "13640"
+      }, {
+        "item" : "Pereira",
+        "count" : "13112"
+      }, {
+        "item" : "Florencia",
+        "count" : "12888"
+      }, {
+        "item" : "Manaure",
+        "count" : "12856"
+      }, {
+        "item" : "Armenia",
+        "count" : "12712"
+      }, {
+        "item" : "Jamundi",
+        "count" : "12604"
+      }, {
+        "item" : "Popayan",
+        "count" : "12532"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725715,
+    "name" : "Area Misional",
+    "dataTypeName" : "text",
+    "description" : "Área misional del ICBF en la cual se enmarca la estrategia, modalidad y/o servicio prestado al beneficiario",
+    "fieldName" : "area_misional",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354897,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "PRIMERA INFANCIA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "PRIMERA INFANCIA",
+        "count" : "2446672"
+      }, {
+        "item" : "FAMILIAS Y COMUNIDADES",
+        "count" : "479916"
+      }, {
+        "item" : "NIÑEZ Y ADOLESCENCIA",
+        "count" : "258712"
+      }, {
+        "item" : "INFANCIA",
+        "count" : "243756"
+      }, {
+        "item" : "ADOLESCENCIA",
+        "count" : "223664"
+      }, {
+        "item" : "NUTRICIÓN",
+        "count" : "128068"
+      } ],
+      "smallest" : "ADOLESCENCIA",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725687,
+    "name" : "Nombre Servicio",
+    "dataTypeName" : "text",
+    "description" : "Nombre del servicio prestado al beneficiario",
+    "fieldName" : "nombre_servicio",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354896,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "UNIDADES DE APOYO Y FORTALECIMIENTO A FAMILIAS - UNAFAS",
+      "null" : "0",
+      "top" : [ {
+        "item" : "DESARROLLO INFANTIL EN MEDIO FAMILIAR SIN ARRIENDO - FAMILIAR",
+        "count" : "445872"
+      }, {
+        "item" : "HCB - COMUNITARIO",
+        "count" : "206712"
+      }, {
+        "item" : "HCB FAMI - FAMILIAR",
+        "count" : "200664"
+      }, {
+        "item" : "CDI SIN ARRIENDO  - INSTITUCIONAL",
+        "count" : "197984"
+      }, {
+        "item" : "DESARROLLO INFANTIL EN MEDIO FAMILIAR SIN ARRIENDO - FAMILIAR INTEGRAL",
+        "count" : "162032"
+      }, {
+        "item" : "MI FAMILIA URBANA",
+        "count" : "148948"
+      }, {
+        "item" : "DESARROLLO INFANTIL EN MEDIO FAMILIAR CON ARRIENDO - FAMILIAR",
+        "count" : "115408"
+      }, {
+        "item" : "GENERACIONES ÉTNICAS CON BIENESTAR",
+        "count" : "103660"
+      }, {
+        "item" : "HCB TRADICIONAL- COMUNITARIO (T)",
+        "count" : "90300"
+      }, {
+        "item" : "HCB FAMI-FAMILIAR TRADICIONAL",
+        "count" : "89192"
+      }, {
+        "item" : "ATENCIÓN PROPIA E INTERCULTURAL",
+        "count" : "88756"
+      }, {
+        "item" : "HOGARES INFANTILES - INSTITUCIONAL",
+        "count" : "78504"
+      }, {
+        "item" : "CDI CON ARRIENDO - INSTITUCIONAL",
+        "count" : "74404"
+      }, {
+        "item" : "CDI SIN ARRIENDO -  INSTITUCIONAL INTEGRAL",
+        "count" : "69880"
+      }, {
+        "item" : "ESTRATEGIAS DE DESARROLLO ALIMENTARIO O NUTRICIONAL (MODALIDAD MIL DÍAS PARA CAMBIAR EL MUNDO)",
+        "count" : "66700"
+      }, {
+        "item" : "GENERACIÓN EXPLORA",
+        "count" : "61268"
+      }, {
+        "item" : "TERRITORIOS ETNICOS CON BIENESTAR",
+        "count" : "60116"
+      }, {
+        "item" : "FAMILIAS CON BIENESTAR PARA LA PAZ",
+        "count" : "59096"
+      }, {
+        "item" : "MI FAMILIA RURAL",
+        "count" : "56736"
+      }, {
+        "item" : "DESARROLLO INFANTIL EN MEDIO FAMILIAR CON ARRIENDO - FAMILIAR INTEGRAL",
+        "count" : "56148"
+      } ],
+      "smallest" : "1.000 DÍAS PARA CAMBIAR EL MUNDO",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725686,
+    "name" : "Rango Edad",
+    "dataTypeName" : "text",
+    "description" : "Grupo etario al cual pertenece el beneficiario",
+    "fieldName" : "rango_edad",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354895,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Sin Información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "6 Meses - 5 años",
+        "count" : "1443356"
+      }, {
+        "item" : "Mayor a 18 Años",
+        "count" : "497020"
+      }, {
+        "item" : "14 - 17 Años",
+        "count" : "448408"
+      }, {
+        "item" : "0-6 Meses",
+        "count" : "364556"
+      }, {
+        "item" : "9 - 13 Años",
+        "count" : "304292"
+      }, {
+        "item" : "6 - 8 Años",
+        "count" : "256212"
+      }, {
+        "item" : "0  - 5 años",
+        "count" : "235532"
+      }, {
+        "item" : "18 - 28 Años",
+        "count" : "69324"
+      }, {
+        "item" : "0 - 5 años",
+        "count" : "59624"
+      }, {
+        "item" : "Mayor a 28 Años",
+        "count" : "50208"
+      }, {
+        "item" : "6 - 13 Años",
+        "count" : "50144"
+      }, {
+        "item" : "Sin información",
+        "count" : "2088"
+      }, {
+        "item" : "Sin Información",
+        "count" : "24"
+      } ],
+      "smallest" : "0  - 5 años",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725685,
+    "name" : "Sexo",
+    "dataTypeName" : "text",
+    "description" : "Sexo del beneficiario",
+    "fieldName" : "sexo",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354894,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Mujer",
+        "count" : "2157920"
+      }, {
+        "item" : "Hombre",
+        "count" : "1616472"
+      }, {
+        "item" : "Intersexual",
+        "count" : "6392"
+      }, {
+        "item" : "Sin información",
+        "count" : "4"
+      } ],
+      "smallest" : "Hombre",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725684,
+    "name" : "Zona Ubicacion Beneficiario",
+    "dataTypeName" : "text",
+    "description" : "Zona de ubicación del beneficiario",
+    "fieldName" : "zona_ubicacion_beneficiario",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354893,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Resto",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Resto",
+        "count" : "1951596"
+      }, {
+        "item" : "Cabecera",
+        "count" : "1817280"
+      }, {
+        "item" : "No Informa",
+        "count" : "11912"
+      } ],
+      "smallest" : "Cabecera",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725683,
+    "name" : "Agrupación Etnica",
+    "dataTypeName" : "text",
+    "description" : "Agrupación étnica a la que pertenece el beneficiario",
+    "fieldName" : "agrupaci_n_etnica",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354892,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Sin Información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No se autoreconoce",
+        "count" : "2069796"
+      }, {
+        "item" : "Sin Información",
+        "count" : "1023484"
+      }, {
+        "item" : "Indígena",
+        "count" : "390412"
+      }, {
+        "item" : "NARP",
+        "count" : "294588"
+      }, {
+        "item" : "Rrom/Gitano",
+        "count" : "2508"
+      } ],
+      "smallest" : "Indígena",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725682,
+    "name" : "Grupo Etnico",
+    "dataTypeName" : "text",
+    "description" : "Grupo étnico al que pertenece el beneficiario",
+    "fieldName" : "grupo_etnico",
+    "position" : 12,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354891,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Sin Información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No se autoreconoce en ninguno de los anteriores",
+        "count" : "2069796"
+      }, {
+        "item" : "Sin Información",
+        "count" : "1023484"
+      }, {
+        "item" : "Indígena",
+        "count" : "390412"
+      }, {
+        "item" : "Afrocolombiano (a)",
+        "count" : "248332"
+      }, {
+        "item" : "Comunidad Negra",
+        "count" : "40528"
+      }, {
+        "item" : "Raizal",
+        "count" : "4036"
+      }, {
+        "item" : "Rrom/Gitano",
+        "count" : "2508"
+      }, {
+        "item" : "Palenquero (a)",
+        "count" : "1692"
+      } ],
+      "smallest" : "Afrocolombiano (a)",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725681,
+    "name" : "Presenta Discapacidad",
+    "dataTypeName" : "text",
+    "description" : "Campo de autorreconocimiento donde el beneficiario indica si presenta alguna discapacidad",
+    "fieldName" : "presenta_discapacidad",
+    "position" : 13,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354890,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "SI",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NO",
+        "count" : "3630136"
+      }, {
+        "item" : "SI",
+        "count" : "150652"
+      } ],
+      "smallest" : "NO",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725680,
+    "name" : "Víctima",
+    "dataTypeName" : "text",
+    "description" : "Indica si el beneficario es reconocido como víctima del conflicto armado e incluido en el Registro Único de Víctimas RUV",
+    "fieldName" : "v_ctima",
+    "position" : 14,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354889,
+    "cachedContents" : {
+      "non_null" : "0",
+      "null" : "3780788",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725679,
+    "name" : "Nacionalidad",
+    "dataTypeName" : "text",
+    "description" : "Nacionalidad del beneficiario",
+    "fieldName" : "nacionalidad",
+    "position" : 15,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354888,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Venezolano",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Colombiano",
+        "count" : "3284676"
+      }, {
+        "item" : "Venezolano",
+        "count" : "415276"
+      }, {
+        "item" : "Otra",
+        "count" : "80836"
+      } ],
+      "smallest" : "Colombiano",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725721,
+    "name" : "Tipo Beneficiario",
+    "dataTypeName" : "text",
+    "description" : "Especifica a que grupo de atención pertenece el beneficiario",
+    "fieldName" : "tipo_beneficiario_homologado",
+    "position" : 16,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354903,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "valor predeterminado",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NIÑO O NIÑA ENTRE 6 MESES Y 5 AÑOS Y 11 MESES",
+        "count" : "1373684"
+      }, {
+        "item" : "EN VERIFICACION",
+        "count" : "621800"
+      }, {
+        "item" : "NIÑOS, NIÑAS, ADOLESCENTES O ADULTOS",
+        "count" : "421624"
+      }, {
+        "item" : "MENOR DE SEIS MESES",
+        "count" : "321564"
+      }, {
+        "item" : "MUJER GESTANTE",
+        "count" : "312692"
+      }, {
+        "item" : "ESCOLAR O ADOLESCENTE",
+        "count" : "257596"
+      }, {
+        "item" : "PARTICIPANTE",
+        "count" : "185244"
+      }, {
+        "item" : "PERSONA GESTANTE",
+        "count" : "139328"
+      }, {
+        "item" : "ADOLESCENTE",
+        "count" : "93148"
+      }, {
+        "item" : "JOVEN",
+        "count" : "46632"
+      }, {
+        "item" : "valor predeterminado",
+        "count" : "2448"
+      }, {
+        "item" : "NIÑO O NIÑA 10 AÑOS A 13 AÑOS, 11 MESES, 29 DIAS",
+        "count" : "1696"
+      }, {
+        "item" : "MADRE LACTANTE",
+        "count" : "764"
+      }, {
+        "item" : "NIÑO O NIÑA DE 6 AÑOS A 9 AÑOS, 11 MESES, 29 DÍAS",
+        "count" : "652"
+      }, {
+        "item" : "ADULTOS ENTRE 40 Y 59",
+        "count" : "472"
+      }, {
+        "item" : "ADULTOS DE 29 A 39 AÑOS",
+        "count" : "412"
+      }, {
+        "item" : "NIÑO O NIÑA 10 AÑOS A 13 AÑOS, 11 MESES, 29 DÍAS",
+        "count" : "348"
+      }, {
+        "item" : "ADULTO MAYOR DE 60 AÑOS",
+        "count" : "272"
+      }, {
+        "item" : "CUIDADORES Y DOCENTES",
+        "count" : "192"
+      }, {
+        "item" : "PARTICIPANTE MAYOR DE 14",
+        "count" : "152"
+      } ],
+      "smallest" : "ADOLESCENTE",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725678,
+    "name" : "Estado Atencion Beneficiario",
+    "dataTypeName" : "text",
+    "description" : "Indica el estado de vinculación del beneficiario",
+    "fieldName" : "estado_atencion_beneficiario",
+    "position" : 17,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354887,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "Inactivo",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Inactivo",
+        "count" : "2931060"
+      }, {
+        "item" : "Activo",
+        "count" : "849728"
+      } ],
+      "smallest" : "Activo",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725677,
+    "name" : "Corte",
+    "dataTypeName" : "text",
+    "description" : "Corte de la información",
+    "fieldName" : "corte",
+    "position" : 18,
+    "renderTypeName" : "text",
+    "tableColumnId" : 117354886,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "202512",
+      "null" : "0",
+      "top" : [ {
+        "item" : "202212",
+        "count" : "598952"
+      }, {
+        "item" : "201912",
+        "count" : "534836"
+      }, {
+        "item" : "202112",
+        "count" : "526708"
+      }, {
+        "item" : "202012",
+        "count" : "465112"
+      }, {
+        "item" : "202312",
+        "count" : "459868"
+      }, {
+        "item" : "202412",
+        "count" : "458992"
+      }, {
+        "item" : "202512",
+        "count" : "383204"
+      }, {
+        "item" : "201812",
+        "count" : "353116"
+      } ],
+      "smallest" : "201812",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  }, {
+    "id" : 498725676,
+    "name" : "Beneficiarios",
+    "dataTypeName" : "number",
+    "description" : "Cantidad de beneficiarios",
+    "fieldName" : "beneficiarios",
+    "position" : 19,
+    "renderTypeName" : "number",
+    "tableColumnId" : 117354885,
+    "cachedContents" : {
+      "non_null" : "3780788",
+      "largest" : "40148",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "1114680"
+      }, {
+        "item" : "2",
+        "count" : "469884"
+      }, {
+        "item" : "3",
+        "count" : "292404"
+      }, {
+        "item" : "4",
+        "count" : "208928"
+      }, {
+        "item" : "5",
+        "count" : "161560"
+      }, {
+        "item" : "6",
+        "count" : "128716"
+      }, {
+        "item" : "7",
+        "count" : "108892"
+      }, {
+        "item" : "8",
+        "count" : "91984"
+      }, {
+        "item" : "9",
+        "count" : "78940"
+      }, {
+        "item" : "10",
+        "count" : "69392"
+      }, {
+        "item" : "11",
+        "count" : "61324"
+      }, {
+        "item" : "12",
+        "count" : "54936"
+      }, {
+        "item" : "13",
+        "count" : "49140"
+      }, {
+        "item" : "14",
+        "count" : "44572"
+      }, {
+        "item" : "15",
+        "count" : "40772"
+      }, {
+        "item" : "16",
+        "count" : "36528"
+      }, {
+        "item" : "17",
+        "count" : "34228"
+      }, {
+        "item" : "18",
+        "count" : "31448"
+      }, {
+        "item" : "19",
+        "count" : "28964"
+      }, {
+        "item" : "20",
+        "count" : "27280"
+      } ],
+      "smallest" : "1",
+      "count" : "3780788",
+      "cardinality" : "3780788"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Igualdad",
+        "Área o dependencia" : "Dirección de planeación y control de la gestión",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "promoción y prevención", "primera infancia", "niñez", "adolescencia", "familias", "comunidades" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

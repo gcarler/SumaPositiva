@@ -1,0 +1,9 @@
+{
+  "url": "https://cifras2.unidadvictimas.gov.co/RNI.Reportes.Servicios/api/Cifras/DatosAbiertos?idReporte=5&nivelTerritorial=2&fechaReporte=30%2F09%2F2026&anio=0&idDepartamento=13&idMunicipio=13001&idDireccionTerritorial=0",
+  "fecha_corte": "30/09/2026",
+  "sha256_respuesta": "bdb7bdddf61bc59df6cdc0c7e2c35345d939da80996491bda4f06b955fe8f85f",
+  "filas_consultadas": 11184,
+  "filas_agregadas": 522,
+  "extraido_utc": "2026-10-23T01:50:55.839671+00:00",
+  "privacidad": "Solo se guardan agregados por municipio, año, hecho y métrica"
+}

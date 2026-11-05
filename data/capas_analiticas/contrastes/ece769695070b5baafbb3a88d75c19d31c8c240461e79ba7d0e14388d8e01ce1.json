@@ -1,0 +1,1999 @@
+{
+  "corte_canonico_sha256": "52ac79842d632a316e45c300aefd9ddf4252d33f44268914b70d6431371d08b4",
+  "esquema": "polis.contraste_fuentes.v1",
+  "estado_publicacion": "no_publicable",
+  "paneles": [
+    {
+      "anio": 2018,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-15.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "766",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "230.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "215.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_homicidio",
+        "policia_feminicidio"
+      ],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2019,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-24.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "658",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "197.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "4.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "173.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_homicidio"
+      ],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2020,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-29.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        },
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-6.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "210",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "618",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "233.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "6.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "204.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2021,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-32.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        },
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-3.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "216",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "681",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "245.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "3.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "213.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2022,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-32.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        },
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-5.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "366",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "898",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "393.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "5.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "361.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2023,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-62.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        },
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-3.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "368",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "918",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "427.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "3.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "365.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2024,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-33.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "medicina_homicidios"
+        },
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-3.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "381",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "910",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "medicina_homicidios",
+          "provisional": false,
+          "serie": "medicina_homicidios",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vtub-3de2",
+          "valor": "411.0",
+          "version_sha256": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "3.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "378.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2025,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-2.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "360",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "871",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "2.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": false,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "358.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [
+        "medicina_homicidios"
+      ],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2026,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-1.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_intencional",
+          "serie_b": "archivo_recibido_homicidio"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": true,
+          "serie": "archivo_recibido_homicidio",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "217",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": true,
+          "serie": "fiscalia_busqueda_homicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "663",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": true,
+          "serie": "policia_feminicidio",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "1.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        },
+        {
+          "fuente_clave": "policia_homicidios",
+          "provisional": true,
+          "serie": "policia_intencional",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/m8fd-ahd9",
+          "valor": "216.0",
+          "version_sha256": "c617b872f9b5c348b4b88cb6cd0714f80c42792227ad57c37eb03d8d70e47ece"
+        }
+      ],
+      "series_sin_dato": [
+        "medicina_homicidios"
+      ],
+      "tema": "homicidio",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2018,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1694",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "1678.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_vif"
+      ],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2019,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "2340",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "2343.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_vif"
+      ],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2020,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-38.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "2166",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1915",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "2128.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2021,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-51.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "2675",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "2465",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "2624.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2022,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-40.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "2735",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "2691",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "2695.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2023,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-16.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "3346",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "3396",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "3330.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2024,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-42.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "3454",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "3681",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "3412.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2025,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-78.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "3125",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "3530",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": false,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "3047.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2026,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-686.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_vif",
+          "serie_b": "archivo_recibido_vif"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": true,
+          "serie": "archivo_recibido_vif",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "2953",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": true,
+          "serie": "fiscalia_busqueda_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "3025",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_violencia_intrafamiliar",
+          "provisional": true,
+          "serie": "policia_vif",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/vuyt-mqpw",
+          "valor": "2267.0",
+          "version_sha256": "3dceda7836845dca6455e178ac4e61f9903d2a6cdb1e380cfd49e5554123b5e5"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "violencia_intrafamiliar",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2018,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "752",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "720.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_amenazas"
+      ],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2019,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "808",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "837.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_amenazas"
+      ],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2020,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-8.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1010",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "716",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "1002.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2021,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-14.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1137",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1142",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "1123.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2022,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-12.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1371",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1456",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "1359.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2023,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-3.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1400",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1518",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "1397.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2024,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-8.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "934",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1775",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "926.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2025,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-35.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1256",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "1481",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": false,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "1221.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2026,
+      "diferencias_numericas": [
+        {
+          "comparabilidad": "no_acreditada",
+          "diferencia_a_menos_b": "-342.0",
+          "nota": "Diferencia de registros; no demuestra casos faltantes ni efecto del plan.",
+          "serie_a": "policia_amenazas",
+          "serie_b": "archivo_recibido_amenazas"
+        }
+      ],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": true,
+          "serie": "archivo_recibido_amenazas",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "1262",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": true,
+          "serie": "fiscalia_busqueda_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "930",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        },
+        {
+          "fuente_clave": "policia_amenazas",
+          "provisional": true,
+          "serie": "policia_amenazas",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "casos",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://www.datos.gov.co/d/meew-mguv",
+          "valor": "920.0",
+          "version_sha256": "e5e1c2e64aa88721f3757f82664b83bfd3684d948b64e7b99e25b59bd2288950"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "amenazas",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2018,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "163",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_extorsion"
+      ],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2019,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "127",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_extorsion"
+      ],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2020,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "130",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "166",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2021,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "135",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "188",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2022,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "308",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "455",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2023,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "134",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "490",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2024,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "196",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "469",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2025,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "379",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "433",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2026,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": true,
+          "serie": "archivo_recibido_extorsion",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "272",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": true,
+          "serie": "fiscalia_busqueda_extorsion",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "329",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "extorsion",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2018,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "8662",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_hurtos_total"
+      ],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2019,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "9417",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [
+        "archivo_recibido_hurtos_total"
+      ],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2020,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "6176",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "6882",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2021,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "7325",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "8124",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2022,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "8466",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "10227",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2023,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "10151",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "11986",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2024,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "9400",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "11898",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2025,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": false,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "7503",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": false,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "14295",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    },
+    {
+      "anio": 2026,
+      "diferencias_numericas": [],
+      "series": [
+        {
+          "fuente_clave": "drive_excel_policial_11_delitos",
+          "provisional": true,
+          "serie": "archivo_recibido_hurtos_total",
+          "tipo_fecha": "anio_declarado_por_fuente",
+          "unidad": "casos_reportados",
+          "unidad_observacion": "hecho",
+          "url_fuente": "https://drive.google.com/drive/folders/1eE5e5rX6wvzxCuAoJZ74OKEWT1e73et4",
+          "valor": "5759",
+          "version_sha256": "f3c9a35a1431da9865d3f5657f9104cc9252ea052e8b9834d07aba5f94b57069"
+        },
+        {
+          "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+          "provisional": true,
+          "serie": "fiscalia_busqueda_hurto",
+          "tipo_fecha": "anio_hecho",
+          "unidad": "procesos",
+          "unidad_observacion": "proceso",
+          "url_fuente": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+          "valor": "10749",
+          "version_sha256": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83"
+        }
+      ],
+      "series_sin_dato": [],
+      "tema": "hurtos",
+      "total_interinstitucional": null
+    }
+  ],
+  "regla": "Hechos, víctimas y procesos son series paralelas; no se suman ni se atribuyen a planes."
+}

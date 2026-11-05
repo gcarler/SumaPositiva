@@ -48,6 +48,9 @@ def _fecha(valor: str | None) -> datetime | None:
 
 
 def _clave_artefacto(ruta: str, claves: set[str]) -> str | None:
+    if ruta.startswith("data/banco_fuentes_oficiales/policia_portal/"):
+        clave_portal = "portal_policia_cuadros_cartagena"
+        return clave_portal if clave_portal in claves else None
     nombre = Path(ruta).name
     candidata = nombre.split(".", 1)[0]
     if "/extracciones/" in ruta and candidata in claves:

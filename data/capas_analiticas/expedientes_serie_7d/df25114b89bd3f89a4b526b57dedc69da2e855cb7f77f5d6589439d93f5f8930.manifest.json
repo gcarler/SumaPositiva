@@ -1,0 +1,15 @@
+{
+  "esquema": "polis.expedientes_serie_7d.v1",
+  "estado_publicacion": "no_publicable",
+  "estados_revision": {
+    "contradiccion": 1,
+    "documentado_no_publicable": 3153,
+    "provisional": 171,
+    "repetido": 6
+  },
+  "expedientes": 3331,
+  "limite": "Expedientes descriptivos por punto; no acreditan causalidad ni dictámenes de planes.",
+  "paneles_sha256": "ed95d3380a59bb89234242c789c9cceb3d78b95ab0be46d8d0b540a5d9476c48",
+  "salida_sha256": "df25114b89bd3f89a4b526b57dedc69da2e855cb7f77f5d6589439d93f5f8930",
+  "series_7d_sha256": "4a90461ba586336cdad5ad7c2394ea3ddcf1e48561d393428f24742676d6573e"
+}

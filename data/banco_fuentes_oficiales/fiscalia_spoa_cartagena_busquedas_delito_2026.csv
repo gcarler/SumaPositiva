@@ -1,0 +1,19 @@
+termino_busqueda,dimension_orientativa,procesos,porcentaje_total_no_exclusivo,corte,municipio_hecho,operador,estado
+"homicidio",PERS,12719,2.53,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"feminicidio",COM,137,0.03,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"lesiones",PERS,68537,13.65,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"hurto",PERS,136742,27.24,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"extorsion",PERS,4745,0.95,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"amenazas",PERS,20246,4.03,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"secuestro",PERS,312,0.06,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"violencia intrafamiliar",COM,42783,8.52,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"acceso carnal",COM,5727,1.14,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"acto sexual",COM,3379,0.67,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"trata de personas",PERS,131,0.03,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"estafa",ECON,25912,5.16,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"inasistencia alimentaria",SALUD,9914,1.97,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"estupefacientes",PERS,27977,5.57,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"armas de fuego",PERS,11611,2.31,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"desplazamiento forzado",SAT,434,0.09,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"contaminacion ambiental",AMB,182,0.04,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva
+"corrupcion",POL,148,0.03,30/09/2026,Cartagena de Indias,Contains any,consulta_textual_no_exhaustiva

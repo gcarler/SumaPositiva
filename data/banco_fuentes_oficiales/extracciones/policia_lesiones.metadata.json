@@ -1,0 +1,22 @@
+{
+  "dataset_id": "72sg-cybi",
+  "titulo": "Reporte Lesiones Personales y en Accidente de Tránsito Policía Nacional",
+  "entidad_publicadora": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+  "enlace_entidad": null,
+  "provenance": "official",
+  "rowsUpdatedAt": 1788290710,
+  "columnas_publicadas": [
+    "departamento",
+    "municipio",
+    "codigo_dane",
+    "armas_medios",
+    "fecha_hecho",
+    "genero",
+    "grupo_etario",
+    "descripci_n_conducta",
+    "cantidad"
+  ],
+  "filtro_cartagena": "codigo_dane='13001000'",
+  "corte_comprobado": true,
+  "conteo_filtrado_verificado": true
+}

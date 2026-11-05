@@ -7,8 +7,11 @@ from app.core.database import SessionDependency
 from app.modules.identidad.deps import requerir_permiso
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.indicadores.repository import IndicadoresRepository
+from app.modules.indicadores.catalogo_polis import leer_catalogo_indicadores
 from app.modules.indicadores.schemas import (
     CadenaValorRespuesta,
+    CatalogoIndicadorRead,
+    CatalogoIndicadoresRespuesta,
     FichaIndicadorActualizar,
     FichaIndicadorCrear,
     FichaIndicadorRespuesta,
@@ -25,6 +28,40 @@ def get_indicadores_service(session: SessionDependency) -> IndicadoresService:
 
 
 IndicadoresServiceDep = Annotated[IndicadoresService, Depends(get_indicadores_service)]
+
+
+@router.get(
+    "/catalogo",
+    response_model=CatalogoIndicadoresRespuesta,
+    summary="Catálogo metodológico de indicadores de seguridad humana",
+    description=(
+        "Devuelve el catálogo validado de indicadores con su fórmula, denominador,"
+        " fuente, URL, custodio, licencia, año base y estado. No calcula valores."
+    ),
+)
+async def obtener_catalogo_indicadores(
+    dimension: str | None = None,
+    tier: str | None = None,
+    busqueda: str | None = None,
+) -> CatalogoIndicadoresRespuesta:
+    filas, archivo_sha256 = leer_catalogo_indicadores()
+    texto_busqueda = (busqueda or "").strip().lower()
+    items = []
+    for fila in filas:
+        if dimension and fila.get("dimension", "").strip().upper() != dimension.strip().upper():
+            continue
+        if tier and fila.get("tier", "").strip().upper() != tier.strip().upper():
+            continue
+        if texto_busqueda:
+            texto = " ".join(fila.values()).lower()
+            if texto_busqueda not in texto:
+                continue
+        items.append(CatalogoIndicadorRead.model_validate(fila))
+    return CatalogoIndicadoresRespuesta(
+        total=len(items),
+        archivo_sha256=archivo_sha256,
+        indicadores=items,
+    )
 
 
 @router.get("/fichas", response_model=list[FichaIndicadorRespuesta])

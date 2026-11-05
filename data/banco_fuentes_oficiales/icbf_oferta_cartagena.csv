@@ -1,0 +1,50 @@
+dataset,dataset_id,anio,desagregacion,valor,filas_agregadas,unidad
+primera_infancia,5akr-u7t8,2025,MENOR DE SEIS MESES,1640,611,beneficiarios_reportados
+primera_infancia,5akr-u7t8,2025,NIÑA O NIÑO ENTRE LOS 7 MESES Y (2) DOS AÑOS DE EDAD,34,31,beneficiarios_reportados
+primera_infancia,5akr-u7t8,2025,"NIÑAS Y NIÑOS DEL RANGO DE 18 MESES A 4 AÑOS, 11 MESES Y 29 DIAS",15,15,beneficiarios_reportados
+primera_infancia,5akr-u7t8,2025,"NIÑAS Y NIÑOS HASTA LOS CINCO (5) AÑOS, ONCE (11) MESES VEINTINUEVE (29) DAS",12,11,beneficiarios_reportados
+primera_infancia,5akr-u7t8,2025,NIÑO O NIÑA ENTRE 6 MESES Y 5 AÑOS Y 11 MESES,38999,5963,beneficiarios_reportados
+primera_infancia,5akr-u7t8,2025,PERSONA GESTANTE,4698,1300,beneficiarios_reportados
+prevencion,g58z-k6f6,2018,NUTRICIÓN,1048,104,beneficiarios_reportados
+prevencion,g58z-k6f6,2018,PRIMERA INFANCIA,196888,1640,beneficiarios_reportados
+prevencion,g58z-k6f6,2019,FAMILIAS Y COMUNIDADES,1968,300,beneficiarios_reportados
+prevencion,g58z-k6f6,2019,NIÑEZ Y ADOLESCENCIA,5532,536,beneficiarios_reportados
+prevencion,g58z-k6f6,2019,NUTRICIÓN,2220,136,beneficiarios_reportados
+prevencion,g58z-k6f6,2019,PRIMERA INFANCIA,190320,1540,beneficiarios_reportados
+prevencion,g58z-k6f6,2020,FAMILIAS Y COMUNIDADES,18776,568,beneficiarios_reportados
+prevencion,g58z-k6f6,2020,NIÑEZ Y ADOLESCENCIA,6024,616,beneficiarios_reportados
+prevencion,g58z-k6f6,2020,NUTRICIÓN,1400,108,beneficiarios_reportados
+prevencion,g58z-k6f6,2020,PRIMERA INFANCIA,189396,1248,beneficiarios_reportados
+prevencion,g58z-k6f6,2021,ADOLESCENCIA,2148,280,beneficiarios_reportados
+prevencion,g58z-k6f6,2021,FAMILIAS Y COMUNIDADES,19092,236,beneficiarios_reportados
+prevencion,g58z-k6f6,2021,INFANCIA,6420,544,beneficiarios_reportados
+prevencion,g58z-k6f6,2021,NUTRICIÓN,1656,104,beneficiarios_reportados
+prevencion,g58z-k6f6,2021,PRIMERA INFANCIA,176872,1164,beneficiarios_reportados
+prevencion,g58z-k6f6,2022,ADOLESCENCIA,6392,248,beneficiarios_reportados
+prevencion,g58z-k6f6,2022,FAMILIAS Y COMUNIDADES,2896,104,beneficiarios_reportados
+prevencion,g58z-k6f6,2022,INFANCIA,4608,296,beneficiarios_reportados
+prevencion,g58z-k6f6,2022,NUTRICIÓN,1588,88,beneficiarios_reportados
+prevencion,g58z-k6f6,2022,PRIMERA INFANCIA,189168,1812,beneficiarios_reportados
+prevencion,g58z-k6f6,2023,ADOLESCENCIA,2616,156,beneficiarios_reportados
+prevencion,g58z-k6f6,2023,FAMILIAS Y COMUNIDADES,7632,264,beneficiarios_reportados
+prevencion,g58z-k6f6,2023,INFANCIA,7236,124,beneficiarios_reportados
+prevencion,g58z-k6f6,2023,NUTRICIÓN,3596,116,beneficiarios_reportados
+prevencion,g58z-k6f6,2023,PRIMERA INFANCIA,179248,1192,beneficiarios_reportados
+prevencion,g58z-k6f6,2024,ADOLESCENCIA,156,32,beneficiarios_reportados
+prevencion,g58z-k6f6,2024,FAMILIAS Y COMUNIDADES,4532,280,beneficiarios_reportados
+prevencion,g58z-k6f6,2024,INFANCIA,2956,256,beneficiarios_reportados
+prevencion,g58z-k6f6,2024,NUTRICIÓN,604,60,beneficiarios_reportados
+prevencion,g58z-k6f6,2024,PRIMERA INFANCIA,178176,1256,beneficiarios_reportados
+prevencion,g58z-k6f6,2025,ADOLESCENCIA,1872,148,beneficiarios_reportados
+prevencion,g58z-k6f6,2025,FAMILIAS Y COMUNIDADES,5336,392,beneficiarios_reportados
+prevencion,g58z-k6f6,2025,INFANCIA,15136,428,beneficiarios_reportados
+prevencion,g58z-k6f6,2025,NUTRICIÓN,1532,136,beneficiarios_reportados
+prevencion,g58z-k6f6,2025,PRIMERA INFANCIA,182752,856,beneficiarios_reportados
+uds,i8ww-5mcf,2024,total,1567,1567,puntos_distintos
+uds,i8ww-5mcf,2025,total,80,80,puntos_distintos
+uds,i8ww-5mcf,2026,total,34,34,puntos_distintos
+bienestarina,crxh-as6c,2019,total,210,210,puntos_distintos
+bienestarina,crxh-as6c,2020,total,202,202,puntos_distintos
+bienestarina,crxh-as6c,2021,total,195,195,puntos_distintos
+bienestarina,crxh-as6c,2022,total,203,203,puntos_distintos
+bienestarina,crxh-as6c,2023,total,206,206,puntos_distintos

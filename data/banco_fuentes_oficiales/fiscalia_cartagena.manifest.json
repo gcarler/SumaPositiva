@@ -1,0 +1,67 @@
+{
+  "fecha_verificacion_utc": "2026-10-21",
+  "entidad": "Fiscalía General de la Nación",
+  "sistema": "SPOA",
+  "ambito_objetivo": "municipio del hecho: Cartagena de Indias",
+  "portal": "https://www.fiscalia.gov.co/colombia/gestion/estadisticas/",
+  "guia": "https://www.fiscalia.gov.co/colombia/wp-content/uploads/GUIA-PARA-LA-CONSULTA-DE-CIFRAS-ESTADISTICAS-A-TRAVES-DE-DATOS-ABIERTOS.pdf",
+  "estado": "extraccion_parcial_powerbi_procesos",
+  "filas_cartagena_descargadas": 23,
+  "conjuntos": [
+    {
+      "nombre": "Conteo de Procesos V2",
+      "dataset_id": "6d52-qyqg",
+      "url": "https://www.datos.gov.co/d/6d52-qyqg",
+      "unidad": "procesos/noticias criminales por delito",
+      "campo_territorial": "municipio_hecho",
+      "api_json_http": 403,
+      "csv_http": 403,
+      "respuesta_api": "authentication_required"
+    },
+    {
+      "nombre": "Conteo de Víctimas V2",
+      "dataset_id": "4mnf-va5w",
+      "url": "https://www.datos.gov.co/d/4mnf-va5w",
+      "unidad": "víctimas registradas en noticias criminales por delito",
+      "campo_territorial": "municipio_hecho",
+      "api_json_http": 403,
+      "csv_http": 403,
+      "respuesta_api": "authentication_required"
+    },
+    {
+      "nombre": "Conteo de Actuaciones V2",
+      "dataset_id": "9pc4-8nib",
+      "url": "https://www.datos.gov.co/d/9pc4-8nib",
+      "unidad": "procesos-indiciados por tipo de actuación y delito",
+      "campo_territorial": "municipio_hecho",
+      "api_json_http": 403,
+      "csv_http": 403,
+      "respuesta_api": "authentication_required"
+    },
+    {
+      "nombre": "Conteo de Indiciados V2",
+      "dataset_id": null,
+      "url": null,
+      "unidad": "indiciados registrados en noticias criminales",
+      "campo_territorial": "pendiente_verificar",
+      "estado": "referenciado_en_guia_oficial_sin_id_confirmado"
+    }
+  ],
+  "reglas_interpretacion": [
+    "No sumar procesos, víctimas, indiciados y actuaciones: tienen unidades distintas.",
+    "Filtrar por municipio del hecho, no por seccional asignada.",
+    "Distinguir año del hecho, año de entrada, año de denuncia y año de actuación.",
+    "Las noticias criminales registradas no equivalen a todos los hechos ocurridos ni prueban culpabilidad.",
+    "En actuaciones, filtrar por delito antes de sumar para evitar sobreconteo, según el catálogo oficial."
+  ],
+  "tablero_powerbi": {
+    "url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+    "csv": "fiscalia_spoa_cartagena_procesos_por_anio_2026.csv",
+    "top5_csv": "fiscalia_spoa_top5_municipios_2026.csv",
+    "manifest": "fiscalia_powerbi_cartagena.manifest.json",
+    "busquedas_delito_csv": "fiscalia_spoa_cartagena_busquedas_delito_2026.csv",
+    "busquedas_delito_manifest": "fiscalia_spoa_cartagena_busquedas_delito_2026.manifest.json",
+    "delitos_por_anio_csv": "fiscalia_spoa_cartagena_delitos_por_anio_2026.csv",
+    "delitos_por_anio_manifest": "fiscalia_spoa_cartagena_delitos_por_anio_2026.manifest.json"
+  }
+}

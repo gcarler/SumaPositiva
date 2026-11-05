@@ -1,0 +1,26 @@
+{
+  "canonico_sha256": "48ce3f7c2f8d204abf0d7e3754baead5a43f089bd917079063a018438a58dceb",
+  "colisiones_de_clave": {
+    "duplicado_identico": 6,
+    "valores_contradictorios": 1
+  },
+  "denominador_sha256": "0fbcd121b99dd2646508482c8551aa0bec92769d1af788a11f0b473b87ca240d",
+  "dimensiones": {
+    "AMB": 186,
+    "COM": 165,
+    "ECON": 121,
+    "PERS": 1047,
+    "POL": 27,
+    "SALUD": 163,
+    "SAT": 198,
+    "sin_dimension": 489
+  },
+  "esquema": "polis.series_7d.v1",
+  "estado_publicacion": "no_publicable",
+  "filas": 2396,
+  "limitacion": "Series por fuente y unidad; no se suman instituciones ni se infiere causalidad.",
+  "provisionales": 115,
+  "ruta": "data/capas_analiticas/indicadores_7d/13304885fb3388eff41091d22d112ed1a4921fd1fbb4e7e4555a788f56ae219e.jsonl",
+  "salida_sha256": "13304885fb3388eff41091d22d112ed1a4921fd1fbb4e7e4555a788f56ae219e",
+  "tasas_municipales": 964
+}

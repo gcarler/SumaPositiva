@@ -1,0 +1,282 @@
+{
+  "esquema": "polis.evaluacion_estructural.v1",
+  "consolidado_sha256": "a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa",
+  "evaluacion": {
+    "estado": "ambar",
+    "filas_entrada": 2396,
+    "filas_tipadas": 2396,
+    "problemas": {
+      "dimension_sin_clasificar": 144
+    },
+    "contrato": "observacion_agregada_v1"
+  },
+  "validacion_fuentes": {
+    "fuentes_esperadas": 43,
+    "fuentes_evaluadas": 43,
+    "estados": {
+      "validado_estructural": 43
+    },
+    "resultados": [
+      {
+        "fuente_clave": "dane_ecsc_2024",
+        "estado": "validado_estructural",
+        "filas": 7,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_geih_cartagena",
+        "estado": "validado_estructural",
+        "filas": 45,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_geih_informalidad_cartagena",
+        "estado": "validado_estructural",
+        "filas": 6,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_nbi_cnpv2018",
+        "estado": "validado_estructural",
+        "filas": 21,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_poblacion_municipal",
+        "estado": "validado_estructural",
+        "filas": 48,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_poblacion_vigencia_censal",
+        "estado": "validado_estructural",
+        "filas": 45,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_pobreza_monetaria",
+        "estado": "validado_estructural",
+        "filas": 3,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dane_sae_fies_pobreza_cartagena",
+        "estado": "validado_estructural",
+        "filas": 6,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "dnp_terridata_13001",
+        "estado": "validado_estructural",
+        "filas": 82,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_delito_sexual",
+        "estado": "validado_estructural",
+        "filas": 12,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_extorsion",
+        "estado": "validado_estructural",
+        "filas": 9,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_homicidios",
+        "estado": "validado_estructural",
+        "filas": 12,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_muertes_transporte",
+        "estado": "validado_estructural",
+        "filas": 12,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_suicidios",
+        "estado": "validado_estructural",
+        "filas": 12,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "drive_violencia_intrafamiliar",
+        "estado": "validado_estructural",
+        "filas": 12,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+        "estado": "validado_estructural",
+        "filas": 358,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "fiscalia_spoa_procesos_por_anio_hecho",
+        "estado": "validado_estructural",
+        "filas": 23,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "icbf_bienestarina",
+        "estado": "validado_estructural",
+        "filas": 5,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "icbf_prevencion",
+        "estado": "validado_estructural",
+        "filas": 35,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "icbf_primera_infancia",
+        "estado": "validado_estructural",
+        "filas": 6,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "icbf_rpc_cartagena",
+        "estado": "validado_estructural",
+        "filas": 230,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "icbf_uds",
+        "estado": "validado_estructural",
+        "filas": 3,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "ideam_calidad_aire",
+        "estado": "validado_estructural",
+        "filas": 156,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "ins_calidad_agua",
+        "estado": "validado_estructural",
+        "filas": 38,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_examenes_sexuales",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_homicidios",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_lesiones_accidentales",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_lesiones_transporte",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_suicidios",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_violencia_interpersonal",
+        "estado": "validado_estructural",
+        "filas": 10,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "medicina_violencia_intrafamiliar",
+        "estado": "validado_estructural",
+        "filas": 30,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_amenazas",
+        "estado": "validado_estructural",
+        "filas": 17,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_delitos_sexuales",
+        "estado": "validado_estructural",
+        "filas": 204,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_homicidios",
+        "estado": "validado_estructural",
+        "filas": 26,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_hurto_vehiculos",
+        "estado": "validado_estructural",
+        "filas": 34,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_hurto_vivienda_comercio",
+        "estado": "validado_estructural",
+        "filas": 20,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_lesiones",
+        "estado": "validado_estructural",
+        "filas": 93,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "policia_violencia_intrafamiliar",
+        "estado": "validado_estructural",
+        "filas": 17,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "portal_policia_cuadros_cartagena",
+        "estado": "validado_estructural",
+        "filas": 133,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "procuraduria_pqrsdf_cartagena",
+        "estado": "validado_estructural",
+        "filas": 5,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "unidad_victimas_indemnizaciones_cartagena",
+        "estado": "validado_estructural",
+        "filas": 36,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "unidad_victimas_irv_cartagena",
+        "estado": "validado_estructural",
+        "filas": 13,
+        "problemas": []
+      },
+      {
+        "fuente_clave": "unidad_victimas_ruv_cartagena",
+        "estado": "validado_estructural",
+        "filas": 522,
+        "problemas": []
+      }
+    ]
+  },
+  "estado_publicacion": "no_publicable",
+  "regla": "Ámbar permite conservar una captura; no aprueba fuente, licencia ni publicación."
+}

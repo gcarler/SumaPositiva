@@ -1,0 +1,118 @@
+{
+  "esquema": "polis.solicitudes_fuentes.v1",
+  "fecha_plan": "2026-10-22",
+  "estado_global": "preparadas_no_enviadas",
+  "regla": "Cada entrega requiere custodio, fecha de corte, definición, nivel territorial, licencia y autorización de uso antes de incorporarse al banco.",
+  "solicitudes": [
+    {
+      "id": "SF-01",
+      "custodio": "Secretaría del Interior y Distriseguridad de Cartagena",
+      "variables": ["homicidios", "hurtos por modalidad", "riñas", "cuadrantes", "fecha de operación de cámaras", "alumbrado público"],
+      "nivel_territorial_requerido": "UCG o cuadrante, agregado con supresión de celdas pequeñas",
+      "periodo": "2018-2026",
+      "canal_esperado": "convenio institucional o exportación agregada documentada",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "Los datos públicos disponibles son municipales; un punto de cuadrante no es un punto de hecho."
+    },
+    {
+      "id": "SF-02",
+      "custodio": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "variables": ["homicidios", "lesiones", "violencia intrafamiliar", "presunto delito sexual", "definiciones y revisiones"],
+      "nivel_territorial_requerido": "agregados distrito/localidad/UCG solo donde privacidad y calidad lo permitan",
+      "periodo": "2018-2026",
+      "canal_esperado": "tablas oficiales agregadas o convenio de datos",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "Las siete series abiertas son municipales y no contienen puntos de víctima publicables."
+    },
+    {
+      "id": "SF-03",
+      "custodio": "Fiscalía General de la Nación",
+      "variables": ["procesos SPOA por año del hecho y tipo penal", "cohortes para seguimiento judicial", "diccionario de delitos"],
+      "nivel_territorial_requerido": "Cartagena 13001, municipal; desagregación menor solo con autorización",
+      "periodo": "2018-2026",
+      "canal_esperado": "exportación oficial de Conteo de Procesos V2 y ficha técnica",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "El tablero Power BI ofrece consultas textuales superpuestas; el conjunto abierto directo respondió 403 en la revisión previa."
+    },
+    {
+      "id": "SF-04",
+      "custodio": "DADIS Cartagena e INS",
+      "variables": ["desnutrición aguda", "dengue", "salud mental", "mortalidad evitable", "agua potable y brotes"],
+      "nivel_territorial_requerido": "agregado municipal y submunicipal con umbral de privacidad",
+      "periodo": "2018-2026",
+      "canal_esperado": "anuario, exportación SIVIGILA autorizada o convenio",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "El IRCA municipal no sustituye series sanitarias ni permite localizar casos individuales."
+    },
+    {
+      "id": "SF-05",
+      "custodio": "EPA Cartagena y CARDIQUE",
+      "variables": ["manglar", "vertimientos", "calidad de aire y agua", "inundación", "erosión costera", "fecha de intervención"],
+      "nivel_territorial_requerido": "polígono o estación con CRS, método y fecha",
+      "periodo": "2018-2026",
+      "canal_esperado": "servicio geoespacial oficial o descarga vectorial con metadatos",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "La estación IDEAM y el IRCA municipal no representan por sí solos toda la superficie urbana."
+    },
+    {
+      "id": "SF-06",
+      "custodio": "Defensoría del Pueblo, Sistema de Alertas Tempranas",
+      "variables": ["alertas aplicables a Cartagena", "municipios cubiertos", "riesgos", "vigencia", "seguimiento"],
+      "nivel_territorial_requerido": "municipio y territorios nombrados en cada ficha",
+      "periodo": "2018-2026",
+      "canal_esperado": "catálogo o exportación oficial de fichas SAT",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "Dos fichas verificadas; otras alertas multimunicipales candidatas requieren curaduría."
+    },
+    {
+      "id": "SF-07",
+      "custodio": "IGAC y Secretaría de Planeación Distrital",
+      "variables": ["límites jurídicos de localidades", "UCG", "barrios", "corregimientos", "perímetro", "actos y fecha de edición"],
+      "nivel_territorial_requerido": "geometrías vectoriales EPSG declarado y códigos estables",
+      "periodo": "edición vigente y cambios desde 2018",
+      "canal_esperado": "descarga SHP/GDB/GeoJSON oficial y acto administrativo",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "Capas recibidas con 17/15 variantes y diferencias topológicas; procedencia normativa sin cotejar."
+    },
+    {
+      "id": "SF-08",
+      "custodio": "DNP, Sisbén IV y DANE",
+      "variables": ["población submunicipal validada", "denominadores por UCG/barrio", "pobreza y vulnerabilidad"],
+      "nivel_territorial_requerido": "municipio y, si existe método válido, UCG o barrio",
+      "periodo": "2018-2026",
+      "canal_esperado": "agregados oficiales o metodología de estimación y acceso autorizado",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "La proyección municipal CNPV 2018 no se reparte automáticamente entre UCG y barrios."
+    },
+    {
+      "id": "SF-09",
+      "custodio": "ICBF, DADIS y Secretaría de Educación Distrital",
+      "variables": ["PARD municipales", "PAE", "comedores", "atenciones", "personas únicas", "cupos"],
+      "nivel_territorial_requerido": "Cartagena 13001; menor escala solo con privacidad y cobertura acreditadas",
+      "periodo": "2018-2026",
+      "canal_esperado": "tabla agregada oficial con unidad estadística y ficha",
+      "prioridad": "media",
+      "estado": "por_solicitar",
+      "limite_actual": "La oferta ICBF abierta no equivale a personas únicas ni a resultados en seguridad humana."
+    },
+    {
+      "id": "SF-10",
+      "custodio": "Secretaría de Hacienda Distrital, DNP y responsables PPI/BPIM",
+      "variables": ["presupuesto aprobado", "compromisos", "obligaciones", "pagos", "BPIM", "productos", "metas PA"],
+      "nivel_territorial_requerido": "programa, proyecto, actividad y territorio si está codificado",
+      "periodo": "2018-2026",
+      "canal_esperado": "CUIPO/PIIP y exportación distrital conciliable",
+      "prioridad": "alta",
+      "estado": "por_solicitar",
+      "limite_actual": "No sumar PDD, PA y BPIM como inversiones independientes sin regla de conciliación."
+    }
+  ]
+}

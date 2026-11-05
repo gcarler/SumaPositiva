@@ -64,9 +64,9 @@ async def obtener_tarea(
     status_code=status.HTTP_201_CREATED,
 )
 async def crear_tarea(
+    sujeto: PuedeGestionarComunicacionesSujeto,
     datos: TareaComunicacionCrear,
     service: ComunicacionesServiceDep,
-    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Crea una nueva tarea en el cronograma de comunicaciones."""
     return await service.crear(datos, sujeto)
@@ -77,10 +77,10 @@ async def crear_tarea(
     response_model=TareaComunicacionLectura,
 )
 async def actualizar_tarea(
+    sujeto: PuedeGestionarComunicacionesSujeto,
     id: uuid.UUID,
     datos: TareaComunicacionActualizar,
     service: ComunicacionesServiceDep,
-    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Actualiza una tarea del cronograma (fechas, entregables, descripción, estado)."""
     return await service.actualizar(id, datos, sujeto)
@@ -91,10 +91,10 @@ async def actualizar_tarea(
     response_model=TareaComunicacionLectura,
 )
 async def parchear_tarea(
+    sujeto: PuedeGestionarComunicacionesSujeto,
     id: uuid.UUID,
     datos: TareaComunicacionActualizar,
     service: ComunicacionesServiceDep,
-    sujeto: PuedeGestionarComunicacionesSujeto,
 ):
     """Actualización parcial de una tarea del cronograma."""
     return await service.actualizar(id, datos, sujeto)

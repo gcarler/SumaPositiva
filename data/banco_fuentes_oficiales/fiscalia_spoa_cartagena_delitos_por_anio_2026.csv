@@ -1,0 +1,415 @@
+termino_busqueda,dimension_orientativa,anio_hecho,procesos,corte,estado
+"homicidio",PERS,2004,1,30/09/2026,punto_del_grafico
+"homicidio",PERS,2005,,30/09/2026,anio_no_mostrado
+"homicidio",PERS,2006,,30/09/2026,anio_no_mostrado
+"homicidio",PERS,2007,,30/09/2026,anio_no_mostrado
+"homicidio",PERS,2008,6,30/09/2026,punto_del_grafico
+"homicidio",PERS,2009,26,30/09/2026,punto_del_grafico
+"homicidio",PERS,2010,700,30/09/2026,punto_del_grafico
+"homicidio",PERS,2011,740,30/09/2026,punto_del_grafico
+"homicidio",PERS,2012,682,30/09/2026,punto_del_grafico
+"homicidio",PERS,2013,716,30/09/2026,punto_del_grafico
+"homicidio",PERS,2014,727,30/09/2026,punto_del_grafico
+"homicidio",PERS,2015,688,30/09/2026,punto_del_grafico
+"homicidio",PERS,2016,676,30/09/2026,punto_del_grafico
+"homicidio",PERS,2017,770,30/09/2026,punto_del_grafico
+"homicidio",PERS,2018,766,30/09/2026,punto_del_grafico
+"homicidio",PERS,2019,658,30/09/2026,punto_del_grafico
+"homicidio",PERS,2020,618,30/09/2026,punto_del_grafico
+"homicidio",PERS,2021,681,30/09/2026,punto_del_grafico
+"homicidio",PERS,2022,898,30/09/2026,punto_del_grafico
+"homicidio",PERS,2023,918,30/09/2026,punto_del_grafico
+"homicidio",PERS,2024,910,30/09/2026,punto_del_grafico
+"homicidio",PERS,2025,871,30/09/2026,punto_del_grafico
+"homicidio",PERS,2026,663,30/09/2026,anio_parcial
+"feminicidio",COM,2004,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2005,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2006,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2007,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2008,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2009,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2010,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2011,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2012,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2013,,30/09/2026,anio_no_mostrado
+"feminicidio",COM,2014,1,30/09/2026,punto_del_grafico
+"feminicidio",COM,2015,1,30/09/2026,punto_del_grafico
+"feminicidio",COM,2016,7,30/09/2026,punto_del_grafico
+"feminicidio",COM,2017,15,30/09/2026,punto_del_grafico
+"feminicidio",COM,2018,14,30/09/2026,punto_del_grafico
+"feminicidio",COM,2019,9,30/09/2026,punto_del_grafico
+"feminicidio",COM,2020,12,30/09/2026,punto_del_grafico
+"feminicidio",COM,2021,9,30/09/2026,punto_del_grafico
+"feminicidio",COM,2022,15,30/09/2026,punto_del_grafico
+"feminicidio",COM,2023,11,30/09/2026,punto_del_grafico
+"feminicidio",COM,2024,14,30/09/2026,punto_del_grafico
+"feminicidio",COM,2025,16,30/09/2026,punto_del_grafico
+"feminicidio",COM,2026,13,30/09/2026,anio_parcial
+"lesiones",PERS,2004,1,30/09/2026,punto_del_grafico
+"lesiones",PERS,2005,,30/09/2026,anio_no_mostrado
+"lesiones",PERS,2006,1,30/09/2026,punto_del_grafico
+"lesiones",PERS,2007,,30/09/2026,anio_no_mostrado
+"lesiones",PERS,2008,308,30/09/2026,punto_del_grafico
+"lesiones",PERS,2009,151,30/09/2026,punto_del_grafico
+"lesiones",PERS,2010,4072,30/09/2026,punto_del_grafico
+"lesiones",PERS,2011,4142,30/09/2026,punto_del_grafico
+"lesiones",PERS,2012,3869,30/09/2026,punto_del_grafico
+"lesiones",PERS,2013,4004,30/09/2026,punto_del_grafico
+"lesiones",PERS,2014,4129,30/09/2026,punto_del_grafico
+"lesiones",PERS,2015,4181,30/09/2026,punto_del_grafico
+"lesiones",PERS,2016,3928,30/09/2026,punto_del_grafico
+"lesiones",PERS,2017,4300,30/09/2026,punto_del_grafico
+"lesiones",PERS,2018,4148,30/09/2026,punto_del_grafico
+"lesiones",PERS,2019,4619,30/09/2026,punto_del_grafico
+"lesiones",PERS,2020,2581,30/09/2026,punto_del_grafico
+"lesiones",PERS,2021,3488,30/09/2026,punto_del_grafico
+"lesiones",PERS,2022,4067,30/09/2026,punto_del_grafico
+"lesiones",PERS,2023,4327,30/09/2026,punto_del_grafico
+"lesiones",PERS,2024,3960,30/09/2026,punto_del_grafico
+"lesiones",PERS,2025,4537,30/09/2026,punto_del_grafico
+"lesiones",PERS,2026,3717,30/09/2026,anio_parcial
+"hurto",PERS,2004,7,30/09/2026,punto_del_grafico
+"hurto",PERS,2005,3,30/09/2026,punto_del_grafico
+"hurto",PERS,2006,6,30/09/2026,punto_del_grafico
+"hurto",PERS,2007,4,30/09/2026,punto_del_grafico
+"hurto",PERS,2008,379,30/09/2026,punto_del_grafico
+"hurto",PERS,2009,306,30/09/2026,punto_del_grafico
+"hurto",PERS,2010,5037,30/09/2026,punto_del_grafico
+"hurto",PERS,2011,5905,30/09/2026,punto_del_grafico
+"hurto",PERS,2012,5195,30/09/2026,punto_del_grafico
+"hurto",PERS,2013,5176,30/09/2026,punto_del_grafico
+"hurto",PERS,2014,4639,30/09/2026,punto_del_grafico
+"hurto",PERS,2015,5115,30/09/2026,punto_del_grafico
+"hurto",PERS,2016,5720,30/09/2026,punto_del_grafico
+"hurto",PERS,2017,6945,30/09/2026,punto_del_grafico
+"hurto",PERS,2018,8662,30/09/2026,punto_del_grafico
+"hurto",PERS,2019,9417,30/09/2026,punto_del_grafico
+"hurto",PERS,2020,6882,30/09/2026,punto_del_grafico
+"hurto",PERS,2021,8124,30/09/2026,punto_del_grafico
+"hurto",PERS,2022,10227,30/09/2026,punto_del_grafico
+"hurto",PERS,2023,11986,30/09/2026,punto_del_grafico
+"hurto",PERS,2024,11898,30/09/2026,punto_del_grafico
+"hurto",PERS,2025,14295,30/09/2026,punto_del_grafico
+"hurto",PERS,2026,10749,30/09/2026,anio_parcial
+"extorsion",PERS,2004,1,30/09/2026,punto_del_grafico
+"extorsion",PERS,2005,,30/09/2026,anio_no_mostrado
+"extorsion",PERS,2006,,30/09/2026,anio_no_mostrado
+"extorsion",PERS,2007,,30/09/2026,anio_no_mostrado
+"extorsion",PERS,2008,8,30/09/2026,punto_del_grafico
+"extorsion",PERS,2009,31,30/09/2026,punto_del_grafico
+"extorsion",PERS,2010,132,30/09/2026,punto_del_grafico
+"extorsion",PERS,2011,184,30/09/2026,punto_del_grafico
+"extorsion",PERS,2012,301,30/09/2026,punto_del_grafico
+"extorsion",PERS,2013,454,30/09/2026,punto_del_grafico
+"extorsion",PERS,2014,257,30/09/2026,punto_del_grafico
+"extorsion",PERS,2015,215,30/09/2026,punto_del_grafico
+"extorsion",PERS,2016,186,30/09/2026,punto_del_grafico
+"extorsion",PERS,2017,155,30/09/2026,punto_del_grafico
+"extorsion",PERS,2018,163,30/09/2026,punto_del_grafico
+"extorsion",PERS,2019,127,30/09/2026,punto_del_grafico
+"extorsion",PERS,2020,166,30/09/2026,punto_del_grafico
+"extorsion",PERS,2021,188,30/09/2026,punto_del_grafico
+"extorsion",PERS,2022,455,30/09/2026,punto_del_grafico
+"extorsion",PERS,2023,490,30/09/2026,punto_del_grafico
+"extorsion",PERS,2024,469,30/09/2026,punto_del_grafico
+"extorsion",PERS,2025,433,30/09/2026,punto_del_grafico
+"extorsion",PERS,2026,329,30/09/2026,anio_parcial
+"amenazas",PERS,2004,1,30/09/2026,punto_del_grafico
+"amenazas",PERS,2005,3,30/09/2026,punto_del_grafico
+"amenazas",PERS,2006,,30/09/2026,anio_no_mostrado
+"amenazas",PERS,2007,,30/09/2026,anio_no_mostrado
+"amenazas",PERS,2008,14,30/09/2026,punto_del_grafico
+"amenazas",PERS,2009,52,30/09/2026,punto_del_grafico
+"amenazas",PERS,2010,1443,30/09/2026,punto_del_grafico
+"amenazas",PERS,2011,1363,30/09/2026,punto_del_grafico
+"amenazas",PERS,2012,1259,30/09/2026,punto_del_grafico
+"amenazas",PERS,2013,1281,30/09/2026,punto_del_grafico
+"amenazas",PERS,2014,1631,30/09/2026,punto_del_grafico
+"amenazas",PERS,2015,1038,30/09/2026,punto_del_grafico
+"amenazas",PERS,2016,745,30/09/2026,punto_del_grafico
+"amenazas",PERS,2017,835,30/09/2026,punto_del_grafico
+"amenazas",PERS,2018,752,30/09/2026,punto_del_grafico
+"amenazas",PERS,2019,808,30/09/2026,punto_del_grafico
+"amenazas",PERS,2020,716,30/09/2026,punto_del_grafico
+"amenazas",PERS,2021,1142,30/09/2026,punto_del_grafico
+"amenazas",PERS,2022,1456,30/09/2026,punto_del_grafico
+"amenazas",PERS,2023,1518,30/09/2026,punto_del_grafico
+"amenazas",PERS,2024,1775,30/09/2026,punto_del_grafico
+"amenazas",PERS,2025,1481,30/09/2026,punto_del_grafico
+"amenazas",PERS,2026,930,30/09/2026,anio_parcial
+"secuestro",PERS,2004,,30/09/2026,anio_no_mostrado
+"secuestro",PERS,2005,,30/09/2026,anio_no_mostrado
+"secuestro",PERS,2006,,30/09/2026,anio_no_mostrado
+"secuestro",PERS,2007,,30/09/2026,anio_no_mostrado
+"secuestro",PERS,2008,3,30/09/2026,punto_del_grafico
+"secuestro",PERS,2009,2,30/09/2026,punto_del_grafico
+"secuestro",PERS,2010,24,30/09/2026,punto_del_grafico
+"secuestro",PERS,2011,24,30/09/2026,punto_del_grafico
+"secuestro",PERS,2012,19,30/09/2026,punto_del_grafico
+"secuestro",PERS,2013,23,30/09/2026,punto_del_grafico
+"secuestro",PERS,2014,21,30/09/2026,punto_del_grafico
+"secuestro",PERS,2015,20,30/09/2026,punto_del_grafico
+"secuestro",PERS,2016,14,30/09/2026,punto_del_grafico
+"secuestro",PERS,2017,11,30/09/2026,punto_del_grafico
+"secuestro",PERS,2018,15,30/09/2026,punto_del_grafico
+"secuestro",PERS,2019,9,30/09/2026,punto_del_grafico
+"secuestro",PERS,2020,16,30/09/2026,punto_del_grafico
+"secuestro",PERS,2021,13,30/09/2026,punto_del_grafico
+"secuestro",PERS,2022,24,30/09/2026,punto_del_grafico
+"secuestro",PERS,2023,14,30/09/2026,punto_del_grafico
+"secuestro",PERS,2024,28,30/09/2026,punto_del_grafico
+"secuestro",PERS,2025,25,30/09/2026,punto_del_grafico
+"secuestro",PERS,2026,7,30/09/2026,anio_parcial
+"violencia intrafamiliar",COM,2004,,30/09/2026,anio_no_mostrado
+"violencia intrafamiliar",COM,2005,3,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2006,2,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2007,,30/09/2026,anio_no_mostrado
+"violencia intrafamiliar",COM,2008,516,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2009,136,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2010,2479,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2011,2538,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2012,2337,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2013,2049,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2014,2093,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2015,1958,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2016,1827,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2017,2097,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2018,1694,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2019,2340,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2020,1915,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2021,2465,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2022,2691,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2023,3396,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2024,3681,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2025,3530,30/09/2026,punto_del_grafico
+"violencia intrafamiliar",COM,2026,3025,30/09/2026,anio_parcial
+"acceso carnal",COM,2004,,30/09/2026,anio_no_mostrado
+"acceso carnal",COM,2005,,30/09/2026,anio_no_mostrado
+"acceso carnal",COM,2006,1,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2007,,30/09/2026,anio_no_mostrado
+"acceso carnal",COM,2008,31,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2009,43,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2010,261,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2011,320,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2012,326,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2013,326,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2014,383,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2015,355,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2016,406,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2017,367,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2018,352,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2019,376,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2020,329,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2021,360,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2022,397,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2023,254,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2024,320,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2025,304,30/09/2026,punto_del_grafico
+"acceso carnal",COM,2026,209,30/09/2026,anio_parcial
+"acto sexual",COM,2004,,30/09/2026,anio_no_mostrado
+"acto sexual",COM,2005,,30/09/2026,anio_no_mostrado
+"acto sexual",COM,2006,1,30/09/2026,punto_del_grafico
+"acto sexual",COM,2007,1,30/09/2026,punto_del_grafico
+"acto sexual",COM,2008,8,30/09/2026,punto_del_grafico
+"acto sexual",COM,2009,14,30/09/2026,punto_del_grafico
+"acto sexual",COM,2010,86,30/09/2026,punto_del_grafico
+"acto sexual",COM,2011,93,30/09/2026,punto_del_grafico
+"acto sexual",COM,2012,134,30/09/2026,punto_del_grafico
+"acto sexual",COM,2013,169,30/09/2026,punto_del_grafico
+"acto sexual",COM,2014,182,30/09/2026,punto_del_grafico
+"acto sexual",COM,2015,183,30/09/2026,punto_del_grafico
+"acto sexual",COM,2016,171,30/09/2026,punto_del_grafico
+"acto sexual",COM,2017,136,30/09/2026,punto_del_grafico
+"acto sexual",COM,2018,213,30/09/2026,punto_del_grafico
+"acto sexual",COM,2019,274,30/09/2026,punto_del_grafico
+"acto sexual",COM,2020,219,30/09/2026,punto_del_grafico
+"acto sexual",COM,2021,232,30/09/2026,punto_del_grafico
+"acto sexual",COM,2022,318,30/09/2026,punto_del_grafico
+"acto sexual",COM,2023,236,30/09/2026,punto_del_grafico
+"acto sexual",COM,2024,251,30/09/2026,punto_del_grafico
+"acto sexual",COM,2025,256,30/09/2026,punto_del_grafico
+"acto sexual",COM,2026,198,30/09/2026,anio_parcial
+"trata de personas",PERS,2004,,30/09/2026,anio_no_mostrado
+"trata de personas",PERS,2005,,30/09/2026,anio_no_mostrado
+"trata de personas",PERS,2006,,30/09/2026,anio_no_mostrado
+"trata de personas",PERS,2007,,30/09/2026,anio_no_mostrado
+"trata de personas",PERS,2008,,30/09/2026,anio_no_mostrado
+"trata de personas",PERS,2009,1,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2010,8,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2011,5,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2012,1,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2013,1,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2014,1,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2015,2,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2016,6,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2017,2,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2018,4,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2019,9,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2020,4,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2021,13,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2022,12,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2023,21,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2024,15,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2025,10,30/09/2026,punto_del_grafico
+"trata de personas",PERS,2026,16,30/09/2026,anio_parcial
+"estafa",ECON,2004,1,30/09/2026,punto_del_grafico
+"estafa",ECON,2005,4,30/09/2026,punto_del_grafico
+"estafa",ECON,2006,2,30/09/2026,punto_del_grafico
+"estafa",ECON,2007,1,30/09/2026,punto_del_grafico
+"estafa",ECON,2008,125,30/09/2026,punto_del_grafico
+"estafa",ECON,2009,214,30/09/2026,punto_del_grafico
+"estafa",ECON,2010,707,30/09/2026,punto_del_grafico
+"estafa",ECON,2011,591,30/09/2026,punto_del_grafico
+"estafa",ECON,2012,531,30/09/2026,punto_del_grafico
+"estafa",ECON,2013,575,30/09/2026,punto_del_grafico
+"estafa",ECON,2014,522,30/09/2026,punto_del_grafico
+"estafa",ECON,2015,593,30/09/2026,punto_del_grafico
+"estafa",ECON,2016,537,30/09/2026,punto_del_grafico
+"estafa",ECON,2017,689,30/09/2026,punto_del_grafico
+"estafa",ECON,2018,800,30/09/2026,punto_del_grafico
+"estafa",ECON,2019,1063,30/09/2026,punto_del_grafico
+"estafa",ECON,2020,1607,30/09/2026,punto_del_grafico
+"estafa",ECON,2021,2268,30/09/2026,punto_del_grafico
+"estafa",ECON,2022,2933,30/09/2026,punto_del_grafico
+"estafa",ECON,2023,3038,30/09/2026,punto_del_grafico
+"estafa",ECON,2024,3009,30/09/2026,punto_del_grafico
+"estafa",ECON,2025,3398,30/09/2026,punto_del_grafico
+"estafa",ECON,2026,2683,30/09/2026,anio_parcial
+"inasistencia alimentaria",SALUD,2004,1,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2005,3,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2006,4,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2007,7,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2008,535,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2009,486,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2010,842,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2011,783,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2012,781,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2013,660,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2014,543,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2015,530,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2016,537,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2017,486,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2018,548,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2019,534,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2020,298,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2021,484,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2022,535,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2023,374,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2024,315,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2025,423,30/09/2026,punto_del_grafico
+"inasistencia alimentaria",SALUD,2026,202,30/09/2026,anio_parcial
+"estupefacientes",PERS,2004,,30/09/2026,anio_no_mostrado
+"estupefacientes",PERS,2005,,30/09/2026,anio_no_mostrado
+"estupefacientes",PERS,2006,,30/09/2026,anio_no_mostrado
+"estupefacientes",PERS,2007,,30/09/2026,anio_no_mostrado
+"estupefacientes",PERS,2008,35,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2009,13,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2010,3568,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2011,2031,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2012,1923,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2013,1592,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2014,1468,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2015,1140,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2016,1046,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2017,576,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2018,799,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2019,1109,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2020,1344,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2021,1574,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2022,1237,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2023,1530,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2024,2010,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2025,2707,30/09/2026,punto_del_grafico
+"estupefacientes",PERS,2026,2272,30/09/2026,anio_parcial
+"armas de fuego",PERS,2004,,30/09/2026,anio_no_mostrado
+"armas de fuego",PERS,2005,,30/09/2026,anio_no_mostrado
+"armas de fuego",PERS,2006,,30/09/2026,anio_no_mostrado
+"armas de fuego",PERS,2007,,30/09/2026,anio_no_mostrado
+"armas de fuego",PERS,2008,3,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2009,10,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2010,525,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2011,625,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2012,519,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2013,636,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2014,658,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2015,541,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2016,575,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2017,586,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2018,637,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2019,633,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2020,759,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2021,826,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2022,867,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2023,987,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2024,812,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2025,781,30/09/2026,punto_del_grafico
+"armas de fuego",PERS,2026,628,30/09/2026,anio_parcial
+"desplazamiento forzado",SAT,2004,,30/09/2026,anio_no_mostrado
+"desplazamiento forzado",SAT,2005,1,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2006,,30/09/2026,anio_no_mostrado
+"desplazamiento forzado",SAT,2007,1,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2008,13,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2009,26,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2010,28,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2011,26,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2012,35,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2013,33,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2014,20,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2015,17,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2016,16,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2017,23,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2018,16,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2019,12,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2020,10,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2021,30,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2022,37,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2023,39,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2024,20,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2025,20,30/09/2026,punto_del_grafico
+"desplazamiento forzado",SAT,2026,9,30/09/2026,anio_parcial
+"contaminacion ambiental",AMB,2004,,30/09/2026,anio_no_mostrado
+"contaminacion ambiental",AMB,2005,,30/09/2026,anio_no_mostrado
+"contaminacion ambiental",AMB,2006,,30/09/2026,anio_no_mostrado
+"contaminacion ambiental",AMB,2007,,30/09/2026,anio_no_mostrado
+"contaminacion ambiental",AMB,2008,1,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2009,,30/09/2026,anio_no_mostrado
+"contaminacion ambiental",AMB,2010,7,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2011,15,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2012,9,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2013,12,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2014,8,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2015,9,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2016,11,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2017,7,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2018,9,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2019,21,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2020,28,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2021,9,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2022,7,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2023,5,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2024,8,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2025,7,30/09/2026,punto_del_grafico
+"contaminacion ambiental",AMB,2026,9,30/09/2026,anio_parcial
+"corrupcion",POL,2004,,30/09/2026,anio_no_mostrado
+"corrupcion",POL,2005,,30/09/2026,anio_no_mostrado
+"corrupcion",POL,2006,,30/09/2026,anio_no_mostrado
+"corrupcion",POL,2007,,30/09/2026,anio_no_mostrado
+"corrupcion",POL,2008,1,30/09/2026,punto_del_grafico
+"corrupcion",POL,2009,,30/09/2026,anio_no_mostrado
+"corrupcion",POL,2010,16,30/09/2026,punto_del_grafico
+"corrupcion",POL,2011,4,30/09/2026,punto_del_grafico
+"corrupcion",POL,2012,3,30/09/2026,punto_del_grafico
+"corrupcion",POL,2013,2,30/09/2026,punto_del_grafico
+"corrupcion",POL,2014,16,30/09/2026,punto_del_grafico
+"corrupcion",POL,2015,22,30/09/2026,punto_del_grafico
+"corrupcion",POL,2016,5,30/09/2026,punto_del_grafico
+"corrupcion",POL,2017,3,30/09/2026,punto_del_grafico
+"corrupcion",POL,2018,12,30/09/2026,punto_del_grafico
+"corrupcion",POL,2019,9,30/09/2026,punto_del_grafico
+"corrupcion",POL,2020,3,30/09/2026,punto_del_grafico
+"corrupcion",POL,2021,3,30/09/2026,punto_del_grafico
+"corrupcion",POL,2022,14,30/09/2026,punto_del_grafico
+"corrupcion",POL,2023,11,30/09/2026,punto_del_grafico
+"corrupcion",POL,2024,10,30/09/2026,punto_del_grafico
+"corrupcion",POL,2025,3,30/09/2026,punto_del_grafico
+"corrupcion",POL,2026,11,30/09/2026,anio_parcial

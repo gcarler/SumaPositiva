@@ -1,0 +1,22 @@
+{
+  "dataset_id": "6sqw-8cg5",
+  "titulo": "Reporte Hurto por Modalidades Policía Nacional",
+  "entidad_publicadora": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+  "enlace_entidad": "https://www.datos.gov.co/d/6sqw-8cg5",
+  "provenance": "official",
+  "rowsUpdatedAt": 1788295226,
+  "columnas_publicadas": [
+    "departamento",
+    "municipio",
+    "codigo_dane",
+    "armas_medios",
+    "fecha_hecho",
+    "genero",
+    "grupo_etario",
+    "tipo_de_hurto",
+    "cantidad"
+  ],
+  "filtro_cartagena": "codigo_dane='13001000'",
+  "corte_comprobado": true,
+  "conteo_filtrado_verificado": true
+}

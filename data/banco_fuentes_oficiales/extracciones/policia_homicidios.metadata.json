@@ -1,0 +1,24 @@
+{
+  "dataset_id": "m8fd-ahd9",
+  "titulo": "HOMICIDIO",
+  "entidad_publicadora": "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+  "enlace_entidad": "https://www.mindefensa.gov.co",
+  "provenance": "official",
+  "rowsUpdatedAt": 1792593057,
+  "columnas_publicadas": [
+    "fecha_hecho",
+    "cod_depto",
+    "departamento",
+    "cod_muni",
+    "municipio",
+    "zona",
+    "sexo",
+    "arma_medio",
+    "_modalidad_presunta",
+    "spoa_caracterizacion",
+    "cantidad"
+  ],
+  "filtro_cartagena": "cod_muni='13001'",
+  "corte_comprobado": true,
+  "conteo_filtrado_verificado": true
+}

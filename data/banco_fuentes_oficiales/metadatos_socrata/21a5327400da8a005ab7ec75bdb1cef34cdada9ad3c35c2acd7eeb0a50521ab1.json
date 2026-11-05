@@ -1,0 +1,457 @@
+{
+  "datasets_capturados": 22,
+  "datasets_con_alerta_atribucion": 2,
+  "datasets_esperados": 22,
+  "errores": [],
+  "esquema": "polis.metadatos_socrata.v1",
+  "estado": "CAPTURA_COMPLETA_PENDIENTE_ACREDITACION",
+  "fichas": [
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+      "dataset_id": "5akr-u7t8",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758592307,
+      "filas_actualizadas_unix": 1790308469,
+      "fuentes_clave": [
+        "icbf_primera_infancia"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Caracterización de Beneficiarios de las Modalidades de Primera Infancia del ICBF",
+      "propietario_portal": "Analítica Institucional ICBF",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/5akr-u7t8/2b4a3d694c63e33511b00c3639ab5f7337bf95ab7c7cd04d0fe45cb23d1f22c2.json",
+      "sha256_respuesta": "2b4a3d694c63e33511b00c3639ab5f7337bf95ab7c7cd04d0fe45cb23d1f22c2",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/5akr-u7t8",
+      "url_metadata": "https://www.datos.gov.co/api/views/5akr-u7t8.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "dataset_id": "6cjn-eevd",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758303231,
+      "filas_actualizadas_unix": 1758303194,
+      "fuentes_clave": [
+        "medicina_lesiones_accidentales"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Lesiones accidentales. Colombia. Años 2015 - 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/6cjn-eevd/8d90a0e5739d7fac3e2c1f2e927ec3db7ea7ee68f74be4cd993ebe3c21c1fb50.json",
+      "sha256_respuesta": "8d90a0e5739d7fac3e2c1f2e927ec3db7ea7ee68f74be4cd993ebe3c21c1fb50",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/6cjn-eevd",
+      "url_metadata": "https://www.datos.gov.co/api/views/6cjn-eevd.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "dataset_id": "6sqw-8cg5",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1612976745,
+      "filas_actualizadas_unix": 1788295226,
+      "fuentes_clave": [
+        "policia_hurto_vivienda_comercio"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Reporte Hurto por Modalidades Policía Nacional",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/6sqw-8cg5/4e96092f7fe327b818c219ce9d6d134ce0b59158a7f32bc09d7f04dfeefa3fdb.json",
+      "sha256_respuesta": "4e96092f7fe327b818c219ce9d6d134ce0b59158a7f32bc09d7f04dfeefa3fdb",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/6sqw-8cg5",
+      "url_metadata": "https://www.datos.gov.co/api/views/6sqw-8cg5.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "dataset_id": "72sg-cybi",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1612973237,
+      "filas_actualizadas_unix": 1788290710,
+      "fuentes_clave": [
+        "policia_lesiones"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Reporte Lesiones Personales y en Accidente de Tránsito Policía Nacional",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/72sg-cybi/5057779d9310687786d99f33687fb892a0d36b03caa96ab16f6580a76aa7f082.json",
+      "sha256_respuesta": "5057779d9310687786d99f33687fb892a0d36b03caa96ab16f6580a76aa7f082",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/72sg-cybi",
+      "url_metadata": "https://www.datos.gov.co/api/views/72sg-cybi.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección de Investigación Criminal e Interpol DIJIN",
+      "dataset_id": "9vha-vh9n",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1612976037,
+      "filas_actualizadas_unix": 1788293993,
+      "fuentes_clave": [
+        "policia_hurto_vehiculos"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Reporte Hurto por Modalidades Policía Nacional",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/9vha-vh9n/93781b6cf790ea60ee8475df9a81476b89ca72e4e46c51e2e20bc2c83e927fd3.json",
+      "sha256_respuesta": "93781b6cf790ea60ee8475df9a81476b89ca72e4e46c51e2e20bc2c83e927fd3",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/9vha-vh9n",
+      "url_metadata": "https://www.datos.gov.co/api/views/9vha-vh9n.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+      "dataset_id": "crxh-as6c",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1625237175,
+      "filas_actualizadas_unix": 1752792594,
+      "fuentes_clave": [
+        "icbf_bienestarina"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "PUNTOS DISTRIBUCIÓN BIENESTARINA ICBF",
+      "propietario_portal": "Analítica Institucional ICBF",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/crxh-as6c/1d440aaeb48a5d16634a63f15228a7cda52bc91bcaf3b05f3fba55f80e00eb85.json",
+      "sha256_respuesta": "1d440aaeb48a5d16634a63f15228a7cda52bc91bcaf3b05f3fba55f80e00eb85",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/crxh-as6c",
+      "url_metadata": "https://www.datos.gov.co/api/views/crxh-as6c.json"
+    },
+    {
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:medicina_violencia_interpersonal"
+      ],
+      "atribucion_publicada": "Alcaldía de Sogamoso, Boyacá",
+      "dataset_id": "e3xi-4zq5",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758555828,
+      "filas_actualizadas_unix": 1758555070,
+      "fuentes_clave": [
+        "medicina_violencia_interpersonal"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Violencia interpersonal. Colombia, años 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/e3xi-4zq5/a593c72049ef7802cf56610285405a63e6035e6e9b35d992dea912551dec9c60.json",
+      "sha256_respuesta": "a593c72049ef7802cf56610285405a63e6035e6e9b35d992dea912551dec9c60",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/e3xi-4zq5",
+      "url_metadata": "https://www.datos.gov.co/api/views/e3xi-4zq5.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "dataset_id": "ers2-kerr",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758558805,
+      "filas_actualizadas_unix": 1758558548,
+      "fuentes_clave": [
+        "medicina_violencia_intrafamiliar"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Violencia intrafamiliar. Colombia, años 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/ers2-kerr/cd67faeb1bd74e1e02cf7eeb9aa0e6ded805bf0805e333840eca742b65902f9b.json",
+      "sha256_respuesta": "cd67faeb1bd74e1e02cf7eeb9aa0e6ded805bf0805e333840eca742b65902f9b",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/ers2-kerr",
+      "url_metadata": "https://www.datos.gov.co/api/views/ers2-kerr.json"
+    },
+    {
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:medicina_lesiones_transporte"
+      ],
+      "atribucion_publicada": "Alcaldía de Apía, Risaralda",
+      "dataset_id": "ezhf-hscf",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758550191,
+      "filas_actualizadas_unix": 1758549825,
+      "fuentes_clave": [
+        "medicina_lesiones_transporte"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Lesiones por eventos de transporte. Colombia, años 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/ezhf-hscf/475681ddece4518b56f621a5f9bed0137894b5aff28fec2939bdab6a18471794.json",
+      "sha256_respuesta": "475681ddece4518b56f621a5f9bed0137894b5aff28fec2939bdab6a18471794",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/ezhf-hscf",
+      "url_metadata": "https://www.datos.gov.co/api/views/ezhf-hscf.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "dataset_id": "f75u-mirk",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758298889,
+      "filas_actualizadas_unix": 1758298846,
+      "fuentes_clave": [
+        "medicina_suicidios"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Presuntos Suicidios. Colombia, 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/f75u-mirk/f164dd9eea3573b25ad0fca70417c7792d19061e531dcced660389d5da27a2ba.json",
+      "sha256_respuesta": "f164dd9eea3573b25ad0fca70417c7792d19061e531dcced660389d5da27a2ba",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/f75u-mirk",
+      "url_metadata": "https://www.datos.gov.co/api/views/f75u-mirk.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección de Investigación Criminal e Interpol DIJIN",
+      "dataset_id": "fpe5-yrmw",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1618357660,
+      "filas_actualizadas_unix": 1788291878,
+      "fuentes_clave": [
+        "policia_delitos_sexuales"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Reporte  Delitos sexuales Policía Nacional",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/fpe5-yrmw/74af2c94a87815325b5a886988a4cd32fec4f0be4bff78990a79839c77fa0dd7.json",
+      "sha256_respuesta": "74af2c94a87815325b5a886988a4cd32fec4f0be4bff78990a79839c77fa0dd7",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/fpe5-yrmw",
+      "url_metadata": "https://www.datos.gov.co/api/views/fpe5-yrmw.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+      "dataset_id": "g58z-k6f6",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1601432203,
+      "filas_actualizadas_unix": 1790309326,
+      "fuentes_clave": [
+        "icbf_prevencion"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Caracterización de Beneficiarios de las Modalidades de Prevención del ICBF",
+      "propietario_portal": "Analítica Institucional ICBF",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/g58z-k6f6/b1b1465ca63beddb476a565c77a20e23e356be0983bed60905ecdf6960565570.json",
+      "sha256_respuesta": "b1b1465ca63beddb476a565c77a20e23e356be0983bed60905ecdf6960565570",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/g58z-k6f6",
+      "url_metadata": "https://www.datos.gov.co/api/views/g58z-k6f6.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "dataset_id": "hyqu-diue",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758302033,
+      "filas_actualizadas_unix": 1758301767,
+      "fuentes_clave": [
+        "medicina_examenes_sexuales"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Exámenes médico legales por presunto delito sexual. Colombia, años 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/hyqu-diue/2e106b30d3cf17ef8b0448f4e656f3cf19a10adb77d6fd4765b596335634c9be.json",
+      "sha256_respuesta": "2e106b30d3cf17ef8b0448f4e656f3cf19a10adb77d6fd4765b596335634c9be",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/hyqu-diue",
+      "url_metadata": "https://www.datos.gov.co/api/views/hyqu-diue.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+      "dataset_id": "i8ww-5mcf",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758596527,
+      "filas_actualizadas_unix": 1792102743,
+      "fuentes_clave": [
+        "icbf_uds"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Unidades de Servicio (UDS) en Primera Infancia ICBF",
+      "propietario_portal": "Analítica Institucional ICBF",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/i8ww-5mcf/92f33dc83309ea81f116c096279780cdaa5e764eb54eac2219c3fd1e39dbb04a.json",
+      "sha256_respuesta": "92f33dc83309ea81f116c096279780cdaa5e764eb54eac2219c3fd1e39dbb04a",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/i8ww-5mcf",
+      "url_metadata": "https://www.datos.gov.co/api/views/i8ww-5mcf.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, Bogotá D.C.",
+      "dataset_id": "kekd-7v7h",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1747166121,
+      "filas_actualizadas_unix": 1792422278,
+      "fuentes_clave": [
+        "ideam_calidad_aire"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Calidad del Aire en Colombia (Promedio Anual)",
+      "propietario_portal": "Oficina de Informática IDEAM",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/kekd-7v7h/19bd88e1c9e72f856270a1491e401bff08e532b94eeb28088829c44eaed7d379.json",
+      "sha256_respuesta": "19bd88e1c9e72f856270a1491e401bff08e532b94eeb28088829c44eaed7d379",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/kekd-7v7h",
+      "url_metadata": "https://www.datos.gov.co/api/views/kekd-7v7h.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+      "dataset_id": "m8fd-ahd9",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1773948375,
+      "filas_actualizadas_unix": 1792593057,
+      "fuentes_clave": [
+        "policia_homicidios"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "HOMICIDIO",
+      "propietario_portal": "Observatorio MDN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/m8fd-ahd9/65a5d0e8338da3238e2fca881ceb80e7ec9f0ec76e64f2bdca58afba4de6da77.json",
+      "sha256_respuesta": "65a5d0e8338da3238e2fca881ceb80e7ec9f0ec76e64f2bdca58afba4de6da77",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/m8fd-ahd9",
+      "url_metadata": "https://www.datos.gov.co/api/views/m8fd-ahd9.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "dataset_id": "meew-mguv",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1613066127,
+      "filas_actualizadas_unix": 1788282306,
+      "fuentes_clave": [
+        "policia_amenazas"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Amenazas Policía Nacional de Colombia",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/meew-mguv/8bb43dc6a7b37574cad3b1f67c526d31e3ea37c371a370fb88add743ff181758.json",
+      "sha256_respuesta": "8bb43dc6a7b37574cad3b1f67c526d31e3ea37c371a370fb88add743ff181758",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/meew-mguv",
+      "url_metadata": "https://www.datos.gov.co/api/views/meew-mguv.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Salud INS, Bogotá D.C",
+      "dataset_id": "nxt2-39c3",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1733766158,
+      "filas_actualizadas_unix": 1749585666,
+      "fuentes_clave": [
+        "ins_calidad_agua"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Calidad del Agua para Consumo Humano en Colombia",
+      "propietario_portal": "DatosabiertosINS",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/nxt2-39c3/3f07bbe12b23f01dfdbf4aaf2a404e12df255d1cf44bc32b20f62b31febea9a7.json",
+      "sha256_respuesta": "3f07bbe12b23f01dfdbf4aaf2a404e12df255d1cf44bc32b20f62b31febea9a7",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/nxt2-39c3",
+      "url_metadata": "https://www.datos.gov.co/api/views/nxt2-39c3.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+      "dataset_id": "s226-fj9i",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1634047273,
+      "filas_actualizadas_unix": 1735660401,
+      "fuentes_clave": [
+        "procuraduria_pqrsdf_cartagena"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Datos abiertos de las PQRSDF de la Sede Electrónica de la Procuraduría General de la Nación",
+      "propietario_portal": "Procuraduría General de la Nación - Analítica de Datos",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/s226-fj9i/ea18d4bdf4804a6c5030743b73963ae2d299f054032910f741214415998d6222.json",
+      "sha256_respuesta": "ea18d4bdf4804a6c5030743b73963ae2d299f054032910f741214415998d6222",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/s226-fj9i",
+      "url_metadata": "https://www.datos.gov.co/api/views/s226-fj9i.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+      "dataset_id": "v9qk-hdcc",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1677823907,
+      "filas_actualizadas_unix": 1722020361,
+      "fuentes_clave": [
+        "icbf_rpc_cartagena"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Batería de indicadores de niñez y adolescencia para el proceso de Rendición Pública de Cuentas Territorial",
+      "propietario_portal": "Analítica Institucional ICBF",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/v9qk-hdcc/42ffe627416c35c15c6c6b1801e45e00c29fd44e8a0e29caab209213612a0bbc.json",
+      "sha256_respuesta": "42ffe627416c35c15c6c6b1801e45e00c29fd44e8a0e29caab209213612a0bbc",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/v9qk-hdcc",
+      "url_metadata": "https://www.datos.gov.co/api/views/v9qk-hdcc.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "dataset_id": "vtub-3de2",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1758297485,
+      "filas_actualizadas_unix": 1758297367,
+      "fuentes_clave": [
+        "medicina_homicidios"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Presuntos Homicidios. Colombia, 2015 a 2024. Cifras definitivas",
+      "propietario_portal": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/vtub-3de2/aa28f9f6ee60537b0dab06d0fc024d15fd62ed5813da8f05a89dfd4bf60261cd.json",
+      "sha256_respuesta": "aa28f9f6ee60537b0dab06d0fc024d15fd62ed5813da8f05a89dfd4bf60261cd",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/vtub-3de2",
+      "url_metadata": "https://www.datos.gov.co/api/views/vtub-3de2.json"
+    },
+    {
+      "alertas_atribucion": [],
+      "atribucion_publicada": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "dataset_id": "vuyt-mqpw",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": 1612973936,
+      "filas_actualizadas_unix": 1788283189,
+      "fuentes_clave": [
+        "policia_violencia_intrafamiliar"
+      ],
+      "licencia_publicada": "Creative Commons Attribution | Share Alike 4.0 International",
+      "nombre_publicado": "Reporte Delito Violencia Intrafamiliar Policía Nacional",
+      "propietario_portal": "DIJIN",
+      "ruta_respuesta": "data/banco_fuentes_oficiales/metadatos_socrata/respuestas/vuyt-mqpw/c7ea087b3e61684ac043294000dbebc435d7f4ca8820a1a2c90cda357f42dcf1.json",
+      "sha256_respuesta": "c7ea087b3e61684ac043294000dbebc435d7f4ca8820a1a2c90cda357f42dcf1",
+      "terminos_licencia_url": "http://creativecommons.org/licenses/by-sa/4.0/legalcode",
+      "url_ficha": "https://www.datos.gov.co/d/vuyt-mqpw",
+      "url_metadata": "https://www.datos.gov.co/api/views/vuyt-mqpw.json"
+    }
+  ],
+  "inventario_fuentes_sha256": "7b505632e2daf37716eff131c6d3808311c871cbf47734707e1ece75bad3e0cc",
+  "licencias_declaradas": 22,
+  "regla": "Metadato del portal; exige cotejar custodio, licencia de derivados y comparabilidad."
+}

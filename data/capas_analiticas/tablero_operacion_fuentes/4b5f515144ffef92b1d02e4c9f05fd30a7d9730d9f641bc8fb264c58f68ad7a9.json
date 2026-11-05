@@ -1,0 +1,1811 @@
+{
+  "corte_consolidado_sha256": "a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa",
+  "esquema": "polis.tablero_operacion_fuentes.v1",
+  "estado_calidad_global": "ambar",
+  "estado_publicacion": "no_publicable",
+  "evaluacion_sha256": "a917326dbed096a6058a77e07409a7323aed504425d1f25f3894b03ab0e207f2",
+  "fecha_corte_utc": "2026-11-05T03:30:21.959420+00:00",
+  "fuentes": [
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 7,
+      "fuente_clave": "dane_ecsc_2024",
+      "indicadores": [
+        "percepcion_inseguridad_barrio",
+        "percepcion_inseguridad_ciudad",
+        "victimas_que_denunciaron",
+        "victimas_que_no_denunciaron",
+        "victimizacion_algun_delito",
+        "victimizacion_extorsion_o_intento",
+        "victimizacion_hurto_personas"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:42.010827+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "51b4987474c042ea1855f786812ce929e2f1642fb5ae1965cb046075ee68ec61",
+      "ultima_extraccion_utc": "2026-10-23T01:50:42.010827+00:00",
+      "version_id": "51b4987474c042ea"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 45,
+      "fuente_clave": "dane_geih_cartagena",
+      "indicadores": [
+        "tasa_desocupacion",
+        "tasa_global_participacion",
+        "tasa_ocupacion"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:51.990302+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "87363dbbbb1548806ebf9af739a124ce710e40d6aca5d81ad0668c6c086e5ae9",
+      "ultima_extraccion_utc": "2026-10-23T01:50:51.990302+00:00",
+      "version_id": "87363dbbbb154880"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 6,
+      "fuente_clave": "dane_geih_informalidad_cartagena",
+      "indicadores": [
+        "proporcion_informalidad"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:51.990302+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "bc70bc2d8af9d634af50c45a37b3d2850fd23ad4da8f8cceb9a166a4d0ab3baf",
+      "ultima_extraccion_utc": "2026-10-23T01:50:51.990302+00:00",
+      "version_id": "bc70bc2d8af9d634"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2018"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 21,
+      "fuente_clave": "dane_nbi_cnpv2018",
+      "indicadores": [
+        "nbi_dependencia_economica",
+        "nbi_hacinamiento",
+        "nbi_inasistencia_escolar",
+        "nbi_personas_miseria",
+        "nbi_personas_nbi",
+        "nbi_servicios",
+        "nbi_vivienda"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:42.010827+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "4bf461864cbafcaa60e46509b638f7bb678e76b6ee19ca0fd8974dfa3cb118a7",
+      "ultima_extraccion_utc": "2026-10-23T01:50:42.010827+00:00",
+      "version_id": "4bf461864cbafcaa"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026",
+        "2027"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 48,
+      "fuente_clave": "dane_poblacion_municipal",
+      "indicadores": [
+        "poblacion_cabecera",
+        "poblacion_centros_rural",
+        "poblacion_total"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:42.010827+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "d82164a540ae01e4be9aa08c84b337f8cd87ee4ed9ec2f575bee291628a7606d",
+      "ultima_extraccion_utc": "2026-10-23T01:50:42.010827+00:00",
+      "version_id": "d82164a540ae01e4"
+    },
+    {
+      "alertas": [
+        "frescura:sin_fecha_de_extraccion",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "sin_fecha_de_extraccion",
+      "filas": 45,
+      "fuente_clave": "dane_poblacion_vigencia_censal",
+      "indicadores": [
+        "poblacion_cabecera",
+        "poblacion_centros_rural",
+        "poblacion_total"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "2a0604b48b38049deb38f294ef73249cc2c06ca6eba496a45b8a495895332738",
+      "ultima_extraccion_utc": null,
+      "version_id": "2a0604b48b38049d"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 3,
+      "fuente_clave": "dane_pobreza_monetaria",
+      "indicadores": [
+        "incidencia_pobreza_monetaria"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:50:31.247689+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "4ed47c5a7b69e6b7bb099378c2f11114f16805378b97f13c8b85ea6deb034d50",
+      "ultima_extraccion_utc": "2026-10-23T01:50:31.247689+00:00",
+      "version_id": "4ed47c5a7b69e6b7"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2022",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "DANE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 6,
+      "fuente_clave": "dane_sae_fies_pobreza_cartagena",
+      "indicadores": [
+        "inseguridad_alimentaria_moderada_grave_sae",
+        "pobreza_monetaria_sae",
+        "pobreza_multidimensional_sae"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_o_revision_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2027-01-21T01:51:01.211132+00:00",
+      "responsable_rol": "custodio_fuentes_y_demografia",
+      "sha256_contenido": "077c4dac481ca973e7a221a9023cc48a64a0ea05fc41d3793476f7aaed07abd5",
+      "ultima_extraccion_utc": "2026-10-23T01:51:01.211132+00:00",
+      "version_id": "077c4dac481ca973"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "DNP / custodios originales"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 82,
+      "fuente_clave": "dnp_terridata_13001",
+      "indicadores": [
+        "area_deforestada",
+        "eventos_inundacion",
+        "homicidio_intencional_tasa",
+        "incidencia_dengue",
+        "incidencia_pobreza_monetaria_terridata",
+        "indice_participacion_institucional",
+        "indice_transparencia_institucional",
+        "mortalidad_desnutricion_menores_5",
+        "victimas_desplazamiento_ubicadas",
+        "violencia_intrafamiliar_tasa"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:53.370781+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "42d3ce651e73063fc9c5105ade5f951376b2eedfd5dc2ddc4caf3bebd6df6963",
+      "ultima_extraccion_utc": "2026-10-23T01:50:53.370781+00:00",
+      "version_id": "42d3ce651e73063f"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 12,
+      "fuente_clave": "drive_delito_sexual",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "83c9a9034eae9707b5598f04c29aa58a2147d836e6b9745c3854f4bf89f1a4cd",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "83c9a9034eae9707"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 9,
+      "fuente_clave": "drive_extorsion",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "3c380d1f458992fd7b4cc349e9eef54a3de1576c17c4ed70c0d30fc6983d38c3",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "3c380d1f458992fd"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 12,
+      "fuente_clave": "drive_homicidios",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "8bf3c16419379f63ca8ce130802baea6baf0c3e086f7b1bc99688c496ed01780",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "8bf3c16419379f63"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 12,
+      "fuente_clave": "drive_muertes_transporte",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "c0bfd81ab1ecd59524b0bd4ce14eb709a52a5fb961afc8e0e37986e141d60811",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "c0bfd81ab1ecd595"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 12,
+      "fuente_clave": "drive_suicidios",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "e195eee916d9c728d4e1bd8fa5d7f94a70caa94f760b8d3428d5bca483a44e29",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "e195eee916d9c728"
+    },
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "archivo_compartido_origen_pendiente"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 12,
+      "fuente_clave": "drive_violencia_intrafamiliar",
+      "indicadores": [
+        "casos_reportados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual_al_recibir_version",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio_fuentes_y_analista_sectorial",
+      "sha256_contenido": "56fd37d4b70077902107b6c02efa4cd8fd68388106e341c870f775ece1e13591",
+      "ultima_extraccion_utc": "2026-10-21",
+      "version_id": "56fd37d4b7007790"
+    },
+    {
+      "alertas": [
+        "frescura:revision_vencida",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Fiscalía General de la Nación"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_vencida",
+      "filas": 358,
+      "fuente_clave": "fiscalia_spoa_busquedas_por_anio_hecho",
+      "indicadores": [
+        "procesos_coincidentes_con_termino"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "supervisado_powerbi",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-10-28T23:54:05.208000+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "5add443e1f0ebce7bddfe69cd6e97a40efd9d36bf48b5543f2d78ebbe9db5e83",
+      "ultima_extraccion_utc": "2026-10-21T23:54:05.208Z",
+      "version_id": "5add443e1f0ebce7"
+    },
+    {
+      "alertas": [
+        "frescura:revision_vencida",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Fiscalía General de la Nación"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_vencida",
+      "filas": 23,
+      "fuente_clave": "fiscalia_spoa_procesos_por_anio_hecho",
+      "indicadores": [
+        "procesos_penales_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "supervisado_powerbi",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-10-28T22:47:55.861000+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "4b20bf8e7d753f142527107f9f7a902f2b3c3e40aa2201f073b412f6bb96ecb6",
+      "ultima_extraccion_utc": "2026-10-21T22:47:55.861Z",
+      "version_id": "4b20bf8e7d753f14"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 5,
+      "fuente_clave": "icbf_bienestarina",
+      "indicadores": [
+        "bienestarina"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-20T22:13:51.244009+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "f192c00a696b2f100d4073e060bd3a628d3f4a48c4566af4a2ac2f7a36eec9ec",
+      "ultima_extraccion_utc": "2026-10-21T22:13:51.244009+00:00",
+      "version_id": "f192c00a696b2f10"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 35,
+      "fuente_clave": "icbf_prevencion",
+      "indicadores": [
+        "prevencion"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-20T22:13:51.244009+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "804c8035eb23dae13357a781f202f377be7be3a3906e1d2ceb6ab6804752944d",
+      "ultima_extraccion_utc": "2026-10-21T22:13:51.244009+00:00",
+      "version_id": "804c8035eb23dae1"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2025"
+      ],
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 6,
+      "fuente_clave": "icbf_primera_infancia",
+      "indicadores": [
+        "primera_infancia"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-20T22:13:51.244009+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "65b23a78a86d7b695bb4b0668a82687704b25c69b01b19142512f240c854d041",
+      "ultima_extraccion_utc": "2026-10-21T22:13:51.244009+00:00",
+      "version_id": "65b23a78a86d7b69"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "custodios_declarados": [
+        "DANE",
+        "ICBF",
+        "INMLyCF",
+        "INS",
+        "MEN",
+        "MSPS",
+        "RNEC",
+        "SSPD",
+        "UARIV"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 230,
+      "fuente_clave": "icbf_rpc_cartagena",
+      "indicadores": [
+        "Calidad de agua",
+        "Cobertura de inmunización contra el triple viral (tv) de un año",
+        "Cobertura de vacunación con BCG en nacidos vivos",
+        "Cobertura de vacunación con pentavalente (DPT y Hepatitis) tres dosis en niños y niñas menores de 1 año",
+        "Cobertura escolar bruta en educación básica secundaria",
+        "Cobertura escolar bruta en transición",
+        "Número de mesas de participación de niños, niñas y adolescentes conformadas y en operación",
+        "Número de niños y niñas menores de 1 año con registro civil por lugar de residencia",
+        "Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",
+        "Porcentaje de adolescentes (12 a 17 años) víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado",
+        "Porcentaje de atención institucional al parto por personal calificado",
+        "Porcentaje de cobertura del servicio de acueducto",
+        "Porcentaje de nacidos vivos con 4 o más controles prenatales",
+        "Porcentaje de niñas y niños de 6 a 11 años víctimas de desplazamiento forzado del total NNA víctimas del conflicto armado",
+        "Porcentaje de niños  y niñas entre 0 a 5 años afiliados al SGSSS",
+        "Porcentaje de niños  y niñas entre 12 a 17 años afiliados al SGSSS",
+        "Porcentaje de niños  y niñas entre 6 a 11 años afiliados al SGSSS",
+        "Porcentaje de niños y niñas de primera infancia víctimas de desplazamiento forzado del  total NNA víctimas del conflicto armado",
+        "Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención Integral que cuentan con seis o más atenciones.",
+        "Porcentaje de niños y niñas en servicios de educación inicial en el marco de la atención integral que cuentan con seis o más atenciones.",
+        "Razón de mortalidad materna por 100.000 nacidos vivos",
+        "Tasa de Cobertura escolar bruta en educación básica primaria",
+        "Tasa de Cobertura escolar bruta en educación media",
+        "Tasa de deserción en educación básica primaria",
+        "Tasa de deserción en educación básica secundaria",
+        "Tasa de deserción en educación media",
+        "Tasa de exámenes médico legales por presunto delito sexual contra adolescentes",
+        "Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 0 a 5 años",
+        "Tasa de exámenes médico legales por presunto delito sexual contra niños y niñas de 6 a 11 años",
+        "Tasa de fecundidad especifica en niños y niñas de 10 a 14 años",
+        "Tasa de homicidios en adolescentes (12 a 17 años)",
+        "Tasa de homicidios en niños y niñas de 0 a 5 años",
+        "Tasa de homicidios en niños y niñas de 6 a 11 años",
+        "Tasa de mortalidad en menores de 1 año (por mil nacidos vivos)",
+        "Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "Tasa de mortalidad por desnutrición en menores de 5 años.",
+        "Tasa de muertes por eventos de transporte en adolescentes (12 a 17 años)",
+        "Tasa de muertes por eventos de transporte en niños y niñas de 0 a 5 años",
+        "Tasa de muertes por eventos de transporte en niños y niñas de 6 a 11 años",
+        "Tasa de repitencia en educación básica primaria",
+        "Tasa de repitencia en educación básica secundaria",
+        "Tasa de repitencia en educación media",
+        "Tasa de suicidios en niños y niñas de adolescentes (12 a 17 años)",
+        "Tasa de violencia contra adolescentes 12 a 17 años.",
+        "Tasa de violencia contra niños y niñas de 6 a 11 años",
+        "Tasa de violencia contra niños y niñas de primera infancia",
+        "Tasa de violencia de pareja cuando la víctima es menor de 18 años",
+        "Tasa de violencia intrafamiliar en adolescentes (12 a 17 años)",
+        "Tasa de violencia intrafamiliar en niños y niñas de 0 a 5 años",
+        "Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-20T22:13:51.244009+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "0bac1bbfa0ac65f024a6fec52475a94f8c2fb1ab34ea565ae4d4ca3b175a3029",
+      "ultima_extraccion_utc": "2026-10-21T22:13:51.244009+00:00",
+      "version_id": "0bac1bbfa0ac65f0"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "ICBF"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 3,
+      "fuente_clave": "icbf_uds",
+      "indicadores": [
+        "uds"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-20T22:13:51.244009+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "fa944e84a449d5b73c42800052d77ed8db49d52d242d5d143cab3d9cf422f030",
+      "ultima_extraccion_utc": "2026-10-21T22:13:51.244009+00:00",
+      "version_id": "fa944e84a449d5b7"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "IDEAM / SISAIRE"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 156,
+      "fuente_clave": "ideam_calidad_aire",
+      "indicadores": [
+        "concentracion_media_estacion"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:28.770097+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "2cbb9ebcb46d5a684b0883d68314b0a103c5a12168a6f449e1fdfda2ca685259",
+      "ultima_extraccion_utc": "2026-10-23T01:50:28.770097+00:00",
+      "version_id": "2cbb9ebcb46d5a68"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "INS / SIVICAP"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 38,
+      "fuente_clave": "ins_calidad_agua",
+      "indicadores": [
+        "irca"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:28.676774+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "3164eca822c27fd7717c808b3e0cf928e5f79ae1dfeec7f52b9417d9a9b0773b",
+      "ultima_extraccion_utc": "2026-10-23T01:50:28.676774+00:00",
+      "version_id": "3164eca822c27fd7"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_examenes_sexuales",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:07.543176+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "50247cb74e935d851d7d408fb7aa7d9a75fa05f8007fbe0455e0ddf9a4552c6e",
+      "ultima_extraccion_utc": "2026-10-23T01:50:07.543176+00:00",
+      "version_id": "50247cb74e935d85"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_homicidios",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:07.635802+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "eebf4aa5d07e79f7b230a6d9971823e7fb527443f9f5d49b932a0e8adda56dc9",
+      "ultima_extraccion_utc": "2026-10-23T01:50:07.635802+00:00",
+      "version_id": "eebf4aa5d07e79f7"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_lesiones_accidentales",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:11.664410+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "867fcb6ad495a008b15d32dfd66a1a170e0597f8a5cacb539cdde46c92d0b8eb",
+      "ultima_extraccion_utc": "2026-10-23T01:50:11.664410+00:00",
+      "version_id": "867fcb6ad495a008"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_lesiones_transporte",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:14.329984+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "80a74e15b1c0584040c9de2c5ad556bca2a9ee866e363937e89c7d6af0abaa13",
+      "ultima_extraccion_utc": "2026-10-23T01:50:14.329984+00:00",
+      "version_id": "80a74e15b1c05840"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_suicidios",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:09.759735+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "53d6e358b14b5922107bafedeb240892ab2d5aa676520c4cd904dfc771ea6bf3",
+      "ultima_extraccion_utc": "2026-10-23T01:50:09.759735+00:00",
+      "version_id": "53d6e358b14b5922"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 10,
+      "fuente_clave": "medicina_violencia_interpersonal",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:17.242744+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "37a7bb357ea8ba19106b835bfc4798606bfb895dd27c9e824ec25c294b1f26f7",
+      "ultima_extraccion_utc": "2026-10-23T01:50:17.242744+00:00",
+      "version_id": "37a7bb357ea8ba19"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 30,
+      "fuente_clave": "medicina_violencia_intrafamiliar",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:09.309350+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "9a6ca64538035e8e03ee489bfef99a35ade7225e3c4d370ecae9d38e1affefc4",
+      "ultima_extraccion_utc": "2026-10-23T01:50:09.309350+00:00",
+      "version_id": "9a6ca64538035e8e"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 17,
+      "fuente_clave": "policia_amenazas",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:22.334550+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "6c2ef0943a8fcaaed723799e0806f33131de4ccd43346d8b26a0fb4b94ab604d",
+      "ultima_extraccion_utc": "2026-10-23T01:50:22.334550+00:00",
+      "version_id": "6c2ef0943a8fcaae"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 204,
+      "fuente_clave": "policia_delitos_sexuales",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:26.570448+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "4c372e47b116a4837fb5fed73b5e2755e8783eb1a7ec1c8d2fb0a9001d2e4949",
+      "ultima_extraccion_utc": "2026-10-23T01:50:26.570448+00:00",
+      "version_id": "4c372e47b116a483"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional / MinDefensa"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 26,
+      "fuente_clave": "policia_homicidios",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:15.814385+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "afb11ff22875557b16fb7bbdafdb03f748e80373102558d5bbd77fb2c87b66f3",
+      "ultima_extraccion_utc": "2026-10-23T01:50:15.814385+00:00",
+      "version_id": "afb11ff22875557b"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 34,
+      "fuente_clave": "policia_hurto_vehiculos",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:27.651995+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "d6663e2343681e8ce5f4acd342ad395f0087f948d48f4e17b2f820dce3c584f0",
+      "ultima_extraccion_utc": "2026-10-23T01:50:27.651995+00:00",
+      "version_id": "d6663e2343681e8c"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 20,
+      "fuente_clave": "policia_hurto_vivienda_comercio",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:29.691426+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "3425a8fe5d278180fafdb73458006cd5f5a1e6f88dbfe8c726d98dfc4e5f38e9",
+      "ultima_extraccion_utc": "2026-10-23T01:50:29.691426+00:00",
+      "version_id": "3425a8fe5d278180"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 93,
+      "fuente_clave": "policia_lesiones",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:27.388965+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "52552a512b30af3214f62cfbfd6e17079b8061e6d979f93dc1d6bfd341890137",
+      "ultima_extraccion_utc": "2026-10-23T01:50:27.388965+00:00",
+      "version_id": "52552a512b30af32"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 17,
+      "fuente_clave": "policia_violencia_intrafamiliar",
+      "indicadores": [
+        "casos_registrados"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:23.556651+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "ad9dec0b3af1ed293a47e55c127f34f1ba35e7059a52647ab08aa5251e213f26",
+      "ultima_extraccion_utc": "2026-10-23T01:50:23.556651+00:00",
+      "version_id": "ad9dec0b3af1ed29"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Policía Nacional de Colombia - DIJIN"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 133,
+      "fuente_clave": "portal_policia_cuadros_cartagena",
+      "indicadores": [
+        "abigeato",
+        "amenaza",
+        "extorsion",
+        "homicidio_intencional",
+        "homicidio_transito",
+        "hurto_automotores",
+        "hurto_comercio",
+        "hurto_entidades_financieras",
+        "hurto_motocicletas",
+        "hurto_personas",
+        "hurto_pirateria_terrestre",
+        "hurto_residencias",
+        "hurtos_total",
+        "lesiones_personales",
+        "lesiones_transito",
+        "secuestro",
+        "terrorismo",
+        "violencia_intrafamiliar",
+        "violencia_sexual"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-12-05T02:59:13.677925+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "fc8a776108404b1bfefe4499eb191c9d4b7b6b35c18153be997b22c6306e7ecd",
+      "ultima_extraccion_utc": "2026-11-05T02:59:13.677925+00:00",
+      "version_id": "fc8a776108404b1b"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2024"
+      ],
+      "custodios_declarados": [
+        "Procuraduría General de la Nación"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 5,
+      "fuente_clave": "procuraduria_pqrsdf_cartagena",
+      "indicadores": [
+        "pqrsdf_radicadas"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:51:01.703882+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "3dbee229983a8e86d806a0ca597641a18e0847573ff11d81873faf85e32ac8b6",
+      "ultima_extraccion_utc": "2026-10-23T01:51:01.703882+00:00",
+      "version_id": "3dbee229983a8e86"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023"
+      ],
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 36,
+      "fuente_clave": "unidad_victimas_indemnizaciones_cartagena",
+      "indicadores": [
+        "giros_indemnizacion",
+        "personas_indemnizadas",
+        "valor_indemnizaciones"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:59.193040+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "744bab3432d63d759e41c880f65ed20f08b76bdcb6d0b177931aebdf913113a7",
+      "ultima_extraccion_utc": "2026-10-23T01:50:59.193040+00:00",
+      "version_id": "744bab3432d63d75"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 13,
+      "fuente_clave": "unidad_victimas_irv_cartagena",
+      "indicadores": [
+        "indice_riesgo_victimizacion"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:58.236748+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "bf0fc1d148236b4b4b3ffeb98bd160349a23d90ed157a67ff8807039112b3686",
+      "ultima_extraccion_utc": "2026-10-23T01:50:58.236748+00:00",
+      "version_id": "bf0fc1d148236b4b"
+    },
+    {
+      "alertas": [
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026"
+      ],
+      "custodios_declarados": [
+        "Unidad para las Víctimas / RNI"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "revision_en_plazo",
+      "filas": 522,
+      "fuente_clave": "unidad_victimas_ruv_cartagena",
+      "indicadores": [
+        "eventos_reportados",
+        "personas_por_declaracion",
+        "personas_por_ocurrencia"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "automatico_http_o_anexo",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": "2026-11-22T01:50:55.839671+00:00",
+      "responsable_rol": "custodio_fuentes",
+      "sha256_contenido": "efc5e08a6eaa8cd15325bd3c6b1d378d656d91ea2c2deda2f4b6e6defa5235af",
+      "ultima_extraccion_utc": "2026-10-23T01:50:55.839671+00:00",
+      "version_id": "efc5e08a6eaa8cd1"
+    }
+  ],
+  "fuentes_transversales": [
+    {
+      "alerta": true,
+      "corte_datos": "2026-09",
+      "estado_promocion": "no_publicable",
+      "estado_revision": "revision_en_plazo",
+      "fecha_publicacion_fuente": "2026-10-07",
+      "fuente_clave": "dane_ipc_nacional_serie_empalmada",
+      "licencia": "por_verificar",
+      "modo": "revision_anexo_oficial_mensual",
+      "nota": "La fecha DANE es publicación de fuente, no captura local ni actualización automática.",
+      "proxima_revision_utc": "2026-11-06T00:00:00+00:00",
+      "responsable_rol": "custodio_fuentes_y_finanzas",
+      "sha256_archivo": "56f8e5e6e9d235d411e487b2284beba1be8eaeee69b7b9516bfa8ea8443c0676",
+      "sha256_esperado": "56f8e5e6e9d235d411e487b2284beba1be8eaeee69b7b9516bfa8ea8443c0676",
+      "tipo": "deflactor_transversal_no_indicador_7d",
+      "url_publicacion": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-precios-al-consumidor-ipc/ipc-informacion-tecnica"
+    }
+  ],
+  "inventario_sha256": "2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e",
+  "limitacion": "La validación estructural no acredita custodia, licencia, comparabilidad ni publicación.",
+  "plan_actualizacion_sha256": "3c748765619a2ed3d52ed41b1d59ea934d4ca524fdf545b1ad816fdba06a5cd4",
+  "problemas_globales": {
+    "dimension_sin_clasificar": 144
+  },
+  "resumen": {
+    "artefactos": 1928,
+    "estados_estructurales": {
+      "validado_estructural": 43
+    },
+    "estados_revision": {
+      "espera_entrega_manual": 6,
+      "revision_en_plazo": 34,
+      "revision_vencida": 2,
+      "sin_fecha_de_extraccion": 1
+    },
+    "filas": 2396,
+    "fuentes": 43,
+    "fuentes_con_alerta": 43,
+    "fuentes_transversales": 1,
+    "fuentes_transversales_con_alerta": 1,
+    "motivos_alerta": {
+      "frescura:espera_entrega_manual": 6,
+      "frescura:revision_vencida": 2,
+      "frescura:sin_fecha_de_extraccion": 1,
+      "licencia_por_verificar": 43,
+      "promocion:pendiente_validacion": 43
+    }
+  }
+}

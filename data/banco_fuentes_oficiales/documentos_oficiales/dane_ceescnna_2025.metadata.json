@@ -1,0 +1,14 @@
+{
+  "archivo": "dane_ceescnna_2025.xlsx",
+  "url": "https://www.dane.gov.co/files/operaciones/CEESCNNA/anex-CEESCNNA-2025.xlsx",
+  "sha256": "dc36dbad7ed6e79eec22b8baaeb3b4c3d40d79403cbe8ca0965d41989fd84f9d",
+  "bytes": 422540,
+  "corte_hechos": "2025-12-31",
+  "periodo": "2015-2025 provisional",
+  "cartagena": "CARTAGENA, BOLÍVAR",
+  "cuadros": {
+    "victimas": "Cuadro 3.2, fila 13, total 600",
+    "indiciados": "Cuadro 6.2, fila 12, total 885"
+  },
+  "estado": "referencia_acumulada_no_cargada_como_serie_anual"
+}

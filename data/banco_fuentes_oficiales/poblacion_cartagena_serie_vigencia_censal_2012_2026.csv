@@ -1,0 +1,46 @@
+anio,codigo_dane,municipio,indicador,personas,base_censal,tipo,fuente_archivo,fuente_hoja,referencia,apto_como_denominador_municipal
+2012,13001,Cartagena,poblacion_cabecera,923414,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2012,13001,Cartagena,poblacion_centros_rural,43689,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2012,13001,Cartagena,poblacion_total,967103,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2013,13001,Cartagena,poblacion_cabecera,935496,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2013,13001,Cartagena,poblacion_centros_rural,43104,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2013,13001,Cartagena,poblacion_total,978600,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2014,13001,Cartagena,poblacion_cabecera,947579,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2014,13001,Cartagena,poblacion_centros_rural,42600,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2014,13001,Cartagena,poblacion_total,990179,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2015,13001,Cartagena,poblacion_cabecera,959594,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2015,13001,Cartagena,poblacion_centros_rural,42161,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2015,13001,Cartagena,poblacion_total,1001755,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2016,13001,Cartagena,poblacion_cabecera,971592,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2016,13001,Cartagena,poblacion_centros_rural,41797,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2016,13001,Cartagena,poblacion_total,1013389,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2017,13001,Cartagena,poblacion_cabecera,983391,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2017,13001,Cartagena,poblacion_centros_rural,41491,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2017,13001,Cartagena,poblacion_total,1024882,Censo General 2005,proyeccion_historica_vigente,dane_base_censo_2005_municipal_area_1985_2020.xls,Mpios,A junio 30,si
+2018,13001,Cartagena,poblacion_cabecera,876885,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2018,13001,Cartagena,poblacion_centros_rural,96162,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2018,13001,Cartagena,poblacion_total,973047,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2019,13001,Cartagena,poblacion_cabecera,886102,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2019,13001,Cartagena,poblacion_centros_rural,98569,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2019,13001,Cartagena,poblacion_total,984671,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2020,13001,Cartagena,poblacion_cabecera,896779,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2020,13001,Cartagena,poblacion_centros_rural,101167,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2020,13001,Cartagena,poblacion_total,997946,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2021,13001,Cartagena,poblacion_cabecera,901144,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2021,13001,Cartagena,poblacion_centros_rural,102799,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2021,13001,Cartagena,poblacion_total,1003943,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2022,13001,Cartagena,poblacion_cabecera,902522,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2022,13001,Cartagena,poblacion_centros_rural,104087,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2022,13001,Cartagena,poblacion_total,1006609,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2023,13001,Cartagena,poblacion_cabecera,903072,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2023,13001,Cartagena,poblacion_centros_rural,105282,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2023,13001,Cartagena,poblacion_total,1008354,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2024,13001,Cartagena,poblacion_cabecera,903895,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2024,13001,Cartagena,poblacion_centros_rural,106513,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2024,13001,Cartagena,poblacion_total,1010408,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2025,13001,Cartagena,poblacion_cabecera,903881,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2025,13001,Cartagena,poblacion_centros_rural,107639,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2025,13001,Cartagena,poblacion_total,1011520,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2026,13001,Cartagena,poblacion_cabecera,902411,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2026,13001,Cartagena,poblacion_centros_rural,108584,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si
+2026,13001,Cartagena,poblacion_total,1010995,CNPV 2018,proyeccion_actualizada_2025,dane_poblacion_municipal_2018_2042.xlsx,PobMunicipalxÁrea,Anexo DANE actualizado 30 julio 2025,si

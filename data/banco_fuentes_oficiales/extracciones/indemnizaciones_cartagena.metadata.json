@@ -1,0 +1,27 @@
+{
+  "servicio": "https://vgv.unidadvictimas.gov.co/server/rest/services/UARIV/Indemnizaciones/MapServer/1",
+  "pagina": "https://datospaz.unidadvictimas.gov.co/mapa-indemnizacion/",
+  "unidad_valor": "millones de pesos colombianos, según la etiqueta del visor",
+  "escala": "municipio DIVIPOLA 13001",
+  "filas_consultadas": 14,
+  "filas_anuales_aceptadas": 12,
+  "corte_fuente": "sin fecha de corte explícita en esta capa",
+  "discrepancias_excluidas": [
+    {
+      "anio": 2024,
+      "capa_general": [
+        367,
+        316,
+        3794.0
+      ],
+      "capa_por_hecho": [
+        2398,
+        2222,
+        22309
+      ]
+    }
+  ],
+  "tolerancia_valor_millones": 1,
+  "extraido_utc": "2026-10-23T01:50:59.193040+00:00",
+  "nota": "Giros, personas y valor son medidas de indemnización; no hechos de victimización. No sumar con la capa desagregada por hecho."
+}

@@ -1,0 +1,64 @@
+{
+  "conteos_estado": {
+    "AMBIGUO_CODIGO_O_NOMBRE": 203,
+    "ENLACE_EXISTENTE_COINCIDE": 229,
+    "ENLACE_EXISTENTE_DIFERENTE": 512,
+    "NOMBRE_DISCREPANTE": 4,
+    "SIN_CODIGO_PROGRAMA": 3628,
+    "SIN_PROGRAMA_CON_ESE_CODIGO": 61
+  },
+  "conteos_por_plan": {
+    "PDD_2012_2015": {
+      "SIN_CODIGO_PROGRAMA": 469
+    },
+    "PDD_2013_2015": {
+      "AMBIGUO_CODIGO_O_NOMBRE": 104,
+      "ENLACE_EXISTENTE_COINCIDE": 224,
+      "ENLACE_EXISTENTE_DIFERENTE": 149,
+      "NOMBRE_DISCREPANTE": 4,
+      "SIN_CODIGO_PROGRAMA": 195
+    },
+    "PDD_2016_2019": {
+      "AMBIGUO_CODIGO_O_NOMBRE": 99,
+      "ENLACE_EXISTENTE_COINCIDE": 5,
+      "ENLACE_EXISTENTE_DIFERENTE": 363,
+      "SIN_CODIGO_PROGRAMA": 370,
+      "SIN_PROGRAMA_CON_ESE_CODIGO": 61
+    },
+    "PDD_2020_2023": {
+      "SIN_CODIGO_PROGRAMA": 947
+    },
+    "PDD_2024_2027": {
+      "SIN_CODIGO_PROGRAMA": 1246
+    },
+    "PDL_1_2024_2027": {
+      "SIN_CODIGO_PROGRAMA": 110
+    },
+    "PDL_2_2024_2027": {
+      "SIN_CODIGO_PROGRAMA": 89
+    },
+    "PDL_3_2024_2027": {
+      "SIN_CODIGO_PROGRAMA": 202
+    }
+  },
+  "esquema": "polis.candidatos_programa_meta.v1",
+  "estado_publicacion": "no_publicable",
+  "referencias": {
+    "candidatos": {
+      "filas": 4637,
+      "ruta": "data/capas_analiticas/candidatos_programa_meta/candidatos_36c473313288aa83535b7a927fe58e51f31a428ac9b990a59d55587ac1c894ce.jsonl",
+      "sha256": "36c473313288aa83535b7a927fe58e51f31a428ac9b990a59d55587ac1c894ce"
+    },
+    "metas": {
+      "filas": 4637,
+      "ruta": "data/capas_analiticas/candidatos_programa_meta/metas_b411cfc7507445d99d94c8b0c8edc1c42622a103e9a1066c53bfef84432aefac.jsonl",
+      "sha256": "b411cfc7507445d99d94c8b0c8edc1c42622a103e9a1066c53bfef84432aefac"
+    },
+    "programas": {
+      "filas": 865,
+      "ruta": "data/capas_analiticas/candidatos_programa_meta/programas_94ba1e3afe478f537c673ad134ed01e0be8531f125dd805840e0e63c0ba196af.jsonl",
+      "sha256": "94ba1e3afe478f537c673ad134ed01e0be8531f125dd805840e0e63c0ba196af"
+    }
+  },
+  "regla": "Candidatura sin acreditar: exige documento, página y revisión antes de persistir."
+}

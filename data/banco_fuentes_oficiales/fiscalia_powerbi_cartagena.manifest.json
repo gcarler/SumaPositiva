@@ -1,0 +1,32 @@
+{
+  "source_url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+  "source_system": "SPOA",
+  "source_owner": "Fiscalía General de la Nación",
+  "accessed_utc": "2026-10-21T22:47:55.861Z",
+  "cutoff": "30/09/2026",
+  "filters": {
+    "departamento": "Bolívar",
+    "municipio_hecho": "Cartagena De Indias"
+  },
+  "report_page": "¿Cuándo ocurrieron los hechos? (3 de 7)",
+  "year_variable": "año del hecho",
+  "total_procesos_municipio": 502027,
+  "annual_rows": 23,
+  "annual_sum": 501792,
+  "total_minus_annual_sum": 235,
+  "annual_sum_warning": "El total del tablero no coincide con la suma de los años visibles; no asignar el residuo a un año ni inferir su causa sin ficha del modelo.",
+  "interpretation": "Procesos penales registrados por presuntos delitos; no equivalen a hechos ocurridos, personas víctimas ni condenas. Las cifras pueden cambiar con actualizaciones del SPOA.",
+  "csv_sha256": "1c59435025ea0ce712b4f4dd14ee327307c66d3abd3995544521052c7bdddcde",
+  "top5": {
+    "report_page": "¿Dónde ocurrieron los hechos? (2 de 7)",
+    "filters": {
+      "departamento": "All",
+      "municipio": "All",
+      "delito": "sin filtro"
+    },
+    "csv": "fiscalia_spoa_top5_municipios_2026.csv",
+    "rows": 5,
+    "csv_sha256": "d7bd80766f4d7d28809b6a5097e1f0e34f3b862045a34063980be93f952391fc",
+    "interpretation": "Municipios con más procesos acumulados en SPOA; no son tasas ajustadas por población ni una clasificación de riesgo."
+  }
+}

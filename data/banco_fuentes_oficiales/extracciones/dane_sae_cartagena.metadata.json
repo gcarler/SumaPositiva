@@ -1,0 +1,14 @@
+{
+  "url": "https://sitios.dane.gov.co/EstimacionesModeloSAE/documentos/estimaciones-pobreza-alimentaria-fies-modelo-sae-2022-y-2024.xlsx",
+  "metodologia": "https://sitios.dane.gov.co/EstimacionesModeloSAE/documentos/metodologia-estimaciones-pobreza-alimentaria-fies-modelo-sae-2022-y-2024.pdf",
+  "sha256_archivo": "f544cca76e34ac005a867ac5c0c1e7860401df1ca53c581d8d91228ae6f42010",
+  "tamano_bytes": 705761,
+  "filas_extraidas": 6,
+  "escala": "municipio 13001",
+  "periodos": [
+    2022,
+    2024
+  ],
+  "advertencia": "Estimaciones modeladas SAE; no equivalen a estimaciones directas de encuesta ni a conteos de personas",
+  "extraido_utc": "2026-10-23T01:51:01.211132+00:00"
+}

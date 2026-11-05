@@ -1,0 +1,24 @@
+{
+  "dataset_id": "nxt2-39c3",
+  "titulo": "Calidad del Agua para Consumo Humano en Colombia",
+  "entidad_publicadora": "Instituto Nacional de Salud INS, Bogotá D.C",
+  "enlace_entidad": "https://www.ins.gov.co/sivicap/Paginas/sivicap.aspx",
+  "provenance": "official",
+  "rowsUpdatedAt": 1749585666,
+  "columnas_publicadas": [
+    "departamentocodigo",
+    "departamento",
+    "municipiocodigo",
+    "municipio",
+    "a_o",
+    "irca",
+    "nivel_de_riesgo",
+    "ircaurbano",
+    "nivel_de_riesgo_urbano",
+    "ircarural",
+    "nivel_de_riesgo_rural"
+  ],
+  "filtro_cartagena": "municipiocodigo='13001'",
+  "corte_comprobado": true,
+  "conteo_filtrado_verificado": true
+}

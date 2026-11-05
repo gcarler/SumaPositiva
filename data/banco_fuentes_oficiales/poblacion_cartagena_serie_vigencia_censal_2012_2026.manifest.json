@@ -1,0 +1,23 @@
+{
+  "archivo": "poblacion_cartagena_serie_vigencia_censal_2012_2026.csv",
+  "filas": 45,
+  "escala": "municipio Cartagena 13001",
+  "regla": {
+    "2012_2017": "Proyecciones publicadas bajo Censo General 2005",
+    "2018_2026": "Proyecciones actualizadas 2025 basadas en CNPV 2018"
+  },
+  "cambio_de_base_2018": "Debe señalarse visualmente; no interpretar salto 2017-2018 como cambio demográfico puro.",
+  "limite_territorial": "No usar cifras municipales para tasas de barrios, UCG o corregimientos sin estimaciones desagregadas validadas.",
+  "fuentes": [
+    {
+      "archivo": "dane_base_censo_2005_municipal_area_1985_2020.xls",
+      "sha256": "5d6ae35f5bbde7c0163cee10ebda344a21993ece0f9b9f66f2ff186010335e84",
+      "url": "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls"
+    },
+    {
+      "archivo": "dane_poblacion_municipal_2018_2042.xlsx",
+      "sha256": "1ea83594ad308becff39934a3977c102919c25740f60439be95d797396d11283",
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion"
+    }
+  ]
+}

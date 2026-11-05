@@ -1,0 +1,733 @@
+{
+  "id" : "v9qk-hdcc",
+  "name" : "Batería de indicadores de niñez y adolescencia para el proceso de Rendición Pública de Cuentas Territorial",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+  "averageRating" : 0,
+  "category" : "Inclusión Social y Reconciliación",
+  "createdAt" : 1675700195,
+  "description" : "Este conjunto de datos contiene la información de los indicadores definidos para la rendición pública de cuentas para primera infancia, infancia y adolescencia",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 1219,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 39357023,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1677823907,
+  "publicationGroup" : 19044780,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1722020361,
+  "tableId" : 19077336,
+  "totalTimesRated" : 0,
+  "viewCount" : 2157,
+  "viewLastModified" : 1779122501,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1715722074,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 6312979,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1715709560,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "vc9x-zjzh",
+      "displayName" : "soporteccc"
+    },
+    "submissionDetails" : {
+      "permissionType" : "read"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1715722074,
+      "failureCount" : 0,
+      "startedAt" : 1715722074,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "gk4s-qz54",
+      "displayName" : "Analítica Institucional ICBF"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 572395215,
+    "name" : "DIVIPOLA MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "Código DIVIPOLA del municipio del indicador",
+    "fieldName" : "divipola_municipio",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594385,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "99773",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "1879"
+      }, {
+        "item" : "23",
+        "count" : "430"
+      }, {
+        "item" : "23001",
+        "count" : "401"
+      }, {
+        "item" : "23466",
+        "count" : "389"
+      }, {
+        "item" : "23660",
+        "count" : "381"
+      }, {
+        "item" : "23162",
+        "count" : "371"
+      }, {
+        "item" : "23350",
+        "count" : "365"
+      }, {
+        "item" : "23417",
+        "count" : "365"
+      }, {
+        "item" : "23555",
+        "count" : "359"
+      }, {
+        "item" : "23068",
+        "count" : "351"
+      }, {
+        "item" : "23189",
+        "count" : "349"
+      }, {
+        "item" : "23682",
+        "count" : "347"
+      }, {
+        "item" : "23580",
+        "count" : "345"
+      }, {
+        "item" : "23500",
+        "count" : "345"
+      }, {
+        "item" : "23670",
+        "count" : "345"
+      }, {
+        "item" : "23807",
+        "count" : "345"
+      }, {
+        "item" : "23182",
+        "count" : "345"
+      }, {
+        "item" : "23672",
+        "count" : "343"
+      }, {
+        "item" : "23570",
+        "count" : "341"
+      }, {
+        "item" : "23686",
+        "count" : "341"
+      } ],
+      "smallest" : "05",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 572395216,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Departamento según DIVIPOLA",
+    "fieldName" : "departamento",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594384,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Vichada",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Antioquia",
+        "count" : "26409"
+      }, {
+        "item" : "Boyacá",
+        "count" : "21374"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "21222"
+      }, {
+        "item" : "Santander",
+        "count" : "15869"
+      }, {
+        "item" : "Nariño",
+        "count" : "11540"
+      }, {
+        "item" : "Córdoba",
+        "count" : "10838"
+      }, {
+        "item" : "Tolima",
+        "count" : "9274"
+      }, {
+        "item" : "Bolívar",
+        "count" : "8678"
+      }, {
+        "item" : "Cauca",
+        "count" : "8217"
+      }, {
+        "item" : "Valle Del Cauca",
+        "count" : "7347"
+      }, {
+        "item" : "Huila",
+        "count" : "7296"
+      }, {
+        "item" : "Norte De Santander",
+        "count" : "6548"
+      }, {
+        "item" : "Meta",
+        "count" : "5877"
+      }, {
+        "item" : "Magdalena",
+        "count" : "5696"
+      }, {
+        "item" : "Chocó",
+        "count" : "5671"
+      }, {
+        "item" : "Caldas",
+        "count" : "5179"
+      }, {
+        "item" : "Sucre",
+        "count" : "5130"
+      }, {
+        "item" : "Cesar",
+        "count" : "5017"
+      }, {
+        "item" : "Atlántico",
+        "count" : "4501"
+      }, {
+        "item" : "Casanare",
+        "count" : "3821"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395217,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Municipio según DIVIPOLA",
+    "fieldName" : "municipio",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594383,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Zona Bananera",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Dato Departamento",
+        "count" : "7646"
+      }, {
+        "item" : "Dato Nacional",
+        "count" : "1879"
+      }, {
+        "item" : "Buenavista",
+        "count" : "860"
+      }, {
+        "item" : "La Unión",
+        "count" : "758"
+      }, {
+        "item" : "Villanueva",
+        "count" : "751"
+      }, {
+        "item" : "Granada",
+        "count" : "581"
+      }, {
+        "item" : "Argelia",
+        "count" : "571"
+      }, {
+        "item" : "Sabanalarga",
+        "count" : "569"
+      }, {
+        "item" : "Bolívar",
+        "count" : "568"
+      }, {
+        "item" : "Guadalupe",
+        "count" : "563"
+      }, {
+        "item" : "Santa Bárbara",
+        "count" : "559"
+      }, {
+        "item" : "San Francisco",
+        "count" : "551"
+      }, {
+        "item" : "San Carlos",
+        "count" : "549"
+      }, {
+        "item" : "Albania",
+        "count" : "542"
+      }, {
+        "item" : "Nariño",
+        "count" : "536"
+      }, {
+        "item" : "Sucre",
+        "count" : "534"
+      }, {
+        "item" : "Córdoba",
+        "count" : "533"
+      }, {
+        "item" : "El Peñón",
+        "count" : "523"
+      }, {
+        "item" : "Rionegro",
+        "count" : "427"
+      }, {
+        "item" : "Barbosa",
+        "count" : "421"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395218,
+    "name" : "NOMBRE DEL INDICADOR",
+    "dataTypeName" : "text",
+    "description" : "Nombre del indicador",
+    "fieldName" : "nombre_indicador",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594382,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Tasa de violencia intrafamiliar en niños y niñas de 6 a 11 años",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Tasa de mortalidad en menores de 1 año (por mil nacidos vivos)",
+        "count" : "7180"
+      }, {
+        "item" : "Número de niños, niñas y mujeres gestantes con educación inicial en el marco de la atención integral a la primera infancia.",
+        "count" : "7092"
+      }, {
+        "item" : "Cobertura escolar bruta en transición",
+        "count" : "7092"
+      }, {
+        "item" : "Cobertura escolar bruta en educación básica secundaria",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de violencia contra niños y niñas de primera infancia",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de violencia contra niños y niñas de 6 a 11 años",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de violencia contra adolescentes 12 a 17 años.",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de Cobertura escolar bruta en educación básica primaria",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de Cobertura escolar bruta en educación media",
+        "count" : "7090"
+      }, {
+        "item" : "Tasa de deserción en educación básica secundaria",
+        "count" : "7088"
+      }, {
+        "item" : "Tasa de deserción en educación media",
+        "count" : "7088"
+      }, {
+        "item" : "Tasa de deserción en educación básica primaria",
+        "count" : "7088"
+      }, {
+        "item" : "Tasa de repitencia en educación básica primaria",
+        "count" : "7086"
+      }, {
+        "item" : "Tasa de repitencia en educación básica secundaria",
+        "count" : "7086"
+      }, {
+        "item" : "Tasa de repitencia en educación media",
+        "count" : "7086"
+      }, {
+        "item" : "Tasa de fecundidad especifica en niños y niñas de 10 a 14 años",
+        "count" : "5975"
+      }, {
+        "item" : "Tasa de mortalidad por desnutrición en menores de 5 años.",
+        "count" : "5975"
+      }, {
+        "item" : "Tasa de mortalidad por IRA (Infección respiratoria aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "count" : "5975"
+      }, {
+        "item" : "Tasa de mortalidad por EDA (Enfermedad diarreica aguda) en niños y niñas menores de 5 años por cada 100.000 menores de 5 años",
+        "count" : "5975"
+      }, {
+        "item" : "Razón de mortalidad materna por 100.000 nacidos vivos",
+        "count" : "5971"
+      } ],
+      "smallest" : "Calidad de agua",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395219,
+    "name" : "FUENTE",
+    "dataTypeName" : "text",
+    "description" : "Entidad que produce y reporta la información",
+    "fieldName" : "fuente",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594381,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "UARIV",
+      "null" : "0",
+      "top" : [ {
+        "item" : "MEN",
+        "count" : "85068"
+      }, {
+        "item" : "MSPS",
+        "count" : "66810"
+      }, {
+        "item" : "ICBF",
+        "count" : "24022"
+      }, {
+        "item" : "INMLyCF",
+        "count" : "18641"
+      }, {
+        "item" : "UARIV",
+        "count" : "7914"
+      }, {
+        "item" : "DANE",
+        "count" : "7214"
+      }, {
+        "item" : "RNEC",
+        "count" : "4765"
+      }, {
+        "item" : "INS",
+        "count" : "4763"
+      }, {
+        "item" : "SSPD",
+        "count" : "4532"
+      } ],
+      "smallest" : "DANE",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395220,
+    "name" : "DERECHO",
+    "dataTypeName" : "text",
+    "description" : "Derecho de niñas, niños y adolescentes en el que se enmarca el indicador",
+    "fieldName" : "derecho",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594380,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Educación Inicial",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Derecho a la salud",
+        "count" : "60835"
+      }, {
+        "item" : "Derecho \na la educación",
+        "count" : "47764"
+      }, {
+        "item" : "Derechos a la protección",
+        "count" : "42358"
+      }, {
+        "item" : "Educación",
+        "count" : "23120"
+      }, {
+        "item" : "Derecho a la integridad personal",
+        "count" : "11442"
+      }, {
+        "item" : "Derecho al desarrollo integral de la primera infancia",
+        "count" : "9560"
+      }, {
+        "item" : "Derecho  a un ambiente sano",
+        "count" : "9295"
+      }, {
+        "item" : "Derecho a la vida",
+        "count" : "7214"
+      }, {
+        "item" : "Derecho a la identidad",
+        "count" : "4765"
+      }, {
+        "item" : "Derecho a la participación",
+        "count" : "2752"
+      }, {
+        "item" : "Desarrollo Integral",
+        "count" : "2312"
+      }, {
+        "item" : "Educación Inicial",
+        "count" : "2312"
+      } ],
+      "smallest" : "Derecho \na la educación",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395221,
+    "name" : "CICLO VITAL",
+    "dataTypeName" : "text",
+    "description" : "Grupo de edad al que se refiere el indicador",
+    "fieldName" : "ciclo_vital",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145594379,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Primera Infancia\nInfancia\nAdolescencia\njuventud",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Primera Infancia",
+        "count" : "96049"
+      }, {
+        "item" : "Adolescencia",
+        "count" : "38104"
+      }, {
+        "item" : "Infancia",
+        "count" : "34110"
+      }, {
+        "item" : "Matrícula estadística educación preescolar, básica y media - EPBM",
+        "count" : "23120"
+      }, {
+        "item" : "Infancia y adolescencia",
+        "count" : "20303"
+      }, {
+        "item" : "Primera Infancia\nInfancia\nAdolescencia\njuventud",
+        "count" : "9295"
+      }, {
+        "item" : "Primera Infancia\nInfancia\nAdolescencia",
+        "count" : "2748"
+      } ],
+      "smallest" : "Adolescencia",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  }, {
+    "id" : 572395222,
+    "name" : "AÑO/VIGENCIA",
+    "dataTypeName" : "number",
+    "description" : "Año de medición del indicador",
+    "fieldName" : "anno_vigencia",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 145594378,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "2023",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2021",
+        "count" : "46016"
+      }, {
+        "item" : "2019",
+        "count" : "45625"
+      }, {
+        "item" : "2020",
+        "count" : "45383"
+      }, {
+        "item" : "2018",
+        "count" : "39270"
+      }, {
+        "item" : "2022",
+        "count" : "21733"
+      }, {
+        "item" : "2023",
+        "count" : "17340"
+      }, {
+        "item" : "2017",
+        "count" : "8362"
+      } ],
+      "smallest" : "2017",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "noCommas" : "true",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 572395223,
+    "name" : "VALOR INDICADOR",
+    "dataTypeName" : "number",
+    "description" : "Valor del indicador",
+    "fieldName" : "valor_indicador",
+    "position" : 9,
+    "renderTypeName" : "number",
+    "tableColumnId" : 145594377,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "2021985.00",
+      "null" : "0",
+      "top" : [ {
+        "item" : "0.00",
+        "count" : "37131"
+      }, {
+        "item" : "1.00",
+        "count" : "7289"
+      }, {
+        "item" : "0.02",
+        "count" : "6614"
+      }, {
+        "item" : "0.01",
+        "count" : "6465"
+      }, {
+        "item" : "0.03",
+        "count" : "5986"
+      }, {
+        "item" : "100.00",
+        "count" : "5496"
+      }, {
+        "item" : "0.04",
+        "count" : "4711"
+      }, {
+        "item" : "0.05",
+        "count" : "3535"
+      }, {
+        "item" : "0.99",
+        "count" : "2665"
+      }, {
+        "item" : "0.06",
+        "count" : "2583"
+      }, {
+        "item" : "0.07",
+        "count" : "2061"
+      }, {
+        "item" : "0.98",
+        "count" : "2009"
+      }, {
+        "item" : "0.93",
+        "count" : "1909"
+      }, {
+        "item" : "0.91",
+        "count" : "1817"
+      }, {
+        "item" : "0.94",
+        "count" : "1801"
+      }, {
+        "item" : "0.92",
+        "count" : "1797"
+      }, {
+        "item" : "0.97",
+        "count" : "1796"
+      }, {
+        "item" : "0.95",
+        "count" : "1784"
+      }, {
+        "item" : "0.96",
+        "count" : "1766"
+      }, {
+        "item" : "0.90",
+        "count" : "1738"
+      } ],
+      "smallest" : "0.00",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "precision" : "2",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 572395224,
+    "name" : "UNIDAD_MEDIDA",
+    "dataTypeName" : "text",
+    "description" : "Unidad de medida del indicador",
+    "fieldName" : "unidad_medida",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145939304,
+    "cachedContents" : {
+      "non_null" : "223729",
+      "largest" : "Tasa por 100.000 habitantes",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Porcentaje",
+        "count" : "136640"
+      }, {
+        "item" : "Tasa por 100.000 habitantes",
+        "count" : "39911"
+      }, {
+        "item" : "Tasa por 100.000",
+        "count" : "17925"
+      }, {
+        "item" : "Número",
+        "count" : "16064"
+      }, {
+        "item" : "Tasa por 1.000",
+        "count" : "7214"
+      }, {
+        "item" : "Tasa",
+        "count" : "5975"
+      } ],
+      "smallest" : "Número",
+      "count" : "223729",
+      "cardinality" : "223729"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Igualdad",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Anual"
+      }
+    }
+  },
+  "owner" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "indicadores", "niños  niñas adolescentes", "icbf", "suin", "rendición de cuentas" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

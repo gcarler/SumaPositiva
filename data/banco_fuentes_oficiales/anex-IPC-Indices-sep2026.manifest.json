@@ -1,0 +1,18 @@
+{
+  "esquema": "polis.fuente_transversal.v1",
+  "fuente_clave": "dane_ipc_nacional_serie_empalmada",
+  "custodio": "DANE",
+  "url_publicacion": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-precios-al-consumidor-ipc/ipc-informacion-tecnica",
+  "url_archivo": "https://www.dane.gov.co/files/operaciones/IPC/sep2026/anex-IPC-Indices-sep2026.xlsx",
+  "archivo": "data/banco_fuentes_oficiales/anex-IPC-Indices-sep2026.xlsx",
+  "sha256_archivo": "56f8e5e6e9d235d411e487b2284beba1be8eaeee69b7b9516bfa8ea8443c0676",
+  "fecha_actualizacion_dane": "2026-10-07",
+  "corte_datos": "2026-09",
+  "serie": "IPC total nacional, índices de empalme",
+  "unidad": "número índice; diciembre de 2018 = 100",
+  "periodicidad": "mensual",
+  "cobertura": "Colombia; total nacional",
+  "uso": "deflactor transversal de flujos anuales COP, no indicador de casos de seguridad humana",
+  "licencia": "por_verificar",
+  "estado_publicacion": "no_publicable"
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "archivo": "dane_pobreza_2025.pdf",
+    "url": "https://www.dane.gov.co/files/operaciones/PM/pres-PM-2025.pdf",
+    "sha256": "3b7b3e56e91e3c48c6efaf2acaf3adf86e2e0553614a78c2524ca170a13dfab9",
+    "bytes": 2666054,
+    "consultado_utc": "2026-10-23T01:50:31.258807+00:00"
+  },
+  {
+    "archivo": "dane_fies_2025.xlsx",
+    "url": "https://www.dane.gov.co/files/operaciones/FIES/anex-FIES-2025.xlsx",
+    "sha256": "9cc4e79f2f7474900e1369aca3a27c72a0a7a89376618b647c848e39fade49ac",
+    "bytes": 287509,
+    "consultado_utc": "2026-10-23T01:50:32.011832+00:00"
+  },
+  {
+    "archivo": "dane_pobreza_nacional_2025.xlsx",
+    "url": "https://www.dane.gov.co/files/operaciones/PM/anex-PM-TotalNacional-2025.xlsx",
+    "sha256": "c283d579eab208c8f6baaad8ee7c0c9949dfaa2dcdd02e6b26f520fa92dbd78c",
+    "bytes": 310387,
+    "consultado_utc": "2026-10-23T01:50:32.834390+00:00"
+  },
+  {
+    "archivo": "dane_poblacion_municipal_2005_2017.xlsx",
+    "url": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-2005-2017_VP.xlsx",
+    "sha256": "0d7e6b896955f37e030e1d4d07389b8db96dc2731fe04095639e036d0ebf579b",
+    "bytes": 1600037,
+    "consultado_utc": "2026-10-23T01:50:42.010827+00:00"
+  },
+  {
+    "archivo": "dane_poblacion_municipal_2018_2042.xlsx",
+    "url": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx",
+    "sha256": "1ea83594ad308becff39934a3977c102919c25740f60439be95d797396d11283",
+    "bytes": 3948350,
+    "consultado_utc": "2026-10-23T01:50:42.010827+00:00"
+  },
+  {
+    "archivo": "dane_ecsc_2024.xlsx",
+    "url": "https://www.dane.gov.co/files/operaciones/ECSC/anex-ECSC-2024.xlsx",
+    "sha256": "9bed1cd4e9d9fb4ee9e770f977ffec1adee48dfea4bc3ab2d2f882d635fab06e",
+    "bytes": 543732,
+    "consultado_utc": "2026-10-23T01:50:42.010827+00:00"
+  },
+  {
+    "archivo": "dane_nbi_cnpv2018.xlsx",
+    "url": "https://www.dane.gov.co/files/censo2018/informacion-tecnica/CNPV-2018-NBI.xlsx",
+    "sha256": "d850d740873a5c652dcb9487fd583b3d3497b03b1b17feb7561711cd162aed13",
+    "bytes": 443433,
+    "consultado_utc": "2026-10-23T01:50:42.010827+00:00"
+  },
+  {
+    "archivo": "anex-GEIH-ago2026.xlsx",
+    "url": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIH-ago2026.xlsx",
+    "sha256": "ade9b213c799e967c121091438a53617f3a3ab8d85d311f5cada08e2461473d9",
+    "bytes": 3692971,
+    "consultado_utc": "2026-10-23T01:50:51.990302+00:00"
+  },
+  {
+    "archivo": "anex-GEIHEISS-jun-ago2026.xlsx",
+    "url": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx",
+    "sha256": "3da594e046a2c67deeeaaaed1bd0d0f81f243ea48429be6481ca426044d28ffc",
+    "bytes": 1595993,
+    "consultado_utc": "2026-10-23T01:50:51.990302+00:00"
+  },
+  {
+    "archivo": "TerriData13001.xlsx.zip",
+    "url": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "sha256": "f89e2b5110347f1d7b59d0debe067ba915efcc5e373322169c5f675af10d50a6",
+    "bytes": 305031,
+    "consultado_utc": "2026-10-23T01:50:53.370781+00:00"
+  },
+  {
+    "archivo": "dane_sae_fies_pobreza_2022_2024.xlsx",
+    "url": "https://sitios.dane.gov.co/EstimacionesModeloSAE/documentos/estimaciones-pobreza-alimentaria-fies-modelo-sae-2022-y-2024.xlsx",
+    "sha256": "f544cca76e34ac005a867ac5c0c1e7860401df1ca53c581d8d91228ae6f42010",
+    "bytes": 705761,
+    "consultado_utc": "2026-10-23T01:51:01.211132+00:00"
+  }
+]

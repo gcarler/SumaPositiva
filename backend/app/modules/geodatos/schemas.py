@@ -101,6 +101,112 @@ class IndicadoresTerritorioResponse(BaseModel):
     )
 
 
+class FiltrosMultifuente(BaseModel):
+    codigo_territorio: str | None = Field(default=None, max_length=80)
+    fuente_datos: str | None = Field(default=None, max_length=200)
+    dimension: str | None = Field(default=None, max_length=40)
+    anio_desde: int | None = Field(default=None, ge=1900, le=2200)
+    anio_hasta: int | None = Field(default=None, ge=1900, le=2200)
+    busqueda: str | None = Field(default=None, max_length=200)
+    incluir_ediciones_previas: bool = False
+
+
+class OpcionMultifuente(BaseModel):
+    id: str
+    nombre: str
+    total: int = Field(ge=0)
+
+
+class SerieMultifuenteResumen(BaseModel):
+    id: str
+    codigo_indicador: str
+    nombre: str
+    fuente: str
+    unidad: str
+    territorio_id: str
+    codigo_territorio: str
+    territorio: str
+    escala: str
+    dimension: str | None
+    subtipo: str
+    total: int
+    anios: list[int]
+    advertencias: list[str]
+
+
+class PuntoMultifuente(BaseModel):
+    observacion_id: str
+    anio: int
+    valor: float | None
+    valor_original: str
+    periodo_desde: str | None
+    periodo_hasta: str | None
+    tipo_periodo: str
+    completo: bool | None
+    provisional: bool
+    url_fuente: str | None
+    sha256: str | None
+    fecha_extraccion: str | None
+    referencia: str | None
+    nota: str | None
+    estado_validacion: str | None
+    estado_publicacion: str | None
+    universo: str | None
+    metodo: str | None
+    advertencias: list[str]
+
+
+class SerieMultifuenteDetalle(BaseModel):
+    resumen: SerieMultifuenteResumen
+    puntos: list[PuntoMultifuente]
+    minimo: float | None
+    maximo: float | None
+    mediana: float | None
+    variacion_interanual_pct: float | None
+    motivo_variacion: str
+
+
+class ParMultifuente(BaseModel):
+    anio: int
+    x: float
+    y: float
+    observacion_x: str
+    observacion_y: str
+    elegible: bool
+    motivos: list[str]
+
+
+class ComparacionMultifuente(BaseModel):
+    serie_x: str
+    serie_y: str
+    pares: list[ParMultifuente]
+    anios_sin_pareja: list[int]
+    muestra_total: int
+    muestra_elegible: int
+    pearson: float | None = None
+    spearman: float | None = None
+    estado: str
+    motivos: list[str]
+    interpretacion: str
+
+
+class AnaliticaMultifuenteResponse(BaseModel):
+    version_metodo: str
+    consulta_sha256: str
+    total_observaciones: int
+    observaciones_excluidas: int
+    fuentes: list[OpcionMultifuente]
+    territorios: list[OpcionMultifuente]
+    dimensiones: list[OpcionMultifuente]
+    anios: list[int]
+    cobertura_fuentes: list[OpcionMultifuente]
+    series: list[SerieMultifuenteResumen]
+    serie: SerieMultifuenteDetalle | None
+    serie_comparada: SerieMultifuenteDetalle | None
+    comparacion: ComparacionMultifuente | None
+    advertencias: list[str]
+
+
 class CapaGeovisorBase(BaseModel):
     """Esquema base para capa espacial del Geovisor."""
 

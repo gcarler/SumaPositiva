@@ -1,0 +1,238 @@
+{
+  "source_url": "https://app.powerbi.com/view?r=eyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9",
+  "source_system": "SPOA",
+  "source_owner": "Fiscalía General de la Nación",
+  "accessed_utc": "2026-10-21T23:54:05.208Z",
+  "cutoff": "30/09/2026",
+  "report_page": "¿Cuándo ocurrieron los hechos? (3 de 7)",
+  "filters": {
+    "departamento": "Bolívar",
+    "municipio_hecho": "Cartagena De Indias",
+    "anio_hecho": "All"
+  },
+  "query_operator": "Contains any",
+  "baseline_procesos": 502027,
+  "terms": 18,
+  "rows": 414,
+  "observed_year_points": 358,
+  "reconciliation": [
+    {
+      "term": "homicidio",
+      "cumulative": 12719,
+      "annual_sum": 12715,
+      "unexplained_difference": 4,
+      "years_displayed": 20,
+      "years_not_displayed": [
+        2005,
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "feminicidio",
+      "cumulative": 137,
+      "annual_sum": 137,
+      "unexplained_difference": 0,
+      "years_displayed": 13,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013
+      ]
+    },
+    {
+      "term": "lesiones",
+      "cumulative": 68537,
+      "annual_sum": 68530,
+      "unexplained_difference": 7,
+      "years_displayed": 21,
+      "years_not_displayed": [
+        2005,
+        2007
+      ]
+    },
+    {
+      "term": "hurto",
+      "cumulative": 136742,
+      "annual_sum": 136677,
+      "unexplained_difference": 65,
+      "years_displayed": 23,
+      "years_not_displayed": []
+    },
+    {
+      "term": "extorsion",
+      "cumulative": 4745,
+      "annual_sum": 4744,
+      "unexplained_difference": 1,
+      "years_displayed": 20,
+      "years_not_displayed": [
+        2005,
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "amenazas",
+      "cumulative": 20246,
+      "annual_sum": 20243,
+      "unexplained_difference": 3,
+      "years_displayed": 21,
+      "years_not_displayed": [
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "secuestro",
+      "cumulative": 312,
+      "annual_sum": 312,
+      "unexplained_difference": 0,
+      "years_displayed": 19,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "violencia intrafamiliar",
+      "cumulative": 42783,
+      "annual_sum": 42772,
+      "unexplained_difference": 11,
+      "years_displayed": 21,
+      "years_not_displayed": [
+        2004,
+        2007
+      ]
+    },
+    {
+      "term": "acceso carnal",
+      "cumulative": 5727,
+      "annual_sum": 5720,
+      "unexplained_difference": 7,
+      "years_displayed": 20,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2007
+      ]
+    },
+    {
+      "term": "acto sexual",
+      "cumulative": 3379,
+      "annual_sum": 3375,
+      "unexplained_difference": 4,
+      "years_displayed": 21,
+      "years_not_displayed": [
+        2004,
+        2005
+      ]
+    },
+    {
+      "term": "trata de personas",
+      "cumulative": 131,
+      "annual_sum": 131,
+      "unexplained_difference": 0,
+      "years_displayed": 18,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007,
+        2008
+      ]
+    },
+    {
+      "term": "estafa",
+      "cumulative": 25912,
+      "annual_sum": 25891,
+      "unexplained_difference": 21,
+      "years_displayed": 23,
+      "years_not_displayed": []
+    },
+    {
+      "term": "inasistencia alimentaria",
+      "cumulative": 9914,
+      "annual_sum": 9911,
+      "unexplained_difference": 3,
+      "years_displayed": 23,
+      "years_not_displayed": []
+    },
+    {
+      "term": "estupefacientes",
+      "cumulative": 27977,
+      "annual_sum": 27974,
+      "unexplained_difference": 3,
+      "years_displayed": 19,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "armas de fuego",
+      "cumulative": 11611,
+      "annual_sum": 11608,
+      "unexplained_difference": 3,
+      "years_displayed": 19,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007
+      ]
+    },
+    {
+      "term": "desplazamiento forzado",
+      "cumulative": 434,
+      "annual_sum": 432,
+      "unexplained_difference": 2,
+      "years_displayed": 21,
+      "years_not_displayed": [
+        2004,
+        2006
+      ]
+    },
+    {
+      "term": "contaminacion ambiental",
+      "cumulative": 182,
+      "annual_sum": 182,
+      "unexplained_difference": 0,
+      "years_displayed": 18,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007,
+        2009
+      ]
+    },
+    {
+      "term": "corrupcion",
+      "cumulative": 148,
+      "annual_sum": 148,
+      "unexplained_difference": 0,
+      "years_displayed": 18,
+      "years_not_displayed": [
+        2004,
+        2005,
+        2006,
+        2007,
+        2009
+      ]
+    }
+  ],
+  "interpretation": "Series de procesos por año del hecho para búsquedas textuales de delito. Los términos pueden solaparse; no sumar entre términos. Un año no mostrado queda vacío, no se presume cero.",
+  "caveat": "2026 tiene corte al 30 de septiembre. Los procesos registrados no equivalen a hechos ocurridos, víctimas ni condenas. Las diferencias entre total filtrado y suma anual no se imputan a ningún año.",
+  "csv_sha256": "7ed353108b9800b48f2619560bec6ad94243365d6d9b0bf5fbd97f56a62ff159"
+}

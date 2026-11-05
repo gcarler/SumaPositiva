@@ -6,13 +6,16 @@ from collections.abc import Sequence
 from typing import Any
 
 from fastapi import HTTPException, status
+from starlette.concurrency import run_in_threadpool
 
 from app.modules.geodatos.models import CapaGeovisor, Territorio
 from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.schemas import (
+    AnaliticaMultifuenteResponse,
     CoordenadasAproximadas,
     DireccionEstandarizadaResponse,
     ExploradorHurtosResponse,
+    FiltrosMultifuente,
     HurtosFeatureCollection,
     IndicadoresTerritorioResponse,
     IndicadorTerritorioDetalladoRead,
@@ -347,6 +350,29 @@ class GeodatosService:
     async def listar_fuentes_indicadores(self) -> list[dict[str, Any]]:
         return await self.repository.listar_fuentes_indicadores()
 
+    async def analizar_multifuente(
+        self,
+        filtros: FiltrosMultifuente,
+        *,
+        serie_x: str | None = None,
+        serie_y: str | None = None,
+        observacion_id: str | None = None,
+    ) -> AnaliticaMultifuenteResponse:
+        from app.modules.geodatos.analitica_multifuente import LIMITE_OBSERVACIONES, construir_analitica
+
+        filas = await self.repository.obtener_observaciones_analiticas(LIMITE_OBSERVACIONES + 1)
+        try:
+            return await run_in_threadpool(
+                construir_analitica,
+                filas,
+                filtros,
+                serie_x=serie_x,
+                serie_y=serie_y,
+                observacion_id=observacion_id,
+            )
+        except ValueError as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+
     async def listar_indicadores(
         self,
         territorio_id: uuid.UUID | None = None,
@@ -356,10 +382,16 @@ class GeodatosService:
         fuente_datos: str | None = None,
         anio_corte: int | None = None,
         codigo_indicador: str | None = None,
+        anio_desde: int | None = None,
+        anio_hasta: int | None = None,
+        incluir_ediciones_previas: bool = True,
+        fuente_exacta: bool = False,
         busqueda: str | None = None,
         limit: int = 100,
         offset: int = 0,
     ) -> IndicadoresTerritorioResponse:
+        if anio_desde is not None and anio_hasta is not None and anio_desde > anio_hasta:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="El año inicial supera al final.")
         total, items = await self.repository.listar_indicadores_territorio(
             territorio_id=territorio_id,
             codigo_territorio=codigo_territorio,
@@ -368,6 +400,10 @@ class GeodatosService:
             fuente_datos=fuente_datos,
             anio_corte=anio_corte,
             codigo_indicador=codigo_indicador,
+            anio_desde=anio_desde,
+            anio_hasta=anio_hasta,
+            incluir_ediciones_previas=incluir_ediciones_previas,
+            fuente_exacta=fuente_exacta,
             busqueda=busqueda,
             limit=limit,
             offset=offset,

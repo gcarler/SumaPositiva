@@ -1,0 +1,89 @@
+{
+  "consulta_utc": "2026-10-21T22:13:51.244009+00:00",
+  "divipola": "13001",
+  "datasets": {
+    "rpc": {
+      "id": "v9qk-hdcc",
+      "url": "https://www.datos.gov.co/d/v9qk-hdcc",
+      "parametros": {
+        "$select": "divipola_municipio,departamento,municipio,nombre_indicador,fuente,derecho,ciclo_vital,anno_vigencia,valor_indicador,unidad_medida",
+        "$where": "divipola_municipio='13001'",
+        "$order": "nombre_indicador,anno_vigencia,valor_indicador",
+        "$limit": "1000"
+      },
+      "filas_salida": 230
+    },
+    "primera_infancia": {
+      "id": "5akr-u7t8",
+      "url": "https://www.datos.gov.co/d/5akr-u7t8",
+      "parametros": {
+        "$select": "vigencia,tipo_beneficiario_homologado,sum(beneficiarios) as valor,count(*) as filas",
+        "$where": "codigo_municipio_uds='13001'",
+        "$group": "vigencia,tipo_beneficiario_homologado",
+        "$order": "vigencia,tipo_beneficiario_homologado",
+        "$limit": "1000"
+      },
+      "filas_salida": 6
+    },
+    "prevencion": {
+      "id": "g58z-k6f6",
+      "url": "https://www.datos.gov.co/d/g58z-k6f6",
+      "parametros": {
+        "$select": "a_o,area_misional,sum(beneficiarios) as valor,count(*) as filas",
+        "$where": "codigo_municipio_atenci_n='13001'",
+        "$group": "a_o,area_misional",
+        "$order": "a_o,area_misional",
+        "$limit": "1000"
+      },
+      "filas_salida": 35
+    },
+    "uds": {
+      "id": "i8ww-5mcf",
+      "url": "https://www.datos.gov.co/d/i8ww-5mcf",
+      "parametros": {
+        "$select": "vigencia,count(distinct codigo_unidad_servicio) as valor,count(*) as filas",
+        "$where": "codigo_dane_municipio='13001'",
+        "$group": "vigencia",
+        "$order": "vigencia",
+        "$limit": "1000"
+      },
+      "filas_salida": 3
+    },
+    "bienestarina": {
+      "id": "crxh-as6c",
+      "url": "https://www.datos.gov.co/d/crxh-as6c",
+      "parametros": {
+        "$select": "anno,count(distinct cod_punto_de_entrega) as valor,count(*) as filas",
+        "$where": "codigo_dane_municipio='13001'",
+        "$group": "anno",
+        "$order": "anno",
+        "$limit": "1000"
+      },
+      "filas_salida": 5
+    }
+  },
+  "rpc_indicadores_distintos": 51,
+  "rpc_claves_duplicadas": 7,
+  "rpc_claves_con_valores_conflictivos": [
+    {
+      "indicador": "Tasa de mortalidad en menores de 1 año (por mil nacidos vivos)",
+      "anio": "2022",
+      "fuente": "DANE",
+      "ciclo_vital": "Primera Infancia",
+      "valores": [
+        "14.20",
+        "16.36"
+      ]
+    }
+  ],
+  "exclusiones": {
+    "pard_gj35-hct5": "No expone código de municipio; centro zonal no equivale a municipio de residencia o hecho.",
+    "contratos_4s78-bzvq": "El código municipal corresponde al contratista; no acredita ejecución en Cartagena.",
+    "salud_mental_xlsx": "Archivo descargable inspeccionado; sus tablas son nacionales, sin fila municipal Cartagena."
+  },
+  "nota": "RPC compila varias entidades; no sumar con sus fuentes originales. Beneficiarios y puntos no son casos ni personas únicas; comparar cortes y cobertura antes de inferir tendencias.",
+  "sha256_salida": {
+    "icbf_rpc_cartagena.csv": "591e8851b99b9044d0b2a856680a69c2e1cc6fa6db9afcebf321e138f4d8d5d4",
+    "icbf_oferta_cartagena.csv": "d594d8453386de60cbef586986ca511d70617e707f6996c20aaee319572e7ea6"
+  }
+}

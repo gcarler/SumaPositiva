@@ -1,0 +1,66 @@
+{
+  "carpeta_drive": "1z704iQPAyEp__BZPsUhBiny4ikOyJMk4",
+  "fecha_extraccion": "2026-10-21",
+  "fuentes": [
+    {
+      "serie": "extorsion",
+      "drive_file_id": "1l95yaiLS4pLPep68CZBYr7ZO781XUhqL",
+      "csv_en_zip": "Extorsión/Extorsión.csv",
+      "sha256_csv": "be28e546c9325240b363f629fd22853808576bf1581a0ecc215893ed28275824",
+      "filas": 1544,
+      "cobertura": "2018-2026",
+      "unidad": "suma Cantidad",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    },
+    {
+      "serie": "muertes_transporte",
+      "drive_file_id": "1wBJpxjYDtPq01ZvdCqB7lrncbXd4Q1RZ",
+      "csv_en_zip": "Muertes_Por_Evento_De_Transporte/Muertes_Eventos_transporte_Cartagena 2015 - 2026.csv",
+      "sha256_csv": "14f99fa828dd70e292c01d5b93dae9d80d13481de8b67832d308408d56282587",
+      "filas": 1442,
+      "cobertura": "2015-2026",
+      "unidad": "filas/casos",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    },
+    {
+      "serie": "delito_sexual",
+      "drive_file_id": "15rY4B427yqa1FP292kcsibEf1kGXBsIn",
+      "csv_en_zip": "Presunto_Delito_Sexual/Delito_sexual_Cartagena 2015-2026.csv",
+      "sha256_csv": "ec96be182807fa37e20bb53f08af78c31c31315d1b3c112c608c68b6199ef41b",
+      "filas": 5862,
+      "cobertura": "2015-2026",
+      "unidad": "filas/casos",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    },
+    {
+      "serie": "violencia_intrafamiliar",
+      "drive_file_id": "1eR69ew-v-d4pgZcOsxsvkm4vdSb2NCnY",
+      "csv_en_zip": "Violencia_Intrafamiliar/Violencia_intrafamiliar_Cartagena_2015-2026.csv",
+      "sha256_csv": "009e0af67454da9d9f39ac263b6a4fe74961f4d60c11724d19d89c1694e6cd67",
+      "filas": 4411,
+      "cobertura": "2015-2026",
+      "unidad": "filas/casos",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    },
+    {
+      "serie": "suicidios",
+      "drive_file_id": "1vbu1HCTmk8e5dHpLr_whX8e8kg23XC4A",
+      "csv_en_zip": "Suicidios/Suicidios_Cartagena 2015 - 2026.csv",
+      "sha256_csv": "12461222f84b45eeed565c173f384308d600393c91455fd641f6f9bcd2523ad4",
+      "filas": 446,
+      "cobertura": "2015-2026",
+      "unidad": "filas/casos",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    },
+    {
+      "serie": "homicidios",
+      "drive_file_id": "1uXt-frIq--GwpMi6sguSn9ZA65WAmuU3",
+      "csv_en_zip": "Homicidios/Homicidios_Cartagena_2015_2026.csv",
+      "sha256_csv": "c426f9e4b5cd02da37912098e33f199f43a8ed650bcfa34458ec1b84c8ccdc8e",
+      "filas": 3553,
+      "cobertura": "2015-2026",
+      "unidad": "filas/casos",
+      "nota": "GeoJSON con polígonos urbanos/rurales repetidos; no hay coordenada individual del hecho"
+    }
+  ]
+}

@@ -355,6 +355,15 @@ async def cargar_banco_multifuente(
     if not csv_path.exists():
         raise FileNotFoundError(f"Archivo no encontrado: {csv_path}")
 
+    # La edición cotejada conserva 77 identidades anteriores y ocho modalidades
+    # nuevas. El generador y las heurísticas históricos duplicarían esas series.
+    with csv_path.open(encoding="utf-8", newline="") as archivo:
+        if any(fila.get("fuente_clave") == "portal_policia_cuadros_cartagena" for fila in csv.DictReader(archivo)):
+            raise ValueError(
+                "El corte incluye el portal policial cotejado. Usar scripts.integrar_portal_policia "
+                "para su proyección; este importador histórico no debe duplicar ni reclasificar esas series."
+            )
+
     settings = Settings()
     engine = create_async_engine(str(settings.database_url))
     tiempo_inicio = time.perf_counter()

@@ -4,7 +4,7 @@ import uuid
 from collections.abc import Sequence
 from typing import Any
 
-from sqlalchemy import String, func, or_, select, text
+from sqlalchemy import String, and_, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.geodatos.models import (
@@ -120,6 +120,43 @@ class GeodatosRepository:
         res = await self.session.execute(stmt)
         return [{"id": row.id, "total": int(row.total)} for row in res.all()]
 
+    async def obtener_observaciones_analiticas(self, limite: int) -> list[dict[str, Any]]:
+        """Una captura coherente del banco público, sin geometrías ni escrituras."""
+        from app.modules.politicas.models import DimensionSeguridadHumana
+
+        stmt = (
+            select(
+                IndicadorTerritorio,
+                Territorio.codigo.label("codigo_territorio"),
+                Territorio.nombre.label("nombre_territorio"),
+                Territorio.tipo_territorio,
+                DimensionSeguridadHumana.codigo.label("codigo_dimension"),
+            )
+            .join(Territorio, IndicadorTerritorio.territorio_id == Territorio.id)
+            .outerjoin(DimensionSeguridadHumana, IndicadorTerritorio.dimension_id == DimensionSeguridadHumana.id)
+            .order_by(IndicadorTerritorio.id)
+            .limit(limite)
+        )
+        resultado = await self.session.execute(stmt)
+        return [
+            {
+                "id": str(row[0].id),
+                "territorio_id": str(row[0].territorio_id),
+                "codigo_indicador": row[0].codigo_indicador,
+                "nombre_indicador": row[0].nombre_indicador,
+                "valor": row[0].valor,
+                "unidad_medida": row[0].unidad_medida,
+                "anio_corte": row[0].anio_corte,
+                "fuente_datos": row[0].fuente_datos,
+                "metadatos": row[0].metadatos,
+                "codigo_territorio": row.codigo_territorio,
+                "nombre_territorio": row.nombre_territorio,
+                "tipo_territorio": row.tipo_territorio,
+                "codigo_dimension": row.codigo_dimension,
+            }
+            for row in resultado.all()
+        ]
+
     async def obtener_capa_geojson(self, codigo: str) -> dict[str, Any]:
         """FeatureCollection dinámico de una capa oficial del Geovisor."""
         stmt = select(
@@ -197,6 +234,10 @@ class GeodatosRepository:
         fuente_datos: str | None = None,
         anio_corte: int | None = None,
         codigo_indicador: str | None = None,
+        anio_desde: int | None = None,
+        anio_hasta: int | None = None,
+        incluir_ediciones_previas: bool = True,
+        fuente_exacta: bool = False,
         busqueda: str | None = None,
         limit: int = 100,
         offset: int = 0,
@@ -231,21 +272,61 @@ class GeodatosRepository:
         if territorio_id:
             filtros.append(IndicadorTerritorio.territorio_id == territorio_id)
         if codigo_territorio:
-            filtros.append(Territorio.codigo.ilike(f"%{codigo_territorio.strip()}%"))
+            codigo = codigo_territorio.strip().upper()
+            codigo = "DISTRITO-CTG" if codigo in {"13001", "DISTRITO"} else codigo
+            filtros.append(
+                or_(func.upper(Territorio.codigo) == codigo, func.upper(func.cast(Territorio.id, String)) == codigo)
+            )
         if dimension_id:
             filtros.append(IndicadorTerritorio.dimension_id == dimension_id)
         if dimension:
             dim_str = dimension.strip()
+            codigos = {
+                "PERS": ("personal",),
+                "COM": ("comunitaria",),
+                "AMB": ("ambiental",),
+                "ECON": ("economica",),
+                "SALUD": ("salud", "alimentaria"),
+                "POL": ("politica",),
+                "SAT": (),
+            }
+            dimension_7d = IndicadorTerritorio.metadatos["clasificacion_7d"]["dimension"].astext
+            if dim_str in codigos:
+                filtros.append(
+                    or_(
+                        dimension_7d == dim_str,
+                        and_(dimension_7d.is_(None), DimensionSeguridadHumana.codigo.in_(codigos[dim_str])),
+                    )
+                )
+            else:
+                filtros.append(
+                    or_(
+                        DimensionSeguridadHumana.codigo.ilike(f"%{dim_str}%"),
+                        DimensionSeguridadHumana.nombre.ilike(f"%{dim_str}%"),
+                    )
+                )
+        if fuente_datos:
+            fuente = fuente_datos.strip()
             filtros.append(
                 or_(
-                    DimensionSeguridadHumana.codigo.ilike(f"%{dim_str}%"),
-                    DimensionSeguridadHumana.nombre.ilike(f"%{dim_str}%"),
+                    IndicadorTerritorio.fuente_datos == fuente,
+                    func.split_part(IndicadorTerritorio.fuente_datos, " - ", 1) == fuente,
                 )
+                if fuente_exacta
+                else IndicadorTerritorio.fuente_datos.ilike(f"%{fuente}%")
             )
-        if fuente_datos:
-            filtros.append(IndicadorTerritorio.fuente_datos.ilike(f"%{fuente_datos.strip()}%"))
         if anio_corte:
             filtros.append(IndicadorTerritorio.anio_corte == anio_corte)
+        if anio_desde is not None:
+            filtros.append(IndicadorTerritorio.anio_corte >= anio_desde)
+        if anio_hasta is not None:
+            filtros.append(IndicadorTerritorio.anio_corte <= anio_hasta)
+        if not incluir_ediciones_previas:
+            filtros.append(
+                IndicadorTerritorio.metadatos["estado_cotejo_portal"].astext.is_distinct_from(
+                    "edicion_previa_no_sumar_con_portal"
+                )
+            )
         if codigo_indicador:
             filtros.append(IndicadorTerritorio.codigo_indicador.ilike(f"%{codigo_indicador.strip()}%"))
         if busqueda:

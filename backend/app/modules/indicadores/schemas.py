@@ -82,3 +82,38 @@ class CadenaValorRespuesta(BaseModel):
     insumo: list[FichaIndicadorRespuesta]
     producto: list[FichaIndicadorRespuesta]
     resultado: list[FichaIndicadorRespuesta]
+
+
+class CatalogoIndicadorRead(BaseModel):
+    """Fila del catálogo municipal de indicadores, sin recálculo de valores."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    codigo: str
+    nombre: str
+    dimension: str
+    definicion: str
+    formula: str
+    numerador: str
+    denominador: str
+    unidad: str
+    tipo_territorio_fuente: str
+    periodicidad: str
+    tipo_periodo: str
+    fuente: str
+    url_fuente: str
+    custodio: str
+    licencia: str
+    anio_base: str
+    interpretacion: str
+    riesgo_metodologico: str
+    tier: str
+    estado: str
+
+
+class CatalogoIndicadoresRespuesta(BaseModel):
+    """Catálogo metodológico de indicadores y el SHA-256 del archivo fuente."""
+
+    total: int
+    archivo_sha256: str
+    indicadores: list[CatalogoIndicadorRead]

@@ -10,7 +10,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-VERSION = "seguridad_humana_7d_v5"
+VERSION = "seguridad_humana_7d_v6"
 DIMENSIONES = {
     "PERS": "Seguridad Personal y Ciudadana",
     "COM": "Seguridad Convivencia y Comunitaria",
@@ -105,6 +105,36 @@ CRUCES: dict[tuple[str, str], Dimension] = {
     ("drive_excel_policial_11_delitos", "violencia_intrafamiliar"): "COM",
     ("drive_excel_policial_11_delitos", "terrorismo"): "SAT",
 }
+
+# Cuadros oficiales 2020–2026: las once categorías conservan el cruce de la
+# edición recibida y se añaden las ocho modalidades explícitas del Cuadro 10.
+# La clasificación no acredita equivalencia con registros, licencia o causalidad.
+CRUCES.update(
+    {
+        ("portal_policia_cuadros_cartagena", indicador): dimension
+        for indicador, dimension in {
+            "homicidio_intencional": "PERS",
+            "homicidio_transito": "PERS",
+            "lesiones_personales": "PERS",
+            "lesiones_transito": "PERS",
+            "violencia_intrafamiliar": "COM",
+            "violencia_sexual": "PERS",
+            "extorsion": "PERS",
+            "amenaza": "PERS",
+            "hurtos_total": "PERS",
+            "hurto_personas": "PERS",
+            "hurto_residencias": "PERS",
+            "hurto_comercio": "PERS",
+            "hurto_automotores": "PERS",
+            "hurto_motocicletas": "PERS",
+            "hurto_pirateria_terrestre": "PERS",
+            "hurto_entidades_financieras": "PERS",
+            "abigeato": "PERS",
+            "secuestro": "PERS",
+            "terrorismo": "SAT",
+        }.items()
+    }
+)
 
 ICBF_RPC_CRUCES: dict[Dimension, tuple[str, ...]] = {
     "PERS": (

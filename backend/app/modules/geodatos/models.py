@@ -2,9 +2,22 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Integer, Numeric, String, Text, text
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.schema import conv
 from sqlalchemy.types import UserDefinedType
 
 from app.core.database import Base
@@ -145,6 +158,10 @@ class IndicadorTerritorio(Base):
 
     __tablename__ = "indicadores_territorio"
     __table_args__ = (
+        CheckConstraint(
+            "nivel_riesgo IN ('bajo','medio','alto','critico','sin_evaluar')",
+            name=conv("chk_nivel_riesgo"),
+        ),
         Index("idx_indicadores_codigo", "codigo_indicador", postgresql_include=[]),
         Index("idx_indicadores_dimension", "dimension_id", postgresql_include=[]),
         Index("idx_indicadores_territorio", "territorio_id", postgresql_include=[]),

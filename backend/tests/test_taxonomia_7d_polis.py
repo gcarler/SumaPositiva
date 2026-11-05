@@ -5,7 +5,7 @@ from app.modules.compromisos.taxonomia_7d_polis import DIMENSIONES, VERSION, cla
 
 def test_siete_dimensiones_y_separacion_de_tipos():
     assert len(DIMENSIONES) == 7
-    assert VERSION == "seguridad_humana_7d_v5"
+    assert VERSION == "seguridad_humana_7d_v6"
     assert clasificar("policia_homicidios", "casos_registrados").dimension == "PERS"
     assert clasificar("policia_violencia_intrafamiliar", "casos_registrados").dimension == "COM"
     assert clasificar("drive_excel_policial_11_delitos", "terrorismo").dimension == "SAT"

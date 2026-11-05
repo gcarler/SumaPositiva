@@ -1,0 +1,13 @@
+{
+  "servicio": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer",
+  "pagina": "https://datospaz.unidadvictimas.gov.co/indice-de-riesgo-de-victimizacion/",
+  "escala": "municipio DIVIPOLA 13001",
+  "unidad": "índice estimado, escala 0 a 1",
+  "geometria": "polígono municipal de la capa; no punto de hecho",
+  "corte_fuente": "sin fecha de corte explícita en el servicio; año de medición en IRV_CYEAR",
+  "extraido_utc": "2026-10-23T01:50:58.236748+00:00",
+  "filas": 14,
+  "sin_dato": [
+    2016
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "adaptador_sha256": "8859ea4ceab626df09272e6d58040ef726d2d5f688137987359711f62b7ee0be",
+  "calidad_estructural": {
+    "contrato": "observacion_agregada_v1",
+    "estado": "ambar",
+    "filas_entrada": 2340,
+    "filas_tipadas": 2340,
+    "problemas": {
+      "dimension_sin_clasificar": 144
+    }
+  },
+  "entrada_sha256": "935d6d13a162466d1636a58dceacefb127db4bdf10eb25cbcce54a983fa4c9b9",
+  "esquema": "polis.observacion_agregada.v1",
+  "estado_publicacion": "no_publicable",
+  "filas": 2340,
+  "regla": "La capa tipada no acredita licencia, custodio, comparabilidad ni autorización de publicación.",
+  "ruta": "data/capas_analiticas/observaciones/00f5ac58edfbd50376f05fa3e62fab386f0c71ecb3ff4fb708375bf708f35f65.jsonl",
+  "salida_sha256": "00f5ac58edfbd50376f05fa3e62fab386f0c71ecb3ff4fb708375bf708f35f65"
+}

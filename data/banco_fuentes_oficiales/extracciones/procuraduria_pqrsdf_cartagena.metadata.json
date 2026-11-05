@@ -1,0 +1,9 @@
+{
+  "url": "https://www.datos.gov.co/resource/s226-fj9i.json?%24select=date_extract_y%28fecha_de_radicaci_n%29+as+anio%2Ctipo_de_pqrsdf%2Ccount%28%2A%29+as+n&%24where=departamento%3D%27BOLIVAR%27+AND+municipio%3D%27CARTAGENA%27+AND+fecha_de_radicaci_n+IS+NOT+NULL&%24group=anio%2Ctipo_de_pqrsdf&%24order=anio%2Ctipo_de_pqrsdf&%24limit=1000",
+  "pagina_entidad": "https://www.procuraduria.gov.co/Pages/datos-abiertos.aspx",
+  "sha256_respuesta": "4ac352d6da0714b0b3b8c324cf3b2b5891efb889cf5d84724408a50bb764e7c6",
+  "grupos": 5,
+  "consultado_utc": "2026-10-23T01:51:01.703882+00:00",
+  "unidad": "PQRSDF radicadas en la sede electrónica de Procuraduría; municipio informado en el registro",
+  "advertencia": "No son casos de violencia ni denuncias penales; la cobertura del conjunto debe revisarse al refrescar"
+}

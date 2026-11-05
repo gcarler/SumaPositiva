@@ -177,3 +177,26 @@ Los controles de tasa por IP implementados en memoria de proceso (como `verifica
    - Las ventanas en memoria quedan particionadas entre los workers locales (el tráfico balanceado por round-robin distribuye el contador entre procesos independientes).
    - Para garantizar un tope global sincronizado en despliegues con alta concurrencia o múltiples réplicas, debe activarse la persistencia de control de tasa en base de datos PostgreSQL (`LimiteAcceso` gestionado por SQLAlchemy) o integrarse un almacén compartido de baja latencia como Redis (`redis-py` con algoritmos de token bucket o sliding log).
    - Los encabezados estándar `Retry-After` informan al cliente la ventana de espera requerida ante respuestas `429 Too Many Requests`.
+
+## Release web y fuente policial — 2026-11-05
+
+El frontend de este servidor usa el artefacto independiente
+`/root/polis-releases/policia_20261105_r2/standalone`, seleccionado mediante
+`/etc/systemd/system/polis-frontend.service.d/20261105-policia.conf`.
+El drop-in sustituye `WorkingDirectory` y vacía `ExecStartPre`: el artefacto ya
+incluye `public` y los estáticos correspondientes a su `distDir`. Reconstruir
+`.next` no actualiza esta release ni debe retirar sus archivos. Para otra entrega,
+preparar y comprobar un artefacto separado, actualizar el directorio de la unidad,
+ejecutar `daemon-reload` y reiniciar; conservar la release anterior para recuperación.
+
+El corte policial cotejado se registra con `scripts.cargar_catalogo_fuentes` y se
+proyecta con `scripts.integrar_portal_policia`: conserva las 77 identidades previas
+y añade 56 observaciones. El importador heurístico histórico rechaza este corte
+antes de abrir la base para evitar duplicados y reclasificaciones. La proyección
+exige previsualización y su SHA de estado; una versión nueva requiere otro cotejo.
+Los contratos y licencias pendientes del catálogo no quedan aprobados por cargarlo.
+
+La migración `0096_riesgo_sin_evaluar` admite conteos sin calificación de riesgo.
+Su downgrade exige restaurar antes esos registros; no convierte la ausencia de
+evaluación en riesgo bajo o medio. Evidencia y recuperación específica de esta
+entrega: `bridge/20261105_integracion_policia_produccion.md`.

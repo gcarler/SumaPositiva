@@ -1,0 +1,156 @@
+{
+  "slides": [
+    {
+      "id": "asamblea-claustro",
+      "titulo": "Cabildo Abierto y Foro Ciudadano",
+      "subtitulo": "Deliberación comunitaria vinculante y construcción colectiva de la seguridad humana en Cartagena de Indias.",
+      "enfoque": "Cabildo Masivo Territorial",
+      "imagenFondo": "/images/hero/hero-asamblea-claustro.webp",
+      "ubicacionReal": "Claustro de la Merced — Centro Histórico",
+      "altura": "fullscreen",
+      "badgeTexto": "Participación Ciudadana Masiva",
+      "activa": true,
+      "heroImageId": null,
+      "accionPrimaria": {
+        "label": "Explorar Diagnóstico",
+        "href": "/fases",
+        "onClickAction": null
+      }
+    },
+    {
+      "id": "dialogo-comunitario",
+      "titulo": "Diálogo Social y Escucha Barrial",
+      "subtitulo": "Encuentros cara a cara en los sectores populares para concertar compromisos de bienestar y seguridad integral.",
+      "enfoque": "Diálogo Barrial Comunitario",
+      "imagenFondo": "/images/hero/hero-dialogo-comunitario.webp",
+      "ubicacionReal": "Sector El Pozón — Localidad 2 (De la Virgen y Turística)",
+      "altura": "fullscreen",
+      "badgeTexto": "Presencia Barrial Directa",
+      "activa": true,
+      "heroImageId": null,
+      "accionPrimaria": {
+        "label": "Modo Barrio",
+        "href": "/barrio",
+        "onClickAction": null
+      }
+    },
+    {
+      "id": "enfoque-diferencial",
+      "titulo": "Enfoque Diferencial, Género y Juventud",
+      "subtitulo": "Garantía de derechos, equidad de género sustantiva y liderazgo transformador de las nuevas generaciones cartageneras.",
+      "enfoque": "Mujeres, Jóvenes y Diversidad",
+      "imagenFondo": "/images/hero/hero-enfoque-diferencial.webp",
+      "ubicacionReal": "Casa de Justicia Chiquinquirá — Localidad 2",
+      "altura": "fullscreen",
+      "badgeTexto": "Enfoque Diferencial e Inclusivo",
+      "activa": true,
+      "heroImageId": null,
+      "accionPrimaria": {
+        "label": "Ver Compromisos",
+        "href": "/alternativas",
+        "onClickAction": null
+      }
+    },
+    {
+      "id": "marco-logico",
+      "titulo": "Metodología y Proyectos Comunitarios",
+      "subtitulo": "Formulación técnica rigurosa con marco lógico, banco de iniciativas e impacto territorial verificable.",
+      "enfoque": "Proyectos Comunitarios y Marco Lógico",
+      "imagenFondo": "/images/hero/hero-marco-logico.webp",
+      "ubicacionReal": "Centro Comunitario Nelson Mandela — Localidad 3 (Industrial y de la Bahía)",
+      "altura": "fullscreen",
+      "badgeTexto": "Formulación Técnica Participativa",
+      "activa": true,
+      "heroImageId": null,
+      "accionPrimaria": {
+        "label": "Consultar Banco",
+        "href": "/fases",
+        "onClickAction": null
+      }
+    },
+    {
+      "id": "mesa-deliberativa",
+      "titulo": "Mesa de Concertación y Transparencia",
+      "subtitulo": "Veeduría ciudadana activa, rendición de cuentas pública y trazabilidad institucional inalterable.",
+      "enfoque": "Transparencia y Control Social",
+      "imagenFondo": "/images/hero/hero-mesa-deliberativa.webp",
+      "ubicacionReal": "Palacio de la Proclamación — Plaza de Bolívar",
+      "altura": "fullscreen",
+      "badgeTexto": "Transparencia y Fe Pública",
+      "activa": true,
+      "heroImageId": null,
+      "accionPrimaria": {
+        "label": "Rendición de Cuentas",
+        "href": "/plataforma/rendicion",
+        "onClickAction": null
+      }
+    }
+  ],
+  "catalogoImagenes": [
+    {
+      "id": "asamblea-claustro",
+      "titulo": "Cabildo Abierto y Foro Ciudadano",
+      "descripcion": "Vista aérea de asamblea y cabildo masivo en patio colonial cartagenero con amplia deliberación ciudadana.",
+      "archivo": "/images/hero/hero-asamblea-claustro.webp",
+      "thumbnail": "/images/hero/hero-asamblea-claustro-thumb.webp",
+      "enfoque": "Cabildo Masivo Territorial",
+      "habilitada": true,
+      "heroImageId": "asamblea-claustro"
+    },
+    {
+      "id": "dialogo-comunitario",
+      "titulo": "Diálogo Social y Rendición de Cuentas",
+      "descripcion": "Conversatorio abierto al aire libre con micrófono ciudadano y concertación institucional directa.",
+      "archivo": "/images/hero/hero-dialogo-comunitario.webp",
+      "thumbnail": "/images/hero/hero-dialogo-comunitario-thumb.webp",
+      "enfoque": "Transparencia y Diálogo Directo",
+      "habilitada": true,
+      "heroImageId": "dialogo-comunitario"
+    },
+    {
+      "id": "enfoque-diferencial",
+      "titulo": "Taller Diferencial de Género y Juventud",
+      "descripcion": "Espacio inclusivo con el Observatorio de Equidad y organizaciones comunitarias de mujeres y jóvenes.",
+      "archivo": "/images/hero/hero-enfoque-diferencial.webp",
+      "thumbnail": "/images/hero/hero-enfoque-diferencial-thumb.webp",
+      "enfoque": "Inclusión y Género",
+      "habilitada": true,
+      "heroImageId": "enfoque-diferencial"
+    },
+    {
+      "id": "marco-logico",
+      "titulo": "Matriz de Marco Lógico y Proyectos",
+      "descripcion": "Mesa comunitaria con líderes y jóvenes formulando proyectos territoriales con la matriz de relatoría técnica.",
+      "archivo": "/images/hero/hero-marco-logico.webp",
+      "thumbnail": "/images/hero/hero-marco-logico-thumb.webp",
+      "enfoque": "Metodología Participativa & Comunitaria",
+      "habilitada": true,
+      "heroImageId": "marco-logico"
+    },
+    {
+      "id": "mesa-deliberativa",
+      "titulo": "Mesa Redonda y Concertación Temática",
+      "descripcion": "Trabajo deliberativo en equipo con carpetas, relatoría y concertación de compromisos ciudadanos.",
+      "archivo": "/images/hero/hero-mesa-deliberativa.webp",
+      "thumbnail": "/images/hero/hero-mesa-deliberativa-thumb.webp",
+      "enfoque": "Mesas Temáticas POLIS",
+      "habilitada": true,
+      "heroImageId": "mesa-deliberativa"
+    },
+    {
+      "id": "ninguna",
+      "titulo": "Solo Retícula Institucional",
+      "descripcion": "Fondo minimalista oficial con retícula de puntos de alta legibilidad sin fotografía de fondo.",
+      "archivo": "",
+      "thumbnail": "",
+      "enfoque": "Fondo Minimalista Oficial",
+      "habilitada": true,
+      "heroImageId": "ninguna"
+    }
+  ],
+  "opacidad": 80,
+  "modoCarrusel": true,
+  "intervaloSegundos": 7,
+  "heroImageId": "asamblea-claustro",
+  "pageImages": {}
+}
