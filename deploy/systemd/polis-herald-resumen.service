@@ -1,0 +1,13 @@
+[Unit]
+Description=POLIS Herald - resumen diario de pendientes para usuarios internos
+After=network.target postgresql.service
+Wants=network.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/root/polis/backend
+EnvironmentFile=/root/polis/backend/.env
+ExecStart=/root/polis/backend/.venv/bin/python -m app.modules.notificaciones.resumen_cli
+# El CLI solo encola (patrón outbox); la entrega la hace polis-herald.service.

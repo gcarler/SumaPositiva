@@ -2,6 +2,7 @@
 
 PUBLIC_ANALYTICAL_GET_ROUTES = frozenset(
     {
+        "/api/v1/geodatos/analitica/multifuente",
         "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento",
         "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes",
     }

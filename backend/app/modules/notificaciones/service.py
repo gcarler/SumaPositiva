@@ -5,11 +5,13 @@ import uuid
 from collections.abc import Sequence
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
+from sqlalchemy.dialects.postgresql import insert as insert_pg
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.config import Settings
+from app.core.transactions import transaction
 from app.modules.aportes.models import PropuestaCiudadana
 from app.modules.notificaciones.models import NotificacionTransaccional
 from app.modules.notificaciones.plantillas_eventos import (
@@ -17,6 +19,7 @@ from app.modules.notificaciones.plantillas_eventos import (
     generar_html_constancia_actualizacion_propuesta,
     generar_html_gestion_institucional,
     generar_html_recuperacion_contrasena,
+    generar_html_resumen_diario,
     generar_html_seguridad_perfil,
 )
 from app.modules.notificaciones.plantillas_stack import (
@@ -428,6 +431,7 @@ class NotificacionService:
         desplazamiento: int = 0,
         codigo_radicado: str | None = None,
         tipo_evento: str | None = None,
+        estado_envio: str | None = None,
     ) -> tuple[int, Sequence[NotificacionTransaccional]]:
         """Listado de notificaciones para auditoría forense y control institucional."""
         condiciones = []
@@ -435,6 +439,8 @@ class NotificacionService:
             condiciones.append(NotificacionTransaccional.codigo_radicado == codigo_radicado.strip().upper())
         if tipo_evento:
             condiciones.append(NotificacionTransaccional.tipo_evento == tipo_evento)
+        if estado_envio:
+            condiciones.append(NotificacionTransaccional.estado_envio == estado_envio)
 
         conteo_query = select(func.count(NotificacionTransaccional.id))
         if condiciones:
@@ -454,3 +460,114 @@ class NotificacionService:
         resultado = await self.session.execute(query)
         elementos = resultado.scalars().all()
         return total, elementos
+
+    async def reintentar_manual(self, notificacion_id: uuid.UUID, sujeto) -> NotificacionTransaccional:
+        """Herald Fase 3: reintento manual de una notificación agotada, auditado.
+
+        Solo filas 'fallido' con ``intentos >= MAX_INTENTOS`` (el worker no las
+        vuelve a tomar solo). Devuelve la fila a 'pendiente' con contador limpio.
+        """
+        from app.modules.auditoria.models import RegistroAuditoria
+        from app.modules.notificaciones.worker import MAX_INTENTOS
+
+        async with transaction(self.session):
+            resultado = await self.session.execute(
+                select(NotificacionTransaccional)
+                .where(NotificacionTransaccional.id == notificacion_id)
+                .with_for_update()
+                .execution_options(populate_existing=True)
+            )
+            registro = resultado.scalar_one_or_none()
+            if registro is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No existe una notificación con ese identificador",
+                )
+            if registro.estado_envio != "fallido" or registro.intentos < MAX_INTENTOS:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=(
+                        "Solo se puede reintentar manualmente una notificación 'fallido' con "
+                        f"{MAX_INTENTOS} o más intentos (estado actual: {registro.estado_envio}, "
+                        f"intentos: {registro.intentos})."
+                    ),
+                )
+
+            intentos_previos = registro.intentos
+            registro.estado_envio = "pendiente"
+            registro.intentos = 0
+            registro.proximo_intento_en = None
+            registro.error_detalle = None
+            await self.session.flush()
+
+            auditoria = RegistroAuditoria(
+                tabla_afectada="participacion_ciudadana.notificaciones_transaccionales",
+                registro_id=registro.id,
+                accion="REINTENTO_MANUAL_HERALD",
+                usuario_id=getattr(sujeto, "sujeto_id", None),
+                causal="tecnica",
+                justificacion_motivada=(
+                    f"Reintento manual de notificación agotada ({intentos_previos} intentos previos) "
+                    f"para {registro.destinatario_correo}"
+                ),
+                metadatos={
+                    "notificacion_id": str(registro.id),
+                    "tipo_evento": registro.tipo_evento,
+                    "intentos_previos": intentos_previos,
+                },
+            )
+            self.session.add(auditoria)
+            await self.session.flush()
+            await self.session.refresh(registro)
+            return registro
+
+    async def enviar_resumen_diario(
+        self,
+        *,
+        destinatario: str,
+        nombre_funcionario: str,
+        fecha_iso: str,
+        fecha_legible: str,
+        acciones: Sequence[str],
+        pendientes: Sequence[str],
+        enlace_panel: str | None = None,
+    ) -> NotificacionTransaccional | None:
+        """Herald Fase 3: resumen diario consolidado de gestión y pendientes.
+
+        Idempotente por diseño: ``codigo_radicado = RESUMEN-{fecha}`` contra el
+        índice único parcial ``(destinatario_correo, codigo_radicado)`` con
+        ``ON CONFLICT DO NOTHING``. Ante corridas concurrentes el índice gana:
+        la perdedora no inserta y devuelve None en lugar de explotar con una
+        IntegrityError (remediación del hallazgo D-2 del dictamen EAF 275).
+        """
+        codigo = f"RESUMEN-{fecha_iso}"
+        cuerpo_html = generar_html_resumen_diario(
+            nombre_funcionario=nombre_funcionario,
+            fecha_legible=fecha_legible,
+            acciones=list(acciones),
+            pendientes=list(pendientes),
+            enlace_panel=enlace_panel or self._enlace_panel(),
+        )
+        asunto = (f"POLIS: Resumen del día {fecha_legible} — {len(acciones)} acciones, {len(pendientes)} pendientes")[
+            :250
+        ]
+        sentencia = (
+            insert_pg(NotificacionTransaccional)
+            .values(
+                codigo_radicado=codigo,
+                destinatario_correo=destinatario,
+                tipo_evento="resumen_diario",
+                asunto=asunto,
+                cuerpo_html=cuerpo_html,
+                estado_envio="pendiente",
+            )
+            .on_conflict_do_nothing(
+                index_elements=["destinatario_correo", "codigo_radicado"],
+                index_where=text("tipo_evento = 'resumen_diario'"),
+            )
+            .returning(NotificacionTransaccional.id)
+        )
+        id_nueva = (await self.session.execute(sentencia)).scalar_one_or_none()
+        if id_nueva is None:
+            return None
+        return await self.session.get(NotificacionTransaccional, id_nueva)

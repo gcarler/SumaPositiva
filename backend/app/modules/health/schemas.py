@@ -8,6 +8,13 @@ class LivenessResponse(BaseModel):
     service: str = "polis-api"
 
 
+class HealthHeraldResponse(BaseModel):
+    """Estado mínimo del Herald para el monitor de operación (sin cifras ni PII)."""
+
+    estado: Literal["saludable", "degradado", "critico"]
+    motivos: list[str] = Field(default_factory=list)
+
+
 class ReadinessResponse(BaseModel):
     status: Literal["ready", "unavailable"]
     database: Literal["ok", "unavailable"]

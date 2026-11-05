@@ -42,8 +42,11 @@ class Settings(BaseSettings):
     smtp_port: int = Field(default=587, ge=1, le=65535)
     smtp_usuario: str | None = None
     smtp_contrasena: str | None = None
-    smtp_remitente: str = "POLIS <no-reply@example.org>"
+    smtp_remitente: str = "Polis Plataforma <no-reply@example.org>"
     smtp_tls: bool = True
+    # Herald Fase 3: interruptor del resumen diario de pendientes (Encargo 275).
+    herald_resumen_activo: bool = True
+
     identidad_token_minutos: int = Field(default=30, ge=5, le=120)
     identidad_limite_ip: int = Field(default=60, ge=1)
     identidad_limite_cuenta: int = Field(default=10, ge=1)

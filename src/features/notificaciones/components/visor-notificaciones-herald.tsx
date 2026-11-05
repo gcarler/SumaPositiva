@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   listarHistorialNotificaciones,
+  reintentarNotificacion,
   type NotificacionLectura,
 } from "../services/notificaciones-api";
+import { esNotificacionAgotada } from "../lib/herald-helpers";
 import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -21,6 +23,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  AlertTriangle,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -48,8 +52,11 @@ export function VisorNotificacionesHerald() {
   const [desplazamiento, setDesplazamiento] = useState(0);
   const [filtroRadicado, setFiltroRadicado] = useState("");
   const [filtroTipoEvento, setFiltroTipoEvento] = useState<string>("");
+  const [soloFallidos, setSoloFallidos] = useState(false);
   const [busquedaInput, setBusquedaInput] = useState("");
   const [copiadoId, setCopiadoId] = useState<string | null>(null);
+  const [reintentandoId, setReintentandoId] = useState<string | null>(null);
+  const [confirmandoReintentoId, setConfirmandoReintentoId] = useState<string | null>(null);
 
   const { data, isPending, error, refetch, isFetching } = useQuery({
     queryKey: [
@@ -58,6 +65,7 @@ export function VisorNotificacionesHerald() {
       desplazamiento,
       filtroRadicado,
       filtroTipoEvento,
+      soloFallidos,
     ],
     queryFn: () =>
       listarHistorialNotificaciones({
@@ -65,6 +73,7 @@ export function VisorNotificacionesHerald() {
         desplazamiento,
         codigo_radicado: filtroRadicado || undefined,
         tipo_evento: filtroTipoEvento || undefined,
+        estado_envio: soloFallidos ? "fallido" : undefined,
       }),
   });
 
@@ -78,7 +87,26 @@ export function VisorNotificacionesHerald() {
     setBusquedaInput("");
     setFiltroRadicado("");
     setFiltroTipoEvento("");
+    setSoloFallidos(false);
     setDesplazamiento(0);
+  };
+
+  const handleEjecutarReintento = async (item: NotificacionLectura) => {
+    try {
+      setReintentandoId(item.id);
+      const resp = await reintentarNotificacion(item.id);
+      toast.success(
+        resp.mensaje || `Reintento programado para ${item.destinatario_correo}`
+      );
+      setConfirmandoReintentoId(null);
+      await refetch();
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Error al reintentar envío de notificación";
+      toast.error(msg);
+    } finally {
+      setReintentandoId(null);
+    }
   };
 
   const copiarRadicado = (codigo: string) => {
@@ -155,7 +183,7 @@ export function VisorNotificacionesHerald() {
             <Search className="size-3.5" aria-hidden="true" />
             <span>Buscar</span>
           </Button>
-          {(filtroRadicado || filtroTipoEvento) && (
+          {(filtroRadicado || filtroTipoEvento || soloFallidos) && (
             <Button
               type="button"
               variant="outline"
@@ -171,15 +199,30 @@ export function VisorNotificacionesHerald() {
         <div className="flex flex-wrap gap-1.5 text-xs">
           <Button
             type="button"
-            variant={!filtroTipoEvento ? "default" : "outline"}
+            variant={!filtroTipoEvento && !soloFallidos ? "default" : "outline"}
             size="sm"
             onClick={() => {
               setFiltroTipoEvento("");
+              setSoloFallidos(false);
               setDesplazamiento(0);
             }}
             className="h-7 rounded-full px-2.5 text-[11px]"
           >
             Todos ({total})
+          </Button>
+          <Button
+            type="button"
+            variant={soloFallidos ? "destructive" : "outline"}
+            size="sm"
+            onClick={() => {
+              setSoloFallidos((prev) => !prev);
+              setDesplazamiento(0);
+            }}
+            className="h-7 rounded-full px-2.5 text-[11px]"
+            aria-pressed={soloFallidos}
+          >
+            <AlertTriangle className="size-3 mr-1" aria-hidden="true" />
+            Solo fallidos
           </Button>
           {Object.entries(EVENTO_LABELS).map(([key, config]) => (
             <Button
@@ -292,6 +335,11 @@ export function VisorNotificacionesHerald() {
                         timeStyle: "short",
                       })}
                     </span>
+                    {item.intentos !== undefined && item.intentos > 0 && (
+                      <span>
+                        Intentos: <strong className="text-[var(--text-secondary)]">{item.intentos}</strong>
+                      </span>
+                    )}
                     {item.error_detalle && (
                       <span className="text-[var(--destructive)] truncate max-w-xs" title={item.error_detalle}>
                         (Detalle: {item.error_detalle})
@@ -300,7 +348,54 @@ export function VisorNotificacionesHerald() {
                   </div>
                 </div>
 
-                <div className="shrink-0 flex items-center justify-end">
+                <div className="shrink-0 flex flex-wrap items-center justify-end gap-2">
+                  {esNotificacionAgotada(item) && (
+                    confirmandoReintentoId === item.id ? (
+                      <div className="flex items-center gap-1.5 rounded-lg border border-[var(--destructive)] bg-[var(--surface-1)] p-1">
+                        <span className="text-[11px] text-[var(--destructive)] font-medium px-1">
+                          ¿Reintentar envío?
+                        </span>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          type="button"
+                          disabled={reintentandoId === item.id}
+                          onClick={() => void handleEjecutarReintento(item)}
+                          className="h-6 px-2 text-[10px]"
+                        >
+                          {reintentandoId === item.id ? (
+                            <RefreshCw className="size-3 animate-spin" aria-hidden="true" />
+                          ) : (
+                            "Sí, reintentar"
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          type="button"
+                          disabled={reintentandoId === item.id}
+                          onClick={() => setConfirmandoReintentoId(null)}
+                          className="h-6 px-1.5 text-[10px]"
+                        >
+                          Cancelar
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
+                        disabled={reintentandoId === item.id}
+                        onClick={() => setConfirmandoReintentoId(item.id)}
+                        className="h-7 px-2.5 text-[11px] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] gap-1"
+                        title="Reintentar despacho de esta notificación"
+                      >
+                        <RotateCcw className="size-3 text-[var(--warning)]" aria-hidden="true" />
+                        <span>Reintentar</span>
+                      </Button>
+                    )
+                  )}
+
                   <a
                     href={`/api/v1/notificaciones/radicado/${encodeURIComponent(item.codigo_radicado)}`}
                     target="_blank"

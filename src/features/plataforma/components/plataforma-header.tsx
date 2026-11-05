@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
+import { IsotipoPolis } from "@/shared/branding/logo-polis";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { usePanelStore } from "@/core/panels/panel-store";
 import { modulosPermitidos, puedeEditar, ROLES } from "../models/acceso";
@@ -34,14 +36,24 @@ export function PlataformaHeader() {
   return (
     <header className="space-y-3 border-b border-border bg-surface-1 p-4 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="break-words font-medium text-text-primary">
-            {sesion?.identidad?.nombre ?? "Usuario"}
-          </p>
-          <p className="text-sm text-text-secondary">
-            {ROLES[sesion?.rol ?? ""] ?? sesion?.rol?.replaceAll("_", " ") ?? "Sin rol interno"}
-            {soloLectura ? " · Solo lectura" : ""}
-          </p>
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/"
+            aria-label="Ir al portal público de POLIS"
+            className="group flex size-9 shrink-0 items-center justify-center rounded-lg bg-[var(--surface-2)] border border-[var(--border-strong)] p-1 shadow-xs transition-all hover:border-[var(--ember)] hover:scale-105"
+            title="Volver al portal público de POLIS"
+          >
+            <IsotipoPolis className="size-full" />
+          </Link>
+          <div className="min-w-0">
+            <p className="break-words font-medium text-text-primary">
+              {sesion?.identidad?.nombre ?? "Usuario"}
+            </p>
+            <p className="text-sm text-text-secondary">
+              {ROLES[sesion?.rol ?? ""] ?? sesion?.rol?.replaceAll("_", " ") ?? "Sin rol interno"}
+              {soloLectura ? " · Solo lectura" : ""}
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" onClick={abrirCuenta}>

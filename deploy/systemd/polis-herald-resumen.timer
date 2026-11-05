@@ -1,0 +1,12 @@
+[Unit]
+Description=POLIS Herald - disparo diario del resumen de pendientes (07:00 America/Bogota)
+
+[Timer]
+# Persistent=true: si el servidor estuvo apagado a la hora programada, dispara
+# al arrancar para no perder el resumen del día.
+OnCalendar=*-*-* 07:00:00 America/Bogota
+Persistent=true
+Unit=polis-herald-resumen.service
+
+[Install]
+WantedBy=timers.target

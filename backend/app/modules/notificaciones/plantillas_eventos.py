@@ -27,7 +27,7 @@ def _cuerpo_institucional(titulo_pagina: str, subtitulo: str, contenido: str, pi
 <table role="presentation" width="100%" style="max-width:600px; background-color:#ffffff; border-radius:8px; border:1px solid #e2e8f0; overflow:hidden;">
 <tr>
 <td style="background-color:#0f172a; padding:24px 32px; border-bottom:3px solid #0284c7;">
-<p style="margin:0; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#38bdf8; text-transform:uppercase;">Alcaldía Mayor de Cartagena de Indias</p>
+<p style="margin:0; font-size:11px; font-weight:700; letter-spacing:0.04em; color:#38bdf8; text-transform:uppercase;">polis | plataforma para la construccion de politicas publicas</p>
 <h1 style="margin:4px 0 0 0; font-size:18px; font-weight:700; color:#ffffff;">Sistema Distrital POLIS</h1>
 <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">{html.escape(subtitulo)}</p>
 </td>
@@ -193,9 +193,12 @@ def generar_html_actividad_apoyo(
             "Gracias por participar: su respaldo quedó registrado como constancia de "
             "actividad en el Sistema Distrital POLIS."
         )
-    filas: list[tuple[str, str]] = [("Radicado", radicado), ("Propuesta", titulo)]
-    if dimension_titulo:
-        filas.append(("Dimensión de Seguridad Humana", dimension_titulo))
+    filas: list[tuple[str, str]] = [
+        ("Entidad", "Alcaldía Mayor de Cartagena de Indias"),
+        ("Política", dimension_titulo or "Política Pública de Seguridad y Convivencia Ciudadana"),
+        ("Radicado", radicado),
+        ("Propuesta", titulo),
+    ]
     filas.append(("Fecha y hora oficial", datetime.now(UTC).strftime("%d/%m/%Y %H:%M UTC")))
     contenido = destacado + intro + _tarjeta(filas) + _boton(enlace_seguimiento, "Ver el progreso de la propuesta")
     if not es_autor and enlace_actividades:
@@ -329,4 +332,53 @@ def generar_html_constancia_actualizacion_propuesta(
         "Cartagena Ciudad de Derechos · Participación Vinculante",
         contenido,
         "Radicado único e inmutable; fe pública conforme a la Sentencia C-150 de 2015.",
+    )
+
+
+def generar_html_resumen_diario(
+    nombre_funcionario: str,
+    fecha_legible: str,
+    acciones: list[str],
+    pendientes: list[str],
+    enlace_panel: str,
+) -> str:
+    """Resumen diario consolidado de gestión y pendientes del funcionario (Herald Fase 3).
+
+    Un correo por usuario interno por día calendario (America/Bogota); solo se
+    envía si hay actividad o pendientes. Los datos de usuario pasan por
+    ``html.escape`` como en todas las plantillas institucionales.
+    """
+    contenido = (
+        _destacado("#eef2ff", "#c7d2fe", "#3730a3", "Resumen diario de gestión institucional")
+        + _parrafo(
+            f"Estimado(a) <strong>{html.escape(nombre_funcionario)}</strong>: este es el resumen "
+            f"consolidado de su gestión del día {html.escape(fecha_legible)} (hora distrital "
+            "America/Bogota):"
+        )
+        + _tarjeta(
+            [
+                ("Acciones registradas en las últimas 24 horas", str(len(acciones))),
+                ("Pendientes bajo su responsabilidad", str(len(pendientes))),
+                ("Sello de generación", _sello_utc()),
+            ]
+        )
+    )
+    if acciones:
+        contenido += _parrafo(
+            '<strong style="text-transform:uppercase; letter-spacing:0.05em; font-size:12px; '
+            'color:#475569;">Lo que hizo hoy</strong>'
+        )
+        contenido += _lista(acciones)
+    if pendientes:
+        contenido += _parrafo(
+            '<strong style="text-transform:uppercase; letter-spacing:0.05em; font-size:12px; '
+            'color:#475569;">Lo que tiene pendiente</strong>'
+        )
+        contenido += _lista(pendientes)
+    contenido += _boton(enlace_panel, "Abrir panel de gestión")
+    return _cuerpo_institucional(
+        "Resumen diario de gestión - POLIS",
+        "Cartagena Ciudad de Derechos · Bitácora Institucional",
+        contenido,
+        "Resumen automatizado conforme a la Sentencia C-150 de 2015 y el Decreto 037 de 2026.",
     )

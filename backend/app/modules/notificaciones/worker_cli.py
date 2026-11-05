@@ -20,6 +20,7 @@ from collections import Counter
 
 from app.core.config import Settings
 from app.core.database import Database
+from app.modules.notificaciones.salud import escribir_latido
 from app.modules.notificaciones.worker import NotificacionWorker
 
 logger = logging.getLogger("polis.herald")
@@ -108,6 +109,15 @@ async def ejecutar(args: argparse.Namespace) -> int:
                     logger.info("Ciclo de entrega: %s", dict(resultados))
             except Exception:  # un fallo de BD no debe matar el servicio; el siguiente ciclo reintenta
                 logger.exception("Fallo en el ciclo de entrega; se reintenta")
+            else:
+                # Latido al final de cada ciclo, aunque no se haya procesado nada:
+                # un ejecutor sano con cola vacía no debe parecer muerto. Escribirlo
+                # usa su propia transacción y nunca interrumpe la entrega.
+                try:
+                    async with database.sessions() as session:
+                        await escribir_latido(session, dict(resultados))
+                except Exception:
+                    logger.exception("No se pudo escribir el latido de Herald; la entrega continúa")
             if args.una_vez:
                 break
             try:

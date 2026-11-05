@@ -48,8 +48,8 @@ def generar_html_constancia_radicacion(
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td>
-                                        <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #38bdf8; text-transform: uppercase;">
-                                            Alcaldía Mayor de Cartagena de Indias
+                                        <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #38bdf8; text-transform: uppercase;">
+                                            polis | plataforma para la construccion de politicas publicas
                                         </p>
                                         <h1 style="margin: 4px 0 0 0; font-size: 18px; font-weight: 700; color: #ffffff;">
                                             Sistema Distrital POLIS
@@ -85,14 +85,26 @@ def generar_html_constancia_radicacion(
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 24px;">
                                 <tr>
                                     <td style="padding: 16px;">
-                                        <p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Título del Aporte</p>
-                                        <p style="margin: 0 0 14px 0; font-size: 14px; font-weight: 600; color: #0f172a;">{titulo_limpio}</p>
-                                        
-                                        <p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Resumen</p>
-                                        <p style="margin: 0 0 14px 0; font-size: 13px; line-height: 1.5; color: #334155;">{desc_limpia}</p>
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Entidad</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 13px; font-weight: 600; color: #0f172a;">Alcaldía Mayor de Cartagena de Indias</p>
 
-                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha y Hora Oficial</p>
-                                        <p style="margin: 0; font-size: 12px; color: #475569;">{fecha_emision}</p>
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Política</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 13px; font-weight: 600; color: #0f172a;">Política Pública de Seguridad y Convivencia Ciudadana</p>
+
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Dimensión</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 13px; font-weight: 600; color: #0f172a;">Seguridad Humana</p>
+
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Propuesta</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 14px; font-weight: 600; color: #0f172a;">{titulo_limpio}</p>
+
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Autor</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 13px; font-weight: 600; color: #0f172a;">{autor_limpio}</p>
+
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha y Hora Legal</p>
+                                        <p style="margin: 0 0 14px 0; font-size: 12px; color: #475569;">{fecha_emision}</p>
+                                        
+                                        <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Resumen</p>
+                                        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #334155;">{desc_limpia}</p>
                                     </td>
                                 </tr>
                             </table>
@@ -161,8 +173,8 @@ def generar_html_cambio_estado(
                 <table role="presentation" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                     <tr>
                         <td style="background-color: #0f172a; padding: 24px 32px; border-bottom: 3px solid #0284c7;">
-                            <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #38bdf8; text-transform: uppercase;">
-                                Alcaldía Mayor de Cartagena de Indias
+                            <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #38bdf8; text-transform: uppercase;">
+                                polis | plataforma para la construccion de politicas publicas
                             </p>
                             <h1 style="margin: 4px 0 0 0; font-size: 18px; font-weight: 700; color: #ffffff;">
                                 Sistema Distrital POLIS

@@ -7,6 +7,7 @@ from app.core.database import SessionDependency
 from app.modules.health.repository import HealthRepository
 from app.modules.health.schemas import (
     DatabaseTelemetryResponse,
+    HealthHeraldResponse,
     LivenessResponse,
     ReadinessResponse,
     SystemHealthResponse,
@@ -23,6 +24,28 @@ def get_health_service(session: SessionDependency) -> HealthService:
 @router.get("/live", response_model=LivenessResponse)
 async def liveness() -> LivenessResponse:
     return LivenessResponse()
+
+
+@router.get(
+    "/herald",
+    response_model=HealthHeraldResponse,
+    summary="Estado agregado del Herald para el monitor de operación",
+    description=(
+        "Endpoint interno sin autenticación (análogo a /health/live): solo estado "
+        "y motivos, sin cifras, destinatarios ni datos sensibles."
+    ),
+)
+async def herald(
+    request: Request,
+    session: SessionDependency,
+) -> HealthHeraldResponse:
+    from app.modules.notificaciones.salud import recolectar_salud
+
+    settings: Settings = getattr(request.app.state, "settings", None) or Settings()
+    # Endpoint público para el monitor de operación: motivos sin cifras
+    # operativas de la cola (tarea 2.4 del Encargo 275: sin cifras ni PII).
+    datos = await recolectar_salud(session, settings, incluir_cifras=False)
+    return HealthHeraldResponse(estado=datos["estado"], motivos=datos["motivos"])
 
 
 @router.get("/ready", response_model=ReadinessResponse, responses={503: {"model": ReadinessResponse}})

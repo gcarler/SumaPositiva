@@ -2,17 +2,19 @@
 
 import uuid
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
     Index,
     Integer,
+    SmallInteger,
     String,
     Text,
     text,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import conv
 
@@ -28,7 +30,7 @@ class NotificacionTransaccional(Base):
             "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion', 'registro_bienvenida', "
             "'recuperacion_contrasena', 'apoyo_propuesta', 'actividad_ciudadana', "
             "'perfil_actualizado', 'contrasena_cambiada', 'gestion_institucional', "
-            "'alerta_pendientes', 'propuesta_actualizada')",
+            "'alerta_pendientes', 'propuesta_actualizada', 'resumen_diario')",
             name=conv("chk_notificaciones_tipo_evento"),
         ),
         CheckConstraint(
@@ -39,6 +41,14 @@ class NotificacionTransaccional(Base):
         Index("idx_notif_destinatario", "destinatario_correo"),
         Index("idx_notif_creado_en", "creado_en"),
         Index("idx_notif_cola", "estado_envio", "proximo_intento_en"),
+        # Un resumen diario por usuario por día calendario (Encargo 275).
+        Index(
+            "uq_notif_resumen_destinatario_dia",
+            "destinatario_correo",
+            "codigo_radicado",
+            unique=True,
+            postgresql_where=text("tipo_evento = 'resumen_diario'"),
+        ),
         {
             "schema": "participacion_ciudadana",
             "comment": (
@@ -74,3 +84,36 @@ class NotificacionTransaccional(Base):
         nullable=True,
     )
     simulado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class HeraldLatido(Base):
+    """Fila única (id = 1) con el último ciclo del ejecutor de POLIS Herald.
+
+    Se escribe al final de cada ciclo, aunque no se haya procesado nada: un
+    ejecutor sano con la cola vacía no debe parecer muerto. El latido vive en su
+    propia transacción; un fallo al escribirlo no interrumpe la entrega.
+    """
+
+    __tablename__ = "herald_latido"
+    __table_args__ = (
+        CheckConstraint("id = 1", name=conv("chk_herald_latido_unica")),
+        {
+            "schema": "participacion_ciudadana",
+            "comment": (
+                "Latido del ejecutor de POLIS Herald: acredita que el outbox se "
+                "está consumiendo, incluso con la cola vacía (Encargo 275)"
+            ),
+        },
+    )
+
+    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, server_default=text("1"))
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+    ultimo_ciclo: Mapped[dict[str, Any]] = mapped_column(
+        JSONB,
+        server_default=text("'{}'::jsonb"),
+        nullable=False,
+    )
