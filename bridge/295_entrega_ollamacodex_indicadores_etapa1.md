@@ -16,6 +16,9 @@
 - No se ejecutó suite integral, pytest, E2E ni conexión a producción.
 - No hubo commit, push ni despliegue.
 
+### Corrección M-3 (Encargo 299)
+La consulta a `geodatos.indicadores_territorio` en WP0 fue un acceso **de solo lectura** a la base local configurada por `Settings().database_url`; no hubo escritura. Base: `bd_csh`, host local de PostgreSQL (sin credenciales). El comando usaba `default_transaction_read_only=on` y no alteró datos ni metadatos.
+
 ## 2. Archivos creados/actualizados
 
 | Archivo | Contenido | SHA-256 |
