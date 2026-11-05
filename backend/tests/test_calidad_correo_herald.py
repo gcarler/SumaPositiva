@@ -10,7 +10,7 @@ import uuid
 from email import policy
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.core.config import Settings
@@ -199,6 +199,12 @@ def test_desarrollo_y_bandera_explicita_permiten_simulado():
 @pytest.fixture
 async def fabrica(database_url: str):
     engine = create_async_engine(database_url, pool_pre_ping=True)
+    # Limpieza por prueba: drenar reclama un lote acotado de la outbox real
+    # (participacion_ciudadana.notificaciones_transaccionales); los residuos
+    # pendientes de corridas previas se comerían el lote y asfixian los asertos
+    # de entrega. La base es exclusiva de pruebas (polis_test*), no bd_csh.
+    async with engine.begin() as sesion:
+        await sesion.execute(text("DELETE FROM participacion_ciudadana.notificaciones_transaccionales"))
     yield async_sessionmaker(engine, expire_on_commit=False)
     await engine.dispose()
 
