@@ -137,7 +137,10 @@ async def test_despacho_resiliente_notificacion_radicacion(session, contexto_bas
     assert notif.tipo_evento == "radicacion"
     assert p.codigo_radicado in notif.asunto
     assert p.codigo_radicado in notif.cuerpo_html
-    assert "Cartagena Ciudad de Derechos" in notif.cuerpo_html
+    # Encargo 279/285: la constancia compone con el stack oficial
+    # (plantillas_stack) y su enlace de fe pública es /aportes/{radicado}.
+    assert "Alcaldía Mayor de Cartagena de Indias" in notif.cuerpo_html
+    assert f"/aportes/{p.codigo_radicado}" in notif.cuerpo_html
     assert notif.estado_envio == "pendiente"
     assert notif.enviado_en is None
 

@@ -262,7 +262,8 @@ async def test_editar_propuesta_encola_constancia_actualizacion(session, context
     assert propuesta.codigo_radicado in constancia.asunto
     assert "Campos actualizados" in constancia.cuerpo_html
     assert "Título" in constancia.cuerpo_html
-    assert f"/seguimiento?radicado={propuesta.codigo_radicado}" in constancia.cuerpo_html
+    # Encargo 282/285: el destino oficial de fe pública es la ruta de validación.
+    assert f"/aportes/{propuesta.codigo_radicado}" in constancia.cuerpo_html
 
 
 async def test_cambio_de_estado_no_duplica_constancia_de_edicion(session, contexto_base):

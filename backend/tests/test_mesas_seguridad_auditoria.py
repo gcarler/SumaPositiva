@@ -1,3 +1,4 @@
+import re
 import uuid
 
 import pytest
@@ -397,10 +398,19 @@ async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str, ca
         assert mesas["MP-POB-09"]["tipo_mesa"] == "POBLACIONAL"
         assert mesas["MS-SEC-12"]["tipo_mesa"] == "SECTORIAL"
         if "MR-RUR-01" in mesas:
-            assert sum(m["tipo_mesa"] == "RURAL_INSULAR" for m in mesas.values()) == 11
-            assert sum(m["tipo_mesa"] == "POBLACIONAL" for m in mesas.values()) == 9
-            assert sum(m["tipo_mesa"] == "SECTORIAL" for m in mesas.values()) == 12
-            assert sum(m["tipo_mesa"] == "TERRITORIAL" for m in mesas.values()) == 3
+            # El censo canónico se evalúa por los 35 códigos definitivos del
+            # catálogo oficial (0088/0095); las mesas instrumentales de otras
+            # pruebas coexisten en la base y no son parte del censo.
+            patron_censo = re.compile(
+                r"^(MT-L0[123]-01|MP-(POB-0[1-9]|ETN-08)"
+                r"|MR-(RUR-0[1-6]|ISL-(07|08|09|10|11))|MS-SEC-(0[1-9]|1[0-2]))$"
+            )
+            censo = [m for m in mesas.values() if patron_censo.match(m["codigo_oficial"])]
+            assert len(censo) == 35
+            assert sum(m["tipo_mesa"] == "RURAL_INSULAR" for m in censo) == 11
+            assert sum(m["tipo_mesa"] == "POBLACIONAL" for m in censo) == 9
+            assert sum(m["tipo_mesa"] == "SECTORIAL" for m in censo) == 12
+            assert sum(m["tipo_mesa"] == "TERRITORIAL" for m in censo) == 3
 
         # Resolucion transparente por codigo de agenda
         agenda_ejemplo = agendas_con_mesa[0]

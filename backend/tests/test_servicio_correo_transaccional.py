@@ -153,7 +153,8 @@ async def test_registro_persiste_bienvenida_y_token_verificar(session):
     assert bienvenida is not None
     assert bienvenida.estado_envio == "pendiente"
     assert "Alcaldía Mayor de Cartagena de Indias" in bienvenida.cuerpo_html
-    assert "Verificar mi cuenta" in bienvenida.cuerpo_html
+    # Encargo 279/283: copy oficial del stack de bienvenida.
+    assert "Verificar mi correo electrónico" in bienvenida.cuerpo_html
     assert "accion=verificar" in bienvenida.cuerpo_html
 
     # El enlace porta el token; el token vive solo como hash en tokens_accion.
@@ -270,8 +271,10 @@ async def test_constancia_radicacion_html_institucional(session, contexto_base):
     assert aviso is not None
     assert aviso.codigo_radicado == propuesta.codigo_radicado
     assert propuesta.codigo_radicado in aviso.asunto
-    assert "C-150 de 2015" in aviso.cuerpo_html
-    assert f"/seguimiento?radicado={propuesta.codigo_radicado}" in aviso.cuerpo_html
+    # Encargo 279/283: pie legal del stack oficial (Habeas Data + CPACA) y
+    # enlace de fe pública en /aportes/{radicado}.
+    assert "Habeas Data, Ley 1581 de 2012" in aviso.cuerpo_html
+    assert f"/aportes/{propuesta.codigo_radicado}" in aviso.cuerpo_html
 
 
 # ---------------------------------------------------------------------------

@@ -27,6 +27,7 @@ from app.modules.notificaciones import models as notificaciones_models  # noqa: 
 from app.modules.participacion import models as participacion_models  # noqa: F401
 from app.modules.politicas import models as politicas_models  # noqa: F401
 from app.modules.presupuesto import models as presupuesto_models  # noqa: F401
+from app.modules.proyectos import models as proyectos_models  # noqa: F401
 from app.modules.sesion import models as sesion_models  # noqa: F401
 from app.modules.testimonios import models as testimonios_models  # noqa: F401
 

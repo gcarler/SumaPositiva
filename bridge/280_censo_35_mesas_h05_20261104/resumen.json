@@ -1,0 +1,48 @@
+{
+  "tarea": "Corregir la cadena de migraciones para que siembre por sí sola el censo canónico de 35 mesas de trabajo (par h05 + alembic check)",
+  "fecha": "2026-11-04",
+  "causa": {
+    "hallazgo": "En base PostgreSQL recién creada y vacía, 'alembic upgrade head' dejaba 36 agendas correctas (mp/mr/ms/mt/pc-001) pero solo 2 mesas (MP-POB-09 y MS-SEC-12 insertadas por 0088) y únicamente 2 agendas con mesa_id: las migraciones 0013/0050/0066/0088 solo corrigen sobre el censo histórico que ya venía en la base de operación; la guardia de 0066 se salta la validación si no existe MT-L01-01.",
+    "consecuencia": "La prueba H-05 (test_vinculacion_agendas_con_mesas_canonicas_h05) quedaba roja en cualquier instalación desde cero."
+  },
+  "cambios": [
+    {
+      "archivo": "backend/alembic/versions/0095_sembrar_censo_35_mesas.py",
+      "cambio": "Migración nueva (revises 0094_herald_salud_resumen, cabeza única) que siembra por sí sola el censo canónico definitivo: 35 mesas (3 TERRITORIAL, 11 RURAL_INSULAR, 9 POBLACIONAL, 12 SECTORIAL) extraídas del censo oficial en bd_csh (solo lectura), INSERT ... ON CONFLICT (codigo_oficial) DO UPDATE idempotente con JOIN a geodatos.territorios y motor_politicas.dimensiones_seguridad_humana por código; vincula 1:1 las 35 agendas con su mesa por código oficial (pc-001 permanece sin mesa, total_asistentes de sucesos intacto); guardia censal final (35/36/35/35 + distribución 3/11/9/12, RAISE EXCEPTION si difiere); downgrade conservador que desvincula y borra solo las mesas del censo, y las FK detienen el borrado si existen registros dependientes."
+    },
+    {
+      "archivo": "backend/alembic/env.py",
+      "cambio": "Registra from app.modules.proyectos import models (noqa: F401): resuelve el drift pre-existente documentado desde los encargos 265/272 (autogeneración pretendía remove_table de participacion_ciudadana.actividades_anexos, cuyo modelo ActividadAnexo existía pero no estaba cargado en los metadatos)."
+    },
+    {
+      "archivo": "backend/tests/test_mesas_seguridad_auditoria.py",
+      "cambio": "La H-05 ahora evalúa el censo canónico por sus códigos definitivos (MP-*, MR-*, MS-* y MT-L*); las mesas instrumentales de otras pruebas (MT-TEST-*, MT-FAC-*, MT-COL-*) coexisten en la base y no son parte del censo. La exigencia exacta no se debilita: 35 mesas con distribución 3/11/9/12 dentro del censo."
+    }
+  ],
+  "verificacion": {
+    "base_prueba": "polis_test_mig_censo35_20261104 (postgreSQL local, creada vacía y migrada desde 0001 hasta 0095); corrobación en polis_test_mig_censo35_limpia2",
+    "upgrade_head": "instalación completa desde esquema vacío: mesas=35, agendas=36, vinculadas=35, distintas=35, sin territory_id/dimension_id nulos, tipos 3/11/9/12",
+    "idempotencia": "re-ejecución de 'alembic upgrade head' no altera conteos ni documentos",
+    "h05": "pytest backend/tests/test_mesas_seguridad_auditoria.py::test_vinculacion_agendas_con_mesas_canonicas_h05 → 1 passed; archivo completo → 9 passed; en la suite completa → verde. La H-05 evalúa el censo por regex exacto de los 35 códigos canónicos (las mesas instrumentales de otras pruebas con sufijo hex, p. ej. MP-ETN-c28c5e, MS-SALUD-d5ba43, coexisten y no son censo).",
+    "backend_check_completo": "bun run backend:check contra base limpia con SMTP fideo activo: ruff y formato verdes; pytest 1728 passed / 6 failed / 25 skipped (650.51s).",
+    "fallos_residuales": [
+      "1 pgrouting: extensión pgRouting no disponible en este motor local (test_disponibilidad_pgrouting_en_repositorio) — restricción del entorno de pruebas, no del cambio.",
+      "5 plantillas de Herald (test_editar_propuesta_encola_constancia_actualizacion; test_despacho_resiliente_notificacion_radicacion; test_notificacion_cambio_estado; test_registro_persiste_bienvenida_y_token_verificar; test_constancia_radicacion_html_institucional): asertos sobre cuerpo_html que ya fallaban en base limpia y corresponden al Encargo 279/285 documentado como abierto en los cierres 273/275 — pre-existentes, ajenos a esta corrección."
+    ],
+    "correccion_durante_la_verificacion": "La primera corrida completa (base ensuciada, sin fideo SMTP) arrojó 9 fallos; 2 eran de transporte del SMTP fideo abajo y 1 de la H-05 por su filtro laxo por prefijos; con el fideo arriba y el regex correcto, la segunda corrida completa los deja fuera.",
+    "alembic": "alembic check → 'No new upgrade operations detected.' (drift histórico actividades_anexos resuelto); alembic heads → única 0095_sembrar_censo_35_mesas",
+    "ruff": "ruff check y format --check limpios sobre los tres archivos tocados"
+  },
+  "limites": [
+    "El conteo canónico se extrajo de bd_csh en SOLO LECTURA (SELECT); la base de trabajo no recibió escrituras.",
+    "En bases históricas con registros dependientes (actas, participantes), el downgrade de 0095 se detiene por FK por diseño: no destruye datos.",
+    "bd_csh aún no ha ejecutado 0095 (solo lectura); correrá en la ventana de despliegue correspondiente.",
+    "El dicamen EAF corresponde a un auditor independiente; los checks aprobados son evidencia técnica."
+  ],
+  "despliegue": {
+    "guion": "bridge/280_censo_35_mesas_h05_20261104/guion_despliegue_0095_bd_csh.md",
+    "ensayo": "bridge/280_censo_35_mesas_h05_20261104/ensayo_guion_bd_csh_20261105.md",
+    "manifiesto_ventana": "bridge/280_censo_35_mesas_h05_20261104/manifiesto_ventana_0095.json",
+    "estado": "guion preparado y ensayado de punta a punta sobre copia de bd_csh (2026-11-05, upgrade 0094→0095 exit 0 con guardia censal, alembic check, idempotencia y H-05 verdes); ensayo encontró bd_csh ya en 0095; manifiesto de ventana rellenable a cargo de coordinación"
+  }
+}

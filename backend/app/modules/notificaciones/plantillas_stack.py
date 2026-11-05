@@ -373,8 +373,11 @@ def generar_html_cambio_estado(
     fecha_cambio: str | None = None,
 ) -> str:
     """Template 8: notificación de trámite ciudadano (deliberación, admitida, concepto o rechazo)."""
+    # Estado en caso institucional (p. ej. 'en_revision' -> 'EN REVISION'),
+    # comportando la normalización del stack legado (correo.py) durante 279/285.
+    estado_institucional = nuevo_estado.replace("_", " ").upper()
     contenido = (
-        _destacado(f"Nuevo estado: {nuevo_estado}")
+        _destacado(f"Nuevo estado: {estado_institucional}")
         + _tarjeta(
             [
                 ("Radicado", radicado),

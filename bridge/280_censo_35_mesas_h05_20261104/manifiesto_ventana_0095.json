@@ -1,0 +1,84 @@
+{
+  "esquema": "polis.despliegue_ventana_0095.v1",
+  "tarea": "Ventana de despliegue de 0095_sembrar_censo_35_mesas sobre bd_csh",
+  "guion": "bridge/280_censo_35_mesas_h05_20261104/guion_despliegue_0095_bd_csh.md",
+  "ensayo_previo": "bridge/280_censo_35_mesas_h05_20261104/ensayo_guion_bd_csh_20261105.md",
+  "instrucciones_relleno": "Campos null los completa el equipo de coordinación durante la ventana con los valores reales de ese día. No eliminar llaves; null significa 'pendiente de ventana'. Al cerrar, renombrar este fichero a manifiesto_ventana_0095_ejecutado.json y referenciarlo desde el registro de la jornada.",
+  "rellenado_por": null,
+  "estado": "guion_preparado_pendiente_ventana",
+  "contexto_preventivo": {
+    "nota": "El ensayo del 2026-11-05 encontró bd_csh ya en 0095; si la ventana ya ocurrió sin manifiesto, este fichero sirve para reconstruir el registro con la evidencia disponible. Si 0095 quedó pendiente en otro entorno, reutilizar el guion tal cual.",
+    "revision_bd_csh_observada_solo_lectura": "0095_sembrar_censo_35_mesas",
+    "censo_bd_csh_observado_solo_lectura": {
+      "mesas": 35,
+      "agendas": 36,
+      "vinculadas": 35,
+      "distintas_vinculadas": 35,
+      "tipos": { "TERRITORIAL": 3, "RURAL_INSULAR": 11, "POBLACIONAL": 9, "SECTORIAL": 12 },
+      "pc001_sin_mesa": true,
+      "suma_total_asistentes": 0
+    },
+    "sha256_dump_ensayo": "b9b5651f8e34361a28a73c6fd2ee63060ab9796dcf08ca708aee71f3efb11ecd"
+  },
+  "previo": {
+    "fecha_ventana": null,
+    "hora_apertura_ct": null,
+    "hora_cierre_ct": null,
+    "responsable_ejecucion": null,
+    "check_tree_git_limpio": null,
+    "revision_head_repo_unica_0095": null,
+    "restauracion_prueba_validada": null
+  },
+  "ventana": {
+    "notificacion_mesa_operaciones": null,
+    "pagina_mantenimiento_activada": null,
+    "servicios_detenidos": {
+      "polis_frontend_inactive": null,
+      "polis_backend_inactive": null,
+      "sesiones_bd_csh_cero": null
+    }
+  },
+  "respaldo": {
+    "comando": "respaldo_bd.sh",
+    "ruta_dump": null,
+    "bytes": null,
+    "sha256": null,
+    "sha256_verificado_ok": null,
+    "dump_no_vacio": null
+  },
+  "migracion": {
+    "revision_previa_bd_csh": null,
+    "revision_head_repo": "0095_sembrar_censo_35_mesas",
+    "revisiones_pendientes_detectadas": [],
+    "upgrade_ejecutado": null,
+    "upgrade_exit": null,
+    "revision_final_bd_csh": null,
+    "nota_0089": "Si la cadena aplicó 0089, las fechas/horarios/lugar de las 35 mesas quedaron en 'Por definir' — cambio de datos esperado y cubierto por el respaldo."
+  },
+  "verificacion": {
+    "censo": {
+      "mesas": null,
+      "agendas": null,
+      "vinculadas": null,
+      "distintas_vinculadas": null,
+      "tipos": { "TERRITORIAL": null, "RURAL_INSULAR": null, "POBLACIONAL": null, "SECTORIAL": null },
+      "pc001_sin_mesa": null,
+      "sin_territorio_o_dimension": null,
+      "suma_total_asistentes_intacta": null
+    },
+    "alembic_check": null,
+    "upgrade_repetido_no_op": null,
+    "h05_pytest_resultado": null,
+    "health_live_200": null,
+    "health_ready_200": null,
+    "frontend_seguimiento_200": null,
+    "aportes_endpoint_total": null
+  },
+  "cierre": {
+    "servicios_reiniciados": { "polis_backend_activo": null, "polis_frontend_activo": null },
+    "nginx_reabierto": null,
+    "observaciones": null
+  },
+  "incidencias_y_rollbacks": [],
+  "dictamen_eaf_independiente": "pendiente — corresponde a otro rol; este manifiesto es evidencia técnica"
+}
