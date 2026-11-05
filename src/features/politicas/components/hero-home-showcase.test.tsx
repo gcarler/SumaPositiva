@@ -124,6 +124,7 @@ describe("HeroHomeShowcase Component (HERO-PAGES-02)", () => {
 
     expect(html).toContain("Dejar mi Aporte Territorial");
     expect(html).toContain("Ver Diagnóstico Participativo");
+    expect(html).toContain("Saber más sobre Seguridad Humana Integral");
     expect(html).toContain("Geovisor de Seguridad");
     expect(html).toContain("Rendición de Cuentas 2026");
   });

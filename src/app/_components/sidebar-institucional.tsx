@@ -84,12 +84,14 @@ export const PERMISOS_MODULO: Record<string, string[]> = {
 export interface ParametrosConstruccionModulos {
   navigateTo: (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => void;
   navigateToPlataforma: (path?: string) => void;
+  navigateToRuta: (path: string) => void;
   openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) => void;
 }
 
 export function construirModulosInstitucionales({
   navigateTo,
   navigateToPlataforma,
+  navigateToRuta,
   openPanel,
 }: ParametrosConstruccionModulos): ModuloItem[] {
   return [
@@ -254,9 +256,22 @@ export function construirModulosInstitucionales({
     },
     {
       id: "geodatos",
-      label: "Geovisor Territorial",
+      label: "Datos",
       icon: Map,
-      onClick: () => navigateTo("geovisor"),
+      submodulos: [
+        {
+          id: "geodatos_geovisor",
+          label: "Datos",
+          icon: Map,
+          onClick: () => navigateTo("geovisor"),
+        },
+        {
+          id: "geodatos_catalogo",
+          label: "Catálogo de indicadores",
+          icon: LineChart,
+          onClick: () => navigateToRuta("/indicadores"),
+        },
+      ],
     },
     {
       id: "diagnostico",
@@ -315,6 +330,7 @@ export function SidebarInstitucional() {
   const [modo, setModo] = useState<ModoSidebar>("expandido");
   const [ancho, setAncho] = useState<number>(280);
   const [submodulosAbiertos, setSubmodulosAbiertos] = useState<Record<string, boolean>>({
+    geodatos: true,
     mesas_trabajo: true,
     asistencia: false,
     forms: false,
@@ -405,6 +421,7 @@ export function SidebarInstitucional() {
   const modulos = construirModulosInstitucionales({
     navigateTo,
     navigateToPlataforma,
+    navigateToRuta: (path: string) => router.push(path),
     openPanel,
   });
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { toast } from "sonner";
+import { CircleCheck } from "lucide-react";
 import {
   GoogleLogin,
   useGoogleOAuth,
@@ -20,6 +21,13 @@ import {
   comprobarContrasena,
 } from "@/features/sesion/components/campo-identidad";
 import { CuentaUsuario } from "@/features/sesion/components/cuenta-usuario";
+
+interface AvisoExito {
+  titulo: string;
+  tipo?: "general" | "registro";
+  mensaje?: string;
+  correo?: string;
+}
 
 type Vista =
   | "login"
@@ -87,7 +95,8 @@ export function SesionPanel({
   );
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
-  const [mensaje, setMensaje] = useState("");
+  const [avisoExito, setAvisoExito] = useState<AvisoExito | null>(null);
+  const [correoRegistrado, setCorreoRegistrado] = useState("");
   const [tokenDesafioMfa, setTokenDesafioMfa] = useState<string | null>(null);
   /* Consumo del Magic Link (hallazgo 3 de EAF-ID-06): se marca alutzen una
    * única vez; tras el consumo la ficha pasa a Mi cuenta (si hay sesión) o
@@ -139,7 +148,7 @@ export function SesionPanel({
   function cambiar(v: Vista) {
     setVista(v);
     setError("");
-    setMensaje("");
+    setAvisoExito(null);
     setOcupado(false);
     if (v !== "mfa") {
       setTokenDesafioMfa(null);
@@ -178,7 +187,7 @@ export function SesionPanel({
     const datos = new FormData(event.currentTarget);
     setOcupado(true);
     setError("");
-    setMensaje("");
+    setAvisoExito(null);
     try {
       if (vista === "login") {
         const respuesta = await identidadApi.login(
@@ -196,7 +205,7 @@ export function SesionPanel({
           setTokenDesafioMfa(respuesta.token_desafio_mfa ?? null);
           setVista("mfa");
         } else if (respuesta.mfa_enrolamiento_requerido) {
-          setMensaje("");
+          setAvisoExito(null);
           toast.warning(
             "Sesión limitada: configura la verificación en dos pasos para completar tu acceso.",
           );
@@ -222,42 +231,60 @@ export function SesionPanel({
         }
       } else if (vista === "registro") {
         const contrasena = comprobarContrasena(datos);
+        const correo = textoFormulario(datos, "correo").trim();
         await identidadApi.registrar({
-          correo: textoFormulario(datos, "correo"),
+          correo,
           contrasena,
-          nombres: textoFormulario(datos, "nombres"),
-          apellidos: textoFormulario(datos, "apellidos"),
+          nombres: textoFormulario(datos, "nombres").trim(),
+          apellidos: textoFormulario(datos, "apellidos").trim(),
+        });
+        setCorreoRegistrado(correo);
+        setAvisoExito({
+          tipo: "registro",
+          titulo: "¡Cuenta creada! Estás a un paso de activarla",
+          correo,
         });
         setVista("login");
-        setMensaje("Cuenta creada. Inicia sesión para verificar tu correo.");
+        toast.info("Hemos enviado un correo para activar tu cuenta.");
       } else if (vista === "magic_link") {
         const correo = textoFormulario(datos, "correo");
         const resp = await identidadApi.solicitarMagicLink(correo);
-        setMensaje(resp.mensaje);
+        setAvisoExito({
+          tipo: "general",
+          titulo: "Enlace de acceso enviado",
+          mensaje: resp.mensaje,
+        });
         toast.info("Enlace de acceso enviado. Revisa tu bandeja de entrada.");
       } else if (vista === "recuperar") {
-        setMensaje(
-          (
-            await identidadApi.solicitarRecuperacion(
-              textoFormulario(datos, "correo"),
-            )
-          ).mensaje,
+        const resp = await identidadApi.solicitarRecuperacion(
+          textoFormulario(datos, "correo"),
         );
+        setAvisoExito({
+          tipo: "general",
+          titulo: "Instrucciones de recuperación enviadas",
+          mensaje: resp.mensaje,
+        });
       } else if (vista === "restablecer") {
-        setMensaje(
-          (
-            await identidadApi.confirmarRecuperacion(
-              props.token ?? "",
-              comprobarContrasena(datos),
-            )
-          ).mensaje,
+        const resp = await identidadApi.confirmarRecuperacion(
+          props.token ?? "",
+          comprobarContrasena(datos),
         );
+        setAvisoExito({
+          tipo: "general",
+          titulo: "Contraseña actualizada exitosamente",
+          mensaje: resp.mensaje,
+        });
         useSesionStore.getState().limpiarSesion();
         setVista("login");
       } else {
-        setMensaje(
-          (await identidadApi.confirmarVerificacion(props.token ?? "")).mensaje,
-        );
+        const resp = await identidadApi.confirmarVerificacion(props.token ?? "");
+        setAvisoExito({
+          tipo: "general",
+          titulo: "Cuenta verificada con éxito",
+          mensaje:
+            resp.mensaje ||
+            "Tu correo ha sido confirmado y tu cuenta quedó activada. Ya puedes iniciar sesión.",
+        });
         if (sesion?.usuarioId)
           useSesionStore
             .getState()
@@ -321,9 +348,58 @@ export function SesionPanel({
                 {error}
               </Notice>
             )}
-            {mensaje && (
-              <Notice tone="success" title="Solicitud completada">
-                {mensaje}
+            {avisoExito && avisoExito.tipo === "registro" && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="space-y-3 rounded-xl border border-success/30 bg-success-soft/30 p-4 sm:p-5 text-text-primary"
+              >
+                <div className="flex items-start gap-3">
+                  <CircleCheck
+                    className="mt-0.5 size-5 shrink-0 text-success"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <h3 className="text-base font-semibold text-text-primary">
+                      {avisoExito.titulo}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-text-secondary">
+                      Para garantizar la autenticidad y seguridad de tu participación ciudadana, enviamos un mensaje de activación a{" "}
+                      <strong className="font-semibold text-text-primary break-all">
+                        {avisoExito.correo}
+                      </strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2 rounded-lg border border-border/70 bg-surface-elevated/95 p-3.5 sm:p-4 text-sm">
+                  <p className="font-medium text-text-primary">
+                    Pasos requeridos para activar tu cuenta:
+                  </p>
+                  <ol className="list-decimal space-y-1.5 pl-5 text-xs text-text-secondary sm:text-sm">
+                    <li>
+                      Abre la <strong>bandeja de entrada</strong> de tu correo electrónico.
+                    </li>
+                    <li>
+                      Abre el correo de <strong>POLIS</strong> y haz clic en el enlace o botón oficial para <strong>activar tu cuenta</strong>.
+                    </li>
+                    <li>
+                      <span className="font-medium text-text-primary">
+                        ¿No encuentras el correo?
+                      </span>{" "}
+                      Revisa tu carpeta de <strong>Correo no deseado (Spam)</strong> y marca el mensaje como <strong>«No es spam»</strong>. Esto asegurará que tu cuenta se active y que recibas sin contratiempos tus constancias oficiales de radicación de propuestas y actas comunitarias.
+                    </li>
+                  </ol>
+                </div>
+
+                <p className="text-xs text-text-muted">
+                  Una vez que confirmes el enlace en tu correo, tu cuenta quedará lista para iniciar sesión ingresando tus datos a continuación.
+                </p>
+              </div>
+            )}
+            {avisoExito && avisoExito.tipo !== "registro" && (
+              <Notice tone="success" title={avisoExito.titulo}>
+                {avisoExito.mensaje}
               </Notice>
             )}
             <form
@@ -341,6 +417,11 @@ export function SesionPanel({
                   label="Correo electrónico"
                   type="email"
                   autoComplete="email"
+                  defaultValue={
+                    vista === "login" && correoRegistrado
+                      ? correoRegistrado
+                      : undefined
+                  }
                   maxLength={255}
                 />
               )}

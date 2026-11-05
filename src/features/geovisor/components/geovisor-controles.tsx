@@ -79,7 +79,7 @@ export function GeovisorControles({
               className="w-full h-8 justify-start gap-2 text-xs font-semibold bg-[var(--ember)] text-[var(--ember-foreground)] hover:bg-[var(--ember)]/90"
             >
               <Database className="size-3.5 shrink-0" />
-              <span>Banco Multifuente (2.449 Indicadores)</span>
+              <span>Banco Multifuente</span>
             </Button>
           )}
 
@@ -110,7 +110,7 @@ export function GeovisorControles({
         >
           <div className="flex items-center gap-1.5">
             <Sparkles className="size-3.5 text-[var(--ember)]" />
-            <span>Capas Multifuente ({capasOficiales.length || 10})</span>
+            <span>Capas Multifuente ({capasOficiales.length})</span>
           </div>
           {seccionOficialesAbierta ? (
             <ChevronUp className="size-3.5 text-[var(--text-tertiary)]" />
@@ -203,7 +203,7 @@ export function GeovisorControles({
                 <span className="font-medium text-xs">
                   Hurto Motocicletas{" "}
                   <span className="text-[10px] text-[var(--text-tertiary)]">
-                    (4.683 casos)
+                    (consulta en Analítica de Hurtos)
                   </span>
                 </span>
               </div>
@@ -226,7 +226,7 @@ export function GeovisorControles({
                 <span className="font-medium text-xs">
                   Hurto Residencias{" "}
                   <span className="text-[10px] text-[var(--text-tertiary)]">
-                    (5.044 casos)
+                    (consulta en Analítica de Hurtos)
                   </span>
                 </span>
               </div>
@@ -249,7 +249,7 @@ export function GeovisorControles({
                 <span className="font-medium text-xs">
                   Hurto Comercio{" "}
                   <span className="text-[10px] text-[var(--text-tertiary)]">
-                    (8.515 casos)
+                    (consulta en Analítica de Hurtos)
                   </span>
                 </span>
               </div>

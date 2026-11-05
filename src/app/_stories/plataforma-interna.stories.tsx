@@ -456,7 +456,7 @@ export const GeovisorReal: Story = {
     const c = within(canvasElement);
     await userEvent.click(
       await c.findByRole("button", {
-        name: "Territorio de prueba · localidad",
+        name: /Territorio de prueba/,
       }),
     );
     await expect(
@@ -741,7 +741,7 @@ export const ComunicacionesGestion: Story = {
     await expect(await c.findByText("Cobertura audiovisual inauguración")).toBeVisible();
 
     // Cambio rápido de estado desde la tarjeta del cronograma (sin abrir formulario)
-    await userEvent.click(c.getByRole("tab", { name: /Cronograma/ }));
+    await userEvent.click(c.getByRole("tab", { name: /Lista por etapas/ }));
     await expect(await c.findByText("TC-01", {}, { timeout: 10000 })).toBeVisible();
     await userEvent.click(
       c.getAllByRole("button", { name: "✓ Marcar lista" })[0]!,

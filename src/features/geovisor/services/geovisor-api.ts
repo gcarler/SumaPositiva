@@ -44,7 +44,7 @@ export async function obtenerTerritorio(
 
 /**
  * Consulta del Banco Multifuente de Seguridad Humana:
- * 28 datasets oficiales y 2.449 indicadores indexados (DANE, Medicina Legal, DNP TerriData, RUV, ICBF, INS).
+ * Los recuentos de fuentes y observaciones proceden de la respuesta del catálogo vigente.
  * Conecta con backend FastAPI: GET /api/v1/geodatos/indicadores
  */
 export async function listarFuentesIndicadores(): Promise<IndicadorFuente[]> {
@@ -68,6 +68,11 @@ export async function listarIndicadores(
     params.append("territorio_id", filtros.territorio_id);
   if (filtros?.anio_corte)
     params.append("anio_corte", String(filtros.anio_corte));
+  if (filtros?.anio_desde !== undefined) params.append("anio_desde", String(filtros.anio_desde));
+  if (filtros?.anio_hasta !== undefined) params.append("anio_hasta", String(filtros.anio_hasta));
+  if (filtros?.codigo_indicador) params.append("codigo_indicador", filtros.codigo_indicador);
+  if (filtros?.incluir_ediciones_previas !== undefined) params.append("incluir_ediciones_previas", String(filtros.incluir_ediciones_previas));
+  if (filtros?.fuente_exacta !== undefined) params.append("fuente_exacta", String(filtros.fuente_exacta));
   if (filtros?.busqueda) params.append("busqueda", filtros.busqueda);
   const q = params.toString();
   return apiFetch<RespuestaIndicadores>(

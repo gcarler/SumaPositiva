@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ArrowRight,
   MapPin,
@@ -10,6 +11,7 @@ import {
   Plus,
   Play,
   Layers,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -127,15 +129,28 @@ export function InicioView() {
             </div>
           </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setVista("dimensiones")}
-            className="group w-fit shrink-0 gap-2 text-xs"
-          >
-            <span>Ver matriz completa de las 7 Dimensiones y 27 Entidades</span>
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+            <Button
+              asChild
+              variant="default"
+              className="group w-fit gap-2 text-xs"
+            >
+              <Link href="/seguridad-humana">
+                <BookOpen className="size-3.5" aria-hidden="true" />
+                <span>Saber más sobre la Política de Seguridad Humana</span>
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setVista("dimensiones")}
+              className="group w-fit gap-2 text-xs"
+            >
+              <span>Ver matriz 7 Dimensiones y 27 Entidades</span>
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            </Button>
+          </div>
         </div>
 
         <DimensionesGrid />

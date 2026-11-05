@@ -51,7 +51,7 @@ export function TerritorioPanel({ entryKey, props }: TerritorioPanelProps) {
       <PanelShell
         entryKey={entryKey}
         title="Territorio no encontrado"
-        crumbs={[{ label: "Geovisor" }]}
+        crumbs={[{ label: "Datos" }]}
         onClose={closeTop}
         onCloseToKey={closeToKey}
       >
@@ -83,7 +83,7 @@ export function TerritorioPanel({ entryKey, props }: TerritorioPanelProps) {
     <PanelShell
       entryKey={entryKey}
       title={territorio.nombre}
-      crumbs={[{ label: "Geovisor" }, { label: tipoLabel }]}
+      crumbs={[{ label: "Datos" }, { label: tipoLabel }]}
       onClose={closeTop}
       onCloseToKey={closeToKey}
       footer={

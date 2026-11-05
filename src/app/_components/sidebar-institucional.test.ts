@@ -24,6 +24,7 @@ import type { Formulario } from "@/features/formularios/models/formulario";
 describe("Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03)", () => {
   const navigateToMock = vi.fn();
   const navigateToPlataformaMock = vi.fn();
+  const navigateToRutaMock = vi.fn();
   const openPanelMock = vi.fn();
 
   beforeEach(() => {
@@ -41,6 +42,7 @@ describe("Sidebar Institucional — Navegación Operativa y Erradicación de GAP
     construirModulosInstitucionales({
       navigateTo: navigateToMock,
       navigateToPlataforma: navigateToPlataformaMock,
+      navigateToRuta: navigateToRutaMock,
       openPanel: openPanelMock,
     });
 

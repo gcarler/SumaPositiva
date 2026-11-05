@@ -189,7 +189,7 @@ function agruparPermisos(catalogo: Record<string, string>) {
   const nombres: Record<string, string> = {
     formularios: "Formularios e instrumentos",
     instrumentos: "Formularios e instrumentos",
-    geovisor: "Geovisor",
+    geovisor: "Datos",
     mesas: "Mesas y asistencia",
     asistencia: "Mesas y asistencia",
     contenido: "Contenido y política pública",

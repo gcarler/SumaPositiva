@@ -6,7 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
 import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorWorkspaceLayout } from "../components/geovisor-workspace-layout";
-import { GeovisorTopShelf } from "../components/geovisor-top-shelf";
+import { MultifuenteFiltros } from "../components/multifuente-filtros";
+import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
+import { normalizarCodigoTerritorio, useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
+import { Button } from "@/shared/ui/button";
 import { GeovisorDockHost } from "../components/geovisor-dock-host";
 import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
 import { GeovisorMesasDirectorio } from "../components/geovisor-mesas-directorio";
@@ -30,7 +33,7 @@ const MapaCartagena = dynamic(() => import("../components/mapa-cartagena"), {
     >
       <div className="flex flex-col items-center gap-2">
         <div className="size-6 animate-spin rounded-full border-2 border-[var(--ember)] border-t-transparent" />
-        <span>Cargando Geovisor Territorial Power BI / Tableau…</span>
+        <span>Cargando mapa del sistema estadístico…</span>
       </div>
     </div>
   ),
@@ -39,6 +42,7 @@ const MapaCartagena = dynamic(() => import("../components/mapa-cartagena"), {
 export function GeovisorView() {
   const { openPanel } = usePanels();
   const mapaRef = useRef<MapaCartagenaHandle | null>(null);
+  const analitica = useAnaliticaMultifuente();
 
   const [territorioId, setTerritorioId] = useState<string>("todas");
   const [mesaIdSeleccionada, setMesaIdSeleccionada] = useState<string | null>(null);
@@ -72,7 +76,7 @@ export function GeovisorView() {
   });
 
   useEffect(() => {
-    useGeovisorLayoutStore.getState().openView("fuentes");
+    useGeovisorLayoutStore.getState().openView("graficos");
   }, []);
 
   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {
@@ -129,7 +133,10 @@ export function GeovisorView() {
 
   const handleSelectTerritorio = useCallback(
     (id: string) => {
-      setTerritorioId(id);
+      setTerritorioId(/^LOC-/i.test(id) ? id.toLowerCase() : id);
+      const codigo = normalizarCodigoTerritorio(id);
+      const actual = useGeovisorAnaliticaStore.getState();
+      if (actual.filtros.codigo_territorio !== codigo) actual.setFiltros({ codigo_territorio: codigo });
       setBarrioSeleccionado(null);
       if (id !== "todas") {
         openPanel("territorio", { territorioId: id });
@@ -198,19 +205,13 @@ export function GeovisorView() {
     switch (id) {
       case "filtros":
         return (
-          <GeovisorTopShelf
-            territorioId={territorioId}
-            onTerritorioChange={handleSelectTerritorio}
-            zonaId={territorioId}
-            onZonaChange={handleSelectTerritorio}
-            delitoHurto={delitoHurto}
-            onDelitoChange={handleCambioDelito}
-            anioHurto={anioHurto}
-            onAnioHurtoChange={setAnioHurto}
-            variableMapa={variableMapa}
-            onVariableChange={setVariableMapa}
-            onExportarPng={handleExportarPng}
-          />
+          <div className="space-y-2 p-3">
+            <MultifuenteFiltros datos={analitica.data} onTerritorioChange={handleSelectTerritorio} />
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
+              <span>{analitica.data ? `${analitica.data.total_observaciones.toLocaleString("es-CO")} observaciones · ${analitica.data.series.length} series con esta selección` : "Consultando banco estadístico"}</span>
+              <Button variant="outline" size="sm" onClick={handleExportarPng}>Exportar mapa PNG</Button>
+            </div>
+          </div>
         );
       case "capas":
         return (
@@ -324,6 +325,7 @@ export function GeovisorView() {
 
   return (
     <div className="h-full w-full overflow-hidden">
+      <h1 className="sr-only">Sistema de Estadística y Análisis Territorial</h1>
       {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS CON PESTAÑAS (estilo IDE) */}
       <GeovisorWorkspaceLayout
         topSlot={<GeovisorDockHost dock="top" renderView={renderView} />}

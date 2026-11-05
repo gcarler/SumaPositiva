@@ -47,6 +47,11 @@ export const componentCatalog = [
   { name: "notice", source: "@/shared/ui/notice", status: "ready" },
   { name: "page-header", source: "@/shared/ui/page-header", status: "ready" },
   { name: "pagination", source: "@/shared/ui/pagination", status: "ready" },
+  {
+    name: "password-input",
+    source: "@/shared/ui/password-input",
+    status: "ready",
+  },
   { name: "popover", source: "@/shared/ui/popover", status: "ready" },
   { name: "progress", source: "@/shared/ui/progress", status: "ready" },
   { name: "radio-group", source: "@/shared/ui/radio-group", status: "ready" },

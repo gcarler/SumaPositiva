@@ -1,374 +1,235 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FocusEvent, type MouseEvent } from "react";
+import { useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { Bar, CartesianGrid, Cell, ComposedChart, Line, Pie, PieChart, Scatter, ScatterChart, XAxis, YAxis } from "recharts";
+import { Download, MapPin } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { StatusBadge } from "@/shared/ui/status-badge";
-import {
-  ESTADISTICAS_TERRITORIOS,
-  VARIABLE_META,
-  obtenerValorVariable,
-  type EstadisticasTerritorio,
-  type VariableMapa,
-} from "../data/estadisticas.data";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { FormField } from "@/shared/ui/form-field";
+import { Notice } from "@/shared/ui/notice";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import type { VariableMapa } from "../data/estadisticas.data";
+import type { AnaliticaMultifuente, SerieMultifuenteDetalle } from "../models/analitica-multifuente";
+import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
+import { listarIndicadores } from "../services/geovisor-api";
+import { useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
+import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+import { MultifuenteFiltros } from "./multifuente-filtros";
 
 interface GeovisorChartsProps {
-  territorioId: string;
-  variableMapa: VariableMapa;
-  onTerritorioChange: (id: string) => void;
-  onVariableChange: (variable: VariableMapa) => void;
+  territorioId?: string;
+  variableMapa?: VariableMapa;
+  onTerritorioChange?: (id: string) => void;
+  onVariableChange?: (variable: VariableMapa) => void;
+  /** Inyección exclusiva para historias aisladas; no es respaldo de producción. */
+  datosIniciales?: AnaliticaMultifuente | null;
+  cargandoInicial?: boolean;
+  errorInicial?: string;
 }
 
-const MESES = ["Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre"];
-const LOCALIDADES = ["loc-1", "loc-2", "loc-3"] as const;
-const DIMENSIONES: { label: string; variable: VariableMapa }[] = [
-  { label: "Personal", variable: "personal" },
-  { label: "Comunitaria", variable: "comunitaria" },
-  { label: "Económica", variable: "economica" },
-  { label: "Ambiental", variable: "ambiental" },
-  { label: "Alimentaria", variable: "alimentaria" },
-  { label: "Salud", variable: "salud" },
-  { label: "Política", variable: "politica" },
-];
+const formato = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 3 });
+const COLORES = ["var(--ember)", "var(--info)", "var(--success)", "var(--warning)", "var(--danger)", "var(--text-secondary)"];
 
-function territorioActual(id: string): EstadisticasTerritorio {
-  return ESTADISTICAS_TERRITORIOS.find((territorio) => territorio.id === id)
-    ?? ESTADISTICAS_TERRITORIOS[0];
+function numero(valor: number | null | undefined): string {
+  return valor === null || valor === undefined ? "Sin dato" : formato.format(valor);
 }
 
-function encabezado(titulo: string, territorio: EstadisticasTerritorio, etiqueta: string) {
-  return (
-    <div className="mb-4 flex min-h-12 items-start justify-between gap-2">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">{etiqueta}</p>
-        <h2 className="text-sm font-semibold text-[var(--text-primary)]">{titulo}</h2>
-      </div>
-      <StatusBadge tone="ember" className="max-w-[48%] truncate text-[10px]" title={territorio.nombre}>
-        {territorio.nombre.split(" — ")[0]}
-      </StatusBadge>
-    </div>
-  );
+function exportarSerie(serie: SerieMultifuenteDetalle, consultaSha: string) {
+  const columnas = ["fuente", "territorio", "indicador", "unidad", "anio_referencia", "valor_original", "periodo_desde", "periodo_hasta", "provisional", "observacion_id", "url_fuente", "sha256_fuente", "sha256_consulta"];
+  const filas = serie.puntos.map((p) => [serie.resumen.fuente, serie.resumen.territorio, serie.resumen.nombre, serie.resumen.unidad, p.anio, p.valor_original, p.periodo_desde, p.periodo_hasta, p.provisional, p.observacion_id, p.url_fuente, p.sha256, consultaSha]);
+  const escapar = (v: unknown) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+  const contenido = [columnas, ...filas].map((fila) => fila.map(escapar).join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob(["\uFEFF", contenido], { type: "text/csv;charset=utf-8" }));
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = `polis-serie-${serie.resumen.id.slice(0, 12)}.csv`;
+  enlace.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function valorDimensiones(territorio: EstadisticasTerritorio): number[] {
-  return DIMENSIONES.map(({ variable }) => obtenerValorVariable(territorio, variable));
-}
-
-function puntosPoligono(valores: number[], centro: number, radio: number): string {
-  return valores.map((valor, indice) => {
-    const angulo = -Math.PI / 2 + (indice * Math.PI * 2) / valores.length;
-    const distancia = (Math.max(0, Math.min(100, valor)) / 100) * radio;
-    return `${(centro + Math.cos(angulo) * distancia).toFixed(2)},${(centro + Math.sin(angulo) * distancia).toFixed(2)}`;
-  }).join(" ");
-}
-
-function RadarChart({
-  territorio,
-  onVariableChange,
-  reducedMotion,
-}: {
-  territorio: EstadisticasTerritorio;
-  onVariableChange: (variable: VariableMapa) => void;
-  reducedMotion: boolean;
-}) {
-  const svgRef = useRef<SVGPolygonElement | null>(null);
-  const size = 220;
-  const center = size / 2;
-  const radius = 70;
-  const valores = valorDimensiones(territorio);
-  const vertices = DIMENSIONES.map((dimension, indice) => {
-    const angle = -Math.PI / 2 + (indice * Math.PI * 2) / DIMENSIONES.length;
-    return {
-      ...dimension,
-      x: center + Math.cos(angle) * radius,
-      y: center + Math.sin(angle) * radius,
-      labelX: center + Math.cos(angle) * (radius + 24),
-      labelY: center + Math.sin(angle) * (radius + 24),
-    };
+function SerieGrafica({ serie, tipo }: { serie: SerieMultifuenteDetalle; tipo: "linea" | "barras" }) {
+  const reducirMovimiento = useReducedMotion() ?? false;
+  const anios = serie.puntos.map((p) => p.anio);
+  const porAnio = new Map(serie.puntos.map((p) => [p.anio, p]));
+  if (porAnio.size !== serie.puntos.length) return <Notice tone="warning" title="Hay varias observaciones por año">Consulta los valores originales: no se agregan desagregaciones automáticamente.</Notice>;
+  const primero = Math.min(...anios);
+  const ultimo = Math.max(...anios);
+  const datos = Array.from({ length: ultimo - primero + 1 }, (_, indice) => {
+    const anio = primero + indice;
+    const punto = porAnio.get(anio);
+    return { anio: `${anio}${punto?.provisional || punto?.completo === false ? "*" : ""}`, valor: punto?.valor ?? null };
   });
-
-  useEffect(() => {
-    const polygon = svgRef.current;
-    if (!polygon || reducedMotion) return;
-    const perimeter = polygon.getTotalLength();
-    polygon.style.transition = "none";
-    polygon.style.strokeDasharray = `${perimeter}`;
-    polygon.style.strokeDashoffset = `${perimeter}`;
-    requestAnimationFrame(() => {
-      polygon.style.transition = "stroke-dashoffset 500ms ease-out";
-      polygon.style.strokeDashoffset = "0";
-    });
-    return () => {
-      polygon.style.transition = "none";
-    };
-  }, [territorio.id, reducedMotion]);
-
   return (
-    <div className="relative mx-auto w-full max-w-[250px]">
-      <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Radar de siete dimensiones derivadas, escala de cero a cien" className="h-auto w-full overflow-visible">
-        {[25, 50, 75, 100].map((nivel) => (
-          <polygon key={nivel} points={puntosPoligono(Array.from({ length: 7 }, () => nivel), center, radius)} fill="none" stroke="var(--border)" strokeWidth="1" />
-        ))}
-        {vertices.map((vertice) => (
-          <line key={vertice.label} x1={center} y1={center} x2={vertice.x} y2={vertice.y} stroke="var(--border)" strokeWidth="1" />
-        ))}
-        <polygon
-          ref={svgRef}
-          points={puntosPoligono(valores, center, radius)}
-          fill="var(--ember)"
-          fillOpacity="0.2"
-          stroke="var(--ember)"
-          strokeWidth="2.5"
-          strokeLinejoin="round"
-        />
-        {vertices.map((vertice, indice) => (
-          <g key={vertice.label} aria-hidden="true">
-            <circle cx={center + Math.cos(-Math.PI / 2 + (indice * Math.PI * 2) / 7) * radius * valores[indice] / 100} cy={center + Math.sin(-Math.PI / 2 + (indice * Math.PI * 2) / 7) * radius * valores[indice] / 100} r="3" fill="var(--ember)" />
-            <text x={vertice.labelX} y={vertice.labelY} textAnchor="middle" dominantBaseline="middle" className="fill-[var(--text-secondary)] text-[9px]">{vertice.label}</text>
-          </g>
-        ))}
-      </svg>
-      {vertices.map((vertice, indice) => (
-        <Button
-          key={vertice.variable}
-          variant="unstyled"
-          size="unstyled"
-          className="absolute z-10 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--surface-1)]/90 text-[9px] font-semibold text-[var(--text-primary)] shadow-sm ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--ember)] hover:text-[var(--ember-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ember)]"
-          style={{ left: `${(vertice.x / size) * 100}%`, top: `${(vertice.y / size) * 100}%`, transitionDuration: reducedMotion ? "0ms" : "300ms" }}
-          aria-label={`Mostrar dimensión ${vertice.label} en el mapa (${valores[indice]} sobre 100)`}
-          title={`${vertice.label}: ${Math.round(valores[indice])}/100`}
-          onMouseEnter={() => onVariableChange(vertice.variable)}
-          onFocus={() => onVariableChange(vertice.variable)}
-        >
-          {Math.round(valores[indice])}
-        </Button>
-      ))}
-    </div>
+    <section aria-label={`Gráfica de ${serie.resumen.nombre}`} className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{serie.resumen.nombre}</h3>
+      <p className="mb-3 break-words text-xs text-[var(--text-secondary)]">{serie.resumen.territorio} · {serie.resumen.unidad} · {serie.resumen.fuente}</p>
+      <ChartContainer config={{ valor: { label: serie.resumen.unidad, color: "var(--ember)" } }} className="aspect-auto h-64 w-full min-w-0">
+        <ComposedChart data={datos} accessibilityLayer margin={{ left: 0, right: 12, top: 8, bottom: 8 }}>
+          <CartesianGrid vertical={false} stroke="var(--border)" />
+          <XAxis dataKey="anio" tickLine={false} axisLine={false} minTickGap={18} tick={{ fill: "var(--text-secondary)", fontSize: 11 }} />
+          <YAxis width={62} tickLine={false} axisLine={false} tickFormatter={(v: number) => formato.format(v)} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          {tipo === "linea" ? <Line dataKey="valor" type="linear" stroke="var(--ember)" strokeWidth={2} dot={{ r: 3 }} connectNulls={false} isAnimationActive={!reducirMovimiento} /> : <Bar dataKey="valor" fill="var(--ember)" radius={[4, 4, 0, 0]} isAnimationActive={!reducirMovimiento} />}
+        </ComposedChart>
+      </ChartContainer>
+      <p className="text-xs text-[var(--text-secondary)]">* Corte parcial o provisional. Los huecos representan datos ausentes. El eje temporal usa el año de referencia declarado por la fuente.</p>
+    </section>
   );
 }
 
-function RankingChart({
-  territorioId,
-  variableMapa,
-  onTerritorioChange,
-  reducedMotion,
-}: {
-  territorioId: string;
-  variableMapa: VariableMapa;
-  onTerritorioChange: (id: string) => void;
-  reducedMotion: boolean;
-}) {
-  const territorios = useMemo(() => [...ESTADISTICAS_TERRITORIOS].sort(
-    (a, b) => obtenerValorVariable(b, variableMapa) - obtenerValorVariable(a, variableMapa),
-  ), [variableMapa]);
-  const promedio = territorios.reduce((total, item) => total + obtenerValorVariable(item, variableMapa), 0) / Math.max(territorios.length, 1);
-  const maximo = Math.max(...territorios.map((item) => obtenerValorVariable(item, variableMapa)), 1);
-  const meta = VARIABLE_META[variableMapa];
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; texto: string } | null>(null);
+function CoberturaGrafica({ datos }: { datos: AnaliticaMultifuente }) {
+  const reducirMovimiento = useReducedMotion() ?? false;
+  const ordenadas = [...datos.cobertura_fuentes].sort((a, b) => b.total - a.total);
+  const categorias = ordenadas.slice(0, 5).map((f) => ({ nombre: f.nombre, total: f.total }));
+  if (ordenadas.length > 5) categorias.push({ nombre: "Otras entidades", total: ordenadas.slice(5).reduce((suma, f) => suma + f.total, 0) });
+  if (!categorias.length) return null;
+  return (
+    <section aria-label="Composición de las observaciones consultadas" className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
+      <h3 className="text-sm font-semibold">Cobertura del banco por entidad</h3>
+      <p className="text-xs text-[var(--text-secondary)]">Cada observación se cuenta una vez en su grupo de entidad. Esta distribución describe la cobertura documental del banco.</p>
+      <ChartContainer config={{ total: { label: "Observaciones", color: "var(--info)" } }} className="aspect-auto h-56 w-full min-w-0">
+        <PieChart>
+          <ChartTooltip content={<ChartTooltipContent nameKey="nombre" />} />
+          <Pie data={categorias} dataKey="total" nameKey="nombre" innerRadius={42} outerRadius={78} isAnimationActive={!reducirMovimiento}>
+            {categorias.map((c, i) => (
+              <Cell
+                key={c.nombre}
+                fill={COLORES[i % COLORES.length]}
+                aria-label={`${c.nombre}: ${c.total} observaciones`}
+              />
+            ))}
+          </Pie>
+        </PieChart>
+      </ChartContainer>
+      <ul className="space-y-1 text-xs">
+        {categorias.map((c, i) => <li key={c.nombre} className="flex min-w-0 items-start justify-between gap-2"><span className="min-w-0 break-words"><span aria-hidden="true" className="mr-2 inline-block size-2 rounded-full" style={{ backgroundColor: COLORES[i % COLORES.length] }} />{c.nombre}</span><span className="shrink-0 tabular-nums">{c.total.toLocaleString("es-CO")}</span></li>)}
+      </ul>
+    </section>
+  );
+}
 
-  function mostrarTooltip(event: MouseEvent<HTMLButtonElement> | FocusEvent<HTMLButtonElement>, item: EstadisticasTerritorio) {
-    const bounds = event.currentTarget.parentElement?.getBoundingClientRect();
-    if (!bounds) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const clientX = "clientX" in event ? event.clientX : rect.left + rect.width / 2;
-    const clientY = "clientY" in event ? event.clientY : rect.top + rect.height / 2;
-    const valor = obtenerValorVariable(item, variableMapa);
-    setTooltip({ x: clientX - bounds.left, y: clientY - bounds.top, texto: `${valor.toLocaleString("es-CO")} ${meta.unidad} · ${valor - promedio >= 0 ? "+" : ""}${(valor - promedio).toLocaleString("es-CO", { maximumFractionDigits: 1 })} vs. promedio simple` });
+function Trazabilidad({ serie }: { serie: SerieMultifuenteDetalle }) {
+  const ultimo = serie.puntos.at(-1);
+  if (!ultimo) return null;
+  return (
+    <section aria-label="Trazabilidad y método de la serie" className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
+      <h3 className="text-sm font-semibold">Fuente y método</h3>
+      <dl className="grid gap-2 text-xs sm:grid-cols-2">
+        <div><dt className="text-[var(--text-secondary)]">Entidad y producto</dt><dd className="break-words">{serie.resumen.fuente}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Escala territorial</dt><dd>{serie.resumen.escala} · {serie.resumen.territorio}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Unidad y desagregación</dt><dd>{serie.resumen.unidad} · {serie.resumen.subtipo || "Sin declarar"}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Periodo del último dato</dt><dd>{ultimo.periodo_desde && ultimo.periodo_hasta ? `${ultimo.periodo_desde} a ${ultimo.periodo_hasta}` : `${ultimo.anio}: año de referencia; fechas sin acreditar`}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Método</dt><dd>{ultimo.metodo || "Lectura directa del valor del banco. Fórmula de origen sin declarar."}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Fecha de extracción</dt><dd>{ultimo.fecha_extraccion || "Sin declarar"}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Validación de origen</dt><dd>{ultimo.estado_validacion || "Sin declarar"}</dd></div>
+        <div><dt className="text-[var(--text-secondary)]">Certificación del corte analítico</dt><dd>{ultimo.estado_publicacion || "Sin declarar"}</dd></div>
+      </dl>
+      {ultimo.url_fuente && <a href={ultimo.url_fuente} target="_blank" rel="noopener noreferrer" className="inline-block max-w-full break-all text-xs text-[var(--info)] underline focus-visible:outline focus-visible:outline-2">Consultar publicación de origen</a>}
+      <p className="break-all text-xs text-[var(--text-secondary)]">SHA-256 de origen: {ultimo.sha256 || "No registrado en esta observación"}</p>
+      {ultimo.referencia && <p className="text-xs">Referencia: {ultimo.referencia}</p>}
+      {ultimo.nota && <p className="text-xs leading-relaxed text-[var(--text-secondary)]">{ultimo.nota}</p>}
+      <details className="text-xs"><summary className="cursor-pointer rounded py-1 font-medium focus-visible:outline focus-visible:outline-2">Advertencias de la serie ({serie.resumen.advertencias.length})</summary><ul className="list-disc space-y-1 pl-4">{serie.resumen.advertencias.map((a) => <li key={a}>{a}</li>)}</ul></details>
+    </section>
+  );
+}
+
+export function GeovisorCharts({ onTerritorioChange, datosIniciales, cargandoInicial = false, errorInicial }: GeovisorChartsProps) {
+  const consulta = useAnaliticaMultifuente(datosIniciales === undefined && !cargandoInicial && !errorInicial);
+  const datos = datosIniciales === undefined ? consulta.data : datosIniciales;
+  const setSerieX = useGeovisorAnaliticaStore((s) => s.setSerieX);
+  const setSerieY = useGeovisorAnaliticaStore((s) => s.setSerieY);
+  const [tipo, setTipo] = useState<"linea" | "barras">("linea");
+  const [errorMapa, setErrorMapa] = useState<string | null>(null);
+  const [abriendoMapa, setAbriendoMapa] = useState(false);
+  const serie = datos?.serie;
+  const comparacion = datos?.comparacion;
+  const reducirMovimiento = useReducedMotion() ?? false;
+  const cargando = cargandoInicial || (datosIniciales === undefined && consulta.isLoading && !errorInicial);
+  const error = errorInicial || (consulta.isError ? (consulta.error instanceof Error ? consulta.error.message : "No fue posible consultar la API.") : null);
+
+  async function mostrarEnMapa() {
+    const ultimo = serie?.puntos.at(-1);
+    if (!serie || !ultimo) return;
+    setErrorMapa(null);
+    setAbriendoMapa(true);
+    try {
+      const respuesta = await listarIndicadores({ codigo_territorio: serie.resumen.codigo_territorio, fuente_datos: serie.resumen.fuente, codigo_indicador: serie.resumen.codigo_indicador, anio_corte: ultimo.anio, limit: 100 });
+      const observacion = respuesta.indicadores.find((item) => item.id === ultimo.observacion_id);
+      if (!observacion) throw new Error("La observación ya no está disponible. Actualiza la consulta.");
+      const estado = useGeovisorLayoutStore.getState();
+      if (!estado.indicadoresMultifuenteActivos.some((i) => i.id === observacion.id)) estado.toggleIndicadorMultifuente(observacion);
+      onTerritorioChange?.(serie.resumen.codigo_territorio);
+    } catch (e) {
+      setErrorMapa(e instanceof Error ? e.message : "No fue posible mostrar la observación en el mapa.");
+    } finally {
+      setAbriendoMapa(false);
+    }
   }
 
   return (
-    <div className="relative">
-      <div className="mb-2 flex justify-between text-[10px] text-[var(--text-tertiary)]"><span>Territorio</span><span>{meta.label} · {meta.unidad}</span></div>        <div className="space-y-2">
-        {territorios.map((item) => {
-          const valor = obtenerValorVariable(item, variableMapa);
-          const activo = territorioId === item.id;
-          return (
-            <Button
-              key={item.id}
-              variant="unstyled"
-              size="unstyled"
-              className={`group w-full rounded-md px-1.5 py-1 text-left transition-colors hover:bg-[var(--surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--ember)] ${activo ? "bg-[var(--ember-soft)]" : ""}`}
-              style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }}
-              aria-pressed={activo}
-              aria-label={`Seleccionar ${item.nombre}: ${valor.toLocaleString("es-CO")} ${meta.unidad}`}
-              onClick={() => onTerritorioChange(item.id)}
-              onMouseMove={(event) => mostrarTooltip(event, item)}
-              onMouseEnter={(event) => mostrarTooltip(event, item)}
-              onMouseLeave={() => setTooltip(null)}
-              onFocus={(event) => mostrarTooltip(event, item)}
-              onBlur={() => setTooltip(null)}
-            >
-              <span className="mb-1 flex items-center justify-between gap-2 text-[10px]">
-                <span className="truncate text-[var(--text-primary)]">{item.nombre}</span>
-                <span className="shrink-0 font-semibold tabular text-[var(--text-primary)]">{valor.toLocaleString("es-CO")} {meta.unidad}</span>
-              </span>
-              <span className="block h-2 overflow-hidden rounded-full bg-[var(--surface-2)]">
-                <span className={`block h-full rounded-full transition-[width,background-color] ease-out ${activo ? "bg-[var(--ember)]" : "bg-[var(--info)] group-hover:bg-[var(--ember)]"} ${activo && !reducedMotion ? "animate-pulse" : ""}`} style={{ width: `${Math.max(2, (valor / maximo) * 100)}%`, transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
-              </span>
-            </Button>
-          );
-        })}
-      </div>
-      <p className="mt-3 text-[10px] text-[var(--text-tertiary)]">Diferencia frente al promedio simple de los territorios listados; no es una ponderación poblacional.</p>
-      {tooltip && <div className="pointer-events-none absolute z-20 max-w-[90%] -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.texto}</div>}
-    </div>
-  );
-}
-
-function TendenciaChart({ territorio, reducedMotion }: { territorio: EstadisticasTerritorio; reducedMotion: boolean }) {
-  const values = territorio.tendenciaAlertas;
-  const max = Math.max(...values, 1);
-  const min = Math.min(...values, 0);
-  const width = 320;
-  const height = 160;
-  const padding = { x: 22, y: 18 };
-  const plotWidth = width - padding.x * 2;
-  const plotHeight = height - padding.y * 2;
-  const range = Math.max(max - min, 1);
-  const points = values.map((value, index) => ({
-    x: padding.x + (index / Math.max(values.length - 1, 1)) * plotWidth,
-    y: padding.y + ((max - value) / range) * plotHeight,
-    value,
-  }));
-  const line = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
-  const area = `${line} L ${points.at(-1)?.x ?? 0} ${height - padding.y} L ${padding.x} ${height - padding.y} Z`;
-  const average = values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
-  const averageY = padding.y + ((max - average) / range) * plotHeight;
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
-
-  return (
-    <div className="relative" onMouseLeave={() => setTooltip(null)}>
-      <div className="mb-2 flex items-baseline justify-between"><span className="text-xl font-semibold tabular text-[var(--text-primary)]">{values.at(-1) ?? 0}</span><span className="text-[10px] text-[var(--text-tertiary)]">alertas · octubre</span></div>
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Tendencia de alertas referencial para ${territorio.nombre}, de mayo a octubre`} className="w-full overflow-visible">
-        <defs><linearGradient id={`gradiente-alertas-${territorio.id}`} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="var(--ember)" stopOpacity="0.3" /><stop offset="100%" stopColor="var(--ember)" stopOpacity="0" /></linearGradient></defs>
-        <line x1={padding.x} x2={width - padding.x} y1={averageY} y2={averageY} stroke="var(--text-tertiary)" strokeDasharray="4 4" strokeWidth="1" />
-        <path d={area} fill={`url(#gradiente-alertas-${territorio.id})`} className="transition-all" style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
-        <path d={line} fill="none" stroke="var(--ember)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-all" style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
-        {points.map((point, index) => (
-          <g key={`${territorio.id}-${MESES[index]}`} onMouseMove={(event) => {
-            const bounds = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
-            if (bounds) setTooltip({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, text: `${MESES[index]} 2026 · ${point.value} alertas` });
-          }} onFocus={() => setTooltip({ x: point.x / width * 100, y: point.y / height * 100, text: `${MESES[index]} 2026 · ${point.value} alertas` })}>
-            <circle cx={point.x} cy={point.y} r="11" fill="transparent" tabIndex={0} role="img" aria-label={`${MESES[index]} de 2026: ${point.value} alertas`} onBlur={() => setTooltip(null)} />
-            <circle cx={point.x} cy={point.y} r="3.5" fill="var(--surface-1)" stroke="var(--ember)" strokeWidth="2" />
-          </g>
-        ))}
-        {points.map((point, index) => <text key={MESES[index]} x={point.x} y={height - 2} textAnchor="middle" className="fill-[var(--text-tertiary)] text-[8px]">{MESES[index].slice(0, 3)}</text>)}
-      </svg>
-      {tooltip && <div className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.text}</div>}
-      <p className="mt-1 text-[10px] text-[var(--text-tertiary)]">Promedio: {average.toLocaleString("es-CO", { maximumFractionDigits: 1 })} · serie referencial de los datos disponibles</p>
-    </div>
-  );
-}
-
-function arcoDonut(cx: number, cy: number, radio: number, inicio: number, fin: number): string {
-  const punto = (angulo: number) => ({ x: cx + radio * Math.cos(angulo), y: cy + radio * Math.sin(angulo) });
-  const primero = punto(inicio);
-  const segundo = punto(fin);
-  const arcoGrande = fin - inicio > Math.PI ? 1 : 0;
-  return `M ${primero.x} ${primero.y} A ${radio} ${radio} 0 ${arcoGrande} 1 ${segundo.x} ${segundo.y}`;
-}
-
-function DonutChart({ territorioId, variableMapa, onTerritorioChange, reducedMotion }: {
-  territorioId: string;
-  variableMapa: VariableMapa;
-  onTerritorioChange: (id: string) => void;
-  reducedMotion: boolean;
-}) {
-  const localidades = LOCALIDADES.map((id) => territorioActual(id));
-  const total = localidades.reduce((suma, item) => suma + item.poblacion, 0);
-  const centerTerritory = territorioActual(territorioId);
-  const centerValue = obtenerValorVariable(centerTerritory, variableMapa);
-  const colors: Record<(typeof LOCALIDADES)[number], string> = {
-    "loc-1": "var(--territory-loc-1)",
-    "loc-2": "var(--territory-loc-2)",
-    "loc-3": "var(--territory-loc-3)",
-  };
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
-  const segmentos = localidades.reduce<Array<{ item: EstadisticasTerritorio; portion: number; start: number; end: number }>>((acumulados, item) => {
-    const start = acumulados.at(-1)?.end ?? -Math.PI / 2;
-    const portion = item.poblacion / total;
-    acumulados.push({ item, portion, start, end: start + portion * Math.PI * 2 });
-    return acumulados;
-  }, []);
-
-  return (
-    <div className="relative" onMouseLeave={() => setTooltip(null)}>
-      <svg viewBox="0 0 220 190" role="group" aria-label="Distribución referencial de población por localidad" className="mx-auto w-full max-w-[260px] overflow-visible">
-        {segmentos.map(({ item, portion, start, end }) => {
-          const selected = territorioId === item.id;
-          const middle = (start + end) / 2;
-          const offset = selected ? 5 : 0;
-          const cx = 110 + Math.cos(middle) * offset;
-          const cy = 90 + Math.sin(middle) * offset;
-          return (
-            <path
-              key={item.id}
-              d={arcoDonut(cx, cy, selected ? 59 : 55, start, end)}
-              fill="none"
-              stroke={colors[item.id as (typeof LOCALIDADES)[number]]}
-              strokeWidth={selected ? 29 : 24}
-              strokeLinecap="butt"
-              className="cursor-pointer transition-all hover:opacity-80 focus-visible:stroke-[var(--text-primary)]"
-              style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }}
-              tabIndex={0}
-              role="button"
-              aria-label={`Seleccionar ${item.nombre}, población ${item.poblacion.toLocaleString("es-CO")}`}
-              onClick={() => onTerritorioChange(item.id)}
-              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onTerritorioChange(item.id); } }}
-              onMouseMove={(event) => {
-                const bounds = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
-                if (bounds) setTooltip({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, text: `${item.nombre.split(" — ")[0]} · ${item.poblacion.toLocaleString("es-CO")} habitantes (${Math.round(portion * 100)}%)` });
-              }}
-              onFocus={() => setTooltip({ x: 50, y: 12, text: `${item.nombre.split(" — ")[0]} · ${item.poblacion.toLocaleString("es-CO")} habitantes` })}
-            />
-          );
-        })}
-        <text x="110" y="84" textAnchor="middle" className="fill-[var(--text-tertiary)] text-[9px]">{VARIABLE_META[variableMapa].label}</text>
-        <text x="110" y="104" textAnchor="middle" className="fill-[var(--text-primary)] text-[15px] font-bold">{centerValue.toLocaleString("es-CO")}</text>
-      </svg>
-      <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1">
-        {localidades.map((item) => <Button key={item.id} type="button" variant="unstyled" size="unstyled" className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[10px] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--ember)]" onClick={() => onTerritorioChange(item.id)}><span aria-hidden="true" className="size-2 rounded-full" style={{ backgroundColor: colors[item.id as (typeof LOCALIDADES)[number]] }} />{item.nombre.split(" — ")[0]}</Button>)}
-      </div>
-      <p className="mt-2 text-center text-[10px] text-[var(--text-tertiary)]">Población total referencial: {total.toLocaleString("es-CO")}</p>
-      {tooltip && <div className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.text}</div>}
-    </div>
-  );
-}
-
-export function GeovisorCharts({ territorioId, variableMapa, onTerritorioChange, onVariableChange }: GeovisorChartsProps) {
-  const reducedMotion = useReducedMotion() ?? false;
-  const territorio = territorioActual(territorioId);
-  const variableLabel = VARIABLE_META[variableMapa].label;
-
-  return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">Exploración interactiva · {variableLabel}</p>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Análisis estadístico territorial</h2>
-        </div>
-        <p className="text-xs text-[var(--text-secondary)]">Selecciona una gráfica o territorio; el mapa y las gráficas comparten la selección.</p>
-      </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Perfil multidimensional derivado">
-          {encabezado("Perfil multidimensional", territorio, "Indicadores derivados · 0–100")}
-          <RadarChart territorio={territorio} onVariableChange={onVariableChange} reducedMotion={reducedMotion} />
-          <p className="mt-3 text-[10px] leading-relaxed text-[var(--text-tertiary)]">Exploración construida con fórmulas derivadas; no equivale a una medición oficial de las dimensiones ONU.</p>
-        </article>
-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Ranking de territorios">
-          {encabezado("Ranking territorial", territorio, "Comparativa")}
-          <RankingChart territorioId={territorioId} variableMapa={variableMapa} onTerritorioChange={onTerritorioChange} reducedMotion={reducedMotion} />
-        </article>
-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Tendencia de alertas">
-          {encabezado("Tendencia de alertas", territorio, "Mayo–octubre 2026")}
-          <TendenciaChart territorio={territorio} reducedMotion={reducedMotion} />
-        </article>
-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Distribución de población por localidad">
-          {encabezado("Población por localidad", territorio, "Distribución referencial")}
-          <DonutChart territorioId={territorioId} variableMapa={variableMapa} onTerritorioChange={onTerritorioChange} reducedMotion={reducedMotion} />
-        </article>
-      </div>
+    <div className="min-w-0 space-y-4" aria-busy={cargando}>
+      <header className="space-y-1">
+        <p className="text-xs font-medium uppercase tracking-wider text-[var(--info)]">Banco Multifuente · análisis descriptivo</p>
+        <h2 className="text-lg font-semibold">Estadísticas y comparación de fuentes</h2>
+        <p className="text-sm text-[var(--text-secondary)]">Explora las series del banco, su cobertura y las condiciones para compararlas.</p>
+      </header>
+      <MultifuenteFiltros datos={datos ?? undefined} onTerritorioChange={onTerritorioChange} />
+      {cargando ? <p role="status" className="p-6 text-sm text-[var(--text-secondary)]">Consultando observaciones y calculando series…</p> : error ? <Notice tone="danger" title="No se pudo consultar el banco"><p>{error}</p><Button variant="outline" size="sm" onClick={() => void consulta.refetch()}>Reintentar consulta</Button></Notice> : !datos || !serie ? <EmptyState title="Sin serie disponible" description="La serie seleccionada no contiene observaciones con estos filtros. Los datos municipales no se replican a otros territorios." action={datos?.series.length ? <Button variant="outline" onClick={() => setSerieX(null)}>Elegir una serie disponible</Button> : undefined} /> : (
+        <>
+          <div className="grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
+            <FormField label="Indicador principal">
+              {({ id, ...props }) => <Select value={serie.resumen.id} onValueChange={setSerieX}><SelectTrigger id={id} {...props} className="w-full min-w-0 [&>span]:truncate"><SelectValue /></SelectTrigger><SelectContent>{datos.series.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre} · {s.fuente} · {s.territorio}</SelectItem>)}</SelectContent></Select>}
+            </FormField>
+            <FormField label="Comparar con otra serie" description="Para cruzar entidades, selecciona Todos en el filtro de fuente.">
+              {({ id, ...props }) => <Select value={datos.serie_comparada?.resumen.id ?? "ninguna"} onValueChange={(v) => setSerieY(v === "ninguna" ? null : v)}><SelectTrigger id={id} {...props} className="w-full min-w-0 [&>span]:truncate"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ninguna">Sin comparación</SelectItem>{datos.series.filter((s) => s.id !== serie.resumen.id).map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre} · {s.fuente} · {s.territorio}</SelectItem>)}</SelectContent></Select>}
+            </FormField>
+          </div>
+          <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" aria-label="Resumen de la serie consultada">
+            {[ ["Observaciones de la serie", serie.puntos.length.toLocaleString("es-CO")], ["Último valor registrado", `${numero(serie.puntos.at(-1)?.valor)} ${serie.resumen.unidad}`], ["Mediana de valores disponibles", `${numero(serie.mediana)} ${serie.resumen.unidad}`], ["Observaciones del filtro", datos.total_observaciones.toLocaleString("es-CO")] ].map(([etiqueta, valor]) => <div key={etiqueta} className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3"><p className="text-xs text-[var(--text-secondary)]">{etiqueta}</p><p className="mt-1 break-words text-lg font-semibold tabular-nums">{valor}</p></div>)}
+          </div>
+          <div className="flex flex-wrap gap-2" aria-label="Acciones y presentación de la serie">
+            <Button size="sm" variant={tipo === "linea" ? "default" : "outline"} aria-pressed={tipo === "linea"} onClick={() => setTipo("linea")}>Evolución temporal</Button>
+            <Button size="sm" variant={tipo === "barras" ? "default" : "outline"} aria-pressed={tipo === "barras"} onClick={() => setTipo("barras")}>Barras por año</Button>
+            <Button size="sm" variant="outline" onClick={() => exportarSerie(serie, datos.consulta_sha256)}><Download className="mr-1 size-4" aria-hidden="true" />Descargar serie CSV</Button>
+            <Button size="sm" variant="outline" disabled={abriendoMapa || datosIniciales !== undefined} onClick={() => void mostrarEnMapa()}><MapPin className="mr-1 size-4" aria-hidden="true" />{abriendoMapa ? "Localizando…" : "Ver último dato en mapa"}</Button>
+          </div>
+          {errorMapa && <Notice tone="danger" title="No se pudo mostrar el dato">{errorMapa}</Notice>}
+          <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-2">
+            <SerieGrafica serie={serie} tipo={tipo} />
+            {datos.serie_comparada ? <SerieGrafica serie={datos.serie_comparada} tipo={tipo} /> : <CoberturaGrafica datos={datos} />}
+          </div>
+          {comparacion && <section aria-label="Resultado de la comparación" className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
+            <h3 className="text-sm font-semibold">Comparación trazable por año de referencia</h3>
+            <p className="text-sm">{comparacion.muestra_total} pares observados · {comparacion.muestra_elegible} pares acreditados para cálculo.</p>
+            <p className="text-sm">Pearson: {numero(comparacion.pearson)} · Spearman: {numero(comparacion.spearman)}</p>
+            <ul className="list-disc space-y-1 pl-4 text-xs text-[var(--text-secondary)]">{comparacion.motivos.map((m) => <li key={m}>{m}</li>)}</ul>
+            {comparacion.anios_sin_pareja.length > 0 && <p className="text-xs">Años sin pareja numérica: {comparacion.anios_sin_pareja.join(", ")}. Se conservan como ausencia.</p>}
+            <p className="text-xs text-[var(--text-secondary)]">{comparacion.interpretacion}</p>
+            {comparacion.estado === "correlacion_descriptiva" && <ChartContainer config={{ y: { label: datos.serie_comparada?.resumen.nombre, color: "var(--info)" } }} className="aspect-auto h-64 w-full min-w-0">
+              <ScatterChart accessibilityLayer margin={{ left: 4, right: 12, top: 12, bottom: 12 }}>
+                <CartesianGrid stroke="var(--border)" />
+                <XAxis type="number" dataKey="x" name={serie.resumen.nombre} unit={` ${serie.resumen.unidad}`} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
+                <YAxis type="number" dataKey="y" name={datos.serie_comparada?.resumen.nombre} unit={` ${datos.serie_comparada?.resumen.unidad}`} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Scatter name="Pares acreditados" data={comparacion.pares.filter((p) => p.elegible)} fill="var(--info)" isAnimationActive={!reducirMovimiento} />
+              </ScatterChart>
+            </ChartContainer>}
+            <details className="text-xs"><summary className="cursor-pointer rounded py-1 focus-visible:outline focus-visible:outline-2">Ver valores y exclusiones de cada par</summary><div className="overflow-x-auto"><table className="w-full text-left"><caption className="sr-only">Pares de observaciones y motivos de exclusión</caption><thead><tr><th scope="col" className="p-2">Año</th><th scope="col" className="p-2">Principal ({serie.resumen.unidad})</th><th scope="col" className="p-2">Comparada ({datos.serie_comparada?.resumen.unidad})</th><th scope="col" className="p-2">Condiciones</th></tr></thead><tbody>{comparacion.pares.map((p) => <tr key={p.anio}><td className="p-2">{p.anio}</td><td className="p-2">{numero(p.x)}</td><td className="p-2">{numero(p.y)}</td><td className="p-2">{p.elegible ? "Par acreditado" : p.motivos.join(" ")}</td></tr>)}</tbody></table></div></details>
+          </section>}
+          <Trazabilidad serie={serie} />
+          {datos.serie_comparada && <Trazabilidad serie={datos.serie_comparada} />}
+          <details className="rounded-xl border border-[var(--border)] p-3 text-xs"><summary className="cursor-pointer rounded py-1 font-medium focus-visible:outline focus-visible:outline-2">Valores originales y procedencia de cada observación</summary><div className="overflow-x-auto"><table className="w-full text-left"><caption className="sr-only">Observaciones originales de la serie principal</caption><thead><tr><th scope="col" className="p-2">Año</th><th scope="col" className="p-2">Valor ({serie.resumen.unidad})</th><th scope="col" className="p-2">Periodo</th><th scope="col" className="p-2">Procedencia</th></tr></thead><tbody>{serie.puntos.map((p) => <tr key={p.observacion_id}><td className="p-2">{p.anio}</td><td className="p-2">{p.valor === null ? "Sin dato" : p.valor_original}</td><td className="p-2">{p.periodo_desde && p.periodo_hasta ? `${p.periodo_desde} / ${p.periodo_hasta}` : "Fechas sin acreditar"}{p.provisional || p.completo === false ? " · parcial/provisional" : ""}</td><td className="max-w-64 break-all p-2">{p.url_fuente && <a href={p.url_fuente} target="_blank" rel="noopener noreferrer" className="text-[var(--info)] underline">Fuente</a>}<span className="block">{p.observacion_id}</span><span className="block">{p.sha256 || "SHA no registrado"}</span></td></tr>)}</tbody></table></div></details>
+          <footer className="space-y-1 break-words text-xs text-[var(--text-secondary)]">
+            {datos.advertencias.map((a) => <p key={a}>{a}</p>)}
+            <p>Ediciones previas excluidas de esta consulta: {datos.observaciones_excluidas}.</p>
+            <p>Variación interanual: {numero(serie.variacion_interanual_pct)}{serie.variacion_interanual_pct !== null ? " %" : ""}. {serie.motivo_variacion}</p>
+            <p>Método: {datos.version_metodo}. Estadísticos: mínimo, máximo y mediana de valores disponibles, sin imputación.</p>
+            <p className="break-all">SHA-256 de la consulta: {datos.consulta_sha256}</p>
+          </footer>
+        </>
+      )}
     </div>
   );
 }

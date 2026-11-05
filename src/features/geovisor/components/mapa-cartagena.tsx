@@ -36,12 +36,12 @@ import { TERRITORIOS_CARTAGENA } from "../data/territorios.data";
 
 import { useMapa, type HoverInfo } from "../hooks/use-mapa";
 import type { VariableMapa } from "../data/estadisticas.data";
-import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
 import type { CapasConfig } from "./geovisor-controles";
 import type { MesaGeovisor } from "../services/mesas-geovisor-api";
 import { usePanels } from "@/core/panels/panel-store";
 import { useCapasGeovisor } from "../services/use-geovisor-queries";
 import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+import { indicadorCumpleFiltros, useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;
@@ -126,11 +126,16 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
 
     const { data: capasOficiales = [] } = useCapasGeovisor();
 
-    const indicadorMultifuenteActivo = useGeovisorLayoutStore(
-      (s) => s.indicadorMultifuenteActivo,
+    const indicadoresSeleccionados = useGeovisorLayoutStore(
+      (s) => s.indicadoresMultifuenteActivos,
     );
-    const setIndicadorMultifuenteActivo = useGeovisorLayoutStore(
-      (s) => s.setIndicadorMultifuenteActivo,
+    const filtrosDatos = useGeovisorAnaliticaStore((s) => s.filtros);
+    const indicadoresMultifuenteActivos = useMemo(
+      () => indicadoresSeleccionados.filter((indicador) => indicadorCumpleFiltros(indicador, filtrosDatos)),
+      [indicadoresSeleccionados, filtrosDatos],
+    );
+    const clearIndicadoresMultifuente = useGeovisorLayoutStore(
+      (s) => s.clearIndicadoresMultifuente,
     );
 
     const localidadActiva =
@@ -166,7 +171,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
       delitoHurto,
       onSelectHurto,
       capaPersonalizada,
-      indicadorMultifuente: indicadorMultifuenteActivo,
+      indicadoresMultifuente: indicadoresMultifuenteActivos,
       capasOficiales,
     });
 
@@ -425,12 +430,12 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
           )}
         </div>
 
-        {/* Chip flotante de Capa Multifuente activa */}
-        {indicadorMultifuenteActivo && (
+        {/* Chip flotante de capas multifuente activas */}
+        {indicadoresMultifuenteActivos.length > 0 && (
           <div
             role="status"
             aria-live="polite"
-            className="absolute top-14 right-4 z-20 flex max-w-sm items-center gap-2 rounded-xl border border-[var(--primary)]/30 bg-[var(--surface-1)]/95 p-2 shadow-raised backdrop-blur text-xs"
+            className="absolute top-14 right-4 z-20 flex max-w-md items-center gap-2 rounded-xl border border-[var(--primary)]/30 bg-[var(--surface-1)]/95 p-2 shadow-raised backdrop-blur text-xs"
           >
             <Database
               className="size-4 text-[var(--primary)] shrink-0"
@@ -438,32 +443,32 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
             />
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)]">
-                Capa en mapa
+                Cruce analitico activo
               </span>
               <span
                 className="truncate font-semibold text-[var(--text-primary)]"
-                title={indicadorMultifuenteActivo.nombre_indicador}
+                title={indicadoresMultifuenteActivos
+                  .map((item) => item.nombre_indicador)
+                  .join(" · ")}
               >
-                {indicadorMultifuenteActivo.nombre_indicador}
+                {indicadoresMultifuenteActivos
+                  .map((item) => item.nombre_indicador)
+                  .join(" · ")}
               </span>
             </div>
             <Badge
               variant="outline"
               className="text-[10px] uppercase font-mono shrink-0"
             >
-              {indicadorMultifuenteActivo.territorio_id
-                ?.toLowerCase()
-                .startsWith("loc")
-                ? "Localidades"
-                : "Toda la ciudad"}
+              {indicadoresMultifuenteActivos.length} capas
             </Badge>
             <Button
               variant="ghost"
               size="sm"
               className="h-6 w-6 p-0 rounded-full text-[var(--text-tertiary)] hover:text-[var(--text-primary)] shrink-0"
-              onClick={() => setIndicadorMultifuenteActivo(null)}
-              aria-label="Quitar capa del mapa"
-              title="Quitar capa del mapa"
+              onClick={clearIndicadoresMultifuente}
+              aria-label="Quitar todas las capas del mapa"
+              title="Quitar todas las capas del mapa"
             >
               <X className="size-3.5" />
             </Button>
@@ -573,10 +578,15 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
                             : hoverInfo.multifuenteDetalle.nivel_riesgo ===
                                 "medio"
                               ? "border-[var(--ember)] text-[var(--ember)]"
-                              : "border-[var(--success)] text-[var(--success)]"
+                              : hoverInfo.multifuenteDetalle.nivel_riesgo ===
+                                  "bajo"
+                                ? "border-[var(--success)] text-[var(--success)]"
+                                : "border-[var(--border-strong)] text-[var(--text-secondary)]"
                       }`}
                     >
-                      {hoverInfo.multifuenteDetalle.nivel_riesgo}
+                      {hoverInfo.multifuenteDetalle.nivel_riesgo === "sin_evaluar"
+                        ? "Sin evaluar"
+                        : hoverInfo.multifuenteDetalle.nivel_riesgo}
                     </Badge>
                   )}
                 </div>
@@ -935,31 +945,10 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
           </p>
         </div>
 
-        {/* T7: Tabla oculta de datos para lectores de pantalla (Accesibilidad A11y) */}
         <table className="sr-only">
-          <caption>
-            Resumen estadístico territorial de Cartagena de Indias
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Territorio</th>
-              <th scope="col">ISH</th>
-              <th scope="col">Población</th>
-              <th scope="col">Aportes Ciudadanos</th>
-              <th scope="col">Alertas SAT</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ESTADISTICAS_TERRITORIOS.map((t) => (
-              <tr key={t.id}>
-                <td>{t.nombre}</td>
-                <td>{t.ish}</td>
-                <td>{t.poblacion}</td>
-                <td>{t.aportesCiudadanos}</td>
-                <td>{t.alertas}</td>
-              </tr>
-            ))}
-          </tbody>
+          <caption>Observaciones del banco activas en el mapa</caption>
+          <thead><tr><th scope="col">Territorio</th><th scope="col">Indicador</th><th scope="col">Valor</th><th scope="col">Unidad</th><th scope="col">Año</th><th scope="col">Fuente</th></tr></thead>
+          <tbody>{indicadoresMultifuenteActivos.map((ind) => <tr key={ind.id}><td>{ind.nombre_territorio ?? ind.codigo_territorio}</td><td>{ind.nombre_indicador}</td><td>{ind.valor}</td><td>{ind.unidad_medida}</td><td>{ind.anio_corte}</td><td>{ind.fuente_datos}</td></tr>)}</tbody>
         </table>
       </div>
     );

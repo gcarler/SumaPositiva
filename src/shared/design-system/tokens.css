@@ -5,6 +5,14 @@
   --brand-google-green: #34A853;
   --brand-google-yellow: #FBBC05;
   --brand-google-red: #EA4335;
+
+  /* Identidad y marca oficial POLIS / Ples SAS */
+  --brand-polis-blue: #0369a1;
+  --brand-polis-sky: #38bdf8;
+  --brand-polis-cyan: #0284c7;
+  --brand-polis-light: #7dd3fc;
+  --brand-polis-core: #ffffff;
+  --brand-ples-blue: #009fe3;
   --layer-dropdown: 100;
   --radius: 0.75rem;
   --territory-loc-1: #e85d04;

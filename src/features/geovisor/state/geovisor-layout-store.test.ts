@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach } from "vitest";
+import type { IndicadorMultifuente } from "../models/geovisor";
 import {
   useGeovisorLayoutStore,
   DEFAULT_DOCK_SIZES,
@@ -114,4 +115,46 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     expect(reset.sizes).toEqual(DEFAULT_DOCK_SIZES);
     expect(reset.isMaximized).toBe(false);
   });
+});
+test("inicia con el lienzo cartografico visible y cambia a solo analitica", () => {
+  const state = useGeovisorLayoutStore.getState();
+  expect(state.centerOpen).toBe(true);
+
+  state.toggleCenter(false);
+  expect(useGeovisorLayoutStore.getState().centerOpen).toBe(false);
+
+  state.toggleCenter();
+  expect(useGeovisorLayoutStore.getState().centerOpen).toBe(true);
+});
+test("permite el cruce analitico con multiples indicadores activos", () => {
+  const indicadorUno = {
+    id: "ind-a",
+    territorio_id: "01a0f5dd-538e-7900-afb0-68db850f2153",
+    codigo_indicador: "IND_UNO",
+    nombre_indicador: "Pobreza",
+    valor: 34,
+    unidad_medida: "%",
+    nivel_riesgo: "alto",
+    anio_corte: 2025,
+    fuente_datos: "DANE",
+  } as IndicadorMultifuente;
+  const indicadorDos = {
+    ...indicadorUno,
+    id: "ind-b",
+    nombre_indicador: "Dengue",
+  } as IndicadorMultifuente;
+
+  useGeovisorLayoutStore.getState().toggleIndicadorMultifuente(indicadorUno);
+  useGeovisorLayoutStore.getState().toggleIndicadorMultifuente(indicadorDos);
+  useGeovisorLayoutStore.getState().toggleIndicadorMultifuente(indicadorUno);
+
+  const estado = useGeovisorLayoutStore.getState();
+  expect(estado.indicadoresMultifuenteActivos.map((item) => item.id)).toEqual([
+    "ind-b",
+  ]);
+
+  useGeovisorLayoutStore.getState().clearIndicadoresMultifuente();
+  expect(
+    useGeovisorLayoutStore.getState().indicadoresMultifuenteActivos,
+  ).toEqual([]);
 });

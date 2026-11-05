@@ -6,7 +6,12 @@ import type { IndicadorMultifuente } from "../models/geovisor";
 
 export type DockPanelId = "top" | "left" | "right" | "bottom";
 
-export const DOCK_PANEL_IDS: readonly DockPanelId[] = ["top", "left", "right", "bottom"];
+export const DOCK_PANEL_IDS: readonly DockPanelId[] = [
+  "top",
+  "left",
+  "right",
+  "bottom",
+];
 
 /** Vistas (pestañas) que pueden alojarse en cualquiera de los 4 paneles acoplados. */
 export type GeovisorViewId =
@@ -72,6 +77,7 @@ export interface DockPanelVisibility {
 }
 
 export interface GeovisorLayoutState extends DockPanelVisibility {
+  centerOpen: boolean;
   sizes: DockPanelSizes;
   isMaximized: boolean;
   previousOpenState: DockPanelVisibility | null;
@@ -79,11 +85,17 @@ export interface GeovisorLayoutState extends DockPanelVisibility {
   tabs: DockTabs;
   /** Pestaña activa de cada panel. */
   activeTab: DockActiveTab;
-  /** Indicador del banco multifuente actualmente proyectado en el lienzo cartográfico. */
-  indicadorMultifuenteActivo: IndicadorMultifuente | null;
-  setIndicadorMultifuenteActivo: (indicador: IndicadorMultifuente | null) => void;
+  /** Indicadores del banco multifuente activos en el lienzo (cruce analítico). */
+  indicadoresMultifuenteActivos: IndicadorMultifuente[];
+  setIndicadoresMultifuenteActivos: (
+    indicadores: IndicadorMultifuente[],
+  ) => void;
+  toggleIndicadorMultifuente: (indicador: IndicadorMultifuente) => void;
+  clearIndicadoresMultifuente: () => void;
   /** Panel expandido a su tamaño máximo (como "maximizar panel" de VS Code). */
   expandedDock: DockPanelId | null;
+  toggleCenter: (open?: boolean) => void;
+  setCenterOpen: (open: boolean) => void;
   togglePanel: (panelId: DockPanelId) => void;
   setPanelOpen: (panelId: DockPanelId, open: boolean) => void;
   setPanelSize: (panelId: DockPanelId, size: number) => void;
@@ -95,23 +107,41 @@ export interface GeovisorLayoutState extends DockPanelVisibility {
   /** Quita una vista de su panel (se puede volver a abrir desde el menú Vistas). */
   closeView: (viewId: GeovisorViewId) => void;
   /** Mueve una vista a otro panel (o la reordena dentro del mismo). */
-  moveView: (viewId: GeovisorViewId, panelId: DockPanelId, index?: number) => void;
+  moveView: (
+    viewId: GeovisorViewId,
+    panelId: DockPanelId,
+    index?: number,
+  ) => void;
   toggleDockExpanded: (panelId: DockPanelId) => void;
 }
 
-export function findViewDock(tabs: DockTabs, viewId: GeovisorViewId): DockPanelId | null {
+export function findViewDock(
+  tabs: DockTabs,
+  viewId: GeovisorViewId,
+): DockPanelId | null {
   return DOCK_PANEL_IDS.find((d) => tabs[d].includes(viewId)) ?? null;
 }
 
 export function defaultDockForView(viewId: GeovisorViewId): DockPanelId {
-  if (viewId === "hurtos" || viewId === "datagrid" || viewId === "graficos" || viewId === "fuentes") return "bottom";
+  if (
+    viewId === "hurtos" ||
+    viewId === "datagrid" ||
+    viewId === "graficos" ||
+    viewId === "fuentes"
+  )
+    return "bottom";
   if (viewId === "ficha" || viewId === "territorio") return "right";
   if (viewId === "capas" || viewId === "mesas") return "left";
   return "top";
 }
 
 function cloneTabs(tabs: DockTabs): DockTabs {
-  return { top: [...tabs.top], left: [...tabs.left], right: [...tabs.right], bottom: [...tabs.bottom] };
+  return {
+    top: [...tabs.top],
+    left: [...tabs.left],
+    right: [...tabs.right],
+    bottom: [...tabs.bottom],
+  };
 }
 
 /** Normaliza una configuración persistida: sin ids desconocidos ni duplicados. */
@@ -123,7 +153,11 @@ export function sanitizeDockTabs(raw: unknown): DockTabs {
     const list = (raw as Record<string, unknown>)[dock];
     if (!Array.isArray(list)) continue;
     for (const id of list) {
-      if (typeof id === "string" && (GEOVISOR_VIEW_IDS as readonly string[]).includes(id) && !seen.has(id)) {
+      if (
+        typeof id === "string" &&
+        (GEOVISOR_VIEW_IDS as readonly string[]).includes(id) &&
+        !seen.has(id)
+      ) {
         seen.add(id);
         out[dock].push(id as GeovisorViewId);
       }
@@ -135,9 +169,13 @@ export function sanitizeDockTabs(raw: unknown): DockTabs {
 function sanitizeActive(raw: unknown, tabs: DockTabs): DockActiveTab {
   const out = {} as DockActiveTab;
   for (const dock of DOCK_PANEL_IDS) {
-    const candidate = raw && typeof raw === "object" ? (raw as Record<string, unknown>)[dock] : null;
+    const candidate =
+      raw && typeof raw === "object"
+        ? (raw as Record<string, unknown>)[dock]
+        : null;
     out[dock] =
-      typeof candidate === "string" && (tabs[dock] as string[]).includes(candidate)
+      typeof candidate === "string" &&
+      (tabs[dock] as string[]).includes(candidate)
         ? (candidate as GeovisorViewId)
         : (tabs[dock][0] ?? null);
   }
@@ -174,8 +212,26 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
       tabs: cloneTabs(DEFAULT_DOCK_TABS),
       activeTab: { ...DEFAULT_DOCK_ACTIVE },
       expandedDock: null,
-      indicadorMultifuenteActivo: null,
-      setIndicadorMultifuenteActivo: (indicador) => set({ indicadorMultifuenteActivo: indicador }),
+      indicadoresMultifuenteActivos: [],
+      centerOpen: true,
+      setIndicadoresMultifuenteActivos: (indicadores) =>
+        set({ indicadoresMultifuenteActivos: indicadores }),
+      toggleIndicadorMultifuente: (indicador) =>
+        set((state) => ({
+          indicadoresMultifuenteActivos:
+            state.indicadoresMultifuenteActivos.some(
+              (item) => item.id === indicador.id,
+            )
+              ? state.indicadoresMultifuenteActivos.filter(
+                  (item) => item.id !== indicador.id,
+                )
+              : [...state.indicadoresMultifuenteActivos, indicador],
+        })),
+      clearIndicadoresMultifuente: () =>
+        set({ indicadoresMultifuenteActivos: [] }),
+
+      toggleCenter: (open) => set({ centerOpen: open ?? !get().centerOpen }),
+      setCenterOpen: (open) => set({ centerOpen: open }),
 
       togglePanel: (panelId: DockPanelId) => {
         const key = `${panelId}Open` as const;
@@ -209,7 +265,10 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
       maximizeMap: () => {
         const state = get();
         const algunAbierto =
-          state.topOpen || state.leftOpen || state.rightOpen || state.bottomOpen;
+          state.topOpen ||
+          state.leftOpen ||
+          state.rightOpen ||
+          state.bottomOpen;
 
         if (state.isMaximized || !algunAbierto) {
           // Restaurar disposición previa
@@ -249,7 +308,7 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
           tabs: cloneTabs(DEFAULT_DOCK_TABS),
           activeTab: { ...DEFAULT_DOCK_ACTIVE },
           expandedDock: null,
-          indicadorMultifuenteActivo: null,
+          indicadoresMultifuenteActivos: [],
         });
       },
 
@@ -257,7 +316,7 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
         set((state) =>
           state.tabs[panelId].includes(viewId)
             ? { activeTab: { ...state.activeTab, [panelId]: viewId } }
-            : state
+            : state,
         );
       },
 
@@ -294,7 +353,8 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
             ...(tabs[dock].length === 0
               ? {
                   [`${dock}Open`]: false,
-                  expandedDock: state.expandedDock === dock ? null : state.expandedDock,
+                  expandedDock:
+                    state.expandedDock === dock ? null : state.expandedDock,
                 }
               : {}),
           };
@@ -308,13 +368,18 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
           if (source) {
             tabs[source].splice(tabs[source].indexOf(viewId), 1);
           }
-          const at = index === undefined ? tabs[panelId].length : Math.max(0, Math.min(index, tabs[panelId].length));
+          const at =
+            index === undefined
+              ? tabs[panelId].length
+              : Math.max(0, Math.min(index, tabs[panelId].length));
           tabs[panelId].splice(at, 0, viewId);
           const activeTab = { ...state.activeTab, [panelId]: viewId };
           const extra: Partial<GeovisorLayoutState> = {};
           if (source && source !== panelId) {
             activeTab[source] =
-              state.activeTab[source] === viewId ? (tabs[source][0] ?? null) : state.activeTab[source];
+              state.activeTab[source] === viewId
+                ? (tabs[source][0] ?? null)
+                : state.activeTab[source];
             if (tabs[source].length === 0) {
               (extra as Record<string, unknown>)[`${source}Open`] = false;
               if (state.expandedDock === source) extra.expandedDock = null;
@@ -358,7 +423,9 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<GeovisorLayoutState>;
         const hasTabs = saved.tabs !== undefined;
-        const tabs = hasTabs ? sanitizeDockTabs(saved.tabs) : cloneTabs(DEFAULT_DOCK_TABS);
+        const tabs = hasTabs
+          ? sanitizeDockTabs(saved.tabs)
+          : cloneTabs(DEFAULT_DOCK_TABS);
         if (!findViewDock(tabs, "hurtos")) {
           tabs.bottom.unshift("hurtos");
         }
@@ -379,6 +446,6 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
         }
         return storageFallback;
       }),
-    }
-  )
+    },
+  ),
 );

@@ -27,9 +27,9 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
     expect(html).toContain('data-testid="geovisor-workspace-layout"');
 
     // Dock superior (Top Shelf)
-    expect(html).toContain('data-testid="geovisor-top-shelf"');
-    expect(html).toContain("Zona Territorial:");
-    expect(html).toContain("Datos Estadísticos:");
+    expect(html).toContain('aria-label="Filtros compartidos del banco y las gráficas"');
+    expect(html).toContain("Territorio de los datos");
+    expect(html).toContain("Entidad fuente");
 
     // Dock izquierdo (Capas GeoJSON)
     expect(html).toContain('data-testid="geovisor-dock-host-left"');
@@ -48,7 +48,7 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
     expect(html).toContain("Volver al inicio");
 
     // Atribución de fuentes oficiales en la barra permanente
-    expect(html).toContain("Fuentes oficiales: DANE 2025");
+    expect(html).toContain("Fuentes y método:");
 
     // Sin contenedor fluid ni márgenes restrictivos
     expect(html).not.toContain("container-fluid");

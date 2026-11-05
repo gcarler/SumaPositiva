@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polis Plataforma — Galería Oficial de Plantillas de Correo Transaccional</title>
+    <style>
+        :root {
+            --bg-app: #0f172a;
+            --surface-panel: #1e293b;
+            --surface-hover: #334155;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #0284c7;
+            --accent-light: #38bdf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            background-color: #0284c7;
+            background: linear-gradient(135deg, #0369a1 0%, #002855 100%);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand img {
+            height: 38px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .brand-text h1 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+        .brand-text p {
+            font-size: 12px;
+            color: #bae6fd;
+        }
+        .header-meta {
+            font-size: 12px;
+            color: #e0f2fe;
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        aside {
+            width: 380px;
+            background-color: var(--surface-panel);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.15s ease;
+        }
+        .nav-item:hover {
+            background-color: var(--surface-hover);
+        }
+        .nav-item.active {
+            background-color: rgba(2, 132, 199, 0.25);
+            border-left: 4px solid var(--accent-light);
+        }
+        .badge-num {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-light);
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+        .nav-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .nav-title {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #ffffff;
+        }
+        .nav-type {
+            display: block;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #0b0f19;
+            overflow: hidden;
+        }
+        .preview-toolbar {
+            background-color: #131b2e;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .info-card h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .info-card p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .info-card strong {
+            color: #38bdf8;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--surface-panel);
+            color: #ffffff;
+            transition: all 0.15s;
+        }
+        .btn:hover {
+            background: var(--surface-hover);
+        }
+        .btn-primary {
+            background: #0284c7;
+            border-color: #0369a1;
+        }
+        .btn-primary:hover {
+            background: #0369a1;
+        }
+        .iframe-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: auto;
+            background: #0b0f19;
+        }
+        iframe {
+            width: 100%;
+            max-width: 680px;
+            height: 100%;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <img src="/logo-polis.svg" alt="POLIS">
+            <div class="brand-text">
+                <h1>Polis Plataforma — Galería Oficial de Plantillas Transaccionales</h1>
+                <p>Suite completa de 17 plantillas institucionales HTML con fe pública, QR verificable y tipografía caribeña</p>
+            </div>
+        </div>
+        <div class="header-meta">
+            Ples SAS • Alcaldía Mayor de Cartagena • Ley 1757 de 2015
+        </div>
+    </header>
+
+    <div class="container">
+        <aside>
+            <div class="sidebar-header">
+                17 Plantillas Registradas (Polis Plataforma)
+            </div>
+            <div id="nav-list">
+                
+        <button class="nav-item" onclick="cargarPlantilla('01_registro_bienvenida.html', '1', 'Bienvenida y Activación de Cuenta Ciudadana', 'POLIS: Bienvenido(a) a la plataforma distrital - Verifique su cuenta', 'Ciudadano registrado', 'OBLIGATORIO (Seguridad / Activación)', 'registro_bienvenida')">
+            <span class="badge-num">01</span>
+            <div class="nav-text">
+                <span class="nav-title">Bienvenida y Activación de Cuenta Ciudadana</span>
+                <span class="nav-type">registro_bienvenida</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('02_verificacion_correo.html', '2', 'Verificación de Correo Electrónico Institucional', 'POLIS: Verificación de correo electrónico institucional', 'Usuario registrado o funcionario', 'OBLIGATORIO (Seguridad)', 'verificacion_correo')">
+            <span class="badge-num">02</span>
+            <div class="nav-text">
+                <span class="nav-title">Verificación de Correo Electrónico Institucional</span>
+                <span class="nav-type">verificacion_correo</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('03_recuperacion_contrasena.html', '3', 'Recuperación de Contraseña con Token de Uso Único', 'POLIS: Restablecimiento de contraseña de acceso', 'Ciudadano o funcionario que solicita recuperar clave', 'OBLIGATORIO (Seguridad y Acceso)', 'recuperacion_contrasena')">
+            <span class="badge-num">03</span>
+            <div class="nav-text">
+                <span class="nav-title">Recuperación de Contraseña con Token de Uso Único</span>
+                <span class="nav-type">recuperacion_contrasena</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('04_contrasena_cambiada.html', '4', 'Confirmación de Modificación de Contraseña', 'POLIS: Confirmación de cambio de contraseña exitoso', 'Usuario autenticado tras cambio de clave', 'OBLIGATORIO (Seguridad / Detección de intrusión)', 'contrasena_cambiada')">
+            <span class="badge-num">04</span>
+            <div class="nav-text">
+                <span class="nav-title">Confirmación de Modificación de Contraseña</span>
+                <span class="nav-type">contrasena_cambiada</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('05_perfil_actualizado.html', '5', 'Constancia de Actualización de Datos de Perfil', 'POLIS: Constancia de actualización de perfil de usuario', 'Usuario autenticado que modifica nombres o apellidos', 'OBLIGATORIO (Fe Pública / Auditoría)', 'perfil_actualizado')">
+            <span class="badge-num">05</span>
+            <div class="nav-text">
+                <span class="nav-title">Constancia de Actualización de Datos de Perfil</span>
+                <span class="nav-type">perfil_actualizado</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('06_constancia_radicacion.html', '6', 'Constancia Oficial de Radicación con Código QR', 'POLIS: Constancia de radicación oficial POL-2026-0842', 'Ciudadano autor de propuesta', 'OBLIGATORIO (Fe Pública / Sentencia C-150 de 2015)', 'radicacion')">
+            <span class="badge-num">06</span>
+            <div class="nav-text">
+                <span class="nav-title">Constancia Oficial de Radicación con Código QR</span>
+                <span class="nav-type">radicacion</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('07_propuesta_actualizada.html', '7', 'Constancia de Complementación o Edición de Propuesta', 'POLIS: Actualización de propuesta ciudadana POL-2026-0842', 'Ciudadano autor de la propuesta', 'OBLIGATORIO (Trazabilidad documental)', 'propuesta_actualizada')">
+            <span class="badge-num">07</span>
+            <div class="nav-text">
+                <span class="nav-title">Constancia de Complementación o Edición de Propuesta</span>
+                <span class="nav-type">propuesta_actualizada</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('08_cambio_estado.html', '8', 'Notificación de Cambio de Estado en Trámite Institucional', 'POLIS: Actualización de trámite POL-2026-0842 - En Evaluación Técnica', 'Ciudadano autor de propuesta', 'OBLIGATORIO (Debido Proceso / CPACA)', 'cambio_estado')">
+            <span class="badge-num">08</span>
+            <div class="nav-text">
+                <span class="nav-title">Notificación de Cambio de Estado en Trámite Institucional</span>
+                <span class="nav-type">cambio_estado</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('09_priorizacion.html', '9', 'Aviso de Propuesta Priorizada e Incorporada al Plan', 'POLIS: Propuesta POL-2026-0842 priorizada e incorporada a la política pública', 'Ciudadano autor de propuesta', 'OBLIGATORIO (Eficacia participativa)', 'priorizacion')">
+            <span class="badge-num">09</span>
+            <div class="nav-text">
+                <span class="nav-title">Aviso de Propuesta Priorizada e Incorporada al Plan</span>
+                <span class="nav-type">priorizacion</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('10_apoyo_propuesta.html', '10', 'Aviso de Nuevo Respaldo Popular Comunitario', 'POLIS: Su propuesta POL-2026-0842 recibió un nuevo respaldo ciudadano', 'Ciudadano autor de la propuesta', 'INFORMATIVO (Participación cívica)', 'apoyo_propuesta')">
+            <span class="badge-num">10</span>
+            <div class="nav-text">
+                <span class="nav-title">Aviso de Nuevo Respaldo Popular Comunitario</span>
+                <span class="nav-type">apoyo_propuesta</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('11_actividad_ciudadana.html', '11', 'Constancia de Respaldo Cívico y Participación Ciudadana', 'POLIS: Constancia de su respaldo a la propuesta POL-2026-0842', 'Ciudadano que emite un voto o apoyo comunitario', 'INFORMATIVO (Constancia para el votante)', 'actividad_ciudadana')">
+            <span class="badge-num">11</span>
+            <div class="nav-text">
+                <span class="nav-title">Constancia de Respaldo Cívico y Participación Ciudadana</span>
+                <span class="nav-type">actividad_ciudadana</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('12_invitacion_mesa.html', '12', 'Convocatoria Oficial a Mesa Territorial de Diálogo', 'POLIS: Convocatoria oficial a la Mesa Territorial MT-012 (Localidad de la Virgen y Turística)', 'Líderes comunales, ediles y delegados inscritos', 'INFORMATIVO (Convocatoria pública)', 'invitacion_mesa')">
+            <span class="badge-num">12</span>
+            <div class="nav-text">
+                <span class="nav-title">Convocatoria Oficial a Mesa Territorial de Diálogo</span>
+                <span class="nav-type">invitacion_mesa</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('13_acta_sesion.html', '13', 'Acta de Sesión Territorial Disponible para Revisión', 'POLIS: Acta de sesión MT-012-2026 disponible para revisión y firma comunitaria', 'Asistentes y facilitadores de la mesa', 'INFORMATIVO (Transparencia / Veeduría)', 'acta_sesion')">
+            <span class="badge-num">13</span>
+            <div class="nav-text">
+                <span class="nav-title">Acta de Sesión Territorial Disponible para Revisión</span>
+                <span class="nav-type">acta_sesion</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('14_compromiso_asignado.html', '14', 'Asignación de Compromiso Institucional con Trazabilidad', 'POLIS: Asignación de compromiso institucional COM-2026-089 (Alumbrado Público)', 'Funcionario responsable o veedor ciudadano', 'OBLIGATORIO (Control de Gestión Pública)', 'compromiso_asignado')">
+            <span class="badge-num">14</span>
+            <div class="nav-text">
+                <span class="nav-title">Asignación de Compromiso Institucional con Trazabilidad</span>
+                <span class="nav-type">compromiso_asignado</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('15_gestion_institucional.html', '15', 'Registro de Gestión Institucional y Auditoría', 'POLIS: Comprobante de gestión institucional AUD-2026-1049', 'Funcionario, auditor o gestor de plataforma', 'INFORMATIVO (Trazabilidad interna)', 'gestion_institucional')">
+            <span class="badge-num">15</span>
+            <div class="nav-text">
+                <span class="nav-title">Registro de Gestión Institucional y Auditoría</span>
+                <span class="nav-type">gestion_institucional</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('16_alerta_pendientes.html', '16', 'Alerta de Compromisos y Tareas Próximas a Vencer', 'POLIS: Alerta de compromisos institucionales pendientes de cumplimiento', 'Facilitadores de mesa, secretarios y directores de despacho', 'OBLIGATORIO (SLA y Mitigación de Vencimientos)', 'alerta_pendientes')">
+            <span class="badge-num">16</span>
+            <div class="nav-text">
+                <span class="nav-title">Alerta de Compromisos y Tareas Próximas a Vencer</span>
+                <span class="nav-type">alerta_pendientes</span>
+            </div>
+        </button>
+        
+
+        <button class="nav-item" onclick="cargarPlantilla('17_resumen_diario.html', '17', 'Resumen Diario de Despacho y Fe Pública Institucional', 'POLIS: Resumen diario institucional de radicaciones y fe pública (Corte 31/10/2026)', 'Equipo de Coordinación General, Alcalde Mayor y Secretarios', 'INFORMATIVO (Observabilidad consolidada)', 'resumen_diario')">
+            <span class="badge-num">17</span>
+            <div class="nav-text">
+                <span class="nav-title">Resumen Diario de Despacho y Fe Pública Institucional</span>
+                <span class="nav-type">resumen_diario</span>
+            </div>
+        </button>
+        
+            </div>
+        </aside>
+
+        <main>
+            <div class="preview-toolbar">
+                <div class="info-card">
+                    <h2 id="view-title">Seleccione una plantilla</h2>
+                    <p id="view-subject">Asunto: <strong>-</strong></p>
+                    <p id="view-meta">Audiencia: - | Obligatoriedad: -</p>
+                </div>
+                <div class="actions">
+                    <a id="btn-raw" href="#" target="_blank" class="btn btn-primary">Abrir en pestaña nueva ↗</a>
+                </div>
+            </div>
+            <div class="iframe-container">
+                <iframe id="preview-frame" src="01_registro_bienvenida.html"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const items = [{'id': '01_registro_bienvenida', 'num': 1, 'titulo': 'Bienvenida y Activación de Cuenta Ciudadana', 'tipo_evento': 'registro_bienvenida', 'asunto': 'POLIS: Bienvenido(a) a la plataforma distrital - Verifique su cuenta', 'audiencia': 'Ciudadano registrado', 'obligatoriedad': 'OBLIGATORIO (Seguridad / Activación)', 'render': <function <lambda> at 0x7be758d697a0>, 'archivo': '01_registro_bienvenida.html'}, {'id': '02_verificacion_correo', 'num': 2, 'titulo': 'Verificación de Correo Electrónico Institucional', 'tipo_evento': 'verificacion_correo', 'asunto': 'POLIS: Verificación de correo electrónico institucional', 'audiencia': 'Usuario registrado o funcionario', 'obligatoriedad': 'OBLIGATORIO (Seguridad)', 'render': <function <lambda> at 0x7be758c1f320>, 'archivo': '02_verificacion_correo.html'}, {'id': '03_recuperacion_contrasena', 'num': 3, 'titulo': 'Recuperación de Contraseña con Token de Uso Único', 'tipo_evento': 'recuperacion_contrasena', 'asunto': 'POLIS: Restablecimiento de contraseña de acceso', 'audiencia': 'Ciudadano o funcionario que solicita recuperar clave', 'obligatoriedad': 'OBLIGATORIO (Seguridad y Acceso)', 'render': <function <lambda> at 0x7be758b73270>, 'archivo': '03_recuperacion_contrasena.html'}, {'id': '04_contrasena_cambiada', 'num': 4, 'titulo': 'Confirmación de Modificación de Contraseña', 'tipo_evento': 'contrasena_cambiada', 'asunto': 'POLIS: Confirmación de cambio de contraseña exitoso', 'audiencia': 'Usuario autenticado tras cambio de clave', 'obligatoriedad': 'OBLIGATORIO (Seguridad / Detección de intrusión)', 'render': <function <lambda> at 0x7be758b73320>, 'archivo': '04_contrasena_cambiada.html'}, {'id': '05_perfil_actualizado', 'num': 5, 'titulo': 'Constancia de Actualización de Datos de Perfil', 'tipo_evento': 'perfil_actualizado', 'asunto': 'POLIS: Constancia de actualización de perfil de usuario', 'audiencia': 'Usuario autenticado que modifica nombres o apellidos', 'obligatoriedad': 'OBLIGATORIO (Fe Pública / Auditoría)', 'render': <function <lambda> at 0x7be758b733d0>, 'archivo': '05_perfil_actualizado.html'}, {'id': '06_constancia_radicacion', 'num': 6, 'titulo': 'Constancia Oficial de Radicación con Código QR', 'tipo_evento': 'radicacion', 'asunto': 'POLIS: Constancia de radicación oficial POL-2026-0842', 'audiencia': 'Ciudadano autor de propuesta', 'obligatoriedad': 'OBLIGATORIO (Fe Pública / Sentencia C-150 de 2015)', 'render': <function <lambda> at 0x7be758b73480>, 'archivo': '06_constancia_radicacion.html'}, {'id': '07_propuesta_actualizada', 'num': 7, 'titulo': 'Constancia de Complementación o Edición de Propuesta', 'tipo_evento': 'propuesta_actualizada', 'asunto': 'POLIS: Actualización de propuesta ciudadana POL-2026-0842', 'audiencia': 'Ciudadano autor de la propuesta', 'obligatoriedad': 'OBLIGATORIO (Trazabilidad documental)', 'render': <function <lambda> at 0x7be758b73530>, 'archivo': '07_propuesta_actualizada.html'}, {'id': '08_cambio_estado', 'num': 8, 'titulo': 'Notificación de Cambio de Estado en Trámite Institucional', 'tipo_evento': 'cambio_estado', 'asunto': 'POLIS: Actualización de trámite POL-2026-0842 - En Evaluación Técnica', 'audiencia': 'Ciudadano autor de propuesta', 'obligatoriedad': 'OBLIGATORIO (Debido Proceso / CPACA)', 'render': <function <lambda> at 0x7be758b735e0>, 'archivo': '08_cambio_estado.html'}, {'id': '09_priorizacion', 'num': 9, 'titulo': 'Aviso de Propuesta Priorizada e Incorporada al Plan', 'tipo_evento': 'priorizacion', 'asunto': 'POLIS: Propuesta POL-2026-0842 priorizada e incorporada a la política pública', 'audiencia': 'Ciudadano autor de propuesta', 'obligatoriedad': 'OBLIGATORIO (Eficacia participativa)', 'render': <function <lambda> at 0x7be758b73690>, 'archivo': '09_priorizacion.html'}, {'id': '10_apoyo_propuesta', 'num': 10, 'titulo': 'Aviso de Nuevo Respaldo Popular Comunitario', 'tipo_evento': 'apoyo_propuesta', 'asunto': 'POLIS: Su propuesta POL-2026-0842 recibió un nuevo respaldo ciudadano', 'audiencia': 'Ciudadano autor de la propuesta', 'obligatoriedad': 'INFORMATIVO (Participación cívica)', 'render': <function <lambda> at 0x7be758b73740>, 'archivo': '10_apoyo_propuesta.html'}, {'id': '11_actividad_ciudadana', 'num': 11, 'titulo': 'Constancia de Respaldo Cívico y Participación Ciudadana', 'tipo_evento': 'actividad_ciudadana', 'asunto': 'POLIS: Constancia de su respaldo a la propuesta POL-2026-0842', 'audiencia': 'Ciudadano que emite un voto o apoyo comunitario', 'obligatoriedad': 'INFORMATIVO (Constancia para el votante)', 'render': <function <lambda> at 0x7be758b737f0>, 'archivo': '11_actividad_ciudadana.html'}, {'id': '12_invitacion_mesa', 'num': 12, 'titulo': 'Convocatoria Oficial a Mesa Territorial de Diálogo', 'tipo_evento': 'invitacion_mesa', 'asunto': 'POLIS: Convocatoria oficial a la Mesa Territorial MT-012 (Localidad de la Virgen y Turística)', 'audiencia': 'Líderes comunales, ediles y delegados inscritos', 'obligatoriedad': 'INFORMATIVO (Convocatoria pública)', 'render': <function <lambda> at 0x7be758b738a0>, 'archivo': '12_invitacion_mesa.html'}, {'id': '13_acta_sesion', 'num': 13, 'titulo': 'Acta de Sesión Territorial Disponible para Revisión', 'tipo_evento': 'acta_sesion', 'asunto': 'POLIS: Acta de sesión MT-012-2026 disponible para revisión y firma comunitaria', 'audiencia': 'Asistentes y facilitadores de la mesa', 'obligatoriedad': 'INFORMATIVO (Transparencia / Veeduría)', 'render': <function <lambda> at 0x7be758b73950>, 'archivo': '13_acta_sesion.html'}, {'id': '14_compromiso_asignado', 'num': 14, 'titulo': 'Asignación de Compromiso Institucional con Trazabilidad', 'tipo_evento': 'compromiso_asignado', 'asunto': 'POLIS: Asignación de compromiso institucional COM-2026-089 (Alumbrado Público)', 'audiencia': 'Funcionario responsable o veedor ciudadano', 'obligatoriedad': 'OBLIGATORIO (Control de Gestión Pública)', 'render': <function <lambda> at 0x7be758b73a00>, 'archivo': '14_compromiso_asignado.html'}, {'id': '15_gestion_institucional', 'num': 15, 'titulo': 'Registro de Gestión Institucional y Auditoría', 'tipo_evento': 'gestion_institucional', 'asunto': 'POLIS: Comprobante de gestión institucional AUD-2026-1049', 'audiencia': 'Funcionario, auditor o gestor de plataforma', 'obligatoriedad': 'INFORMATIVO (Trazabilidad interna)', 'render': <function <lambda> at 0x7be758b73ab0>, 'archivo': '15_gestion_institucional.html'}, {'id': '16_alerta_pendientes', 'num': 16, 'titulo': 'Alerta de Compromisos y Tareas Próximas a Vencer', 'tipo_evento': 'alerta_pendientes', 'asunto': 'POLIS: Alerta de compromisos institucionales pendientes de cumplimiento', 'audiencia': 'Facilitadores de mesa, secretarios y directores de despacho', 'obligatoriedad': 'OBLIGATORIO (SLA y Mitigación de Vencimientos)', 'render': <function <lambda> at 0x7be758b73b60>, 'archivo': '16_alerta_pendientes.html'}, {'id': '17_resumen_diario', 'num': 17, 'titulo': 'Resumen Diario de Despacho y Fe Pública Institucional', 'tipo_evento': 'resumen_diario', 'asunto': 'POLIS: Resumen diario institucional de radicaciones y fe pública (Corte 31/10/2026)', 'audiencia': 'Equipo de Coordinación General, Alcalde Mayor y Secretarios', 'obligatoriedad': 'INFORMATIVO (Observabilidad consolidada)', 'render': <function <lambda> at 0x7be758b73c10>, 'archivo': '17_resumen_diario.html'}];
+        
+        function cargarPlantilla(archivo, num, titulo, asunto, audiencia, obligatoriedad, evento) {
+            document.getElementById('preview-frame').src = archivo;
+            document.getElementById('view-title').textContent = `[${num}/17] ${titulo} (${evento})`;
+            document.getElementById('view-subject').innerHTML = `Asunto de correo: <strong>${asunto}</strong>`;
+            document.getElementById('view-meta').textContent = `Destinatario: ${audiencia} • Obligatoriedad: ${obligatoriedad}`;
+            document.getElementById('btn-raw').href = archivo;
+
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            event?.currentTarget?.classList.add('active');
+        }
+
+        // Inicializar con la primera plantilla
+        if (items.length > 0) {
+            const primero = items[0];
+            cargarPlantilla(primero.archivo, primero.num, primero.titulo, primero.asunto, primero.audiencia, primero.obligatoriedad, primero.tipo_evento);
+            const primerBoton = document.querySelector('.nav-item');
+            if (primerBoton) primerBoton.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -500,9 +500,17 @@ export const AnexosDesdeFicha: Story = {
     const informe = await within(ficha).findByText("informe_tecnico.pdf", {}, { timeout: 10000 });
     await expect(informe).toBeVisible();
 
-    // Eliminación con confirmación explícita en dos pasos.
+    // Eliminación con confirmación explícita en dos pasos: se eliminan los dos
+    // anexos (pre-cargado y subido). El botón expone aria-label específico del
+    // anexo (más accesible que el title genérico).
     await userEvent.click(
-      within(ficha).getByTitle("Eliminar anexo"),
+      within(ficha).getByRole("button", { name: "Eliminar Acta de la mesa.pdf" }),
+    );
+    await userEvent.click(
+      within(ficha).getByRole("button", { name: "Confirmar" }),
+    );
+    await userEvent.click(
+      within(ficha).getByRole("button", { name: "Eliminar informe_tecnico.pdf" }),
     );
     await userEvent.click(
       within(ficha).getByRole("button", { name: "Confirmar" }),

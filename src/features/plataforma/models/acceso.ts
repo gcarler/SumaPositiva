@@ -17,8 +17,8 @@ export const MODULOS = [
   {
     id: "geovisor",
     ruta: "/plataforma/geovisor",
-    titulo: "Geovisor",
-    descripcion: "Mapa y datos de los territorios.",
+    titulo: "Datos",
+    descripcion: "Estadísticas, fuentes, análisis y mapas de los territorios.",
   },
   {
     id: "mesas",

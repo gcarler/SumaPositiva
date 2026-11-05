@@ -1,6 +1,6 @@
 "use client";
 import { ApiError } from "@/core/http/api-client";
-import { ArrowLeft, Landmark } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
+import { IsotipoPolis } from "@/shared/branding/logo-polis";
 import { FormularioRuntime } from "../components/formulario-runtime";
 import type { Formulario } from "../models/formulario";
 import { formulariosRemotos } from "../services/formularios-remotos";
@@ -66,12 +67,11 @@ export function FormularioPublicoPage({
           <Link
             href="/"
             aria-label="Ir a la página principal de POLIS"
-            className="flex items-center gap-3 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+            className="group flex items-center gap-3 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
           >
-            <Landmark
-              aria-hidden="true"
-              className="size-10 sm:size-12 shrink-0 text-ember"
-            />
+            <div className="relative flex size-10 sm:size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--surface-2)] border border-[var(--border-strong)] p-1.5 shadow-xs transition-transform group-hover:scale-105">
+              <IsotipoPolis className="size-full" />
+            </div>
             <p className="text-xs sm:text-sm font-semibold text-foreground">
               Política Pública de Seguridad Humana Integral — Cartagena 2026–2036
             </p>

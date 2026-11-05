@@ -29,25 +29,37 @@ import { GeovisorDockControls } from "./geovisor-dock-controls";
 export function GeovisorWorkbenchBar({ className }: { className?: string }) {
   const clientStore = useGeovisorLayoutStore();
   const isServer = typeof window === "undefined";
-  const { tabs, openView, closeView, topOpen, togglePanel } = isServer ? useGeovisorLayoutStore.getState() : clientStore;
+  const {
+    tabs,
+    openView,
+    closeView,
+    topOpen,
+    togglePanel,
+    centerOpen,
+    toggleCenter,
+  } = isServer ? useGeovisorLayoutStore.getState() : clientStore;
 
   return (
     <div
       data-testid="geovisor-workbench-bar"
       className={cn(
-        "flex h-9 shrink-0 items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--surface-2)]/80 px-2 text-xs",
-        className
+        "flex min-h-9 shrink-0 flex-wrap items-center justify-between gap-2 py-1 border-b border-[var(--border)] bg-[var(--surface-2)]/80 px-2 text-xs",
+        className,
       )}
     >
       {/* Lado izquierdo: Botón «Volver al inicio» + Título SIG */}
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <Button
           asChild
           variant="ghost"
           size="sm"
           className="h-7 gap-1.5 px-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
-          <Link href="/" aria-label="Volver al inicio" data-testid="geovisor-btn-volver-inicio">
+          <Link
+            href="/"
+            aria-label="Volver al inicio"
+            data-testid="geovisor-btn-volver-inicio"
+          >
             <ArrowLeft className="size-3.5" aria-hidden="true" />
             <Home className="size-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">Volver al inicio</span>
@@ -56,23 +68,30 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
 
         <div className="h-4 w-px bg-[var(--border)]" aria-hidden="true" />
 
-        <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-          <LayoutPanelLeft className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
-          <span className="hidden md:inline">Espacio de trabajo SIG</span>
+        <div className="flex min-w-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+          <LayoutPanelLeft
+            className="size-3.5 text-[var(--ember)]"
+            aria-hidden="true"
+          />
+          <span className="hidden truncate md:inline" title="Sistema de Estadística y Análisis Territorial">Sistema de Estadística y Análisis Territorial</span><span className="md:hidden">Estadística</span>
         </div>
       </div>
 
       {/* Centro: Fuentes oficiales discretas para no perder la atribución */}
       <div
         className="hidden xl:flex items-center gap-1.5 text-[11px] text-[var(--text-tertiary)] truncate max-w-md 2xl:max-w-xl"
-        title="Fuentes oficiales: DANE 2025 • Policía Nacional / CCV (Ene–Sep 2025) • Alcaldía Mayor de Cartagena • Catastro Distrital"
+        title="Cada serie identifica su fuente, corte, unidad, escala y procedencia en el panel Gráficos"
       >
-        <span className="font-semibold text-[var(--text-secondary)]">Fuentes oficiales:</span>
-        <span className="truncate">DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro Distrital</span>
+        <span className="font-semibold text-[var(--text-secondary)]">
+          Fuentes y método:
+        </span>
+        <span className="truncate">
+          Consulta la procedencia de cada serie en Gráficos
+        </span>
       </div>
 
       {/* Lado derecho: Botón Panel Superior, Banco Multifuente, Datos Estadísticos, Menú de Vistas y Controles de los 4 Paneles */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
         <Button
           type="button"
           variant="outline"
@@ -80,9 +99,31 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
           onClick={() => togglePanel("top")}
           data-testid="workbench-btn-toggle-top-panel"
           className="h-7.5 gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          title={topOpen ? "Ocultar panel superior de controles y KPIs" : "Mostrar panel superior de controles y KPIs"}
+          title={
+            topOpen
+              ? "Ocultar panel superior de controles y KPIs"
+              : "Mostrar panel superior de controles y KPIs"
+          }
         >
-          <span>{topOpen ? "Ocultar Panel Superior" : "Mostrar Panel Superior"}</span>
+          <span>
+            {topOpen ? "Ocultar Panel Superior" : "Mostrar Panel Superior"}
+          </span>
+        </Button>
+        <Button
+          type="button"
+          variant={centerOpen ? "ghost" : "secondary"}
+          size="sm"
+          onClick={() => toggleCenter()}
+          data-testid="workbench-btn-toggle-center-panel"
+          className="h-7.5 gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          title={
+            centerOpen
+              ? "Ocultar mapa y usar solo analitica"
+              : "Mostrar mapa en el lienzo central"
+          }
+          aria-pressed={!centerOpen}
+        >
+          <span>{centerOpen ? "Solo analitica" : "Mostrar mapa"}</span>
         </Button>
 
         <Button
@@ -92,7 +133,7 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
           onClick={() => openView("fuentes")}
           data-testid="workbench-btn-banco-multifuente"
           className="h-7.5 gap-1.5 text-xs bg-[var(--ember)] text-[var(--ember-foreground)] hover:bg-[var(--ember)]/90 font-semibold"
-          title="Ver Banco Multifuente de Seguridad Humana (2.449 indicadores)"
+          title="Ver Banco Multifuente de Seguridad Humana"
         >
           <Database className="size-3.5" aria-hidden="true" />
           <span className="hidden sm:inline">Banco Multifuente</span>
@@ -102,13 +143,13 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => openView("hurtos")}
+          onClick={() => openView("graficos")}
           data-testid="workbench-btn-gestor-geojson"
           className="h-7.5 gap-1.5 text-xs border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
-          title="Ver y explorar datos estadísticos (12.280 registros)"
+          title="Abrir gráficas y comparación de fuentes"
         >
           <Database className="size-3.5" aria-hidden="true" />
-          <span className="hidden sm:inline">Datos Estadísticos</span>
+          <span className="hidden sm:inline">Gráficas y Comparación</span>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -124,7 +165,9 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64">
-            <DropdownMenuLabel className="text-[11px]">Mostrar u ocultar vistas</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-[11px]">
+              Mostrar u ocultar vistas
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {GEOVISOR_VIEW_IDS.map((id) => {
               const meta = GEOVISOR_VIEW_META[id];
@@ -134,9 +177,14 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
                 <DropdownMenuCheckboxItem
                   key={id}
                   checked={dock !== null}
-                  onCheckedChange={(checked) => (checked ? openView(id) : closeView(id))}
+                  onCheckedChange={(checked) =>
+                    checked ? openView(id) : closeView(id)
+                  }
                 >
-                  <Icon className={cn("size-3.5", meta.tone)} aria-hidden="true" />
+                  <Icon
+                    className={cn("size-3.5", meta.tone)}
+                    aria-hidden="true"
+                  />
                   <span>{meta.title}</span>
                   <span className="ml-auto text-[10px] text-[var(--text-tertiary)]">
                     {dock ? DOCK_LABELS[dock] : "Cerrada"}

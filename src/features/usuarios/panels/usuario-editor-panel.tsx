@@ -11,6 +11,7 @@ import { ApiError } from "@/core/http/api-client";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
+import { PasswordInput } from "@/shared/ui/password-input";
 import { Label } from "@/shared/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
@@ -181,9 +182,8 @@ export function UsuarioEditorPanel({ entryKey, props, mode }: EditorProps) {
               description="Mínimo 8 caracteres (por defecto: Cartagena2026*)"
             >
               {(field) => (
-                <Input
+                <PasswordInput
                   {...field}
-                  type="password"
                   placeholder="Cartagena2026*"
                   value={contrasena}
                   onChange={(event) => setContrasena(event.target.value)}

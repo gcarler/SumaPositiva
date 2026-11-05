@@ -1,12 +1,31 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 import { expect, fn, userEvent, within, waitFor } from "storybook/test";
 import MapaCartagena from "@/features/geovisor/components/mapa-cartagena";
 
+/**
+ * El mapa consulta el catálogo de capas mediante react-query: las historias
+ * aisladas lo envuelven para que el fallo de red degrade a capas vacías.
+ */
+function ProveedorConsultas({ children }: { children: React.ReactNode }) {
+  const [cliente] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+  );
+  return <QueryClientProvider client={cliente}>{children}</QueryClientProvider>;
+}
 const meta = {
   title: "Plataforma/Geovisor/MapaCartagena",
   component: MapaCartagena,
   parameters: { layout: "fullscreen", polis: { screen: true } },
   args: { onSelectTerritorio: () => undefined },
+  decorators: [
+    (Historia: React.ComponentType) => (
+      <ProveedorConsultas>
+        <Historia />
+      </ProveedorConsultas>
+    ),
+  ],
 } satisfies Meta<typeof MapaCartagena>;
 export default meta;
 type Story = StoryObj<typeof meta>;

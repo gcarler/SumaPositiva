@@ -16,7 +16,7 @@ describe("GeovisorMultifuentePanel Component (GEO-FUENTES-01)", () => {
     vi.restoreAllMocks();
   });
 
-  test("renderiza el panel con título del Banco Multifuente y las 7 dimensiones", () => {
+  test("renderiza el Banco Multifuente con filtros estadisticos compartidos", () => {
     const mockDatos = {
       total: 2449,
       limit: 30,
@@ -55,14 +55,14 @@ describe("GeovisorMultifuentePanel Component (GEO-FUENTES-01)", () => {
     expect(html).toContain("2.449");
     expect(html).toContain("indicadores encontrados");
 
-    // Dimensiones en chips
-    expect(html).toContain("Seguridad Personal");
-    expect(html).toContain("Seguridad Comunitaria");
-    expect(html).toContain("Seguridad Económica");
-    expect(html).toContain("Seguridad Ambiental");
-    expect(html).toContain("Seguridad en Salud");
-    expect(html).toContain("Seguridad Alimentaria");
-    expect(html).toContain("Seguridad Política");
+    // Contrato de filtros compartidos
+    expect(html).toContain("Territorio de los datos");
+    expect(html).toContain("Entidad fuente");
+    expect(html).toContain("Dimensión de seguridad humana");
+    expect(html).toContain("Desde el año");
+    expect(html).toContain("Hasta el año");
+    expect(html).toContain("Buscar indicador");
+    expect(html).toContain("Incluir ediciones previas para revisión");
 
     // Tarjeta del indicador
     expect(html).toContain("Pobreza Monetaria Cartagena");

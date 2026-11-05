@@ -55,6 +55,7 @@ export function GeovisorWorkspaceLayout({
     setPanelSize,
     setPanelOpen,
     expandedDock,
+    centerOpen,
   } = isServer ? useGeovisorLayoutStore.getState() : storeState;
 
   const topPanelRef = useRef<React.ElementRef<typeof ResizablePanel>>(null);
@@ -71,6 +72,7 @@ export function GeovisorWorkspaceLayout({
   const isLeftActive = hasLeft && leftOpen;
   const isRightActive = hasRight && rightOpen;
   const isBottomActive = hasBottom && bottomOpen;
+  const isCenterVisible = Boolean(centerOpen);
 
   // Al arrastrar una pestaña, los paneles ocultos muestran una zona de soltado en su borde
   const [draggingView, setDraggingView] = useState(false);
@@ -90,8 +92,16 @@ export function GeovisorWorkspaceLayout({
   }, []);
 
   const moveView = useGeovisorLayoutStore((st) => st.moveView);
-  const hiddenDocks = (["top", "left", "right", "bottom"] as DockPanelId[]).filter(
-    (d) => !{ top: isTopActive, left: isLeftActive, right: isRightActive, bottom: isBottomActive }[d]
+  const hiddenDocks = (
+    ["top", "left", "right", "bottom"] as DockPanelId[]
+  ).filter(
+    (d) =>
+      !{
+        top: isTopActive,
+        left: isLeftActive,
+        right: isRightActive,
+        bottom: isBottomActive,
+      }[d],
   );
   const edgeClass: Record<DockPanelId, string> = {
     top: "inset-x-0 top-9 h-10",
@@ -104,7 +114,10 @@ export function GeovisorWorkspaceLayout({
   const previousExpanded = useRef<DockPanelId | null>(null);
   const savedSize = useRef<number | null>(null);
   useEffect(() => {
-    const refs: Record<DockPanelId, React.RefObject<React.ElementRef<typeof ResizablePanel> | null>> = {
+    const refs: Record<
+      DockPanelId,
+      React.RefObject<React.ElementRef<typeof ResizablePanel> | null>
+    > = {
       top: topPanelRef,
       left: leftPanelRef,
       right: rightPanelRef,
@@ -113,7 +126,8 @@ export function GeovisorWorkspaceLayout({
     const prev = previousExpanded.current;
     previousExpanded.current = expandedDock;
     if (prev && prev !== expandedDock) {
-      const restore = savedSize.current ?? useGeovisorLayoutStore.getState().sizes[prev];
+      const restore =
+        savedSize.current ?? useGeovisorLayoutStore.getState().sizes[prev];
       refs[prev].current?.resize(restore);
     }
     if (expandedDock) {
@@ -170,7 +184,7 @@ export function GeovisorWorkspaceLayout({
       data-testid="geovisor-workspace-layout"
       className={cn(
         "relative flex h-dvh w-full flex-col overflow-hidden bg-[var(--surface-0)] transition-all",
-        className
+        className,
       )}
     >
       <GeovisorWorkbenchBar />
@@ -196,7 +210,7 @@ export function GeovisorWorkspaceLayout({
           aria-label="Panel superior de filtros y KPIs ejecutivos"
           className={cn(
             "bg-[var(--surface-1)] transition-colors",
-            !isTopActive && "pointer-events-none"
+            !isTopActive && "pointer-events-none",
           )}
         >
           <div
@@ -219,8 +233,12 @@ export function GeovisorWorkspaceLayout({
         <ResizablePanel
           id="dock-panel-middle"
           order={2}
-          minSize={30}
-          className="relative flex h-full w-full overflow-hidden"
+          minSize={0}
+          collapsible
+          className={cn(
+            "relative flex h-full w-full overflow-hidden",
+            !isCenterVisible && "hidden",
+          )}
         >
           <ResizablePanelGroup
             direction="horizontal"
@@ -244,7 +262,7 @@ export function GeovisorWorkspaceLayout({
               aria-label="Panel izquierdo de capas y mesas territoriales"
               className={cn(
                 "bg-[var(--surface-1)] transition-colors",
-                !isLeftActive && "pointer-events-none"
+                !isLeftActive && "pointer-events-none",
               )}
             >
               <div
@@ -268,7 +286,10 @@ export function GeovisorWorkspaceLayout({
               id="dock-panel-center"
               order={2}
               minSize={30}
-              className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--surface-0)]"
+              className={cn(
+                "relative flex h-full w-full flex-col overflow-hidden bg-[var(--surface-0)]",
+                !isCenterVisible && "hidden",
+              )}
             >
               <div
                 className="relative h-full w-full overflow-hidden"
@@ -302,7 +323,7 @@ export function GeovisorWorkspaceLayout({
               aria-label="Panel derecho de inspector SIG y ficha técnica"
               className={cn(
                 "bg-[var(--surface-1)] transition-colors",
-                !isRightActive && "pointer-events-none"
+                !isRightActive && "pointer-events-none",
               )}
             >
               <div
@@ -340,7 +361,7 @@ export function GeovisorWorkspaceLayout({
           aria-label="Panel inferior de tabla de datos y gráficos analíticos"
           className={cn(
             "bg-[var(--surface-1)] transition-colors",
-            !isBottomActive && "pointer-events-none"
+            !isBottomActive && "pointer-events-none",
           )}
         >
           <div
@@ -372,10 +393,16 @@ export function GeovisorWorkspaceLayout({
             }}
             className={cn(
               "absolute z-20 flex items-center justify-center rounded-md border-2 border-dashed border-[var(--ember)] bg-[var(--surface-2)]/90 text-[10px] font-semibold text-[var(--ember)]",
-              edgeClass[dock]
+              edgeClass[dock],
             )}
           >
-            <span className={dock === "left" || dock === "right" ? "[writing-mode:vertical-rl]" : ""}>
+            <span
+              className={
+                dock === "left" || dock === "right"
+                  ? "[writing-mode:vertical-rl]"
+                  : ""
+              }
+            >
               Soltar en panel {DOCK_LABELS[dock].toLowerCase()}
             </span>
           </div>

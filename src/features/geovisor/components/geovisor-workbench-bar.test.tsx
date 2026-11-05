@@ -19,14 +19,14 @@ describe("GeovisorWorkbenchBar Component (GEO-FULL-01)", () => {
     expect(html).toContain("Volver al inicio");
   });
 
-  test("renderiza la mencion discreta a fuentes oficiales para preservar atribucion", () => {
+  test("renderiza el acceso a la procedencia y metodo de cada serie", () => {
     const html = renderToString(<GeovisorWorkbenchBar />);
 
-    expect(html).toContain("Fuentes oficiales:");
-    expect(html).toContain("DANE 2025");
-    expect(html).toContain("Policía Nacional / CCV");
-    expect(html).toContain("Alcaldía de Cartagena");
-    expect(html).toContain("Catastro Distrital");
+    expect(html).toContain("Fuentes y método:");
+    expect(html).toContain("procedencia");
+    expect(html).toContain("cada serie");
+    expect(html).toContain("Gráficos");
+    expect(html).toContain("Sistema de Estadística y Análisis Territorial");
   });
 
   test("renderiza los controles de vistas y conmutadores de paneles dock", () => {
@@ -45,10 +45,14 @@ describe("GeovisorWorkbenchBar Component (GEO-FULL-01)", () => {
     // Botón Datos Estadísticos presente en lenguaje ciudadano
     expect(htmlInicial).toContain('data-testid="workbench-btn-gestor-geojson"');
     expect(htmlInicial).toContain("Datos Estadísticos");
-    expect(htmlInicial).toContain('title="Ver y explorar datos estadísticos (12.280 registros)"');
+    expect(htmlInicial).toContain(
+      'title="Ver y explorar datos estadísticos (12.280 registros)"',
+    );
 
     // Botón Mostrar Panel Superior cuando topOpen es false por defecto
-    expect(htmlInicial).toContain('data-testid="workbench-btn-toggle-top-panel"');
+    expect(htmlInicial).toContain(
+      'data-testid="workbench-btn-toggle-top-panel"',
+    );
     expect(htmlInicial).toContain("Mostrar Panel Superior");
 
     // Al abrir el panel superior, el botón conmuta a Ocultar Panel Superior
@@ -56,4 +60,18 @@ describe("GeovisorWorkbenchBar Component (GEO-FULL-01)", () => {
     const htmlAbierto = renderToString(<GeovisorWorkbenchBar />);
     expect(htmlAbierto).toContain("Ocultar Panel Superior");
   });
+});
+test("permite ocultar el mapa y pasar a solo analitica", () => {
+  useGeovisorLayoutStore.getState().setCenterOpen(true);
+
+  const htmlVisible = renderToString(<GeovisorWorkbenchBar />);
+  expect(htmlVisible).toContain(
+    'data-testid="workbench-btn-toggle-center-panel"',
+  );
+  expect(htmlVisible).toContain("Solo analitica");
+  expect(useGeovisorLayoutStore.getState().centerOpen).toBe(true);
+
+  useGeovisorLayoutStore.getState().setCenterOpen(false);
+  const htmlOculto = renderToString(<GeovisorWorkbenchBar />);
+  expect(htmlOculto).toContain("Mostrar mapa");
 });

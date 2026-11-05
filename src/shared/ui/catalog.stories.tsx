@@ -141,6 +141,7 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from "./pagination";
+import { PasswordInput } from "./password-input";
 import { Popover, PopoverTrigger, PopoverContent } from "./popover";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 import {
@@ -1026,5 +1027,18 @@ export const SonnerExample: Story = {
         Mostrar notificación
       </Button>
     </>
+  ),
+};
+export const PasswordInputExample: Story = {
+  name: "PasswordInput",
+  render: () => (
+    <div className="max-w-sm space-y-2">
+      <Label htmlFor="ejemplo-clave">Contraseña de acceso</Label>
+      <PasswordInput
+        id="ejemplo-clave"
+        name="contrasena"
+        placeholder="Introduce tu clave segura…"
+      />
+    </div>
   ),
 };

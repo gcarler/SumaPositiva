@@ -13,8 +13,8 @@ import { PropuestaBarrioTab } from "./propuesta-barrio-tab";
 import { SemaforoBarrioTab } from "./semaforo-barrio-tab";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
+import { IsotipoPolis } from "@/shared/branding/logo-polis";
 import {
-  Landmark,
   FileText,
   PlusCircle,
   Activity,
@@ -40,8 +40,8 @@ export function BarrioView() {
             className="flex items-center gap-2 group outline-none"
             aria-label="POLIS Modo Barrio — Inicio"
           >
-            <span className="flex size-7 items-center justify-center rounded-md bg-[var(--text-primary)] text-[var(--text-inverse)] shadow-xs">
-              <Landmark className="size-4" />
+            <span className="relative flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--surface-2)] border border-[var(--border-strong)] p-0.5 shadow-xs transition-transform group-hover:scale-105">
+              <IsotipoPolis className="size-full" />
             </span>
             <div className="flex flex-col leading-tight">
               <span className="flex items-center gap-1 text-xs font-bold tracking-tight text-[var(--text-primary)]">

@@ -125,6 +125,11 @@ export interface IndicadorFiltros {
   codigo_territorio?: string;
   territorio_id?: string;
   anio_corte?: number;
+  anio_desde?: number;
+  anio_hasta?: number;
+  codigo_indicador?: string;
+  incluir_ediciones_previas?: boolean;
+  fuente_exacta?: boolean;
   busqueda?: string;
 }
 

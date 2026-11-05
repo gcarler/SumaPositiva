@@ -16,6 +16,15 @@ export const metadata: Metadata = {
   description:
     "Plataforma distrital de participación ciudadana para la construcción y rendición de cuentas de la Política Pública de Seguridad Humana Integral de Cartagena de Indias.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

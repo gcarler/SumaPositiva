@@ -38,7 +38,7 @@ export function GeovisorAdministrativoView() {
   return (
     <>
       <PageHeader
-        title="Geovisor administrativo"
+        title="Datos"
         description="División territorial y geometrías registradas en el sistema."
       />
 
@@ -47,7 +47,7 @@ export function GeovisorAdministrativoView() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
           <div>
             <h2 className="text-lg font-bold text-[var(--text-primary)]">
-              Geovisor y Gestor de Capas GeoJSON — Drive SIEDCO (2018–2026)
+              Sistema de Estadística y Análisis Territorial
             </h2>
             <p className="text-xs text-[var(--text-secondary)]">
               Herramienta integral de exploración tabular, pivot analítico y gestor de capas GeoJSON delictivas en Cartagena.
@@ -55,7 +55,7 @@ export function GeovisorAdministrativoView() {
           </div>
           <Button asChild variant="default" size="sm" className="h-8 gap-1.5 text-xs font-semibold">
             <Link href="/geovisor">
-              <span>Abrir Workbench Geovisor Pantalla Completa</span>
+              <span>Abrir sistema estadístico en pantalla completa</span>
               <Compass className="size-3.5" />
             </Link>
           </Button>

@@ -29,6 +29,7 @@ import { GestorHerosPlataforma } from "../components/gestor-heros-plataforma";
 import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
 import { SaludSistemaSection } from "../components/salud-sistema-section";
+import { PanelSaludHerald } from "@/features/notificaciones/components/panel-salud-herald";
 import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
 
@@ -39,6 +40,11 @@ export function ConfiguracionView() {
   const cache = useQueryClient();
   const { openPanel } = usePanels();
   const editar = puedeEditar(sesion, "configuracion");
+  const puedeVerSaludHerald =
+    sesion?.rol === "administrador_sistema" ||
+    sesion?.rol === "administrador_identidades" ||
+    sesion?.rol === "auditor" ||
+    Boolean(sesion?.permisos?.includes("auditoria:leer"));
 
   /* Parámetros persistentes de configuración (GAP-12) */
   const resumenSemanal = useConfiguracionPlataformaStore(
@@ -174,6 +180,12 @@ export function ConfiguracionView() {
         </section>
 
         <SaludSistemaSection />
+
+        {puedeVerSaludHerald && (
+          <div className="xl:col-span-2">
+            <PanelSaludHerald />
+          </div>
+        )}
 
         <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-1 p-5 sm:flex-row sm:items-center sm:justify-between xl:col-span-2">
           <div className="flex items-start gap-3"><Settings2 className="mt-0.5 size-5 text-ember" aria-hidden="true" /><div><h2 className="font-semibold">Participación y fases</h2><p className="mt-1 text-sm text-text-secondary">La recepción web y los cierres se configuran desde cada fase y formulario.</p></div></div>

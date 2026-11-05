@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ChevronLeft,
@@ -13,6 +14,7 @@ import {
   Compass,
   BarChart3,
   Sparkles,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -355,6 +357,21 @@ export function HeroHomeShowcase({
                   />
                   Ver Diagnóstico Participativo
                 </a>
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                type="button"
+                asChild
+                className="gap-2 border-[var(--border-strong)] bg-[var(--surface-1)]/90 text-[var(--text-primary)] hover:border-[var(--ember)] hover:bg-[var(--surface-2)]"
+              >
+                <Link href="/seguridad-humana">
+                  <BookOpen
+                    className="size-4 text-[var(--ember)]"
+                    strokeWidth={1.75}
+                  />
+                  Saber más sobre Seguridad Humana Integral
+                </Link>
               </Button>
               <Button
                 variant="ghost"

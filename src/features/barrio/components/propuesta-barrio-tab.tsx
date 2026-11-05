@@ -346,9 +346,24 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
               Radicar Propuesta para {barrio.nombre}
             </h3>
             <p className="text-[11px] text-[var(--text-secondary)]">
-              Voz directa de tu sector. Recibes número de radicado inmediato.
+              Voz directa de tu sector. Recibes número de radicado inmediato con fe pública.
             </p>
           </div>
+        </div>
+
+        {/* Identificación Territorial POT */}
+        <div className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5 text-[11px] text-[var(--text-secondary)] space-y-1">
+          <div className="flex flex-wrap items-center justify-between gap-1.5">
+            <span className="font-semibold text-[var(--text-primary)]">
+              {barrio.nombre} — {barrio.localidad}
+            </span>
+            <span className="font-mono text-[10px] text-[var(--ember)] font-bold bg-[var(--surface-2)] px-1.5 py-0.5 rounded border border-[var(--border)]">
+              {barrio.tipo === "corregimiento" ? "CORREGIMIENTO" : barrio.tipo === "isla" ? "ZONA INSULAR" : "BARRIO URBANO"}{barrio.ucg ? ` • UCG ${barrio.ucg}` : ""}
+            </span>
+          </div>
+          <p className="text-[10px] text-[var(--text-tertiary)] leading-tight">
+            Listado territorial enmarcado oficialmente en el <strong>Plan de Ordenamiento Territorial (POT)</strong> y las Unidades Comuneras de Gobierno (UCG) del Distrito de Cartagena de Indias.
+          </p>
         </div>
 
         <form onSubmit={handleEnviar} className="mt-4 space-y-3.5">
