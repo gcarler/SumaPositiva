@@ -62,6 +62,12 @@ export function Footer() {
             ¿Qué es Seguridad Humana?
           </Link>
           <Link
+            href="/indicadores"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
+          >
+            Catálogo de indicadores
+          </Link>
+          <Link
             href="/barrio"
             className="label-micro text-[var(--ember)] font-semibold transition-colors hover:underline"
           >

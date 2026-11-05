@@ -73,7 +73,7 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
             className="size-3.5 text-[var(--ember)]"
             aria-hidden="true"
           />
-          <span className="hidden truncate md:inline" title="Sistema de Estadística y Análisis Territorial">Sistema de Estadística y Análisis Territorial</span><span className="md:hidden">Estadística</span>
+          <span className="hidden truncate md:inline" title="Sistema de Estadística y Análisis Territorial">Sistema de Estadística y Análisis Territorial</span><span className="md:hidden">Datos</span>
         </div>
       </div>
 

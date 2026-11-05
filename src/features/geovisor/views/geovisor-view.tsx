@@ -325,7 +325,7 @@ export function GeovisorView() {
 
   return (
     <div className="h-full w-full overflow-hidden">
-      <h1 className="sr-only">Sistema de Estadística y Análisis Territorial</h1>
+      <h1 className="sr-only">Datos — Sistema de Estadística y Análisis Territorial</h1>
       {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS CON PESTAÑAS (estilo IDE) */}
       <GeovisorWorkspaceLayout
         topSlot={<GeovisorDockHost dock="top" renderView={renderView} />}

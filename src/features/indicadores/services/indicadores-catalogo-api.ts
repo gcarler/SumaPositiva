@@ -35,15 +35,39 @@ export interface FiltrosCatalogoIndicadores {
   busqueda?: string;
 }
 
+/**
+ * Valida estrictamente que una URL de fuente comience por el esquema seguro https://.
+ * Si es NO_VERIFICADO o cualquier otro esquema, retorna false.
+ */
+export function esUrlHttpsSegura(url?: string | null): boolean {
+  if (!url || typeof url !== "string") return false;
+  return url.trim().toLowerCase().startsWith("https://");
+}
+
+/**
+ * Construye la URL canónica con parámetros de consulta para el catálogo de indicadores.
+ * Omite filtros vacíos o valores comodín ('todas', 'todos').
+ */
+export function construirUrlCatalogoIndicadores(
+  filtros?: FiltrosCatalogoIndicadores,
+): string {
+  const params = new URLSearchParams();
+  if (filtros?.dimension && filtros.dimension !== "todas") {
+    params.append("dimension", filtros.dimension);
+  }
+  if (filtros?.tier && filtros.tier !== "todos") {
+    params.append("tier", filtros.tier);
+  }
+  if (filtros?.busqueda && filtros.busqueda.trim()) {
+    params.append("busqueda", filtros.busqueda.trim());
+  }
+  const query = params.toString();
+  return `/indicadores/catalogo${query ? `?${query}` : ""}`;
+}
+
 export async function obtenerCatalogoIndicadores(
   filtros?: FiltrosCatalogoIndicadores,
 ): Promise<CatalogoIndicadoresRespuesta> {
-  const params = new URLSearchParams();
-  if (filtros?.dimension) params.append("dimension", filtros.dimension);
-  if (filtros?.tier) params.append("tier", filtros.tier);
-  if (filtros?.busqueda) params.append("busqueda", filtros.busqueda);
-  const query = params.toString();
-  return apiFetch<CatalogoIndicadoresRespuesta>(
-    `/indicadores/catalogo${query ? `?${query}` : ""}`,
-  );
+  const url = construirUrlCatalogoIndicadores(filtros);
+  return apiFetch<CatalogoIndicadoresRespuesta>(url);
 }

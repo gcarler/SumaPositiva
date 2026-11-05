@@ -371,7 +371,7 @@ class GeodatosService:
                 observacion_id=observacion_id,
             )
         except ValueError as exc:
-            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
 
     async def listar_indicadores(
         self,

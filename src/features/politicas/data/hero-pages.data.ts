@@ -132,10 +132,10 @@ export const HERO_PAGES_CONFIG: Record<string, HeroPageConfig> = {
   },
   geovisor: {
     id: "geovisor",
-    titulo: "Geovisor Cartográfico y Cobertura Territorial",
+    titulo: "Datos",
     subtitulo:
-      "Capas geoespaciales, isócronas de accesibilidad y focalización de seguridad humana por sectores y manzanas censales.",
-    enfoque: "Inteligencia Geográfica y Cobertura Distrital",
+      "Fuentes, estadísticas, series temporales, gráficas y análisis territorial con procedencia verificable.",
+    enfoque: "Estadística y Análisis Territorial",
     imagenFondo: "/images/hero/hero-asamblea-claustro.webp",
     ubicacionReal: "Distrito de Cartagena de Indias — Cobertura Total",
     altura: "ultracompact",
@@ -201,7 +201,7 @@ export const HERO_PAGES_CONFIG: Record<string, HeroPageConfig> = {
     altura: "compact",
     badgeTexto: "35 Mesas Distritales",
     accionPrimaria: {
-      label: "Ver en Geovisor",
+      label: "Ver en Datos",
       href: "/geovisor",
     },
   },
