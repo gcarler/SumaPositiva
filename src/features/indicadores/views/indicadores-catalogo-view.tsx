@@ -671,10 +671,10 @@ export function IndicadoresCatalogoView() {
                             {ETIQUETAS_DIMENSION[indicador.dimension] ?? indicador.dimension}
                           </span>
                         </TableCell>
-                        <TableCell className="text-xs text-[var(--text-secondary)]">
+                        <TableCell className="text-xs text-[var(--text-secondary)] whitespace-normal">
                           {indicador.unidad}
                         </TableCell>
-                        <TableCell className="text-xs text-[var(--text-secondary)]">
+                        <TableCell className="text-xs text-[var(--text-secondary)] whitespace-normal">
                           {indicador.fuente}
                         </TableCell>
                         <TableCell>
@@ -702,11 +702,9 @@ export function IndicadoresCatalogoView() {
                           ) : (
                             <span
                               className="text-[11px] font-mono text-[var(--text-tertiary)]"
-                              title="Sin enlace https oficial verificado"
+                              title={indicador.url_fuente === "NO_VERIFICADO" ? "Sin enlace https oficial verificado (NO_VERIFICADO)" : "Sin enlace https oficial verificado"}
                             >
-                              {indicador.url_fuente === "NO_VERIFICADO"
-                                ? "NO_VERIFICADO"
-                                : (indicador.url_fuente || "—")}
+                              {indicador.url_fuente === "NO_VERIFICADO" ? "—" : (indicador.url_fuente || "—")}
                             </span>
                           )}
                         </TableCell>
