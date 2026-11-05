@@ -201,7 +201,7 @@ ejecutar `daemon-reload` y reiniciar; conservar la release anterior para recuper
 **Archivos de `public/docs` en la release activa.** Los cuatro PDF de la caja de
 herramientas de Seguridad Humana se reemplazaron a mano en `r3` después de su
 compilación (copia directa desde `public/docs/` del repositorio), por lo que no coinciden
-con el commit `51d985b` hasta que se comiteen. Los originales de `r3` están en
+con el commit `51d985b`; coinciden con el commit `5e39828`, que los incorpora. Los originales de `r3` están en
 `/root/polis-releases/policia_20261105_r3/_respaldo_docs_20261105_previo_rotulo_polis/`.
 Los PDF se regeneran con `backend/.venv/bin/python scripts/generar_toolbox_completa_pdf.py`;
 ya no se rotulan con membrete de la Alcaldía sino como documentos de POLIS.
