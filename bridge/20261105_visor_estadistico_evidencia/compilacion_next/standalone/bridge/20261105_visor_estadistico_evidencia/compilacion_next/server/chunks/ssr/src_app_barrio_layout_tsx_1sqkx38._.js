@@ -1,3 +1,0 @@
-module.exports=[72265,a=>{"use strict";a.s(["default",0,function({children:a}){return a},"metadata",0,{title:"Modo Barrio — POLIS Cartagena de Indias",description:"Vista ciudadana ultraligera y de bajo consumo de datos para participar en la Política de Seguridad Humana de Cartagena."},"viewport",0,{width:"device-width",initialScale:1,maximumScale:5}])},30503,function(a){a.n(a.i(72265))}];
-
-//# sourceMappingURL=src_app_barrio_layout_tsx_1sqkx38._.js.map

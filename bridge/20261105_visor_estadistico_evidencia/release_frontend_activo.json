@@ -1,0 +1,8 @@
+{
+  "release_frontend_activo": "/root/polis-releases/policia_20261105_r3/standalone",
+  "dist": "./.next",
+  "chunks_con_nueva_api": [
+    ".next/static/chunks/17q76ehoqr4z3.js"
+  ],
+  "verificacion": "lectura estática del artefacto activo; sin navegación de navegador"
+}

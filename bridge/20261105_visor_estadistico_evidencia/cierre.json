@@ -1,0 +1,74 @@
+{
+  "fecha_utc": "2026-11-05T07:46:59.727689+00:00",
+  "modulo": "Datos",
+  "estado": "plan_implementado",
+  "rama": "main",
+  "head_observado": "51d985bb41db400e45b3239c414057f622623b15",
+  "checks": {
+    "ruff": 0,
+    "ruff_format": 0,
+    "bun_run_check": 0,
+    "build_next_cierre": 0,
+    "build_storybook_cierre": 0,
+    "uv_lock_check": 0
+  },
+  "procesamiento_real": {
+    "entrada_sha256": "58f517ff2e242facf0db5ad4f39881a56a0d691e10edf74155977955b1432482",
+    "filas_entrada": 2505,
+    "filas_consulta": 2296,
+    "series": 476,
+    "ediciones_previas_excluidas": 209,
+    "pares_homicidios": 5,
+    "pares_elegibles": 0,
+    "pearson": null,
+    "spearman": null,
+    "segundos_dos_consultas": 0.7093079457990825,
+    "versiones": {
+      "pandas": "3.1.1",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "geopandas": "1.2.0",
+      "statsmodels": "0.15.0"
+    },
+    "productos_sha256": {
+      "analitica_banco_real.json": "8ca48a3bef0f14c6dbf7b7785e5f681fe15f6fde4bb88c84da9da94796015634",
+      "comparacion_homicidios_real.json": "b147df8d4e7a0c0f1ff5fb85bec653d1b0367b65f50bb862ce7675c7133cb9fb"
+    },
+    "sin_red": true,
+    "sin_sql": true,
+    "sin_imputacion": true,
+    "metodo": "polis.multifuente.descriptiva.v1"
+  },
+  "api_real": {
+    "fecha": "2026-11-05T07:29:56.470772+00:00",
+    "http": 200,
+    "version": "polis.multifuente.descriptiva.v1",
+    "observaciones": 2296,
+    "series": 476,
+    "sha": "874fbcfbacf52cc3226976490eb1b5f65d041795ca0c7627a11fee998006d25d",
+    "sha_coincide_captura_local": true
+  },
+  "fuentes_archivadas": 39,
+  "codigo_zip_sha256": "43f6f90426206fcf29f02dec7fec9b9ba0abfc1d2ae7625ecfb65e43318b1d31",
+  "copias_previas_conservadas": "/root/polis-builds/datos_20261105/fuentes_antes",
+  "pruebas": {
+    "casos_nuevos_creados_por_codex": false,
+    "suites_ejecutadas_por_codex": false,
+    "expectativas_existentes_actualizadas": true,
+    "navegacion_browser_acreditada": false
+  },
+  "operaciones_codex": {
+    "escrituras_bd": false,
+    "migraciones": false,
+    "reinicio_servicios": false,
+    "commit": false,
+    "push": false,
+    "cambio_release_activa": false
+  },
+  "auditoria_independiente": false,
+  "limites": [
+    "Periodos mensuales y por arma de Policía permanecen fuera del contrato anual.",
+    "Los coeficientes requieren las guardas de evidencia; el cruce real de homicidios entrega yuxtaposición descriptiva.",
+    "La presencia del nuevo consumo en la release activa se comprobó por lectura de artefactos; no se acredita recorrido interactivo."
+  ]
+}

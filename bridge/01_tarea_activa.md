@@ -31,10 +31,13 @@
 | 294 | `agy2` | Rediseño Integral de la Presentación de Seguridad Humana (Formato Diapositivas Ejecutivas de Alto Impacto con Cards, KPIs y Diagramas) | `bridge/294_entrega_agy2_presentacion_ejecutiva_slides_visual.md` (COMPLETADO Y ENTREGADO: 10 diapositivas, 9/9 tests) |
 | 295 | `ollamacodex` | Indicadores de Seguridad Humana, plan maestro v2, Etapa 1: WP0 + WP2 (catálogo y validador) | `bridge/295_entrega_ollamacodex_indicadores_etapa1.md` (ENTREGADO; auditado en 296) |
 | 296 | `agy` | Auditoría del catálogo, endpoint `/catalogo` y página `/indicadores` | `bridge/296_entrega_agy_auditoria_catalogo_indicadores.md` (APROBADO catálogo+backend para commit; página NO aprobada para despliegue, ver B-1..B-4) |
-| 297 | `codex` | QA independiente sobre 295 y 296 (solo lectura). Reasignado desde opencode (cupo agotado hasta 2026-11-06) | `bridge/297_entrega_codex_qa_independiente_indicadores.md` (ASIGNADO) |
-| 298 | `agy2` | Corrección de la página `/indicadores` según los hallazgos B-2, B-3, B-4 y N-1..N-9 del dictamen 296 (sin tocar menú, backend ni despliegue) | `bridge/298_entrega_agy2_correccion_pagina_indicadores.md` (ASIGNADO) |
+| 298 | `agy2` | Corrección de la página `/indicadores` según los hallazgos B-2, B-3, B-4 y N-1..N-9 del dictamen 296 (sin tocar menú, backend ni despliegue) | `bridge/298_entrega_agy2_correccion_pagina_indicadores.md` (COMPLETADO Y ENTREGADO: 18/18 tests, gates limpios) |
 | 299 | `ollamacodex` | Cierre de pendientes del catálogo (M-1..M-3, N-5, N-8): registro y validador de cifras publicadas, ampliación de cobertura, pruebas del backend `/catalogo` | `bridge/299_entrega_ollamacodex_cierre_catalogo.md` (ASIGNADO) |
-Especificaciones: `bridge/275_tarea_*` a `299_tarea_*`. QA independiente posterior: `opencode`.
+| 297 | `codex` | QA independiente sobre 295 y 296 | `bridge/297_entrega_codex_qa_independiente_indicadores.md` (ENTREGADO: **RECHAZA el cierre integral**; 9 hallazgos H297-01..09 y 3 observaciones) |
+| 300 | `ollamacodex` | Correcciones del catálogo y validador según QA 297 (H297-01, 02, 07, 09), después del 299 | `bridge/300_entrega_ollamacodex_correcciones_qa297.md` (EN COLA) |
+| 301 | `agy2` | Accesibilidad y estados de `/indicadores` según QA 297 (H297-05, 06, O297-01, 02) | `bridge/301_entrega_agy2_accesibilidad_indicadores.md` (COMPLETADO Y ENTREGADO: 28/28 tests, axe 0 violaciones, gates limpios) |
+| 302 | `agy2` | Diferenciación estructural del Marco de la Política Pública de Seguridad Humana vs. Marco Legal de la Plataforma POLIS en `/marco-legal` | `bridge/302_entrega_agy2_diferenciacion_marcos_legales.md` (COMPLETADO Y ENTREGADO: 9/9 tests, gates limpios) |
+Especificaciones: `bridge/275_tarea_*` a `302_tarea_*`. QA independiente posterior: `opencode`.
 
 ---
 

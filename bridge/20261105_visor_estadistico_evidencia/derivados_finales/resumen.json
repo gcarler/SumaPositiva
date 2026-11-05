@@ -1,0 +1,27 @@
+{
+  "entrada_sha256": "58f517ff2e242facf0db5ad4f39881a56a0d691e10edf74155977955b1432482",
+  "filas_entrada": 2505,
+  "filas_consulta": 2296,
+  "series": 476,
+  "ediciones_previas_excluidas": 209,
+  "pares_homicidios": 5,
+  "pares_elegibles": 0,
+  "pearson": null,
+  "spearman": null,
+  "segundos_dos_consultas": 0.7093079457990825,
+  "versiones": {
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "geopandas": "1.2.0",
+    "statsmodels": "0.15.0"
+  },
+  "productos_sha256": {
+    "analitica_banco_real.json": "8ca48a3bef0f14c6dbf7b7785e5f681fe15f6fde4bb88c84da9da94796015634",
+    "comparacion_homicidios_real.json": "b147df8d4e7a0c0f1ff5fb85bec653d1b0367b65f50bb862ce7675c7133cb9fb"
+  },
+  "sin_red": true,
+  "sin_sql": true,
+  "sin_imputacion": true,
+  "metodo": "polis.multifuente.descriptiva.v1"
+}

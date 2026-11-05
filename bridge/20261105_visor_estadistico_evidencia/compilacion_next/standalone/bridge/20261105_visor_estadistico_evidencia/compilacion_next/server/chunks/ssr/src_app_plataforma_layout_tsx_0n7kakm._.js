@@ -1,3 +1,0 @@
-module.exports=[570462,a=>{"use strict";a.s(["default",()=>b]);let b=(0,a.i(211857).registerClientReference)(function(){throw Error("Attempted to call the default export of [project]/src/app/plataforma/layout.tsx from the server, but it's on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.")},"[project]/src/app/plataforma/layout.tsx","default")},91055,a=>{"use strict";var b=a.i(570462);a.n(b)},625487,function(a){a.n(a.i(91055))}];
-
-//# sourceMappingURL=src_app_plataforma_layout_tsx_0n7kakm._.js.map

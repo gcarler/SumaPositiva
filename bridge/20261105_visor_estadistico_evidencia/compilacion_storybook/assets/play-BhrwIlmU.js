@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-BcKkbAw3.js";import{v as t,y as n}from"./button-CsCxrpBO.js";var r,i;function a(){return(a=e((()=>{n(),r=[[`polygon`,{points:`6 3 20 12 6 21 6 3`,key:`1oa8hb`}]],i=t(`play`,r)})))()}export{a as n,i as t};

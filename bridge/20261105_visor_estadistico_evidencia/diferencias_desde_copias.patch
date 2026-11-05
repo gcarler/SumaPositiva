@@ -1,0 +1,2346 @@
+--- antes/backend/app/core/security/access_policy.py
++++ actual/backend/app/core/security/access_policy.py
+@@ -2,6 +2,7 @@
+ 
+ PUBLIC_ANALYTICAL_GET_ROUTES = frozenset(
+     {
++        "/api/v1/geodatos/analitica/multifuente",
+         "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento",
+         "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes",
+     }
+--- antes/backend/app/modules/geodatos/repository.py
++++ actual/backend/app/modules/geodatos/repository.py
+@@ -4,7 +4,7 @@
+ from collections.abc import Sequence
+ from typing import Any
+ 
+-from sqlalchemy import String, func, or_, select, text
++from sqlalchemy import String, and_, func, or_, select, text
+ from sqlalchemy.ext.asyncio import AsyncSession
+ 
+ from app.modules.geodatos.models import (
+@@ -119,6 +119,43 @@
+         )
+         res = await self.session.execute(stmt)
+         return [{"id": row.id, "total": int(row.total)} for row in res.all()]
++
++    async def obtener_observaciones_analiticas(self, limite: int) -> list[dict[str, Any]]:
++        """Una captura coherente del banco público, sin geometrías ni escrituras."""
++        from app.modules.politicas.models import DimensionSeguridadHumana
++
++        stmt = (
++            select(
++                IndicadorTerritorio,
++                Territorio.codigo.label("codigo_territorio"),
++                Territorio.nombre.label("nombre_territorio"),
++                Territorio.tipo_territorio,
++                DimensionSeguridadHumana.codigo.label("codigo_dimension"),
++            )
++            .join(Territorio, IndicadorTerritorio.territorio_id == Territorio.id)
++            .outerjoin(DimensionSeguridadHumana, IndicadorTerritorio.dimension_id == DimensionSeguridadHumana.id)
++            .order_by(IndicadorTerritorio.id)
++            .limit(limite)
++        )
++        resultado = await self.session.execute(stmt)
++        return [
++            {
++                "id": str(row[0].id),
++                "territorio_id": str(row[0].territorio_id),
++                "codigo_indicador": row[0].codigo_indicador,
++                "nombre_indicador": row[0].nombre_indicador,
++                "valor": row[0].valor,
++                "unidad_medida": row[0].unidad_medida,
++                "anio_corte": row[0].anio_corte,
++                "fuente_datos": row[0].fuente_datos,
++                "metadatos": row[0].metadatos,
++                "codigo_territorio": row.codigo_territorio,
++                "nombre_territorio": row.nombre_territorio,
++                "tipo_territorio": row.tipo_territorio,
++                "codigo_dimension": row.codigo_dimension,
++            }
++            for row in resultado.all()
++        ]
+ 
+     async def obtener_capa_geojson(self, codigo: str) -> dict[str, Any]:
+         """FeatureCollection dinámico de una capa oficial del Geovisor."""
+@@ -197,6 +234,10 @@
+         fuente_datos: str | None = None,
+         anio_corte: int | None = None,
+         codigo_indicador: str | None = None,
++        anio_desde: int | None = None,
++        anio_hasta: int | None = None,
++        incluir_ediciones_previas: bool = True,
++        fuente_exacta: bool = False,
+         busqueda: str | None = None,
+         limit: int = 100,
+         offset: int = 0,
+@@ -231,21 +272,61 @@
+         if territorio_id:
+             filtros.append(IndicadorTerritorio.territorio_id == territorio_id)
+         if codigo_territorio:
+-            filtros.append(Territorio.codigo.ilike(f"%{codigo_territorio.strip()}%"))
++            codigo = codigo_territorio.strip().upper()
++            codigo = "DISTRITO-CTG" if codigo in {"13001", "DISTRITO"} else codigo
++            filtros.append(
++                or_(func.upper(Territorio.codigo) == codigo, func.upper(func.cast(Territorio.id, String)) == codigo)
++            )
+         if dimension_id:
+             filtros.append(IndicadorTerritorio.dimension_id == dimension_id)
+         if dimension:
+             dim_str = dimension.strip()
++            codigos = {
++                "PERS": ("personal",),
++                "COM": ("comunitaria",),
++                "AMB": ("ambiental",),
++                "ECON": ("economica",),
++                "SALUD": ("salud", "alimentaria"),
++                "POL": ("politica",),
++                "SAT": (),
++            }
++            dimension_7d = IndicadorTerritorio.metadatos["clasificacion_7d"]["dimension"].astext
++            if dim_str in codigos:
++                filtros.append(
++                    or_(
++                        dimension_7d == dim_str,
++                        and_(dimension_7d.is_(None), DimensionSeguridadHumana.codigo.in_(codigos[dim_str])),
++                    )
++                )
++            else:
++                filtros.append(
++                    or_(
++                        DimensionSeguridadHumana.codigo.ilike(f"%{dim_str}%"),
++                        DimensionSeguridadHumana.nombre.ilike(f"%{dim_str}%"),
++                    )
++                )
++        if fuente_datos:
++            fuente = fuente_datos.strip()
+             filtros.append(
+                 or_(
+-                    DimensionSeguridadHumana.codigo.ilike(f"%{dim_str}%"),
+-                    DimensionSeguridadHumana.nombre.ilike(f"%{dim_str}%"),
++                    IndicadorTerritorio.fuente_datos == fuente,
++                    func.split_part(IndicadorTerritorio.fuente_datos, " - ", 1) == fuente,
+                 )
+-            )
+-        if fuente_datos:
+-            filtros.append(IndicadorTerritorio.fuente_datos.ilike(f"%{fuente_datos.strip()}%"))
++                if fuente_exacta
++                else IndicadorTerritorio.fuente_datos.ilike(f"%{fuente}%")
++            )
+         if anio_corte:
+             filtros.append(IndicadorTerritorio.anio_corte == anio_corte)
++        if anio_desde is not None:
++            filtros.append(IndicadorTerritorio.anio_corte >= anio_desde)
++        if anio_hasta is not None:
++            filtros.append(IndicadorTerritorio.anio_corte <= anio_hasta)
++        if not incluir_ediciones_previas:
++            filtros.append(
++                IndicadorTerritorio.metadatos["estado_cotejo_portal"].astext.is_distinct_from(
++                    "edicion_previa_no_sumar_con_portal"
++                )
++            )
+         if codigo_indicador:
+             filtros.append(IndicadorTerritorio.codigo_indicador.ilike(f"%{codigo_indicador.strip()}%"))
+         if busqueda:
+--- antes/backend/app/modules/geodatos/router.py
++++ actual/backend/app/modules/geodatos/router.py
+@@ -6,10 +6,12 @@
+ from app.core.database import SessionDependency
+ from app.modules.geodatos.repository import GeodatosRepository
+ from app.modules.geodatos.schemas import (
++    AnaliticaMultifuenteResponse,
+     CapaGeovisorRead,
+     DireccionEstandarizadaResponse,
+     EstandarizarDireccionRequest,
+     ExploradorHurtosResponse,
++    FiltrosMultifuente,
+     HurtosFeatureCollection,
+     IndicadoresTerritorioResponse,
+     IndicadorTerritorioDetalladoRead,
+@@ -27,6 +29,26 @@
+ 
+ 
+ GeodatosServiceDep = Annotated[GeodatosService, Depends(get_geodatos_service)]
++
++
++@router.get(
++    "/analitica/multifuente",
++    response_model=AnaliticaMultifuenteResponse,
++    summary="Series, cobertura y comparación descriptiva del banco público del Geovisor",
++)
++async def analizar_multifuente(
++    service: GeodatosServiceDep,
++    filtros: Annotated[FiltrosMultifuente, Depends()],
++    serie_x: Annotated[str | None, Query(pattern=r"^[a-f0-9]{64}$")] = None,
++    serie_y: Annotated[str | None, Query(pattern=r"^[a-f0-9]{64}$")] = None,
++    observacion_id: Annotated[uuid.UUID | None, Query()] = None,
++):
++    return await service.analizar_multifuente(
++        filtros,
++        serie_x=serie_x,
++        serie_y=serie_y,
++        observacion_id=str(observacion_id) if observacion_id else None,
++    )
+ 
+ 
+ @router.get("/territorios", response_model=list[TerritorioRead])
+@@ -116,6 +138,10 @@
+         str | None, Query(description="Filtro por entidad o fuente (DANE, Medicina Legal, ICBF, etc.)")
+     ] = None,
+     anio_corte: Annotated[int | None, Query(description="Año de corte del indicador")] = None,
++    anio_desde: Annotated[int | None, Query(ge=1900, le=2200)] = None,
++    anio_hasta: Annotated[int | None, Query(ge=1900, le=2200)] = None,
++    incluir_ediciones_previas: bool = True,
++    fuente_exacta: bool = False,
+     codigo_indicador: Annotated[str | None, Query(description="Código del indicador o patrón")] = None,
+     busqueda: Annotated[str | None, Query(description="Búsqueda de texto en nombre de indicador")] = None,
+     limit: Annotated[int, Query(ge=1, le=1000, description="Límite de registros por página")] = 100,
+@@ -127,6 +153,10 @@
+         dimension=dimension,
+         fuente_datos=fuente_datos,
+         anio_corte=anio_corte,
++        anio_desde=anio_desde,
++        anio_hasta=anio_hasta,
++        incluir_ediciones_previas=incluir_ediciones_previas,
++        fuente_exacta=fuente_exacta,
+         codigo_indicador=codigo_indicador,
+         busqueda=busqueda,
+         limit=limit,
+--- antes/backend/app/modules/geodatos/schemas.py
++++ actual/backend/app/modules/geodatos/schemas.py
+@@ -99,6 +99,112 @@
+     indicadores: list[IndicadorTerritorioDetalladoRead] = Field(
+         default_factory=list, description="Lista de indicadores territoriales"
+     )
++
++
++class FiltrosMultifuente(BaseModel):
++    codigo_territorio: str | None = Field(default=None, max_length=80)
++    fuente_datos: str | None = Field(default=None, max_length=200)
++    dimension: str | None = Field(default=None, max_length=40)
++    anio_desde: int | None = Field(default=None, ge=1900, le=2200)
++    anio_hasta: int | None = Field(default=None, ge=1900, le=2200)
++    busqueda: str | None = Field(default=None, max_length=200)
++    incluir_ediciones_previas: bool = False
++
++
++class OpcionMultifuente(BaseModel):
++    id: str
++    nombre: str
++    total: int = Field(ge=0)
++
++
++class SerieMultifuenteResumen(BaseModel):
++    id: str
++    codigo_indicador: str
++    nombre: str
++    fuente: str
++    unidad: str
++    territorio_id: str
++    codigo_territorio: str
++    territorio: str
++    escala: str
++    dimension: str | None
++    subtipo: str
++    total: int
++    anios: list[int]
++    advertencias: list[str]
++
++
++class PuntoMultifuente(BaseModel):
++    observacion_id: str
++    anio: int
++    valor: float | None
++    valor_original: str
++    periodo_desde: str | None
++    periodo_hasta: str | None
++    tipo_periodo: str
++    completo: bool | None
++    provisional: bool
++    url_fuente: str | None
++    sha256: str | None
++    fecha_extraccion: str | None
++    referencia: str | None
++    nota: str | None
++    estado_validacion: str | None
++    estado_publicacion: str | None
++    universo: str | None
++    metodo: str | None
++    advertencias: list[str]
++
++
++class SerieMultifuenteDetalle(BaseModel):
++    resumen: SerieMultifuenteResumen
++    puntos: list[PuntoMultifuente]
++    minimo: float | None
++    maximo: float | None
++    mediana: float | None
++    variacion_interanual_pct: float | None
++    motivo_variacion: str
++
++
++class ParMultifuente(BaseModel):
++    anio: int
++    x: float
++    y: float
++    observacion_x: str
++    observacion_y: str
++    elegible: bool
++    motivos: list[str]
++
++
++class ComparacionMultifuente(BaseModel):
++    serie_x: str
++    serie_y: str
++    pares: list[ParMultifuente]
++    anios_sin_pareja: list[int]
++    muestra_total: int
++    muestra_elegible: int
++    pearson: float | None = None
++    spearman: float | None = None
++    estado: str
++    motivos: list[str]
++    interpretacion: str
++
++
++class AnaliticaMultifuenteResponse(BaseModel):
++    version_metodo: str
++    consulta_sha256: str
++    total_observaciones: int
++    observaciones_excluidas: int
++    fuentes: list[OpcionMultifuente]
++    territorios: list[OpcionMultifuente]
++    dimensiones: list[OpcionMultifuente]
++    anios: list[int]
++    cobertura_fuentes: list[OpcionMultifuente]
++    series: list[SerieMultifuenteResumen]
++    serie: SerieMultifuenteDetalle | None
++    serie_comparada: SerieMultifuenteDetalle | None
++    comparacion: ComparacionMultifuente | None
++    advertencias: list[str]
+ 
+ 
+ class CapaGeovisorBase(BaseModel):
+--- antes/backend/app/modules/geodatos/service.py
++++ actual/backend/app/modules/geodatos/service.py
+@@ -6,13 +6,16 @@
+ from typing import Any
+ 
+ from fastapi import HTTPException, status
++from starlette.concurrency import run_in_threadpool
+ 
+ from app.modules.geodatos.models import CapaGeovisor, Territorio
+ from app.modules.geodatos.repository import GeodatosRepository
+ from app.modules.geodatos.schemas import (
++    AnaliticaMultifuenteResponse,
+     CoordenadasAproximadas,
+     DireccionEstandarizadaResponse,
+     ExploradorHurtosResponse,
++    FiltrosMultifuente,
+     HurtosFeatureCollection,
+     IndicadoresTerritorioResponse,
+     IndicadorTerritorioDetalladoRead,
+@@ -347,6 +350,29 @@
+     async def listar_fuentes_indicadores(self) -> list[dict[str, Any]]:
+         return await self.repository.listar_fuentes_indicadores()
+ 
++    async def analizar_multifuente(
++        self,
++        filtros: FiltrosMultifuente,
++        *,
++        serie_x: str | None = None,
++        serie_y: str | None = None,
++        observacion_id: str | None = None,
++    ) -> AnaliticaMultifuenteResponse:
++        from app.modules.geodatos.analitica_multifuente import LIMITE_OBSERVACIONES, construir_analitica
++
++        filas = await self.repository.obtener_observaciones_analiticas(LIMITE_OBSERVACIONES + 1)
++        try:
++            return await run_in_threadpool(
++                construir_analitica,
++                filas,
++                filtros,
++                serie_x=serie_x,
++                serie_y=serie_y,
++                observacion_id=observacion_id,
++            )
++        except ValueError as exc:
++            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
++
+     async def listar_indicadores(
+         self,
+         territorio_id: uuid.UUID | None = None,
+@@ -356,10 +382,16 @@
+         fuente_datos: str | None = None,
+         anio_corte: int | None = None,
+         codigo_indicador: str | None = None,
++        anio_desde: int | None = None,
++        anio_hasta: int | None = None,
++        incluir_ediciones_previas: bool = True,
++        fuente_exacta: bool = False,
+         busqueda: str | None = None,
+         limit: int = 100,
+         offset: int = 0,
+     ) -> IndicadoresTerritorioResponse:
++        if anio_desde is not None and anio_hasta is not None and anio_desde > anio_hasta:
++            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="El año inicial supera al final.")
+         total, items = await self.repository.listar_indicadores_territorio(
+             territorio_id=territorio_id,
+             codigo_territorio=codigo_territorio,
+@@ -368,6 +400,10 @@
+             fuente_datos=fuente_datos,
+             anio_corte=anio_corte,
+             codigo_indicador=codigo_indicador,
++            anio_desde=anio_desde,
++            anio_hasta=anio_hasta,
++            incluir_ediciones_previas=incluir_ediciones_previas,
++            fuente_exacta=fuente_exacta,
+             busqueda=busqueda,
+             limit=limit,
+             offset=offset,
+--- antes/docs/permisos-api.md
++++ actual/docs/permisos-api.md
+@@ -187,6 +187,7 @@
+ | GET | /api/v1/geodatos/analitica/hurtos/resumen | publico | Consulta pública y transparente de analítica agregada de hurtos para visualización ciudadana en el Geovisor. |
+ | GET | /api/v1/geodatos/analitica/hurtos/geojson | publico | Consulta pública de polígonos y métricas de densidad delictiva para capas del Geovisor. |
+ | GET | /api/v1/geodatos/analitica/hurtos/registros | publico | Exploración tabular, filtrado multicriterio y pivot analítico de registros GeoJSON de hurtos. |
++| GET | /api/v1/geodatos/analitica/multifuente | publico | Lectura descriptiva de las mismas observaciones agregadas ya públicas del Banco Multifuente; filtros, series y trazabilidad sin escrituras, datos personales ni promoción de fuentes. |
+ | GET | /api/v1/health/live | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
+ | GET | /api/v1/health/ready | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
+ | GET | /api/v1/health/system | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
+@@ -234,6 +235,7 @@
+ | POST | /api/v1/identidad/usuarios/{usuario_id}/ambitos | permiso:usuarios:gestionar@declarada | Asignación controlada de ámbito territorial con justificación pericial y auditoría. |
+ | DELETE | /api/v1/identidad/usuarios/{usuario_id}/ambitos/{ambito_id} | permiso:usuarios:gestionar@declarada | Revocación controlada de ámbito territorial con justificación pericial y auditoría. |
+ | GET | /api/v1/identidad/verificar-nivel | permiso:aportes:crear@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
++| GET | /api/v1/indicadores/catalogo | publico | Catálogo metodológico público de indicadores de seguridad humana: fórmula, fuente, custodio y estado; sin valores calculados. |
+ | GET | /api/v1/indicadores/cadena-valor | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+ | GET | /api/v1/indicadores/fichas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+ | POST | /api/v1/indicadores/fichas | permiso:indicadores:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+--- antes/src/app/_stories/geovisor-charts.stories.tsx
++++ actual/src/app/_stories/geovisor-charts.stories.tsx
+@@ -1,14 +1,24 @@
++import { useState, type ReactNode } from "react";
+ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
++import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+ import { expect, fn, userEvent, within } from "storybook/test";
+ import { GeovisorCharts } from "@/features/geovisor/components/geovisor-charts";
++import { ANALITICA_DEMO } from "@/features/geovisor/__fixtures__/analitica.fixture";
++import { useGeovisorAnaliticaStore } from "@/features/geovisor/state/geovisor-analitica-store";
++
++function EntornoAislado({ children }: { children: ReactNode }) {
++  const [cliente] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: false } } }));
++  return <QueryClientProvider client={cliente}>{children}</QueryClientProvider>;
++}
+ 
+ const meta = {
+-  title: "Plataforma/Geovisor/GeovisorCharts",
++  title: "Plataforma/Datos/Series multifuente",
+   component: GeovisorCharts,
+   parameters: { layout: "padded", polis: { screen: true } },
++  decorators: [(Story) => <EntornoAislado><Story /></EntornoAislado>],
++  beforeEach: () => { useGeovisorAnaliticaStore.getState().limpiar(); },
+   args: {
+-    territorioId: "loc-1",
+-    variableMapa: "ish",
++    datosIniciales: ANALITICA_DEMO,
+     onTerritorioChange: fn(),
+     onVariableChange: fn(),
+   },
+@@ -16,16 +26,14 @@
+ export default meta;
+ type Story = StoryObj<typeof meta>;
+ 
+-export const AnalisisSinSeleccion: Story = {};
++export const AnalisisSinSeleccion: Story = { args: { datosIniciales: { ...ANALITICA_DEMO, total_observaciones: 0, series: [], serie: null, cobertura_fuentes: [] } } };
+ 
+ export const LocalidadSeleccionada: Story = {
+-  args: { territorioId: "loc-2", variableMapa: "alertas" },
+-  play: async ({ canvasElement, args }) => {
++  play: async ({ canvasElement }) => {
+     const canvas = within(canvasElement);
+-    await userEvent.click(canvas.getAllByRole("button", { name: /Seleccionar Localidad 3/ })[0]);
+-    await expect(args.onTerritorioChange).toHaveBeenCalledWith("loc-3");
+-    await userEvent.hover(canvas.getByRole("button", { name: /Mostrar dimensión Comunitaria/ }));
+-    await expect(args.onVariableChange).toHaveBeenCalledWith("comunitaria");
++    await userEvent.click(canvas.getByRole("button", { name: "Barras por año" }));
++    await expect(canvas.getByRole("button", { name: "Barras por año" })).toHaveAttribute("aria-pressed", "true");
++    await expect(canvas.getByRole("heading", { name: "Indicador ficticio de demostración" })).toBeVisible();
+   },
+ };
+ 
+--- antes/src/features/geovisor/components/geovisor-bi-sidebar.tsx
++++ actual/src/features/geovisor/components/geovisor-bi-sidebar.tsx
+@@ -1,24 +1,12 @@
+ "use client";
+ 
+-import {useMemo} from "react";
+-import {
+-  ShieldCheck,
+-  MessageSquare,
+-  AlertTriangle,
+-  Users,
+-  TrendingUp,
+-  ExternalLink
+-} from "lucide-react";
+-import {Button} from "@/shared/ui/button";
+-import {ScrollArea} from "@/shared/ui/scroll-area";
+-
+-import {
+-  type VariableMapa,
+-  VARIABLE_META,
+-  ESTADISTICAS_TERRITORIOS,
+-  obtenerValorVariable
+-} from "../data/estadisticas.data";
+-import {BARRIOS_CARTAGENA} from "../data/barrios.data";
++import { Button } from "@/shared/ui/button";
++import { Notice } from "@/shared/ui/notice";
++import { EmptyState } from "@/shared/ui/empty-state";
++import type { VariableMapa } from "../data/estadisticas.data";
++import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
++import { useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
++import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+ 
+ interface GeovisorBiSidebarProps {
+   territorioId: string;
+@@ -27,318 +15,21 @@
+   onOpenDetalleDrawer?: (territorioId: string) => void;
+ }
+ 
+-function Sparkline({ datos }: { datos: number[] }) {
+-  const max = Math.max(...datos, 1);
+-  const w = 120;
+-  const h = 32;
+-  const pad = 3;
+-  const pts = datos
+-    .map((v, i) => {
+-      const x = pad + (i / (datos.length - 1)) * (w - pad * 2);
+-      const y = h - pad - (v / max) * (h - pad * 2);
+-      return `${x.toFixed(1)},${y.toFixed(1)}`;
+-    })
+-    .join(" ");
+-
++export function GeovisorBiSidebar({ onSelectTerritorio }: GeovisorBiSidebarProps) {
++  const consulta = useAnaliticaMultifuente();
++  const filtros = useGeovisorAnaliticaStore((s) => s.filtros);
++  const setSerieX = useGeovisorAnaliticaStore((s) => s.setSerieX);
++  const datos = consulta.data;
+   return (
+-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" className="shrink-0">
+-      <polyline
+-        points={pts}
+-        fill="none"
+-        stroke="var(--ember)"
+-        strokeWidth="2"
+-        strokeLinecap="round"
+-        strokeLinejoin="round"
+-      />
+-    </svg>
+-  );
+-}
+-
+-export function GeovisorBiSidebar({
+-  territorioId,
+-  onSelectTerritorio,
+-  variableMapa,
+-  onOpenDetalleDrawer,
+-}: GeovisorBiSidebarProps) {
+-  const meta = VARIABLE_META[variableMapa];
+-
+-  // Territorio activo (por defecto loc-1 si es 'todas')
+-  const territorioActivo = useMemo(() => {
+-    return (
+-      ESTADISTICAS_TERRITORIOS.find((t) => t.id === territorioId) ??
+-      ESTADISTICAS_TERRITORIOS[0]
+-    );
+-  }, [territorioId]);
+-
+-  // Territorios macro ordenados por la variable seleccionada
+-  const territoriosOrdenados = useMemo(() => {
+-    const macros = ESTADISTICAS_TERRITORIOS.filter((t) =>
+-      ["loc-1", "loc-2", "loc-3", "rural-insular"].includes(t.id),
+-    );
+-    return [...macros].sort(
+-      (a, b) => obtenerValorVariable(b, variableMapa) - obtenerValorVariable(a, variableMapa),
+-    );
+-  }, [variableMapa]);
+-
+-  const valorMaxMacro = useMemo(() => {
+-    const vals = territoriosOrdenados.map((t) => obtenerValorVariable(t, variableMapa));
+-    return Math.max(...vals, 1);
+-  }, [territoriosOrdenados, variableMapa]);
+-
+-  // Top 5 barrios del territorio activo
+-  const topBarrios = useMemo(() => {
+-    const barrios =
+-      territorioActivo.id === "rural-insular"
+-        ? BARRIOS_CARTAGENA.filter((b) => b.ucg === "R")
+-        : BARRIOS_CARTAGENA.filter((b) => b.localidadId === territorioActivo.id);
+-    return barrios.slice(0, 5);
+-  }, [territorioActivo]);
+-
+-  // Color semántico para ISH
+-  const ishColor =
+-    territorioActivo.ish >= 70
+-      ? "var(--success)"
+-      : territorioActivo.ish >= 50
+-        ? "var(--warning)"
+-        : "var(--danger)";
+-
+-  const ishNivel =
+-    territorioActivo.ish >= 70
+-      ? "Favorable"
+-      : territorioActivo.ish >= 50
+-        ? "Moderado"
+-        : "Crítico";
+-
+-  return (
+-    <aside
+-      className="flex h-full min-h-[36rem] flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm overflow-hidden"
+-      aria-label="Panel analítico de inteligencia territorial"
+-    >
+-      {/* Header del Panel */}
+-      <div className="flex items-center justify-between border-b border-[var(--border)] p-4 bg-[var(--surface-2)]/40">
+-        <div>
+-          <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+-            Analítica Territorial
+-          </span>
+-          <h2 className="text-sm font-bold text-[var(--text-primary)] truncate max-w-[240px]">
+-            {territorioActivo.nombre}
+-          </h2>
+-        </div>
+-        {onOpenDetalleDrawer && (
+-          <Button
+-            variant="outline"
+-            size="sm"
+-            onClick={() => onOpenDetalleDrawer(territorioActivo.id)}
+-            className="h-7 gap-1 px-2 text-xs"
+-            aria-label={`Abrir ficha de diagnóstico para ${territorioActivo.nombre}`}
+-          >
+-            <span>Ficha</span>
+-            <ExternalLink className="size-3" />
+-          </Button>
+-        )}
+-      </div>
+-
+-      <ScrollArea className="flex-1 p-4 space-y-6">
+-        {/* ================= 3.1 KPIs DEL TERRITORIO ================= */}
+-        <section aria-labelledby="kpi-territorio-heading" className="space-y-3">
+-          <h3 id="kpi-territorio-heading" className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+-            Indicadores Clave
+-          </h3>
+-
+-          <div className="grid grid-cols-2 gap-2.5">
+-            {/* KPI ISH */}
+-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-3">
+-              <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
+-                <span>ISH</span>
+-                <ShieldCheck className="size-3.5 text-[var(--ember)]" />
+-              </div>
+-              <div className="mt-1 flex items-baseline gap-1.5">
+-                <span className="text-xl font-bold tabular text-[var(--text-primary)]">
+-                  {territorioActivo.ish}
+-                </span>
+-                <span className="text-xs text-[var(--text-tertiary)]">/100</span>
+-              </div>
+-              <div className="mt-2 h-1.5 w-full rounded-full bg-[var(--surface-1)] overflow-hidden">
+-                <div
+-                  className="h-full rounded-full transition-all"
+-                  style={{ width: `${territorioActivo.ish}%`, backgroundColor: ishColor }}
+-                />
+-              </div>
+-              <span className="mt-1 block text-[10px] font-medium" style={{ color: ishColor }}>
+-                {ishNivel}
+-              </span>
+-            </div>
+-
+-            {/* KPI Aportes */}
+-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-3">
+-              <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
+-                <span>Aportes</span>
+-                <MessageSquare className="size-3.5 text-[var(--info)]" />
+-              </div>
+-              <div className="mt-1 flex items-baseline gap-1">
+-                <span className="text-xl font-bold tabular text-[var(--text-primary)]">
+-                  {territorioActivo.aportesCiudadanos.toLocaleString("es-CO")}
+-                </span>
+-              </div>
+-              <span className="mt-2 block text-[10px] text-[var(--text-tertiary)]">
+-                Propuestas registradas
+-              </span>
+-            </div>
+-
+-            {/* KPI Alertas */}
+-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-3">
+-              <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
+-                <span>Alertas SAT</span>
+-                <AlertTriangle className="size-3.5 text-[var(--warning)]" />
+-              </div>
+-              <div className="mt-1 flex items-baseline gap-1">
+-                <span className="text-xl font-bold tabular text-[var(--warning)]">
+-                  {territorioActivo.alertas}
+-                </span>
+-              </div>
+-              <span className="mt-2 block text-[10px] text-[var(--text-tertiary)]">
+-                {territorioActivo.escnna} ESCNNA
+-              </span>
+-            </div>
+-
+-            {/* KPI Mesas */}
+-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-3">
+-              <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)]">
+-                <span>Mesas</span>
+-                <Users className="size-3.5 text-[var(--success)]" />
+-              </div>
+-              <div className="mt-1 flex items-baseline gap-1">
+-                <span className="text-xl font-bold tabular text-[var(--text-primary)]">
+-                  {territorioActivo.mesasRealizadas}
+-                </span>
+-              </div>
+-              <span className="mt-2 block text-[10px] text-[var(--text-tertiary)]">
+-                Actas concertadas
+-              </span>
+-            </div>
+-          </div>
+-        </section>
+-
+-        {/* ================= 3.2 COMPARATIVA TERRITORIAL (BARRAS CSS) ================= */}
+-        <section aria-labelledby="comparativa-heading" className="space-y-3 pt-2">
+-          <div className="flex items-center justify-between">
+-            <h3 id="comparativa-heading" className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+-              Comparativa por {meta.label}
+-            </h3>
+-            <span className="text-[10px] text-[var(--text-tertiary)]">{meta.unidad}</span>
+-          </div>
+-
+-          <div className="space-y-2">
+-            {territoriosOrdenados.map((t) => {
+-              const val = obtenerValorVariable(t, variableMapa);
+-              const pct = (val / valorMaxMacro) * 100;
+-              const activo = territorioActivo.id === t.id;
+-
+-              return (
+-                <Button
+-                  key={t.id}
+-                  variant="unstyled"
+-                  size="unstyled"
+-                  onClick={() => onSelectTerritorio(t.id)}
+-                  className={`w-full rounded-lg border p-2 text-left transition-all ${
+-                    activo
+-                      ? "border-[var(--ember)] bg-[var(--surface-2)]"
+-                      : "border-[var(--border)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)]/50"
+-                  }`}
+-                  aria-label={`Seleccionar ${t.nombre}: ${val} ${meta.unidad}`}
+-                >
+-                  <div className="flex items-center justify-between text-xs font-medium">
+-                    <span className="text-[var(--text-primary)] truncate max-w-[170px]">
+-                      {t.nombre}
+-                    </span>
+-                    <span className="tabular font-bold text-[var(--text-primary)]">
+-                      {val.toLocaleString("es-CO")}
+-                    </span>
+-                  </div>
+-                  {/* Barra CSS Pura */}
+-                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-[var(--surface-2)] overflow-hidden">
+-                    <div
+-                      className="h-full rounded-full transition-all"
+-                      style={{
+-                        width: `${pct}%`,
+-                        backgroundColor: activo ? "var(--ember)" : "var(--info)",
+-                      }}
+-                    />
+-                  </div>
+-                </Button>
+-              );
+-            })}
+-          </div>
+-        </section>
+-
+-        {/* ================= 3.3 TENDENCIA TEMPORAL (SPARKLINE SVG) ================= */}
+-        <section aria-labelledby="tendencia-heading" className="space-y-3 pt-2">
+-          <div className="flex items-center justify-between">
+-            <h3 id="tendencia-heading" className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+-              Tendencia (Mayo – Octubre 2026)
+-            </h3>
+-            <TrendingUp className="size-3.5 text-[var(--ember)]" />
+-          </div>
+-
+-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/40 p-3">
+-            <div className="flex items-center justify-between">
+-              <div>
+-                <span className="text-[11px] text-[var(--text-tertiary)]">Aportes mensuales:</span>
+-                <span className="block text-sm font-bold tabular text-[var(--text-primary)]">
+-                  {territorioActivo.tendenciaAportes[territorioActivo.tendenciaAportes.length - 1]} en octubre
+-                </span>
+-              </div>
+-              <Sparkline datos={territorioActivo.tendenciaAportes} />
+-            </div>
+-            <div className="mt-2 flex justify-between text-[9px] text-[var(--text-tertiary)]">
+-              <span>May</span>
+-              <span>Jun</span>
+-              <span>Jul</span>
+-              <span>Ago</span>
+-              <span>Sep</span>
+-              <span>Oct</span>
+-            </div>
+-          </div>
+-        </section>
+-
+-        {/* ================= 3.4 RANKING DE BARRIOS (TOP 5) ================= */}
+-        <section aria-labelledby="ranking-barrios-heading" className="space-y-3 pt-2">
+-          <div className="flex items-center justify-between">
+-            <h3 id="ranking-barrios-heading" className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+-              Barrios del Territorio
+-            </h3>
+-            <span className="text-[10px] text-[var(--text-tertiary)]">Top 5</span>
+-          </div>
+-
+-          <div className="space-y-1.5">
+-            {topBarrios.map((b, idx) => (
+-              <div
+-                key={b.barrio}
+-                className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface-2)]/30 p-2 text-xs"
+-              >
+-                <div className="flex items-center gap-2 min-w-0">
+-                  <span className="size-4 shrink-0 rounded-full bg-[var(--surface-1)] text-center text-[10px] font-bold leading-4 text-[var(--text-tertiary)]">
+-                    {idx + 1}
+-                  </span>
+-                  <div className="min-w-0">
+-                    <span className="block font-semibold truncate text-[var(--text-primary)]">
+-                      {b.barrio}
+-                    </span>
+-                    <span className="text-[10px] text-[var(--text-tertiary)]">
+-                      {b.ucg ? `UCG ${b.ucg}` : "Sin UCG"}
+-                    </span>
+-                  </div>
+-                </div>
+-                <div className="flex items-center gap-1.5 shrink-0">
+-                  <span className="rounded bg-[var(--surface-1)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--text-secondary)]">
+-                    {b.estratoNum ? `E${b.estratoNum}` : b.estrato}
+-                  </span>
+-                </div>
+-              </div>
+-            ))}
+-          </div>
+-        </section>
+-      </ScrollArea>
++    <aside aria-label="Ficha estadística del territorio" className="min-w-0 space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
++      <header><h2 className="text-base font-semibold">Evidencia del territorio</h2><p className="mt-1 text-xs text-[var(--text-secondary)]">{datos?.territorios.find((t) => t.id === filtros.codigo_territorio)?.nombre ?? filtros.codigo_territorio ?? "Todos los territorios del banco"}</p></header>
++      {consulta.isLoading ? <p role="status" className="text-sm">Consultando observaciones…</p> : consulta.isError ? <Notice tone="danger" title="No fue posible consultar el territorio"><Button size="sm" variant="outline" onClick={() => void consulta.refetch()}>Reintentar</Button></Notice> : !datos?.series.length ? <EmptyState title="Sin observaciones con esta selección" description="Una cifra municipal no se replica a una localidad, UCG o barrio." /> : <>
++        <dl className="grid grid-cols-2 gap-3 text-sm"><div><dt className="text-xs text-[var(--text-secondary)]">Observaciones</dt><dd className="text-xl font-semibold">{datos.total_observaciones.toLocaleString("es-CO")}</dd></div><div><dt className="text-xs text-[var(--text-secondary)]">Series distintas</dt><dd className="text-xl font-semibold">{datos.series.length.toLocaleString("es-CO")}</dd></div></dl>
++        <p className="text-xs text-[var(--text-secondary)]">Selecciona una serie para revisar sus valores, fuente y cobertura temporal.</p>
++        <ul className="space-y-2">{datos.series.slice(0, 20).map((serie) => <li key={serie.id}><Button variant="outline" className="h-auto w-full min-w-0 justify-start whitespace-normal p-3 text-left" onClick={() => { onSelectTerritorio(serie.codigo_territorio); setSerieX(serie.id); useGeovisorLayoutStore.getState().openView("graficos"); }}><span className="min-w-0 break-words"><span className="block text-xs font-semibold">{serie.nombre}</span><span className="block text-xs text-[var(--text-secondary)]">{serie.fuente} · {serie.unidad} · {serie.anios[0]}–{serie.anios.at(-1)}</span></span></Button></li>)}</ul>
++        {datos.series.length > 20 && <p className="text-xs text-[var(--text-secondary)]">Se muestran las primeras 20 series; el panel Gráficos permite elegir entre todas las series filtradas.</p>}
++        <Notice title="Lectura descriptiva">Las series conservan su escala y procedencia. Esta ficha no calcula un índice sintético de seguridad humana.</Notice>
++      </>}
+     </aside>
+   );
+ }
+--- antes/src/features/geovisor/components/geovisor-charts.tsx
++++ actual/src/features/geovisor/components/geovisor-charts.tsx
+@@ -1,374 +1,235 @@
+ "use client";
+ 
+-import { useEffect, useMemo, useRef, useState, type FocusEvent, type MouseEvent } from "react";
++import { useState } from "react";
+ import { useReducedMotion } from "framer-motion";
++import { Bar, CartesianGrid, Cell, ComposedChart, Line, Pie, PieChart, Scatter, ScatterChart, XAxis, YAxis } from "recharts";
++import { Download, MapPin } from "lucide-react";
+ import { Button } from "@/shared/ui/button";
+-import { StatusBadge } from "@/shared/ui/status-badge";
+-import {
+-  ESTADISTICAS_TERRITORIOS,
+-  VARIABLE_META,
+-  obtenerValorVariable,
+-  type EstadisticasTerritorio,
+-  type VariableMapa,
+-} from "../data/estadisticas.data";
++import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/ui/chart";
++import { EmptyState } from "@/shared/ui/empty-state";
++import { FormField } from "@/shared/ui/form-field";
++import { Notice } from "@/shared/ui/notice";
++import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
++import type { VariableMapa } from "../data/estadisticas.data";
++import type { AnaliticaMultifuente, SerieMultifuenteDetalle } from "../models/analitica-multifuente";
++import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
++import { listarIndicadores } from "../services/geovisor-api";
++import { useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
++import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
++import { MultifuenteFiltros } from "./multifuente-filtros";
+ 
+ interface GeovisorChartsProps {
+-  territorioId: string;
+-  variableMapa: VariableMapa;
+-  onTerritorioChange: (id: string) => void;
+-  onVariableChange: (variable: VariableMapa) => void;
+-}
+-
+-const MESES = ["Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre"];
+-const LOCALIDADES = ["loc-1", "loc-2", "loc-3"] as const;
+-const DIMENSIONES: { label: string; variable: VariableMapa }[] = [
+-  { label: "Personal", variable: "personal" },
+-  { label: "Comunitaria", variable: "comunitaria" },
+-  { label: "Económica", variable: "economica" },
+-  { label: "Ambiental", variable: "ambiental" },
+-  { label: "Alimentaria", variable: "alimentaria" },
+-  { label: "Salud", variable: "salud" },
+-  { label: "Política", variable: "politica" },
+-];
+-
+-function territorioActual(id: string): EstadisticasTerritorio {
+-  return ESTADISTICAS_TERRITORIOS.find((territorio) => territorio.id === id)
+-    ?? ESTADISTICAS_TERRITORIOS[0];
+-}
+-
+-function encabezado(titulo: string, territorio: EstadisticasTerritorio, etiqueta: string) {
+-  return (
+-    <div className="mb-4 flex min-h-12 items-start justify-between gap-2">
+-      <div>
+-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">{etiqueta}</p>
+-        <h2 className="text-sm font-semibold text-[var(--text-primary)]">{titulo}</h2>
+-      </div>
+-      <StatusBadge tone="ember" className="max-w-[48%] truncate text-[10px]" title={territorio.nombre}>
+-        {territorio.nombre.split(" — ")[0]}
+-      </StatusBadge>
++  territorioId?: string;
++  variableMapa?: VariableMapa;
++  onTerritorioChange?: (id: string) => void;
++  onVariableChange?: (variable: VariableMapa) => void;
++  /** Inyección exclusiva para historias aisladas; no es respaldo de producción. */
++  datosIniciales?: AnaliticaMultifuente | null;
++  cargandoInicial?: boolean;
++  errorInicial?: string;
++}
++
++const formato = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 3 });
++const COLORES = ["var(--ember)", "var(--info)", "var(--success)", "var(--warning)", "var(--danger)", "var(--text-secondary)"];
++
++function numero(valor: number | null | undefined): string {
++  return valor === null || valor === undefined ? "Sin dato" : formato.format(valor);
++}
++
++function exportarSerie(serie: SerieMultifuenteDetalle, consultaSha: string) {
++  const columnas = ["fuente", "territorio", "indicador", "unidad", "anio_referencia", "valor_original", "periodo_desde", "periodo_hasta", "provisional", "observacion_id", "url_fuente", "sha256_fuente", "sha256_consulta"];
++  const filas = serie.puntos.map((p) => [serie.resumen.fuente, serie.resumen.territorio, serie.resumen.nombre, serie.resumen.unidad, p.anio, p.valor_original, p.periodo_desde, p.periodo_hasta, p.provisional, p.observacion_id, p.url_fuente, p.sha256, consultaSha]);
++  const escapar = (v: unknown) => `"${String(v ?? "").replaceAll('"', '""')}"`;
++  const contenido = [columnas, ...filas].map((fila) => fila.map(escapar).join(",")).join("\r\n");
++  const url = URL.createObjectURL(new Blob(["\uFEFF", contenido], { type: "text/csv;charset=utf-8" }));
++  const enlace = document.createElement("a");
++  enlace.href = url;
++  enlace.download = `polis-serie-${serie.resumen.id.slice(0, 12)}.csv`;
++  enlace.click();
++  setTimeout(() => URL.revokeObjectURL(url), 1000);
++}
++
++function SerieGrafica({ serie, tipo }: { serie: SerieMultifuenteDetalle; tipo: "linea" | "barras" }) {
++  const reducirMovimiento = useReducedMotion() ?? false;
++  const anios = serie.puntos.map((p) => p.anio);
++  const porAnio = new Map(serie.puntos.map((p) => [p.anio, p]));
++  if (porAnio.size !== serie.puntos.length) return <Notice tone="warning" title="Hay varias observaciones por año">Consulta los valores originales: no se agregan desagregaciones automáticamente.</Notice>;
++  const primero = Math.min(...anios);
++  const ultimo = Math.max(...anios);
++  const datos = Array.from({ length: ultimo - primero + 1 }, (_, indice) => {
++    const anio = primero + indice;
++    const punto = porAnio.get(anio);
++    return { anio: `${anio}${punto?.provisional || punto?.completo === false ? "*" : ""}`, valor: punto?.valor ?? null };
++  });
++  return (
++    <section aria-label={`Gráfica de ${serie.resumen.nombre}`} className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
++      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{serie.resumen.nombre}</h3>
++      <p className="mb-3 break-words text-xs text-[var(--text-secondary)]">{serie.resumen.territorio} · {serie.resumen.unidad} · {serie.resumen.fuente}</p>
++      <ChartContainer config={{ valor: { label: serie.resumen.unidad, color: "var(--ember)" } }} className="aspect-auto h-64 w-full min-w-0">
++        <ComposedChart data={datos} accessibilityLayer margin={{ left: 0, right: 12, top: 8, bottom: 8 }}>
++          <CartesianGrid vertical={false} stroke="var(--border)" />
++          <XAxis dataKey="anio" tickLine={false} axisLine={false} minTickGap={18} tick={{ fill: "var(--text-secondary)", fontSize: 11 }} />
++          <YAxis width={62} tickLine={false} axisLine={false} tickFormatter={(v: number) => formato.format(v)} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
++          <ChartTooltip content={<ChartTooltipContent />} />
++          {tipo === "linea" ? <Line dataKey="valor" type="linear" stroke="var(--ember)" strokeWidth={2} dot={{ r: 3 }} connectNulls={false} isAnimationActive={!reducirMovimiento} /> : <Bar dataKey="valor" fill="var(--ember)" radius={[4, 4, 0, 0]} isAnimationActive={!reducirMovimiento} />}
++        </ComposedChart>
++      </ChartContainer>
++      <p className="text-xs text-[var(--text-secondary)]">* Corte parcial o provisional. Los huecos representan datos ausentes. El eje temporal usa el año de referencia declarado por la fuente.</p>
++    </section>
++  );
++}
++
++function CoberturaGrafica({ datos }: { datos: AnaliticaMultifuente }) {
++  const reducirMovimiento = useReducedMotion() ?? false;
++  const ordenadas = [...datos.cobertura_fuentes].sort((a, b) => b.total - a.total);
++  const categorias = ordenadas.slice(0, 5).map((f) => ({ nombre: f.nombre, total: f.total }));
++  if (ordenadas.length > 5) categorias.push({ nombre: "Otras entidades", total: ordenadas.slice(5).reduce((suma, f) => suma + f.total, 0) });
++  if (!categorias.length) return null;
++  return (
++    <section aria-label="Composición de las observaciones consultadas" className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
++      <h3 className="text-sm font-semibold">Cobertura del banco por entidad</h3>
++      <p className="text-xs text-[var(--text-secondary)]">Cada observación se cuenta una vez en su grupo de entidad. Esta distribución describe la cobertura documental del banco.</p>
++      <ChartContainer config={{ total: { label: "Observaciones", color: "var(--info)" } }} className="aspect-auto h-56 w-full min-w-0">
++        <PieChart>
++          <ChartTooltip content={<ChartTooltipContent nameKey="nombre" />} />
++          <Pie data={categorias} dataKey="total" nameKey="nombre" innerRadius={42} outerRadius={78} isAnimationActive={!reducirMovimiento}>
++            {categorias.map((c, i) => (
++              <Cell
++                key={c.nombre}
++                fill={COLORES[i % COLORES.length]}
++                aria-label={`${c.nombre}: ${c.total} observaciones`}
++              />
++            ))}
++          </Pie>
++        </PieChart>
++      </ChartContainer>
++      <ul className="space-y-1 text-xs">
++        {categorias.map((c, i) => <li key={c.nombre} className="flex min-w-0 items-start justify-between gap-2"><span className="min-w-0 break-words"><span aria-hidden="true" className="mr-2 inline-block size-2 rounded-full" style={{ backgroundColor: COLORES[i % COLORES.length] }} />{c.nombre}</span><span className="shrink-0 tabular-nums">{c.total.toLocaleString("es-CO")}</span></li>)}
++      </ul>
++    </section>
++  );
++}
++
++function Trazabilidad({ serie }: { serie: SerieMultifuenteDetalle }) {
++  const ultimo = serie.puntos.at(-1);
++  if (!ultimo) return null;
++  return (
++    <section aria-label="Trazabilidad y método de la serie" className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
++      <h3 className="text-sm font-semibold">Fuente y método</h3>
++      <dl className="grid gap-2 text-xs sm:grid-cols-2">
++        <div><dt className="text-[var(--text-secondary)]">Entidad y producto</dt><dd className="break-words">{serie.resumen.fuente}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Escala territorial</dt><dd>{serie.resumen.escala} · {serie.resumen.territorio}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Unidad y desagregación</dt><dd>{serie.resumen.unidad} · {serie.resumen.subtipo || "Sin declarar"}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Periodo del último dato</dt><dd>{ultimo.periodo_desde && ultimo.periodo_hasta ? `${ultimo.periodo_desde} a ${ultimo.periodo_hasta}` : `${ultimo.anio}: año de referencia; fechas sin acreditar`}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Método</dt><dd>{ultimo.metodo || "Lectura directa del valor del banco. Fórmula de origen sin declarar."}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Fecha de extracción</dt><dd>{ultimo.fecha_extraccion || "Sin declarar"}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Validación de origen</dt><dd>{ultimo.estado_validacion || "Sin declarar"}</dd></div>
++        <div><dt className="text-[var(--text-secondary)]">Certificación del corte analítico</dt><dd>{ultimo.estado_publicacion || "Sin declarar"}</dd></div>
++      </dl>
++      {ultimo.url_fuente && <a href={ultimo.url_fuente} target="_blank" rel="noopener noreferrer" className="inline-block max-w-full break-all text-xs text-[var(--info)] underline focus-visible:outline focus-visible:outline-2">Consultar publicación de origen</a>}
++      <p className="break-all text-xs text-[var(--text-secondary)]">SHA-256 de origen: {ultimo.sha256 || "No registrado en esta observación"}</p>
++      {ultimo.referencia && <p className="text-xs">Referencia: {ultimo.referencia}</p>}
++      {ultimo.nota && <p className="text-xs leading-relaxed text-[var(--text-secondary)]">{ultimo.nota}</p>}
++      <details className="text-xs"><summary className="cursor-pointer rounded py-1 font-medium focus-visible:outline focus-visible:outline-2">Advertencias de la serie ({serie.resumen.advertencias.length})</summary><ul className="list-disc space-y-1 pl-4">{serie.resumen.advertencias.map((a) => <li key={a}>{a}</li>)}</ul></details>
++    </section>
++  );
++}
++
++export function GeovisorCharts({ onTerritorioChange, datosIniciales, cargandoInicial = false, errorInicial }: GeovisorChartsProps) {
++  const consulta = useAnaliticaMultifuente(datosIniciales === undefined && !cargandoInicial && !errorInicial);
++  const datos = datosIniciales === undefined ? consulta.data : datosIniciales;
++  const setSerieX = useGeovisorAnaliticaStore((s) => s.setSerieX);
++  const setSerieY = useGeovisorAnaliticaStore((s) => s.setSerieY);
++  const [tipo, setTipo] = useState<"linea" | "barras">("linea");
++  const [errorMapa, setErrorMapa] = useState<string | null>(null);
++  const [abriendoMapa, setAbriendoMapa] = useState(false);
++  const serie = datos?.serie;
++  const comparacion = datos?.comparacion;
++  const reducirMovimiento = useReducedMotion() ?? false;
++  const cargando = cargandoInicial || (datosIniciales === undefined && consulta.isLoading && !errorInicial);
++  const error = errorInicial || (consulta.isError ? (consulta.error instanceof Error ? consulta.error.message : "No fue posible consultar la API.") : null);
++
++  async function mostrarEnMapa() {
++    const ultimo = serie?.puntos.at(-1);
++    if (!serie || !ultimo) return;
++    setErrorMapa(null);
++    setAbriendoMapa(true);
++    try {
++      const respuesta = await listarIndicadores({ codigo_territorio: serie.resumen.codigo_territorio, fuente_datos: serie.resumen.fuente, codigo_indicador: serie.resumen.codigo_indicador, anio_corte: ultimo.anio, limit: 100 });
++      const observacion = respuesta.indicadores.find((item) => item.id === ultimo.observacion_id);
++      if (!observacion) throw new Error("La observación ya no está disponible. Actualiza la consulta.");
++      const estado = useGeovisorLayoutStore.getState();
++      if (!estado.indicadoresMultifuenteActivos.some((i) => i.id === observacion.id)) estado.toggleIndicadorMultifuente(observacion);
++      onTerritorioChange?.(serie.resumen.codigo_territorio);
++    } catch (e) {
++      setErrorMapa(e instanceof Error ? e.message : "No fue posible mostrar la observación en el mapa.");
++    } finally {
++      setAbriendoMapa(false);
++    }
++  }
++
++  return (
++    <div className="min-w-0 space-y-4" aria-busy={cargando}>
++      <header className="space-y-1">
++        <p className="text-xs font-medium uppercase tracking-wider text-[var(--info)]">Banco Multifuente · análisis descriptivo</p>
++        <h2 className="text-lg font-semibold">Estadísticas y comparación de fuentes</h2>
++        <p className="text-sm text-[var(--text-secondary)]">Explora las series del banco, su cobertura y las condiciones para compararlas.</p>
++      </header>
++      <MultifuenteFiltros datos={datos ?? undefined} onTerritorioChange={onTerritorioChange} />
++      {cargando ? <p role="status" className="p-6 text-sm text-[var(--text-secondary)]">Consultando observaciones y calculando series…</p> : error ? <Notice tone="danger" title="No se pudo consultar el banco"><p>{error}</p><Button variant="outline" size="sm" disabled={datosIniciales !== undefined || !!errorInicial || cargandoInicial} onClick={() => void consulta.refetch()}>Reintentar consulta</Button></Notice> : !datos || !serie ? <EmptyState title="Sin serie disponible" description="La serie seleccionada no contiene observaciones con estos filtros. Los datos municipales no se replican a otros territorios." action={datos?.series.length ? <Button variant="outline" onClick={() => setSerieX(null)}>Elegir una serie disponible</Button> : undefined} /> : (
++        <>
++          <div className="grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
++            <FormField label="Indicador principal">
++              {({ id, ...props }) => <Select value={serie.resumen.id} onValueChange={setSerieX}><SelectTrigger id={id} {...props} className="w-full min-w-0 [&>span]:truncate"><SelectValue /></SelectTrigger><SelectContent>{datos.series.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre} · {s.fuente} · {s.territorio}</SelectItem>)}</SelectContent></Select>}
++            </FormField>
++            <FormField label="Comparar con otra serie" description="Para cruzar entidades, selecciona Todos en el filtro de fuente.">
++              {({ id, ...props }) => <Select value={datos.serie_comparada?.resumen.id ?? "ninguna"} onValueChange={(v) => setSerieY(v === "ninguna" ? null : v)}><SelectTrigger id={id} {...props} className="w-full min-w-0 [&>span]:truncate"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ninguna">Sin comparación</SelectItem>{datos.series.filter((s) => s.id !== serie.resumen.id).map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre} · {s.fuente} · {s.territorio}</SelectItem>)}</SelectContent></Select>}
++            </FormField>
++          </div>
++          <div className="grid grid-cols-2 gap-3 xl:grid-cols-4" aria-label="Resumen de la serie consultada">
++            {[ ["Observaciones de la serie", serie.puntos.length.toLocaleString("es-CO")], ["Último valor registrado", `${numero(serie.puntos.at(-1)?.valor)} ${serie.resumen.unidad}`], ["Mediana de valores disponibles", `${numero(serie.mediana)} ${serie.resumen.unidad}`], ["Observaciones del filtro", datos.total_observaciones.toLocaleString("es-CO")] ].map(([etiqueta, valor]) => <div key={etiqueta} className="min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3"><p className="text-xs text-[var(--text-secondary)]">{etiqueta}</p><p className="mt-1 break-words text-lg font-semibold tabular-nums">{valor}</p></div>)}
++          </div>
++          <div className="flex flex-wrap gap-2" aria-label="Acciones y presentación de la serie">
++            <Button size="sm" variant={tipo === "linea" ? "default" : "outline"} aria-pressed={tipo === "linea"} onClick={() => setTipo("linea")}>Evolución temporal</Button>
++            <Button size="sm" variant={tipo === "barras" ? "default" : "outline"} aria-pressed={tipo === "barras"} onClick={() => setTipo("barras")}>Barras por año</Button>
++            <Button size="sm" variant="outline" onClick={() => exportarSerie(serie, datos.consulta_sha256)}><Download className="mr-1 size-4" aria-hidden="true" />Descargar serie CSV</Button>
++            <Button size="sm" variant="outline" disabled={abriendoMapa || datosIniciales !== undefined} onClick={() => void mostrarEnMapa()}><MapPin className="mr-1 size-4" aria-hidden="true" />{abriendoMapa ? "Localizando…" : "Ver último dato en mapa"}</Button>
++          </div>
++          {errorMapa && <Notice tone="danger" title="No se pudo mostrar el dato">{errorMapa}</Notice>}
++          <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-2">
++            <SerieGrafica serie={serie} tipo={tipo} />
++            {datos.serie_comparada ? <SerieGrafica serie={datos.serie_comparada} tipo={tipo} /> : <CoberturaGrafica datos={datos} />}
++          </div>
++          {comparacion && <section aria-label="Resultado de la comparación" className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
++            <h3 className="text-sm font-semibold">Comparación trazable por año de referencia</h3>
++            <p className="text-sm">{comparacion.muestra_total} pares observados · {comparacion.muestra_elegible} pares acreditados para cálculo.</p>
++            <p className="text-sm">Pearson: {numero(comparacion.pearson)} · Spearman: {numero(comparacion.spearman)}</p>
++            <ul className="list-disc space-y-1 pl-4 text-xs text-[var(--text-secondary)]">{comparacion.motivos.map((m) => <li key={m}>{m}</li>)}</ul>
++            {comparacion.anios_sin_pareja.length > 0 && <p className="text-xs">Años sin pareja numérica: {comparacion.anios_sin_pareja.join(", ")}. Se conservan como ausencia.</p>}
++            <p className="text-xs text-[var(--text-secondary)]">{comparacion.interpretacion}</p>
++            {comparacion.estado === "correlacion_descriptiva" && <ChartContainer config={{ y: { label: datos.serie_comparada?.resumen.nombre, color: "var(--info)" } }} className="aspect-auto h-64 w-full min-w-0">
++              <ScatterChart accessibilityLayer margin={{ left: 4, right: 12, top: 12, bottom: 12 }}>
++                <CartesianGrid stroke="var(--border)" />
++                <XAxis type="number" dataKey="x" name={serie.resumen.nombre} unit={` ${serie.resumen.unidad}`} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
++                <YAxis type="number" dataKey="y" name={datos.serie_comparada?.resumen.nombre} unit={` ${datos.serie_comparada?.resumen.unidad}`} tick={{ fill: "var(--text-secondary)", fontSize: 10 }} />
++                <ChartTooltip content={<ChartTooltipContent />} />
++                <Scatter name="Pares acreditados" data={comparacion.pares.filter((p) => p.elegible)} fill="var(--info)" isAnimationActive={!reducirMovimiento} />
++              </ScatterChart>
++            </ChartContainer>}
++            <details className="text-xs"><summary className="cursor-pointer rounded py-1 focus-visible:outline focus-visible:outline-2">Ver valores y exclusiones de cada par</summary><div className="overflow-x-auto"><table className="w-full text-left"><caption className="sr-only">Pares de observaciones y motivos de exclusión</caption><thead><tr><th scope="col" className="p-2">Año</th><th scope="col" className="p-2">Principal ({serie.resumen.unidad})</th><th scope="col" className="p-2">Comparada ({datos.serie_comparada?.resumen.unidad})</th><th scope="col" className="p-2">Condiciones</th></tr></thead><tbody>{comparacion.pares.map((p) => <tr key={p.anio}><td className="p-2">{p.anio}</td><td className="p-2">{numero(p.x)}</td><td className="p-2">{numero(p.y)}</td><td className="p-2">{p.elegible ? "Par acreditado" : p.motivos.join(" ")}</td></tr>)}</tbody></table></div></details>
++          </section>}
++          <Trazabilidad serie={serie} />
++          {datos.serie_comparada && <Trazabilidad serie={datos.serie_comparada} />}
++          <details className="rounded-xl border border-[var(--border)] p-3 text-xs"><summary className="cursor-pointer rounded py-1 font-medium focus-visible:outline focus-visible:outline-2">Valores originales y procedencia de cada observación</summary><div className="overflow-x-auto"><table className="w-full text-left"><caption className="sr-only">Observaciones originales de la serie principal</caption><thead><tr><th scope="col" className="p-2">Año</th><th scope="col" className="p-2">Valor ({serie.resumen.unidad})</th><th scope="col" className="p-2">Periodo</th><th scope="col" className="p-2">Procedencia</th></tr></thead><tbody>{serie.puntos.map((p) => <tr key={p.observacion_id}><td className="p-2">{p.anio}</td><td className="p-2">{p.valor === null ? "Sin dato" : p.valor_original}</td><td className="p-2">{p.periodo_desde && p.periodo_hasta ? `${p.periodo_desde} / ${p.periodo_hasta}` : "Fechas sin acreditar"}{p.provisional || p.completo === false ? " · parcial/provisional" : ""}</td><td className="max-w-64 break-all p-2">{p.url_fuente && <a href={p.url_fuente} target="_blank" rel="noopener noreferrer" className="text-[var(--info)] underline">Fuente</a>}<span className="block">{p.observacion_id}</span><span className="block">{p.sha256 || "SHA no registrado"}</span></td></tr>)}</tbody></table></div></details>
++          <footer className="space-y-1 break-words text-xs text-[var(--text-secondary)]">
++            {datos.advertencias.map((a) => <p key={a}>{a}</p>)}
++            <p>Ediciones previas excluidas de esta consulta: {datos.observaciones_excluidas}.</p>
++            <p>Variación interanual: {numero(serie.variacion_interanual_pct)}{serie.variacion_interanual_pct !== null ? " %" : ""}. {serie.motivo_variacion}</p>
++            <p>Método: {datos.version_metodo}. Estadísticos: mínimo, máximo y mediana de valores disponibles, sin imputación.</p>
++            <p className="break-all">SHA-256 de la consulta: {datos.consulta_sha256}</p>
++          </footer>
++        </>
++      )}
+     </div>
+   );
+ }
+-
+-export function valorDimensiones(territorio: EstadisticasTerritorio): number[] {
+-  return DIMENSIONES.map(({ variable }) => obtenerValorVariable(territorio, variable));
+-}
+-
+-function puntosPoligono(valores: number[], centro: number, radio: number): string {
+-  return valores.map((valor, indice) => {
+-    const angulo = -Math.PI / 2 + (indice * Math.PI * 2) / valores.length;
+-    const distancia = (Math.max(0, Math.min(100, valor)) / 100) * radio;
+-    return `${(centro + Math.cos(angulo) * distancia).toFixed(2)},${(centro + Math.sin(angulo) * distancia).toFixed(2)}`;
+-  }).join(" ");
+-}
+-
+-function RadarChart({
+-  territorio,
+-  onVariableChange,
+-  reducedMotion,
+-}: {
+-  territorio: EstadisticasTerritorio;
+-  onVariableChange: (variable: VariableMapa) => void;
+-  reducedMotion: boolean;
+-}) {
+-  const svgRef = useRef<SVGPolygonElement | null>(null);
+-  const size = 220;
+-  const center = size / 2;
+-  const radius = 70;
+-  const valores = valorDimensiones(territorio);
+-  const vertices = DIMENSIONES.map((dimension, indice) => {
+-    const angle = -Math.PI / 2 + (indice * Math.PI * 2) / DIMENSIONES.length;
+-    return {
+-      ...dimension,
+-      x: center + Math.cos(angle) * radius,
+-      y: center + Math.sin(angle) * radius,
+-      labelX: center + Math.cos(angle) * (radius + 24),
+-      labelY: center + Math.sin(angle) * (radius + 24),
+-    };
+-  });
+-
+-  useEffect(() => {
+-    const polygon = svgRef.current;
+-    if (!polygon || reducedMotion) return;
+-    const perimeter = polygon.getTotalLength();
+-    polygon.style.transition = "none";
+-    polygon.style.strokeDasharray = `${perimeter}`;
+-    polygon.style.strokeDashoffset = `${perimeter}`;
+-    requestAnimationFrame(() => {
+-      polygon.style.transition = "stroke-dashoffset 500ms ease-out";
+-      polygon.style.strokeDashoffset = "0";
+-    });
+-    return () => {
+-      polygon.style.transition = "none";
+-    };
+-  }, [territorio.id, reducedMotion]);
+-
+-  return (
+-    <div className="relative mx-auto w-full max-w-[250px]">
+-      <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Radar de siete dimensiones derivadas, escala de cero a cien" className="h-auto w-full overflow-visible">
+-        {[25, 50, 75, 100].map((nivel) => (
+-          <polygon key={nivel} points={puntosPoligono(Array.from({ length: 7 }, () => nivel), center, radius)} fill="none" stroke="var(--border)" strokeWidth="1" />
+-        ))}
+-        {vertices.map((vertice) => (
+-          <line key={vertice.label} x1={center} y1={center} x2={vertice.x} y2={vertice.y} stroke="var(--border)" strokeWidth="1" />
+-        ))}
+-        <polygon
+-          ref={svgRef}
+-          points={puntosPoligono(valores, center, radius)}
+-          fill="var(--ember)"
+-          fillOpacity="0.2"
+-          stroke="var(--ember)"
+-          strokeWidth="2.5"
+-          strokeLinejoin="round"
+-        />
+-        {vertices.map((vertice, indice) => (
+-          <g key={vertice.label} aria-hidden="true">
+-            <circle cx={center + Math.cos(-Math.PI / 2 + (indice * Math.PI * 2) / 7) * radius * valores[indice] / 100} cy={center + Math.sin(-Math.PI / 2 + (indice * Math.PI * 2) / 7) * radius * valores[indice] / 100} r="3" fill="var(--ember)" />
+-            <text x={vertice.labelX} y={vertice.labelY} textAnchor="middle" dominantBaseline="middle" className="fill-[var(--text-secondary)] text-[9px]">{vertice.label}</text>
+-          </g>
+-        ))}
+-      </svg>
+-      {vertices.map((vertice, indice) => (
+-        <Button
+-          key={vertice.variable}
+-          variant="unstyled"
+-          size="unstyled"
+-          className="absolute z-10 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--surface-1)]/90 text-[9px] font-semibold text-[var(--text-primary)] shadow-sm ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--ember)] hover:text-[var(--ember-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ember)]"
+-          style={{ left: `${(vertice.x / size) * 100}%`, top: `${(vertice.y / size) * 100}%`, transitionDuration: reducedMotion ? "0ms" : "300ms" }}
+-          aria-label={`Mostrar dimensión ${vertice.label} en el mapa (${valores[indice]} sobre 100)`}
+-          title={`${vertice.label}: ${Math.round(valores[indice])}/100`}
+-          onMouseEnter={() => onVariableChange(vertice.variable)}
+-          onFocus={() => onVariableChange(vertice.variable)}
+-        >
+-          {Math.round(valores[indice])}
+-        </Button>
+-      ))}
+-    </div>
+-  );
+-}
+-
+-function RankingChart({
+-  territorioId,
+-  variableMapa,
+-  onTerritorioChange,
+-  reducedMotion,
+-}: {
+-  territorioId: string;
+-  variableMapa: VariableMapa;
+-  onTerritorioChange: (id: string) => void;
+-  reducedMotion: boolean;
+-}) {
+-  const territorios = useMemo(() => [...ESTADISTICAS_TERRITORIOS].sort(
+-    (a, b) => obtenerValorVariable(b, variableMapa) - obtenerValorVariable(a, variableMapa),
+-  ), [variableMapa]);
+-  const promedio = territorios.reduce((total, item) => total + obtenerValorVariable(item, variableMapa), 0) / Math.max(territorios.length, 1);
+-  const maximo = Math.max(...territorios.map((item) => obtenerValorVariable(item, variableMapa)), 1);
+-  const meta = VARIABLE_META[variableMapa];
+-  const [tooltip, setTooltip] = useState<{ x: number; y: number; texto: string } | null>(null);
+-
+-  function mostrarTooltip(event: MouseEvent<HTMLButtonElement> | FocusEvent<HTMLButtonElement>, item: EstadisticasTerritorio) {
+-    const bounds = event.currentTarget.parentElement?.getBoundingClientRect();
+-    if (!bounds) return;
+-    const rect = event.currentTarget.getBoundingClientRect();
+-    const clientX = "clientX" in event ? event.clientX : rect.left + rect.width / 2;
+-    const clientY = "clientY" in event ? event.clientY : rect.top + rect.height / 2;
+-    const valor = obtenerValorVariable(item, variableMapa);
+-    setTooltip({ x: clientX - bounds.left, y: clientY - bounds.top, texto: `${valor.toLocaleString("es-CO")} ${meta.unidad} · ${valor - promedio >= 0 ? "+" : ""}${(valor - promedio).toLocaleString("es-CO", { maximumFractionDigits: 1 })} vs. promedio simple` });
+-  }
+-
+-  return (
+-    <div className="relative">
+-      <div className="mb-2 flex justify-between text-[10px] text-[var(--text-tertiary)]"><span>Territorio</span><span>{meta.label} · {meta.unidad}</span></div>        <div className="space-y-2">
+-        {territorios.map((item) => {
+-          const valor = obtenerValorVariable(item, variableMapa);
+-          const activo = territorioId === item.id;
+-          return (
+-            <Button
+-              key={item.id}
+-              variant="unstyled"
+-              size="unstyled"
+-              className={`group w-full rounded-md px-1.5 py-1 text-left transition-colors hover:bg-[var(--surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--ember)] ${activo ? "bg-[var(--ember-soft)]" : ""}`}
+-              style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }}
+-              aria-pressed={activo}
+-              aria-label={`Seleccionar ${item.nombre}: ${valor.toLocaleString("es-CO")} ${meta.unidad}`}
+-              onClick={() => onTerritorioChange(item.id)}
+-              onMouseMove={(event) => mostrarTooltip(event, item)}
+-              onMouseEnter={(event) => mostrarTooltip(event, item)}
+-              onMouseLeave={() => setTooltip(null)}
+-              onFocus={(event) => mostrarTooltip(event, item)}
+-              onBlur={() => setTooltip(null)}
+-            >
+-              <span className="mb-1 flex items-center justify-between gap-2 text-[10px]">
+-                <span className="truncate text-[var(--text-primary)]">{item.nombre}</span>
+-                <span className="shrink-0 font-semibold tabular text-[var(--text-primary)]">{valor.toLocaleString("es-CO")} {meta.unidad}</span>
+-              </span>
+-              <span className="block h-2 overflow-hidden rounded-full bg-[var(--surface-2)]">
+-                <span className={`block h-full rounded-full transition-[width,background-color] ease-out ${activo ? "bg-[var(--ember)]" : "bg-[var(--info)] group-hover:bg-[var(--ember)]"} ${activo && !reducedMotion ? "animate-pulse" : ""}`} style={{ width: `${Math.max(2, (valor / maximo) * 100)}%`, transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
+-              </span>
+-            </Button>
+-          );
+-        })}
+-      </div>
+-      <p className="mt-3 text-[10px] text-[var(--text-tertiary)]">Diferencia frente al promedio simple de los territorios listados; no es una ponderación poblacional.</p>
+-      {tooltip && <div className="pointer-events-none absolute z-20 max-w-[90%] -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.texto}</div>}
+-    </div>
+-  );
+-}
+-
+-function TendenciaChart({ territorio, reducedMotion }: { territorio: EstadisticasTerritorio; reducedMotion: boolean }) {
+-  const values = territorio.tendenciaAlertas;
+-  const max = Math.max(...values, 1);
+-  const min = Math.min(...values, 0);
+-  const width = 320;
+-  const height = 160;
+-  const padding = { x: 22, y: 18 };
+-  const plotWidth = width - padding.x * 2;
+-  const plotHeight = height - padding.y * 2;
+-  const range = Math.max(max - min, 1);
+-  const points = values.map((value, index) => ({
+-    x: padding.x + (index / Math.max(values.length - 1, 1)) * plotWidth,
+-    y: padding.y + ((max - value) / range) * plotHeight,
+-    value,
+-  }));
+-  const line = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+-  const area = `${line} L ${points.at(-1)?.x ?? 0} ${height - padding.y} L ${padding.x} ${height - padding.y} Z`;
+-  const average = values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+-  const averageY = padding.y + ((max - average) / range) * plotHeight;
+-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+-
+-  return (
+-    <div className="relative" onMouseLeave={() => setTooltip(null)}>
+-      <div className="mb-2 flex items-baseline justify-between"><span className="text-xl font-semibold tabular text-[var(--text-primary)]">{values.at(-1) ?? 0}</span><span className="text-[10px] text-[var(--text-tertiary)]">alertas · octubre</span></div>
+-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Tendencia de alertas referencial para ${territorio.nombre}, de mayo a octubre`} className="w-full overflow-visible">
+-        <defs><linearGradient id={`gradiente-alertas-${territorio.id}`} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="var(--ember)" stopOpacity="0.3" /><stop offset="100%" stopColor="var(--ember)" stopOpacity="0" /></linearGradient></defs>
+-        <line x1={padding.x} x2={width - padding.x} y1={averageY} y2={averageY} stroke="var(--text-tertiary)" strokeDasharray="4 4" strokeWidth="1" />
+-        <path d={area} fill={`url(#gradiente-alertas-${territorio.id})`} className="transition-all" style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
+-        <path d={line} fill="none" stroke="var(--ember)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-all" style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }} />
+-        {points.map((point, index) => (
+-          <g key={`${territorio.id}-${MESES[index]}`} onMouseMove={(event) => {
+-            const bounds = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+-            if (bounds) setTooltip({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, text: `${MESES[index]} 2026 · ${point.value} alertas` });
+-          }} onFocus={() => setTooltip({ x: point.x / width * 100, y: point.y / height * 100, text: `${MESES[index]} 2026 · ${point.value} alertas` })}>
+-            <circle cx={point.x} cy={point.y} r="11" fill="transparent" tabIndex={0} role="img" aria-label={`${MESES[index]} de 2026: ${point.value} alertas`} onBlur={() => setTooltip(null)} />
+-            <circle cx={point.x} cy={point.y} r="3.5" fill="var(--surface-1)" stroke="var(--ember)" strokeWidth="2" />
+-          </g>
+-        ))}
+-        {points.map((point, index) => <text key={MESES[index]} x={point.x} y={height - 2} textAnchor="middle" className="fill-[var(--text-tertiary)] text-[8px]">{MESES[index].slice(0, 3)}</text>)}
+-      </svg>
+-      {tooltip && <div className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.text}</div>}
+-      <p className="mt-1 text-[10px] text-[var(--text-tertiary)]">Promedio: {average.toLocaleString("es-CO", { maximumFractionDigits: 1 })} · serie referencial de los datos disponibles</p>
+-    </div>
+-  );
+-}
+-
+-function arcoDonut(cx: number, cy: number, radio: number, inicio: number, fin: number): string {
+-  const punto = (angulo: number) => ({ x: cx + radio * Math.cos(angulo), y: cy + radio * Math.sin(angulo) });
+-  const primero = punto(inicio);
+-  const segundo = punto(fin);
+-  const arcoGrande = fin - inicio > Math.PI ? 1 : 0;
+-  return `M ${primero.x} ${primero.y} A ${radio} ${radio} 0 ${arcoGrande} 1 ${segundo.x} ${segundo.y}`;
+-}
+-
+-function DonutChart({ territorioId, variableMapa, onTerritorioChange, reducedMotion }: {
+-  territorioId: string;
+-  variableMapa: VariableMapa;
+-  onTerritorioChange: (id: string) => void;
+-  reducedMotion: boolean;
+-}) {
+-  const localidades = LOCALIDADES.map((id) => territorioActual(id));
+-  const total = localidades.reduce((suma, item) => suma + item.poblacion, 0);
+-  const centerTerritory = territorioActual(territorioId);
+-  const centerValue = obtenerValorVariable(centerTerritory, variableMapa);
+-  const colors: Record<(typeof LOCALIDADES)[number], string> = {
+-    "loc-1": "var(--territory-loc-1)",
+-    "loc-2": "var(--territory-loc-2)",
+-    "loc-3": "var(--territory-loc-3)",
+-  };
+-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+-  const segmentos = localidades.reduce<Array<{ item: EstadisticasTerritorio; portion: number; start: number; end: number }>>((acumulados, item) => {
+-    const start = acumulados.at(-1)?.end ?? -Math.PI / 2;
+-    const portion = item.poblacion / total;
+-    acumulados.push({ item, portion, start, end: start + portion * Math.PI * 2 });
+-    return acumulados;
+-  }, []);
+-
+-  return (
+-    <div className="relative" onMouseLeave={() => setTooltip(null)}>
+-      <svg viewBox="0 0 220 190" role="group" aria-label="Distribución referencial de población por localidad" className="mx-auto w-full max-w-[260px] overflow-visible">
+-        {segmentos.map(({ item, portion, start, end }) => {
+-          const selected = territorioId === item.id;
+-          const middle = (start + end) / 2;
+-          const offset = selected ? 5 : 0;
+-          const cx = 110 + Math.cos(middle) * offset;
+-          const cy = 90 + Math.sin(middle) * offset;
+-          return (
+-            <path
+-              key={item.id}
+-              d={arcoDonut(cx, cy, selected ? 59 : 55, start, end)}
+-              fill="none"
+-              stroke={colors[item.id as (typeof LOCALIDADES)[number]]}
+-              strokeWidth={selected ? 29 : 24}
+-              strokeLinecap="butt"
+-              className="cursor-pointer transition-all hover:opacity-80 focus-visible:stroke-[var(--text-primary)]"
+-              style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }}
+-              tabIndex={0}
+-              role="button"
+-              aria-label={`Seleccionar ${item.nombre}, población ${item.poblacion.toLocaleString("es-CO")}`}
+-              onClick={() => onTerritorioChange(item.id)}
+-              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onTerritorioChange(item.id); } }}
+-              onMouseMove={(event) => {
+-                const bounds = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
+-                if (bounds) setTooltip({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, text: `${item.nombre.split(" — ")[0]} · ${item.poblacion.toLocaleString("es-CO")} habitantes (${Math.round(portion * 100)}%)` });
+-              }}
+-              onFocus={() => setTooltip({ x: 50, y: 12, text: `${item.nombre.split(" — ")[0]} · ${item.poblacion.toLocaleString("es-CO")} habitantes` })}
+-            />
+-          );
+-        })}
+-        <text x="110" y="84" textAnchor="middle" className="fill-[var(--text-tertiary)] text-[9px]">{VARIABLE_META[variableMapa].label}</text>
+-        <text x="110" y="104" textAnchor="middle" className="fill-[var(--text-primary)] text-[15px] font-bold">{centerValue.toLocaleString("es-CO")}</text>
+-      </svg>
+-      <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1">
+-        {localidades.map((item) => <Button key={item.id} type="button" variant="unstyled" size="unstyled" className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[10px] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--ember)]" onClick={() => onTerritorioChange(item.id)}><span aria-hidden="true" className="size-2 rounded-full" style={{ backgroundColor: colors[item.id as (typeof LOCALIDADES)[number]] }} />{item.nombre.split(" — ")[0]}</Button>)}
+-      </div>
+-      <p className="mt-2 text-center text-[10px] text-[var(--text-tertiary)]">Población total referencial: {total.toLocaleString("es-CO")}</p>
+-      {tooltip && <div className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md border border-[var(--border)] bg-[var(--surface-1)] px-2 py-1 text-[10px] text-[var(--text-primary)] shadow-raised" style={{ left: tooltip.x, top: tooltip.y }}>{tooltip.text}</div>}
+-    </div>
+-  );
+-}
+-
+-export function GeovisorCharts({ territorioId, variableMapa, onTerritorioChange, onVariableChange }: GeovisorChartsProps) {
+-  const reducedMotion = useReducedMotion() ?? false;
+-  const territorio = territorioActual(territorioId);
+-  const variableLabel = VARIABLE_META[variableMapa].label;
+-
+-  return (
+-    <div className="space-y-3">
+-      <div className="flex flex-wrap items-end justify-between gap-2">
+-        <div>
+-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">Exploración interactiva · {variableLabel}</p>
+-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Análisis estadístico territorial</h2>
+-        </div>
+-        <p className="text-xs text-[var(--text-secondary)]">Selecciona una gráfica o territorio; el mapa y las gráficas comparten la selección.</p>
+-      </div>
+-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Perfil multidimensional derivado">
+-          {encabezado("Perfil multidimensional", territorio, "Indicadores derivados · 0–100")}
+-          <RadarChart territorio={territorio} onVariableChange={onVariableChange} reducedMotion={reducedMotion} />
+-          <p className="mt-3 text-[10px] leading-relaxed text-[var(--text-tertiary)]">Exploración construida con fórmulas derivadas; no equivale a una medición oficial de las dimensiones ONU.</p>
+-        </article>
+-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Ranking de territorios">
+-          {encabezado("Ranking territorial", territorio, "Comparativa")}
+-          <RankingChart territorioId={territorioId} variableMapa={variableMapa} onTerritorioChange={onTerritorioChange} reducedMotion={reducedMotion} />
+-        </article>
+-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Tendencia de alertas">
+-          {encabezado("Tendencia de alertas", territorio, "Mayo–octubre 2026")}
+-          <TendenciaChart territorio={territorio} reducedMotion={reducedMotion} />
+-        </article>
+-        <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm" aria-label="Distribución de población por localidad">
+-          {encabezado("Población por localidad", territorio, "Distribución referencial")}
+-          <DonutChart territorioId={territorioId} variableMapa={variableMapa} onTerritorioChange={onTerritorioChange} reducedMotion={reducedMotion} />
+-        </article>
+-      </div>
+-    </div>
+-  );
+-}
+--- antes/src/features/geovisor/components/geovisor-multifuente-panel.test.tsx
++++ actual/src/features/geovisor/components/geovisor-multifuente-panel.test.tsx
+@@ -16,7 +16,7 @@
+     vi.restoreAllMocks();
+   });
+ 
+-  test("renderiza el panel con título del Banco Multifuente y las 7 dimensiones", () => {
++  test("renderiza el Banco Multifuente con filtros estadisticos compartidos", () => {
+     const mockDatos = {
+       total: 2449,
+       limit: 30,
+@@ -55,14 +55,14 @@
+     expect(html).toContain("2.449");
+     expect(html).toContain("indicadores encontrados");
+ 
+-    // Dimensiones en chips
+-    expect(html).toContain("Seguridad Personal");
+-    expect(html).toContain("Seguridad Comunitaria");
+-    expect(html).toContain("Seguridad Económica");
+-    expect(html).toContain("Seguridad Ambiental");
+-    expect(html).toContain("Seguridad en Salud");
+-    expect(html).toContain("Seguridad Alimentaria");
+-    expect(html).toContain("Seguridad Política");
++    // Contrato de filtros compartidos
++    expect(html).toContain("Territorio de los datos");
++    expect(html).toContain("Entidad fuente");
++    expect(html).toContain("Dimensión de seguridad humana");
++    expect(html).toContain("Desde el año");
++    expect(html).toContain("Hasta el año");
++    expect(html).toContain("Buscar indicador");
++    expect(html).toContain("Incluir ediciones previas para revisión");
+ 
+     // Tarjeta del indicador
+     expect(html).toContain("Pobreza Monetaria Cartagena");
+--- antes/src/features/geovisor/components/geovisor-multifuente-panel.tsx
++++ actual/src/features/geovisor/components/geovisor-multifuente-panel.tsx
+@@ -3,15 +3,7 @@
+ import React, { useState, useMemo } from "react";
+ import {
+   Database,
+-  Search,
+   ExternalLink,
+-  Shield,
+-  Users,
+-  Coins,
+-  TreePine,
+-  HeartPulse,
+-  Utensils,
+-  Vote,
+   Filter,
+   ChevronLeft,
+   ChevronRight,
+@@ -21,58 +13,18 @@
+   Layers,
+   Check,
+ } from "lucide-react";
+-import { Input } from "@/shared/ui/input";
+ import { Button } from "@/shared/ui/button";
+ import { Badge } from "@/shared/ui/badge";
+ import { ScrollArea } from "@/shared/ui/scroll-area";
+-import {
+-  Select,
+-  SelectContent,
+-  SelectItem,
+-  SelectTrigger,
+-  SelectValue,
+-} from "@/shared/ui/select";
+ import {
+   useIndicadoresGeovisor,
+   useIndicadoresFuente,
+ } from "../services/use-geovisor-queries";
+ import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+ import type { IndicadorMultifuente } from "../models/geovisor";
+-
+-const DIMENSIONES = [
+-  {
+-    id: "todas",
+-    label: "Todas las Dimensiones",
+-    icon: Database,
+-  },
+-  { id: "personal", label: "Seguridad Personal", icon: Shield },
+-  {
+-    id: "comunitaria",
+-    label: "Seguridad Comunitaria",
+-    icon: Users,
+-  },
+-  { id: "economica", label: "Seguridad Económica", icon: Coins },
+-  {
+-    id: "ambiental",
+-    label: "Seguridad Ambiental",
+-    icon: TreePine,
+-  },
+-  { id: "salud", label: "Seguridad en Salud", icon: HeartPulse },
+-  {
+-    id: "alimentaria",
+-    label: "Seguridad Alimentaria",
+-    icon: Utensils,
+-  },
+-  { id: "politica", label: "Seguridad Política", icon: Vote },
+-] as const;
+-
+-const TERRITORIOS = [
+-  { id: "todos", label: "Todos los Territorios" },
+-  { id: "DISTRITO-CTG", label: "Distrito de Cartagena (Consolidado)" },
+-  { id: "LOC-1", label: "Localidad 1 — Histórica y del Caribe Norte" },
+-  { id: "LOC-2", label: "Localidad 2 — De la Virgen y Turística" },
+-  { id: "LOC-3", label: "Localidad 3 — Industrial y de la Bahía" },
+-] as const;
++import { useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
++import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
++import { MultifuenteFiltros } from "./multifuente-filtros";
+ 
+ export interface GeovisorMultifuentePanelProps {
+   territorioId?: string;
+@@ -87,38 +39,23 @@
+ }
+ 
+ export function GeovisorMultifuentePanel({
+-  territorioId,
+   onSelectTerritorio,
+   datosIniciales,
+   cargandoInicial = false,
+ }: GeovisorMultifuentePanelProps) {
+-  const [dimension, setDimension] = useState<string>("todas");
+-  const [fuente, setFuente] = useState<string>("todas");
+-  const [territorioFiltro, setTerritorioFiltro] = useState<string>(
+-    territorioId && territorioId !== "todas" ? territorioId : "todos",
+-  );
+-  const [busqueda, setBusqueda] = useState<string>("");
+-  const [pagina, setPagina] = useState<number>(0);
++  const compartidos = useGeovisorAnaliticaStore((s) => s.filtros);
++  const seleccionarObservacion = useGeovisorAnaliticaStore((s) => s.seleccionarObservacion);
++  const { data: analitica } = useAnaliticaMultifuente(datosIniciales === undefined);
++  const firmaFiltros = JSON.stringify(compartidos);
++  const [paginacion, setPaginacion] = useState({ firma: firmaFiltros, pagina: 0 });
++  const pagina = paginacion.firma === firmaFiltros ? paginacion.pagina : 0;
++  const setPagina = (valor: number | ((actual: number) => number)) => setPaginacion({ firma: firmaFiltros, pagina: typeof valor === "function" ? valor(pagina) : valor });
+   const limite = 30;
+-
+-  const indicadoresActivos = useGeovisorLayoutStore(
+-    (s) => s.indicadoresMultifuenteActivos,
+-  );
+-  const toggleIndicadorMultifuente = useGeovisorLayoutStore(
+-    (s) => s.toggleIndicadorMultifuente,
+-  );
+-
+-  const filtros = useMemo(() => {
+-    return {
+-      limit: limite,
+-      offset: pagina * limite,
+-      dimension: dimension === "todas" ? undefined : dimension,
+-      fuente_datos: fuente === "todas" ? undefined : fuente,
+-      codigo_territorio:
+-        territorioFiltro === "todos" ? undefined : territorioFiltro,
+-      busqueda: busqueda.trim() ? busqueda.trim() : undefined,
+-    };
+-  }, [dimension, fuente, territorioFiltro, busqueda, pagina]);
++  const indicadoresActivos = useGeovisorLayoutStore((s) => s.indicadoresMultifuenteActivos);
++  const toggleIndicadorMultifuente = useGeovisorLayoutStore((s) => s.toggleIndicadorMultifuente);
++  const filtros = useMemo(() => ({
++    ...compartidos, limit: limite, offset: pagina * limite, fuente_exacta: true,
++  }), [compartidos, pagina]);
+ 
+   const {
+     data: dataQuery,
+@@ -135,33 +72,6 @@
+   const totalPaginas = Math.ceil(total / limite);
+   const { data: fuentesApi = [] } = useIndicadoresFuente();
+   const totalBanco = fuentesApi.reduce((suma, item) => suma + item.total, 0);
+-  const fuentes = [
+-    { id: "todas", label: "Todas las Entidades Fuente", total: totalBanco || total },
+-    ...fuentesApi.map((item) => ({
+-      id: item.id,
+-      label: item.id,
+-      total: item.total,
+-    })),
+-  ];
+-
+-  const handleCambioDimension = (nuevaDim: string) => {
+-    setDimension(nuevaDim);
+-    setPagina(0);
+-  };
+-
+-  const handleCambioFuente = (nuevaFuente: string) => {
+-    setFuente(nuevaFuente);
+-    setPagina(0);
+-  };
+-
+-  const handleCambioTerritorio = (nuevoTerritorio: string) => {
+-    setTerritorioFiltro(nuevoTerritorio);
+-    setPagina(0);
+-    if (onSelectTerritorio && nuevoTerritorio !== "todos") {
+-      onSelectTerritorio(nuevoTerritorio);
+-    }
+-  };
+-
+   const renderBadgeRiesgo = (nivel: string) => {
+     const n = nivel?.toLowerCase();
+     if (n === "critico") {
+@@ -222,7 +132,7 @@
+               <p className="text-[11px] text-[var(--text-secondary)]">
+                 {fuentesApi.length > 0
+                   ? `${fuentesApi.length} grupos de fuentes · ${totalBanco.toLocaleString("es-CO")} observaciones territoriales`
+-                  : "Consultando fuentes institucionales"}
++                  : "Consultando catálogo de fuentes"}
+               </p>
+             </div>
+           </div>
+@@ -245,85 +155,9 @@
+           </div>
+         </div>
+ 
+-        {/* 2. Chips de Dimensiones de Seguridad Humana */}
+-        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+-          {DIMENSIONES.map((d) => {
+-            const Icon = d.icon;
+-            const activa = dimension === d.id;
+-            return (
+-              <Button
+-                key={d.id}
+-                type="button"
+-                variant={activa ? "default" : "outline"}
+-                size="sm"
+-                onClick={() => handleCambioDimension(d.id)}
+-                className={`flex h-auto items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all shrink-0 ${
+-                  activa
+-                    ? "bg-[var(--ember)] text-[var(--ember-foreground)] border-[var(--ember)] shadow-sm hover:bg-[var(--ember)]/90 hover:text-[var(--ember-foreground)]"
+-                    : "bg-[var(--surface-1)] text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+-                }`}
+-              >
+-                <Icon className="size-3" />
+-                <span>{d.label}</span>
+-              </Button>
+-            );
+-          })}
+-        </div>
+       </div>
+-
+-      {/* 3. Filtros secundarios: búsqueda, entidad fuente y territorio */}
+-      <div className="p-3 border-b border-[var(--border)] bg-[var(--surface-0)]/30 shrink-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
+-        <div className="relative">
+-          <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
+-          <Input
+-            value={busqueda}
+-            onChange={(e) => {
+-              setBusqueda(e.target.value);
+-              setPagina(0);
+-            }}
+-            placeholder="Buscar por indicador (ej. pobreza, dengue, agua)..."
+-            className="pl-8 h-8 text-[11px]"
+-          />
+-        </div>
+-
+-        <div>
+-          <Select value={fuente} onValueChange={handleCambioFuente}>
+-            <SelectTrigger
+-              className="h-8 text-[11px]"
+-              aria-label="Filtrar por entidad oficial"
+-            >
+-              <SelectValue placeholder="Entidad Oficial" />
+-            </SelectTrigger>
+-            <SelectContent>
+-              {fuentes.map((f) => (
+-                <SelectItem key={f.id} value={f.id} className="text-xs">
+-                  {f.label}
+-                </SelectItem>
+-              ))}
+-            </SelectContent>
+-          </Select>
+-        </div>
+-
+-        <div>
+-          <Select
+-            value={territorioFiltro}
+-            onValueChange={handleCambioTerritorio}
+-          >
+-            <SelectTrigger
+-              className="h-8 text-[11px]"
+-              aria-label="Filtrar por territorio"
+-            >
+-              <SelectValue placeholder="Territorio" />
+-            </SelectTrigger>
+-            <SelectContent>
+-              {TERRITORIOS.map((t) => (
+-                <SelectItem key={t.id} value={t.id} className="text-xs">
+-                  {t.label}
+-                </SelectItem>
+-              ))}
+-            </SelectContent>
+-          </Select>
+-        </div>
++      <div className="shrink-0 p-3">
++        <MultifuenteFiltros datos={analitica} onTerritorioChange={onSelectTerritorio} />
+       </div>
+ 
+       {/* 4. Lista o Grid de Indicadores */}
+@@ -454,7 +288,7 @@
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             className="inline-flex items-center gap-0.5 text-[var(--ember)] hover:underline ml-auto shrink-0 font-medium"
+-                            title="Ir a fuente oficial"
++                            title="Consultar procedencia declarada"
+                           >
+                             <span>Fuente</span>
+                             <ExternalLink className="size-2.5" />
+@@ -463,7 +297,14 @@
+                       </div>
+                     )}
+ 
+-                    <div className="pt-2 flex items-center justify-end">
++                    <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
++                      <Button type="button" size="sm" variant="outline" onClick={() => {
++                        onSelectTerritorio?.(ind.codigo_territorio ?? ind.territorio_id);
++                        seleccionarObservacion(ind);
++                        useGeovisorLayoutStore.getState().openView("graficos");
++                      }} aria-label={`Ver serie de ${ind.nombre_indicador}`}>
++                        Ver serie
++                      </Button>
+                       <Button
+                         type="button"
+                         size="sm"
+--- antes/src/features/geovisor/components/geovisor-view-registry.ts
++++ actual/src/features/geovisor/components/geovisor-view-registry.ts
+@@ -76,7 +76,7 @@
+     id: "graficos",
+     title: "Gráficos",
+     short: "Gráficos",
+-    description: "Radar, evolución temporal y comparativas",
++    description: "Series observadas, barras, cobertura y comparación trazable de fuentes",
+     icon: BarChart2,
+     tone: "text-[var(--info)]",
+   },
+--- antes/src/features/geovisor/components/geovisor-workbench-bar.test.tsx
++++ actual/src/features/geovisor/components/geovisor-workbench-bar.test.tsx
+@@ -19,14 +19,14 @@
+     expect(html).toContain("Volver al inicio");
+   });
+ 
+-  test("renderiza la mencion discreta a fuentes oficiales para preservar atribucion", () => {
++  test("renderiza el acceso a la procedencia y metodo de cada serie", () => {
+     const html = renderToString(<GeovisorWorkbenchBar />);
+ 
+-    expect(html).toContain("Fuentes oficiales:");
+-    expect(html).toContain("DANE 2025");
+-    expect(html).toContain("Policía Nacional / CCV");
+-    expect(html).toContain("Alcaldía de Cartagena");
+-    expect(html).toContain("Catastro Distrital");
++    expect(html).toContain("Fuentes y método:");
++    expect(html).toContain("procedencia");
++    expect(html).toContain("cada serie");
++    expect(html).toContain("Gráficos");
++    expect(html).toContain("Sistema de Estadística y Análisis Territorial");
+   });
+ 
+   test("renderiza los controles de vistas y conmutadores de paneles dock", () => {
+--- antes/src/features/geovisor/components/geovisor-workbench-bar.tsx
++++ actual/src/features/geovisor/components/geovisor-workbench-bar.tsx
+@@ -43,12 +43,12 @@
+     <div
+       data-testid="geovisor-workbench-bar"
+       className={cn(
+-        "flex h-9 shrink-0 items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--surface-2)]/80 px-2 text-xs",
++        "flex min-h-9 shrink-0 flex-wrap items-center justify-between gap-2 py-1 border-b border-[var(--border)] bg-[var(--surface-2)]/80 px-2 text-xs",
+         className,
+       )}
+     >
+       {/* Lado izquierdo: Botón «Volver al inicio» + Título SIG */}
+-      <div className="flex items-center gap-2">
++      <div className="flex min-w-0 flex-1 items-center gap-2">
+         <Button
+           asChild
+           variant="ghost"
+@@ -68,31 +68,30 @@
+ 
+         <div className="h-4 w-px bg-[var(--border)]" aria-hidden="true" />
+ 
+-        <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
++        <div className="flex min-w-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+           <LayoutPanelLeft
+             className="size-3.5 text-[var(--ember)]"
+             aria-hidden="true"
+           />
+-          <span className="hidden md:inline">Espacio de trabajo SIG</span>
++          <span className="hidden truncate md:inline" title="Sistema de Estadística y Análisis Territorial">Sistema de Estadística y Análisis Territorial</span><span className="md:hidden">Datos</span>
+         </div>
+       </div>
+ 
+       {/* Centro: Fuentes oficiales discretas para no perder la atribución */}
+       <div
+         className="hidden xl:flex items-center gap-1.5 text-[11px] text-[var(--text-tertiary)] truncate max-w-md 2xl:max-w-xl"
+-        title="Fuentes oficiales: DANE 2025 • Policía Nacional / CCV (Ene–Sep 2025) • Alcaldía Mayor de Cartagena • Catastro Distrital"
++        title="Cada serie identifica su fuente, corte, unidad, escala y procedencia en el panel Gráficos"
+       >
+         <span className="font-semibold text-[var(--text-secondary)]">
+-          Fuentes oficiales:
++          Fuentes y método:
+         </span>
+         <span className="truncate">
+-          DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro
+-          Distrital
++          Consulta la procedencia de cada serie en Gráficos
+         </span>
+       </div>
+ 
+       {/* Lado derecho: Botón Panel Superior, Banco Multifuente, Datos Estadísticos, Menú de Vistas y Controles de los 4 Paneles */}
+-      <div className="flex items-center gap-1.5">
++      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+         <Button
+           type="button"
+           variant="outline"
+@@ -144,13 +143,13 @@
+           type="button"
+           variant="outline"
+           size="sm"
+-          onClick={() => openView("hurtos")}
++          onClick={() => openView("graficos")}
+           data-testid="workbench-btn-gestor-geojson"
+           className="h-7.5 gap-1.5 text-xs border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
+-          title="Ver y explorar datos estadísticos (12.280 registros)"
++          title="Abrir gráficas y comparación de fuentes"
+         >
+           <Database className="size-3.5" aria-hidden="true" />
+-          <span className="hidden sm:inline">Datos Estadísticos</span>
++          <span className="hidden sm:inline">Gráficas y Comparación</span>
+         </Button>
+         <DropdownMenu>
+           <DropdownMenuTrigger asChild>
+--- antes/src/features/geovisor/components/mapa-cartagena.tsx
++++ actual/src/features/geovisor/components/mapa-cartagena.tsx
+@@ -36,12 +36,12 @@
+ 
+ import { useMapa, type HoverInfo } from "../hooks/use-mapa";
+ import type { VariableMapa } from "../data/estadisticas.data";
+-import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
+ import type { CapasConfig } from "./geovisor-controles";
+ import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+ import { usePanels } from "@/core/panels/panel-store";
+ import { useCapasGeovisor } from "../services/use-geovisor-queries";
+ import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
++import { indicadorCumpleFiltros, useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
+ 
+ export interface MapaCartagenaHandle {
+   exportarPng: () => void;
+@@ -126,8 +126,13 @@
+ 
+     const { data: capasOficiales = [] } = useCapasGeovisor();
+ 
+-    const indicadoresMultifuenteActivos = useGeovisorLayoutStore(
++    const indicadoresSeleccionados = useGeovisorLayoutStore(
+       (s) => s.indicadoresMultifuenteActivos,
++    );
++    const filtrosDatos = useGeovisorAnaliticaStore((s) => s.filtros);
++    const indicadoresMultifuenteActivos = useMemo(
++      () => indicadoresSeleccionados.filter((indicador) => indicadorCumpleFiltros(indicador, filtrosDatos)),
++      [indicadoresSeleccionados, filtrosDatos],
+     );
+     const clearIndicadoresMultifuente = useGeovisorLayoutStore(
+       (s) => s.clearIndicadoresMultifuente,
+@@ -940,31 +945,10 @@
+           </p>
+         </div>
+ 
+-        {/* T7: Tabla oculta de datos para lectores de pantalla (Accesibilidad A11y) */}
+         <table className="sr-only">
+-          <caption>
+-            Resumen estadístico territorial de Cartagena de Indias
+-          </caption>
+-          <thead>
+-            <tr>
+-              <th scope="col">Territorio</th>
+-              <th scope="col">ISH</th>
+-              <th scope="col">Población</th>
+-              <th scope="col">Aportes Ciudadanos</th>
+-              <th scope="col">Alertas SAT</th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            {ESTADISTICAS_TERRITORIOS.map((t) => (
+-              <tr key={t.id}>
+-                <td>{t.nombre}</td>
+-                <td>{t.ish}</td>
+-                <td>{t.poblacion}</td>
+-                <td>{t.aportesCiudadanos}</td>
+-                <td>{t.alertas}</td>
+-              </tr>
+-            ))}
+-          </tbody>
++          <caption>Observaciones del banco activas en el mapa</caption>
++          <thead><tr><th scope="col">Territorio</th><th scope="col">Indicador</th><th scope="col">Valor</th><th scope="col">Unidad</th><th scope="col">Año</th><th scope="col">Fuente</th></tr></thead>
++          <tbody>{indicadoresMultifuenteActivos.map((ind) => <tr key={ind.id}><td>{ind.nombre_territorio ?? ind.codigo_territorio}</td><td>{ind.nombre_indicador}</td><td>{ind.valor}</td><td>{ind.unidad_medida}</td><td>{ind.anio_corte}</td><td>{ind.fuente_datos}</td></tr>)}</tbody>
+         </table>
+       </div>
+     );
+--- antes/src/features/geovisor/hooks/use-mapa.ts
++++ actual/src/features/geovisor/hooks/use-mapa.ts
+@@ -18,13 +18,7 @@
+ import type { Geometry } from "ol/geom";
+ import Point from "ol/geom/Point";
+ import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
+-import {
+-  type VariableMapa,
+-  VARIABLE_META,
+-  ESTADISTICAS_TERRITORIOS,
+-  obtenerValorVariable,
+-  interpolarColor,
+-} from "../data/estadisticas.data";
++import type { VariableMapa } from "../data/estadisticas.data";
+ import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
+ import type { CapasConfig } from "../components/geovisor-controles";
+ import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+@@ -32,6 +26,7 @@
+ import { obtenerPoligonosHurtosGeojson } from "../services/hurtos-api";
+ import type { CapaEspacial, IndicadorMultifuente } from "../models/geovisor";
+ import { listarCapaGeoJSON } from "../services/geovisor-api";
++import { listarTerritoriosGeoJSON } from "../services/geovisor-api";
+ 
+ export interface HoverInfo {
+   id: string;
+@@ -159,30 +154,9 @@
+   MAPA_BARRIOS_METADATOS[normalizar(b.barrio)] = b;
+ });
+ 
+-function crearCapaPuntosAlertas(
+-  localidadRef: { current: string },
+-  capasRef: { current: CapasConfig },
+-): VectorLayer<VectorSource<Feature>> {
+-  const puntos = ESTADISTICAS_TERRITORIOS.filter((t) => t.tipo !== "localidad");
+-  const geojson = {
+-    type: "FeatureCollection",
+-    features: puntos.map((t) => ({
+-      type: "Feature",
+-      id: t.id,
+-      geometry: { type: "Point", coordinates: [t.lon, t.lat] },
+-      properties: {
+-        id: t.id,
+-        nombre: t.nombre,
+-        tipo: t.tipo,
+-        alertas: t.alertas,
+-      },
+-    })),
+-  };
+-  const features = new GeoJSON().readFeatures(geojson, {
+-    dataProjection: "EPSG:4326",
+-    featureProjection: "EPSG:3857",
+-  });
+-  const fuente = new VectorSource({ features });
++function crearCapaPuntosAlertas(capasRef: { current: CapasConfig }): VectorLayer<VectorSource<Feature>> {
++  // Sin registros oficiales de alertas georreferenciadas no se fabrican puntos.
++  const fuente = new VectorSource<Feature>();
+ 
+   return new VectorLayer({
+     source: fuente,
+@@ -499,17 +473,7 @@
+         if (esRural && !capasRef.current.corregimientos) return undefined;
+         if (!esRural && !capasRef.current.localidades) return undefined;
+ 
+-        const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id);
+-        const valores = ESTADISTICAS_TERRITORIOS.map((t) =>
+-          obtenerValorVariable(t, variableRef.current),
+-        );
+-        const minVal = Math.min(...valores);
+-        const maxVal = Math.max(...valores);
+-
+-        const val = stats
+-          ? obtenerValorVariable(stats, variableRef.current)
+-          : 0;
+-        const colorChoropleth = interpolarColor(val, minVal, maxVal);
++        const colorTerritorio = id === "loc-1" ? COLORES_MAPA.loc1 : id === "loc-2" ? COLORES_MAPA.loc2 : COLORES_MAPA.loc3;
+ 
+         const coincideLocalidad =
+           localidadRef.current === "todas" || localidadRef.current === id;
+@@ -519,15 +483,13 @@
+         const colorRelleno = hovered
+           ? `${COLORES_MAPA.hover}99`
+           : coincideLocalidad
+-            ? `${colorChoropleth}cc`
+-            : `${colorChoropleth}33`;
++            ? `${colorTerritorio}66`
++            : `${colorTerritorio}22`;
+ 
+         const colorBorde =
+           hovered || esSeleccionado
+             ? COLORES_MAPA.strokeHover
+             : COLORES_MAPA.stroke;
+-
+-        const meta = VARIABLE_META[variableRef.current];
+ 
+         return new Style({
+           fill: new Fill({ color: colorRelleno }),
+@@ -537,7 +499,7 @@
+           }),
+           text: capasRef.current.etiquetas
+             ? new Text({
+-                text: `${nombre}\n${meta.label}: ${val.toLocaleString("es-CO")} ${meta.unidad}`,
++                text: nombre,
+                 font: "600 11.5px Geist, sans-serif",
+                 fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+                 stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3.5 }),
+@@ -604,7 +566,7 @@
+     });
+ 
+     /* 3. Capa de Puntos de Alertas SAT */
+-    const capaPuntos = crearCapaPuntosAlertas(localidadRef, capasRef);
++    const capaPuntos = crearCapaPuntosAlertas(capasRef);
+     fuentePuntosRef.current = capaPuntos.getSource() ?? null;
+     const fuenteMesas = new VectorSource<Feature>();
+     fuenteMesasRef.current = fuenteMesas;
+@@ -943,17 +905,7 @@
+                 resultados[0];
+ 
+               if (territorio) {
+-                const idCanonica = territorio.codigo
+-                  .toLowerCase()
+-                  .replace("-", "");
+-                const local = ESTADISTICAS_TERRITORIOS.find(
+-                  (item) =>
+-                    item.id.toLowerCase() === idCanonica ||
+-                    item.id === territorio.id ||
+-                    item.nombre.toLowerCase() ===
+-                      territorio.nombre.toLowerCase(),
+-                );
+-                onSelectTerritorio(local ? local.id : territorio.id);
++                onSelectTerritorio(territorio.codigo);
+                 if (onSelectBarrio && territorio.nombre) {
+                   onSelectBarrio(territorio.nombre);
+                 }
+@@ -973,6 +925,11 @@
+         onSelectHurtoRef.current?.(idPol);
+         return;
+       }
++      if (feature.get("tipo") === "multifuente") {
++        const codigo = feature.get("codigo_territorio");
++        if (typeof codigo === "string") onSelectTerritorio(codigo);
++        return;
++      }
+ 
+       const id = feature.get("id");
+       if (typeof id === "string") {
+@@ -982,14 +939,6 @@
+ 
+       const nombre = feature.get("nombre");
+       if (typeof nombre === "string") {
+-        const t = ESTADISTICAS_TERRITORIOS.find(
+-          (item) => item.nombre.toLowerCase() === nombre.toLowerCase(),
+-        );
+-        if (t) {
+-          onSelectTerritorio(t.id);
+-          return;
+-        }
+-
+         const meta = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+         if (meta && onSelectBarrio) {
+           onSelectBarrio(meta.barrio);
+@@ -1120,31 +1069,6 @@
+           return;
+         }
+       }
+-      const stats = ESTADISTICAS_TERRITORIOS.find(
+-        (t) => t.id === id || t.nombre === nombre,
+-      );
+-
+-      if (stats) {
+-        const meta = VARIABLE_META[variableRef.current];
+-        const val = obtenerValorVariable(stats, variableRef.current);
+-        onHoverInfo({
+-          id: stats.id,
+-          nombre: stats.nombre,
+-          tipo: stats.tipo,
+-          ish: stats.ish,
+-          poblacion: stats.poblacion,
+-          aportes: stats.aportesCiudadanos,
+-          alertas: stats.alertas,
+-          homicidios: stats.homicidios,
+-          mesas: stats.mesasRealizadas,
+-          variableValor: val,
+-          variableNombre: meta.label,
+-          variableUnidad: meta.unidad,
+-          pixel,
+-        });
+-        return;
+-      }
+-
+       // Barrio
+       const metaBarrio = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+       onHoverInfo({
+@@ -1185,7 +1109,11 @@
+     fuente.clear(true);
+     if (!indicadoresMultifuente.length) return;
+ 
++    let vigente = true;
++    void (async () => {
+     try {
++      const territorios = await listarTerritoriosGeoJSON();
++      if (!vigente || !mapaRef.current) return;
+       const format = new GeoJSON();
+       const colorPorRiesgo = (riesgoRaw: string) => {
+         const riesgo = String(riesgoRaw || "").toLowerCase();
+@@ -1200,43 +1128,23 @@
+       indicadoresMultifuente.forEach((indicador) => {
+         const colorRiesgo = colorPorRiesgo(indicador.nivel_riesgo);
+         const codTerr = indicador.codigo_territorio;
+-        const esDesagregado =
+-          Boolean(codTerr) &&
+-          codTerr !== "DISTRITO-CTG" &&
+-          codTerr !== "todos" &&
+-          codTerr !== "distrito";
+-        let featuresIndicador: Feature[] = [];
+-
+-        if (esDesagregado && codTerr) {
+-          const idBuscado = codTerr.toLowerCase();
+-          const featuresFiltradas = GEOJSON_TERRITORIOS.features.filter((f) => {
+-            const propId = String(f.properties?.id ?? "").toLowerCase();
+-            return propId === idBuscado || propId.includes(idBuscado);
+-          });
+-          if (featuresFiltradas.length > 0) {
+-            featuresIndicador = format.readFeatures(
+-              {
+-                type: "FeatureCollection",
+-                features: featuresFiltradas,
+-              },
+-              {
+-                dataProjection: "EPSG:4326",
+-                featureProjection: "EPSG:3857",
+-              },
+-            );
+-          }
+-        }
+-
+-        if (featuresIndicador.length === 0) {
+-          featuresIndicador = format.readFeatures(GEOJSON_TERRITORIOS, {
+-            dataProjection: "EPSG:4326",
+-            featureProjection: "EPSG:3857",
+-          });
+-        }
++        const esDesagregado = Boolean(codTerr) && codTerr !== "DISTRITO-CTG";
++        const geometriaExacta = territorios.features.filter((f) =>
++          String(f.properties.id ?? f.id) === indicador.territorio_id ||
++          (codTerr !== undefined && f.properties.codigo === codTerr),
++        );
++        // Sin geometría del territorio exacto, la observación permanece en la serie.
++        // Un valor municipal nunca se copia a los polígonos de sus localidades.
++        const featuresIndicador = format.readFeatures(
++          { type: "FeatureCollection", features: geometriaExacta },
++          { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
++        );
+ 
+         featuresIndicador.forEach((feature) => {
+           feature.set("tipo", "multifuente");
+           feature.set("id", indicador.id);
++          feature.set("codigo_territorio", indicador.codigo_territorio);
++          feature.set("territorio_id", indicador.territorio_id);
+           feature.set("color", colorRiesgo);
+           feature.set("nombre_indicador", indicador.nombre_indicador);
+           feature.set("codigo_indicador", indicador.codigo_indicador);
+@@ -1282,8 +1190,10 @@
+         });
+       }
+     } catch (err) {
+-      console.warn("Fallo al proyectar capas multifuente en OpenLayers:", err);
++      if (vigente) console.warn("Fallo al proyectar capas multifuente en OpenLayers:", err);
+     }
++    })();
++    return () => { vigente = false; };
+   }, [indicadoresMultifuente]);
+ 
+   // Carga reactiva de capas oficiales desde /geodatos/capas
+--- antes/src/features/geovisor/views/geovisor-view.test.tsx
++++ actual/src/features/geovisor/views/geovisor-view.test.tsx
+@@ -27,9 +27,9 @@
+     expect(html).toContain('data-testid="geovisor-workspace-layout"');
+ 
+     // Dock superior (Top Shelf)
+-    expect(html).toContain('data-testid="geovisor-top-shelf"');
+-    expect(html).toContain("Zona Territorial:");
+-    expect(html).toContain("Datos Estadísticos:");
++    expect(html).toContain('aria-label="Filtros compartidos del banco y las gráficas"');
++    expect(html).toContain("Territorio de los datos");
++    expect(html).toContain("Entidad fuente");
+ 
+     // Dock izquierdo (Capas GeoJSON)
+     expect(html).toContain('data-testid="geovisor-dock-host-left"');
+@@ -48,7 +48,7 @@
+     expect(html).toContain("Volver al inicio");
+ 
+     // Atribución de fuentes oficiales en la barra permanente
+-    expect(html).toContain("Fuentes oficiales: DANE 2025");
++    expect(html).toContain("Fuentes y método:");
+ 
+     // Sin contenedor fluid ni márgenes restrictivos
+     expect(html).not.toContain("container-fluid");
+--- antes/src/features/geovisor/views/geovisor-view.tsx
++++ actual/src/features/geovisor/views/geovisor-view.tsx
+@@ -6,7 +6,10 @@
+ import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
+ import { usePanels } from "@/core/panels/panel-store";
+ import { GeovisorWorkspaceLayout } from "../components/geovisor-workspace-layout";
+-import { GeovisorTopShelf } from "../components/geovisor-top-shelf";
++import { MultifuenteFiltros } from "../components/multifuente-filtros";
++import { useAnaliticaMultifuente } from "../services/analitica-multifuente-api";
++import { normalizarCodigoTerritorio, useGeovisorAnaliticaStore } from "../state/geovisor-analitica-store";
++import { Button } from "@/shared/ui/button";
+ import { GeovisorDockHost } from "../components/geovisor-dock-host";
+ import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
+ import { GeovisorMesasDirectorio } from "../components/geovisor-mesas-directorio";
+@@ -30,7 +33,7 @@
+     >
+       <div className="flex flex-col items-center gap-2">
+         <div className="size-6 animate-spin rounded-full border-2 border-[var(--ember)] border-t-transparent" />
+-        <span>Cargando Geovisor Territorial Power BI / Tableau…</span>
++        <span>Cargando mapa del sistema estadístico…</span>
+       </div>
+     </div>
+   ),
+@@ -39,6 +42,7 @@
+ export function GeovisorView() {
+   const { openPanel } = usePanels();
+   const mapaRef = useRef<MapaCartagenaHandle | null>(null);
++  const analitica = useAnaliticaMultifuente();
+ 
+   const [territorioId, setTerritorioId] = useState<string>("todas");
+   const [mesaIdSeleccionada, setMesaIdSeleccionada] = useState<string | null>(null);
+@@ -72,7 +76,7 @@
+   });
+ 
+   useEffect(() => {
+-    useGeovisorLayoutStore.getState().openView("fuentes");
++    useGeovisorLayoutStore.getState().openView("graficos");
+   }, []);
+ 
+   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {
+@@ -129,7 +133,10 @@
+ 
+   const handleSelectTerritorio = useCallback(
+     (id: string) => {
+-      setTerritorioId(id);
++      setTerritorioId(/^LOC-/i.test(id) ? id.toLowerCase() : id);
++      const codigo = normalizarCodigoTerritorio(id);
++      const actual = useGeovisorAnaliticaStore.getState();
++      if (actual.filtros.codigo_territorio !== codigo) actual.setFiltros({ codigo_territorio: codigo });
+       setBarrioSeleccionado(null);
+       if (id !== "todas") {
+         openPanel("territorio", { territorioId: id });
+@@ -198,19 +205,13 @@
+     switch (id) {
+       case "filtros":
+         return (
+-          <GeovisorTopShelf
+-            territorioId={territorioId}
+-            onTerritorioChange={handleSelectTerritorio}
+-            zonaId={territorioId}
+-            onZonaChange={handleSelectTerritorio}
+-            delitoHurto={delitoHurto}
+-            onDelitoChange={handleCambioDelito}
+-            anioHurto={anioHurto}
+-            onAnioHurtoChange={setAnioHurto}
+-            variableMapa={variableMapa}
+-            onVariableChange={setVariableMapa}
+-            onExportarPng={handleExportarPng}
+-          />
++          <div className="space-y-2 p-3">
++            <MultifuenteFiltros datos={analitica.data} onTerritorioChange={handleSelectTerritorio} />
++            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
++              <span>{analitica.data ? `${analitica.data.total_observaciones.toLocaleString("es-CO")} observaciones · ${analitica.data.series.length} series con esta selección` : "Consultando banco estadístico"}</span>
++              <Button variant="outline" size="sm" onClick={handleExportarPng}>Exportar mapa PNG</Button>
++            </div>
++          </div>
+         );
+       case "capas":
+         return (
+@@ -324,6 +325,7 @@
+ 
+   return (
+     <div className="h-full w-full overflow-hidden">
++      <h1 className="sr-only">Datos — Sistema de Estadística y Análisis Territorial</h1>
+       {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS CON PESTAÑAS (estilo IDE) */}
+       <GeovisorWorkspaceLayout
+         topSlot={<GeovisorDockHost dock="top" renderView={renderView} />}
+--- antes/src/features/plataforma/views/geovisor-view.tsx
++++ actual/src/features/plataforma/views/geovisor-view.tsx
+@@ -38,7 +38,7 @@
+   return (
+     <>
+       <PageHeader
+-        title="Geovisor administrativo"
++        title="Datos"
+         description="División territorial y geometrías registradas en el sistema."
+       />
+ 
+@@ -47,7 +47,7 @@
+         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+           <div>
+             <h2 className="text-lg font-bold text-[var(--text-primary)]">
+-              Geovisor y Gestor de Capas GeoJSON — Drive SIEDCO (2018–2026)
++              Sistema de Estadística y Análisis Territorial
+             </h2>
+             <p className="text-xs text-[var(--text-secondary)]">
+               Herramienta integral de exploración tabular, pivot analítico y gestor de capas GeoJSON delictivas en Cartagena.
+@@ -55,7 +55,7 @@
+           </div>
+           <Button asChild variant="default" size="sm" className="h-8 gap-1.5 text-xs font-semibold">
+             <Link href="/geovisor">
+-              <span>Abrir Workbench Geovisor Pantalla Completa</span>
++              <span>Abrir sistema estadístico en pantalla completa</span>
+               <Compass className="size-3.5" />
+             </Link>
+           </Button>

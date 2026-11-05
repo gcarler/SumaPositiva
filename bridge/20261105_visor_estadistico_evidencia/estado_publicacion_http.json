@@ -1,0 +1,11 @@
+{
+  "fecha": "2026-11-05T07:22:10.660879+00:00",
+  "analitica": {
+    "http": 404
+  },
+  "banco": {
+    "http": 200,
+    "total": 2505,
+    "version": null
+  }
+}

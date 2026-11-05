@@ -1,0 +1,14 @@
+{
+  "compilacion_next": "/root/polis-builds/datos_20261105/compilacion_next",
+  "compilacion_next_final": "/root/polis-builds/datos_20261105/compilacion_next_final",
+  "compilacion_storybook": "/root/polis-builds/datos_20261105/compilacion_storybook",
+  "compilacion_next_cierre": {
+    "ruta": "/root/polis-builds/datos_20261105/compilacion_next_cierre",
+    "build_id": "-83za6R6I0_WfvyDTwt81",
+    "server_js_sha256": "883610e03ca2942b6d8accff045c9dcdc81707e7bde78466912129c2c266eb86"
+  },
+  "compilacion_storybook_cierre": {
+    "ruta": "/root/polis-builds/datos_20261105/compilacion_storybook_cierre",
+    "index_sha256": "45f4b056f2e6c551db86c1bb01b44e60eb311a518a361784ff65fdaad080d836"
+  }
+}

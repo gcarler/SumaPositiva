@@ -1,0 +1,185 @@
+{
+  "fecha_utc": "2026-11-05T07:46:59.727689+00:00",
+  "archivos": [
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/analitica_banco_real.json",
+      "sha256": "84cbc16dc03e4aebe6e75ccfaf33e90d95d1073c566db00e06f2ed0ef611df59",
+      "bytes": 474747
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/archivos_fuente_cierre.json",
+      "sha256": "cacdaca89e4acd5784826d93839463e97ebefb8fec4f10ace25d02c6052ec148",
+      "bytes": 4830
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/artefactos_compilacion.json",
+      "sha256": "49ee048f187a8362602d8a707b17ec02ce2516811b036b88904b7c836ead1e41",
+      "bytes": 700
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/banco_publico_antes.json",
+      "sha256": "58f517ff2e242facf0db5ad4f39881a56a0d691e10edf74155977955b1432482",
+      "bytes": 4104599
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/build_next.log",
+      "sha256": "0a74c6dd69dcb80b7c7eca94f5ede68915bb69b8efa456870eb80a0859cbc5da",
+      "bytes": 4601
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/build_next_cierre.log",
+      "sha256": "7c000fb483178aff40886f509dca7ce1da02ece3fd9630c81dbc9c26e817083c",
+      "bytes": 4619
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/build_next_final.log",
+      "sha256": "c17b634fbe535f0d1bb65ccef440370d0a5059d7edf87ad9dd99e14dc6e0fd32",
+      "bytes": 5792
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/build_storybook.log",
+      "sha256": "9b7195ad71d287249457fa55def7b5b48c2160931e3897a8f351515a0feb0b83",
+      "bytes": 317266
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/build_storybook_cierre.log",
+      "sha256": "ffe4d73cd8c3aa80495ef01b515ed8d14f7739b30ff041bb3e511686b3289423",
+      "bytes": 316030
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/check.log",
+      "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
+      "bytes": 197
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/check_cierre.log",
+      "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
+      "bytes": 197
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/check_final.log",
+      "sha256": "e9392e5f1411655b39a973b2da631b7d111a724a20ae3e21fddedfd7e4a059bc",
+      "bytes": 1839
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/cierre.json",
+      "sha256": "76a1577bafcb43c187117dada6aa01b7b5f4dc5d8400125197aa1f6efd8cfc19",
+      "bytes": 2555
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/cobertura_geometrias_publicas.json",
+      "sha256": "8fd28705c3f612d8dfd8af9e891db269ef73d99d5dea6519a3a8a3508027cb96",
+      "bytes": 5436
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/codigo_fuente_cierre.zip",
+      "sha256": "43f6f90426206fcf29f02dec7fec9b9ba0abfc1d2ae7625ecfb65e43318b1d31",
+      "bytes": 308454
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/comparacion_homicidios_real.json",
+      "sha256": "c6ff080a77ec5fa82339b7dce72dc672b1179e452ce175d21117e902fe4bf364",
+      "bytes": 486547
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/contrato_openapi_multifuente.json",
+      "sha256": "340f6830874b2d72027d3de0cdbd37bc51ce5e85971da85e27d162c6c06ba4fd",
+      "bytes": 18060
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/dependencias.log",
+      "sha256": "d9690ddf2abd4fbe809f0b0d49fea101c13fdc5e7576e2a877a6831413a116e3",
+      "bytes": 31
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/analitica_banco_real.json",
+      "sha256": "8ca48a3bef0f14c6dbf7b7785e5f681fe15f6fde4bb88c84da9da94796015634",
+      "bytes": 475648
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/comparacion_homicidios_real.json",
+      "sha256": "b147df8d4e7a0c0f1ff5fb85bec653d1b0367b65f50bb862ce7675c7133cb9fb",
+      "bytes": 487966
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/derivados_finales/resumen.json",
+      "sha256": "0a4bbde55697b8a7065ac73dbefa85f938ffaedb8feb8173a0382ce8559ad566",
+      "bytes": 826
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/diferencias_desde_copias.patch",
+      "sha256": "eeffb77d6fc277e3d28e277ae5c6a7b724cdf8eef09140bde0c00a833bfd95c0",
+      "bytes": 120630
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/estabilidad_fuentes_build.json",
+      "sha256": "324c76a4dd8c8c0fb342c764a6c535981f4d9ebe3f3325b94f29783f88bdfff9",
+      "bytes": 68616
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/estado_api_tras_recarga_concurrente.json",
+      "sha256": "930517b105ca6c06d041fc8aa5825b5586fe3129bfad38c1cbb72cf85f33fd95",
+      "bytes": 271
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/estado_publicacion_http.json",
+      "sha256": "5c288a76779416847443346d4e32e41e791f4d3bae4d936f1c146fb2d6b94a6b",
+      "bytes": 162
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/fuentes_antes_build_final.json",
+      "sha256": "ef1b047b3605ee24d9c75272b733a745c56a86b15418589e482c7c5e4c1af113",
+      "bytes": 67453
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/lock_cierre.log",
+      "sha256": "4a095a985d524aa80374b7f797b7cfcedf5579d963f3557aa39884dbddc4fe6d",
+      "bytes": 29
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/procesamiento_final.log",
+      "sha256": "0a4bbde55697b8a7065ac73dbefa85f938ffaedb8feb8173a0382ce8559ad566",
+      "bytes": 826
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/procesar_captura.py",
+      "sha256": "85a9d1a21c9e6af188a014d2c96e1786ddc2b33162187749ca138a71548b94d0",
+      "bytes": 2834
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/release_frontend_activo.json",
+      "sha256": "18be1ec98edd264b4aebca9d2b7a642f6735cf7978a3c3a50314dbc9290c53d0",
+      "bytes": 274
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/ruff.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/ruff_cierre.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/ruff_format_cierre.log",
+      "sha256": "ef7d13d02214e98ca902b05257cdbe6a8e84f3b4714508efdc19766460b54209",
+      "bytes": 26
+    },
+    {
+      "ruta": "bridge/20261105_visor_estadistico_evidencia/typecheck_inicial.log",
+      "sha256": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92",
+      "bytes": 15
+    },
+    {
+      "ruta": "bridge/20261105_plan_visor_estadistico_multifuente.md",
+      "sha256": "ceb42aedd7c870b79452d53bce270a10c2a22e13d9107090e12d7c5a45062391",
+      "bytes": 6053
+    },
+    {
+      "ruta": "bridge/20261105_entrega_visor_estadistico_multifuente.md",
+      "sha256": "2c6d488554ca7cfe8ae1ba14c6d95f1d75bb2eae17edbb0a61dea8cf804a1d9c",
+      "bytes": 9039
+    }
+  ]
+}

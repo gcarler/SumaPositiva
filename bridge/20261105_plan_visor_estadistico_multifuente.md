@@ -32,9 +32,9 @@ se ejecutan sus tareas en orden.
 
 ### T1. Línea base y contratos
 
-- [ ] Identificar las gráficas que usan datos referenciales y las que consultan API.
-- [ ] Revisar la forma real de los códigos de indicador, periodos y procedencias.
-- [ ] Documentar la correspondencia banco → consulta → cálculo → gráfica.
+- [x] Identificar las gráficas que usan datos referenciales y las que consultan API.
+- [x] Revisar la forma real de los códigos de indicador, periodos y procedencias.
+- [x] Documentar la correspondencia banco → consulta → cálculo → gráfica.
 
 Aceptación: la agrupación de una serie conserva fuente, indicador, unidad,
 territorio y desagregaciones; dos indicadores distintos no se unen por parecido
@@ -42,11 +42,11 @@ del nombre. Los cambios de edición permanecen visibles.
 
 ### T2. Motor descriptivo de solo lectura
 
-- [ ] Añadir catálogo de series y consultas analíticas tipadas en `geodatos`.
-- [ ] Usar Pandas para ordenar/alinear observaciones sin completar ausencias con cero.
-- [ ] Entregar cobertura, valores observados, periodo y métricas descriptivas.
-- [ ] Marcar periodos parciales, duplicados, ediciones previas y metadatos ausentes.
-- [ ] Registrar las rutas nuevas en la política de acceso y la matriz de permisos.
+- [x] Añadir catálogo de series y consultas analíticas tipadas en `geodatos`.
+- [x] Usar Pandas para ordenar/alinear observaciones sin completar ausencias con cero.
+- [x] Entregar cobertura, valores observados, periodo y métricas descriptivas.
+- [x] Marcar periodos parciales, duplicados, ediciones previas y metadatos ausentes.
+- [x] Registrar las rutas nuevas en la política de acceso y la matriz de permisos.
 
 Aceptación: ninguna suma entre fuentes o unidades distintas; los resultados tienen
 identificadores y referencias de observación; los años parciales no producen una
@@ -54,36 +54,36 @@ variación interanual engañosa; una consulta excesiva falla de forma explícita
 
 ### T3. Filtros compartidos y navegación
 
-- [ ] Compartir selección de territorio, fuente, dimensión y periodo entre banco y
+- [x] Compartir selección de territorio, fuente, dimensión y periodo entre banco y
   gráficas mediante estado de la feature.
-- [ ] Normalizar los alias de territorio ya usados por el mapa, sin inventar geometrías.
-- [ ] Permitir abrir la serie de una observación desde el Banco Multifuente.
-- [ ] Conservar la selección al cambiar de panel; reiniciar la paginación al filtrar.
+- [x] Normalizar los alias de territorio ya usados por el mapa, sin inventar geometrías.
+- [x] Permitir abrir la serie de una observación desde el Banco Multifuente.
+- [x] Conservar la selección al cambiar de panel; reiniciar la paginación al filtrar.
 
 Aceptación: cambiar un filtro afecta a ambas consultas; el territorio municipal
 no se distribuye a barrios o UCG; los estados vacío, carga y error son explícitos.
 
 ### T4. Gráficas con observaciones reales
 
-- [ ] Reemplazar el panel estadístico referencial por evolución temporal y barras.
-- [ ] Usar distribución/pastel solo cuando existan categorías mutuamente excluyentes
+- [x] Reemplazar el panel estadístico referencial por evolución temporal y barras.
+- [x] Usar distribución/pastel solo cuando existan categorías mutuamente excluyentes
   y un total justificable; explicar su indisponibilidad en los demás casos.
-- [ ] Sustituir la ficha BI referencial por una lectura de observaciones del territorio.
-- [ ] Mostrar fuente, unidad, escala, fechas, fórmula o método, URL y hash disponible.
-- [ ] Conservar acceso a valores observados y exportación de la selección.
+- [x] Sustituir la ficha BI referencial por una lectura de observaciones del territorio.
+- [x] Mostrar fuente, unidad, escala, fechas, fórmula o método, URL y hash disponible.
+- [x] Conservar acceso a valores observados y exportación de la selección.
 
 Aceptación: ningún radar sintético, población fija o índice inventado se presenta
 como estadística del banco; sin datos, la gráfica no se fabrica.
 
 ### T5. Comparaciones y correlaciones compatibles
 
-- [ ] Permitir elegir dos series y alinear por territorio y periodo explícito.
-- [ ] Mostrar la muestra efectiva y las exclusiones por ausencia o corte parcial.
-- [ ] Entregar comparación descriptiva municipal con las diferencias institucionales
+- [x] Permitir elegir dos series y alinear por territorio y periodo explícito.
+- [x] Mostrar la muestra efectiva y las exclusiones por ausencia o corte parcial.
+- [x] Entregar comparación descriptiva municipal con las diferencias institucionales
   visibles; no consolidar Policía, Fiscalía y Medicina Legal en una cifra única.
-- [ ] Habilitar coeficientes descriptivos solo cuando la escala, el universo,
+- [x] Habilitar coeficientes descriptivos solo cuando la escala, el universo,
   la temporalidad y el tamaño de muestra lo permitan; explicar cada bloqueo.
-- [ ] Evitar afirmaciones causales o interpretaciones automáticas sin soporte.
+- [x] Evitar afirmaciones causales o interpretaciones automáticas sin soporte.
 
 Aceptación: unidad, universo o periodo desconocidos impiden una conclusión
 estadística automática; no se interpolan pares ni se prueban múltiples cruces
@@ -91,10 +91,10 @@ ocultos buscando un resultado significativo.
 
 ### T6. Cierre técnico y entrega
 
-- [ ] Actualizar las historias existentes para el contrato real y estados de UI.
-- [ ] Ejecutar Ruff, comprobaciones de UI/TypeScript/ESLint y compilación aislada.
-- [ ] Revisar los cambios con las guías `polis-ui-build` y `polis-ui-review`.
-- [ ] Registrar los comandos, resultados, límites y tareas completadas en
+- [x] Actualizar las historias existentes para el contrato real y estados de UI.
+- [x] Ejecutar Ruff, comprobaciones de UI/TypeScript/ESLint y compilación aislada.
+- [x] Revisar los cambios con las guías `polis-ui-build` y `polis-ui-review`.
+- [x] Registrar los comandos, resultados, límites y tareas completadas en
   `bridge/20261105_entrega_visor_estadistico_multifuente.md`.
 
 No se añaden ni ejecutan suites de pruebas en esta fase: el encargo solicita
@@ -111,4 +111,5 @@ muestran el motivo y los insumos requeridos.
 ## Registro de ejecución
 
 - Plan registrado antes de modificar código de aplicación.
-- Estado inicial: T1 en curso; T2–T6 pendientes.
+- Estado de cierre: T1–T6 ejecutadas. Evidencia y límites en
+  `bridge/20261105_entrega_visor_estadistico_multifuente.md`.
