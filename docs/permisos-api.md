@@ -174,7 +174,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/formularios/{id}/respuestas | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/formularios/{id}/respuestas | sujeto | Un envío por sujeto; datos estructurados y enfoque diferencial. |
 | GET | /api/v1/geodatos/capas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/geodatos/capas/{codigo}/geojson | publico | GeoJSON público de capa oficial del Geovisor (solo consulta, geometrías y atributos publicados para transparencia). |
 | GET | /api/v1/geodatos/indicadores | publico | Consulta pública y filtrado del banco multifuente de indicadores territoriales para el Geovisor. |
+| GET | /api/v1/geodatos/indicadores/fuentes | publico | Catálogo público de entidades fuente del banco multifuente del Geovisor, sin cifras operativas. |
 | GET | /api/v1/geodatos/territorios | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios/{id}/indicadores | publico | Consulta pública de los indicadores territoriales asociados a un territorio específico. |
 | GET | /api/v1/geodatos/territorios/buscar-por-coordenada | publico | Consulta pública de catálogos y resultados de política para transparencia. |
@@ -413,7 +415,11 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
 | GET | /api/v1/notificaciones/radicado/{codigo_radicado} | publico | Consulta pública del estado de tramitación ciudadana por radicado POL-2026-XXXX. |
-| GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Historial privado de intenciones y resultados de notificación; pendiente, procesando, enviado, simulado o fallido no equivalen a entrega real. Puede contener destinatarios y requiere autorización institucional. |
+| GET | /api/v1/notificaciones/qr/{codigo_radicado}.png | publico | Generación del código QR institucional en PNG para validación y constancia auténtica de radicación. |
+| GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Historial privado de intenciones y resultados de notificación; pendiente, procesando, enviado, simulado o fallido no equivalen a entrega real. Puede contener destinatarios y requiere autorización institucional. Admite filtro `estado_envio` y expone `intentos` y `error_detalle` (solo el nombre de la excepción, sin datos sensibles). |
+| GET | /api/v1/notificaciones/salud | permiso:auditoria:leer@declarada | Salud agregada del Herald (Encargo 275): estado, motivos, ejecutor, cola y métricas de 24 h. Nunca expone host, usuario ni contraseña SMTP. |
+| POST | /api/v1/notificaciones/{notificacion_id}/reintentar | permiso:usuarios:gestionar@declarada | Reintento manual de una notificación 'fallido' agotada; devuelve la fila a 'pendiente' y queda auditado con el actor institucional. 404 si no existe, 409 si no está agotada. |
+| GET | /api/v1/health/herald | publico | Endpoint interno sin autenticación para el monitor de operación: solo `estado` y `motivos`, sin cifras ni PII (análogo a /health/live). |
 
 ## Canal Conversacional WhatsApp e Ingesta Comunitaria — decisión CANAL-WHATSAPP-01
 
