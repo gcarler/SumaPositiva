@@ -1,7 +1,12 @@
 {
   "name": "polis",
   "version": "0.2.1",
+  "description": "POLIS — Plataforma Integral de Participación, Inteligencia Territorial y Seguridad Humana",
   "private": true,
+  "author": "Ples SAS <contacto@ples.com.co> (https://ples.com.co)",
+  "homepage": "https://ples.com.co",
+  "license": "UNLICENSED",
+  "copyright": "Copyright (c) 2026 Ples SAS. All rights reserved.",
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
     "build": "node scripts/build-polis.mjs",
@@ -10,6 +15,8 @@
     "typecheck": "tsc --noEmit",
     "check": "bun run ui:check && bun run typecheck && bun run lint",
     "check:e2e": "node scripts/e2e-smoke-flujos-criticos.mjs",
+    "check:e2e:expansion": "node scripts/e2e-smoke-expansion-cobertura.mjs",
+    "check:e2e:all": "node scripts/e2e-smoke-flujos-criticos.mjs && node scripts/e2e-smoke-expansion-cobertura.mjs",
     "backend:dev": "uv run --project backend uvicorn app.main:app --app-dir backend --reload --reload-dir backend/app --host 127.0.0.1 --port 8000",
     "backend:check": "uv run --project backend ruff check backend && uv run --project backend ruff format --check backend && uv run --project backend pytest backend/tests",
     "backend:migrate": "uv run --project backend alembic -c backend/alembic.ini upgrade head",

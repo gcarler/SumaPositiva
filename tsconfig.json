@@ -45,6 +45,9 @@
     "backend",
     "venv",
     "docs",
-    "bridge"
+    "bridge",
+    "backups",
+    "backups/**",
+    "**/backups/**"
   ]
 }

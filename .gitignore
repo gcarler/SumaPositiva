@@ -102,3 +102,25 @@ geodatos_cartagena/*.zip
 .archify/
 data/planes_accion/drive_sector_seguridad/archivos_pdf/
 data/planes_desarrollo/cache_pdd_dea_v11.json
+
+# Capturas pesadas y artefactos locales fuera de git (2026-11-05:
+# misma política que cache_pdd_dea_v11 y los ZIP de GIS; los JSON/CSV
+# de catálogo, inventario y evaluación sí se versionan)
+data/planes_desarrollo/cache_pdd_dea_v12.json
+data/heros_config.json.bak
+data/banco_fuentes_oficiales/policia_portal/
+data/fuentes_versiones/
+data/capas_analiticas/cortes/
+data/capas_analiticas/derivaciones/
+data/cartografia_fuentes/
+bridge/20261105_integracion_policia_produccion/
+bridge/205_evidencia_temporales_pruebas/
+bridge/211_evidencia_eaf_consumidor_identidad/
+bridge/193_reproduccion_fichas/
+bridge/257_evidencia_codex/
+bridge/277_evidencia_capacidad/
+bridge/235_evidencia_revision_inventario/
+bridge/201_cierre_pilotos_fuentes/
+bridge/177_fichas_cuatro_territorios/
+bridge/185_reproduccion_fichas/
+bridge/58_adquisiciones_fuentes/

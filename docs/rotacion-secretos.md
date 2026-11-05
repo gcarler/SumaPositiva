@@ -8,7 +8,7 @@
 
 ## 1. Contexto y Justificación Forense
 
-Durante las fases iniciales de desarrollo local, se utilizaron credenciales de prueba predeterminadas (tales como la contraseña de base de datos `polis_cartagena_2026` y secretos JWT provisionales). Dichos literales quedaron registrados en commits históricos del árbol git local.
+Durante las fases iniciales de desarrollo local, se utilizaron credenciales de prueba predeterminadas (tales como la contraseña de base de datos `[REDACTADO_HISTORICO_BD]` y secretos JWT provisionales). Dichos literales quedaron registrados en commits históricos del árbol git local.
 
 Dado que el repositorio **nunca ha sido sincronizado a un remoto (`git push`)**, existe una ventana de oportunidad crítica para sanear completamente el entorno:
 1. Erradicar de manera permanente cualquier credencial en el código fuente actual y scripts operativos.
@@ -148,7 +148,7 @@ git status
 
 # 5. Verificación final pre-push:
 git ls-files | grep -E "(\.env|\.db)$" # Debe retornar vacío
-git grep -n "polis_cartagena_2026" src/ backend/ scripts/ # Debe retornar vacío
+git grep -n "<CADENA_HISTORICA_REDACTADA>" src/ backend/ scripts/ # Debe retornar vacío
 ```
 
 ---

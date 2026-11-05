@@ -18,7 +18,7 @@ Un rasgo determinante de seguridad es que **el repositorio es estrictamente loca
 
 ### 1.2. Justificación de la Consolidación
 Durante los primeros commits de desarrollo se utilizaron valores predeterminados de prueba que incluían:
-- La contraseña de PostgreSQL local `polis_cartagena_2026` (introducida en el commit `a1e510b` y presente en varios commits intermedios).
+- La contraseña de PostgreSQL local `[REDACTADO_HISTORICO_BD]` (introducida en el commit `a1e510b` y presente en varios commits intermedios).
 - Claves provisionales de prueba para JWT y sales de IP.
 - Archivos `.env` y bases SQLite temporales que fueron rastreados antes de consolidar el `.gitignore`.
 
@@ -34,9 +34,9 @@ Antes de ejecutar los comandos `git remote add origin <URL>` y `git push`:
 
 | # | Control de Seguridad | Verificación Técnica Requerida | Estado Actual |
 | :---: | :--- | :--- | :---: |
-| **1** | **Rotación de Contraseña de Base de Datos** | Modificar la contraseña del usuario `polis` en PostgreSQL (`ALTER ROLE polis WITH PASSWORD '...'`) y actualizar `POLIS_DATABASE_URL` en `backend/.env`. La contraseña antigua `polis_cartagena_2026` debe quedar inhabilitada. | **Pendiente de ejecución al crear remoto** (detallado en `docs/rotacion-secretos.md`) |
+| **1** | **Rotación de Contraseña de Base de Datos** | Modificar la contraseña del usuario `polis` en PostgreSQL (`ALTER ROLE polis WITH PASSWORD '...'`) y actualizar `POLIS_DATABASE_URL` en `backend/.env`. La contraseña antigua `[REDACTADO_HISTORICO_BD]` debe quedar inhabilitada. | **Pendiente de ejecución al crear remoto** (detallado en `docs/rotacion-secretos.md`) |
 | **2** | **Rotación de Secretos JWT e IP Salt** | Generar nuevas cadenas de 256 bits (`secrets.token_hex(32)`) para `POLIS_JWT_SECRET_KEY` y `POLIS_IP_SALT`. Esto invalida tokens previos y renueva la semilla de anonimización. | **Pendiente de ejecución al crear remoto** |
-| **3** | **Auditoría de Historial con `git log -S`** | Ejecutar búsqueda de cadenas sensibles en el historial: `git log -S "polis_cartagena_2026" --oneline`. En el árbol consolidado resultante, esta búsqueda **debe arrojar 0 commits**. | **Verificado**: En árbol actual arroja 10 commits históricos; se purgará con el squash. |
+| **3** | **Auditoría de Historial con `git log -S`** | Ejecutar búsqueda de cadenas sensibles en el historial: `git log -S "<CADENA_HISTORICA_REDACTADA>" --oneline`. En el árbol consolidado resultante, esta búsqueda **debe arrojar 0 commits**. | **Verificado**: En árbol actual arroja 10 commits históricos; se purgará con el squash. |
 | **4** | **Verificación Estricta de `.gitignore`** | Certificar que `.env`, `.env.*`, `backend/.env`, `*.db`, `bridge/*.db` estén explícitamente ignorados. | **Conforme**: `.gitignore` actualizado y probado con `git check-ignore`. |
 | **5** | **Higiene del Índice Git (`git ls-files`)** | Ejecutar `git ls-files \| grep -E "(\.env\|\.db)$"`. Debe retornar vacío. | **Conforme**: Cero archivos sensibles en el índice desde AUD-11. |
 | **6** | **Cero Mocks y Cero PII en Código** | Certificar que `src/` no contenga datos personales de prueba ni importe mocks en componentes productivos (`no-production-mocks.test.ts`). | **Conforme**: Verificado en AUD-14 y AUD-15. |
@@ -140,7 +140,7 @@ git check-ignore backend/.env # Debe confirmar exclusión
 git commit -m "feat(polis): plataforma de politica publica de seguridad ciudadana cartagena 2026-2036"
 
 # 7. Auditar que la cadena sensible no exista en el nuevo árbol:
-git log -S "polis_cartagena_2026" # Debe retornar VACÍO
+git log -S "<CADENA_HISTORICA_REDACTADA>" # Debe retornar VACÍO
 
 # 8. Vincular el remoto seguro y publicar:
 # git remote add origin https://repositorio.cartagena.gov.co/polis/plataforma.git
@@ -177,7 +177,7 @@ git log --oneline
 | **OBS-01 / OBS-02** | Datos fabricados en compromisos e indicadores | Hito 5 | El commit consolidado reflejará el esquema saneado sin datos simulados. |
 | **OBS-09** | Clave JWT fija por defecto en `config.py` | Hito 5 | Exigencia obligatoria de `POLIS_JWT_SECRET_KEY` sin valores por defecto. |
 | **OBS-11 / OBS-12** | Atribución incorrecta al Decreto 037 en compromisos | Hito 5 | Metadatos corregidos indicando catálogo propuesto pendiente de validación. |
-| **OBS-13** | Contraseña `polis_cartagena_2026` en archivos históricos | Hito 5 | Eliminada de código en AUD-11; el squash purga los blobs del árbol histórico. |
+| **OBS-13** | Contraseña `[REDACTADO_HISTORICO_BD]` en archivos históricos | Hito 5 | Eliminada de código en AUD-11; el squash purga los blobs del árbol histórico. |
 | **OBS-14** | Contraseña en scripts E2E y puertos zombies | Hito 5 | `E2E_DATABASE_URL` dinámica y `fuser -k` acotado a puertos aislados. |
 | **OBS-16 / OBS-19** | Reglas de lint y exclusión temporal de Codex | Hito 5 | Se reintegrarán noticias y testimonios antes de emitir el commit final. |
 | **OBS-17** | Contraseña en historial de git | **Pre-Remoto** | Resuelta formalmente mediante la checklist previa y el squash por fases. |
