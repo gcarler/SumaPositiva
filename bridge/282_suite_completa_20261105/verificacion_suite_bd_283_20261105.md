@@ -20,3 +20,10 @@ Restaurar `POLIS_TEST_DATABASE_URL` en `backend/.env` (otro actor la retiró dur
 ## Notas
 - La suite migró `polis_test_20261105` de 0001 a 0096 como parte de la propia corrida: la cadena completa de migraciones quedó verificada desde cero (censo H-05 incluido: 35/36/35-35 y 3/11/9/12).
 - `select version_num` de la base tras la corrida: 0096_riesgo_sin_evaluar.
+
+## Anexo: verificación del despliegue de 0096 en bd_csh (2026-11-05 ~08:0x UTC)
+- `alembic current` sobre `bd_csh`: **0096_riesgo_sin_evaluar (head)** — la migración ya había sido aplicada por el actor paralelo del despliegue de Policía; en esta tarea no se ejecutó DDL nuevo (y por tanto no correspondía el respaldo previo del runbook, exigido solo antes de ejecutar migraciones).
+- Verificación directa sobre la base: `chk_nivel_riesgo` con los cinco niveles (`bajo`,`medio`,`alto`,`critico`,`sin_evaluar`); 133 filas ya con `nivel_riesgo='sin_evaluar'` (ingesta del portal de Policía).
+- `polis-backend` reiniciado a las 07:23 UTC (después de la aplicación de 0096), por lo que su `EXPECTED_REVISION` coincide.
+- Health verificado: `/api/v1/health/ready` → 200 `"status":"ready","database":"ok","migrations":"ok","extensions":"ok"`. Nota: la ruta con prefijo correcto es `/api/v1/health/*` (según el montaje actual del prefijo v1); un probe a `/health/ready` retornó 404 y no se debe usar en monitores.
+- Smoke: `/api/v1/mesas/agendas` 200, `/api/v1/geodatos/indicadores/fuentes` 200, `/api/v1/indicadores/catalogo` 200, `/api/v1/health/herald` 200 `{"estado":"saludable","motivos":[]}`.
