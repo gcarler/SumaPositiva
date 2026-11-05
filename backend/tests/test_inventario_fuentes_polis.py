@@ -37,7 +37,7 @@ def test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales():
         "medicina_homicidios",
         "fiscalia_spoa_procesos_por_anio_hecho",
         "dane_poblacion_vigencia_censal",
-        "drive_excel_policial_11_delitos",
+        "drive_homicidios",
         "fiscalia_spoa_busquedas_por_anio_hecho",
     } <= claves
 

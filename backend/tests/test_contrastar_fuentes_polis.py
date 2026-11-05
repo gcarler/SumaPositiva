@@ -33,12 +33,14 @@ def test_contraste_homicidios_2024_separa_unidades_y_muestra_diferencias():
     assert series["policia_intencional"]["valor"] == "378.0"
     assert series["policia_feminicidio"]["valor"] == "3.0"
     assert series["medicina_homicidios"]["valor"] == "411.0"
-    assert series["archivo_recibido_homicidio"]["valor"] == "381"
+    assert series["fiscalia_busqueda_homicidio"]["valor"] == "910"
     assert series["fiscalia_busqueda_homicidio"]["unidad_observacion"] == "proceso"
+    # La entrega comunitaria (Excel de comando) dejó de aportar la serie del
+    # homicidio; su ausencia no es cero y no bloquea el contraste institucional.
+    assert "archivo_recibido_homicidio" in panel["series_sin_dato"]
     assert panel["total_interinstitucional"] is None
     diferencias = {d["serie_b"]: d for d in panel["diferencias_numericas"]}
     assert diferencias["medicina_homicidios"]["diferencia_a_menos_b"] == "-33.0"
-    assert diferencias["archivo_recibido_homicidio"]["diferencia_a_menos_b"] == "-3.0"
     assert all(d["comparabilidad"] == "no_acreditada" for d in panel["diferencias_numericas"])
 
 

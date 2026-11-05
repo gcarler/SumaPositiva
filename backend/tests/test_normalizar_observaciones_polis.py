@@ -8,18 +8,18 @@ import pytest
 from scripts.normalizar_observaciones_polis import materializar
 
 
-def test_materializa_2340_filas_con_version_y_sin_publicacion(tmp_path):
+def test_materializa_2396_filas_con_version_y_sin_publicacion(tmp_path):
     primera = materializar(tmp_path)
     segunda = materializar(tmp_path)
     assert primera == segunda
-    assert primera["filas"] == 2340
+    assert primera["filas"] == 2396
     assert primera["estado_publicacion"] == "no_publicable"
     assert primera["calidad_estructural"]["estado"] == "ambar"
     archivo = tmp_path / f"{primera['salida_sha256']}.jsonl"
     assert hashlib.sha256(archivo.read_bytes()).hexdigest() == primera["salida_sha256"]
     assert json.loads((tmp_path / f"{primera['salida_sha256']}.manifest.json").read_text()) == primera
     filas = [json.loads(linea) for linea in archivo.read_text().splitlines()]
-    assert len(filas) == 2340
+    assert len(filas) == 2396
     assert all(fila["estado_publicacion"] == "no_publicable" for fila in filas)
     assert all(len(fila["version_sha256"]) == 64 for fila in filas)
     assert all(fila["adaptador_sha256"] == primera["adaptador_sha256"] for fila in filas)

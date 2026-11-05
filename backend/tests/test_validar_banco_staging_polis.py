@@ -21,7 +21,7 @@ def _preparar(tmp_path):
 def test_corte_actual_queda_ambar_y_no_publicable(tmp_path):
     banco = _preparar(tmp_path)
     resultado = validar(banco)
-    assert resultado["evaluacion"]["filas_tipadas"] == 2340
+    assert resultado["evaluacion"]["filas_tipadas"] == 2396
     assert resultado["evaluacion"]["estado"] == "ambar"
     assert resultado["estado_publicacion"] == "no_publicable"
     assert json.loads((banco / "evaluacion_estructural_2026.json").read_text()) == resultado
