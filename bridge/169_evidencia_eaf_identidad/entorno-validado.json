@@ -1,0 +1,81 @@
+{
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "usuario_bd": "polis",
+  "postgresql": "PostgreSQL 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, 64-bit",
+  "alembic_heads": [
+    "0083_conciliador_gold_set"
+  ],
+  "extensiones": [
+    {
+      "extname": "ltree",
+      "extversion": "1.3"
+    },
+    {
+      "extname": "pg_trgm",
+      "extversion": "1.6"
+    },
+    {
+      "extname": "pgcrypto",
+      "extversion": "1.4"
+    },
+    {
+      "extname": "plpgsql",
+      "extversion": "1.0"
+    },
+    {
+      "extname": "postgis",
+      "extversion": "3.6.2"
+    }
+  ],
+  "funciones_identidad": [
+    {
+      "nspname": "autenticacion",
+      "proname": "proteger_eventos_identidad",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=pg_catalog, pg_temp"
+      ],
+      "propietario": "polis"
+    },
+    {
+      "nspname": "public",
+      "proname": "generar_uuid_v7",
+      "prosecdef": false,
+      "proconfig": null,
+      "propietario": "polis"
+    }
+  ],
+  "tablas_autenticacion": [
+    "ambitos_territoriales_usuario",
+    "eventos_identidad",
+    "limites_acceso",
+    "roles",
+    "sesiones_usuario",
+    "tokens_accion",
+    "usuarios",
+    "usuarios_mfa"
+  ],
+  "guarda_conexion_rechazos_previos_a_red": [
+    "red_externa",
+    "escritura_repositorio",
+    "asyncpg",
+    "psycopg_async",
+    "psycopg",
+    "sqlalchemy"
+  ],
+  "python": "3.12.14",
+  "paquetes": {
+    "sqlalchemy": "2.0.54",
+    "alembic": "1.20.0",
+    "fastapi": "0.142.2",
+    "pydantic": "2.13.5",
+    "asyncpg": "0.31.0",
+    "psycopg": "3.3.6",
+    "pytest": "9.1.1",
+    "ruff": "0.16.9",
+    "bcrypt": "5.0.0",
+    "PyJWT": "2.15.1"
+  },
+  "bun": "1.4.2",
+  "uv": "uv 0.12.21 (x86_64-unknown-linux-gnu)"
+}

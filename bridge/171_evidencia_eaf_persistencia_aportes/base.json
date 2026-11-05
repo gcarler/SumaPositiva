@@ -1,0 +1,9 @@
+{
+  "database": "polis_test_eaf_aportes_20261026_ef6a0ce9",
+  "owner": "polis",
+  "host": "127.0.0.1",
+  "port": 5432,
+  "created_utc": "2026-10-26T04:00:53.344173+00:00",
+  "template": "template0",
+  "preexisting": false
+}

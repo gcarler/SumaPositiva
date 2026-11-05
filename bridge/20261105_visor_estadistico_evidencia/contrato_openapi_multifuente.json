@@ -1,0 +1,832 @@
+{
+  "get": {
+    "tags": [
+      "geovisor-territorial"
+    ],
+    "summary": "Series, cobertura y comparación descriptiva del banco público del Geovisor",
+    "operationId": "analizar_multifuente_api_v1_geodatos_analitica_multifuente_get",
+    "parameters": [
+      {
+        "name": "serie_x",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Serie X"
+        }
+      },
+      {
+        "name": "serie_y",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Serie Y"
+        }
+      },
+      {
+        "name": "observacion_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Observacion Id"
+        }
+      },
+      {
+        "name": "codigo_territorio",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Codigo Territorio"
+        }
+      },
+      {
+        "name": "fuente_datos",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fuente Datos"
+        }
+      },
+      {
+        "name": "dimension",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Dimension"
+        }
+      },
+      {
+        "name": "anio_desde",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "maximum": 2200,
+              "minimum": 1900
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Anio Desde"
+        }
+      },
+      {
+        "name": "anio_hasta",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "maximum": 2200,
+              "minimum": 1900
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Anio Hasta"
+        }
+      },
+      {
+        "name": "busqueda",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Busqueda"
+        }
+      },
+      {
+        "name": "incluir_ediciones_previas",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false,
+          "title": "Incluir Ediciones Previas"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Successful Response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AnaliticaMultifuenteResponse"
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HTTPValidationError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemas": {
+    "AnaliticaMultifuenteResponse": {
+      "properties": {
+        "version_metodo": {
+          "type": "string",
+          "title": "Version Metodo"
+        },
+        "consulta_sha256": {
+          "type": "string",
+          "title": "Consulta Sha256"
+        },
+        "total_observaciones": {
+          "type": "integer",
+          "title": "Total Observaciones"
+        },
+        "observaciones_excluidas": {
+          "type": "integer",
+          "title": "Observaciones Excluidas"
+        },
+        "fuentes": {
+          "items": {
+            "$ref": "#/components/schemas/OpcionMultifuente"
+          },
+          "type": "array",
+          "title": "Fuentes"
+        },
+        "territorios": {
+          "items": {
+            "$ref": "#/components/schemas/OpcionMultifuente"
+          },
+          "type": "array",
+          "title": "Territorios"
+        },
+        "dimensiones": {
+          "items": {
+            "$ref": "#/components/schemas/OpcionMultifuente"
+          },
+          "type": "array",
+          "title": "Dimensiones"
+        },
+        "anios": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array",
+          "title": "Anios"
+        },
+        "cobertura_fuentes": {
+          "items": {
+            "$ref": "#/components/schemas/OpcionMultifuente"
+          },
+          "type": "array",
+          "title": "Cobertura Fuentes"
+        },
+        "series": {
+          "items": {
+            "$ref": "#/components/schemas/SerieMultifuenteResumen"
+          },
+          "type": "array",
+          "title": "Series"
+        },
+        "serie": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/SerieMultifuenteDetalle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "serie_comparada": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/SerieMultifuenteDetalle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comparacion": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/ComparacionMultifuente"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "advertencias": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "Advertencias"
+        }
+      },
+      "type": "object",
+      "required": [
+        "version_metodo",
+        "consulta_sha256",
+        "total_observaciones",
+        "observaciones_excluidas",
+        "fuentes",
+        "territorios",
+        "dimensiones",
+        "anios",
+        "cobertura_fuentes",
+        "series",
+        "serie",
+        "serie_comparada",
+        "comparacion",
+        "advertencias"
+      ],
+      "title": "AnaliticaMultifuenteResponse"
+    },
+    "ComparacionMultifuente": {
+      "properties": {
+        "serie_x": {
+          "type": "string",
+          "title": "Serie X"
+        },
+        "serie_y": {
+          "type": "string",
+          "title": "Serie Y"
+        },
+        "pares": {
+          "items": {
+            "$ref": "#/components/schemas/ParMultifuente"
+          },
+          "type": "array",
+          "title": "Pares"
+        },
+        "anios_sin_pareja": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array",
+          "title": "Anios Sin Pareja"
+        },
+        "muestra_total": {
+          "type": "integer",
+          "title": "Muestra Total"
+        },
+        "muestra_elegible": {
+          "type": "integer",
+          "title": "Muestra Elegible"
+        },
+        "pearson": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pearson"
+        },
+        "spearman": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Spearman"
+        },
+        "estado": {
+          "type": "string",
+          "title": "Estado"
+        },
+        "motivos": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "Motivos"
+        },
+        "interpretacion": {
+          "type": "string",
+          "title": "Interpretacion"
+        }
+      },
+      "type": "object",
+      "required": [
+        "serie_x",
+        "serie_y",
+        "pares",
+        "anios_sin_pareja",
+        "muestra_total",
+        "muestra_elegible",
+        "estado",
+        "motivos",
+        "interpretacion"
+      ],
+      "title": "ComparacionMultifuente"
+    },
+    "OpcionMultifuente": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id"
+        },
+        "nombre": {
+          "type": "string",
+          "title": "Nombre"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0.0,
+          "title": "Total"
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "nombre",
+        "total"
+      ],
+      "title": "OpcionMultifuente"
+    },
+    "ParMultifuente": {
+      "properties": {
+        "anio": {
+          "type": "integer",
+          "title": "Anio"
+        },
+        "x": {
+          "type": "number",
+          "title": "X"
+        },
+        "y": {
+          "type": "number",
+          "title": "Y"
+        },
+        "observacion_x": {
+          "type": "string",
+          "title": "Observacion X"
+        },
+        "observacion_y": {
+          "type": "string",
+          "title": "Observacion Y"
+        },
+        "elegible": {
+          "type": "boolean",
+          "title": "Elegible"
+        },
+        "motivos": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "Motivos"
+        }
+      },
+      "type": "object",
+      "required": [
+        "anio",
+        "x",
+        "y",
+        "observacion_x",
+        "observacion_y",
+        "elegible",
+        "motivos"
+      ],
+      "title": "ParMultifuente"
+    },
+    "PuntoMultifuente": {
+      "properties": {
+        "observacion_id": {
+          "type": "string",
+          "title": "Observacion Id"
+        },
+        "anio": {
+          "type": "integer",
+          "title": "Anio"
+        },
+        "valor": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valor"
+        },
+        "valor_original": {
+          "type": "string",
+          "title": "Valor Original"
+        },
+        "periodo_desde": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Periodo Desde"
+        },
+        "periodo_hasta": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Periodo Hasta"
+        },
+        "tipo_periodo": {
+          "type": "string",
+          "title": "Tipo Periodo"
+        },
+        "completo": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Completo"
+        },
+        "provisional": {
+          "type": "boolean",
+          "title": "Provisional"
+        },
+        "url_fuente": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url Fuente"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sha256"
+        },
+        "fecha_extraccion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fecha Extraccion"
+        },
+        "referencia": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Referencia"
+        },
+        "nota": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Nota"
+        },
+        "estado_validacion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estado Validacion"
+        },
+        "estado_publicacion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estado Publicacion"
+        },
+        "universo": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Universo"
+        },
+        "metodo": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Metodo"
+        },
+        "advertencias": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "Advertencias"
+        }
+      },
+      "type": "object",
+      "required": [
+        "observacion_id",
+        "anio",
+        "valor",
+        "valor_original",
+        "periodo_desde",
+        "periodo_hasta",
+        "tipo_periodo",
+        "completo",
+        "provisional",
+        "url_fuente",
+        "sha256",
+        "fecha_extraccion",
+        "referencia",
+        "nota",
+        "estado_validacion",
+        "estado_publicacion",
+        "universo",
+        "metodo",
+        "advertencias"
+      ],
+      "title": "PuntoMultifuente"
+    },
+    "SerieMultifuenteDetalle": {
+      "properties": {
+        "resumen": {
+          "$ref": "#/components/schemas/SerieMultifuenteResumen"
+        },
+        "puntos": {
+          "items": {
+            "$ref": "#/components/schemas/PuntoMultifuente"
+          },
+          "type": "array",
+          "title": "Puntos"
+        },
+        "minimo": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Minimo"
+        },
+        "maximo": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Maximo"
+        },
+        "mediana": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mediana"
+        },
+        "variacion_interanual_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Variacion Interanual Pct"
+        },
+        "motivo_variacion": {
+          "type": "string",
+          "title": "Motivo Variacion"
+        }
+      },
+      "type": "object",
+      "required": [
+        "resumen",
+        "puntos",
+        "minimo",
+        "maximo",
+        "mediana",
+        "variacion_interanual_pct",
+        "motivo_variacion"
+      ],
+      "title": "SerieMultifuenteDetalle"
+    },
+    "SerieMultifuenteResumen": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id"
+        },
+        "codigo_indicador": {
+          "type": "string",
+          "title": "Codigo Indicador"
+        },
+        "nombre": {
+          "type": "string",
+          "title": "Nombre"
+        },
+        "fuente": {
+          "type": "string",
+          "title": "Fuente"
+        },
+        "unidad": {
+          "type": "string",
+          "title": "Unidad"
+        },
+        "territorio_id": {
+          "type": "string",
+          "title": "Territorio Id"
+        },
+        "codigo_territorio": {
+          "type": "string",
+          "title": "Codigo Territorio"
+        },
+        "territorio": {
+          "type": "string",
+          "title": "Territorio"
+        },
+        "escala": {
+          "type": "string",
+          "title": "Escala"
+        },
+        "dimension": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Dimension"
+        },
+        "subtipo": {
+          "type": "string",
+          "title": "Subtipo"
+        },
+        "total": {
+          "type": "integer",
+          "title": "Total"
+        },
+        "anios": {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array",
+          "title": "Anios"
+        },
+        "advertencias": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "Advertencias"
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "codigo_indicador",
+        "nombre",
+        "fuente",
+        "unidad",
+        "territorio_id",
+        "codigo_territorio",
+        "territorio",
+        "escala",
+        "dimension",
+        "subtipo",
+        "total",
+        "anios",
+        "advertencias"
+      ],
+      "title": "SerieMultifuenteResumen"
+    }
+  }
+}

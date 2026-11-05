@@ -1,0 +1,93 @@
+{
+  "resultados": {
+    "02_consumidores_limpios": {
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.687"
+    },
+    "04_productores_originales": {
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.359"
+    },
+    "06_consumidores_contaminados": {
+      "tests": "3",
+      "failures": "2",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.848"
+    },
+    "07_secuencia_corregida": {
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "14.584"
+    },
+    "09_paquetes_productores_consumidores": {
+      "tests": "157",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "39.145"
+    },
+    "11_orden_inverso_repetido": {
+      "tests": "157",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "58.396"
+    },
+    "14_inmutabilidad_aislada": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.757"
+    },
+    "15_fallo_despues_asserts_legado": {
+      "tests": "4",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "11.114"
+    },
+    "17_fallo_primera_medicion": {
+      "tests": "3",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.728"
+    },
+    "19_consumidores_y_guardas_transacciones": {
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.473"
+    },
+    "21_paquetes_snapshot_estable": {
+      "tests": "157",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "47.799"
+    }
+  },
+  "ordenes_conformes": 2,
+  "casos_por_paquete": 157,
+  "se_repite_la_misma_matriz_no_sumar_duplicados": true,
+  "fallos_deliberados_preservados": [
+    "15_fallo_despues_asserts_legado",
+    "17_fallo_primera_medicion"
+  ],
+  "no_global_por_instruccion242": true,
+  "no_dictamen_EAF": true,
+  "ultima_validacion_554_fuentes_estables": true,
+  "ruff_final_dos_fuentes_propias": "conforme",
+  "formato_final_dos_fuentes_propias": "conforme"
+}

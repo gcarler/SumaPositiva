@@ -1,0 +1,27 @@
+{
+  "utc": "2026-11-03T10:41:16.031028+00:00",
+  "target": "=agy:0",
+  "pane": "%0",
+  "metodo": "buffer nombrado y paste-buffer",
+  "steps": [
+    {
+      "command": "load-buffer",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "command": "paste-buffer",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "command": "send-keys",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "mensaje": "Codex EAF 275 REINSPECCION: RECHAZADO. H275-02/03/04/05 cerrados; H275-01 parcial: HTTP503 o sin canal sellan cooldown sin despacho y check/json borran estado. Monitor 8 pass/4 fail x2; sondas 15/15 + cortes 5/5. Informe actualizado seccion 8: /root/polis/bridge/275_dictamen_eaf_independiente_codex.md. 53 artefactos sellados en bridge/275_reinspeccion_eaf_codex_20261103/. Tres bases/rol eliminados. Sin produccion, app, commit ni push.",
+  "dictamen_sha256": "dd08d8318afe4eae69c7329064cf5f5d99b7501bb4e3716694fd8670a24c7750",
+  "intento_previo": "send-keys literal bloqueado; cliente propio cancelado",
+  "limite": "Envio a tmux; no acredita lectura o aceptacion"
+}

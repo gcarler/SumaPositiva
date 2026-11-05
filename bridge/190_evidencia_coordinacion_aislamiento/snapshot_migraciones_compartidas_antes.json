@@ -1,0 +1,10 @@
+{
+  "backend/tests/conftest.py": "ee24c9f8da2be02f62db7dbaadd3d1b8b6184858e175fceaeb24c264b4f68ea8",
+  "backend/tests/test_cierre01_migracion_asistencia.py": "1052401df4e3656f44aafea5cf0999dc829ab413fdd319e653ff43c1d075d6aa",
+  "backend/tests/test_formularios_admin.py": "33b25e1a8cccfdbff3524835d0952c646713df03eecdc9e4771ff0ecb73b1bd6",
+  "backend/tests/test_corridas_pipeline.py": "a4dbe7bc69f89e6c6687a9af7de76bf69de820cbb2b28c553b29b147dd4e86cd",
+  "backend/tests/test_tablas_dea_dmu_lineage.py": "68abba5c94096c7dc060423568572616c41c652e768ee7c56271df033a79a218",
+  "backend/tests/test_calidad_formularios.py": "b9079b9be6fd91bebc8e937f6c32eecfe9d2408d13e7410ee52ae5dcb8583355",
+  "backend/tests/test_identidad_migracion.py": "e4f8e22339d0a720a79fd0626cf233e95ed18ed028792ed436e9306ec539b8a3",
+  "backend/pyproject.toml": "af5880b3053c23fc7fb0574b34b40b370cbca8e0ee1736b821053a89137dbb4b"
+}

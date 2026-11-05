@@ -1,0 +1,1 @@
+{"esquema": "polis.plan_actualizacion.v1", "inventario_sha256_consolidado": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "fuentes": [{"fuente_clave": "medicina_homicidios", "version_id": "bbbbbbbbbbbbbbbb", "estado_revision": "espera_entrega_manual", "proxima_revision_utc": null, "modo": "manual", "responsable_rol": "custodio"}]}

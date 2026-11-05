@@ -1,0 +1,8 @@
+87449c6c710b885b49eb6deb141de639f05f9122bcf8656cb618cbf7015443c6  ../../src/features/sesion/services/identidad-api.ts
+c8c1b7a6783c585633e242a30519218913a6a68c615b2d258d68bebd11221222  ../../src/features/sesion/panels/sesion-panel.tsx
+1d6b438f365e93442d8b457938f9f0bed7dd45ab639d8140444226032409375c  ../../src/features/sesion/components/cuenta-usuario.tsx
+7600aefb0bf0ef80d44b71e38224c75445bd64caee1c75d7d0b2d2e9447f6c68  ../../src/features/usuarios/panels/usuario-detalle-panel.tsx
+a07cdf0fdd48df1247ae16a5e2deee46a81820ca85b5b72d042070dcb851fde4  ../../src/features/usuarios/services/usuarios-integracion.test.ts
+ff74efac965bff3d4f8cfc0d93a0c373b7bbbfb1be92fb55521c8e73a21f8788  ../../src/features/aportes/services/aportes-api.ts
+37d8fc8902d1a90d78bfc050e1ce921b135c31862fefcdc8e12369c39fcc1fd0  ../../src/app/_stories/identidad.stories.tsx
+26c67f8f20288e7769b8d5a62f2078aa46da4089a0651d6d8d800dfe94683507  ../187_entrega_freebuff_contratos_identidad.md

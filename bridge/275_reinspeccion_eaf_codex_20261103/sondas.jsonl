@@ -1,0 +1,16 @@
+{"case": "permisos_reales", "observed": {"anonimo": {"salud": 401, "reintento": 401}, "ciudadano": {"salud": 403, "reintento": 403}, "auditor_forense": {"salud": 200, "reintento": 403}, "autoridad_distrital": {"salud": 200, "reintento": 403}, "administrador_identidades": {"salud": 200, "reintento": 200}}, "revocado": 401, "publico": {"estado": "critico", "motivos": ["El ejecutor no da latido desde hace más de 5 minutos y hay notificaciones pendientes de entrega."]}}
+{"case": "retry_exito", "estado": {"estado": "pendiente", "intentos": 0, "error": null, "proximo": null, "auditorias": 1}}
+{"case": "retry_rollback_auditoria_flush", "excepcion_propagada": true, "estado": {"estado": "fallido", "intentos": 8, "error": "SMTPServerDisconnected", "proximo": "2026-11-03 10:44:21.860146+00:00", "auditorias": 0}}
+{"case": "retry_rollback_commit", "excepcion_propagada": true, "estado": {"estado": "fallido", "intentos": 8, "error": "SMTPServerDisconnected", "proximo": "2026-11-03 10:44:22.624419+00:00", "auditorias": 0}}
+{"case": "retry_rollback_cancelacion", "excepcion_propagada": true, "estado": {"estado": "fallido", "intentos": 8, "error": "SMTPServerDisconnected", "proximo": "2026-11-03 10:44:23.273049+00:00", "auditorias": 0}}
+{"case": "retry_rollback_validacion", "excepcion_propagada": true, "estado": {"estado": "fallido", "intentos": 8, "error": "SMTPServerDisconnected", "proximo": "2026-11-03 10:44:23.931797+00:00", "auditorias": 0}}
+{"case": "retry_carrera", "resultados": [200, 409], "estado": {"estado": "pendiente", "intentos": 0, "error": null, "proximo": null, "auditorias": 1}}
+{"case": "latido_fallo_real", "entrega_posterior": "simulado", "ciclo_vacio": {"enviado": 0, "fallido": 0, "simulado": 0, "procesados": 0}}
+{"case": "antiguedad_cola", "estado": "degradado", "cola": {"pendientes": 2, "procesando": 0, "fallidos_reintentables": 0, "agotados": 0, "mas_antiguo_segundos": 1860.162607}, "motivos": ["La notificación pendiente más antigua lleva 1860 segundos sin procesarse."], "esperado_minimo_segundos": 1800}
+{"case": "resumen_07h_ventana", "asunto": "POLIS: Resumen del día 31/10/2026 — 2 acciones, 0 pendientes", "incluye_ayer": true, "incluye_hoy": true}
+{"case": "resumen_post_07h", "resumenes": 2, "actividad_incluida": true}
+{"case": "resumen_10_concurrentes", "ganadores": 1, "filas": 1}
+{"case": "baja_excluye_resumen", "destinatario_excluido": true, "filas": 0}
+{"case": "metricas_percentiles", "metricas": {"enviados": 3, "simulados": 1, "fallidos": 1, "tasa_exito": 0.75, "latencia_p50_s": 20.0, "latencia_p95_s": 92.0}}
+{"case": "error_smtp", "estado": "fallido", "error_detalle": "RuntimeError"}
+{"case": "corte_fronteras_sql", "resumenes": 3, "inclusiones": {"EAF-CORTE-A": ["RESUMEN-2026-11-01"], "EAF-CORTE-B": ["RESUMEN-2026-11-02"], "EAF-CORTE-C": ["RESUMEN-2026-11-02"], "EAF-CORTE-D": ["RESUMEN-2026-11-03"], "EAF-CORTE-E": ["RESUMEN-2026-11-03"]}}

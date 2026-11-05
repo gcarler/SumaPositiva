@@ -1,0 +1,21 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests",
+    "-m",
+    "migration",
+    "--junitxml=bridge/190_evidencia_coordinacion_aislamiento/migraciones_marcadas.xml",
+    "-q",
+    "--tb=short"
+  ],
+  "database": "polis_test_edd_coord_20261026_d4afb7fa",
+  "codigo_salida": 0,
+  "duracion_segundos": 51.082,
+  "fecha_utc": "2026-10-26T05:08:37.494055+00:00",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

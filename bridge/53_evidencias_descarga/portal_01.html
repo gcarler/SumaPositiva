@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<style type='text/css'>
+    .appIco {
+        float: left;
+        position: relative;
+        height: 50px;
+        width: 50px;
+        background: none;
+        display: inline-block;
+        background-size: 50px;
+        background-repeat: no-repeat;
+        background-image: url('../../Content/Icons/DPCLogoResOk.png');
+    }
+        .appIco:hover {
+            cursor: pointer;
+        }
+</style>
+
+
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas Tempranas - Tablero</title>
+    <link href="/Content/css?v=GXdwzxqO1j-cI7amFgsynzu7OIFh5uGTgdLLEQPRcR81" rel="stylesheet"/>
+
+    <script src="/bundles/modernizr?v=inCVuEFe6J4Q07A0AcRsbJic_UE5MwpRMNGcOtk94TE1"></script>
+
+</head>
+
+<body style="overflow-y:scroll; padding: 0px">
+    <script type="text/javascript">
+        var application = { viewbag: {
+  "title": "Tablero"
+} };
+        function moduloAlertas() {
+            var url = '/';
+            if (window.event.ctrlKey) {
+                window.open(url);
+            } else {
+                var element = document.getElementById("moduloAlertas");
+                if (element.classList.contains("moduloPaginaInactivo")) {
+                    window.location.href = url;
+                }
+            }
+        }
+        function moduloLideres() {
+            var url = '/Lideres';
+            if (window.event.ctrlKey) {
+                window.open(url);
+            } else {
+                var element = document.getElementById("moduloLideres");
+                if (element.classList.contains("moduloPaginaInactivo")) {
+                    window.location.href = url;
+                }
+            }
+        }
+        function irToVisor() {
+            window.open("./../Content/Mapa.html");
+        }
+        function irToLogout() {
+            resp = confirm("¿Deseas cerrar sesión?")
+            if (resp) {
+                window.location.href = "/Home/Logout";
+            }
+        }
+        function irToMenu(menu, action, controller) {
+            var url = '/controller/action';
+            url = url.replace("action", action);
+            url = url.replace("controller", controller);
+            if (window.event.ctrlKey) {
+                window.open(url);
+            } else {
+                var element = document.getElementById(menu);
+                if (element.classList.contains("menuItem")) {
+                    window.location.href = url;
+                }
+            }
+        }
+    </script>
+
+    <div id="avisoProcesandoGlobal" class="centroPantalla" style="display:none">
+        <h5 id="mensajeAvisoProcesandoGlobal" class="blink_me" style="width:100%; text-align: center; margin:0px; padding:0px 0px 5px 0px; color:#95adc7">Procesando... </h5>
+        <div class="progress-line" style="width:160px"></div>
+    </div>
+
+    <div id="bodyLayout">
+
+        <div id="dummyMenor700" class="detectorMenor700"></div>
+
+        <div class="container opacarGenerandoExcel">
+            <div style="width:100%; text-align:center" class="tituloApp">
+                <label class="setSmallerFont" style="margin:0">Delegada para Prevención de riesgos y Sistema de Alertas Tempranas</label>
+            </div>
+            <div style="width: 100%; display:table; border:1px solid #004a99">
+                <div style="display:table-row">
+
+                    <div id="moduloAlertas" class="moduloPaginaActivo" style="width: 50%; display: table-cell; text-align:center; vertical-align:middle" onclick="moduloAlertas()" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                        <label class="setSmallerFont">Alertas Tempranas</label>
+                    </div>
+                </div>
+            </div>
+            <div style="display:table; width:100%; padding-top:10px">
+
+
+
+                    <div style="display:table-row; float:right">
+                        <div id="menuInicio" class="menuItem" style="display: table-cell" onclick="irToMenu('menuInicio', 'Index', 'Alerta')" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                            <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Inicio</label>
+                        </div>
+                        <div class="menuItem" style="display:table-cell" onclick="irToVisor()">
+                            <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Mapa</label>
+                        </div>
+                        <div id="menuReportes" class="menuItem" style="display: table-cell" onclick="irToMenu('menuReportes', 'Reporte', 'Alerta')" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                            <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Reportes</label>
+                        </div>
+                        <div id="menuTablero" class="menuItemActivo" style="display: table-cell" onclick="irToMenu('menuTablero', 'Tablero', 'Alerta')" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                            <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Tablero</label>
+                        </div>
+                        <div id="menuInformes" class="menuItem" style="display: table-cell" onclick="irToMenu('menuInformes', 'Index', 'Informe')" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                            <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Informes Seguimiento</label>
+                        </div>
+                    </div>
+                <div style="display:table-row; float:left">
+                    <div id="menuAdmin" class="menuItem menuItemIzq" style="display: table-cell" onclick="irToMenu('menuAdmin', 'Index', 'Home')" title="Oprime Ctrl + Click para abrir en una nueva pestaña">
+                        <label class="setSmallerFont" style="margin:0; cursor:inherit; font-weight: inherit">Sesión</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="containerLayout" class="container body-content" style="padding:15px 10px 10px 10px">
+            <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet" type="text/css">
+            
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet" type="text/css">
+
+<div class="divTitulosView">
+    <label class="labelTitulosView setSmallerFont">Tablero</label>
+</div>
+
+<div style="text-align:right; padding-bottom:10px">
+    <a class="setSmallerFont" href="/Alerta/TableroPantallaCompleta?Length=0" target="_blank">Pantalla completa</a>
+</div>
+
+<iframe style="display:none" id="iframePc" height="10" width="10" src="https://app.powerbi.com/view?r=eyJrIjoiZjMwNGNkMjgtYjJhMi00ZGJiLWJmMzgtNTQ1ZDA2YzY1ODM0IiwidCI6ImQxMzU1OTA3LWUwN2YtNDkxOC05MGQyLTczODRhN2MxYzFlYSIsImMiOjR9" frameborder="0" allowFullScreen="true">
+    Tu navegador no soporta iframes
+</iframe>
+<iframe style="display:none" id="iframeMov" height="10" width="10" src="https://app.powerbi.com/view?r=eyJrIjoiNGVhZmY1M2EtMWI5Yy00ZjZiLWE2ZDktOWVkMjMwMTkxOTBlIiwidCI6ImQxMzU1OTA3LWUwN2YtNDkxOC05MGQyLTczODRhN2MxYzFlYSIsImMiOjR9" frameborder="0" allowFullScreen="true">
+    Tu navegador no soporta iframes
+</iframe>
+
+
+            <hr />
+            <footer class="opacarGenerandoExcel">
+                <h4 style="width:100%; text-align:center">2026, Programa de Fortalecimiento de la Capacidad Institucional de la Defensoría del Pueblo-Banco Interamericano de Desarrollo (<span style="color:#004a99;font-weight:bolder">BID</span>)</h4>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/bundles/jquery?v=YclUD73eWQEwvbZHNtxm2qPpamofi1PxF-X6-1KSjiE1"></script>
+
+    <script src="/bundles/bootstrap?v=M4Nk6kIOwMFflsEKET0iPL9i5YBqbzMzvUOrd8gyCnw1"></script>
+
+    <script src="/bundles/chosen?v=4H6Nop7_cJ_ZZLB6zxjxe6tltq0e3MZZxlO5CgfSqEw1"></script>
+
+    <link href="/Content/chosen?v=InWGfcm-d-oOC9QOpm9jWaaU_m_9eWacwIy2abwxEwE1" rel="stylesheet"/>
+
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var anchoDisponible = $("#containerLayout").outerWidth() - parseInt($("#containerLayout").css("padding-left")) - parseInt($("#containerLayout").css("padding-right"));
+            if ($("#dummyMenor700").css("--esMenor700") == 1) {
+                $("#iframeMov").prop("height", anchoDisponible * 3);
+                $("#iframeMov").prop("width", anchoDisponible);
+                $("#iframeMov").show();
+            } else {
+                $("#iframePc").prop("height", anchoDisponible / (16/9));
+                $("#iframePc").prop("width", anchoDisponible);
+                $("#iframePc").show();
+            }
+        });
+    </script>
+
+</body>
+</html>

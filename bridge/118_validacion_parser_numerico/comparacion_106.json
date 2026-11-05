@@ -1,0 +1,77 @@
+{
+  "tarea": "FB-TERR-NUM-01",
+  "nota": "comparacion de conteos parser 106 (regla decimal_simple_v1) vs 118 (regla coma/miles explicita); el estado de fila cambia solo por filas cuya unica causa de retencion era el formato numerico",
+  "cambio_estados_esperado": "12739 retenidas_106 = 12072 solo_formato + 3 mes_0 con numero + 664 sin valor; en 118 las 12072 pasan a aceptadas: 12230 = 158 + 12072; retenidas 667 = 3 + 664; rechazadas 2 en ambas",
+  "comparacion": {
+    "filas_datos": {
+      "p106": 12899,
+      "p118": 12899,
+      "igual": true
+    },
+    "filas_aceptadas": {
+      "p106": 158,
+      "p118": 12230,
+      "igual": false
+    },
+    "filas_retenidas": {
+      "p106": 12739,
+      "p118": 667,
+      "igual": false
+    },
+    "filas_rechazadas": {
+      "p106": 2,
+      "p118": 2,
+      "igual": true
+    },
+    "filas_con_valor_numerico_valido": {
+      "p106": 0,
+      "p118": 12077,
+      "igual": false
+    },
+    "filas_con_numerico_sin_regla": {
+      "p106": 12077,
+      "p118": 0,
+      "igual": false
+    },
+    "filas_con_cualitativo": {
+      "p106": 335,
+      "p118": 335,
+      "igual": true
+    },
+    "filas_sin_valor_declarado": {
+      "p106": 659,
+      "p118": 659,
+      "igual": true
+    },
+    "filas_con_mes_0": {
+      "p106": 8,
+      "p118": 8,
+      "igual": true
+    },
+    "filas_descripcion_general": {
+      "p106": 102,
+      "p118": 102,
+      "igual": true
+    },
+    "filas_identidad_concordante_declarada": {
+      "p106": 12899,
+      "p118": 12899,
+      "igual": true
+    },
+    "filas_identidad_discordante_declarada": {
+      "p106": 0,
+      "p118": 0,
+      "igual": true
+    },
+    "filas_identidad_no_contrastable": {
+      "p106": 0,
+      "p118": 0,
+      "igual": true
+    },
+    "filas_identidad_no_evaluable": {
+      "p106": 0,
+      "p118": 0,
+      "igual": true
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "fuentes236": 554,
+  "sin_cambio": 550,
+  "cambiados_propios_autorizados": {
+    "backend/tests/test_aportes_legado_publico.py": {
+      "236": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753",
+      "243_ultima_corrida": "d95635793a8acbcac78c122810b4e1a70559ce8b7c437dc4b5ea5b8f29fdaa65"
+    },
+    "backend/tests/test_presupuesto_e_indicadores.py": {
+      "236": "b6b968c219897ddb86d79881f5b3aa27b9c32b251186cd7aff49bfe7a1d608cc",
+      "243_ultima_corrida": "ad41d65144c303abac43fa3951565758204368992b5de2a5c309ba6bb2fe5c52"
+    }
+  },
+  "cambios_externos_heros_no_atribuidos_a_EDD243": {
+    "backend/app/modules/politicas/router.py": {
+      "236": "7e0bded52e5c365ca11a4af95e6158b3455c12f74916f9879e410e07714797d9",
+      "243_ultima_corrida": "fd0932c32bc8c5582c0cc24d238bba81e6bdd468a5fe5dcf3bea4ddd08185623"
+    },
+    "backend/app/modules/politicas/schemas.py": {
+      "236": "f767e132bf0618cc8b098f752744ccd366116c6ae2215478e0b80a9c01740047",
+      "243_ultima_corrida": "e5f59f29556de8236f3c0a10eaac5d6175792bdf84c573a21efaad670cbca596"
+    }
+  },
+  "ultima_corrida_554_fuentes_identicas": true,
+  "no_reversion_de_cambios_ajenos": true
+}

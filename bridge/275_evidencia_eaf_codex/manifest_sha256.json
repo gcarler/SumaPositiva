@@ -1,0 +1,335 @@
+{
+  "utc": "2026-11-02T04:07:14.090248+00:00",
+  "algoritmo": "sha256",
+  "dictamen": "RECHAZADO",
+  "base": "4b45b104acc9d2a16a51bc80bd1ab7d328c56d58",
+  "exclusiones": [
+    ".runtime/",
+    "caches",
+    "manifest_sha256.json (este archivo)",
+    "notificacion_tmux.json (acuse posterior al sello)"
+  ],
+  "archivos": [
+    {
+      "path": "bridge/275_dictamen_eaf_independiente_codex.md",
+      "bytes": 23123,
+      "sha256": "f12facbcdde8e2c989cc581aaa337096a7da16354439a95f7f3aa80b9658bcd4"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/.gitignore",
+      "bytes": 38,
+      "sha256": "9fc578c20feca7af8b3f145369dd9c527a9ab35adeb996f920d0d44ff70e692f"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/README.md",
+      "bytes": 3937,
+      "sha256": "c68668009f947b8b9f7d1a48236b3637be54eade8c49daad754f9a5319d404e8"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/ajustes_laboratorio.json",
+      "bytes": 617,
+      "sha256": "71988b34e357bd6a8b314a548c2ee8791747243b053a8a134a24b7b41a7287f8"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check-r1.json",
+      "bytes": 429,
+      "sha256": "dd815003a1cf06ece86f788ce4d94ea7fe3cc84de191abc766f334242fd85df5"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check-r1.log",
+      "bytes": 404591,
+      "sha256": "9cbb4dd53a398892cd60afcdea1557ee4fe07442e447a93bb1773e38e295a457"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check-r2.json",
+      "bytes": 429,
+      "sha256": "f2c770f1ad7b86175fd87dacb943bd1e7050b3297777a0f4101a671815048e98"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check-r2.log",
+      "bytes": 34100,
+      "sha256": "a1fb52d111aae23a2843346c7b6c6d5ce9c6f760e01898bb18d3d0236acc5466"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check.json",
+      "bytes": 421,
+      "sha256": "7b7af126d5b6ff2e9f02f452ecb6c11eead35afe2d76c474e597c8b68b7a5d6e"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/backend-check.log",
+      "bytes": 1841,
+      "sha256": "783549c9765a726b5a7d4cf949ea4f4f96e07209bdedf6e653b94588aeba94d6"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/bateria-dirigida.json",
+      "bytes": 1061,
+      "sha256": "c145259bd70ec92b5e5c38189a0ff8dc68b13dad50ec08ef2baf5335cf4a2750"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/bateria-dirigida.log",
+      "bytes": 6151,
+      "sha256": "dfbd255ec3c0121c5f1b1dc315437689aca153693f4221a96a93aef4bf1ef332"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/bateria_dirigida.xml",
+      "bytes": 50291,
+      "sha256": "fab60c3c4d2a4ba8d2eb099336f333227ca01e0eeb59e9a1a0479248bec3c2a9"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/capturar_cierre.py",
+      "bytes": 4642,
+      "sha256": "58f2a1793ee01877094f150eabda865d11b7555819b03569e9e3a0d4751b2874"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/ciclo-y-cli.json",
+      "bytes": 455,
+      "sha256": "b8c0a30005f1abf8c3b9bdc5f8b8d875d013cc768ca51b85e569ef8e36c6e5b7"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/ciclo-y-cli.log",
+      "bytes": 964,
+      "sha256": "5b3633368170f603ddb514fa66ff9591dd435567031a086f46d376d1e859061c"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/ciclo_y_cli.json",
+      "bytes": 11069,
+      "sha256": "72cb14f520911c0d39467e88223cc309e8e7305f6d339a5b45513b10b385a85e"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/ciclo_y_cli.py",
+      "bytes": 9824,
+      "sha256": "e1253ae97d09e99128a1f5b0ef53208be3e86bddde5c2155ceb90c710975b255"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/cierre.json",
+      "bytes": 3437,
+      "sha256": "b6f8669f96aabe930ce642f2a66161204fba520cd7c7009f73e53e7c5b8596f6"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/codigo_auditado_275.tar.gz",
+      "bytes": 69437,
+      "sha256": "4215837dd603c024b9d4a5e1db9fff984396739d0d538933b687a03b36a474fb"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/custodia_copias.json",
+      "bytes": 391,
+      "sha256": "0653f26cb709373c7f9c68eccf897c8e8cfe0a715317bebd4fdc5af78cda5e13"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/escanear_secretos.py",
+      "bytes": 6975,
+      "sha256": "187f175d9318784c1ee549d0edf24ddc70db399e888b0b6a5f83ec991e5bdc00"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/fijar_snapshot.py",
+      "bytes": 3279,
+      "sha256": "25ab0ae893779cdf5899412bef27a935ec535b6fdda0de3108ebe22ff23f76e9"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/fixture_cartografia.json",
+      "bytes": 177,
+      "sha256": "48dc71c499cb30878af1495251b528333353bef2ce8ce4106de50c64c32db08d"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/fixtures_adicionales.json",
+      "bytes": 399,
+      "sha256": "3a77996f04217ea630ae755343fda3100942951a188a061e4c04aa134593e0b5"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/fixtures_datos.json",
+      "bytes": 983441,
+      "sha256": "165eea89cae2a76b651b4e200371881e5d610b1247161b9275574c78d05f9fce"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/fixtures_inventario.json",
+      "bytes": 268,
+      "sha256": "41af56632b1a448fafd68cbb90443bd68710cbe60bff7648eeb87e7a20c2f49e"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/infraestructura.json",
+      "bytes": 4598,
+      "sha256": "78c460c7e974aac69cb5beaa0156f5e9c029e1913b10459fc51264651d8ac68f"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/infraestructura.py",
+      "bytes": 3994,
+      "sha256": "dc988cfef4375281142b07447774a1745b62bbd95ca7f16312363be844e4fa84"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/inventario-con-fixtures.json",
+      "bytes": 595,
+      "sha256": "b92c11f6b6e2a863e31d1c3e6f9c1d9d26d2077965910489ba900d3c8a7f39f6"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/inventario-con-fixtures.log",
+      "bytes": 99,
+      "sha256": "c2c77d2a64e448b13d1d57f3097bb428e0ef9afb4ef339d18134d98de711e85c"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/inventario.xml",
+      "bytes": 5692,
+      "sha256": "995fd41c41c03109e6998770d17ac6cd633de15eccfb1758ab2acd73208f25f3"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/laboratorio.py",
+      "bytes": 10017,
+      "sha256": "ecc108607d51fdfc710a33fda40ccabed50b1cdf34a3f9c4fde4157e4f2a09ba"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/limpieza.json",
+      "bytes": 324,
+      "sha256": "46ba353d0cd02fd3fb49654ad251f8e23240e0a608c845e6014008f10b2aee08"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/migracion-vacia-r1.json",
+      "bytes": 492,
+      "sha256": "4d3a62540af1d64973d9975906750a893078af452f092e98c50f792cb8002b66"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/migracion-vacia-r1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/migracion-vacia.json",
+      "bytes": 486,
+      "sha256": "a90fce85b40aad18fa3a9f330a79ccac05cbeb188b73017375573a09b38762b9"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/migracion-vacia.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/monitor.json",
+      "bytes": 7701,
+      "sha256": "71bfffda2550337becd13d8846870f68be0c505ac0b0db5d03e27fd51ebf0eb5"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/monitor_r1.json",
+      "bytes": 7720,
+      "sha256": "9204db52834f6c69f5f4b35067cd506c012954daad7b59103277d9f26f8ceb2d"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/postgresql.json",
+      "bytes": 551,
+      "sha256": "a9cc5c88eb7735d73cffbf72fafcf4dadf99719ad36f00d403e9a94cc0dec0fb"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/preparacion_bases_r2.json",
+      "bytes": 274,
+      "sha256": "d98fe459c84e250c76a016b85dc8b0667ab0790559e8841eb0e64c44d907bc0a"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/probar_monitor.py",
+      "bytes": 6033,
+      "sha256": "638e1e51d03abd2e5805d773089ed4b0b4f323b60751288259627a328f17479c"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/redaccion_tokens_fixture.json",
+      "bytes": 191,
+      "sha256": "f9a7a49bdeffe8f179934ebc2c5e66a88dbf08a70e4ae85d9b01b530eb37a540"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/remediaciones-adicionales.json",
+      "bytes": 649,
+      "sha256": "387156c42bdc1befecf6bf4397e5ad34c2b6c298bc72404ee3d2971a7dc579a9"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/remediaciones-adicionales.log",
+      "bytes": 99,
+      "sha256": "00c2709073bb6d8b96b4fbf05684d46fd202d2c45f7c199e82391fb75c6e6830"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/remediaciones.xml",
+      "bytes": 610,
+      "sha256": "7b4b34531cc05efed646a71dfe233dc45aa576fa57cf975edea2c8ff20c2e0a0"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/resumen_eaf.json",
+      "bytes": 2466,
+      "sha256": "c1d7f1896517e8c7467c807a4e1e257c30bc8363275fffd669f0b29a59693f96"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/secretos.json",
+      "bytes": 29586,
+      "sha256": "17449c0e1ea2899188054e2885bbfa997c233606ae0b95e6dabd6cb61022ce0e"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/snapshot.json",
+      "bytes": 114016,
+      "sha256": "b38a4c2df79d743fe1274e075514286cfd2844b35b5e7a2ca9b3ee55c38e0419"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/snapshot_v2.json",
+      "bytes": 114384,
+      "sha256": "69da8e1b19831071518baa6ff623d2b47f7853a54de402fe0e08c53f439c5e95"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes-r1.json",
+      "bytes": 636,
+      "sha256": "b612e86822f49dd6da100feb5c4f5052512e2a1f43c5fd4b84ad1e2d58c1629e"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes-r1.log",
+      "bytes": 2275,
+      "sha256": "a9a501600a919207794b8a766d8307fef63505bf83209bbef93f691096d93bcd"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes-r2.json",
+      "bytes": 636,
+      "sha256": "5fc44e0f47d49fa41ea6882df30b2e6244cf496d5b432cb857ad1b97ff48c2eb"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes-r2.log",
+      "bytes": 3871,
+      "sha256": "8da266b20cf73a0cf434c5e4def8375c27e6b204864767b020da13476923f86f"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes.json",
+      "bytes": 627,
+      "sha256": "a96036ba951b84877f1abf872875d7c7b6cf83e507d718b2d8df9465a8b29c21"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas-independientes.log",
+      "bytes": 70116,
+      "sha256": "dbe02a112c558b6b393febbc941bfe32e0ce1a907484cdff384641ec58da3719"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas.jsonl",
+      "bytes": 4828,
+      "sha256": "638da5f3c4e0b7e81e1587663a0176d85b8f8a2d44f6789a48de619b37cb61ee"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas.xml",
+      "bytes": 74559,
+      "sha256": "df4daa82013b54dbe6c15638d9bfb2e3e399a7f4b4e4c26dde3cd29e3244bd11"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas_r1.xml",
+      "bytes": 3837,
+      "sha256": "f792d2f94d41c654a7c63850a02ee38ce79e0f9832294c4d8edeb68f3f050ad1"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/sondas_r2.xml",
+      "bytes": 3837,
+      "sha256": "ec81023a5dbccb6f9ceeef10187619305ec8e847e1f6645a9801409ac393aff0"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/test_remediaciones_eaf_275.py",
+      "bytes": 3908,
+      "sha256": "9ddc8459d8154abd8e6e762ed7b7ca35d84434354b232d7119a00764fd05c89f"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/test_sondas_eaf_275.py",
+      "bytes": 18822,
+      "sha256": "60b1bb9bdc09c6a8b56e1fe3524266e612dd2f5a290b9486e71c9d5bb3454471"
+    },
+    {
+      "path": "bridge/275_evidencia_eaf_codex/versiones.txt",
+      "bytes": 132,
+      "sha256": "aef214a2eb379f300d283c567e70c17fdcbfa5bbbec0f8f3a405a5504a548c8b"
+    }
+  ],
+  "verificacion_secretos_actuales": "sin coincidencias; incluye contenido del archivo tar"
+}

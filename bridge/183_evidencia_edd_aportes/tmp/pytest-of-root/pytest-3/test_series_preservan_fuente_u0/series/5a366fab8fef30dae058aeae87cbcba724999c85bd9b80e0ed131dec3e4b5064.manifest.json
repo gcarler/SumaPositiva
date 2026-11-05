@@ -1,0 +1,17 @@
+{
+  "canonico_sha256": "9db7c7580ae3b3e2c89c6c1a6c95b90f506075a1f633951668088339cf58b1e9",
+  "colisiones_de_clave": {},
+  "denominador_sha256": "0fbcd121b99dd2646508482c8551aa0bec92769d1af788a11f0b473b87ca240d",
+  "dimensiones": {
+    "PERS": 2,
+    "sin_dimension": 1
+  },
+  "esquema": "polis.series_7d.v1",
+  "estado_publicacion": "no_publicable",
+  "filas": 3,
+  "limitacion": "Series por fuente y unidad; no se suman instituciones ni se infiere causalidad.",
+  "provisionales": 0,
+  "ruta": "bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_series_preservan_fuente_u0/series/5a366fab8fef30dae058aeae87cbcba724999c85bd9b80e0ed131dec3e4b5064.jsonl",
+  "salida_sha256": "5a366fab8fef30dae058aeae87cbcba724999c85bd9b80e0ed131dec3e4b5064",
+  "tasas_municipales": 2
+}

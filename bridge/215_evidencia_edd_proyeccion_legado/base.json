@@ -1,0 +1,16 @@
+{
+  "database": "polis_test_edd_legado_20261026_877ccc94",
+  "uso": "funcional",
+  "origen": "nueva desde template0",
+  "estado": "provisionada",
+  "fecha": "2026-10-26T06:06:15.069735+00:00",
+  "fecha_provision": "2026-10-26T06:06:50.574445+00:00",
+  "owner": "polis",
+  "extensions": [
+    "pgcrypto",
+    "postgis",
+    "ltree",
+    "unaccent",
+    "pg_trgm"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "python_aplicacion": "3.12.14",
+  "paquetes": {
+    "pytest": "9.1.1",
+    "alembic": "1.20.0",
+    "SQLAlchemy": "2.0.54",
+    "fastapi": "0.142.2",
+    "pydantic": "2.13.5",
+    "asyncpg": "0.31.0",
+    "psycopg": "3.3.6",
+    "ruff": "0.16.9",
+    "bcrypt": "5.0.0",
+    "PyJWT": "2.15.1"
+  }
+}

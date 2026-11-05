@@ -1,0 +1,21 @@
+{
+  "existente": true,
+  "fallo": "cancelacion",
+  "excepcion": "CancelledError",
+  "pid_antes": 2888975,
+  "pid_despues": 2888980,
+  "estado_antes_sha256": "a766bcd688f7b1efe6c5f7cef29f8f36727734fd808dcc61bd78a71295e9bb6d",
+  "estado_despues_sha256": "a766bcd688f7b1efe6c5f7cef29f8f36727734fd808dcc61bd78a71295e9bb6d",
+  "igualdad_completa": true,
+  "conteos_despues": {
+    "usuario": 1,
+    "sesiones": 1,
+    "civicas": 1,
+    "tokens": 0,
+    "eventos": 2,
+    "mfa": 0
+  },
+  "filas_restriccion_commit": null,
+  "sesion_utilizable": true,
+  "eventos_consultados_por_uuid_sin_depender_de_usuario_existente": true
+}

@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-10-27T11:44:30.078209+00:00",
+  "estado": "congelado_EDD243_aislamiento_regresiones",
+  "artefactos": 73,
+  "sha_manifest": "12c880665406180e83b34e7f30a31e6fd548b451d5ce3f73f7e4c658823b0a40",
+  "sha_entrega": "4182ea830e5849317ff57406f3d7ff4264c3c880f439c992d62d8d64ecb319a7",
+  "sha_fuentes_finales": "9759fd9dde99bac004c1f0a6ee1b91ca618b35c3b19e22377c07097cf7cc6a93",
+  "fuentes_propias": {
+    "backend/tests/test_aportes_legado_publico.py": "d95635793a8acbcac78c122810b4e1a70559ce8b7c437dc4b5ea5b8f29fdaa65",
+    "backend/tests/test_presupuesto_e_indicadores.py": "ad41d65144c303abac43fa3951565758204368992b5de2a5c309ba6bb2fe5c52",
+    "backend/tests/test_ingesta_indicadores.py": "71aab3928b14608100c1293c21074dd401cd4d467771fff61be96019fafd3fcb"
+  },
+  "ultima_matriz": "157/157;554 hashes identicos antes/despues",
+  "otros_cambios_externos_no_atribuidos": [
+    "backend/app/modules/politicas/router.py",
+    "backend/app/modules/politicas/schemas.py"
+  ],
+  "historicos183215226236_intactos": true,
+  "sin_global_commit_push_deploy": true
+}

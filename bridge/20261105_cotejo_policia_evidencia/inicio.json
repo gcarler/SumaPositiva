@@ -1,0 +1,6 @@
+{
+  "utc": "2026-11-05T03:19:17.955589+00:00",
+  "head": "552a0f9f851c2f4ab846070f271facf1273b06da",
+  "consolidador_previo_sha256": "5430514e2ca948f709c5e91f39b4f41227c7b4840230498c24aed58b1a220109",
+  "alcance": "cotejo y ampliación del banco local de Policía; sin conexiones a bd_csh, cambios de interfaz ni publicación remota"
+}

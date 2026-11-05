@@ -1,0 +1,57 @@
+{
+  "datasets_capturados": 2,
+  "datasets_con_alerta_atribucion": 2,
+  "datasets_esperados": 2,
+  "errores": [],
+  "esquema": "polis.metadatos_socrata.v1",
+  "estado": "CAPTURA_COMPLETA_PENDIENTE_ACREDITACION",
+  "fichas": [
+    {
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:icbf_prevencion"
+      ],
+      "atribucion_publicada": "Entidad publicadora",
+      "dataset_id": "g58z-k6f6",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": null,
+      "filas_actualizadas_unix": 12345,
+      "fuentes_clave": [
+        "icbf_prevencion"
+      ],
+      "licencia_publicada": "CC BY-SA 4.0",
+      "nombre_publicado": "Fuente g58z-k6f6",
+      "propietario_portal": null,
+      "ruta_respuesta": "bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_captura_metadatos_conserv0/metadatos/respuestas/g58z-k6f6/fd41f504f968f0e1580269daf8c893658cc08f05a09bdd491741dcea341ee2af.json",
+      "sha256_respuesta": "fd41f504f968f0e1580269daf8c893658cc08f05a09bdd491741dcea341ee2af",
+      "terminos_licencia_url": "https://example.org/licencia",
+      "url_ficha": "https://www.datos.gov.co/d/g58z-k6f6",
+      "url_metadata": "https://www.datos.gov.co/api/views/g58z-k6f6.json"
+    },
+    {
+      "alertas_atribucion": [
+        "ATRIBUCION_NO_COINCIDE:medicina_homicidios"
+      ],
+      "atribucion_publicada": "Entidad publicadora",
+      "dataset_id": "vtub-3de2",
+      "estado_acreditacion": "PENDIENTE_COTEJO_CUSTODIO_LICENCIA_Y_VERSION",
+      "estado_publicacion_portal": "published",
+      "fecha_publicacion_unix": null,
+      "filas_actualizadas_unix": 12345,
+      "fuentes_clave": [
+        "medicina_homicidios"
+      ],
+      "licencia_publicada": "CC BY-SA 4.0",
+      "nombre_publicado": "Fuente vtub-3de2",
+      "propietario_portal": null,
+      "ruta_respuesta": "bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_captura_metadatos_conserv0/metadatos/respuestas/vtub-3de2/83e266fb4335d3fb7c51753c0fa699632972be03c23aafe2246b93ccb3d3a31d.json",
+      "sha256_respuesta": "83e266fb4335d3fb7c51753c0fa699632972be03c23aafe2246b93ccb3d3a31d",
+      "terminos_licencia_url": "https://example.org/licencia",
+      "url_ficha": "https://www.datos.gov.co/d/vtub-3de2",
+      "url_metadata": "https://www.datos.gov.co/api/views/vtub-3de2.json"
+    }
+  ],
+  "inventario_fuentes_sha256": "4990eaf0219c7ba1e68a5b7384470c4fdb895f97f86e9a70d3c2efd11e598deb",
+  "licencias_declaradas": 2,
+  "regla": "Metadato del portal; exige cotejar custodio, licencia de derivados y comparabilidad."
+}

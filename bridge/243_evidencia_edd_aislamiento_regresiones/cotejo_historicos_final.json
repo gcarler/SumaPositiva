@@ -1,0 +1,21 @@
+{
+  "183_evidencia_edd_aportes": {
+    "artefactos": 68,
+    "sha_manifest": "661b24b11f9b27db5e0ee41a50874c81379fab44870aeac0593453afd739aa5a",
+    "diferencias": []
+  },
+  "215_evidencia_edd_proyeccion_legado": {
+    "artefactos": 43,
+    "sha_manifest": "9d5d843b285b512a549f9189ba1dc423241b49fd525119958db6187f72568273",
+    "diferencias": []
+  },
+  "226_evidencia_eaf_legado_aportes": {
+    "artefactos": 58,
+    "sha_manifest": "d36dc3ed1c993259ce154a13db311498b5b04c97979f4733681f6da27c235905",
+    "diferencias": []
+  },
+  "236_resultado": {
+    "sha256": "3ebb210df5fe86933d9a5bdaabc69b5bb336505eb340554591e0785ad28c9662",
+    "sin_cambio": true
+  }
+}

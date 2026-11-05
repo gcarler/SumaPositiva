@@ -1,0 +1,11 @@
+{
+  "comando": "backend/.venv/bin/ruff format --check --no-cache --config backend/pyproject.toml scripts/inventariar_fuentes_polis.py backend/tests/test_inventario_fuentes_polis.py",
+  "cwd": "/root/polis",
+  "inicio_utc": "2026-10-26T06:44:11.091Z",
+  "chunk_id": "e3c2ad",
+  "wall_time_seconds": 0.00001276,
+  "exit_code": 0,
+  "original_token_count": 7,
+  "output": "2 files already formatted\n",
+  "fin_utc": "2026-10-26T06:44:11.204Z"
+}

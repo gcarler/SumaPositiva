@@ -1,0 +1,1874 @@
+{
+  "esquema": "polis.inventario_fuentes.v1",
+  "generado_utc": "2026-10-26T06:39:46.041863+00:00",
+  "corte_consolidado_sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+  "fuentes_clave": 43,
+  "artefactos": 2,
+  "identidades_con_multiples_claves": {},
+  "regla": "Clave de serie no equivale a fuente independiente; la promoción requiere licencia y control de calidad.",
+  "paquetes": {
+    "banco_local": {
+      "prefijo": "data/banco_fuentes_oficiales/",
+      "descripcion": "Archivos locales de extracción, revisión y consolidación de indicadores",
+      "atribucion": "mixta_pendiente_verificacion"
+    },
+    "cartografia_recepcion": {
+      "prefijo": "data/cartografia_fuentes/",
+      "descripcion": "Capas recibidas, versiones curadas y auditorías cartográficas",
+      "atribucion": "custodio_y_edicion_pendientes_verificacion"
+    },
+    "analisis_derivados": {
+      "prefijo": "data/analisis_planes/",
+      "descripcion": "Informes y gráficas derivados de análisis previos",
+      "atribucion": "producto_analitico_no_fuente_independiente"
+    },
+    "planes_locales": {
+      "prefijo": "data/planes_desarrollo/",
+      "descripcion": "Documentos y extracciones de planes de desarrollo y acción",
+      "atribucion": "edicion_documental_pendiente_verificacion"
+    },
+    "planes_accion": {
+      "prefijo": "data/planes_accion/",
+      "descripcion": "Planes de acción recibidos, catálogo Drive y extracciones documentales",
+      "atribucion": "custodio_y_edicion_pendientes_verificacion"
+    },
+    "analitica_canonica": {
+      "prefijo": "data/capas_analiticas/",
+      "descripcion": "Cortes derivados tipados y manifiestos de calidad",
+      "atribucion": "derivado_no_fuente_independiente"
+    },
+    "geodatos_recepcion": {
+      "prefijo": "geodatos_cartagena/",
+      "descripcion": "Paquete cartográfico recibido y sus componentes de formato",
+      "atribucion": "custodio_y_edicion_pendientes_verificacion"
+    },
+    "geodatos_publicados": {
+      "prefijo": "public/geodatos/",
+      "descripcion": "Copias técnicas de geodatos para la interfaz",
+      "atribucion": "derivado_no_fuente_independiente"
+    }
+  },
+  "fuentes": [
+    {
+      "fuente_clave": "clave_0",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_0"
+      ],
+      "origenes": [
+        "archivo_usuario_drive"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "2069352de14971c57d7c2ddd9fc7c23d2fddadf7e6cd00bbea20fbe8bd5a04a4",
+      "version_id": "2069352de14971c5",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": false,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_1",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_1"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "81bb76b8432bf28e416f078cdc475a50456c9bc1a7c36780302a07bcd24e3477",
+      "version_id": "81bb76b8432bf28e",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_10",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_10"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "097797ada899f9a94e98ff64da6425fe9197364d78d7a230b4a7660f536898f8",
+      "version_id": "097797ada899f9a9",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_11",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_11"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "69ba104b8aeff7f085d6bd4629cb553a8b476aec0623477187211445ca1ed58d",
+      "version_id": "69ba104b8aeff7f0",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_12",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_12"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "025a7bbcc7031bba3182f94bf3dfaedd76020f227f076cd6f13179801aaea49d",
+      "version_id": "025a7bbcc7031bba",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_13",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_13"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "6c5a238d6ec525c9193838fe2962c66bb27f3f208978882f88b0c04023c0641b",
+      "version_id": "6c5a238d6ec525c9",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_14",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_14"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "3e69cb8f763032a2d5bcbc295b4e0f489649420e613436fbd80d946e65639a2b",
+      "version_id": "3e69cb8f763032a2",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_15",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_15"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "288ccb32a1d1b372ee660c886fada5510d3007546704c7b4cd6ce9b9e14e2d4a",
+      "version_id": "288ccb32a1d1b372",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_16",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_16"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "6f23bb0205a24f0c306bbd8cc2ab4cead7737eefbc9410130827776d37ddba64",
+      "version_id": "6f23bb0205a24f0c",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_17",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_17"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "6301a628e62c527ef5b4192e0b887b63ca86f8428288465e4bc1c7754d2a4f74",
+      "version_id": "6301a628e62c527e",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_18",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_18"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "c3e844dc383538a0710b7c7da6de67a34781f7ed7c02ccd61d39ee51878f6788",
+      "version_id": "c3e844dc383538a0",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_19",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_19"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "5850a09dea0166545774943f008a23ec355262f768b2bb9af2fa124084e45cd2",
+      "version_id": "5850a09dea016654",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_2",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_2"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "4b58ce0e1aae819435b511d9ba3d3de39263ff18d036aa58514217e5615bc557",
+      "version_id": "4b58ce0e1aae8194",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_20",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_20"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "9921b17c56611e43a207646526eb0e7071bad8b3e2f03be244c375131e0d77f8",
+      "version_id": "9921b17c56611e43",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_21",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_21"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "871b0e07e60100d143a4ba016dfa4b6225f9b0968b74a52e6ddcac278482ebee",
+      "version_id": "871b0e07e60100d1",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_22",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_22"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "73a0c58475fa823399a2f3b254bcd39c025017bf23d047f48a7f2878cfce3bb2",
+      "version_id": "73a0c58475fa8233",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_23",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_23"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "9b7e822a330333b3e036ccc26f90bcee3a7015f63262df3785f3637c0914cef7",
+      "version_id": "9b7e822a330333b3",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_24",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_24"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "76afe2d446ae46c79323494c2c788dd4bfc69da1f6b3f3206924f33147a54153",
+      "version_id": "76afe2d446ae46c7",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_25",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_25"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "76db1ec9e46d43c854ca31bec149b772d55b44c26a00242cf65807d35a33aeb3",
+      "version_id": "76db1ec9e46d43c8",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_26",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_26"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "10a24f3ee8031ab2506f7bcfac63a43931ef4d02aadc6a88384454b7644be375",
+      "version_id": "10a24f3ee8031ab2",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_27",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_27"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "ad9107710fb78b37200fa063e4593e84c4355fb40e24922548f006aa2f866988",
+      "version_id": "ad9107710fb78b37",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_28",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_28"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "3df71878a9cfb3a4bfd1a1319140002f54897f9eb6285aec3c921826f7ee014e",
+      "version_id": "3df71878a9cfb3a4",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_29",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_29"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "5f1f86a6999195480188e1c89bdc58938740289b581ff6314b802d7e1519a12d",
+      "version_id": "5f1f86a699919548",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_3",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_3"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "5b503aaaf9687a7428052f9094686b7296d31e85db35c9408c977c3c0669e002",
+      "version_id": "5b503aaaf9687a74",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_30",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_30"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "eda24e745dd1ddb1ce4dabab673d07b54650cceb2706feaa22719f9b0881b94a",
+      "version_id": "eda24e745dd1ddb1",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_31",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_31"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "4f6e54ba540898179df837480afbf2fd087e7981ab7001130a06f4d7c5feaa18",
+      "version_id": "4f6e54ba54089817",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_32",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_32"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "592132b63485ec2b8498dea31f0cf9646c34f5e40198f6b8aac16e5d68cde086",
+      "version_id": "592132b63485ec2b",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_33",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_33"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "5ad1cf86088ec9802a179821f580642040a8d65ad8cf87b262b58368993807cd",
+      "version_id": "5ad1cf86088ec980",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_34",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_34"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "f0972afd7a8ba33cbe830070f088581268e713a9f848491990e227c6e7e7f373",
+      "version_id": "f0972afd7a8ba33c",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_35",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_35"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "828a499da6b7855a3f346940c3366402bef17b65c210eb207bad436663482205",
+      "version_id": "828a499da6b7855a",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_36",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_36"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "f7c704037a24711ce00370c51c19dc7607e5ba7cc57e960c40e808ec1ead9f6b",
+      "version_id": "f7c704037a24711c",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_37",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_37"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "76af3b79dd94ff30c55fce3cf9fe0e7bc5f8e2d5f9348319514ea8fed5842834",
+      "version_id": "76af3b79dd94ff30",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_38",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_38"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "d981f9d9e80f3797ee9681e83cd0a9518083e4f90aca9d1700b9ce0eaadb4365",
+      "version_id": "d981f9d9e80f3797",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_39",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_39"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "1bf785e34f4b6a01a54ba4ef5cf115267a0e8e3f9d082078e8c7252435fddd7f",
+      "version_id": "1bf785e34f4b6a01",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_4",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_4"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "f52f3745c958cb42496c3f7dff9e84606b317c52dd91449b8dc46caf5333d264",
+      "version_id": "f52f3745c958cb42",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_40",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_40"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "523736916ed3c42048fd6965aeac0aa4947b28a9a5c51e65b50408bc565bba9e",
+      "version_id": "523736916ed3c420",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_41",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_41"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "c2147053411ba32ad1699e850d9fa655ae61c5c2721b133ae1f9045f178b3f30",
+      "version_id": "c2147053411ba32a",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_42",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_42"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "09b4e065e92e2c3cdafcabbb7905672326b50350745bcd2c82c445e9267f0070",
+      "version_id": "09b4e065e92e2c3c",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_5",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_5"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "013f73f45d1dff6caa9087c6259f372b86d148abc456799792a398fee2864ce7",
+      "version_id": "013f73f45d1dff6c",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_6",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_6"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "9c3bb5bb1e11c733f4d1e29f5226414f6fd8149208e899875a9283f31160c470",
+      "version_id": "9c3bb5bb1e11c733",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_7",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_7"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "4f8576dda9d64d7fa290aea302246e73ebb9a94a0fc110301ba83a1631afc97d",
+      "version_id": "4f8576dda9d64d7f",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_8",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_8"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "ac64fb575d37d347fb988c83269bad34bebf14cc0982a9c02222434a667ed34c",
+      "version_id": "ac64fb575d37d347",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    },
+    {
+      "fuente_clave": "clave_9",
+      "custodios": [
+        "Entidad"
+      ],
+      "dataset_ids": [
+        "dataset_9"
+      ],
+      "origenes": [
+        "prueba"
+      ],
+      "indicadores": [
+        "indicador"
+      ],
+      "unidades": [
+        "casos"
+      ],
+      "ambitos": [
+        "municipio"
+      ],
+      "estados_calidad": [
+        "prueba"
+      ],
+      "anios": [
+        "2026"
+      ],
+      "urls": [
+        "https://example.org"
+      ],
+      "fechas_extraccion": [
+        "2026-10-24"
+      ],
+      "filas": 1,
+      "sha256_contenido": "31f0e96a8123b903bb74b1913ba4162648ffab8f4bba4355b1b95ebe11f4f31b",
+      "version_id": "31f0e96a8123b903",
+      "ultima_extraccion_utc": "2026-10-24",
+      "licencia": "por_verificar",
+      "contrato": "observacion_agregada_v1",
+      "es_fuente_independiente": true,
+      "estado_promocion": "pendiente_validacion"
+    }
+  ],
+  "archivos": [
+    {
+      "ruta": "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv",
+      "paquete_clave": "banco_local",
+      "evidencia_origen": {},
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "version_id": "fd03038a48d7763a",
+      "bytes": 4940,
+      "formato": "csv",
+      "rol": "derivado",
+      "estado_calidad": "sin_evaluacion_por_artefacto"
+    },
+    {
+      "ruta": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json",
+      "paquete_clave": "planes_accion",
+      "evidencia_origen": {},
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "version_id": "7af2a60ea19f01ed",
+      "bytes": 30,
+      "formato": "json",
+      "rol": "derivado_control",
+      "estado_calidad": "sin_evaluacion_por_artefacto"
+    }
+  ],
+  "captura_control": {
+    "ruta_origen_213": "bridge/copia_captura.json",
+    "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+    "bytes": 30,
+    "fecha_lectura_utc": "2026-10-24T11:00:00+00:00",
+    "naturaleza": "captura_control_derivado_no_fuente_oficial",
+    "sin_fuente_oficial": true,
+    "sin_validacion_semantica": true,
+    "sin_validacion_censo": true,
+    "sin_revision_licencia": true,
+    "procedencia_captura": {
+      "captura_origen_ruta": "bridge/copia_captura.json",
+      "captura_origen_sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "captura_origen_bytes": 30
+    },
+    "ruta_inventariada": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json",
+    "estado": "captura_inventariada_sin_promocion"
+  },
+  "version_captura": "polis.fuentes.captura_control.v1",
+  "hallazgo_historico": {
+    "original": {
+      "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bytes": 51693,
+      "estado": "no_localizado"
+    },
+    "diferencia_semantica": "no_comprobada",
+    "sin_contenido_original": true
+  },
+  "inventario_anterior": {
+    "ruta": "data/fuentes_versiones/inventarios/99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a.json",
+    "sha256": "99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a",
+    "bytes": 1408
+  }
+}

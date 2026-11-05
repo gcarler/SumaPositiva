@@ -1,0 +1,33 @@
+{
+  "tarea": "OL-TERR-FICHA-01-R3",
+  "fecha_utc": "2026-10-26",
+  "alcance": "nucleo_ficha_y_tests",
+  "archivos": {
+    "core": "cb43a8e99bdcf73740fc866f59b3c53ebcc60b7ba8490915f729c63575033c63",
+    "tests": "2be85e3e0a2bd5ffbd8ffa94289628ad5069b58468aacfe1b818a3b8150844ce"
+  },
+  "pruebas": {
+    "corrida_1": {
+      "archivo": "pytest_puro_1.xml",
+      "sha256": "0515ffb78f05cc55949836491f863fd66a4c2548179cf79a28b2b55d70ed77e4",
+      "resultado": "34 passed, 1 deselected (CLI congelado)"
+    },
+    "corrida_2": {
+      "archivo": "pytest_puro_2.xml",
+      "sha256": "6f3c561964c1a4db239065693ecaa73f38a522a4ab294aac5ba474b9cb81dc0f",
+      "resultado": "34 passed, 1 deselected (CLI congelado)"
+    }
+  },
+  "casos_149": {
+    "archivo": "casos_r3.json",
+    "sha256": "8e6beafdf2adb71d2933d440af372db20fb2d1c854173c8a2d5ce226cbc33372"
+  },
+  "cli_congelado": true,
+  "pilotos_cli": "pendientes_hash_final_coordinacion",
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_banco": true,
+  "sin_commit": true,
+  "sin_push": true,
+  "sin_despliegue": true
+}

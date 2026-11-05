@@ -1,0 +1,8 @@
+{
+  "prueba": "8 ensayos de downgrade/reconstruccion en base secundaria",
+  "principal": "polis_test_edd_coord_20261026_d4afb7fa",
+  "tablas_comparadas": 71,
+  "huellas_y_conteos_iguales": true,
+  "diferencias": [],
+  "limite": "Solo tablas de esquemas aplicacion de base propia; no verifica produccion"
+}

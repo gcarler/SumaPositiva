@@ -1,0 +1,790 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test_sintetica",
+  "cobertura_sql": {
+    "PDD_PRUEBA": {
+      "metas": 42,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [
+    {
+      "codigo": "M7",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 7,
+      "fuente": null,
+      "id": "030a530e-4d54-46df-9793-96bba59f3e2c",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M19",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 19,
+      "fuente": null,
+      "id": "05f2e03d-a5a7-48b9-aaf6-7db40f245675",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M35",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 35,
+      "fuente": null,
+      "id": "06fbeb40-5145-42d1-9eb0-23fd3eb42882",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M27",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 27,
+      "fuente": null,
+      "id": "10e6d14c-47a4-4005-b91e-12cdf197619a",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M18",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 18,
+      "fuente": null,
+      "id": "23cb90d2-a244-4d6c-99fb-3afc6fe5ebbd",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M15",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 15,
+      "fuente": null,
+      "id": "242ba6b3-cf13-4e6e-83be-022aee163c39",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M25",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 25,
+      "fuente": null,
+      "id": "289bc227-3737-433a-938f-6e91232359ef",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M38",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 38,
+      "fuente": null,
+      "id": "29a74efa-3734-4638-9e6c-8b5eb16baa68",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M11",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 11,
+      "fuente": null,
+      "id": "3cd666ab-85f9-4c82-a578-273f37296dc1",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M23",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 23,
+      "fuente": null,
+      "id": "4bf3e9e7-3439-45e1-8478-3c26478d3981",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M24",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 24,
+      "fuente": null,
+      "id": "545178bb-2f29-4f28-9bba-1c4b25f6b60a",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M12",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 12,
+      "fuente": null,
+      "id": "593655ee-2d7a-4e0b-aec8-5931789044c6",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M3",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 3,
+      "fuente": null,
+      "id": "6289da90-d418-4ba1-b03f-f290f11ff7cf",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M36",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 36,
+      "fuente": null,
+      "id": "650aa69a-2f72-4a83-ae23-c20298adabf2",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M8",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 8,
+      "fuente": null,
+      "id": "66eece52-d012-4ed4-b828-efb3e6a7cd36",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M5",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 5,
+      "fuente": null,
+      "id": "6bf633cc-2651-407f-97f6-ce7ba4ac4887",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M10",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 10,
+      "fuente": null,
+      "id": "6c556f4f-5f98-48f8-bf84-7cfa8253f4b2",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M30",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 30,
+      "fuente": null,
+      "id": "6dbb0d3c-ac47-4bcb-86a6-32be422e6a22",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M28",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 28,
+      "fuente": null,
+      "id": "7d9e2705-b3f9-4f5b-b941-97bcadb45c58",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M37",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 37,
+      "fuente": null,
+      "id": "7e359485-44f7-4860-a3e3-25bbb048995c",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M6",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 6,
+      "fuente": null,
+      "id": "8cf2d78a-2f9c-4a34-a39f-e32ab3f6d42a",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M2",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 2,
+      "fuente": null,
+      "id": "92befb1d-55ef-4b30-8456-1f47690292d7",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M31",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 31,
+      "fuente": null,
+      "id": "9f317812-97c1-48e4-a4fe-f2f021414c36",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M39",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 39,
+      "fuente": null,
+      "id": "a082cd1f-c0bb-4c8d-b593-b9d8fab87ab9",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M17",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 17,
+      "fuente": null,
+      "id": "a338d9df-9021-4501-8dc0-c345bd4cb910",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M0",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": null,
+      "fuente": null,
+      "id": "ab8e906f-663b-427d-92e2-1f24724d1da8",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M29",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 29,
+      "fuente": null,
+      "id": "b4245da9-ca6a-4c36-9580-167bb056d2f9",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M32",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 32,
+      "fuente": null,
+      "id": "b6b9bccd-da5d-42b9-8b56-e1bea46ba89e",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M21",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 21,
+      "fuente": null,
+      "id": "c281a63d-37bc-4064-8b3f-eb1a25d4985e",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M16",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 16,
+      "fuente": null,
+      "id": "c388f741-ff55-46af-9dee-ef6eec18bb5c",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M13",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 13,
+      "fuente": null,
+      "id": "c5ed08b2-d17f-43e7-98eb-5d37d2dd74e7",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M20",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 20,
+      "fuente": null,
+      "id": "cb2f5ac0-80eb-434f-aaae-daa4e78ff226",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M34",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 34,
+      "fuente": null,
+      "id": "cb9adf8b-d93b-4d41-a54b-1c16694931ce",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M41",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 41,
+      "fuente": null,
+      "id": "cbc12ea4-7cb7-441e-a7a0-e77910a41275",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M40",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 40,
+      "fuente": null,
+      "id": "cff67948-1d7b-4103-85b7-a0f492640612",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M9",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 9,
+      "fuente": null,
+      "id": "d17cbf39-c209-4058-92b3-8f981ea4baae",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M14",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 14,
+      "fuente": null,
+      "id": "d70ba8a2-bfb2-4357-9b0c-b76f614c51ba",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M1",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 1,
+      "fuente": null,
+      "id": "df9b9085-bbfc-43a1-963e-472d19e60f3a",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M26",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 26,
+      "fuente": null,
+      "id": "e5546057-544f-4e6f-b77a-42f2c95cfda8",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M4",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 4,
+      "fuente": null,
+      "id": "ecf9af88-4e13-4749-8781-20bbd0051557",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M22",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 22,
+      "fuente": null,
+      "id": "ed260752-9f07-4fb8-8457-c78ed13d77d9",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    },
+    {
+      "codigo": "M33",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": 33,
+      "fuente": null,
+      "id": "f8edbfe6-89a5-479f-839a-3161b2c471fa",
+      "indicador": "Personas atendidas",
+      "linea_id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    }
+  ],
+  "nodos": [
+    {
+      "codigo": "P1",
+      "codigo_plan": "PDD_PRUEBA",
+      "fuente": null,
+      "id": "6dd3a8a1-c8dc-44a9-b2dd-7178ca092b09",
+      "metadatos": {
+        "dimension_sh_primaria": "Seguridad Personal",
+        "grado_frontalidad_sh": "A_DIRECTA"
+      },
+      "nivel": "PROGRAMA",
+      "nombre": "Programa de atención ciudadana",
+      "orden": 0,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "2024": null
+      }
+    }
+  ]
+}

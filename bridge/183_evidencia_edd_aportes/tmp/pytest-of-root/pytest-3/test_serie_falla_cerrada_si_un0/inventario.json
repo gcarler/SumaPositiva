@@ -1,0 +1,1 @@
+{"archivos": [{"ruta": "data/096cbdf4f0b47f52e58239630f3f06fa3003cbbfff9a4152148d0a006235edfc.jsonl", "sha256": "096cbdf4f0b47f52e58239630f3f06fa3003cbbfff9a4152148d0a006235edfc"}], "esquema": "polis.inventario_fuentes.v1", "fuentes": [{"fuente_clave": "fuente_prueba", "sha256_contenido": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]}

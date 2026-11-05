@@ -1,0 +1,20 @@
+{
+  "alcance": "Referencias congeladas conjuntamente; no une indicadores a metas ni estima efectos causales.",
+  "base_origen": "polis_test_sintetica",
+  "corte_sha256": "12d802eee3b797b45c2d072b27ef114bd628a5d93c47aa50e05308427d9e2ca4",
+  "esquema": "polis.planeacion_serie_corte.v1",
+  "estado_publicacion": "no_publicable",
+  "filas_serie": 1,
+  "fuentes_serie": 1,
+  "instantanea_sha256": "61cd3b86e76680cc3a1c64d26102a5126ee95ce7a9f68287651885191a608f28",
+  "inventario_sha256": "2f148e454ddfedc5ec9e65cbb023717ab5533b4a9e94cd6e8ea0c4c522725ed6",
+  "metas_con_multiples_actividades": 0,
+  "metas_con_programa": 0,
+  "metas_distintas": 1,
+  "metas_sin_pa": 0,
+  "modo_matriz": "MATERIALIZADA",
+  "pares_acreditados": 0,
+  "pares_candidatos": 1,
+  "run_id": "548b6d5b-0b7b-4c81-9cbc-e0893225bec8",
+  "serie_sha256": "e5e7c8021f13f2645bdd1a33deb2460a729c94cd2381e1974eeb141b533570ac"
+}

@@ -1,0 +1,38 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "base_origen": "polis_test",
+  "conteos_sql": {
+    "P": {
+      "metas": 0,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.ppi_planeacion.v2",
+  "estado_publicacion": "no_publicable",
+  "nodos": [
+    {
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "4d2b60fa-7a52-4a33-949e-cfacfcd1717b",
+      "metadatos": "{}",
+      "nivel": "PLAN2",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}"
+    }
+  ],
+  "planes": [
+    {
+      "codigo_plan": "P",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan P",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    }
+  ],
+  "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+  "versionamiento": "01"
+}

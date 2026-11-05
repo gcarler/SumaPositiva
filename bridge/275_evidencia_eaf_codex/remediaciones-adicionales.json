@@ -1,0 +1,23 @@
+{
+  "label": "remediaciones-adicionales",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_evidencia_eaf_codex/test_remediaciones_eaf_275.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=/root/polis/bridge/275_evidencia_eaf_codex/remediaciones.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot",
+  "start_utc": "2026-11-02T03:49:59.096280+00:00",
+  "seconds": 18.651,
+  "returncode": 0,
+  "log": "remediaciones-adicionales.log",
+  "databases": [
+    "polis_test_eaf_275_codex_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

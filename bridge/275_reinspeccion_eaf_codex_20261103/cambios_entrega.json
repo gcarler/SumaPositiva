@@ -1,0 +1,32 @@
+[
+  {
+    "path": "backend/app/modules/notificaciones/resumen_cli.py",
+    "antes": "09a387f16ffb3aca7e14089a2b2b3569c4e467ce49464164b9b42ea34715b1e8",
+    "despues": "2803e7e94b46b2b9a844c4f367b4b4f84439eef77c68caadcc357cf8c6015bdf"
+  },
+  {
+    "path": "backend/app/modules/notificaciones/salud.py",
+    "antes": "a1016be638351de119647547c46d0f059c3217aca249f69741d84c1dc74156c1",
+    "despues": "afcd6b3325532e2470b5b3d9de5b8824300b5695c05701b0bba675a367ce6b9b"
+  },
+  {
+    "path": "backend/tests/test_herald_salud_resumen.py",
+    "antes": "a6ad026b87351d48d61e30282869181031f6439e2e3a09f881fe5fb22e97c1e1",
+    "despues": "dbe426509769f4b9edd54705c1a0b8c7cc01ac07470e48fcfb679cd6b5fcc155"
+  },
+  {
+    "path": "docs/plan-consolidacion-git.md",
+    "antes": "a87f577801e4895fdf3c80f7e7c0505a246076a0478d684c90cd2355303d6963",
+    "despues": "491b39ec8cf908df666159b53e6019995776500ae08908d7149656d73c904982"
+  },
+  {
+    "path": "docs/rotacion-secretos.md",
+    "antes": "2aa27614f22a995deef86478815870379b5553bec10528c7299602907f3a4b8a",
+    "despues": "92d69dc1807f1e061a17d11923e5264a0a1f0c764d36017e88b21852671d368c"
+  },
+  {
+    "path": "scripts/monitor_sistema_polis.sh",
+    "antes": "14394f860d52a6585e84624deef38d60df9c39b27b3957d20743a49fb43e98af",
+    "despues": "aa45bd28e8539cef0eade42ab3c1ab24e2cc6a42a836497df1101b0e74225168"
+  }
+]

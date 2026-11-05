@@ -1,0 +1,9 @@
+{
+  "originales_sin_modificar": true,
+  "copias_voluminosas_retiradas": [
+    ".runtime/snapshot/data",
+    ".runtime/snapshot/geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip"
+  ],
+  "codigo_preservado": "codigo_auditado_reinspeccion.tar.gz",
+  "referencias_y_sha_fixtures": "fixtures.json"
+}

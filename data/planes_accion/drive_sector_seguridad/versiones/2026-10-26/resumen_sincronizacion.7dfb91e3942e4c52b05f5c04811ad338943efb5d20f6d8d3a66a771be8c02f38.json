@@ -1,0 +1,97 @@
+{
+  "catalogo_entradas": 1383,
+  "archivos_intentados": 1383,
+  "descargas": {
+    "formato_no_excel": 78,
+    "descargado": 1305
+  },
+  "magic_bytes": {
+    ".xls": 80,
+    ".xlsx": 1225
+  },
+  "archivos_locales": 1305,
+  "bytes_locales": 464165727,
+  "libros_unicos_por_sha256": 621,
+  "copias_binarias_duplicadas": 684,
+  "ingesta_bd": {
+    "conteos": {
+      "persistidos": 598,
+      "registros_normalizados": 211387,
+      "hojas": 1574,
+      "lotes": 599,
+      "ya_persistido": 8
+    },
+    "errores_ingesta": [
+      {
+        "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+        "nombre_archivo": "PLAN DE ACCIÒN CORVIVIENDA 2022.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA A JUNIO 30 DE 2022.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA IV TRIMESTRE 2023.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION CORVIVIENDAA 30 DE SEPTIEMBRE2023 (2).xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+        "nombre_archivo": "SEGUIMIENTO Y EVALUACIÓN PLAN DE ACCIÓN DIC 2024 - CORVIVIENDA.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+        "nombre_archivo": "12. SEGUIMIENTO Y EVALUACION  PLAN DE ACCIÓN CORVIVIENDA JUNIO 2023.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA 2023 - IV TRIMESTRE.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA 2024 (PARA VALIDACIOìN PD).xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+        "nombre_archivo": "1. SEGUIMIENTO Y EVALUACION PLAN DE ACCION SECRETARIA DE HACIENDA A JUNIO 30 DE 2023.xlsx",
+        "error": "File contains no valid workbook part"
+      },
+      {
+        "id": "1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs",
+        "nombre_archivo": "INFORME PLAN DE ACCION SECRETARÍA DE PARTICIPACIÓN Y DESARROLLO SOCIAL – UMATA. MARZO 2024.docx.xlsx",
+        "error": "File contains no valid workbook part"
+      },
+      {
+        "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA A MARZO 31 DE 2024 - EPA CARTAGENA.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION A MAYO 31 DE 2024.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION EPA A MAYO 31 DE 2024-EPA CARTAGENA.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+        "nombre_archivo": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx",
+        "error": "File contains no valid workbook part"
+      }
+    ]
+  }
+}

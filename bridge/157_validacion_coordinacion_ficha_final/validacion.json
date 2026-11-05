@@ -1,0 +1,89 @@
+{
+  "fecha_utc": "2026-10-26T03:44:56.977696+00:00",
+  "tipo": "pilotos_cli_locales_y_cotejo_de_todas_las_filas",
+  "codigo_sha256": {
+    "ficha": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874",
+    "parser": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+    "cli": "7773e7a307ef8916fe85e6c0613950012dd716a273f2f817686e20198c36b570",
+    "resolver": "9c0c25de1307f2d0d7f2e596b41ba8743067cd3fc11f49e88aba9037e2eabfab"
+  },
+  "jsonl_referencia_sha256": "a6f30f18dccc7950ba12ed5dc83012fd3e46b03870660c1cbfbd3c8323c02e4c",
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_promocion": true,
+  "pilotos": [
+    {
+      "nombre": "completo",
+      "exit_code_cli": 0,
+      "ficha_sha256": "19e06b4112ca576a25fa31d3deee55d2a5efccac2c2ca9ed43fc7fc407d41f80",
+      "manifiesto_sha256": "6764464808e57f7ae8d2fa33fc9f5241356834a478020d3f43304d197cd8947e",
+      "seleccion_archivo_sha256": "aee9787994e21b3148230d30052d3c6c72d190e37caaab9d8072bcf3af7b93a2",
+      "seleccion_canonica_sha256": "36265dcf03ca6fc610210e949732c5d8316248556cf77c00b5cbc3900fbca5a0",
+      "bytes_ficha": 13042547,
+      "filas_cotejadas": 12899,
+      "errores": [],
+      "ordenes_exactos_sin_perdidas": true,
+      "conteos": {
+        "filas_total": 12899,
+        "filas_contexto_general": 102,
+        "observaciones": 12797,
+        "filas_excluidas_seleccion": 0,
+        "series": 1423,
+        "duplicados_celda": 2,
+        "observaciones_aceptadas": 12133,
+        "observaciones_retenidas": 662,
+        "observaciones_rechazadas": 2,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 0,
+        "excluidas_retenidas": 0,
+        "excluidas_rechazadas": 0
+      },
+      "identidad_estado": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "codigo_sha256": {
+        "cli": "7773e7a307ef8916fe85e6c0613950012dd716a273f2f817686e20198c36b570",
+        "ficha": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874",
+        "parser": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100"
+      }
+    },
+    {
+      "nombre": "filtro-2020",
+      "exit_code_cli": 0,
+      "ficha_sha256": "1fc1e9868a523d70b3f041cf066d1b12d493e107175e1ed0f2258c873e572915",
+      "manifiesto_sha256": "f052b80a98db220e031367fd1cb4fd680d0671b6587e7f3d66c08e9bc7644d9e",
+      "seleccion_archivo_sha256": "9925e783ebbdd9185bb202a06fdbe03e0ded6f9c2a0d678d1f6e34a568a33b30",
+      "seleccion_canonica_sha256": "cebf31403d90615392ceb69d8fee5457102ba3fcca9a421fae37782af8f41be0",
+      "bytes_ficha": 9450733,
+      "filas_cotejadas": 12899,
+      "errores": [],
+      "ordenes_exactos_sin_perdidas": true,
+      "conteos": {
+        "filas_total": 12899,
+        "filas_contexto_general": 102,
+        "observaciones": 900,
+        "filas_excluidas_seleccion": 11897,
+        "series": 889,
+        "duplicados_celda": 0,
+        "observaciones_aceptadas": 852,
+        "observaciones_retenidas": 48,
+        "observaciones_rechazadas": 0,
+        "contexto_aceptadas": 97,
+        "contexto_retenidas": 5,
+        "contexto_rechazadas": 0,
+        "excluidas_aceptadas": 11281,
+        "excluidas_retenidas": 614,
+        "excluidas_rechazadas": 2
+      },
+      "identidad_estado": "encontrado",
+      "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+      "codigo_sha256": {
+        "cli": "7773e7a307ef8916fe85e6c0613950012dd716a273f2f817686e20198c36b570",
+        "ficha": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874",
+        "parser": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100"
+      }
+    }
+  ],
+  "codigo_sin_cambios_durante_pilotos": true
+}

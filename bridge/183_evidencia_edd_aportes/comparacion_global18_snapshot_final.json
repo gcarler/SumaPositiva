@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-26T05:30:47.894475+00:00",
+  "global18_completo": "1419 passed,11 failed,16 skipped;exit1",
+  "diferencias_fuentes_propias": [
+    {
+      "archivo": "backend/alembic/versions/0084_aportes_colas_y_apoyos.py",
+      "sha256_global18": "42e31aba0f92e3efa61c73b75269e4ceb86696306b8f541c1e407503ffbcac6d",
+      "sha256_final": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5"
+    }
+  ],
+  "otras_diferencias_snapshot": [],
+  "motivo_unica_diferencia_propia": "Validaci\u00f3n antes deDDL de contacto legado string<=255, sin conversi\u00f3n/normalizaci\u00f3n/truncaci\u00f3n",
+  "verificacion_posterior": "222 pruebas dirigidas;contactos legados inadmisibles/copias exactas;roundtrip completo;Ruff/formato539"
+}

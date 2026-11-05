@@ -1,0 +1,14 @@
+{
+  "archivo_codigo": "codigo_auditado_275.tar.gz",
+  "copias_voluminosas_retiradas": [
+    ".runtime/snapshot/data",
+    ".runtime/snapshot/geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip"
+  ],
+  "originales_sin_cambios": true,
+  "fuentes_por_sha": [
+    "fixtures_datos.json",
+    "fixture_cartografia.json",
+    "fixtures_inventario.json",
+    "fixtures_adicionales.json"
+  ]
+}

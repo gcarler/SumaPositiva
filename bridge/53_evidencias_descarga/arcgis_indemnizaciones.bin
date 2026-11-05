@@ -1,0 +1,525 @@
+{
+ "currentVersion": 11.5,
+ "cimVersion": "3.5.0",
+ "id": 1,
+ "name": "Indemnizaciones Generales Municipios",
+ "type": "Feature Layer",
+ "description": "",
+ "geometryType": "esriGeometryPolygon",
+ "sourceSpatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326,
+  "xyTolerance": 8.983152841195215E-9,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -400,
+  "falseY": -400,
+  "xyUnits": 9.999999999999999E8,
+  "falseZ": 0,
+  "zUnits": 1,
+  "falseM": 0,
+  "mUnits": 1
+ },
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326,
+  "xyTolerance": 8.983152841195215E-9,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -400,
+  "falseY": -400,
+  "xyUnits": 9.999999999999999E8,
+  "falseZ": -100000,
+  "zUnits": 10000,
+  "falseM": -100000,
+  "mUnits": 10000
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 0,
+ "maxScale": 0,
+ "referenceScale": 0.0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "classBreaks",
+   "authoringInfo": {
+    "type": "classedColor",
+    "colorRamp": {
+     "type": "multipart",
+     "colorRamps": [
+      {
+       "type": "algorithmic",
+       "algorithm": "esriCIELabAlgorithm",
+       "fromColor": [
+        235,
+        247,
+        250,
+        255
+       ],
+       "toColor": [
+        235,
+        247,
+        250,
+        255
+       ]
+      },
+      {
+       "type": "algorithmic",
+       "algorithm": "esriCIELabAlgorithm",
+       "fromColor": [
+        179,
+        227,
+        227,
+        255
+       ],
+       "toColor": [
+        179,
+        227,
+        227,
+        255
+       ]
+      },
+      {
+       "type": "algorithmic",
+       "algorithm": "esriCIELabAlgorithm",
+       "fromColor": [
+        103,
+        194,
+        163,
+        255
+       ],
+       "toColor": [
+        103,
+        194,
+        163,
+        255
+       ]
+      },
+      {
+       "type": "algorithmic",
+       "algorithm": "esriCIELabAlgorithm",
+       "fromColor": [
+        44,
+        163,
+        96,
+        255
+       ],
+       "toColor": [
+        44,
+        163,
+        96,
+        255
+       ]
+      },
+      {
+       "type": "algorithmic",
+       "algorithm": "esriCIELabAlgorithm",
+       "fromColor": [
+        0,
+        110,
+        44,
+        255
+       ],
+       "toColor": [
+        0,
+        110,
+        44,
+        255
+       ]
+      }
+     ]
+    },
+    "classificationMethod": "esriClassifyManual"
+   },
+   "field": "PERSONAS",
+   "classificationMethod": "esriClassifyManual",
+   "minValue": 0,
+   "classBreakInfos": [
+    {
+     "symbol": {
+      "type": "esriSFS",
+      "style": "esriSFSSolid",
+      "color": [
+       237,
+       248,
+       251,
+       255
+      ],
+      "outline": {
+       "type": "esriSLS",
+       "style": "esriSLSSolid",
+       "color": [
+        110,
+        110,
+        110,
+        255
+       ],
+       "width": 0.7
+      }
+     },
+     "classMaxValue": 500,
+     "label": "<= 500 Personas atendidas"
+    },
+    {
+     "symbol": {
+      "type": "esriSFS",
+      "style": "esriSFSSolid",
+      "color": [
+       178,
+       226,
+       226,
+       255
+      ],
+      "outline": {
+       "type": "esriSLS",
+       "style": "esriSLSSolid",
+       "color": [
+        110,
+        110,
+        110,
+        255
+       ],
+       "width": 0.7
+      }
+     },
+     "classMaxValue": 2500,
+     "label": "501 - 2,500 Personas atendidas"
+    },
+    {
+     "symbol": {
+      "type": "esriSFS",
+      "style": "esriSFSSolid",
+      "color": [
+       102,
+       194,
+       164,
+       255
+      ],
+      "outline": {
+       "type": "esriSLS",
+       "style": "esriSLSSolid",
+       "color": [
+        110,
+        110,
+        110,
+        255
+       ],
+       "width": 0.7
+      }
+     },
+     "classMaxValue": 5000,
+     "label": "2,501 - 5,000 Personas atendidas"
+    },
+    {
+     "symbol": {
+      "type": "esriSFS",
+      "style": "esriSFSSolid",
+      "color": [
+       44,
+       162,
+       95,
+       255
+      ],
+      "outline": {
+       "type": "esriSLS",
+       "style": "esriSLSSolid",
+       "color": [
+        110,
+        110,
+        110,
+        255
+       ],
+       "width": 0.7
+      }
+     },
+     "classMaxValue": 10000,
+     "label": "5,001 - 10,000 Personas atendidas"
+    },
+    {
+     "symbol": {
+      "type": "esriSFS",
+      "style": "esriSFSSolid",
+      "color": [
+       0,
+       109,
+       44,
+       255
+      ],
+      "outline": {
+       "type": "esriSLS",
+       "style": "esriSLSSolid",
+       "color": [
+        110,
+        110,
+        110,
+        255
+       ],
+       "width": 0.7
+      }
+     },
+     "classMaxValue": 100000,
+     "label": ">= 10,001 Personas atendidas"
+    }
+   ],
+   "legendOptions": {"order": "ascendingValues"}
+  },
+  "scaleSymbols": true,
+  "transparency": 0,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": -81.73562045699998,
+  "ymin": -4.2294064659999435,
+  "xmax": -67.40980565499996,
+  "ymax": 13.394713255000056,
+  "spatialReference": {
+   "wkid": 4326,
+   "latestWkid": 4326,
+   "xyTolerance": 8.983152841195215E-9,
+   "zTolerance": 0.001,
+   "mTolerance": 0.001,
+   "falseX": -400,
+   "falseY": -400,
+   "xyUnits": 9.999999999999999E8,
+   "falseZ": -100000,
+   "zUnits": 10000,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "displayField": "DPTO_CCDGO",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "DPTO_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código CDepartamento",
+   "length": 2,
+   "domain": null
+  },
+  {
+   "name": "DPTO_NCDGO",
+   "type": "esriFieldTypeInteger",
+   "alias": "Código NDepartamento",
+   "domain": null
+  },
+  {
+   "name": "DPTO_CNMBR",
+   "type": "esriFieldTypeString",
+   "alias": "Departamento",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "DT_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código CDT",
+   "length": 5,
+   "domain": null
+  },
+  {
+   "name": "DT_NCDGO",
+   "type": "esriFieldTypeInteger",
+   "alias": "Código NDT",
+   "domain": null
+  },
+  {
+   "name": "DT_CNMBR",
+   "type": "esriFieldTypeString",
+   "alias": "Dirección Territorial",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "PDET_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código CPDET",
+   "length": 5,
+   "domain": null
+  },
+  {
+   "name": "PDET_NCDGO",
+   "type": "esriFieldTypeInteger",
+   "alias": "Código NPDET",
+   "domain": null
+  },
+  {
+   "name": "PDET_CNMBR",
+   "type": "esriFieldTypeString",
+   "alias": "PDET",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "MPIO_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código CMunicipio",
+   "length": 5,
+   "domain": null
+  },
+  {
+   "name": "MPIO_NCDGO",
+   "type": "esriFieldTypeInteger",
+   "alias": "Código NMunicipio",
+   "domain": null
+  },
+  {
+   "name": "MPIO_CNMBR",
+   "type": "esriFieldTypeString",
+   "alias": "Municipio",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "VIGENCIA",
+   "type": "esriFieldTypeString",
+   "alias": "VIGENCIA",
+   "length": 10,
+   "domain": null
+  },
+  {
+   "name": "GIROS",
+   "type": "esriFieldTypeDouble",
+   "alias": "GIROS REALIZADOS",
+   "domain": null
+  },
+  {
+   "name": "PERSONAS",
+   "type": "esriFieldTypeDouble",
+   "alias": "PERSONAS ATENDIDAS",
+   "domain": null
+  },
+  {
+   "name": "VALOR",
+   "type": "esriFieldTypeDouble",
+   "alias": "VALOR GIRADO",
+   "domain": null
+  },
+  {
+   "name": "SHAPE",
+   "type": "esriFieldTypeGeometry",
+   "alias": "SHAPE",
+   "domain": null
+  },
+  {
+   "name": "SHAPE.STArea()",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE.STArea()",
+   "domain": null
+  },
+  {
+   "name": "SHAPE.STLength()",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE.STLength()",
+   "domain": null
+  }
+ ],
+ "geometryField": {
+  "name": "SHAPE",
+  "type": "esriFieldTypeGeometry",
+  "alias": "SHAPE"
+ },
+ "indexes": [
+  {
+   "name": "R368_pk",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  },
+  {
+   "name": "S178_idx",
+   "fields": "SHAPE",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": false,
+ "capabilities": "Query,Map,Data",
+ "maxRecordCount": 2000,
+ "maxSelectionCount": 2000,
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "isDataVersioned": false,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsPagination": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true,
+  "supportsTimeRelation": true,
+  "supportsSqlFormat": false,
+  "supportsQueryAnalytic": true,
+  "supportsCurrentUserQueries": true
+ },
+ "supportsDatumTransformation": true,
+ "advancedQueryAnalyticCapabilities": {
+  "supportsLinearRegression": true,
+  "supportsAsync": false,
+  "supportsPercentileAnalytic": true
+ },
+ "dateFieldsTimeReference": null,
+ "preferredTimeReference": null,
+ "datesInUnknownTimezone": false,
+ "hasGeometryProperties": true,
+ "geometryProperties": {
+  "shapeAreaFieldName": "SHAPE.STArea()",
+  "shapeLengthFieldName": "SHAPE.STLength()",
+  "units": "esriDecimalDegrees",
+  "mapUnits": {"uwkid": 9102}
+ },
+ "hasMetadata": true,
+ "isDataArchived": false,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsCoordinatesQuantization": true,
+ "supportsDynamicLegends": true,
+ "serviceItemId": "44747753c4204ed08364f22b86fdddfe"
+}

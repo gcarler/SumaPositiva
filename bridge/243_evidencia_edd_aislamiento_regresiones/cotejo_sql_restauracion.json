@@ -1,0 +1,122 @@
+{
+  "estado_despues_paquete1": {
+    "sha_baseline": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "sha_posterior": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "iguales": {
+      "auditoria_principal": true,
+      "fichas": true,
+      "mediciones": true,
+      "esquemas_privados": true,
+      "triggers_principal": true
+    },
+    "pid_lector": 3538995
+  },
+  "estado_despues_fallo_legado": {
+    "sha_baseline": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "sha_posterior": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "iguales": {
+      "auditoria_principal": true,
+      "fichas": true,
+      "mediciones": true,
+      "esquemas_privados": true,
+      "triggers_principal": true
+    },
+    "pid_lector": 3540937
+  },
+  "estado_despues_fallo_medicion": {
+    "sha_baseline": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "sha_posterior": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "iguales": {
+      "auditoria_principal": true,
+      "fichas": true,
+      "mediciones": true,
+      "esquemas_privados": true,
+      "triggers_principal": true
+    },
+    "pid_lector": 3541189
+  },
+  "estado_despues_final": {
+    "sha_baseline": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "sha_posterior": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "iguales": {
+      "auditoria_principal": true,
+      "fichas": true,
+      "mediciones": true,
+      "esquemas_privados": true,
+      "triggers_principal": true
+    },
+    "pid_lector": 3543185
+  },
+  "estado_despues_snapshot_estable": {
+    "sha_baseline": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "sha_posterior": {
+      "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+      "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+      "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+    },
+    "iguales": {
+      "auditoria_principal": true,
+      "fichas": true,
+      "mediciones": true,
+      "esquemas_privados": true,
+      "triggers_principal": true
+    },
+    "pid_lector": 3546115
+  }
+}

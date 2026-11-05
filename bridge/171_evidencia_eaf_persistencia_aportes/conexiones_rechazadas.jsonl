@@ -1,0 +1,8 @@
+{"driver": "asyncpg", "database": "bd_csh", "pid": 2831629}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "psycopg_async", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2840233}
+{"driver": "asyncpg", "database": "bd_csh", "pid": 2839225}

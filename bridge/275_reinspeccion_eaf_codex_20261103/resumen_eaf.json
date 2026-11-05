@@ -1,0 +1,102 @@
+{
+  "utc": "2026-11-03T10:34:42.390054+00:00",
+  "estado": "RECHAZADO",
+  "alcance": "Re-inspeccion independiente de H275-01 a H275-05",
+  "independencia": true,
+  "head": "64e818f8444083b1f7589e7edaae020765b96068",
+  "superposicion": "snapshot.json",
+  "hallazgos": [
+    {
+      "id": "H275-01",
+      "estado": "PARCIAL_ABIERTO",
+      "severidad_residual": "Media",
+      "bloqueante": true,
+      "residuos": [
+        "HTTP 503 confirma falsamente despacho y sella cooldown",
+        "Sin canal configurado se retorna exito y se sella cooldown",
+        "Diagnosticos de recuperacion borran el sello (Baja)"
+      ]
+    },
+    {
+      "id": "H275-02",
+      "estado": "CERRADO"
+    },
+    {
+      "id": "H275-03",
+      "estado": "CERRADO"
+    },
+    {
+      "id": "H275-04",
+      "estado": "CERRADO"
+    },
+    {
+      "id": "H275-05",
+      "estado": "CERRADO_DOCS_CORRIENTES",
+      "limite": "Historial sin reescritura; credencial anterior declarada rotada"
+    }
+  ],
+  "pruebas": {
+    "sondas_anteriores": {
+      "passed": 15,
+      "failed": 0
+    },
+    "corte": {
+      "passed": 5,
+      "failed": 0
+    },
+    "monitor_por_corrida": {
+      "corridas": 2,
+      "passed": 8,
+      "failed": 4
+    },
+    "bateria_dirigida": {
+      "passed": 273,
+      "failed": 5,
+      "deselected": 1
+    },
+    "access_policy": {
+      "passed": 123,
+      "failed": 0
+    },
+    "salud_resumen_global": {
+      "passed": 33,
+      "failed": 0
+    },
+    "backend_check": {
+      "returncode": 1,
+      "passed": 1737,
+      "failed": 6,
+      "skipped": 16,
+      "fallos_ajenos": "5 plantillas paralelas + agenda preexistente"
+    },
+    "alembic_check_cli": {
+      "returncode": 255,
+      "drift": "actividades_anexos y sus dos indices, previo al alcance"
+    }
+  },
+  "primer_timer": {
+    "comprobado_por_Codex": "systemd/journal, 2026-11-02 12:00:01 UTC, exit 0, un destinatario encolado",
+    "entrega_enviado_y_latencia_8_6s": "reportadas por operador; sin consulta productiva del auditor"
+  },
+  "aislamiento": {
+    "puerto": 5433,
+    "bd_csh": "sin acceso",
+    "Postfix": "sin uso",
+    "limpieza": {
+      "utc": "2026-11-03T10:31:56.051044+00:00",
+      "bases_eliminadas": [
+        "polis_test_eaf_275_r2_20261103",
+        "polis_test_eaf_275_r2_20261103_mig",
+        "polis_test_eaf_275_r2_20261103_probes"
+      ],
+      "rol_eliminado": "polis_eaf275_r2_20261103",
+      "residuos": "",
+      "credencial_privada_eliminada": true,
+      "bd_csh": "sin conexiones ni cambios"
+    }
+  },
+  "app_modificada_por_auditor": false,
+  "frontend_modificado_por_auditor": false,
+  "commit": false,
+  "push": false
+}

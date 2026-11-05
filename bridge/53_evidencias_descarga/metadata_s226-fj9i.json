@@ -1,0 +1,636 @@
+{
+  "id" : "s226-fj9i",
+  "name" : "Datos abiertos de las PQRSDF de la Sede Electrónica de la Procuraduría General de la Nación",
+  "assetType" : "dataset",
+  "attribution" : "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+  "attributionLink" : "https://www.datos.gov.co/d/s226-fj9i",
+  "averageRating" : 0,
+  "category" : "Organismos de Control",
+  "createdAt" : 1633974520,
+  "description" : "Listado que contiene las peticiones, quejas, reclamos, sugerencias, denuncias, y felicitaciones de la entidad.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 1194,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 37802790,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1634047273,
+  "publicationGroup" : 18476663,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1735660401,
+  "tableId" : 18477173,
+  "totalTimesRated" : 0,
+  "viewCount" : 5479,
+  "viewLastModified" : 1779123431,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1634806103,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 4113704,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1634066220,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "read"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1634806103,
+      "failureCount" : 0,
+      "startedAt" : 1634806103,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "3vbk-jy2q",
+      "displayName" : "Procuraduría General de la Nación - Analítica de Datos"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 549865399,
+    "name" : "Tipo de PQRSDF",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "tipo_de_pqrsdf",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761550,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "Solicitud de Supervigilancia al Derecho de Petición",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Derecho de Petición",
+        "count" : "20132"
+      }, {
+        "item" : "QUEJA/DENUNCIA",
+        "count" : "15500"
+      }, {
+        "item" : "Convocatoria de Conciliación Extrajudicial Contencioso Administrativa",
+        "count" : "8154"
+      }, {
+        "item" : "Solicitud de Consulta",
+        "count" : "5452"
+      }, {
+        "item" : "Reclamo",
+        "count" : "1719"
+      }, {
+        "item" : "Solicitud de Supervigilancia al Derecho de Petición",
+        "count" : "1031"
+      }, {
+        "item" : "Si eres niño, niña y adolescente, ingresa aquí para hacer tu solicitud",
+        "count" : "95"
+      }, {
+        "item" : "Agradecimiento",
+        "count" : "47"
+      }, {
+        "item" : "Solicitud de información con identificación reservada",
+        "count" : "43"
+      }, {
+        "item" : "Denuncia de Proceso Electoral",
+        "count" : "23"
+      } ],
+      "smallest" : "Agradecimiento",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865400,
+    "name" : "Temática",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "tem_tica",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761551,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "Solicitud de Supervigilancia al Derecho de Petición",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Derecho de Petición",
+        "count" : "20132"
+      }, {
+        "item" : "QUEJA/DENUNCIA",
+        "count" : "15500"
+      }, {
+        "item" : "Convocatoria de Conciliación Extrajudicial Contencioso Administrativa",
+        "count" : "8154"
+      }, {
+        "item" : "Solicitud de Consulta",
+        "count" : "5452"
+      }, {
+        "item" : "Reclamo",
+        "count" : "1719"
+      }, {
+        "item" : "Solicitud de Supervigilancia al Derecho de Petición",
+        "count" : "1031"
+      }, {
+        "item" : "Si eres niño, niña y adolescente, ingresa aquí para hacer tu solicitud",
+        "count" : "95"
+      }, {
+        "item" : "Agradecimiento",
+        "count" : "47"
+      }, {
+        "item" : "Solicitud de información con identificación reservada",
+        "count" : "43"
+      }, {
+        "item" : "Denuncia de Proceso Electoral",
+        "count" : "23"
+      } ],
+      "smallest" : "Agradecimiento",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865401,
+    "name" : "Remitente",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "remitente",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761552,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "Registrado",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Registrado",
+        "count" : "43427"
+      }, {
+        "item" : "Anónimo",
+        "count" : "8769"
+      } ],
+      "smallest" : "Anónimo",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865402,
+    "name" : "País",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "pa_s",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761553,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "VENEZUELA",
+      "null" : "0",
+      "top" : [ {
+        "item" : " ",
+        "count" : "30581"
+      }, {
+        "item" : "COLOMBIA",
+        "count" : "21274"
+      }, {
+        "item" : "ARGENTINA",
+        "count" : "245"
+      }, {
+        "item" : "ESTADOS UNIDOS DE AMERICA",
+        "count" : "28"
+      }, {
+        "item" : "ESPAÑA",
+        "count" : "17"
+      }, {
+        "item" : "CANADA",
+        "count" : "8"
+      }, {
+        "item" : "VENEZUELA",
+        "count" : "8"
+      }, {
+        "item" : "PAISES BAJOS",
+        "count" : "6"
+      }, {
+        "item" : "AUSTRALIA",
+        "count" : "6"
+      }, {
+        "item" : "BRASIL",
+        "count" : "4"
+      }, {
+        "item" : "ECUADOR",
+        "count" : "4"
+      }, {
+        "item" : "CHILE",
+        "count" : "4"
+      }, {
+        "item" : "PANAMA",
+        "count" : "2"
+      }, {
+        "item" : "FRANCIA",
+        "count" : "2"
+      }, {
+        "item" : "REINO UNIDO",
+        "count" : "1"
+      }, {
+        "item" : "NA",
+        "count" : "1"
+      }, {
+        "item" : "ITALIA",
+        "count" : "1"
+      }, {
+        "item" : "CURAZAO",
+        "count" : "1"
+      }, {
+        "item" : "PORTUGAL",
+        "count" : "1"
+      }, {
+        "item" : "COSTA RICA",
+        "count" : "1"
+      } ],
+      "smallest" : " ",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865403,
+    "name" : "Departamento",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761554,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : " ",
+        "count" : "30947"
+      }, {
+        "item" : "BOGOTA",
+        "count" : "6852"
+      }, {
+        "item" : "NA",
+        "count" : "1987"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "1803"
+      }, {
+        "item" : "VALLE DEL CAUCA",
+        "count" : "1359"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "1168"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "783"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "775"
+      }, {
+        "item" : "ATLANTICO",
+        "count" : "700"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "656"
+      }, {
+        "item" : "BOLIVAR",
+        "count" : "481"
+      }, {
+        "item" : "META",
+        "count" : "476"
+      }, {
+        "item" : "CESAR",
+        "count" : "447"
+      }, {
+        "item" : "BOYACA",
+        "count" : "430"
+      }, {
+        "item" : "HUILA",
+        "count" : "356"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "311"
+      }, {
+        "item" : "RISARALDA",
+        "count" : "302"
+      }, {
+        "item" : "CORDOBA",
+        "count" : "301"
+      }, {
+        "item" : "CALDAS",
+        "count" : "293"
+      }, {
+        "item" : "CAUCA",
+        "count" : "262"
+      } ],
+      "smallest" : " ",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865404,
+    "name" : "Municipio",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761555,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "ZONA BANANERA",
+      "null" : "0",
+      "top" : [ {
+        "item" : " ",
+        "count" : "31112"
+      }, {
+        "item" : "BOGOTA D.C.",
+        "count" : "6818"
+      }, {
+        "item" : "NA",
+        "count" : "2052"
+      }, {
+        "item" : "MEDELLIN",
+        "count" : "891"
+      }, {
+        "item" : "CALI",
+        "count" : "829"
+      }, {
+        "item" : "IBAGUE",
+        "count" : "500"
+      }, {
+        "item" : "BARRANQUILLA",
+        "count" : "478"
+      }, {
+        "item" : "CUCUTA",
+        "count" : "476"
+      }, {
+        "item" : "BUCARAMANGA",
+        "count" : "389"
+      }, {
+        "item" : "CARTAGENA",
+        "count" : "323"
+      }, {
+        "item" : "VILLAVICENCIO",
+        "count" : "299"
+      }, {
+        "item" : "VALLEDUPAR",
+        "count" : "258"
+      }, {
+        "item" : "PEREIRA",
+        "count" : "201"
+      }, {
+        "item" : "NEIVA",
+        "count" : "190"
+      }, {
+        "item" : "PASTO",
+        "count" : "174"
+      }, {
+        "item" : "SOACHA",
+        "count" : "173"
+      }, {
+        "item" : "MANIZALES",
+        "count" : "165"
+      }, {
+        "item" : "MONTERIA",
+        "count" : "163"
+      }, {
+        "item" : "ARMENIA",
+        "count" : "139"
+      }, {
+        "item" : "TUNJA",
+        "count" : "131"
+      } ],
+      "smallest" : " ",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865405,
+    "name" : "Dependencia actual",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "dependencia_actual",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139761556,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "Veeduría",
+      "null" : "0",
+      "top" : [ {
+        "item" : "División Centro de Atención al Público  - CAP",
+        "count" : "6819"
+      }, {
+        "item" : "División de Relacionamiento con el Ciudadano",
+        "count" : "4244"
+      }, {
+        "item" : "Proc Primera Distrital",
+        "count" : "2440"
+      }, {
+        "item" : "Proc Segunda Distrital",
+        "count" : "2089"
+      }, {
+        "item" : "División Registro de Sanciones y Causas de Inhabilidad DRSCI",
+        "count" : "1677"
+      }, {
+        "item" : "PROCURADURIA DELEGADA CON FUNCIONES MIXTAS 7: ASUNTOS DEL TRABAJO Y SEGURIDAD SOCIAL",
+        "count" : "1256"
+      }, {
+        "item" : "PROCURADURIA PROVINCIAL DE INSTRUCCION VALLE DE ABURRA",
+        "count" : "1153"
+      }, {
+        "item" : "Grupo Especial de Supervigilancia al Derecho de Petición",
+        "count" : "1004"
+      }, {
+        "item" : "PROCURADURIA DELEGADA CON FUNCIONES MIXTAS 5: PARA EL MINISTERIO PUBLICO EN ASUNTOS PENALES",
+        "count" : "988"
+      }, {
+        "item" : "PROCURADURIA DELEGADA CON FUNCIONES MIXTAS 8: PARA LA DEFENSA DE LOS DERECHOS DE LA INFANCIA, LA ADOLESCENCIA, LA FAMILIA Y LA MUJER",
+        "count" : "844"
+      }, {
+        "item" : "Grupo de Administración y Soporte Funcional de los Sistemas de Información Misional",
+        "count" : "732"
+      }, {
+        "item" : "Oficina Jurídica",
+        "count" : "619"
+      }, {
+        "item" : "Pr. División de Relacionamiento con el ciudadano",
+        "count" : "610"
+      }, {
+        "item" : "PROCURADURIA DELEGADA PREVENTIVA Y DE CONTROL DE GESTION 1: PRIMERA PARA LA VIGILANCIA PREVENTIVA DE LA FUNCION PUBLICA",
+        "count" : "595"
+      }, {
+        "item" : "PROCURADURIA PROVINCIAL DE INSTRUCCION CALI",
+        "count" : "594"
+      }, {
+        "item" : "PROCURADURIA REGIONAL DE INSTRUCCION ANTIOQUIA",
+        "count" : "513"
+      }, {
+        "item" : "PROCURADURIA REGIONAL DE INSTRUCCION VALLE",
+        "count" : "492"
+      }, {
+        "item" : "PROCURADURIA DELEGADA DISCIPLINARIA DE INSTRUCCION 10: PARA LA FUERZA PUBLICA",
+        "count" : "486"
+      }, {
+        "item" : "PROCURADURIA 78 JUDICIAL I PARA LA CONCILIACION ADMINISTRATIVA MONTERIA",
+        "count" : "483"
+      }, {
+        "item" : "PROCURADURIA 33 JUDICIAL II PARA LA CONCILIACION ADMINISTRATIVA MONTERIA",
+        "count" : "440"
+      } ],
+      "smallest" : "Asesores Viceprocurador Piso 24",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : { }
+  }, {
+    "id" : 549865407,
+    "name" : "Fecha de radicación",
+    "dataTypeName" : "calendar_date",
+    "description" : "",
+    "fieldName" : "fecha_de_radicaci_n",
+    "position" : 8,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 139766941,
+    "cachedContents" : {
+      "non_null" : "52196",
+      "largest" : "2024-09-02T00:00:01.000",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2024-04-01T00:00:01.000",
+        "count" : "522"
+      }, {
+        "item" : "2024-01-29T00:00:01.000",
+        "count" : "205"
+      }, {
+        "item" : "2024-01-09T00:00:01.000",
+        "count" : "187"
+      }, {
+        "item" : "2024-02-05T00:00:01.000",
+        "count" : "184"
+      }, {
+        "item" : "2024-02-19T00:00:01.000",
+        "count" : "183"
+      }, {
+        "item" : "2024-01-22T00:00:01.000",
+        "count" : "175"
+      }, {
+        "item" : "2024-02-26T00:00:01.000",
+        "count" : "159"
+      }, {
+        "item" : "2024-01-02T00:00:01.000",
+        "count" : "157"
+      }, {
+        "item" : "2024-05-20T00:00:01.000",
+        "count" : "150"
+      }, {
+        "item" : "2024-03-18T00:00:01.000",
+        "count" : "141"
+      }, {
+        "item" : "2024-08-20T00:00:01.000",
+        "count" : "136"
+      }, {
+        "item" : "2024-02-12T00:00:01.000",
+        "count" : "136"
+      }, {
+        "item" : "2024-01-15T00:00:01.000",
+        "count" : "133"
+      }, {
+        "item" : "2024-06-04T00:00:01.000",
+        "count" : "131"
+      }, {
+        "item" : "2024-03-04T00:00:01.000",
+        "count" : "129"
+      }, {
+        "item" : "2024-05-14T00:00:01.000",
+        "count" : "121"
+      }, {
+        "item" : "2024-04-22T00:00:01.000",
+        "count" : "121"
+      }, {
+        "item" : "2024-03-26T00:00:01.000",
+        "count" : "117"
+      }, {
+        "item" : "2024-08-26T00:00:01.000",
+        "count" : "114"
+      }, {
+        "item" : "2024-05-06T00:00:01.000",
+        "count" : "114"
+      } ],
+      "smallest" : "2024-01-02T00:00:01.000",
+      "count" : "52196",
+      "cardinality" : "52196"
+    },
+    "format" : {
+      "view" : "date_ymd_time"
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Organismos de Control",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Diaria"
+      }
+    }
+  },
+  "owner" : {
+    "id" : "3vbk-jy2q",
+    "displayName" : "Procuraduría General de la Nación - Analítica de Datos",
+    "profileImageUrlLarge" : "/api/users/3vbk-jy2q/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/3vbk-jy2q/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/3vbk-jy2q/profile_images/TINY",
+    "screenName" : "Procuraduría General de la Nación - Analítica de Datos",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "3vbk-jy2q",
+    "displayName" : "Procuraduría General de la Nación - Analítica de Datos",
+    "profileImageUrlLarge" : "/api/users/3vbk-jy2q/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/3vbk-jy2q/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/3vbk-jy2q/profile_images/TINY",
+    "screenName" : "Procuraduría General de la Nación - Analítica de Datos",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "peticiones", "quejas", "reclamos", "denuncias", "electoral", "pqr", "pqrs", "pqrsd", "pqrsdf" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

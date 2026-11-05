@@ -1,0 +1,361 @@
+{
+  "entidades": [
+    {
+      "catalogo_128": {
+        "anio_creacion": "1599",
+        "anio_version": 2025,
+        "concat": "13001",
+        "dpto": "13",
+        "dpto_nombre": "BOLÍVAR",
+        "mpio": "001",
+        "nombre": "CARTAGENA DE INDIAS",
+        "sha256_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "tipo": "MUNICIPIO"
+      },
+      "codigo": "13001",
+      "comparacion_13001": {
+        "ambas_versiones_conservadas": true,
+        "txt_75_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+        "txt_igual": true,
+        "txt_nuevo_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+        "zip_75_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+        "zip_igual": true,
+        "zip_nuevo_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+      },
+      "error_parser": null,
+      "intentos": [
+        {
+          "bytes": 114090,
+          "content_length": "114090",
+          "content_type": "application/x-zip-compressed",
+          "error": null,
+          "estado_http": 200,
+          "etag": "\"1d68bd549626dd1:0\"",
+          "last_modified": "Fri, 07 Aug 2026 17:58:19 GMT",
+          "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+          "url_final": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+          "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+          "utc": "2026-10-26T03:47:49.540955Z"
+        }
+      ],
+      "objetivo": "evidencia_publica_piloto; no ingesta; no ficha certificada",
+      "parser": {
+        "codigos_entidad_presentes": [
+          "13001"
+        ],
+        "entidades_presentes": [
+          "Cartagena"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12891,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12899,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12897,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 822,
+          "valor_numerico_valido": 12077
+        },
+        "filas_total": 12899
+      },
+      "raw_bytes": 114090,
+      "raw_ruta": "raw/13001/original.respuesta.bin",
+      "raw_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+      "zip_validacion": {
+        "bytes_declarados_txt": 2853390,
+        "bytes_reales_txt": 2853390,
+        "bytes_txt": null,
+        "cifrado": false,
+        "crc_valido": true,
+        "encabezado_13_columnas_conforme": true,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "es_zip_valido": true,
+        "miembro_encontrado": "TerriData13001.txt",
+        "miembro_esperado": "TerriData13001.txt",
+        "miembros": [
+          {
+            "compress_size": 113956,
+            "file_size": 2853390,
+            "flag_bits": 0,
+            "nombre": "TerriData13001.txt"
+          }
+        ],
+        "sha256_txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2"
+      }
+    },
+    {
+      "catalogo_128": {
+        "anio_creacion": "1772",
+        "anio_version": 2025,
+        "concat": "13673",
+        "dpto": "13",
+        "dpto_nombre": "BOLÍVAR",
+        "mpio": "673",
+        "nombre": "SANTA CATALINA",
+        "sha256_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "tipo": "MUNICIPIO"
+      },
+      "codigo": "13673",
+      "comparacion_13001": null,
+      "error_parser": null,
+      "intentos": [
+        {
+          "bytes": 103394,
+          "content_length": "103394",
+          "content_type": "application/x-zip-compressed",
+          "error": null,
+          "estado_http": 200,
+          "etag": "\"20e0866f9626dd1:0\"",
+          "last_modified": "Fri, 07 Aug 2026 17:59:04 GMT",
+          "sha256": "b9e7672d7ae7044181c4b3910d927576e65b1dfc057544e4a7e6f6235711eda2",
+          "url_final": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13673.txt.zip",
+          "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13673.txt.zip",
+          "utc": "2026-10-26T03:48:10.702983Z"
+        }
+      ],
+      "objetivo": "evidencia_publica_piloto; no ingesta; no ficha certificada",
+      "parser": {
+        "codigos_entidad_presentes": [
+          "13673"
+        ],
+        "entidades_presentes": [
+          "Santa Catalina"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12725,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12733,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12731,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 1494,
+          "valor_numerico_valido": 11239
+        },
+        "filas_total": 12733
+      },
+      "raw_bytes": 103394,
+      "raw_ruta": "raw/13673/original.respuesta.bin",
+      "raw_sha256": "b9e7672d7ae7044181c4b3910d927576e65b1dfc057544e4a7e6f6235711eda2",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13673.txt.zip",
+      "zip_validacion": {
+        "bytes_declarados_txt": 2822512,
+        "bytes_reales_txt": 2822512,
+        "bytes_txt": null,
+        "cifrado": false,
+        "crc_valido": true,
+        "encabezado_13_columnas_conforme": true,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "es_zip_valido": true,
+        "miembro_encontrado": "TerriData13673.txt",
+        "miembro_esperado": "TerriData13673.txt",
+        "miembros": [
+          {
+            "compress_size": 103260,
+            "file_size": 2822512,
+            "flag_bits": 0,
+            "nombre": "TerriData13673.txt"
+          }
+        ],
+        "sha256_txt": "e3833026873719aa30aa4aac7afa045a09df3d95ef0009e1553691a12e4176ac"
+      }
+    },
+    {
+      "catalogo_128": {
+        "anio_creacion": "1834",
+        "anio_version": 2025,
+        "concat": "23660",
+        "dpto": "23",
+        "dpto_nombre": "CÓRDOBA",
+        "mpio": "660",
+        "nombre": "SAHAGÚN",
+        "sha256_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "tipo": "MUNICIPIO"
+      },
+      "codigo": "23660",
+      "comparacion_13001": null,
+      "error_parser": null,
+      "intentos": [
+        {
+          "bytes": 108832,
+          "content_length": "108832",
+          "content_type": "application/x-zip-compressed",
+          "error": null,
+          "estado_http": 200,
+          "etag": "\"d184834e9726dd1:0\"",
+          "last_modified": "Fri, 07 Aug 2026 18:05:19 GMT",
+          "sha256": "0d12c51c43a3f9eefab36006b18e1c9c1595dfc75b1c142da213bfb2ec4a1fc2",
+          "url_final": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData23660.txt.zip",
+          "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData23660.txt.zip",
+          "utc": "2026-10-26T03:48:32.076967Z"
+        }
+      ],
+      "objetivo": "evidencia_publica_piloto; no ingesta; no ficha certificada",
+      "parser": {
+        "codigos_entidad_presentes": [
+          "23660"
+        ],
+        "entidades_presentes": [
+          "Sahagún"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12877,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12885,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12883,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 1553,
+          "valor_numerico_valido": 11332
+        },
+        "filas_total": 12885
+      },
+      "raw_bytes": 108832,
+      "raw_ruta": "raw/23660/original.respuesta.bin",
+      "raw_sha256": "0d12c51c43a3f9eefab36006b18e1c9c1595dfc75b1c142da213bfb2ec4a1fc2",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData23660.txt.zip",
+      "zip_validacion": {
+        "bytes_declarados_txt": 2791867,
+        "bytes_reales_txt": 2791867,
+        "bytes_txt": null,
+        "cifrado": false,
+        "crc_valido": true,
+        "encabezado_13_columnas_conforme": true,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "es_zip_valido": true,
+        "miembro_encontrado": "TerriData23660.txt",
+        "miembro_esperado": "TerriData23660.txt",
+        "miembros": [
+          {
+            "compress_size": 108698,
+            "file_size": 2791867,
+            "flag_bits": 0,
+            "nombre": "TerriData23660.txt"
+          }
+        ],
+        "sha256_txt": "56927d9d4677e61de0a10a54cfeaaee75c33096d6f20a6aef808a17291f54e92"
+      }
+    },
+    {
+      "catalogo_128": {
+        "anio_creacion": "1538",
+        "anio_version": 2025,
+        "concat": "11001",
+        "dpto": "11",
+        "dpto_nombre": "BOGOTÁ, D.C.",
+        "mpio": "001",
+        "nombre": "BOGOTÁ, D.C.",
+        "sha256_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+        "tipo": "MUNICIPIO"
+      },
+      "codigo": "11001",
+      "comparacion_13001": null,
+      "error_parser": null,
+      "intentos": [
+        {
+          "bytes": 119235,
+          "content_length": "119235",
+          "content_type": "application/x-zip-compressed",
+          "error": null,
+          "estado_http": 200,
+          "etag": "\"5955c539626dd1:0\"",
+          "last_modified": "Fri, 07 Aug 2026 17:58:17 GMT",
+          "sha256": "f2ff0718158884a21f94f021db14bd5f2c638c1a12b1aeb62b2feddbf8501a78",
+          "url_final": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData11001.txt.zip",
+          "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData11001.txt.zip",
+          "utc": "2026-10-26T03:48:53.248133Z"
+        }
+      ],
+      "objetivo": "evidencia_publica_piloto; no ingesta; no ficha certificada",
+      "parser": {
+        "codigos_entidad_presentes": [
+          "11001"
+        ],
+        "entidades_presentes": [
+          "Bogotá"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 13402,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 13410,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 13408,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 839,
+          "valor_numerico_valido": 12571
+        },
+        "filas_total": 13410
+      },
+      "raw_bytes": 119235,
+      "raw_ruta": "raw/11001/original.respuesta.bin",
+      "raw_sha256": "f2ff0718158884a21f94f021db14bd5f2c638c1a12b1aeb62b2feddbf8501a78",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData11001.txt.zip",
+      "zip_validacion": {
+        "bytes_declarados_txt": 2927313,
+        "bytes_reales_txt": 2927313,
+        "bytes_txt": null,
+        "cifrado": false,
+        "crc_valido": true,
+        "encabezado_13_columnas_conforme": true,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "es_zip_valido": true,
+        "miembro_encontrado": "TerriData11001.txt",
+        "miembro_esperado": "TerriData11001.txt",
+        "miembros": [
+          {
+            "compress_size": 119101,
+            "file_size": 2927313,
+            "flag_bits": 0,
+            "nombre": "TerriData11001.txt"
+          }
+        ],
+        "sha256_txt": "32d62761d384d93a943e851391f93b5f63ec9afecdaa02fb9e25e95f228e1946"
+      }
+    }
+  ],
+  "entidades_error_descarga": 0,
+  "entidades_ingeridas_banco": 0,
+  "entidades_sin_datos": 0,
+  "fecha_utc": "2026-10-26T03:48:53.833861Z",
+  "host_oficial": "terridata.dnp.gov.co",
+  "limites": {
+    "no_acredita_cobertura_nacional": true,
+    "no_acredita_condiciones_de_uso": true,
+    "no_acredita_estatus_juridico": true,
+    "no_acredita_validacion_semantica": true
+  },
+  "objetivos": 4,
+  "parseos": 4,
+  "respuestas": 4,
+  "txt_validos": 4,
+  "url_patron": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData{codigo}.txt.zip",
+  "zip_validos": 4
+}

@@ -1,0 +1,32 @@
+{
+  "fecha_utc": "2026-10-26T06:48:25.461307+00:00",
+  "estado": "PREPARADO_ESPERANDO_SENAL",
+  "senal_requerida": "REINSPECCION_CONSUMIDOR_221",
+  "senal_recibida": false,
+  "database": "polis_test_eaf_consumidor_r1_20261026_c91eeabd",
+  "app_importada": false,
+  "migraciones_producto_ejecutadas": false,
+  "servicios_propios_iniciados": [],
+  "puertos": [
+    {
+      "puerto": 34133,
+      "disponible_en_preparacion": true,
+      "reservado": false
+    },
+    {
+      "puerto": 34134,
+      "disponible_en_preparacion": true,
+      "reservado": false
+    }
+  ],
+  "copias_fuentes_mutables": false,
+  "fuentes_211_preservadas": true,
+  "temporales_build_previstos": "/tmp/polis_eaf233_* solo tras señal, nuevos y propios, con limpieza selectiva y evidencia bajo233",
+  "guarda_python_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "guardas_python_rechazos": 15,
+  "guardas_node_rechazos": 3,
+  "incidencias_solo_lectura": [
+    "Primer intento de leer220 usó nombre supuesto inexistente; rg localizó y se leyó220_encargo_freebuff_mfa_consumidor_r1.md.",
+    "233 no existía al tanteo inicial, se creó de forma exclusiva."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-26T06:35:35.068134+00:00",
+  "sources183": 20,
+  "sources183_unchanged": 18,
+  "sources183_changed_only_authorized": [
+    "backend/app/modules/aportes/schemas.py",
+    "backend/app/modules/aportes/service.py"
+  ],
+  "sources215_final": {
+    "backend/app/modules/aportes/schemas.py": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1",
+    "backend/app/modules/aportes/service.py": "2a413c9d53d3a8fdb5c9dc4170655e5cf45ef8a251ed2688d227da3785469244",
+    "backend/tests/test_aportes_legado_publico.py": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753"
+  },
+  "0084_sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+  "historical_artifacts": {
+    "183": {
+      "count": 68,
+      "manifest_sha256": "661b24b11f9b27db5e0ee41a50874c81379fab44870aeac0593453afd739aa5a",
+      "differences": []
+    },
+    "203": {
+      "count": 87,
+      "manifest_sha256": "d5a70b07e0a6e66a8ba50ec33f011cee3bc17db8f3edce9bb168820d4dc1c7bf",
+      "differences": []
+    },
+    "215": {
+      "count": 43,
+      "manifest_sha256": "9d5d843b285b512a549f9189ba1dc423241b49fd525119958db6187f72568273",
+      "differences": []
+    }
+  },
+  "original_four_case_files_identical": true,
+  "report203_unchanged": true
+}

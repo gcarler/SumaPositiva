@@ -1,0 +1,16 @@
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "psycopg_async", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "pid": 2862914}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2876739}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2876739}
+{"driver": "psycopg_async", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2876739}
+{"driver": "asyncpg", "database": "polis_test_edd_coord_20261026_d4afb7fa", "host": "127.0.0.1", "port": 5433, "hostaddr": null, "pid": 2876739}
+{"driver": "asyncpg", "database": "polis_test_edd_coord_20261026_d4afb7fa", "host": "203.0.113.1", "port": 5432, "hostaddr": null, "pid": 2876739}
+{"driver": "psycopg", "database": "polis_test_edd_coord_20261026_d4afb7fa", "host": "127.0.0.1", "port": "5433", "hostaddr": null, "pid": 2876739}
+{"driver": "psycopg", "database": "polis_test_edd_coord_20261026_d4afb7fa", "host": "localhost", "port": "5432", "hostaddr": "203.0.113.1", "pid": 2876739}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": "127.0.0.1", "port": null, "hostaddr": null, "pid": 2876739}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2876739}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2876739}

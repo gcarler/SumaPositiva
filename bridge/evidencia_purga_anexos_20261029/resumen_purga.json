@@ -1,0 +1,43 @@
+{
+  "identificador": "OPS-PURGA-01",
+  "fecha": "2026-10-29",
+  "accion": "Programacion y primera corrida real de la purga de ficheros fisicos de anexos eliminados",
+  "integracion_previa": {
+    "commit_streaming_purga": "b52b891",
+    "revision_codex": "bridge/265_revision_codex_streaming_purga_20261029.md",
+    "streaming_integrado": true
+  },
+  "programacion": {
+    "script_wrapper": "scripts/purga_programada_anexos.sh (0755)",
+    "comando_backend": "uv run --project backend python -m scripts.limpiar_anexos_eliminados --produccion --dias-retencion 30 [--aplicar]",
+    "cron_registrado": "30 3 * * 0 /root/polis/scripts/purga_programada_anexos.sh >> /root/polis/backups/purga_anexos.log 2>&1",
+    "frecuencia": "semanal (domingos 03:30)",
+    "dias_retencion": 30,
+    "seguridad_wrapper": [
+      "unset POLIS_TEST_DATABASE_URL",
+      "Solo POLIS_DATABASE_URL desde backend/.env si no fue exportada",
+      "Previsualizacion obligatoria antes de --aplicar",
+      "Aborta sin aplicar si el manifiesto reporta errores distinto de cero",
+      "Manifiestos en /root/polis/backups/purga_anexos con permisos 0600"
+    ]
+  },
+  "purga_real_operativa": {
+    "captura": "bridge/evidencia_purga_anexos_20261029/captura_wrapper.txt",
+    "manifiesto_previsualizacion": "bridge/evidencia_purga_anexos_20261029/previsualizacion_20261029_102642.json",
+    "resultado": {
+      "anexos_eliminados_candidatos": 0,
+      "ficheros_purgados": 0,
+      "errores": 0,
+      "huerfanos_recientes_omitidos": 0,
+      "volumen_despues_de_la_corrida": 8,
+      "volumen_antes_de_la_corrida": 8
+    },
+    "interpretacion": "La corrida real se ejecuto contra produccion y no encontro ficheros elegibles: no existe anexo con eliminado_en anterior al corte 2026-09-29 (retencion 30 dias). La fase --aplicar no fue necesaria porque habia 0 candidatos; el wrapper salio con exito sin cambios en disco.",
+    "respaldo_pre_purga_volumen": "/root/polis/backups/purga_anexos/volumen_pre_purga_20261029_102633 (36K, 8 ficheros, 0700)"
+  },
+  "log_operativo": "/root/polis/backups/purga_anexos.log",
+  "limites": [
+    "La purga busca candidatos por eliminado_en < corte; el soft-delete ingresa via eliminar_anexo y no hay anexos con esa marca en produccion a la fecha.",
+    "--incluidos-huerfanos no fue activado en la programacion; hueros reales (si existiesen) requieren revision manual previa."
+  ]
+}

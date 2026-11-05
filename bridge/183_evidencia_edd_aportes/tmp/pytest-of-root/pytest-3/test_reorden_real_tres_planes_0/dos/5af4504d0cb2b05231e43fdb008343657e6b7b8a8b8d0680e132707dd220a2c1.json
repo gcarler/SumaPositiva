@@ -1,0 +1,308 @@
+{
+  "alcance": "COMPARACION_OFFLINE_SIN_ACREDITAR_EJECUCION_NI_CAUSALIDAD",
+  "base_origen_catalogo": "polis_test",
+  "base_origen_ppi": "polis_test",
+  "esquema": "polis.comparacion_ppi_catalogo.v1",
+  "estado_publicacion": "no_publicable",
+  "hallazgos": {
+    "nodos_estructura": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_fuente": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_jsonb": {
+      "conteo_completo": 3,
+      "muestra": [
+        {
+          "campo": "ppi_anual_cop",
+          "codigo_plan": "P",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": "jsonb_precision_no_verificable",
+          "id": "51031ce0-18a4-510e-b335-c605204e9145",
+          "motivo": null,
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": "json",
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": "$.ppi_anual_cop.a",
+          "texto_jsonb_ppi_crudo": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+          "tipo": null,
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "a": {
+                "tipo": "float",
+                "valor": "2.2"
+              },
+              "z": {
+                "tipo": "float",
+                "valor": "1.1"
+              }
+            }
+          },
+          "valor_ppi": null,
+          "valor_ppi_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "nulo": {
+                "tipo": "null",
+                "valor": null
+              },
+              "texto": {
+                "tipo": "str",
+                "valor": "1"
+              },
+              "valor": {
+                "tipo": "int",
+                "valor": 1
+              }
+            }
+          }
+        },
+        {
+          "campo": "ppi_anual_cop",
+          "codigo_plan": "Q",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": "jsonb_precision_no_verificable",
+          "id": "863a0c49-8ff5-5f50-9df3-a344f4fe13e4",
+          "motivo": null,
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": "json",
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": "$.ppi_anual_cop.a",
+          "texto_jsonb_ppi_crudo": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+          "tipo": null,
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "a": {
+                "tipo": "float",
+                "valor": "2.2"
+              },
+              "z": {
+                "tipo": "float",
+                "valor": "1.1"
+              }
+            }
+          },
+          "valor_ppi": null,
+          "valor_ppi_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "nulo": {
+                "tipo": "null",
+                "valor": null
+              },
+              "texto": {
+                "tipo": "str",
+                "valor": "1"
+              },
+              "valor": {
+                "tipo": "int",
+                "valor": 1
+              }
+            }
+          }
+        },
+        {
+          "campo": "ppi_anual_cop",
+          "codigo_plan": "R",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": "jsonb_precision_no_verificable",
+          "id": "342c357b-834f-55bc-a95a-a10d478a0232",
+          "motivo": null,
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": "json",
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": "$.ppi_anual_cop.a",
+          "texto_jsonb_ppi_crudo": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+          "tipo": null,
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "a": {
+                "tipo": "float",
+                "valor": "2.2"
+              },
+              "z": {
+                "tipo": "float",
+                "valor": "1.1"
+              }
+            }
+          },
+          "valor_ppi": null,
+          "valor_ppi_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "nulo": {
+                "tipo": "null",
+                "valor": null
+              },
+              "texto": {
+                "tipo": "str",
+                "valor": "1"
+              },
+              "valor": {
+                "tipo": "int",
+                "valor": 1
+              }
+            }
+          }
+        }
+      ],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 3
+    },
+    "planes": {
+      "conteo_completo": 3,
+      "muestra": [
+        {
+          "campo": null,
+          "codigo_plan": "P",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": null,
+          "id": null,
+          "motivo": "El catálogo v1 no contiene totales de plan ni equivalencia declarada",
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": null,
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": null,
+          "tipo": "total_plan_no_comparable",
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": null,
+          "valor_ppi": null,
+          "valor_ppi_tipado": null
+        },
+        {
+          "campo": null,
+          "codigo_plan": "Q",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": null,
+          "id": null,
+          "motivo": "El catálogo v1 no contiene totales de plan ni equivalencia declarada",
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": null,
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": null,
+          "tipo": "total_plan_no_comparable",
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": null,
+          "valor_ppi": null,
+          "valor_ppi_tipado": null
+        },
+        {
+          "campo": null,
+          "codigo_plan": "R",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": null,
+          "id": null,
+          "motivo": "El catálogo v1 no contiene totales de plan ni equivalencia declarada",
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": null,
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": null,
+          "tipo": "total_plan_no_comparable",
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": null,
+          "valor_ppi": null,
+          "valor_ppi_tipado": null
+        }
+      ],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 3
+    }
+  },
+  "limites": {
+    "credito": "No acredita ejecución, presupuesto comparable, vínculo PA, indicador ni causalidad",
+    "precision_financiera": "No se convierte Decimal a float; float heredado del catálogo invalida igualdad exacta",
+    "totales_planes": "COMPARACION_NO_DISPONIBLE_SIN_EQUIVALENCIA_EN_CATALOGO_V1",
+    "universos": "PPI y catálogo son universos distintos; faltantes y sobrantes no se normalizan."
+  },
+  "referencias": {
+    "captura_ppi": {
+      "esquema": "polis.ppi_planeacion.v2",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_reorden_real_tres_planes_0/ppi/f014023559ebcd005081db53f095ee8f9d93088c76c7e8c773d18cc35851df76.json",
+      "sha256": "f014023559ebcd005081db53f095ee8f9d93088c76c7e8c773d18cc35851df76"
+    },
+    "catalogo": {
+      "esquema": "polis.catalogo_planeacion.v1",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_reorden_real_tres_planes_0/catalogo/2ad72b311f08622ced9aaebdaca70bb77b11eb13fcf7cb895ad5cd6109e2335a.json",
+      "sha256": "2ad72b311f08622ced9aaebdaca70bb77b11eb13fcf7cb895ad5cd6109e2335a"
+    },
+    "inventario": {
+      "sha256": "5b4e5160683545bb0b6f969ff48714c025f95797a550397818843f2f2965b958"
+    },
+    "manifiesto": {
+      "run_id": "7b1d2f0d-a687-4682-8321-ea409adb1b37",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_reorden_real_tres_planes_0/manifiesto.json",
+      "sha256": "b9bb5f0485e80cb43253878afa3e2fdc0376e4d0134674041ca7b8677cd5ad0b"
+    }
+  },
+  "resumen": {
+    "base_origen_distinta": false,
+    "campos_jsonb_cambio": 0,
+    "campos_jsonb_iguales": 3,
+    "campos_jsonb_precision_no_verificable": 3,
+    "cobertura_planes_metas_con_cambios": 0,
+    "cobertura_planes_nodos_con_cambios": 0,
+    "nodos_compartidos": 3,
+    "nodos_con_cambios_estructurales": 0,
+    "nodos_faltantes_en_ppi": 0,
+    "nodos_fuente_cambio": 0,
+    "nodos_fuente_iguales": 3,
+    "nodos_iguales_estructuralmente": 3,
+    "nodos_jsonb_con_cambios": 0,
+    "nodos_jsonb_iguales_estructuralmente": 0,
+    "nodos_jsonb_precision_no_verificable": 3,
+    "nodos_sobrantes_en_ppi": 0,
+    "planes_compartidos": 3,
+    "planes_faltantes_en_ppi": 0,
+    "planes_sobrantes_en_ppi": 0
+  }
+}

@@ -1,0 +1,1382 @@
+{
+  "fecha_utc": "2026-10-26T06:51:09.595949+00:00",
+  "estado": "congelado_para_revision",
+  "codigo": {
+    "backend/tests/test_inventario_fuentes_polis.py": {
+      "sha256_antes": "78c201bc98a909d7e5a044d748000db5faa7776899456d6eb67090fd23b8a625",
+      "sha256_final": "bf66f99dd0e93af5bfc288d7efbc8fb6bf9691e59e79e08aae868db1f882d3fa",
+      "bytes_antes": 6976,
+      "bytes_final": 24009,
+      "parche": "test_inventario_fuentes_polis.py.patch"
+    },
+    "scripts/inventariar_fuentes_polis.py": {
+      "sha256_antes": "fe9369b7174176fc6b2bfde9ee3389045d1e2528570041b429bb20ac715b5001",
+      "sha256_final": "202956eaf155fa6cd2e58d4b6804fefb9390b10de2cbb84cc55b60ddded8460e",
+      "bytes_antes": 12843,
+      "bytes_final": 23975,
+      "parche": "inventariar_fuentes_polis.py.patch"
+    }
+  },
+  "informe": {
+    "ruta": "bridge/228_entrega_versionado_inventario_fuentes.md",
+    "sha256": "b3d1fc96cc6def4ddc14ae6267c369dfd13b1774e77ff3d14cccaf286e87852a",
+    "bytes": 8183
+  },
+  "sinteticas": 36,
+  "deseleccionadas_corpus_activo": 3,
+  "ruff_check": 0,
+  "ruff_formato": 0,
+  "integrales_corpus_activo_verdes": false,
+  "activo_sigue_discrepante": true,
+  "snapshot_ajeno_inalterado": 13,
+  "sin_publicacion_activa": true,
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_commit_push": true,
+  "sin_dictamen_eaf": true,
+  "archivos_evidencia": {
+    "inventariar_fuentes_polis.py.antes": {
+      "sha256": "fe9369b7174176fc6b2bfde9ee3389045d1e2528570041b429bb20ac715b5001",
+      "bytes": 12843
+    },
+    "inventariar_fuentes_polis.py.final": {
+      "sha256": "202956eaf155fa6cd2e58d4b6804fefb9390b10de2cbb84cc55b60ddded8460e",
+      "bytes": 23975
+    },
+    "inventariar_fuentes_polis.py.patch": {
+      "sha256": "5f6413495d5557409a35367df4ea3e22b86c0680e0a8b69ca49f4dfccba0f6c1",
+      "bytes": 20284
+    },
+    "resultado_final.json": {
+      "sha256": "6de999992b10183d6d616746020371c605a6a498545886de32dd9ca92f3ed490",
+      "bytes": 4420
+    },
+    "ruff_check_final.json": {
+      "sha256": "6a5253a2463273a3c9399481fdcd6d1a3974ea04872142c03cd956ca815e2e41",
+      "bytes": 427
+    },
+    "ruff_check_inicial.json": {
+      "sha256": "1e6cf3b6982eab72f840c3e75fdff3a4bb5cdd93ecd6cfb5b701338676ce69be",
+      "bytes": 359
+    },
+    "ruff_check_inicial.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ruff_check_inicial.stdout.log": {
+      "sha256": "3a986c83a8fcffd2329e44957a1ff75d14ce02918918caa0e59f8f7c9df811de",
+      "bytes": 572
+    },
+    "ruff_format_check_final.json": {
+      "sha256": "b4d197d9d0faff671daa018f8d81231ff871923e1f14fcc47ace578d6be7bd57",
+      "bytes": 442
+    },
+    "ruff_formato_aplicado.json": {
+      "sha256": "babdb1039e551e1e6fbca0816fd038e9aba48d98aba30f04bc817dbf0744771b",
+      "bytes": 360
+    },
+    "ruff_formato_aplicado.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "ruff_formato_aplicado.stdout.log": {
+      "sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df",
+      "bytes": 20
+    },
+    "ruff_formato_final_aplicado.json": {
+      "sha256": "5afa15c3079f09b9aa1ba7303c10c723bfdf000f789a39dbbebb8c38c085bbbe",
+      "bytes": 451
+    },
+    "sinteticas_01.json": {
+      "sha256": "7db631f9accbb0547d398abae32ea58c463f9df34febd9cc41b9ea706e4d444c",
+      "bytes": 853
+    },
+    "sinteticas_01.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "sinteticas_01.stdout.log": {
+      "sha256": "53126ffe2336570f01a4c89465cf6c848c7004f34c7f78d5ad7a849e3da8f33c",
+      "bytes": 113
+    },
+    "sinteticas_01.xml": {
+      "sha256": "77eddd1da13bd1534f50eb2b89cb0fd6ddd7e888c1eb68889261cd3742c09eb0",
+      "bytes": 4877
+    },
+    "sinteticas_02.json": {
+      "sha256": "f204e27459698f9bca7658e386755ea02225e9ca05c38ea47eb8673d5e638491",
+      "bytes": 916
+    },
+    "sinteticas_02.xml": {
+      "sha256": "a6858a0454e4f208cb9844f8d51b607e68166eaf47261f0f5718864b67281794",
+      "bytes": 5272
+    },
+    "snapshot_antes.json": {
+      "sha256": "ec93cf93d62443569f1a52cd6c5d069ea0686ca86729cdf96724caf4319a937a",
+      "bytes": 2699
+    },
+    "test_inventario_fuentes_polis.py.antes": {
+      "sha256": "78c201bc98a909d7e5a044d748000db5faa7776899456d6eb67090fd23b8a625",
+      "bytes": 6976
+    },
+    "test_inventario_fuentes_polis.py.final": {
+      "sha256": "bf66f99dd0e93af5bfc288d7efbc8fb6bf9691e59e79e08aae868db1f882d3fa",
+      "bytes": 24009
+    },
+    "test_inventario_fuentes_polis.py.patch": {
+      "sha256": "62c14bce20423b9afc4edb18b444adcc66cf3b04c7d9f6a29915e7beb91beb9e",
+      "bytes": 17806
+    },
+    "tmp_pytest_01/test_captura_ausente_o_sustitu0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_ausente_o_sustitu0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_captura_ausente_o_sustitu0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_01/test_captura_ausente_o_sustitu0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_ausente_o_sustitu0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/otra_captura.json": {
+      "sha256": "58ab190b243a702878f665801ce979ccb45e43f829f8716bab8853277c70577e",
+      "bytes": 13
+    },
+    "tmp_pytest_01/test_captura_control_excluye_m0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_control_excluye_m0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_captura_control_excluye_m0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "9a42c7b46b9221bd5d615f0f840c348d404d03ffe597281ecdb438442104bad0",
+      "bytes": 23
+    },
+    "tmp_pytest_01/test_captura_control_excluye_m0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_en_misma_ruta_alt0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_en_misma_ruta_alt0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_captura_en_misma_ruta_alt0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_01/test_captura_en_misma_ruta_alt0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_captura_en_misma_ruta_alt0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "dc3c2588c3a5b448f6a0d73f1a5d13864af03177f02b9bfdf21b3bc38480d7bb",
+      "bytes": 11
+    },
+    "tmp_pytest_01/test_checkpoints_operativos_no0/data/planes_desarrollo/cache_motor_futuro.json": {
+      "sha256": "f6375dc5371ed1f9187ed341adf57ea1a70c339fe77815ec2f404fc2829bfe23",
+      "bytes": 21
+    },
+    "tmp_pytest_01/test_checkpoints_operativos_no0/data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json": {
+      "sha256": "3ff6d10e01ec5f698b59259cbf50896a637dd0088cc5434e785f0301ff2d337b",
+      "bytes": 35
+    },
+    "tmp_pytest_01/test_checkpoints_operativos_no0/data/planes_desarrollo/documento.md": {
+      "sha256": "1297cae512696129e572050d1ff33a67173807b027e6f97c66aeef34b17ec294",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_escritura_preserva_bytes_0/versiones/474e96920d83dc933e059fca7f24fd1b9a8e8e9e46d7296ed1ff920b917e99f2.json": {
+      "sha256": "474e96920d83dc933e059fca7f24fd1b9a8e8e9e46d7296ed1ff920b917e99f2",
+      "bytes": 65
+    },
+    "tmp_pytest_01/test_escritura_preserva_bytes_0/versiones/47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_01/test_escritura_preserva_bytes_0/vista.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_01/test_fallo_al_reemplazar_conse0/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json": {
+      "sha256": "2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96",
+      "bytes": 60
+    },
+    "tmp_pytest_01/test_fallo_al_reemplazar_conse0/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_fallo_al_reemplazar_conse0/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "fa5d10e4e1fb857e48c27ca8babf99a2a007ab8fddc17d33dc210d687e8d181c",
+      "bytes": 43939
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/fuentes_versiones/inventarios/99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a.json": {
+      "sha256": "99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a",
+      "bytes": 1408
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/fuentes_versiones/inventarios/fa5d10e4e1fb857e48c27ca8babf99a2a007ab8fddc17d33dc210d687e8d181c.json": {
+      "sha256": "fa5d10e4e1fb857e48c27ca8babf99a2a007ab8fddc17d33dc210d687e8d181c",
+      "bytes": 43939
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_generar_preserva_metadata0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "633d30d40cf26d647f19a9340ac825b5e25ca15b97cb4b0d6f9f23e2bbe0b58d",
+      "bytes": 9
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi2/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "42519a76f399339326a28e21190597aaadddfbffa5886ec4de57eee95d0635c8",
+      "bytes": 25
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi3/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi3/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi3/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "d5b592c05dc25b5032553f1b27f4139be95e881f73db33b02b05ab20c3f9981e",
+      "bytes": 3
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi3/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_anterior_ilegi3/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_inventario_guarda_instant0/banco/inventario_pipeline_2026.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_01/test_inventario_guarda_instant0/versiones/0143652b9e45c2dea0132b1db49d54ec28536bdb7f05cd13d7f6b863c1e5c496.json": {
+      "sha256": "0143652b9e45c2dea0132b1db49d54ec28536bdb7f05cd13d7f6b863c1e5c496",
+      "bytes": 66
+    },
+    "tmp_pytest_01/test_inventario_guarda_instant0/versiones/47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "d3b31702a966174c0aa0a25eab8a4f184ec823e8b2d9672fbf277642e77e5c32",
+      "bytes": 1350
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "dcbd5a6733630d8405e5f33590734013c356b8c7c9658408c594a947906cc1db",
+      "bytes": 1397
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no2/bridge/copia_captura.json": {
+      "sha256": "be511a5be307fc2465e4bc70b1081b13bbdbf9dc9d874071941ae17ad5eb8b74",
+      "bytes": 18
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no3/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no3/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no3/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "e40d2129dbbf930bb3e91fea3ae909b8848dc3d4e9223cabcae24e92b14ffbd1",
+      "bytes": 1350
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no3/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no3/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no4/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no4/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no4/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "a6af9a77b55345f57f0a5b6cfcacf0454a451c08c7d68b8b7230df2e749e4342",
+      "bytes": 1347
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no4/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no4/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no5/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no5/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no5/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "84894929d23f978730d69b44a21853b1f602a2d62a8f2cc753681b97458ed8d9",
+      "bytes": 1375
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no5/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no5/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no6/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no6/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no6/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "00090395501dd68be23464ee473111de3dd3c84312a51a4bd0e688976be1152f",
+      "bytes": 1351
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no6/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_metadata_inconsistente_no6/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_preco0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_preco0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_preco0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "bbdedf1d2780b25cefc31a043fc171966ac4d1de418c78ed5b4ef2b389708bc9",
+      "bytes": 53
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_preco0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_preco0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_symli0/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_symli1/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_symli2/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_symli3/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_publicacion_rechaza_symli4/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "a418c0b23fdcc3459f79727fa39dcd4770448d5215018883ec6e2fd4263157e3",
+      "bytes": 183
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "cd77ca594f1ba360434c7e32a632f05b2140a45ffbdd94d79aa54aefdc0b1adf",
+      "bytes": 195
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi2/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "0540f3f1cbda5853defd466d3ac493eb0acf94161ae39d8f1e8229e472f5804c",
+      "bytes": 197
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_referencia_previa_inconsi2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_01/test_staging_inventaria_hashes0/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "34a37c2bdadb6e8f84196513a9265e06ca9fbcbe046ede62de2897faf9e2aa60",
+      "bytes": 16
+    },
+    "tmp_pytest_01/test_staging_inventaria_hashes0/banco_fuentes_oficiales.stage.prueba/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "f70e255905a1959536f5d111287ce1ef5f5d2289618dced99668c1c63e6ce4fa",
+      "bytes": 235
+    },
+    "tmp_pytest_01/test_version_de_fuente_no_camb0/indicadores.csv": {
+      "sha256": "84c2d633336679eaeb3d96fb53a4af331dc3621090cf2ba900b9d3fbb059eb0e",
+      "bytes": 349
+    },
+    "tmp_pytest_01/test_version_existente_diverge0/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json": {
+      "sha256": "a4a50a7d0d4541de783c993b1a79c0cb183c6b5099eee5584857e233c424984e",
+      "bytes": 10
+    },
+    "tmp_pytest_01/test_version_existente_diverge0/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_01/test_version_existente_diverge1/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json": {
+      "sha256": "a4a50a7d0d4541de783c993b1a79c0cb183c6b5099eee5584857e233c424984e",
+      "bytes": 10
+    },
+    "tmp_pytest_01/test_version_existente_diverge1/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_captura_ausente_o_sustitu0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_ausente_o_sustitu0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_captura_ausente_o_sustitu0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_captura_ausente_o_sustitu0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_ausente_o_sustitu0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/otra_captura.json": {
+      "sha256": "58ab190b243a702878f665801ce979ccb45e43f829f8716bab8853277c70577e",
+      "bytes": 13
+    },
+    "tmp_pytest_02/test_captura_control_excluye_m0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_control_excluye_m0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_captura_control_excluye_m0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "9a42c7b46b9221bd5d615f0f840c348d404d03ffe597281ecdb438442104bad0",
+      "bytes": 23
+    },
+    "tmp_pytest_02/test_captura_control_excluye_m0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion_documental.json": {
+      "sha256": "83b2955700b24e757f20159766e856c111f45140ab0a251c391354011afab41f",
+      "bytes": 26
+    },
+    "tmp_pytest_02/test_captura_control_excluye_m0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_en_misma_ruta_alt0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_en_misma_ruta_alt0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_captura_en_misma_ruta_alt0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_captura_en_misma_ruta_alt0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_captura_en_misma_ruta_alt0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "dc3c2588c3a5b448f6a0d73f1a5d13864af03177f02b9bfdf21b3bc38480d7bb",
+      "bytes": 11
+    },
+    "tmp_pytest_02/test_checkpoints_operativos_no0/data/planes_desarrollo/cache_motor_futuro.json": {
+      "sha256": "f6375dc5371ed1f9187ed341adf57ea1a70c339fe77815ec2f404fc2829bfe23",
+      "bytes": 21
+    },
+    "tmp_pytest_02/test_checkpoints_operativos_no0/data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json": {
+      "sha256": "3ff6d10e01ec5f698b59259cbf50896a637dd0088cc5434e785f0301ff2d337b",
+      "bytes": 35
+    },
+    "tmp_pytest_02/test_checkpoints_operativos_no0/data/planes_desarrollo/documento.md": {
+      "sha256": "1297cae512696129e572050d1ff33a67173807b027e6f97c66aeef34b17ec294",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_escritura_preserva_bytes_0/versiones/474e96920d83dc933e059fca7f24fd1b9a8e8e9e46d7296ed1ff920b917e99f2.json": {
+      "sha256": "474e96920d83dc933e059fca7f24fd1b9a8e8e9e46d7296ed1ff920b917e99f2",
+      "bytes": 65
+    },
+    "tmp_pytest_02/test_escritura_preserva_bytes_0/versiones/47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_02/test_escritura_preserva_bytes_0/vista.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_02/test_fallo_al_reemplazar_conse0/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json": {
+      "sha256": "2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96",
+      "bytes": 60
+    },
+    "tmp_pytest_02/test_fallo_al_reemplazar_conse0/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_fallo_al_reemplazar_conse0/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "b161fcabe0ce9282c4a6a3ab7b9e882049c0648869217a572d44df1b43663c51",
+      "bytes": 43939
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/fuentes_versiones/inventarios/99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a.json": {
+      "sha256": "99908a4aedc83db834a61c6eaaa0b73b8bd284055e66bc47f5736ccbd784899a",
+      "bytes": 1408
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/fuentes_versiones/inventarios/b161fcabe0ce9282c4a6a3ab7b9e882049c0648869217a572d44df1b43663c51.json": {
+      "sha256": "b161fcabe0ce9282c4a6a3ab7b9e882049c0648869217a572d44df1b43663c51",
+      "bytes": 43939
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_generar_preserva_metadata0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_generar_rechaza_captura_s0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_generar_rechaza_captura_s0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_generar_rechaza_captura_s0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "633d30d40cf26d647f19a9340ac825b5e25ca15b97cb4b0d6f9f23e2bbe0b58d",
+      "bytes": 9
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi2/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "42519a76f399339326a28e21190597aaadddfbffa5886ec4de57eee95d0635c8",
+      "bytes": 25
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi3/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi3/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi3/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "d5b592c05dc25b5032553f1b27f4139be95e881f73db33b02b05ab20c3f9981e",
+      "bytes": 3
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi3/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_anterior_ilegi3/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_inventario_guarda_instant0/banco/inventario_pipeline_2026.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_02/test_inventario_guarda_instant0/versiones/0143652b9e45c2dea0132b1db49d54ec28536bdb7f05cd13d7f6b863c1e5c496.json": {
+      "sha256": "0143652b9e45c2dea0132b1db49d54ec28536bdb7f05cd13d7f6b863c1e5c496",
+      "bytes": 66
+    },
+    "tmp_pytest_02/test_inventario_guarda_instant0/versiones/47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82.json": {
+      "sha256": "47ccdfe5c3ae9babde6c4ce84c85cc1e829c386023c30415cc4179c776617a82",
+      "bytes": 66
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "d3b31702a966174c0aa0a25eab8a4f184ec823e8b2d9672fbf277642e77e5c32",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "dcbd5a6733630d8405e5f33590734013c356b8c7c9658408c594a947906cc1db",
+      "bytes": 1397
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no2/bridge/copia_captura.json": {
+      "sha256": "be511a5be307fc2465e4bc70b1081b13bbdbf9dc9d874071941ae17ad5eb8b74",
+      "bytes": 18
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no3/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no3/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no3/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "e40d2129dbbf930bb3e91fea3ae909b8848dc3d4e9223cabcae24e92b14ffbd1",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no3/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no3/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no4/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no4/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no4/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "a6af9a77b55345f57f0a5b6cfcacf0454a451c08c7d68b8b7230df2e749e4342",
+      "bytes": 1347
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no4/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no4/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no5/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no5/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no5/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "84894929d23f978730d69b44a21853b1f602a2d62a8f2cc753681b97458ed8d9",
+      "bytes": 1375
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no5/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no5/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no6/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no6/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no6/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "00090395501dd68be23464ee473111de3dd3c84312a51a4bd0e688976be1152f",
+      "bytes": 1351
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no6/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_metadata_inconsistente_no6/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_preco0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_preco0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_preco0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "bbdedf1d2780b25cefc31a043fc171966ac4d1de418c78ed5b4ef2b389708bc9",
+      "bytes": 53
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_preco0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_preco0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_symli0/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_symli1/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_symli2/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_symli3/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_publicacion_rechaza_symli4/real/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "a418c0b23fdcc3459f79727fa39dcd4770448d5215018883ec6e2fd4263157e3",
+      "bytes": 183
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi1/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi1/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi1/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "cd77ca594f1ba360434c7e32a632f05b2140a45ffbdd94d79aa54aefdc0b1adf",
+      "bytes": 195
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi1/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi1/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi2/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi2/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi2/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "0540f3f1cbda5853defd466d3ac493eb0acf94161ae39d8f1e8229e472f5804c",
+      "bytes": 197
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi2/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_referencia_previa_inconsi2/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_ruta_de_version_anterior_0/bridge/copia_captura.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_ruta_de_version_anterior_0/data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "fd03038a48d7763a00c27866d8e0939e9eba2c242ef95015cda2caa438df24c3",
+      "bytes": 4940
+    },
+    "tmp_pytest_02/test_ruta_de_version_anterior_0/data/banco_fuentes_oficiales/inventario_pipeline_2026.json": {
+      "sha256": "1386d0855379f6c3ad3825df64e58e74a920281d4c322a680e03b3503c42f36c",
+      "bytes": 1350
+    },
+    "tmp_pytest_02/test_ruta_de_version_anterior_0/data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_ruta_de_version_anterior_0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json": {
+      "sha256": "7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327",
+      "bytes": 30
+    },
+    "tmp_pytest_02/test_staging_inventaria_hashes0/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "34a37c2bdadb6e8f84196513a9265e06ca9fbcbe046ede62de2897faf9e2aa60",
+      "bytes": 16
+    },
+    "tmp_pytest_02/test_staging_inventaria_hashes0/banco_fuentes_oficiales.stage.prueba/indicadores_consolidados_cartagena_2026.csv": {
+      "sha256": "f70e255905a1959536f5d111287ce1ef5f5d2289618dced99668c1c63e6ce4fa",
+      "bytes": 235
+    },
+    "tmp_pytest_02/test_version_anterior_y_nueva_0/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json": {
+      "sha256": "2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96",
+      "bytes": 60
+    },
+    "tmp_pytest_02/test_version_anterior_y_nueva_0/versiones/b2f20b740066e71351141bf3dfe040dd69e952b958b3f153236aa892466e8994.json": {
+      "sha256": "b2f20b740066e71351141bf3dfe040dd69e952b958b3f153236aa892466e8994",
+      "bytes": 57
+    },
+    "tmp_pytest_02/test_version_anterior_y_nueva_0/vista.json": {
+      "sha256": "2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96",
+      "bytes": 60
+    },
+    "tmp_pytest_02/test_version_de_fuente_no_camb0/indicadores.csv": {
+      "sha256": "84c2d633336679eaeb3d96fb53a4af331dc3621090cf2ba900b9d3fbb059eb0e",
+      "bytes": 349
+    },
+    "tmp_pytest_02/test_version_existente_diverge0/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json": {
+      "sha256": "a4a50a7d0d4541de783c993b1a79c0cb183c6b5099eee5584857e233c424984e",
+      "bytes": 10
+    },
+    "tmp_pytest_02/test_version_existente_diverge0/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    },
+    "tmp_pytest_02/test_version_existente_diverge1/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json": {
+      "sha256": "a4a50a7d0d4541de783c993b1a79c0cb183c6b5099eee5584857e233c424984e",
+      "bytes": 10
+    },
+    "tmp_pytest_02/test_version_existente_diverge1/vista.json": {
+      "sha256": "7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9",
+      "bytes": 50
+    }
+  },
+  "enlaces_fixture": [
+    {
+      "ruta": "tmp_pytest_01/test_captura_ausente_o_sustitucurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_ausente_o_sustitu0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_captura_control_excluye_mcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_control_excluye_m0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_captura_en_misma_ruta_altcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_en_misma_ruta_alt0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_checkpoints_operativos_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_checkpoints_operativos_no0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_escritura_preserva_bytes_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_escritura_preserva_bytes_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_fallo_al_reemplazar_consecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_fallo_al_reemplazar_conse0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_generar_preserva_metadatacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_generar_preserva_metadata0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_inventario_anterior_ilegicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_inventario_anterior_ilegi3",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_inventario_guarda_instantcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_inventario_guarda_instant0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_metadata_inconsistente_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_metadata_inconsistente_no6",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_precocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_preco0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli0/vista_link.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli0/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli1/padre_link",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli1/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli2/versiones",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli2/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli3/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli3/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli4/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli4/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symlicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli4",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_vistacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_vista0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_referencia_previa_inconsicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_referencia_previa_inconsi2",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_staging_inventaria_hashescurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_staging_inventaria_hashes0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_version_de_fuente_no_cambcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_version_de_fuente_no_camb0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_version_existente_divergecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_version_existente_diverge1",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_ausente_o_sustitucurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_ausente_o_sustitu0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_control_excluye_mcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_control_excluye_m0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_en_misma_ruta_altcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_en_misma_ruta_alt0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_checkpoints_operativos_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_checkpoints_operativos_no0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_escritura_preserva_bytes_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_escritura_preserva_bytes_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_fallo_al_reemplazar_consecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_fallo_al_reemplazar_conse0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_preserva_metadatacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_preserva_metadata0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_rechaza_captura_s0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_rechaza_captura_s0/bridge/copia_captura.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_rechaza_captura_scurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_rechaza_captura_s0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_inventario_anterior_ilegicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_inventario_anterior_ilegi3",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_inventario_guarda_instantcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_inventario_guarda_instant0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_metadata_inconsistente_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_metadata_inconsistente_no6",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_precocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_preco0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli0/vista_link.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli0/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli1/padre_link",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli1/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli2/versiones",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli2/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli3/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli3/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli4/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli4/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symlicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli4",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_vistacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_vista0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_referencia_previa_inconsicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_referencia_previa_inconsi2",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_ruta_de_version_anterior_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_ruta_de_version_anterior_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_staging_inventaria_hashescurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_staging_inventaria_hashes0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_anterior_y_nueva_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_anterior_y_nueva_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_de_fuente_no_cambcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_de_fuente_no_camb0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_existente_divergecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_existente_diverge1",
+      "tipo": "fixture_sintetica"
+    }
+  ],
+  "autohash": "Manifiesto excluido de su propio inventario"
+}

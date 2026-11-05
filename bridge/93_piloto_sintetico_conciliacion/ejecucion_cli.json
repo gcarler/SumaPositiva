@@ -1,0 +1,14 @@
+{
+  "comando": [
+    "/root/polis/backend/.venv/bin/python",
+    "/root/polis/backend/scripts/contrastar_fuentes_por_periodo.py",
+    "--entrada",
+    "/root/polis/bridge/93_piloto_sintetico_conciliacion/entrada_sintetica.json",
+    "--destino",
+    "/root/polis/bridge/93_piloto_sintetico_conciliacion/salida"
+  ],
+  "exit_code": 0,
+  "stdout": "/root/polis/bridge/93_piloto_sintetico_conciliacion/salida/552548ba97c346b68341fc30dbadcd8d/resultado.json\n/root/polis/bridge/93_piloto_sintetico_conciliacion/salida/552548ba97c346b68341fc30dbadcd8d/manifiesto.json\n",
+  "stderr": "",
+  "datos": "exclusivamente_sinteticos"
+}

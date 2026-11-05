@@ -1,0 +1,211 @@
+[
+  {
+    "test": "tests.test_adaptador_catalogo_fuentes_polis::test_cli_real_catalogar_y_planificar_registrado",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/catalogar_planificar_cli_registrado-df6ad3a5ed13414a901256aa89a8e096.candidatos.json",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/catalogar_planificar_cli_registrado-df6ad3a5ed13414a901256aa89a8e096.candidatos.json",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_adaptador_catalogo_fuentes_polis::test_cli_real_rechaza_registro_inventado",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/cli_registro_inventado-5fe59a492a574bdcb1571513ee23063f.candidatos.json",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/cli_registro_inventado-5fe59a492a574bdcb1571513ee23063f.candidatos.json",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_adaptador_catalogo_fuentes_polis::test_cli_real_unico_por_limite",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/cli_limite-e18a5219871b4c12a2f562648b24d573.catalogo.json",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/116_validacion_adaptador_r1/tests/cli_limite-e18a5219871b4c12a2f562648b24d573.catalogo.json",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_catalogo_fuentes_versionado::test_carga_real_no_duplica_y_no_promueve",
+    "categoria": "datos_fuera_alcance",
+    "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+    "ultimas_lineas": [
+      "            raise ValueError(\"Faltan las fichas de paquetes locales\")",
+      "        catalogos: dict[str, dict[str, dict]] = {}",
+      "        for archivo in inventario[\"archivos\"]:",
+      "            paquete = paquetes.get(archivo.get(\"paquete_clave\"))",
+      "            if not paquete or not archivo[\"ruta\"].startswith(paquete[\"prefijo\"]):",
+      "                raise ValueError(f\"Artefacto sin ficha de paquete v\u00e1lida: {archivo['ruta']}\")",
+      "            ruta = RAIZ / archivo[\"ruta\"]",
+      "            if not ruta.is_file() or _sha256(ruta) != archivo[\"sha256\"]:",
+      ">               raise ValueError(f\"Artefacto ausente o con SHA distinto: {archivo['ruta']}\")",
+      "E               ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+      "",
+      "backend/scripts/cargar_catalogo_fuentes.py:85: ValueError"
+    ]
+  },
+  {
+    "test": "tests.test_catalogo_fuentes_versionado::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion",
+    "categoria": "datos_fuera_alcance",
+    "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+    "ultimas_lineas": [
+      "            raise ValueError(\"Faltan las fichas de paquetes locales\")",
+      "        catalogos: dict[str, dict[str, dict]] = {}",
+      "        for archivo in inventario[\"archivos\"]:",
+      "            paquete = paquetes.get(archivo.get(\"paquete_clave\"))",
+      "            if not paquete or not archivo[\"ruta\"].startswith(paquete[\"prefijo\"]):",
+      "                raise ValueError(f\"Artefacto sin ficha de paquete v\u00e1lida: {archivo['ruta']}\")",
+      "            ruta = RAIZ / archivo[\"ruta\"]",
+      "            if not ruta.is_file() or _sha256(ruta) != archivo[\"sha256\"]:",
+      ">               raise ValueError(f\"Artefacto ausente o con SHA distinto: {archivo['ruta']}\")",
+      "E               ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+      "",
+      "backend/scripts/cargar_catalogo_fuentes.py:85: ValueError"
+    ]
+  },
+  {
+    "test": "tests.test_conciliacion_retrospectiva_fuentes_polis::test_cli_real_subprocess_and_hashes",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/93_sintetico_concilia__4bqwx9b",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/93_sintetico_concilia__4bqwx9b",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_conciliador_gold_set::test_csv_a_ciegas_no_filtra_par_tipo_por_el_id",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /tmp/articulo_gold_set_test.json",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /tmp/articulo_gold_set_test.json",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_ficha_territorial_polis::test_cli_real_publica_hash_de_bytes_reales_y_filtro_2020",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/139_validacion_ficha_r2/cli-test-e22a88e7f1e646eea889abf0eb76af05",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/bridge/139_validacion_ficha_r2/cli-test-e22a88e7f1e646eea889abf0eb76af05",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_ingesta_masiva_triada::test_http_directory_ingest_reads_only_workspace_subdirectory",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/data/planes_accion/triada-test-dnawwyz9",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/data/planes_accion/triada-test-dnawwyz9",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  },
+  {
+    "test": "tests.test_inventario_fuentes_polis::test_inventario_publicado_coincide_con_archivos_actuales",
+    "categoria": "datos_fuera_alcance",
+    "mensaje": "AssertionError: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json\nassert '7dfb91e3942e...a771be8c02f38' == 'a7443aa121b2...005037aa6dc7a'\n  \n  - a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a\n  + 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "ultimas_lineas": [
+      "        inventario = json.loads((raiz / \"data/banco_fuentes_oficiales/inventario_pipeline_2026.json\").read_text())",
+      "        for archivo in inventario[\"archivos\"]:",
+      "            ruta = raiz / archivo[\"ruta\"]",
+      "            assert ruta.is_file(), archivo[\"ruta\"]",
+      ">           assert hashlib.sha256(ruta.read_bytes()).hexdigest() == archivo[\"sha256\"], archivo[\"ruta\"]",
+      "E           AssertionError: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+      "E           assert '7dfb91e3942e...a771be8c02f38' == 'a7443aa121b2...005037aa6dc7a'",
+      "E             ",
+      "E             - a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+      "E             + 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+      "",
+      "backend/tests/test_inventario_fuentes_polis.py:81: AssertionError"
+    ]
+  },
+  {
+    "test": "tests.test_ipc_deflactor_polis::test_factores_reales_verificados_no_incluyen_anio_parcial",
+    "categoria": "restriccion_guarda",
+    "mensaje": "PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/data/capas_analiticas/ipc_deflactor",
+    "ultimas_lineas": [
+      "        elif event == \"os.link\":",
+      "            paths.append(anchored(args[1], args[3]))",
+      "        elif event == \"os.rename\":",
+      "            paths.extend([anchored(args[0], args[2]), anchored(args[1], args[3])])",
+      "        for path in paths:",
+      "            if isinstance(path, (str, bytes, os.PathLike)):",
+      "                resolved = Path(os.fsdecode(path)).resolve()",
+      "                if not resolved.is_relative_to(Path(EVIDENCE)) and resolved != Path(\"/dev/null\"):",
+      ">                   raise PermissionError(\"Guarda EDD: escritura fuera del directorio de evidencia rechazada: \" + str(resolved))",
+      "E                   PermissionError: Guarda EDD: escritura fuera del directorio de evidencia rechazada: /root/polis/data/capas_analiticas/ipc_deflactor",
+      "",
+      "bridge/183_evidencia_edd_aportes/guard/sitecustomize.py:73: PermissionError"
+    ]
+  }
+]

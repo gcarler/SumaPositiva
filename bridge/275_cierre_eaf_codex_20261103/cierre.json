@@ -1,0 +1,39 @@
+{
+  "utc": "2026-11-03T10:54:41.864768+00:00",
+  "head_final": "625007de093a3560033f1de3eddc0a7e5960302a",
+  "archivos_contrastados": 857,
+  "cambios_durante_verificacion": [],
+  "copia_ejecutada_y_publica_identicas": true,
+  "arnes_original_sin_cambios": true,
+  "custodia_historica": [
+    {
+      "manifiesto": "bridge/275_evidencia_eaf_codex/manifest_sha256.json",
+      "sha256": "c685ee54e95ab3c775028b7d395dee88cae8801359c2c24acaf41ef30c09c08e",
+      "entradas_verificadas": 64,
+      "discrepancias": [],
+      "referencia_dictamen_mutable": "resuelta por copia íntegra preservada con el SHA original"
+    },
+    {
+      "manifiesto": "bridge/275_reinspeccion_eaf_codex_20261103/manifest_sha256.json",
+      "sha256": "5203ccac91fa67a8af9e87bf70e1b0ba38698eb1f19eadf65b7b564581d49d62",
+      "entradas_verificadas": 53,
+      "discrepancias": [],
+      "referencia_dictamen_mutable": "resuelta por copia íntegra preservada con el SHA original"
+    }
+  ],
+  "secretos_conocidos_exportados": [],
+  "tipos_secretos_contrastados": [
+    "POLIS_DATABASE_URL",
+    "POLIS_IP_SALT",
+    "POLIS_JWT_SECRET_KEY",
+    "bd_anterior_declarada_rotada"
+  ],
+  "env": "solo lectura para contraste de secretos; no copiado, impreso ni cargado al ejecutar",
+  "bases_creadas": [],
+  "rol_creado": null,
+  "persistencia_retest": "no aplica: delta solo del monitor; evidencia SQL anterior conservada por hash",
+  "bd_csh": "sin conexiones ni cambios",
+  "postfix_real": "no utilizado",
+  "servicios_reales_reiniciados": false,
+  "commit_push_del_auditor": false
+}

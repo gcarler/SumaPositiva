@@ -187,6 +187,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/geodatos/analitica/hurtos/resumen | publico | Consulta pública y transparente de analítica agregada de hurtos para visualización ciudadana en el Geovisor. |
 | GET | /api/v1/geodatos/analitica/hurtos/geojson | publico | Consulta pública de polígonos y métricas de densidad delictiva para capas del Geovisor. |
 | GET | /api/v1/geodatos/analitica/hurtos/registros | publico | Exploración tabular, filtrado multicriterio y pivot analítico de registros GeoJSON de hurtos. |
+| GET | /api/v1/geodatos/analitica/multifuente | publico | Lectura descriptiva de las mismas observaciones agregadas ya públicas del Banco Multifuente; filtros, series y trazabilidad sin escrituras, datos personales ni promoción de fuentes. |
 | GET | /api/v1/health/live | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/ready | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/system | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
@@ -234,6 +235,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/identidad/usuarios/{usuario_id}/ambitos | permiso:usuarios:gestionar@declarada | Asignación controlada de ámbito territorial con justificación pericial y auditoría. |
 | DELETE | /api/v1/identidad/usuarios/{usuario_id}/ambitos/{ambito_id} | permiso:usuarios:gestionar@declarada | Revocación controlada de ámbito territorial con justificación pericial y auditoría. |
 | GET | /api/v1/identidad/verificar-nivel | permiso:aportes:crear@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/indicadores/catalogo | publico | Catálogo metodológico público de indicadores de seguridad humana: fórmula, fuente, custodio y estado; sin valores calculados. |
 | GET | /api/v1/indicadores/cadena-valor | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/indicadores/fichas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | POST | /api/v1/indicadores/fichas | permiso:indicadores:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

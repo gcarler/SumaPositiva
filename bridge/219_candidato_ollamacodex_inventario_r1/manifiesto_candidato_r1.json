@@ -1,0 +1,57 @@
+{
+  "candidato_219": {
+    "archivos": 1829,
+    "bytes": 1641042,
+    "cargable_ahora": false,
+    "entrada_sustituida_indice": 1648,
+    "fuentes": 43,
+    "motivo": "ruta futura no existe todavia",
+    "paquetes": 8,
+    "ruta": "bridge/219_candidato_ollamacodex_inventario_r1/candidato_inventario_r1_2026-10-26.sha-59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce.json",
+    "ruta_futura": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-26/resumen_sincronizacion.7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256": "59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce",
+    "tipo": "inventario_candidato"
+  },
+  "esquema": "polis.inventario_fuentes.v1",
+  "fecha_utc_real": "2026-10-26T06:05:52.550420+00:00",
+  "hallazgo_historico_r1": {
+    "bytes": 51693,
+    "diferencia_semantica": "no_comprobada",
+    "original_no_localizado": true,
+    "sha256": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a"
+  },
+  "origen_213": {
+    "candidato_213": {
+      "bytes": 1638713,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/candidato_inventario_2026-10-26.sha-0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082.json",
+      "sha256": "0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082"
+    },
+    "inventario": {
+      "bytes": 1638638,
+      "mtime_ns": 1792994216297351618,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/inventario_pipeline_2026.sha-5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+      "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c"
+    },
+    "resumen": {
+      "bytes": 4815,
+      "mtime_ns": 1792994216301255148,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+      "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+    }
+  },
+  "resumen_capturado_r1": {
+    "bytes": 4815,
+    "estado": "captura_control_derivado_no_fuente_oficial",
+    "origen": "copia congelada de 213",
+    "ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+  },
+  "sin_banco": true,
+  "sin_commit": true,
+  "sin_despliegue": true,
+  "sin_push": true,
+  "sin_pytest": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "tarea": "OL-FUENTES-SHA-02-R1"
+}

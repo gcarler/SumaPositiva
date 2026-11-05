@@ -1,0 +1,108 @@
+{
+  "alcance": "COMPARACION_OFFLINE_SIN_ACREDITAR_EJECUCION_NI_CAUSALIDAD",
+  "base_origen_catalogo": "polis_test",
+  "base_origen_ppi": "polis_test",
+  "esquema": "polis.comparacion_ppi_catalogo.v1",
+  "estado_publicacion": "no_publicable",
+  "hallazgos": {
+    "nodos_estructura": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_fuente": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_jsonb": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "planes": {
+      "conteo_completo": 1,
+      "muestra": [
+        {
+          "campo": null,
+          "codigo_plan": "P",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": null,
+          "id": null,
+          "motivo": "El catálogo v1 no contiene totales de plan ni equivalencia declarada",
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": null,
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": null,
+          "tipo": "total_plan_no_comparable",
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": null,
+          "valor_ppi": null,
+          "valor_ppi_tipado": null
+        }
+      ],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 1
+    }
+  },
+  "limites": {
+    "credito": "No acredita ejecución, presupuesto comparable, vínculo PA, indicador ni causalidad",
+    "precision_financiera": "No se convierte Decimal a float; float heredado del catálogo invalida igualdad exacta",
+    "totales_planes": "COMPARACION_NO_DISPONIBLE_SIN_EQUIVALENCIA_EN_CATALOGO_V1",
+    "universos": "PPI y catálogo son universos distintos; faltantes y sobrantes no se normalizan."
+  },
+  "referencias": {
+    "captura_ppi": {
+      "esquema": "polis.ppi_planeacion.v2",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_comparacion_igual_y_salid0/ppi/a12c87d558228e5cda689af056727811851b3c3b371cc53921a5f59423ece5df.json",
+      "sha256": "a12c87d558228e5cda689af056727811851b3c3b371cc53921a5f59423ece5df"
+    },
+    "catalogo": {
+      "esquema": "polis.catalogo_planeacion.v1",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_comparacion_igual_y_salid0/catalogo/fc6507e74181148d036a9e141b4ae77b4a2c89ea43f6e668728dc00ee7064b2e.json",
+      "sha256": "fc6507e74181148d036a9e141b4ae77b4a2c89ea43f6e668728dc00ee7064b2e"
+    },
+    "inventario": {
+      "sha256": "6a9aacdc5de95e3274c446f438ae28c3fa40cfa8027f815a7fd5062ad23f3575"
+    },
+    "manifiesto": {
+      "run_id": "b9c68cfc-253b-4053-859f-cce686c0341c",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_comparacion_igual_y_salid0/manifiesto.json",
+      "sha256": "775b7e969741879fa2f830b702d78750b0b6ef897153f9084be2cd362f073bce"
+    }
+  },
+  "resumen": {
+    "base_origen_distinta": false,
+    "campos_jsonb_cambio": 0,
+    "campos_jsonb_iguales": 2,
+    "campos_jsonb_precision_no_verificable": 0,
+    "cobertura_planes_metas_con_cambios": 0,
+    "cobertura_planes_nodos_con_cambios": 0,
+    "nodos_compartidos": 1,
+    "nodos_con_cambios_estructurales": 0,
+    "nodos_faltantes_en_ppi": 0,
+    "nodos_fuente_cambio": 0,
+    "nodos_fuente_iguales": 1,
+    "nodos_iguales_estructuralmente": 1,
+    "nodos_jsonb_con_cambios": 0,
+    "nodos_jsonb_iguales_estructuralmente": 1,
+    "nodos_jsonb_precision_no_verificable": 0,
+    "nodos_sobrantes_en_ppi": 0,
+    "planes_compartidos": 1,
+    "planes_faltantes_en_ppi": 0,
+    "planes_sobrantes_en_ppi": 0
+  }
+}

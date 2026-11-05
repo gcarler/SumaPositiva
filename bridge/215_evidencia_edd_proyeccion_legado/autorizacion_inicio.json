@@ -1,0 +1,27 @@
+{
+  "fecha": "2026-10-26T06:06:34.406823+00:00",
+  "senal": "MODIFICAR_APORTES_LEGADO",
+  "emisor": "coordinador /root",
+  "alcance": [
+    "backend/app/modules/aportes/schemas.py",
+    "backend/app/modules/aportes/service.py",
+    "backend/tests/test_aportes_legado_publico.py"
+  ],
+  "prohibido": [
+    "0084",
+    "frontend",
+    "203",
+    "auditoria",
+    "identidad",
+    "configuracion",
+    "fixtures generales"
+  ],
+  "fuentes": {
+    "backend/app/modules/aportes/schemas.py": "b1cd3eb43a06fa8426b1d480814347cf8ff21c1d83358e5d62b5558ad077a82d",
+    "backend/app/modules/aportes/service.py": "66a3406f719a2128f0e70ed8c872482c141bdcb3e784924d1c516e74be8fe78c",
+    "backend/tests/test_aportes_legado_publico.py": null,
+    "bridge/203_reinspeccion_eaf_aportes.md": "34e841385f91493364271f08e5f20ecbb78f44ffe04f6fdec64b30173b33f2bc",
+    "bridge/203_evidencia_eaf_aportes/manifest_evidencia.json": "d5a70b07e0a6e66a8ba50ec33f011cee3bc17db8f3edce9bb168820d4dc1c7bf",
+    "backend/alembic/versions/0084_aportes_colas_y_apoyos.py": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5"
+  }
+}

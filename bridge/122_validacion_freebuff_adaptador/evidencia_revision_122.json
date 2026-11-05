@@ -1,0 +1,73 @@
+{
+  "tarea": "FB-FUENTES-02",
+  "agente": "Freebuff",
+  "fecha_utc": "2026-10-26T02:00:00+00:00",
+  "estado": "revision_cruzada_adaptador_superada_pendiente_gobierno",
+  "alcance": "revision independiente del adaptador catalogo-clasificado (R1 Ollama + ajuste de coordinacion documento_original_json); sin corregir codigo",
+  "hashes_verificados_contra_120_evidencia": {
+    "backend/app/modules/compromisos/adaptador_catalogo_fuentes_polis.py": {
+      "sha256": "98e19295ddb337c21892adc4161f42a6b757392776e5066ba43d0bdd77bf7a09",
+      "coincide_con_120": true
+    },
+    "backend/scripts/planificar_fuentes_politica.py": {
+      "sha256": "c26e9db460fa1c4386c89f24564fe7feb6bfa8419b1500891906b4344903f3c0",
+      "coincide_con_120": true
+    },
+    "backend/tests/test_adaptador_catalogo_fuentes_polis.py": {
+      "sha256": "0f5b0ed586e3608a9ebe607d17398faea62fdf2cdb3c882cb1df3a9c57776388",
+      "coincide_con_120": true
+    },
+    "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json": {
+      "sha256": "15983f1be2e939def90a808f6344e33b95ae022234852c217d5655b2834215ca"
+    }
+  },
+  "pruebas_reproducidas": {
+    "comando": "backend/.venv/bin/python -m pytest --noconftest -q tests/test_adaptador_catalogo_fuentes_polis.py --junitxml=<evidencia>",
+    "corrida1": {
+      "tests": 16,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tiempo_s": 5.94,
+      "junit": "bridge/122_validacion_freebuff_adaptador/pytest_adaptador_corrida1.xml"
+    },
+    "corrida2": {
+      "tests": 16,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tiempo_s": 5.52,
+      "junit": "bridge/122_validacion_freebuff_adaptador/pytest_adaptador_corrida2.xml"
+    },
+    "repetibilidad": true,
+    "artefactos_sinteticos_cli_limpios": true
+  },
+  "ruff": {
+    "check": "passed",
+    "format_check": "passed",
+    "archivos": 3
+  },
+  "verificaciones_de_codigo": [
+    "registro cerrado real: _registro_autorizado consulta registro_descargas(); la restriccion solo selecciona entradas presentes en el registro real y con adaptador identico (no amplifica ni contradice); duplicados de restriccion rechazados; registro vacio de seleccion rechazado",
+    "candidatos no registrados y discrepancia de adaptador fallan antes de publicar (ValueError); candidatos duplicados rechazados",
+    "lectura acotada real: _leer_bytes_acotados lee maximo+1 y calcula hashes de esos mismos bytes; MAXIMO_BYTES=32MB catalogo, MAXIMO_JSON_BYTES=1MB entradas JSON",
+    "JSON estricto: parse_float rechazado (sin float binario), parse_constant rechazado (sin NaN/Infinity), claves duplicadas rechazadas",
+    "documento_original_json conserva texto UTF-8 exacto con StringConstraints(strip_whitespace=False); ida y vuelta, salto de linea final y SHA verificados por test_documento_json_exacto_sobrevive_serializacion_contexto; proyeccion tipada usa Decimal",
+    "candidatura completa preservada tipada en CandidaturaAutorizada (candidato+registro+evidencia+procedencia) y en manifiesto",
+    "ambitos historicos intactos: catalogar/planificar sin restriccion a bridge/ y escritura exclusiva con open('x') sin sobrescritura; resta a bridge/ solo en catalogar-clasificado con _ruta_valida anti-symlink",
+    "temporada de creacion atomica: carpeta temporal 0700 + rename; en fallo se elimina la carpeta temporal",
+    "flujo CLI real: catalogar-clasificado con --candidatos registrado, manifiesto con candidaturas y SHA de artefactos, luego planificar real con perfil sintetico -> programar_adquisicion_y_validacion sin ejecutar adquisicion",
+    "no adecuacion ni aptitud acreditada: version_local_sha256/evidencia_validacion None, condiciones_uso por_verificar, advertencias explícitas de no acreditacion analitica"
+  ],
+  "observaciones_menores_no_bloqueantes": [
+    "test_json_y_texto_invalido_rechaza contiene expresion obsoleta con rama 'if False else' (codigo sin efecto, pasa por el else); sugerencia futura de simplificacion, no corregida en esta revision",
+    "test_numeros_flotantes_rechazados_en_candidatos prueba _sin_duplicados privada con lambda local; no existe caso CLI directo con float en --candidatos; la logica real _parsear_json_estricto si rechaza floats (verificado por lectura); propuesta: caso CLI explicito en evolucion futura, sin corregir aqui",
+    "comandos historicos catalogar/planificar leen entradas sin limite de bytes; conservacion de compatibilidad previa segun 115 punto 5, sin limitacion nueva documentada",
+    "_lista_anios convierte textos de digitos a int (coercion declarada del contrato del planificador, preexistente y conservada sin excusas)"
+  ],
+  "limites": "sin SQL, red, descargas, promocion al banco, dictamen EAF, commit, push ni despliegue; no se modifico implementacion, tests, parser, contratos ni otros entregables",
+  "junit_sha256": {
+    "pytest_adaptador_corrida1.xml": "9fe4332ba559e2f44df0fa62428524adcf27d7b5914a8d5aef01ce58132f163e",
+    "pytest_adaptador_corrida2.xml": "9f06c1f49ee8f043745b4f1a5111c6ca02c65b4f9eb9382d0d7e6cb7b2c597e9"
+  }
+}

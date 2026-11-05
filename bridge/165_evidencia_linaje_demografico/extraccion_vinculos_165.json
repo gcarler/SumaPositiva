@@ -1,0 +1,604 @@
+{
+  "sin_seguimiento_externo": true,
+  "notas": "vin culos registrados; no se abrió ningún host externo ni se descargó material listado",
+  "paginas": [
+    {
+      "clave": "proyecciones_poblacion",
+      "titulo": "DANE - Proyecciones de población",
+      "fechas_en_meta": [],
+      "total_vinculos": 116,
+      "vinculos_descarga_dane": [
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/NotaTecnica-PPED-jul2025.pdf",
+          "texto": "Nota técnica: Actualización Proyecciones de Población y Estudios Demográficos (PPED)",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/PPED-AreaNac-2018-2070.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/PPED-AreaSexoEdadNac-2018-2070.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/PPED-AreaNac-1950-2017.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/PPED-AreaSexoEdadNac-1950-2017.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Regional/PPED-AreaReg-2018-2050.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Regional/PPED-AreaSexoEdadReg-2018-2050.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/PPED-AreaDep-2018-2050_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/PPED-AreaSexoEdadDep-2018-2050_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-area-proypoblacion-dep-2005-2017_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-area-sexo-edad-proypoblacion-dep-2005-2017_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-areaproypoblacion-dep-1993-2004.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-area-sexo-edad-proypoblacion-dep-1993-2004.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-area-proypoblacion-dep-1985-1992.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Departamental/DCD-area-sexo-edad-proypoblacion-dep-1985-1992.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-2005-2017_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-sexo-edad-proypoblacion-Mun-2005-2017_VP.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-1995-2004.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-sexo-edad-proypoblacion-Mun-1995-2004.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-1985-1994.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-sexo-edad-proypoblacion-Mun-1985-1994.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/anexo-poblacion_certificada_decreto1652_2021.xls",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/acerca/Normatividad/decretos/DECRETO-1652-DE-2021.pdf",
+          "texto": "Consultar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/anex-DCD-Proypoblacion-PerteneniaEtnicoRacialmun.xlsx",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/presentacion-Proypoblacion-IndDemograficos-ActPostCOVID.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Documento-metodologico-proyecciones.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Ficha-metodologica-proyecciones.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nota-metodologica-actualizacion-proyecciones-ActPostCOVID.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Nota-metodologica-actualizacion-proyecciones.pdf",
+          "texto": "",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/Metadato-proyecciones-ActPostCOVID.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/comunicado-estimaciones-de-poblacion-con-base%20en-conciliacion-censos-08-10-2020.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/presentacion-estimaciones-retroproyecciones-de-poblacion-1985-2017.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2018/proyecciones-de-poblacion/presentacion-Proyecciones-Demograficas_baseCNPV-2018_mar21.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        }
+      ],
+      "menciones_censo": [],
+      "menciones_retro": []
+    },
+    {
+      "clave": "censo_general_2005",
+      "titulo": "DANE - Censo general 2005",
+      "fechas_en_meta": [],
+      "total_vinculos": 198,
+      "vinculos_descarga_dane": [
+        {
+          "href": "/files/censos/ManualTecnico.pdf",
+          "texto": "Manual técnico censo 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/Censo_2005.pdf",
+          "texto": "Metodología Censo 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/2005_general_census_methodology.pdf",
+          "texto": "click here",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/sintesis_corregido.pdf",
+          "texto": "Documento Síntesis",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/GRUPO1.pdf",
+          "texto": "Análisis de los procesos previos al procesamiento de la información.",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/censo/files/AnexoAmatriz.pdf?&amp;",
+          "texto": "(Anexos)",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/GRUPO2.1.pdf",
+          "texto": "Tecnología de información",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/Grupo_mixto22%20_PUBL.pdf",
+          "texto": "Estructura y composición de las principales variables demográficas y socioeconómicas",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/Grupo3_Version0902.pdf",
+          "texto": "Especificaciones proceso de conciliación censal como herramienta para medición de la omisión censal",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/informe_final_19_08_08.pdf",
+          "texto": "Principales hallazgos del Estudio de la información recolectada en el censo 2005 sobre las unidades económicas independientes y la actividad agropecuaria asocia",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/libroCenso2005nacional.pdf",
+          "texto": "Libro censo general 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/cuadros_censo_2005.xls",
+          "texto": "Cuadro Censo 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/boletines/bol_educacion.pdf",
+          "texto": "Resultados",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/presentaciones/capital_humano.pdf",
+          "texto": "Capital Humano",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2005/gene_15_03_07.pdf",
+          "texto": "Características de género",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/presentaciones/bol_soltera_Bta.pdf",
+          "texto": "Población soltera en Bogotá",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/presentaciones/jefes_hogar.pdf",
+          "texto": "Jefatura de Hogar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/discapacidad/marco_teorico.pdf",
+          "texto": "Conceptos generales",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/boletines/discapacidad.pdf",
+          "texto": "Boletín informativo",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/discapacidad/discapacidad_mundo.pdf",
+          "texto": "Discapacidad en el mundo",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/discapacidad/datos_departamentales.pdf",
+          "texto": "Datos departamentales",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/discapacidad/preva_indices.pdf",
+          "texto": "Prevalencia e índices",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/censo/files/boletines/bol_educacion.pdf",
+          "texto": "",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2005/ficha_metodologica.pdf",
+          "texto": "Ficha metodológica",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2005/dis_concep_metod.pdf",
+          "texto": "Diseño conceptual",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/docBasica/FormularioCG2005.pdf",
+          "texto": "Formulario",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2005/cuestionario.pdf",
+          "texto": "Cuestionario",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censo2005/lanzamiento/libro.pdf",
+          "texto": "Cuentos de los que nos contaron",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/resultados/NBI_total_municipios_30_Jun_2012.xls",
+          "texto": "Necesidades Básicas Insatisfechas - NBI, por total, cabecera y resto, según municipio y nacional",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/resultados/NBI_total_dpto_30_Jun_2012.xls",
+          "texto": "Necesidades Básicas Insatisfechas - NBI, por Total, cabecera y resto (Desagregada 30/06/12)",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/resultados/NBI_total_municipios_30_Jun_2011.pdf",
+          "texto": "Municipios (pdf)",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/censos/resultados/NBI_total_30_Jun_2011.pdf",
+          "texto": "Departamentos (pdf) .",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/Bol_deficit_vivienda.pdf",
+          "texto": "Boletín déficit de vivienda",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/FM_deficitvivienda.pdf",
+          "texto": "Ficha metodoógica déficit de vivienda",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/DeficitViviendaCenso1993.xls",
+          "texto": "Déficit de vivienda - 1993",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/DeficitViviendaCenso2005.xls",
+          "texto": "Dé ficit de vivienda - 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/Bol_nbi_censo_2005.pdf",
+          "texto": "Boletín NBI Censo 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/boletines/censo/est_interp_coefvariacion.pdf",
+          "texto": "Estimación e interpretación del coeficiente de variación",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/1Conciliacion_censal.pdf",
+          "texto": "Colombia. Proceso de Conciliación Censal 1985-2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/2Cambios_demograficos.pdf",
+          "texto": "Colombia. Análisis de Contexto de los Cambios Demográficos",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/3Calidad_datoscensales.pdf",
+          "texto": "Colombia. Calidad de los Datos del Censo 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/4Fecundidad85_05.pdf",
+          "texto": "Colombia. Estimaciones de Fecundidad 1985-2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/5Mortalidad85_05.pdf",
+          "texto": "Colombia. Estimación de la Mortalidad 1985-2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/6Migracion1973_2005.pdf",
+          "texto": "Estimación de la Migración 1973 - 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/7_Proyecciones_poblacion.pdf",
+          "texto": "Colombia. Proyecciones de Población Nacionales y Departamentales 2006 -2020",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/8Tablasvida1985_2020.pdf",
+          "texto": "Tablas de Vida 1985 - 2020",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/9ProyeccionesMunicipalesedadsexo.pdf",
+          "texto": "Proyecciones de municipales según edad y sexo 2006- 2020",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/conciliacenso/2Cambios_demograficos.pdf",
+          "texto": "Explicaciones de las diferencias entre las Proyecciones de Población y los resultados del CENSO 2005",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/Edades_Simples_1985-2020.xls",
+          "texto": "Estimación y proyección de población nacional, departamental y municipal por sexo, grupos quinquenales de edad y edades simples de 0 a 26 años 1985-2020",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+          "texto": "Estimación y proyección de población nacional, departamental y municipal total por área 1985-2020",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/proyecciones-nivel-nacional-departamental-por-sexo-y-edades-simples-hasta-80-anos-y-mas.xls",
+          "texto": "Proyecciones de población a nivel nacional y departamental por sexo y edades simples hasta 80 años y más",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/VisorCertificaPPO_Oct11.xls",
+          "texto": "Visor: Proyecciones de población total por sexo y grupos de edad de 0 hasta 80 y más años (2005 - 2020).",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/Hogares_viviendas_1985-2020.xls",
+          "texto": "Estimación y proyección de hogares 1985-2020 y viviendas 1993-2020 nacional, departamental por área",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/Proyecciones_poblacion.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/Ficha_Proyecciones_poblacion.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/MProyeccionesMunicipalesedadsexo.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/Metodologia_estimaciones.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/fichas/Ficha_Estimaciones_Proyecciones_85_2020.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/proyepobla06_20/7Proyecciones_poblacion.pdf",
+          "texto": "Descargar",
+          "externo": false,
+          "descarga": true
+        },
+        {
+          "href": "/files/investigaciones/poblacion/seriesp85_20/EstimacionesProyecciones1985__020.xls",
+          "texto": "Colombia. Estimaciones 1985-2005 y Proyecciones 2005-2020 nacional y departamental desagregadas por sexo, área y grupos quinquenales de edad.",
+          "externo": false,
+          "descarga": true
+        }
+      ],
+      "menciones_censo": [
+        "it de vivienda Ficha metodoógica déficit de vivienda Déficit de vivienda - 1993 Dé ficit de vivienda - 2005 Boletín NBI Censo 2005 Estimación e interpretación del coeficiente de variación Conciliación censal 1985-2005 Colombia.",
+        " Calidad de los Datos del Censo 2005 Colombia.",
+        " Estas proyecciones de población fueron calculadas con base en el Censo General 2005.",
+        " Metodología Proyecciones de población línea base Censo General 2005 Descargar Ficha metodológica Proyecciones de población línea base Censo General 2005 Descargar Metodología.",
+        "idad nacionales y departamentales 1985-2020 *Las series de población fueron calculadas con base en las proyecciones del Censo General 2005 que estaban vigentes hasta el 4 de julio de 2019 cuando se publicaron los resultados del Censo Nacion",
+        "antander Sucre Tolima Valle del Cauca **Los indicadores demográficos fueron calculados con base en las proyecciones del Censo General 2005 que estaban vigentes hasta el 4 de julio de 2019 cuando se publicaron los resultados del Censo Nacion",
+        "ntander Sucre Tolima Valle del Cauca ***Los indicadores demográficos fueron calculados con base en las proyecciones del Censo General 2005 que estaban vigentes hasta el 4 de julio de 2019 cuando se publicaron los resultados del Censo Nacion"
+      ],
+      "menciones_retro": []
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "183_evidencia_edd_aportes": {
+    "sha_manifest": "661b24b11f9b27db5e0ee41a50874c81379fab44870aeac0593453afd739aa5a",
+    "artefactos": 68,
+    "diferencias": {}
+  },
+  "203_evidencia_eaf_aportes": {
+    "sha_manifest": "d5a70b07e0a6e66a8ba50ec33f011cee3bc17db8f3edce9bb168820d4dc1c7bf",
+    "artefactos": 87,
+    "diferencias": {}
+  },
+  "producto183": {
+    "total": 20,
+    "sin_cambio": 18,
+    "cambiados_autorizados": [
+      "backend/app/modules/aportes/schemas.py",
+      "backend/app/modules/aportes/service.py"
+    ],
+    "0084_sha": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5"
+  },
+  "protegidos_preparacion": {
+    "total": 6,
+    "todos_identicos": true
+  }
+}

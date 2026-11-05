@@ -1,0 +1,39 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/plataforma/layout,_N_T_/plataforma/diagnostico/layout,_N_T_/plataforma/diagnostico/page,_N_T_/plataforma/diagnostico"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/plataforma/diagnostico/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 160,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/ec9a458b31db06c6385e7c5a38a073ca53b26c77662ed557e7867067b09a7bba/$/plataforma/diagnostico",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/plataforma/diagnostico/page"
+    },
+    "isFallback": false
+  }
+}

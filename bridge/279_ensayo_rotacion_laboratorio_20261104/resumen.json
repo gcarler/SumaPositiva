@@ -1,0 +1,68 @@
+{
+  "tarea": "Ensayo completo del guion de rotación de secretos sobre base y servidor de laboratorio antes de la ventana del 2026-11-05",
+  "date_ventana_objetivo": "2026-11-05",
+  "fecha_ensayo": "2026-11-04",
+  "guion_ejercitado": "scripts/rotar_secretos_produccion.py",
+  "protocolo_normativo": "docs/rotacion-secretos.md (AUD-11)",
+  "laboratorio": {
+    "base_datos": "polis_test_ensayo_rotacion_20261104 (PostgreSQL 127.0.0.1:5432, aislada polis_test*)",
+    "backend": "uvicorn app.main:app 127.0.0.1:8001, workers=1, POLIS_ENVIRONMENT=development",
+    "smtp_fideo": "127.0.0.1:1025 (captura de .eml en /tmp/polis_ensayo_20261104/smtp_capturas, 0700/0600)",
+    "entorno": "/tmp/polis_ensayo_20261104/env_lab.sh derivado del respaldo preflight de producción con overrides solo-lab (no versionado, 0600)",
+    "semilla_usuario": "correo ensayo-1662b2d3@example.org, rol autoridad_distrital, nivel declarada"
+  },
+  "pre_rotacion": {
+    "health_live": 200,
+    "health_ready": 200,
+    "login_gestion": 200,
+    "sesion_anonima": 201,
+    "huella_anonima": "c4069e829981859d3285af191f26322facfefa9ced697bace68fb760ffc4aee9",
+    "herald": "critico (motivos honestos del lab: SMTP vacío hasta montar el fideo; sin efecto de la rotación)",
+    "huella_secretos_jwt_ip_salt_sha256": "86216707e5cf7ab01a6cb19c45953d23c9f9c990980e0fe3e26aed02491fc72d",
+    "link_fuera_de_banda": "POST /identidad/recuperacion/solicitar 200; worker de identidad drenó la cola; mensaje .eml capturado por el fideo; token extraído resolviendo el plegado soft de 78 columnas de EmailMessage (enlace completo 102 caracteres)",
+    "monitor": "El watchdog real (scripts/monitor_sistema_polis.sh) no se ejecutó completo: en modo --cron reinicia servicios systemd de producción (polis-backend/polis-frontend:8000). Se ejercitó su mismo subset de señales (live/ready/herald/system) contra el lab."
+  },
+  "rotacion": {
+    "comando": "python3 scripts/rotar_secretos_produccion.py --env-file /tmp/polis_ensayo_20261104/env_lab.sh",
+    "dry_run_previo": "no ejecutado en lab (archivo derivado, no .env de producción)",
+    "rotacion_bd": "no incluida (--con-bd omitido a propósito: la base lab conserva su credencial; la rotación integral de BD se mantiene para producción)",
+    "huella_secretos_post_sha256_16": "9a3d74bdb9729fb5",
+    "respaldo_guion": "env_lab.sh.bak.20261104_162311 (permisos 0600)",
+    "integridad_no_tocada": ["POLIS_DATABASE_URL (misma base lab)", "POLIS_IDENTIDAD_URL_PUBLICA https://seguridadhumanaintegral.org", "SMTP del lab (127.0.0.1:1025)"],
+    "reinicio": "uvicorn del lab relanzado con secretos nuevos; health 200"
+  },
+  "post_rotacion": {
+    "health_live": 200,
+    "health_ready": 200,
+    "token_pre_rotacion_verificado": 401,
+    "sesion_anonima": 201,
+    "huella_anonima_post": "3ac5b31b82ce7f283eefc16d2069b88cd917169101190e14379c86b11aa18664",
+    "huella_cambio_rotacion": true,
+    "login_nueva_contrasena": 200,
+    "rol_login": "autoridad_distrital",
+    "sesion_verificar_token_nuevo": 200,
+    "identidad_verificar_nivel_token_nuevo": 403,
+    "nota_verificar_nivel_403": "Esperado: la ruta exige nivel de identidad superior al nivel 'declarada' de la semilla; no es efecto de la rotación.",
+    "login_contrasena_original": 401,
+    "nota_login_401": "Esperado: el propio ensayo del enlace fuera de banda reestableció la contraseña (base+'-PostRotA1x'); comportamiento del flujo, no defecto de la rotación.",
+    "herald_post": "critico con motivos del lab (worker puntual sin latido continuo); /health/system ok, revisión 0094_herald_salud_resumen",
+    "consumo_enlace_fuera_de_banda_post": {
+      "status": 200,
+      "explicacion": "Diseño vigente: el token de correo se valida por hash_token (SHA-256 persistido en autenticacion.tokens_accion), no se re-deriva con POLIS_JWT_SECRET_KEY al consumir. La rotación no lo invalida: caduca por tiempo (30 min) y es de uso único. Esto es consistente con docs/rotacion-secretos.md, que solo exige invalidar tokens de sesión JWT."
+    }
+  },
+  "rollback": {
+    "metodo": "restauración del respaldo del guion sobre env_lab.sh (cp + chmod 600) y reinicio del lab",
+    "huella_secretos_restaurada_sha256_16": "86216707e5cf7ab0 (igual a la pre)",
+    "health_live": 200,
+    "login_despues_rollback": 200,
+    "huella_anonima_rollback": "c4069e829981859d3285af191f26322facfefa9ced697bace68fb760ffc4aee9",
+    "huella_identica_a_pre": true,
+    "token_pre_rotacion_tras_rollback": 401,
+    "nota_token_pre_tras_rollback": "401 correcto por revocación de jti en BD: el restablecimiento de contraseña durante el ensayo revocó las sesiones vigentes (política _actualizar_contrasena → revocar_sesiones). No es un fallo del rollback ni de la firma.",
+    "token_post_rotacion_tras_rollback": 401,
+    "nota_token_post_tras_rollback": "Prueba simétrica de firma: token JWT emitido con el secret nuevo queda inválido tras restaurar el secret anterior. La firma regresó al estado pre."
+  },
+  "check_guiones_corridos": "El guion de rotación es el de producción (scripts/rotar_secretos_produccion.py) ejercitado íntegro contra archivo env del laboratorio; no se alteró backend/.env ni systemd de producción.",
+  "ventana": "Ensayada el 2026-11-04, antes del objetivo 2026-11-05."
+}

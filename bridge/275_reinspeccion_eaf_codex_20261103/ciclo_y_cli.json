@@ -1,0 +1,220 @@
+{
+  "commands": [
+    {
+      "name": "heads",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "heads"
+      ],
+      "returncode": 0,
+      "stdout": "0094_herald_salud_resumen (head)\n",
+      "stderr": ""
+    },
+    {
+      "name": "downgrade_0093_herald_gestion",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "downgrade",
+        "0093_herald_gestion"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "upgrade_head",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "upgrade",
+        "head"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "downgrade_0093_herald_gestion",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "downgrade",
+        "0093_herald_gestion"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "upgrade_head",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "upgrade",
+        "head"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "alembic_check",
+      "arguments": [
+        "-m",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "check"
+      ],
+      "returncode": 255,
+      "stdout": "FAILED: New upgrade operations detected: [('remove_index', Index('idx_actividades_anexos_actividad', Column('actividad_id', VARCHAR(length=120), table=<actividades_anexos>, nullable=False))), ('remove_index', Index('idx_actividades_anexos_modulo_recurso', Column('modulo_dueno', VARCHAR(length=50), table=<actividades_anexos>, nullable=False), Column('recurso_id', VARCHAR(length=100), table=<actividades_anexos>, nullable=False))), ('remove_table', Table('actividades_anexos', MetaData(), Column('id', UUID(), table=<actividades_anexos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x758f8736bbc0>, for_update=False)), Column('actividad_id', VARCHAR(length=120), table=<actividades_anexos>, nullable=False), Column('modulo_dueno', VARCHAR(length=50), table=<actividades_anexos>, nullable=False), Column('recurso_id', VARCHAR(length=100), table=<actividades_anexos>, nullable=False), Column('nombre_archivo_original', VARCHAR(length=255), table=<actividades_anexos>, nullable=False), Column('nombre_archivo_seguro', VARCHAR(length=255), table=<actividades_anexos>, nullable=False), Column('ruta_almacenamiento', VARCHAR(length=500), table=<actividades_anexos>, nullable=False), Column('tipo_mime', VARCHAR(length=100), table=<actividades_anexos>, nullable=False), Column('tamano_bytes', INTEGER(), table=<actividades_anexos>, nullable=False), Column('hash_sha256', VARCHAR(length=64), table=<actividades_anexos>, nullable=False), Column('descripcion', TEXT(), table=<actividades_anexos>), Column('subido_por_sujeto_id', UUID(), ForeignKey('autenticacion.usuarios.id'), table=<actividades_anexos>), Column('subido_por_nombre', VARCHAR(length=150), table=<actividades_anexos>), Column('creado_en', TIMESTAMP(timezone=True), table=<actividades_anexos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x758f873b1970>, for_update=False)), Column('eliminado_en', TIMESTAMP(timezone=True), table=<actividades_anexos>), schema='participacion_ciudadana'))]\n",
+      "stderr": ""
+    },
+    {
+      "name": "cli_simular",
+      "arguments": [
+        "-m",
+        "app.modules.notificaciones.resumen_cli",
+        "--simular",
+        "--fecha",
+        "2026-11-02"
+      ],
+      "returncode": 0,
+      "stdout": "[SIMULACIÓN] Resumen del día 02/11/2026 para cli-eaf275-0d950b454a@example.org: 1 acciones, 0 pendientes\n[SIMULACIÓN] Resumen del día 02/11/2026 para eaf275-4b67daa635ac466a9fca3cde1a93c01c@example.org: 2 acciones, 0 pendientes\nResumen diario simulación: 2 destinatario(s) para el 2026-11-02\n",
+      "stderr": ""
+    },
+    {
+      "name": "cli_primera",
+      "arguments": [
+        "-m",
+        "app.modules.notificaciones.resumen_cli",
+        "--fecha",
+        "2026-11-02"
+      ],
+      "returncode": 0,
+      "stdout": "Resumen del día 02/11/2026 encolado para cli-eaf275-0d950b454a@example.org (id=01a1a0e9-e45e-7074-b19f-aaee0373b37b)\nResumen del día 02/11/2026 encolado para eaf275-4b67daa635ac466a9fca3cde1a93c01c@example.org (id=01a1a0e9-e477-7ce0-81e1-94f7b0a9afd8)\nResumen diario encolado: 2 destinatario(s) para el 2026-11-02\n",
+      "stderr": ""
+    },
+    {
+      "name": "cli_repetida",
+      "arguments": [
+        "-m",
+        "app.modules.notificaciones.resumen_cli",
+        "--fecha",
+        "2026-11-02"
+      ],
+      "returncode": 0,
+      "stdout": "Resumen diario encolado: 2 destinatario(s) para el 2026-11-02\n",
+      "stderr": "2026-11-03 10:17:27,010 INFO polis.herald.resumen Resumen del día 2026-11-02 ya encolado para cli-eaf275-0d950b454a@example.org; se omite (idempotencia)\n2026-11-03 10:17:27,021 INFO polis.herald.resumen Resumen del día 2026-11-02 ya encolado para eaf275-4b67daa635ac466a9fca3cde1a93c01c@example.org; se omite (idempotencia)\n"
+    },
+    {
+      "name": "worker_con_cola",
+      "arguments": [
+        "-m",
+        "app.modules.notificaciones.worker_cli",
+        "--una-vez",
+        "--lote",
+        "200"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "2026-11-03 10:17:28,532 INFO polis.herald POLIS Herald iniciado: smtp=(simulado) concurrencia=4 intervalo=10.0s\n2026-11-03 10:17:28,664 INFO polis.notificaciones SMTP no configurado en entorno test; entrega simulada\n2026-11-03 10:17:28,667 INFO polis.notificaciones SMTP no configurado en entorno test; entrega simulada\n2026-11-03 10:17:28,668 INFO polis.notificaciones SMTP no configurado en entorno test; entrega simulada\n2026-11-03 10:17:28,701 INFO polis.herald Ciclo de entrega: {'simulado': 3}\n2026-11-03 10:17:28,738 INFO polis.herald POLIS Herald detenido\n"
+    },
+    {
+      "name": "worker_cola_vacia",
+      "arguments": [
+        "-m",
+        "app.modules.notificaciones.worker_cli",
+        "--una-vez"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "2026-11-03 10:17:30,167 INFO polis.herald POLIS Herald iniciado: smtp=(simulado) concurrencia=4 intervalo=10.0s\n2026-11-03 10:17:30,339 INFO polis.herald POLIS Herald detenido\n"
+    }
+  ],
+  "checkpoints": [
+    {
+      "label": "0094_inicial",
+      "revision": "0094_herald_salud_resumen",
+      "latido": true,
+      "indice": "CREATE UNIQUE INDEX uq_notif_resumen_destinatario_dia ON participacion_ciudadana.notificaciones_transaccionales USING btree (destinatario_correo, codigo_radicado) WHERE ((tipo_evento)::text = 'resumen_diario'::text)",
+      "constraint": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying, 'registro_bienvenida'::character varying, 'recuperacion_contrasena'::character varying, 'apoyo_propuesta'::character varying, 'actividad_ciudadana'::character varying, 'perfil_actualizado'::character varying, 'contrasena_cambiada'::character varying, 'gestion_institucional'::character varying, 'alerta_pendientes'::character varying, 'propuesta_actualizada'::character varying, 'resumen_diario'::character varying])::text[])))",
+      "legado_conservado": 1,
+      "resumenes": 3
+    },
+    {
+      "label": "downgrade_0093_herald_gestion",
+      "revision": "0093_herald_gestion",
+      "latido": false,
+      "indice": null,
+      "constraint": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying, 'registro_bienvenida'::character varying, 'recuperacion_contrasena'::character varying, 'apoyo_propuesta'::character varying, 'actividad_ciudadana'::character varying, 'perfil_actualizado'::character varying, 'contrasena_cambiada'::character varying, 'gestion_institucional'::character varying, 'alerta_pendientes'::character varying, 'propuesta_actualizada'::character varying])::text[])))",
+      "legado_conservado": 1,
+      "resumenes": 0
+    },
+    {
+      "label": "upgrade_head",
+      "revision": "0094_herald_salud_resumen",
+      "latido": true,
+      "indice": "CREATE UNIQUE INDEX uq_notif_resumen_destinatario_dia ON participacion_ciudadana.notificaciones_transaccionales USING btree (destinatario_correo, codigo_radicado) WHERE ((tipo_evento)::text = 'resumen_diario'::text)",
+      "constraint": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying, 'registro_bienvenida'::character varying, 'recuperacion_contrasena'::character varying, 'apoyo_propuesta'::character varying, 'actividad_ciudadana'::character varying, 'perfil_actualizado'::character varying, 'contrasena_cambiada'::character varying, 'gestion_institucional'::character varying, 'alerta_pendientes'::character varying, 'propuesta_actualizada'::character varying, 'resumen_diario'::character varying])::text[])))",
+      "legado_conservado": 1,
+      "resumenes": 0
+    },
+    {
+      "label": "downgrade_0093_herald_gestion",
+      "revision": "0093_herald_gestion",
+      "latido": false,
+      "indice": null,
+      "constraint": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying, 'registro_bienvenida'::character varying, 'recuperacion_contrasena'::character varying, 'apoyo_propuesta'::character varying, 'actividad_ciudadana'::character varying, 'perfil_actualizado'::character varying, 'contrasena_cambiada'::character varying, 'gestion_institucional'::character varying, 'alerta_pendientes'::character varying, 'propuesta_actualizada'::character varying])::text[])))",
+      "legado_conservado": 1,
+      "resumenes": 0
+    },
+    {
+      "label": "upgrade_head",
+      "revision": "0094_herald_salud_resumen",
+      "latido": true,
+      "indice": "CREATE UNIQUE INDEX uq_notif_resumen_destinatario_dia ON participacion_ciudadana.notificaciones_transaccionales USING btree (destinatario_correo, codigo_radicado) WHERE ((tipo_evento)::text = 'resumen_diario'::text)",
+      "constraint": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying, 'registro_bienvenida'::character varying, 'recuperacion_contrasena'::character varying, 'apoyo_propuesta'::character varying, 'actividad_ciudadana'::character varying, 'perfil_actualizado'::character varying, 'contrasena_cambiada'::character varying, 'gestion_institucional'::character varying, 'alerta_pendientes'::character varying, 'propuesta_actualizada'::character varying, 'resumen_diario'::character varying])::text[])))",
+      "legado_conservado": 1,
+      "resumenes": 0
+    }
+  ],
+  "cli": {
+    "fecha_bogota": "2026-11-02",
+    "antes": 0,
+    "tras_simular": 0,
+    "tras_dos_ejecuciones": 1,
+    "entrega": "simulado",
+    "primer_latido": {
+      "actualizado_en": "2026-11-03 10:17:28.702626+00:00",
+      "ultimo_ciclo": {
+        "enviado": 0,
+        "fallido": 0,
+        "simulado": 3,
+        "procesados": 3
+      }
+    },
+    "latido_vacio": {
+      "actualizado_en": "2026-11-03 10:17:30.310721+00:00",
+      "ultimo_ciclo": {
+        "enviado": 0,
+        "fallido": 0,
+        "simulado": 0,
+        "procesados": 0
+      }
+    }
+  },
+  "completed": true
+}

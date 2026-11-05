@@ -1,0 +1,31 @@
+{
+  "autor": "EAF203; solo lectura por EDD215",
+  "fallos": [
+    {
+      "test": "test_legacy_enfoque_irregular_records_behavior[legacy0]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    },
+    {
+      "test": "test_legacy_enfoque_irregular_records_behavior[legacy1]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    },
+    {
+      "test": "test_legacy_enfoque_irregular_records_behavior[legacy2]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    },
+    {
+      "test": "test_legacy_devolution_json_irregular_records_behavior[None]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    },
+    {
+      "test": "test_legacy_devolution_json_irregular_records_behavior[False]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    },
+    {
+      "test": "test_legacy_devolution_json_irregular_records_behavior[legacy2]",
+      "mensaje": "assert 500 == 200\n +  where 500 = <Response [500 Internal Server Error]>.status_code"
+    }
+  ],
+  "cantidad": 6,
+  "producto_editado": false
+}

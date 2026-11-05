@@ -1,0 +1,324 @@
+{
+  "dictamen": "BLOQUEADO",
+  "alcance": "Identidad actual de usuarios POLIS; no GO-LIVE completo",
+  "base_aislada": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "pruebas_xml": {
+    "pytest-escenarios-eaf.xml": {
+      "tests": 11,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0
+    },
+    "pytest-identidad-transacciones.xml": {
+      "tests": 180,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "pytest-migracion-identidad.xml": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "comandos": [
+    {
+      "archivo": "alembic-check.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "check"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 3.738,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:17:19.711359+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "alembic-heads.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "heads"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 1.407,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:14:50.497400+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "backend-check-con-guardas.json",
+      "comando": [
+        "bun",
+        "run",
+        "backend:check"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 1,
+      "duracion_segundos": 497.97,
+      "fecha_utc": "2026-10-26T04:15:02.646305+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "backend-check.json",
+      "comando": [
+        "bun",
+        "run",
+        "backend:check"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 143,
+      "duracion_segundos": 50.109,
+      "fecha_utc": "2026-10-26T04:05:42.119672+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "contratos-cliente.json",
+      "comando": [
+        "bun",
+        "bridge/169_evidencia_eaf_identidad/contrastar-esquemas-cliente.mjs"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 1,
+      "duracion_segundos": 0.247,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:18:47.375397+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "frontend-lint.json",
+      "comando": [
+        "bun",
+        "run",
+        "lint"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 56.728,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:21:21.833507+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "pytest-escenarios-eaf.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "pytest",
+        "bridge/169_evidencia_eaf_identidad/test_escenarios_eaf.py",
+        "-q",
+        "--tb=short",
+        "--junitxml=bridge/169_evidencia_eaf_identidad/pytest-escenarios-eaf.xml"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 1,
+      "duracion_segundos": 31.105,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:18:12.194443+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "pytest-identidad-transacciones.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "pytest",
+        "backend/tests/test_identidad_completa.py",
+        "backend/tests/test_identidad_y_permisos.py",
+        "backend/tests/test_sesion_anonima.py",
+        "backend/tests/test_magic_link.py",
+        "backend/tests/test_cierre06_mfa_totp.py",
+        "backend/tests/test_control_fases_y_oauth.py",
+        "backend/tests/test_access_policy.py",
+        "backend/tests/test_transactions.py",
+        "backend/tests/test_transactions_integration.py",
+        "backend/tests/test_transaction_policy.py",
+        "-q",
+        "--junitxml=bridge/169_evidencia_eaf_identidad/pytest-identidad-transacciones.xml"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 95.779,
+      "fecha_utc": "2026-10-26T04:04:09.533515+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "pytest-migracion-identidad.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "pytest",
+        "backend/tests/test_identidad_migracion.py",
+        "-q",
+        "--junitxml=bridge/169_evidencia_eaf_identidad/pytest-migracion-identidad.xml"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 8.764,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:16:55.148087+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "typecheck-sin-escritura.json",
+      "comando": [
+        "bun",
+        "run",
+        "typecheck",
+        "--incremental",
+        "false"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 45.861,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:21:10.993459+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "ui-check.json",
+      "comando": [
+        "bun",
+        "run",
+        "ui:check"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 1.924,
+      "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+      "fecha_utc": "2026-10-26T04:14:50.978367+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "upgrade-vacio-con-extensiones.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "upgrade",
+        "head"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 4.254,
+      "fecha_utc": "2026-10-26T04:01:41.647448+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "upgrade-vacio.json",
+      "comando": [
+        "uv",
+        "run",
+        "--project",
+        "backend",
+        "alembic",
+        "-c",
+        "backend/alembic.ini",
+        "upgrade",
+        "head"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 1,
+      "duracion_segundos": 4.782,
+      "fecha_utc": "2026-10-26T04:00:54.217184+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "validar-entorno.json",
+      "comando": [
+        "backend/.venv/bin/python",
+        "bridge/169_evidencia_eaf_identidad/validar_entorno.py"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 0.664,
+      "fecha_utc": "2026-10-26T04:04:44.424365+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    },
+    {
+      "archivo": "validar-guardas-completas.json",
+      "comando": [
+        "backend/.venv/bin/python",
+        "bridge/169_evidencia_eaf_identidad/validar_entorno.py"
+      ],
+      "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+      "codigo_salida": 0,
+      "duracion_segundos": 0.86,
+      "fecha_utc": "2026-10-26T04:06:41.316876+00:00",
+      "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+    }
+  ],
+  "hallazgos_identidad": [
+    {
+      "id": "EAF-ID-01",
+      "severidad": "Alta",
+      "evidencia": "hallazgo-magic-link-rollback-validacion.json"
+    },
+    {
+      "id": "EAF-ID-02",
+      "severidad": "Alta",
+      "evidencia": "hallazgo-mfa-intentos.json"
+    },
+    {
+      "id": "EAF-ID-03",
+      "severidad": "Alta",
+      "evidencia": "hallazgo-mfa-reinicio.json"
+    },
+    {
+      "id": "EAF-ID-04",
+      "severidad": "Alta",
+      "evidencia": "hallazgo-mfa-rol-exigido.json"
+    },
+    {
+      "id": "EAF-ID-05",
+      "severidad": "Media",
+      "evidencia": "hallazgo-correo-magic-anticipado.json"
+    },
+    {
+      "id": "EAF-ID-06",
+      "severidad": "Media",
+      "evidencia": "contratos-cliente-resultado.json"
+    },
+    {
+      "id": "EAF-ID-07",
+      "severidad": "Baja",
+      "evidencia": "Documental; referencias en dictamen"
+    }
+  ],
+  "hallazgos_compartidos": [
+    {
+      "id": "EAF-COM-01",
+      "severidad": "Alta",
+      "evidencia": "conexiones-rechazadas.jsonl"
+    }
+  ],
+  "codigo_estable": true,
+  "smtp_real": "No ejecutado",
+  "navegador_builds": "No evaluado",
+  "backend_check_global": "Sin aprobación"
+}

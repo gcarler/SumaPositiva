@@ -1,0 +1,854 @@
+{
+  "tipo": "revision_tecnica_coordinacion_sin_dictamen_eaf",
+  "fuentes201_congeladas_separadas_de_nuevas_corridas": true,
+  "archivos": {
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_comprobaciones/comando.json": {
+      "sha256": "75c407b4cfd5b6a9a5c266a5a20a715b44ea7438904cbd38192bc2663cd50282",
+      "bytes": 713
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_comprobaciones/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_comprobaciones/stdout.log": {
+      "sha256": "5aa5d1bddaf5a3a8f799937decb181754dad76bea6a6400ccd98d760420a9c2f",
+      "bytes": 837
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_demografia/comando.json": {
+      "sha256": "03ed3f1a2b9336302132c27bc35a0e009410372d3b895e565bc386eec6a649ec",
+      "bytes": 453
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_demografia/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_demografia/stdout.log": {
+      "sha256": "671981bf497d561e7d44d92aa6df65d09d591d546b0f2e196c95634c5c512916",
+      "bytes": 319
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_fichas/comando.json": {
+      "sha256": "02bf91b074512670114b9b5d2617e2d8a81f479c204731edd8adc7be89edd720",
+      "bytes": 488
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_fichas/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_fichas/stdout.log": {
+      "sha256": "039b01a1a0f6b24f98b5fb9518aa35b0d24a91b16cf2d65ec673cea1f58448ae",
+      "bytes": 148
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_originales/comando.json": {
+      "sha256": "09a1b5955c771a66dd9bedc84ebe5e4e5eb484a0ed66aba17b6a1d052a4461bd",
+      "bytes": 471
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_originales/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comando_originales/stdout.log": {
+      "sha256": "26c287d1c219e5d32284b813426cb89b1f28949a4dbb8ee6311a31a1c3dbe2d2",
+      "bytes": 35
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_bucle/comando.json": {
+      "sha256": "506f84a83888db5f3ec1ef2be94ce92f9bea90bb3779c79d26da4825cfb80c91",
+      "bytes": 530
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_bucle/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_bucle/stdout.log": {
+      "sha256": "f4729c8868e80d5943f3d9077753eac094ce8434538a434b861c89c2b2bdf3c9",
+      "bytes": 47
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_content_length/comando.json": {
+      "sha256": "183d78344d1ae08bb9002b05defca96139c474fab1a090a8d664eb4d15ee3ba7",
+      "bytes": 548
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_content_length/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_content_length/stdout.log": {
+      "sha256": "5ddce9e0224e73c0e511015a586fac7532b843820fec7454ee50c022fe58e90a",
+      "bytes": 61
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_credenciales/comando.json": {
+      "sha256": "d27d32e2ea406eb6b272925e64fad1998c45cf6220299dda3e58913c3b4e3fc5",
+      "bytes": 544
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_credenciales/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_credenciales/stdout.log": {
+      "sha256": "3e607f7bba3f08233e5fd8bd855d120e575b73f35fdc8e499a3aaf0e25a25ad6",
+      "bytes": 55
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_deadline/comando.json": {
+      "sha256": "b233ce24c920b866469b898373a8af4f6b4489905260b413023df5fae8fee2cf",
+      "bytes": 536
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_deadline/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_deadline/stdout.log": {
+      "sha256": "cf8f94e6aed83a328a489beab09f3bcdfbf36a397c403cb35afe0c9f6996c498",
+      "bytes": 50
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_downgrade/comando.json": {
+      "sha256": "d5669e55c32fd1429f66fe18106adf1d58763c098ba78703177fba837e439584",
+      "bytes": 538
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_downgrade/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_downgrade/stdout.log": {
+      "sha256": "12b12289b330102fcf736560a36cb3348fa352ccda33f89a7dd3874939a3b6ec",
+      "bytes": 52
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_escritura_corta/comando.json": {
+      "sha256": "11450f676f898839ba8b119ab8116685e08c270c0f15a072e3c2129a5d6c35cd",
+      "bytes": 550
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_escritura_corta/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_escritura_corta/stdout.log": {
+      "sha256": "421407d331379aabc0448fc2601bcb5c835da326fa9c042a775d468e6ddedbfe",
+      "bytes": 62
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_externo/comando.json": {
+      "sha256": "ddbd33c0b82c31a5c7d9539b381eb1673e7ddeef1c865e41744a6a0d9c6d0b93",
+      "bytes": 544
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_externo/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_externo/stdout.log": {
+      "sha256": "2f73fc5fa974a0bad3034799b46a3566f097015594bf45e0ba900db7b01b5a3b",
+      "bytes": 55
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_sufijo/comando.json": {
+      "sha256": "de326c4a8ba22ec3e26c5e8c305099293c6bccd57d1a21031568b3727496f373",
+      "bytes": 542
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_sufijo/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_host_sufijo/stdout.log": {
+      "sha256": "e9e3bb398700c6b058e65df5c664201657b2ad613b508ee74aa07f257abed042",
+      "bytes": 54
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_html/comando.json": {
+      "sha256": "3a78ba252a487cc48f537f32b67dfdac21df7b5bd26ccad9281e9bc183312e97",
+      "bytes": 528
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_html/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_html/stdout.log": {
+      "sha256": "1cff80a20a52870728530573ec5188e8097bbb76138bfc193f650e6cdaad1bb8",
+      "bytes": 47
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_http404/comando.json": {
+      "sha256": "2879a65847da9445d5e851c42e37d82511a0e305ce5df652d94d83f224cc6e9d",
+      "bytes": 534
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_http404/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_http404/stdout.log": {
+      "sha256": "70bb2cd75b9648669a7ad76fc2736b3537644a2b9c9a87af7aa37e43fea8e0fd",
+      "bytes": 52
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_archivo/comando.json": {
+      "sha256": "05c3229328f96e0fa3b76d09b7144a8be858dd8d31c66cf0b5784230a14d0241",
+      "bytes": 548
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_archivo/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_archivo/stdout.log": {
+      "sha256": "6ce00c765d6f63fdba196f3fe6a119ff1684af6747d7d57e5c5360bb98d74528",
+      "bytes": 63
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_lote_descartados/comando.json": {
+      "sha256": "7fe730b0f13b2e579e3fc41b76139c312a19b9d6a22323dd2c5760347bc8da6a",
+      "bytes": 566
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_lote_descartados/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_limite_lote_descartados/stdout.log": {
+      "sha256": "04ec8d227380da27ac385cd822683729d6b4f2cffb02855251756a5b40dd2dac",
+      "bytes": 73
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_magic/comando.json": {
+      "sha256": "3368dce3fcb0857ede53cc1029597457d1953dcf1364cc57353e185dcbe0b74f",
+      "bytes": 530
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_magic/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_magic/stdout.log": {
+      "sha256": "27da9d03e367dc2c1267c1fd16d9ca50ccc7be70e84daaf1683591274d4d71a5",
+      "bytes": 48
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_max_redirecciones/comando.json": {
+      "sha256": "8a201b73b06571bc964c1a4f390f4547062e124eb400287187927a99632fd0e9",
+      "bytes": 554
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_max_redirecciones/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_max_redirecciones/stdout.log": {
+      "sha256": "b4745728b81885cb0b40cfd5aab866e475ef277c1c7f2a1baed82ea594016b71",
+      "bytes": 60
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_puerto/comando.json": {
+      "sha256": "37cce9c730bdfcf90b4c3201da181bbfda4cfb48836be731fb6497b40f8655c2",
+      "bytes": 532
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_puerto/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_puerto/stdout.log": {
+      "sha256": "827b38de6522390f39dc3787167251ef16fbdf81a3a39200a87cf7874da8db9a",
+      "bytes": 49
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_redireccion_valida/comando.json": {
+      "sha256": "2ee2d57cb6292cb693feb8c4fc76a146b89309b0eb6f49ec0ab019649356c877",
+      "bytes": 556
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_redireccion_valida/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_redireccion_valida/stdout.log": {
+      "sha256": "e80e33c50938034a81ddeeda78bc44d247272184c77ecb6f8eba05b6f1c87859",
+      "bytes": 65
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_replay189_parcial/comando.json": {
+      "sha256": "1eda88fa44217c53549f318afa23222c7682e3b51bc6e64b2b22779a77be934a",
+      "bytes": 554
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_replay189_parcial/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_replay189_parcial/stdout.log": {
+      "sha256": "5519ca8a7e74711f45013a667f68eaf7285df2b52ac924a65e2a8a3065128b8e",
+      "bytes": 65
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_timeout/comando.json": {
+      "sha256": "e2b2c0c6438d5471f368a3f8def98bdfd9fb5b6732d5ee560555f41b47950de8",
+      "bytes": 534
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_timeout/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_timeout/stdout.log": {
+      "sha256": "01754fd71702ad4c0e1ffa99a0f63c099084d1785a5461bc899b53ccc1263ea4",
+      "bytes": 49
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_expansion/comando.json": {
+      "sha256": "baca00c409e240a800834f5c774e581dae25874729f9f0c70c829033a6482e91",
+      "bytes": 548
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_expansion/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_expansion/stdout.log": {
+      "sha256": "0836ca2162ed00e76a9dfb46b13d01629f37fdf45bc471e7dfd25b5314b6adf6",
+      "bytes": 60
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_invalido/comando.json": {
+      "sha256": "2d985aeaa5942a2c202ee20d6db089b848a011e1ec2f4ef11ad5b8601bdc242b",
+      "bytes": 546
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_invalido/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/comando_xlsx_invalido/stdout.log": {
+      "sha256": "0814da669e53d8e055ded4ae6e5f87acb6d490424a81ec56cb9c146fea99c482",
+      "bytes": 56
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_errores_recuperables/13001/construccion.json": {
+      "sha256": "ecc32d0fba049a9d582e2e73553d1fd088a274f805ed66acfbdf876466bc473c",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_errores_recuperables/13001/ficha/ficha.json": {
+      "sha256": "364669dbd5d29c222da4ffc704ba3f4ec026ac3dfa2cbaf3d384d81931b266be",
+      "bytes": 14
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_errores_recuperables/13001/ficha/manifiesto.json": {
+      "sha256": "fb3b5addaa8df6630a1a470c3acd485bd5a920de1948a05476cb67194fb55a02",
+      "bytes": 5868
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_errores_recuperables/13673/construccion.json": {
+      "sha256": "a7071386efc4291340f587fcaefa3c1cd2c8143d6dd2872e22a5b5544a465b7a",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_errores_recuperables/13673/ficha/manifiesto.json": {
+      "sha256": "60e9aed5e9284288f36f6213d12a5cc375a6ce055fe02dc34fa412b75404f36b",
+      "bytes": 5859
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_semantica/13001/construccion.json": {
+      "sha256": "ecc32d0fba049a9d582e2e73553d1fd088a274f805ed66acfbdf876466bc473c",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_semantica/13001/ficha/ficha.json": {
+      "sha256": "f992af4a514bfce2cba1c09fce22b618d560567a675f274cfef293ad5d594c66",
+      "bytes": 19793978
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/copia_semantica/13001/ficha/manifiesto.json": {
+      "sha256": "b55dd83acafeaaa63a2198e1f19d69f28337202ab3b71b40a473b589c1e457ff",
+      "bytes": 5868
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_errores/13001/construccion.json": {
+      "sha256": "e3344fef6d5e0fde87fcf90da389202ab09deb75ad2bfe517d4b2d2b85f9bb2f",
+      "bytes": 376
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_errores/13001/cotejo.json": {
+      "sha256": "e4dc1c505b5393c924c1abba69c88d3123cc36b7773e0831a3a4ac686e42fe17",
+      "bytes": 229
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_errores/13673/construccion.json": {
+      "sha256": "3ce374f50fbb42f3add9982c313c58a9b2ac7226d1510838b5e60f28c6aeb2f7",
+      "bytes": 376
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_errores/13673/cotejo.json": {
+      "sha256": "884aadc307395897b1534f6b01efdd83376579f2c30baf1eca9aae16d2bfd9ee",
+      "bytes": 321
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_errores/manifiesto.json": {
+      "sha256": "7001edf4ffce8804cc388091c1d6b59f5891b0e06892c34c7c3a3f799a3749b9",
+      "bytes": 8006
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_semantica/13001/construccion.json": {
+      "sha256": "7aad22abf0325103e519fd325b4d71c7ba8303077e805d18ed3d18e68ed8029b",
+      "bytes": 365
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_semantica/13001/cotejo.json": {
+      "sha256": "48b86e07b9f2b1a59100640d8c6be3ec870bc50b9b10e9c11ea42a5d8c7f6d60",
+      "bytes": 6036
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_semantica/13001/filas_cotejadas.jsonl": {
+      "sha256": "6c09508c73539892f4591a7ff65d0f603345393c63c2efaadf508cdbea479f4b",
+      "bytes": 2432463
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/cotejo_semantica/manifiesto.json": {
+      "sha256": "9345d48d704b41a9d31a658985f88430fc2b243c5fdc27e782680a65a7e199ae",
+      "bytes": 7224
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_destino_existente/comando.json": {
+      "sha256": "ba7c58bc9a41e396950ed9d6fda3abb4523d483f402d731a2d726f892d1c7bfb",
+      "bytes": 534
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_destino_existente/stderr.log": {
+      "sha256": "addeedd55365d8072d0ca8239c0b28a4f2f6ced9a60affb2749a6c50b3e63339",
+      "bytes": 171
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_destino_existente/stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_padre_symlink/comando.json": {
+      "sha256": "68f72b66f8d2bf213bc1e804e08c02dee4334b553fc44c872d48bc41dcaca664",
+      "bytes": 546
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_padre_symlink/stderr.log": {
+      "sha256": "15f3de02dca63021147005ba28fefe94ecf34bad916f53cd640591c4b237c74c",
+      "bytes": 170
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_padre_symlink/stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_red_desactivada/comando.json": {
+      "sha256": "6436cf599e24d7227c7467f33879e1fa06f9ccb0453dd264fb0888ca4cdda31d",
+      "bytes": 516
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_red_desactivada/stderr.log": {
+      "sha256": "2e3a5ebeec8fa2e274b5b9f56ce2e21838adabfd2870e99b2b5038dbf95e3a25",
+      "bytes": 97
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/dane_red_desactivada/stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_bucle/manifiesto.json": {
+      "sha256": "854d76c6ae90cf7fa786ed4306f1ed337c978dbd691386197512a7fb6dbce50f",
+      "bytes": 4444
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_bucle/transporte_doble.json": {
+      "sha256": "6128c3ea1d3abb457a08fee4cfbc63c6339347203f5b72988410d24bf9afe829",
+      "bytes": 226
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_content_length/manifiesto.json": {
+      "sha256": "6239350db83ca7589aadb88fb5907d6e3439413a418c5f0de718f62b68ed21b4",
+      "bytes": 4186
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_content_length/transporte_doble.json": {
+      "sha256": "d7a90bcaa8b26cf0c79a5444ed9d7eb57970b033d110a5bc9ecfba07c38c6a10",
+      "bytes": 232
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_credenciales/manifiesto.json": {
+      "sha256": "cadbc80137e6f2a45e489163e92cf1d1eb0d9de2472b687143277285cc4b6a6b",
+      "bytes": 4247
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_credenciales/transporte_doble.json": {
+      "sha256": "e4b949117ae1b4a136ef356a8e49cbeaf38ec93a7e3016a7b3f7a81e17a3ee55",
+      "bytes": 233
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_deadline/manifiesto.json": {
+      "sha256": "8ec9389ea92e9130ba5c34188b61b731e0dcba1b510e9ad7b4af654aadddf195",
+      "bytes": 4105
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_deadline/transporte_doble.json": {
+      "sha256": "3bdbaaa542dc0a959bf377a481d05c07f71edfcc49cd2da586141ec31285d8d6",
+      "bytes": 229
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_downgrade/manifiesto.json": {
+      "sha256": "6984aeb21585877884c36d82ab00fc1fbdd857842f7c370551d8a5c23ed73e97",
+      "bytes": 4192
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_downgrade/transporte_doble.json": {
+      "sha256": "697c5defe4a70de888828341d722cb08fcb9ddcfb200910ace9f088e1f8072bb",
+      "bytes": 230
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_escritura_corta/NotaTecnica-PPED-jul2025.pdf": {
+      "sha256": "ab71bcb2a5ee0f0fce85cd0c8740cd2dac332984c2dc2ac419a8bdc7b3c65b72",
+      "bytes": 855854
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_escritura_corta/manifiesto.json": {
+      "sha256": "6a636886e70280ae911051a4eeec977521da478fe2c03e3d42ee441009977735",
+      "bytes": 4677
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_escritura_corta/transporte_doble.json": {
+      "sha256": "da824311a6e94ed7784983e2fe5fd53879240013fe7704c1e444662f7fe77815",
+      "bytes": 233
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_host_externo/manifiesto.json": {
+      "sha256": "d003e8f568e325853c2ad1cf2b7d34ab2679bdd039a64f9e48ccce025d98a5b1",
+      "bytes": 4222
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_host_externo/transporte_doble.json": {
+      "sha256": "0ae7849916af64cc2fdf9f0fb140cb1c826bb70ad41fbe4f4c7446c9bba7cc62",
+      "bytes": 233
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_host_sufijo/manifiesto.json": {
+      "sha256": "936d90b0ddb4e28e1151148fac085f66d1e22429c57154d160bbb5ea07dc99d0",
+      "bytes": 4243
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_host_sufijo/transporte_doble.json": {
+      "sha256": "cc3cc1bc554546770baeffc2d86f6ceb989ef567a23454d07f5e0e5a626de656",
+      "bytes": 232
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_html/manifiesto.json": {
+      "sha256": "9af121d70ce83eb6e77b114c453adc940836c29b63b50779855d49ad4ff78166",
+      "bytes": 4116
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_html/transporte_doble.json": {
+      "sha256": "a9b08e3ab58549f7536fed158693c8395202b0d9f373a455ddebac96f72c7596",
+      "bytes": 225
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_http404/manifiesto.json": {
+      "sha256": "ab720cf576d2d419b0d3ebbb32597b6d13d0e27b42047383c832cf224c6d2c39",
+      "bytes": 4123
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_http404/transporte_doble.json": {
+      "sha256": "6696dc67da1b219a6b7b59a29328f389e00d2f2c8fc9251b570816b30f729a63",
+      "bytes": 228
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_limite_archivo/manifiesto.json": {
+      "sha256": "7906ec51fa5b475d1a2d0d9aa82a6008570edd48ce85b0c13d15ece5804357be",
+      "bytes": 4197
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_limite_archivo/transporte_doble.json": {
+      "sha256": "ce8f12811f24a07a65751ee7d715d489c6ef308a138faa66d6f95b84d50503dc",
+      "bytes": 235
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_limite_lote_descartados/manifiesto.json": {
+      "sha256": "57cac371e470cea638eba103c4e70a655e564041bfaf746e8624e90e3594201e",
+      "bytes": 9097
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_limite_lote_descartados/transporte_doble.json": {
+      "sha256": "c4fe4e090b31fd7e14bf0f425f3476b097aff45e66ed62ce8de0201d1588bad8",
+      "bytes": 565
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_magic/manifiesto.json": {
+      "sha256": "133db7500dda03f1ad84ea077eb49b5b5fc76aa8c66ab17c1a0bcbc7a56e0c54",
+      "bytes": 4142
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_magic/transporte_doble.json": {
+      "sha256": "d07fefd065b1160d5f8de6f180a40145e90959dec46776e9437e161ec062c48f",
+      "bytes": 226
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_max_redirecciones/manifiesto.json": {
+      "sha256": "3d6ce4f51ff9f3a8ff252ca15671908c7b60d4076547db7c08d8c672c70b52f9",
+      "bytes": 6579
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_max_redirecciones/transporte_doble.json": {
+      "sha256": "1ab52696ef0457016106004ddc8ab60f8a8a172e468280add039ca34b50f4489",
+      "bytes": 736
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_puerto/manifiesto.json": {
+      "sha256": "4599de3d924a7dace0dbb37a213020540a7402ea016b0ba80c15869a84856d07",
+      "bytes": 4218
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_puerto/transporte_doble.json": {
+      "sha256": "ec4b15c51546713688c110e74ae871134005371da11b1a047d4b945d37765b92",
+      "bytes": 227
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_redireccion_valida/NotaTecnica-PPED-jul2025.pdf": {
+      "sha256": "ab71bcb2a5ee0f0fce85cd0c8740cd2dac332984c2dc2ac419a8bdc7b3c65b72",
+      "bytes": 855854
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_redireccion_valida/manifiesto.json": {
+      "sha256": "7243bfe7d7dfe5dfdb1c8963a00db7ec7cb00e906140ae3f8123df5536db3501",
+      "bytes": 5391
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_redireccion_valida/transporte_doble.json": {
+      "sha256": "5286671cac97b7c0e7f93d1ef369dd53e074853332638c5826df84628829981a",
+      "bytes": 403
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_replay189_parcial/Municipal_area_1985-2020.xls": {
+      "sha256": "5d6ae35f5bbde7c0163cee10ebda344a21993ece0f9b9f66f2ff186010335e84",
+      "bytes": 1910272
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_replay189_parcial/NotaTecnica-PPED-jul2025.pdf": {
+      "sha256": "ab71bcb2a5ee0f0fce85cd0c8740cd2dac332984c2dc2ac419a8bdc7b3c65b72",
+      "bytes": 855854
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_replay189_parcial/PPED-AreaMun-2018-2042_VP.xlsx": {
+      "sha256": "1ea83594ad308becff39934a3977c102919c25740f60439be95d797396d11283",
+      "bytes": 3948350
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_replay189_parcial/manifiesto.json": {
+      "sha256": "8c71090d634b5f4149f7b9a7e7b3be4df92be97c91c66f5898be8859b8c1ba29",
+      "bytes": 13582
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_replay189_parcial/transporte_doble.json": {
+      "sha256": "beeaf28d41af34c10599b18d8292da77dafab236504bd4d0dfb98357ab3bad9c",
+      "bytes": 711
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_timeout/manifiesto.json": {
+      "sha256": "3909e7c838f0acc01c16d0bef0c33b90ec3a14cbbf0df97bdb4c8f5ace031733",
+      "bytes": 3723
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_timeout/transporte_doble.json": {
+      "sha256": "6a849d8a34f2ff32bccd28f60a55c8acfd9c563302335b8d3fcc4da65e337e5b",
+      "bytes": 228
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_expansion/PPED-AreaMun-2018-2042_VP.xlsx": {
+      "sha256": "cba1e17676259256ed38166f0008c1c0182b76f51b11ee5c8d32fcb50c830b8d",
+      "bytes": 66400
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_expansion/manifiesto.json": {
+      "sha256": "169da371cbfda526481114913841dcfa9a9da971028a20ae21ede912e0061041",
+      "bytes": 4857
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_expansion/transporte_doble.json": {
+      "sha256": "ba05a5f6ddb306a7175ac8f75fbbd706c3afeb6bfbf2452d2468a5fdb793d4c8",
+      "bytes": 235
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_invalido/PPED-AreaMun-2018-2042_VP.xlsx": {
+      "sha256": "d9e81364e7f3514ded6fcd10eeab7265a0e1b80a2e69cb3058eb02046a225970",
+      "bytes": 22
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_invalido/manifiesto.json": {
+      "sha256": "63b6c6b5ebc6b5f5b855469601f83f56305a670666a21973383874bbabfb7b31",
+      "bytes": 4828
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/doble_xlsx_invalido/transporte_doble.json": {
+      "sha256": "e0eca086cb8be8dcf1726977aaf9e7287db11d1da95eebdb2353d1167da76dc3",
+      "bytes": 234
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_destino_existente/comando.json": {
+      "sha256": "20b78cf539010105bab3cb4d44231982a50f55773335266a09b9bfed66fd1cf1",
+      "bytes": 524
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_destino_existente/stderr.log": {
+      "sha256": "d7cfbc60486722ac9658fc04480b5db7a9e51b73fddb4748ddf9d50ad2cbb8bb",
+      "bytes": 149
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_destino_existente/stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_discrepancia_semantica/comando.json": {
+      "sha256": "a85f93be9106e11eb1d248947fdd91e07429c44122864b783cbd0bff60e73911",
+      "bytes": 700
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_discrepancia_semantica/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_discrepancia_semantica/stdout.log": {
+      "sha256": "2434cd9a69219a5bf4409526ad0597c2545f986c5a8dc862985d093ccacb378c",
+      "bytes": 41
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_errores_recuperables/comando.json": {
+      "sha256": "4908e8f477e630ddebb20b12c4368c1ea8b17888aadd71561411516173f3263e",
+      "bytes": 722
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_errores_recuperables/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_errores_recuperables/stdout.log": {
+      "sha256": "83293db74add57844c1c401a4ad287213454bce4df07416326121e9de9d0693c",
+      "bytes": 74
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_argumento/comando.json": {
+      "sha256": "d894a997f4e88f0f5e587000fc78ebaf55ff899c44aa75ff81f6258a088848f4",
+      "bytes": 584
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_argumento/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_argumento/stdout.log": {
+      "sha256": "08ba46a2cd6491cfbb6ca0621260ea0124bd786350f3a3d303c220fb5c2fcfd2",
+      "bytes": 37
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/cli.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/cli.stdout": {
+      "sha256": "7cda32b6d01433841b6d0846d6e11421bd068579cfff6044cd1a2c7add64ba45",
+      "bytes": 249
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/construccion.json": {
+      "sha256": "c435c5ddcb613cb2ed8c956d2acb864d7f1c7a224aa3938625107dbbd90fabeb",
+      "bytes": 1458
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/cotejo.json": {
+      "sha256": "442978a1cf18cfe43e5892a069ac6b21c2dbb5b99d40bad890b5ec2aab2516c6",
+      "bytes": 5355
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/ficha/ficha.json": {
+      "sha256": "82eafa08702500490d3c745fbb17da0bb14d75e81020a7c452ab2d24118504e6",
+      "bytes": 13042611
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/ficha/manifiesto.json": {
+      "sha256": "62f98470bd042667d74d31bcbeef6bb5758dccf8ffcf51ed41af6c02c65fc1c0",
+      "bytes": 5868
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/13001/filas_cotejadas.jsonl": {
+      "sha256": "b5ca90b9abfab1a193bb2e8033290e2ebbcc3993dd6928f753ffb9e2b4daabfa",
+      "bytes": 2432462
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_fecha_distinta/manifiesto.json": {
+      "sha256": "7ff65cbc4409c78bbbfbd4c464bd5fe9ed3da7089e01a51cb30d2bd981c7027f",
+      "bytes": 7781
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_padre_symlink/comando.json": {
+      "sha256": "daa21a538465f59ce049a302d781d5ca3c27c818c4896ce6f234944162e14053",
+      "bytes": 562
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_padre_symlink/stderr.log": {
+      "sha256": "15f3de02dca63021147005ba28fefe94ecf34bad916f53cd640591c4b237c74c",
+      "bytes": 170
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/fichas_padre_symlink/stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_comprobaciones/resultado_comprobaciones.json": {
+      "sha256": "e9d79d9e7e847a9b7539a54992c8a0595cca71b1aca0852fb8e5caa65166e71a",
+      "bytes": 31823
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/comparacion_municipios_municipios2.jsonl": {
+      "sha256": "2c35784f37b75246c3858b1a8791d0fa3f2c48534e91461720245568f630df2b",
+      "bytes": 35296
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/manifiesto.json": {
+      "sha256": "9b3015e3782e802d1954b678445be6cb9fdc825a174e37c438d9e8e36f57d58b",
+      "bytes": 29946
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/poblacion_municipal_productos_separados.csv": {
+      "sha256": "27d538128d63b5a78d944751d4558728008aa1428a0f1520d7c823dab8b1fe4b",
+      "bytes": 185697
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/proyeccion_publicada_2026_no_censo_no_terridata.json": {
+      "sha256": "11e49a342d20e0982f3f87f093982e0568868928c03fc6f953fcc8e6a87fa465",
+      "bytes": 28815
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/registros_con_celdas.jsonl": {
+      "sha256": "f065baf1838f4b4a928baa7b7436870571ebab12c4d38f0bba91e7eedbc86c06",
+      "bytes": 1816143
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/solapamientos_no_sumados.jsonl": {
+      "sha256": "724502928da8bf56dcc8db33162a08a06e243c15599f1937377960208877dfd5",
+      "bytes": 90438
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_demografia/total_cabecera_resto.jsonl": {
+      "sha256": "fa36940272cf169379965ad58d3e381ad7b438825c2fd85f16dae91f9c16d5d7",
+      "bytes": 80869
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/cli.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/cli.stdout": {
+      "sha256": "5e782d9f51c4389bb361b592cd8610744d03a3e048472fd7fa50d5739fd39523",
+      "bytes": 189
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/construccion.json": {
+      "sha256": "4684a67a657d10ce33538d2b46cb06161696d0b6179bd1e644cf94d51625dd90",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/cotejo.json": {
+      "sha256": "de0a5d10c054ee1f408af99b9c5ce905d09b5b7d0872035c0f048d1e094fc333",
+      "bytes": 5353
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/ficha/ficha.json": {
+      "sha256": "c79b6cd143bc1b976255a2a32ec59df9c8796cf1631419aa9730e3281c57f21f",
+      "bytes": 13526024
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/ficha/manifiesto.json": {
+      "sha256": "0804b488e3c68eb7c316baac52c22aeeb4e9f24b23272e3943c53057eab33266",
+      "bytes": 5855
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/11001/filas_cotejadas.jsonl": {
+      "sha256": "225e99e6e64d2b802edc9111d1bb32e06babac79f4f67cc1684245d0b77f65f7",
+      "bytes": 2529552
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/cli.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/cli.stdout": {
+      "sha256": "cfae715015f48c8b8b9ad58ece0ef570d2ee85327af67794b63501852a60c1e9",
+      "bytes": 189
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/construccion.json": {
+      "sha256": "ecc32d0fba049a9d582e2e73553d1fd088a274f805ed66acfbdf876466bc473c",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/cotejo.json": {
+      "sha256": "e00f5a9dd0fc0e7e19bdea725a9b2e144b5f1ddde9582366323857a1860148ed",
+      "bytes": 5355
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/ficha/ficha.json": {
+      "sha256": "4aaf023de824d1157eebcad4da3d4269ea94a8e6922dd0935bfcd7c616901aa5",
+      "bytes": 13042611
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/ficha/manifiesto.json": {
+      "sha256": "fb3b5addaa8df6630a1a470c3acd485bd5a920de1948a05476cb67194fb55a02",
+      "bytes": 5868
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13001/filas_cotejadas.jsonl": {
+      "sha256": "b5ca90b9abfab1a193bb2e8033290e2ebbcc3993dd6928f753ffb9e2b4daabfa",
+      "bytes": 2432462
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/cli.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/cli.stdout": {
+      "sha256": "62d5b9fcd0c9dcb598b929b388934d90ec0a61fb2f8a71e28675efd72b6dfc71",
+      "bytes": 189
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/construccion.json": {
+      "sha256": "a7071386efc4291340f587fcaefa3c1cd2c8143d6dd2872e22a5b5544a465b7a",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/cotejo.json": {
+      "sha256": "b412280cfe8c5fea09ca2a6d837cafa9c5d8e46c6604d8fab97afa2bd2f8cb39",
+      "bytes": 5347
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/ficha/ficha.json": {
+      "sha256": "5ca4f8ec977256bb005ab8fd4d05e74b8b12111aeaabbb11d5bc52b2f47dfbbc",
+      "bytes": 12899468
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/ficha/manifiesto.json": {
+      "sha256": "60e9aed5e9284288f36f6213d12a5cc375a6ce055fe02dc34fa412b75404f36b",
+      "bytes": 5859
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/13673/filas_cotejadas.jsonl": {
+      "sha256": "3ff8afec5f575cca4b9ee8fbbcb2f321c9442b37fb1ca6625b812cc8a06df666",
+      "bytes": 2400922
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/cli.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/cli.stdout": {
+      "sha256": "163a82a466078bfcf33bc6c6958a83f5b153f283ebffada380531bdc7e4bb0af",
+      "bytes": 189
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/construccion.json": {
+      "sha256": "139ff53b59f57e8d689cba296511dd4d9ba2e66345f1fd1230d92c3403f5bba8",
+      "bytes": 1428
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/cotejo.json": {
+      "sha256": "2186560437d643ff22b5efc48d74e65073b6ff13d34f50ec5389a72cf971a0cf",
+      "bytes": 5339
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/ficha/ficha.json": {
+      "sha256": "1959d8f3ba3b9a35a4b4ebfc8bd7bc9680bf6f4a735f281455ff1e1621de6bbd",
+      "bytes": 12989946
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/ficha/manifiesto.json": {
+      "sha256": "18fd77ca2e9111b97364761295732b8c3bff30b87320f78164f47395a3e33d9a",
+      "bytes": 5851
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/23660/filas_cotejadas.jsonl": {
+      "sha256": "be45e01eb029391bd0456edec344ee0045a95cf5de7e6dbd697dac3378fb1eb9",
+      "bytes": 2429802
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_fichas/manifiesto.json": {
+      "sha256": "82c40d496f07f4bc3b8250e1a288f38b8c9f76e06c62e2c8c62caf2804d0f820",
+      "bytes": 11489
+    },
+    "bridge/201_cierre_pilotos_fuentes/coordinacion209_originales/manifiesto.json": {
+      "sha256": "c4b5946dddc8dc948114e5c25078117c3a60a84904a015a43996b1b5161a24c4",
+      "bytes": 5124
+    },
+    "bridge/208_revision_coordinacion_anexos_dane.md": {
+      "sha256": "fce1e3b537ddc07507253acbea63f671f411c1c643681255e73c6843ec42ca1b",
+      "bytes": 7005
+    },
+    "bridge/209_revision_coordinacion_fuentes/cotejo_celdas_201.json": {
+      "sha256": "78f07b10827c041723966e09905337b8206ff16e740bd0b0af60286e8ff30b39",
+      "bytes": 834
+    },
+    "bridge/209_revision_coordinacion_fuentes/cotejo_celdas_intento_inicial.json": {
+      "sha256": "8cb681135c7f2e12ea98847a2f93227716e7817a55bb475c4623abb90d5b539e",
+      "bytes": 274
+    },
+    "bridge/209_revision_coordinacion_fuentes/cotejo_manifiesto_201.json": {
+      "sha256": "5ad72e4bbe4b28a6fee15fd0bee8b28db38abe1db6513b114983a09b7e6c46e0",
+      "bytes": 203
+    },
+    "bridge/209_revision_coordinacion_fuentes/verificar_celdas_201.py": {
+      "sha256": "fdad6e8ca284814e210730164eb21738729c2bc30c1e3e24353fdc8554e9e758",
+      "bytes": 3742
+    },
+    "bridge/209_revision_coordinacion_fuentes/verificar_celdas_201_v1.py": {
+      "sha256": "c6dd889bd5718f27cbfb292f099fbb23a630873f73adc4a15ea025ce2bc9f888",
+      "bytes": 3724
+    }
+  }
+}

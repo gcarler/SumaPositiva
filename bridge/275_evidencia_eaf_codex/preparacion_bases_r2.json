@@ -1,0 +1,13 @@
+{
+  "utc": "2026-11-02T03:40:32.662510+00:00",
+  "reiniciadas_vacias": [
+    "polis_test_eaf_275_codex",
+    "polis_test_eaf_275_codex_mig"
+  ],
+  "extensiones_solo_lab": [
+    "postgis",
+    "pgrouting",
+    "address_standardizer",
+    "address_standardizer_data_us"
+  ]
+}

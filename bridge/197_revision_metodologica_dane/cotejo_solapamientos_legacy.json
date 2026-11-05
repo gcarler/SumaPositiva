@@ -1,0 +1,1341 @@
+{
+  "sha256_archivo": "5d6ae35f5bbde7c0163cee10ebda344a21993ece0f9b9f66f2ff186010335e84",
+  "celdas_legacy_extraidas": 816,
+  "comprobaciones_total_componentes": 272,
+  "total_igual_componentes": true,
+  "celdas_solapadas_comparadas": 384,
+  "diferencias": 102,
+  "diferencias_por_hoja": {
+    "Municipios": 51,
+    "Municipios (2)": 51
+  },
+  "detalle": [
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Y160",
+        "valor": 893033
+      },
+      "otra_hoja": {
+        "celda": "Municipios!E156",
+        "valor": 892545
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Z160",
+        "valor": 902533
+      },
+      "otra_hoja": {
+        "celda": "Municipios!F156",
+        "valor": 902160
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AA160",
+        "valor": 912498
+      },
+      "otra_hoja": {
+        "celda": "Municipios!G156",
+        "valor": 912265
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AB160",
+        "valor": 922859
+      },
+      "otra_hoja": {
+        "celda": "Municipios!H156",
+        "valor": 922675
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AC160",
+        "valor": 933541
+      },
+      "otra_hoja": {
+        "celda": "Municipios!I156",
+        "valor": 933334
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AD160",
+        "valor": 944481
+      },
+      "otra_hoja": {
+        "celda": "Municipios!J156",
+        "valor": 944250
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AE160",
+        "valor": 955709
+      },
+      "otra_hoja": {
+        "celda": "Municipios!K156",
+        "valor": 955569
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AF160",
+        "valor": 967103
+      },
+      "otra_hoja": {
+        "celda": "Municipios!L156",
+        "valor": 967051
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AG160",
+        "valor": 978600
+      },
+      "otra_hoja": {
+        "celda": "Municipios!M156",
+        "valor": 978574
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AH160",
+        "valor": 990179
+      },
+      "otra_hoja": {
+        "celda": "Municipios!N156",
+        "valor": 990151
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AI160",
+        "valor": 1001755
+      },
+      "otra_hoja": {
+        "celda": "Municipios!O156",
+        "valor": 1001680
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AJ160",
+        "valor": 1013389
+      },
+      "otra_hoja": {
+        "celda": "Municipios!P156",
+        "valor": 1013454
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AK160",
+        "valor": 1024882
+      },
+      "otra_hoja": {
+        "celda": "Municipios!Q156",
+        "valor": 1025086
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AL160",
+        "valor": 1036134
+      },
+      "otra_hoja": {
+        "celda": "Municipios!R156",
+        "valor": 1036412
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AM160",
+        "valor": 1047005
+      },
+      "otra_hoja": {
+        "celda": "Municipios!S156",
+        "valor": 1047321
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AN160",
+        "valor": 1057445
+      },
+      "otra_hoja": {
+        "celda": "Municipios!T156",
+        "valor": 1057767
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BI160",
+        "valor": 842632
+      },
+      "otra_hoja": {
+        "celda": "Municipios!U156",
+        "valor": 842228
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BJ160",
+        "valor": 853394
+      },
+      "otra_hoja": {
+        "celda": "Municipios!V156",
+        "valor": 853102
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BK160",
+        "valor": 864522
+      },
+      "otra_hoja": {
+        "celda": "Municipios!W156",
+        "valor": 864358
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BL160",
+        "valor": 875930
+      },
+      "otra_hoja": {
+        "celda": "Municipios!X156",
+        "valor": 875818
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BM160",
+        "valor": 887565
+      },
+      "otra_hoja": {
+        "celda": "Municipios!Y156",
+        "valor": 887430
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BN160",
+        "valor": 899358
+      },
+      "otra_hoja": {
+        "celda": "Municipios!Z156",
+        "valor": 899200
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BO160",
+        "valor": 911345
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AA156",
+        "valor": 911271
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BP160",
+        "valor": 923414
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AB156",
+        "valor": 923418
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BQ160",
+        "valor": 935496
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AC156",
+        "valor": 935524
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BR160",
+        "valor": 947579
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AD156",
+        "valor": 947606
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BS160",
+        "valor": 959594
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AE156",
+        "valor": 959570
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BT160",
+        "valor": 971592
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AF156",
+        "valor": 971700
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BU160",
+        "valor": 983391
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AG156",
+        "valor": 983629
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BV160",
+        "valor": 994894
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AH156",
+        "valor": 995205
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BW160",
+        "valor": 1005981
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AI156",
+        "valor": 1006323
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BX160",
+        "valor": 1016599
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AJ156",
+        "valor": 1016944
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CS160",
+        "valor": 50401
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AK156",
+        "valor": 50317
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CT160",
+        "valor": 49139
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AL156",
+        "valor": 49058
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CU160",
+        "valor": 47976
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AM156",
+        "valor": 47907
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CV160",
+        "valor": 46929
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AN156",
+        "valor": 46857
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CW160",
+        "valor": 45976
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AO156",
+        "valor": 45904
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CX160",
+        "valor": 45123
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AP156",
+        "valor": 45050
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CY160",
+        "valor": 44364
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AQ156",
+        "valor": 44298
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CZ160",
+        "valor": 43689
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AR156",
+        "valor": 43633
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DA160",
+        "valor": 43104
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AS156",
+        "valor": 43050
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DB160",
+        "valor": 42600
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AT156",
+        "valor": 42545
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DC160",
+        "valor": 42161
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AU156",
+        "valor": 42110
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DD160",
+        "valor": 41797
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AV156",
+        "valor": 41754
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DE160",
+        "valor": 41491
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AW156",
+        "valor": 41457
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DF160",
+        "valor": 41240
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AX156",
+        "valor": 41207
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DG160",
+        "valor": 41024
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AY156",
+        "valor": 40998
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DH160",
+        "valor": 40846
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AZ156",
+        "valor": 40823
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Y459",
+        "valor": 87556
+      },
+      "otra_hoja": {
+        "celda": "Municipios!E456",
+        "valor": 87635
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BI459",
+        "valor": 44996
+      },
+      "otra_hoja": {
+        "celda": "Municipios!U456",
+        "valor": 44985
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CS459",
+        "valor": 42560
+      },
+      "otra_hoja": {
+        "celda": "Municipios!AK456",
+        "valor": 42650
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Y160",
+        "valor": 893033
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!E156",
+        "valor": 892545
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Z160",
+        "valor": 902533
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!F156",
+        "valor": 902160
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AA160",
+        "valor": 912498
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!G156",
+        "valor": 912265
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AB160",
+        "valor": 922859
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!H156",
+        "valor": 922675
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AC160",
+        "valor": 933541
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!I156",
+        "valor": 933334
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AD160",
+        "valor": 944481
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!J156",
+        "valor": 944250
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AE160",
+        "valor": 955709
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!K156",
+        "valor": 955569
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AF160",
+        "valor": 967103
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!L156",
+        "valor": 967051
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AG160",
+        "valor": 978600
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!M156",
+        "valor": 978574
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AH160",
+        "valor": 990179
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!N156",
+        "valor": 990151
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AI160",
+        "valor": 1001755
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!O156",
+        "valor": 1001680
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AJ160",
+        "valor": 1013389
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!P156",
+        "valor": 1013454
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AK160",
+        "valor": 1024882
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!Q156",
+        "valor": 1025086
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AL160",
+        "valor": 1036134
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!R156",
+        "valor": 1036412
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AM160",
+        "valor": 1047005
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!S156",
+        "valor": 1047321
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!AN160",
+        "valor": 1057445
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!T156",
+        "valor": 1057767
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BI160",
+        "valor": 842632
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!U156",
+        "valor": 842228
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BJ160",
+        "valor": 853394
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!V156",
+        "valor": 853102
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BK160",
+        "valor": 864522
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!W156",
+        "valor": 864358
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BL160",
+        "valor": 875930
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!X156",
+        "valor": 875818
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BM160",
+        "valor": 887565
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!Y156",
+        "valor": 887430
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BN160",
+        "valor": 899358
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!Z156",
+        "valor": 899200
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BO160",
+        "valor": 911345
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AA156",
+        "valor": 911271
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BP160",
+        "valor": 923414
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AB156",
+        "valor": 923418
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BQ160",
+        "valor": 935496
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AC156",
+        "valor": 935524
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BR160",
+        "valor": 947579
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AD156",
+        "valor": 947606
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BS160",
+        "valor": 959594
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AE156",
+        "valor": 959570
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BT160",
+        "valor": 971592
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AF156",
+        "valor": 971700
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BU160",
+        "valor": 983391
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AG156",
+        "valor": 983629
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BV160",
+        "valor": 994894
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AH156",
+        "valor": 995205
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BW160",
+        "valor": 1005981
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AI156",
+        "valor": 1006323
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BX160",
+        "valor": 1016599
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AJ156",
+        "valor": 1016944
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2005,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CS160",
+        "valor": 50401
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AK156",
+        "valor": 50317
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2006,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CT160",
+        "valor": 49139
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AL156",
+        "valor": 49058
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2007,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CU160",
+        "valor": 47976
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AM156",
+        "valor": 47907
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2008,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CV160",
+        "valor": 46929
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AN156",
+        "valor": 46857
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2009,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CW160",
+        "valor": 45976
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AO156",
+        "valor": 45904
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2010,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CX160",
+        "valor": 45123
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AP156",
+        "valor": 45050
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2011,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CY160",
+        "valor": 44364
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AQ156",
+        "valor": 44298
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2012,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CZ160",
+        "valor": 43689
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AR156",
+        "valor": 43633
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2013,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DA160",
+        "valor": 43104
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AS156",
+        "valor": 43050
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2014,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DB160",
+        "valor": 42600
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AT156",
+        "valor": 42545
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2015,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DC160",
+        "valor": 42161
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AU156",
+        "valor": 42110
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2016,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DD160",
+        "valor": 41797
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AV156",
+        "valor": 41754
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2017,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DE160",
+        "valor": 41491
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AW156",
+        "valor": 41457
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2018,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DF160",
+        "valor": 41240
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AX156",
+        "valor": 41207
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2019,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DG160",
+        "valor": 41024
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AY156",
+        "valor": 40998
+      }
+    },
+    {
+      "codigo": "13001",
+      "anio": 2020,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!DH160",
+        "valor": 40846
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AZ156",
+        "valor": 40823
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "TOTAL",
+      "referencia_comparacion": {
+        "celda": "Mpios!Y459",
+        "valor": 87556
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!E456",
+        "valor": 87635
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "CABECERA",
+      "referencia_comparacion": {
+        "celda": "Mpios!BI459",
+        "valor": 44996
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!U456",
+        "valor": 44985
+      }
+    },
+    {
+      "codigo": "23660",
+      "anio": 2005,
+      "area": "RESTO",
+      "referencia_comparacion": {
+        "celda": "Mpios!CS459",
+        "valor": 42560
+      },
+      "otra_hoja": {
+        "celda": "Municipios (2)!AK456",
+        "valor": 42650
+      }
+    }
+  ],
+  "limite": "Mpios se usa solo como referencia de comparación; ninguna hoja se declara preferente ni edición de TerriData acreditada."
+}

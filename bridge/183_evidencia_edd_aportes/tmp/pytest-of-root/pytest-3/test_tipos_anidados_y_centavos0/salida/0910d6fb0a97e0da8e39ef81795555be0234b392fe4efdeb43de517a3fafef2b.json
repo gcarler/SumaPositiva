@@ -1,0 +1,191 @@
+{
+  "alcance": "COMPARACION_OFFLINE_SIN_ACREDITAR_EJECUCION_NI_CAUSALIDAD",
+  "base_origen_catalogo": "polis_test",
+  "base_origen_ppi": "polis_test",
+  "esquema": "polis.comparacion_ppi_catalogo.v1",
+  "estado_publicacion": "no_publicable",
+  "hallazgos": {
+    "nodos_estructura": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_fuente": {
+      "conteo_completo": 0,
+      "muestra": [],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 0
+    },
+    "nodos_jsonb": {
+      "conteo_completo": 1,
+      "muestra": [
+        {
+          "campo": "ppi_anual_cop",
+          "codigo_plan": "P",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": "jsonb_cambio",
+          "id": "9ff91c47-73cc-4a07-801d-5ca2dfb2f001",
+          "motivo": null,
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": "json",
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": "{\"a\":[9007199254740993.01,\"9007199254740993.01\",0.00000001,true,0,null]}",
+          "tipo": null,
+          "tipo_valor_catalogo": "dict",
+          "tipo_valor_ppi": "dict",
+          "valor_catalogo": {
+            "a": [
+              "texto"
+            ]
+          },
+          "valor_catalogo_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "a": {
+                "tipo": "list",
+                "valor": [
+                  {
+                    "tipo": "str",
+                    "valor": "texto"
+                  }
+                ]
+              }
+            }
+          },
+          "valor_ppi": {
+            "a": [
+              "9007199254740993.01",
+              "9007199254740993.01",
+              "1E-8",
+              true,
+              0,
+              null
+            ]
+          },
+          "valor_ppi_tipado": {
+            "tipo": "dict",
+            "valor": {
+              "a": {
+                "tipo": "list",
+                "valor": [
+                  {
+                    "tipo": "decimal",
+                    "valor": "9007199254740993.01"
+                  },
+                  {
+                    "tipo": "str",
+                    "valor": "9007199254740993.01"
+                  },
+                  {
+                    "tipo": "decimal",
+                    "valor": "1E-8"
+                  },
+                  {
+                    "tipo": "bool",
+                    "valor": true
+                  },
+                  {
+                    "tipo": "int",
+                    "valor": 0
+                  },
+                  {
+                    "tipo": "null",
+                    "valor": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 1
+    },
+    "planes": {
+      "conteo_completo": 1,
+      "muestra": [
+        {
+          "campo": null,
+          "codigo_plan": "P",
+          "codigo_plan_catalogo": null,
+          "codigo_plan_ppi": null,
+          "estado": null,
+          "id": null,
+          "motivo": "El catálogo v1 no contiene totales de plan ni equivalencia declarada",
+          "nivel_catalogo": null,
+          "nivel_ppi": null,
+          "origen_jsonb_ppi": null,
+          "parent_id_catalogo": null,
+          "parent_id_ppi": null,
+          "ruta_float": null,
+          "texto_jsonb_ppi_crudo": null,
+          "tipo": "total_plan_no_comparable",
+          "tipo_valor_catalogo": null,
+          "tipo_valor_ppi": null,
+          "valor_catalogo": null,
+          "valor_catalogo_tipado": null,
+          "valor_ppi": null,
+          "valor_ppi_tipado": null
+        }
+      ],
+      "muestra_maxima": 50,
+      "muestra_truncada": false,
+      "muestreado": 1
+    }
+  },
+  "limites": {
+    "credito": "No acredita ejecución, presupuesto comparable, vínculo PA, indicador ni causalidad",
+    "precision_financiera": "No se convierte Decimal a float; float heredado del catálogo invalida igualdad exacta",
+    "totales_planes": "COMPARACION_NO_DISPONIBLE_SIN_EQUIVALENCIA_EN_CATALOGO_V1",
+    "universos": "PPI y catálogo son universos distintos; faltantes y sobrantes no se normalizan."
+  },
+  "referencias": {
+    "captura_ppi": {
+      "esquema": "polis.ppi_planeacion.v2",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_tipos_anidados_y_centavos0/ppi/1879407ba69478d2b115963b2fd6c27f9c693bbb4d2280cd5445b973d933bfd4.json",
+      "sha256": "1879407ba69478d2b115963b2fd6c27f9c693bbb4d2280cd5445b973d933bfd4"
+    },
+    "catalogo": {
+      "esquema": "polis.catalogo_planeacion.v1",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_tipos_anidados_y_centavos0/catalogo/dcf603f0f72987736eef393708cee2ae5b8a831082bef368cf950b0bedd85c15.json",
+      "sha256": "dcf603f0f72987736eef393708cee2ae5b8a831082bef368cf950b0bedd85c15"
+    },
+    "inventario": {
+      "sha256": "89603e6b857a126ea64d9c47b41e49b6307baeb0f572d42789e467ced8806399"
+    },
+    "manifiesto": {
+      "run_id": "920f2425-79d6-4fee-bb35-a7543bc21b85",
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_tipos_anidados_y_centavos0/manifiesto.json",
+      "sha256": "38c356e46626caab07dde36fec1dca1dba92bb1a4e71b08306d0972cbec71d0a"
+    }
+  },
+  "resumen": {
+    "base_origen_distinta": false,
+    "campos_jsonb_cambio": 1,
+    "campos_jsonb_iguales": 1,
+    "campos_jsonb_precision_no_verificable": 0,
+    "cobertura_planes_metas_con_cambios": 0,
+    "cobertura_planes_nodos_con_cambios": 0,
+    "nodos_compartidos": 1,
+    "nodos_con_cambios_estructurales": 0,
+    "nodos_faltantes_en_ppi": 0,
+    "nodos_fuente_cambio": 0,
+    "nodos_fuente_iguales": 1,
+    "nodos_iguales_estructuralmente": 1,
+    "nodos_jsonb_con_cambios": 1,
+    "nodos_jsonb_iguales_estructuralmente": 0,
+    "nodos_jsonb_precision_no_verificable": 0,
+    "nodos_sobrantes_en_ppi": 0,
+    "planes_compartidos": 1,
+    "planes_faltantes_en_ppi": 0,
+    "planes_sobrantes_en_ppi": 0
+  }
+}

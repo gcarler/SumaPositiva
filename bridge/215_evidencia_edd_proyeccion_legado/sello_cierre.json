@@ -1,0 +1,15 @@
+{
+  "fecha": "2026-10-26T06:22:37.267960+00:00",
+  "estado": "congelado_EDD215; pendiente_EAF_independiente",
+  "artefactos_manifestados": 43,
+  "sha_manifest_evidencia": "9d5d843b285b512a549f9189ba1dc423241b49fd525119958db6187f72568273",
+  "sha_entrega": "35cddfb93ff50904de8368eb4784090894bfe38adbf33cdf9a6258b24357fd43",
+  "sha_fuentes_finales": "465dda8586bb4ddacb79bc82a9140dd76cd290816595706e51f4e205e310c74a",
+  "sha256_producto": {
+    "backend/app/modules/aportes/schemas.py": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1",
+    "backend/app/modules/aportes/service.py": "2a413c9d53d3a8fdb5c9dc4170655e5cf45ef8a251ed2688d227da3785469244",
+    "backend/tests/test_aportes_legado_publico.py": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753"
+  },
+  "evidencias183203_intactas": true,
+  "no_commit_push_deploy": true
+}

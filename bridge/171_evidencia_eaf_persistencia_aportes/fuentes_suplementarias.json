@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-26T04:32:59.751960+00:00",
+  "nota": "Hashes finales de lecturas complementarias; sin línea base inicial de estos cuatro archivos",
+  "hashes": {
+    "docs/identidad.md": "28d1377d64e2fe91bace68effb3d923b2635510a7e1b778cfa6a7ec8c32cc9df",
+    "docs/plan-trabajo.md": "197cb235ae911b5dabc1acb0989aea6da6c648d47ecf895e536293ea93736250",
+    "docs/operacion.md": "0674c988dde53dfca241b7b01306413012d012787b4dc8239832519f2b176510",
+    ".github/workflows/check.yml": "bb646b0fd40c59d5b234904bb125231ff10d9b464c5807e77faebe19f9c0cab8"
+  }
+}

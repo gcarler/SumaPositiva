@@ -1,0 +1,52 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test_sintetica",
+  "cobertura_sql": {
+    "PDD_PRUEBA": {
+      "metas": 1,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [
+    {
+      "codigo": "M0",
+      "codigo_plan": "PDD_PRUEBA",
+      "datos_oficiales": {
+        "linea_base": null,
+        "meta_cuatrienio": "100",
+        "valor_textual": "001.20"
+      },
+      "fila_fuente": null,
+      "fuente": null,
+      "id": "8ba4bd01-6fa7-42e9-9100-56b92236220d",
+      "indicador": "Personas atendidas",
+      "linea_id": "43c4f608-a9d4-42e1-8638-64e06dd45eb3",
+      "linea_nombre": null,
+      "nombre": "Atención ciudadana",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": "personas"
+    }
+  ],
+  "nodos": [
+    {
+      "codigo": "P1",
+      "codigo_plan": "PDD_PRUEBA",
+      "fuente": null,
+      "id": "43c4f608-a9d4-42e1-8638-64e06dd45eb3",
+      "metadatos": {
+        "dimension_sh_primaria": "Seguridad Personal",
+        "grado_frontalidad_sh": "A_DIRECTA"
+      },
+      "nivel": "PROGRAMA",
+      "nombre": "Programa de atención ciudadana",
+      "orden": 0,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "2024": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "codigo_valido": true,
+  "fallo": "post_flush",
+  "excepcion": "RuntimeError",
+  "pid_antes": 2889045,
+  "pid_despues": 2889048,
+  "estado_antes_sha256": "cb26c0bb4a7f3a334537c87a616e272934fdd3ffc036e51fcb0675e5e3fb0d54",
+  "estado_despues_sha256": "cb26c0bb4a7f3a334537c87a616e272934fdd3ffc036e51fcb0675e5e3fb0d54",
+  "igualdad_completa": true,
+  "sesion_utilizable": true,
+  "campos": "Usuario/hash, sesiones/cívicas y acreditación, cola/tokens, factor/contador/códigos y eventos"
+}

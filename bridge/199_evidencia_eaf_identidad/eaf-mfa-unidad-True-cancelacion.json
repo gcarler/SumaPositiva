@@ -1,0 +1,12 @@
+{
+  "codigo_valido": true,
+  "fallo": "cancelacion",
+  "excepcion": "CancelledError",
+  "pid_antes": 2889225,
+  "pid_despues": 2889228,
+  "estado_antes_sha256": "9a66dddee95cb21443961adfc273fa9ea865b4004cb5aa39560f526d28e13e73",
+  "estado_despues_sha256": "9a66dddee95cb21443961adfc273fa9ea865b4004cb5aa39560f526d28e13e73",
+  "igualdad_completa": true,
+  "sesion_utilizable": true,
+  "campos": "Usuario/hash, sesiones/cívicas y acreditación, cola/tokens, factor/contador/códigos y eventos"
+}

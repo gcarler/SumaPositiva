@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "headers": {
+    "Date": "Mon, 26 Oct 2026 00:49:04 GMT",
+    "Content-Type": "application/json; charset=UTF-8",
+    "Cache-Control": "must-revalidate,max-age=0,public",
+    "X-Content-Type-Options": "nosniff",
+    "Set-Cookie": "AGS_ROLES=\"419jqfa+uOZgYod4xPOQ8Q==\"; Version=1; Max-Age=60; Expires=Mon, 26 Oct 2026 00:50:04 GMT; Path=/mparcgis/rest; Secure; HttpOnly",
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-XSS-Protection": "1; mode=block",
+    "Strict-Transport-Security": "max-age=31536000; includeSubdomains;",
+    "Referrer-Policy": "same-origin",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+    "Access-Control-Allow-Origin": "https://nowsoft.app",
+    "X-Permitted-Cross-Domain-Policies": "none",
+    "X-Cacheable": "NO:Got Cookies",
+    "Vary": "Origin, Accept-Encoding",
+    "ETag": "W/\"37e6e887\"",
+    "Accept-Ranges": "bytes",
+    "Content-Length": "113",
+    "Connection": "close"
+  },
+  "url": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer/317/query?where=1=1&returnGeometry=false&outFields=OBJECTID,DPTO_CCDGO,MPIO_CCDGO,MPIO_CDPMP,MPIO_TIPO,MPIO_NANO,DPTO_CNMBRE,MPIO_CNMBRE,MPIO_CRSLCION&orderByFields=OBJECTID&resultOffset=0&resultRecordCount=1000&f=json",
+  "bytes": 113,
+  "sha256": "b6d0819923f24325b2dbe4bf74521a2591fab7dd7a6c84c7188b5349163cfe7b"
+}

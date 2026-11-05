@@ -1,0 +1,41 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "MATRIZ_PDD_PA_SIN_MONTOS_NI_RESULTADOS",
+  "base_origen": "polis_test_sintetica",
+  "esquema": "polis.instantanea_correspondencias.v1",
+  "matriz": {
+    "estado_publicacion": "no_publicable",
+    "filas": [
+      {
+        "actividad_pa_id": "320acd63-798a-4a2a-a0f9-5af64bb32576",
+        "codigo_actividad_pa": "PA1",
+        "codigo_bpim": "BP1",
+        "codigo_meta": "M1",
+        "codigo_plan": "PDD_SINTETICO",
+        "documento_evidencia": null,
+        "estado_correspondencia": "CANDIDATO_BPIM_VIGENCIA",
+        "indicador_meta": null,
+        "meta_id": "b9248e23-3f95-4e3c-8710-b80c46cebe4d",
+        "nodo_plan_nivel": null,
+        "nodo_plan_nombre": null,
+        "nombre_meta": "Meta sintética",
+        "pagina_evidencia": null,
+        "programa_pa_nombre": null,
+        "programa_pdd_id": null,
+        "programa_pdd_nombre": null,
+        "sha256_documento": null,
+        "tipo_meta": "RESULTADO",
+        "tipo_vinculo_heredado": "INFERIDO",
+        "vigencia": 2024
+      }
+    ],
+    "limite": "Matriz descriptiva; las candidaturas no acreditan ejecución ni impacto. Sin montos aditivos.",
+    "metas_con_multiples_actividades": 0,
+    "metas_distintas": 1,
+    "metas_sin_pa": 0
+  },
+  "metas_fuente_por_plan": {
+    "PDD_SINTETICO": 1
+  },
+  "modo_matriz": "MATERIALIZADA"
+}

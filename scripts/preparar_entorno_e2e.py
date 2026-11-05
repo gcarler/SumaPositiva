@@ -87,12 +87,15 @@ async def preparar_bd_y_usuarios():
         # Generar credenciales dinámicas no versionadas
         pass_autoridad = f"Auto_{secrets.token_hex(6)}*!"
         pass_auditor = f"Audi_{secrets.token_hex(6)}*!"
+        pass_admin = f"Admin_{secrets.token_hex(6)}*!"
 
         hash_autoridad = bcrypt.hashpw(pass_autoridad.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
         hash_auditor = bcrypt.hashpw(pass_auditor.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        hash_admin = bcrypt.hashpw(pass_admin.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
         correo_autoridad = "test_e2e_autoridad@cartagena.gov.co"
         correo_auditor = "test_e2e_auditor@cartagena.gov.co"
+        correo_admin = "test_e2e_admin@cartagena.gov.co"
 
         # Insertar / actualizar usuario autoridad_distrital
         await conn.execute("""
@@ -120,12 +123,43 @@ async def preparar_bd_y_usuarios():
                 activo = true;
         """, correo_auditor, hash_auditor, role_map["auditor_forense"], "verificada", "Auditor", "E2E", True)
 
+        # Insertar / actualizar usuario administrador_identidades
+        if "administrador_identidades" in role_map:
+            await conn.execute("""
+                INSERT INTO autenticacion.usuarios (
+                    correo, hash_contrasena, rol_id, nivel_identidad,
+                    nombres, apellidos, activo, correo_verificado_en
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                ON CONFLICT (lower(correo)) DO UPDATE 
+                SET hash_contrasena = EXCLUDED.hash_contrasena,
+                    rol_id = EXCLUDED.rol_id,
+                    activo = true;
+            """, correo_admin, hash_admin, role_map["administrador_identidades"], "verificada", "Administrador", "E2E", True)
+
         # Normalizar códigos de líneas existentes para respetar patrón DNP (^LE-[0-9]{2,}$)
         await conn.execute("""
             UPDATE motor_politicas.lineas_estrategicas
             SET codigo = 'LE-01'
             WHERE codigo !~ '^LE-[0-9]{2,}$';
         """)
+
+        # Asegurar que la línea canónica de modo barrio (01a0f61b-6252-73d5-b035-7671ed9cf089) exista para participación ciudadana
+        fase_id = await conn.fetchval("SELECT id FROM motor_politicas.fases_politica LIMIT 1;")
+        dim_id = await conn.fetchval("SELECT id FROM motor_politicas.dimensiones_seguridad_humana LIMIT 1;")
+        if fase_id:
+            await conn.execute("""
+                INSERT INTO motor_politicas.lineas_estrategicas (
+                    id, fase_id, dimension_id, codigo, titulo, descripcion,
+                    costo_estimado, fuentes_financiacion, entidad_lider, orden, activa, metadatos,
+                    creado_en, actualizado_en
+                ) VALUES (
+                    '01a0f61b-6252-73d5-b035-7671ed9cf089'::uuid,
+                    $1, $2, 'LE-99', 'Línea Canónica Modo Barrio E2E', 'Línea estratégica canónica para participación ciudadana territorial en modo barrio.',
+                    1000000, ARRAY['FONSET'], 'Secretaría del Interior', 99, true, '{}'::jsonb,
+                    NOW(), NOW()
+                ) ON CONFLICT (id) DO NOTHING;
+            """, fase_id, dim_id)
 
         # Asegurar al menos una mesa canónica para flujos E2E
         mesas_count = await conn.fetchval("SELECT count(*) FROM mesas_trabajo.mesas;")
@@ -216,6 +250,11 @@ async def preparar_bd_y_usuarios():
                 "correo": correo_auditor,
                 "contrasena": pass_auditor,
                 "rol": "auditor_forense",
+            },
+            "admin": {
+                "correo": correo_admin,
+                "contrasena": pass_admin,
+                "rol": "administrador_identidades",
             },
         }
 

@@ -1,0 +1,46 @@
+{
+  "candidato": {
+    "archivos": 1829,
+    "bytes": 4815,
+    "cargable_ahora": false,
+    "copia_local": "candidato_inventario_2026-10-26.sha-0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082.json",
+    "fuentes": 43,
+    "indice_sustituido": 1648,
+    "paquetes": 8,
+    "razon": "ruta futura aun no existe",
+    "ruta_futura": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-26/resumen_sincronizacion.7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "sha_candidato": "0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082"
+  },
+  "captura_utc": "2026-10-26T05:56:56.297108+00:00",
+  "inventario_activo": {
+    "bytes": 1638638,
+    "copia_local": "inventario_pipeline_2026.sha-5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+    "mtime_ns": 1792727328633810387,
+    "mtime_utc": "2026-10-23T03:48:48.633811+00:00",
+    "ruta": "data/banco_fuentes_oficiales/inventario_pipeline_2026.json",
+    "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "sha_copia": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c"
+  },
+  "original_historico": {
+    "bytes_esperados": 51693,
+    "diferencia_semantica": "no_comprobada",
+    "estado": "no_localizado",
+    "sha256_esperado": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a"
+  },
+  "resumen_activo": {
+    "bytes": 4815,
+    "copia_local": "resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "mtime_ns": 1792803921999383434,
+    "mtime_utc": "2026-10-24T01:05:21.999383+00:00",
+    "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+    "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "sha_copia": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+  },
+  "sin_commit": true,
+  "sin_push": true,
+  "sin_pytest": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "tarea": "OL-FUENTES-SHA-02"
+}

@@ -1,0 +1,9 @@
+{
+  "archivos_texto_comprobados": 151,
+  "coincidencias": {
+    "dsn_origen": [],
+    "contrasena_real": [],
+    "jwt_en_claro": []
+  },
+  "incluye_temporales_caches_uploads": false
+}

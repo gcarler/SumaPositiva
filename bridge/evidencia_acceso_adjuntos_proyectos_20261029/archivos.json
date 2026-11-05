@@ -1,0 +1,25 @@
+{
+  "fecha_utc": "2026-10-29T01:35:29.304233+00:00",
+  "archivos": [
+    {
+      "ruta": "src/features/proyectos/views/proyectos-view.tsx",
+      "sha256_antes": "fd99c5abbc580a37a82e2c7386ee3a3d9fc789ca82bb3eb92ba1c0363fa3bebb",
+      "sha256_despues": "c6f126822c966656d79bd1e028c5d28741565dea8c6729fcfda50d4e67f4ed8f"
+    },
+    {
+      "ruta": "src/features/proyectos/panels/ficha-actividad-panel.tsx",
+      "sha256_antes": "14eb1dfc26945e94ddb9de8ff789b866a5b48f08518058da95c4d523539edf73",
+      "sha256_despues": "ab49b8e3409122b21394ee0fe92224a6c0d033a6ac5810ec04d9b327d8a02aa2"
+    },
+    {
+      "ruta": "src/features/proyectos/services/proyectos-api.ts",
+      "sha256_antes": "c247519c88474e369b17c82194b4e97a48b5ff13d8d0f8cb7dcf04f1cd31974a",
+      "sha256_despues": "42f72f82a0a05ff33fd61ace0887de23b634ef2149e6d310cf422e3a367e52d1"
+    },
+    {
+      "ruta": "src/app/_composition/panel-contracts.d.ts",
+      "sha256_antes": "e2abd9cfcccf83262110aa98d5cfa284bc5ad35088bad82c12780176d6e9be2d",
+      "sha256_despues": "ae3949ab2a9d4d93cc3d9f0254c160179fa7e3a2f4e7a0740d4ecbfa66e307d8"
+    }
+  ]
+}

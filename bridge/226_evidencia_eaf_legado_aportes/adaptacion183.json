@@ -1,0 +1,12 @@
+{
+  "origin": "bridge/183_evidencia_edd_aportes/test_http_y_visibilidad_outbox.py",
+  "origin_sha256": "0dd48bc81338436aca49e43986e93e607b53af6daf07cafb07228c56fcb58392",
+  "copy": "bridge/226_evidencia_eaf_legado_aportes/test_http_y_visibilidad_outbox_183.py",
+  "copy_sha256": "a0fda703d8004e7e35f4d65f7169a6b8ea20e70a38125b62608bbc571fd481e9",
+  "changes": [
+    "nombre env DSN propio POLIS_EAF_DATABASE",
+    "prefijo propio exacto226"
+  ],
+  "assertions_changed": false,
+  "origin_unchanged": true
+}

@@ -1,0 +1,34 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/barrio/layout,_N_T_/barrio/page,_N_T_/barrio"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/barrio/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/535d73ab3510fe8db59a511133498f0f2781f0a00dd57affdfbb251128eca23a/$/barrio",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/barrio/page"
+    },
+    "isFallback": false
+  }
+}

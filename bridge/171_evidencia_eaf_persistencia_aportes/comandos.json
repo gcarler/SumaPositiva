@@ -1,0 +1,92 @@
+[
+  {
+    "log": "01_upgrade_vacio.log",
+    "command": "$ uv run --project backend alembic -c backend/alembic.ini upgrade head",
+    "exit_code": 1
+  },
+  {
+    "log": "02_extensiones_base_nueva.log",
+    "command": "$ runuser -u postgres -- psql -X -v ON_ERROR_STOP=1 -1 -d polis_test_eaf_aportes_20261026_ef6a0ce9",
+    "exit_code": 0
+  },
+  {
+    "log": "03_upgrade_extensiones.log",
+    "command": "$ uv run --project backend alembic -c backend/alembic.ini upgrade head",
+    "exit_code": 0
+  },
+  {
+    "log": "04_backend_check.log",
+    "command": "$ bun run backend:check",
+    "exit_code": 143
+  },
+  {
+    "log": "05_backend_check_guardas.log",
+    "command": "$ bun run backend:check",
+    "exit_code": 1
+  },
+  {
+    "log": "06_guardas_verificadas.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/probar_guardas.py",
+    "exit_code": 0
+  },
+  {
+    "log": "07_redaccion.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/redactar_artefactos.py",
+    "exit_code": 0
+  },
+  {
+    "log": "08_migraciones_aportes.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/migraciones_aportes.py",
+    "exit_code": 1
+  },
+  {
+    "log": "09_migraciones_aportes_corregido.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/migraciones_aportes.py",
+    "exit_code": 0
+  },
+  {
+    "log": "10_escenarios_eaf.log",
+    "command": "$ uv run --project backend pytest -c backend/pyproject.toml bridge/171_evidencia_eaf_persistencia_aportes/test_eaf_aportes.py -q",
+    "exit_code": 1
+  },
+  {
+    "log": "11_inventario_bd.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/inventario_bd.py",
+    "exit_code": 0
+  },
+  {
+    "log": "12_escenarios_eaf_final.log",
+    "command": "$ uv run --project backend pytest -c backend/pyproject.toml bridge/171_evidencia_eaf_persistencia_aportes/test_eaf_aportes.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "13_suites_pertinentes.log",
+    "command": "$ uv run --project backend pytest backend/tests/test_aportes.py backend/tests/test_apoyos_unicos.py backend/tests/test_apoyos_voto.py backend/tests/test_devolucion_razones.py backend/tests/test_transactions.py backend/tests/test_transaction_policy.py backend/tests/test_transactions_integration.py backend/tests/test_evidencias.py backend/tests/test_evidencia_segura.py backend/tests/test_notificaciones_y_radicacion.py backend/tests/test_access_policy.py backend/tests/test_concurrencia_y_conflictos.py backend/tests/test_enfoque_etnico.py backend/tests/test_cli_ficha_territorial_polis.py::test_fallo_serializacion_manifiesto_no_deja_publicacion_parcial backend/tests/test_sincronizar_fuentes_versionado.py::test_fallo_no_reemplaza_banco_activo backend/tests/test_sincronizar_fuentes_versionado.py::test_puerta_roja_en_staging_no_promociona -q",
+    "exit_code": 0
+  },
+  {
+    "log": "14_inventario_bd_final.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/inventario_bd.py",
+    "exit_code": 0
+  },
+  {
+    "log": "15_devolucion_http_concurrente.log",
+    "command": "$ uv run --project backend pytest -c backend/pyproject.toml bridge/171_evidencia_eaf_persistencia_aportes/test_eaf_devolucion_http.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "16_webhook_parcial.log",
+    "command": "$ uv run --project backend pytest -c backend/pyproject.toml bridge/171_evidencia_eaf_persistencia_aportes/test_eaf_whatsapp.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "17_redaccion_final.log",
+    "command": "$ backend/.venv/bin/python bridge/171_evidencia_eaf_persistencia_aportes/redactar_artefactos.py",
+    "exit_code": 0
+  },
+  {
+    "log": "provision_base.log",
+    "command": "$ runuser -u postgres -- createdb --template=template0 --owner=polis polis_test_eaf_aportes_20261026_ef6a0ce9",
+    "exit_code": 0
+  }
+]

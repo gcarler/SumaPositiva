@@ -1,0 +1,5 @@
+{
+  "codigo_salida": 1,
+  "causa": "El colector propio no trató EmptyCell de openpyxl; AttributeError en celda.coordinate. No afecta originales ni extractor201.",
+  "correccion": "Ignorar celdas sin coordenada, no incluidas en las coordenadas de evidencia seleccionadas."
+}

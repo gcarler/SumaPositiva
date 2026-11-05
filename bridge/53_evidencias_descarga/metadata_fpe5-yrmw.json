@@ -1,0 +1,647 @@
+{
+  "id" : "fpe5-yrmw",
+  "name" : "Reporte  Delitos sexuales Policía Nacional",
+  "assetType" : "dataset",
+  "attribution" : "Dirección de Investigación Criminal e Interpol DIJIN",
+  "attributionLink" : "https://www.policia.gov.co/jefatura-nacional-del-servicio-de-policia/dijin",
+  "averageRating" : 0,
+  "category" : "Seguridad y Defensa",
+  "createdAt" : 1612980445,
+  "description" : "En este conjunto de datos la ciudadanía puede encontrará información delitos Sexuales desde el 01 de enero del año 2010 al 31 de julio del año 2026.\n\nFuente: DIJIN - Policía Nacional. Datos extraídos el día 31 de agosto del 2026 a las 17:17 horas. Cifras sujetas a variación, en proceso de integración y consolidación con información de fiscalía general de la nación.  \n\nSeñor usuario si encuentra alguna inconsistencia en la información publicada, no la puede hacer saber atreves del correo electrónico Dijin.aicri-jef@policia.gov.co.\n\nNota: se ha realizado actualización en las cifras de todos los delitos, de acuerdo a la nueva metodología de validación de denuncias con la Fiscalía General de la Nación, la cual puede ser encontrada en el link https://www.policia.gov.co/grupo-informacion-criminalidad.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 3445,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 36997914,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1618357660,
+  "publicationGroup" : 18017366,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1788291878,
+  "rowsUpdatedBy" : "bn7v-9rpg",
+  "tableId" : 18220244,
+  "totalTimesRated" : 0,
+  "viewCount" : 33435,
+  "viewLastModified" : 1789504719,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1612993162,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 3518535,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1612982435,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1612993162,
+      "failureCount" : 0,
+      "startedAt" : 1612993162,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "bn7v-9rpg",
+      "displayName" : "DIJIN"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 536090586,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120985,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "BOGOTA",
+        "count" : "75492"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "50508"
+      }, {
+        "item" : "VALLE",
+        "count" : "38026"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "23401"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "20438"
+      }, {
+        "item" : "ATLÁNTICO",
+        "count" : "16664"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "14708"
+      }, {
+        "item" : "HUILA",
+        "count" : "14151"
+      }, {
+        "item" : "BOLÍVAR",
+        "count" : "13670"
+      }, {
+        "item" : "META",
+        "count" : "12484"
+      }, {
+        "item" : "BOYACÁ",
+        "count" : "11441"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "11358"
+      }, {
+        "item" : "RISARALDA",
+        "count" : "10459"
+      }, {
+        "item" : "CAUCA",
+        "count" : "10342"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "9131"
+      }, {
+        "item" : "CALDAS",
+        "count" : "8730"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "8725"
+      }, {
+        "item" : "CESAR",
+        "count" : "8613"
+      }, {
+        "item" : "CÓRDOBA",
+        "count" : "8372"
+      }, {
+        "item" : "SUCRE",
+        "count" : "6413"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090587,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120986,
+    "cachedContents" : {
+      "non_null" : "405188",
+      "largest" : "Zona Bananera",
+      "null" : "5",
+      "top" : [ {
+        "item" : "Bogotá D.C. (CT)",
+        "count" : "75492"
+      }, {
+        "item" : "Medellín (CT)",
+        "count" : "23156"
+      }, {
+        "item" : "Cali (CT)",
+        "count" : "19557"
+      }, {
+        "item" : "Barranquilla (CT)",
+        "count" : "8778"
+      }, {
+        "item" : "Cartagena (CT)",
+        "count" : "7050"
+      }, {
+        "item" : "Villavicencio (CT)",
+        "count" : "6689"
+      }, {
+        "item" : "Bucaramanga (CT)",
+        "count" : "6689"
+      }, {
+        "item" : "Ibagué (CT)",
+        "count" : "6385"
+      }, {
+        "item" : "Pereira (CT)",
+        "count" : "5996"
+      }, {
+        "item" : "Pasto (CT)",
+        "count" : "5037"
+      }, {
+        "item" : "Neiva (CT)",
+        "count" : "4964"
+      }, {
+        "item" : "Cúcuta (CT)",
+        "count" : "4736"
+      }, {
+        "item" : "Soacha",
+        "count" : "4505"
+      }, {
+        "item" : "Valledupar (CT)",
+        "count" : "4122"
+      }, {
+        "item" : "Santa Marta (CT)",
+        "count" : "4120"
+      }, {
+        "item" : "Soledad",
+        "count" : "3613"
+      }, {
+        "item" : "Popayán (CT)",
+        "count" : "3519"
+      }, {
+        "item" : "Bello",
+        "count" : "3474"
+      }, {
+        "item" : "Montería (CT)",
+        "count" : "3399"
+      }, {
+        "item" : "Manizales (CT)",
+        "count" : "3326"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090588,
+    "name" : "CODIGO DANE",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "codigo_dane",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120984,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "99773003",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001000",
+        "count" : "75491"
+      }, {
+        "item" : "05001000",
+        "count" : "22769"
+      }, {
+        "item" : "76001000",
+        "count" : "19545"
+      }, {
+        "item" : "08001000",
+        "count" : "8759"
+      }, {
+        "item" : "13001000",
+        "count" : "6910"
+      }, {
+        "item" : "68001000",
+        "count" : "6688"
+      }, {
+        "item" : "50001000",
+        "count" : "6665"
+      }, {
+        "item" : "73001000",
+        "count" : "6300"
+      }, {
+        "item" : "66001000",
+        "count" : "5968"
+      }, {
+        "item" : "52001000",
+        "count" : "5008"
+      }, {
+        "item" : "41001000",
+        "count" : "4812"
+      }, {
+        "item" : "54001000",
+        "count" : "4728"
+      }, {
+        "item" : "25754000",
+        "count" : "4485"
+      }, {
+        "item" : "47001000",
+        "count" : "4033"
+      }, {
+        "item" : "20001000",
+        "count" : "4012"
+      }, {
+        "item" : "08758000",
+        "count" : "3613"
+      }, {
+        "item" : "19001000",
+        "count" : "3509"
+      }, {
+        "item" : "05088000",
+        "count" : "3472"
+      }, {
+        "item" : "23001000",
+        "count" : "3377"
+      }, {
+        "item" : "17001000",
+        "count" : "3321"
+      } ],
+      "smallest" : "05001000",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090589,
+    "name" : "ARMAS MEDIOS",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "armas_medios",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120987,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "SIN EMPLEO DE ARMAS",
+      "null" : "0",
+      "top" : [ {
+        "item" : "SIN EMPLEO DE ARMAS",
+        "count" : "244479"
+      }, {
+        "item" : "NO REPORTADO",
+        "count" : "70027"
+      }, {
+        "item" : "CONTUNDENTES",
+        "count" : "57292"
+      }, {
+        "item" : "ARMA BLANCA / CORTOPUNZANTE",
+        "count" : "22168"
+      }, {
+        "item" : "ESCOPOLAMINA",
+        "count" : "7518"
+      }, {
+        "item" : "ARMA DE FUEGO",
+        "count" : "2379"
+      }, {
+        "item" : "LICOR ADULTERADO",
+        "count" : "971"
+      }, {
+        "item" : "CINTAS/CINTURON",
+        "count" : "168"
+      }, {
+        "item" : "CORTOPUNZANTES",
+        "count" : "107"
+      }, {
+        "item" : "ESPOSAS",
+        "count" : "69"
+      }, {
+        "item" : "CORTANTES",
+        "count" : "14"
+      }, {
+        "item" : "ARMAS BLANCAS",
+        "count" : "1"
+      } ],
+      "smallest" : "ARMA BLANCA / CORTOPUNZANTE",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090590,
+    "name" : "FECHA HECHO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "fecha_hecho",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120991,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "31/12/2025",
+      "null" : "0",
+      "top" : [ {
+        "item" : "01/01/2021",
+        "count" : "447"
+      }, {
+        "item" : "01/01/2018",
+        "count" : "426"
+      }, {
+        "item" : "01/01/2023",
+        "count" : "378"
+      }, {
+        "item" : "01/01/2017",
+        "count" : "361"
+      }, {
+        "item" : "01/01/2019",
+        "count" : "324"
+      }, {
+        "item" : "01/01/2016",
+        "count" : "316"
+      }, {
+        "item" : "01/01/2020",
+        "count" : "311"
+      }, {
+        "item" : "01/01/2025",
+        "count" : "295"
+      }, {
+        "item" : "01/06/2021",
+        "count" : "265"
+      }, {
+        "item" : "01/01/2024",
+        "count" : "263"
+      }, {
+        "item" : "01/08/2018",
+        "count" : "261"
+      }, {
+        "item" : "01/03/2021",
+        "count" : "254"
+      }, {
+        "item" : "01/06/2018",
+        "count" : "244"
+      }, {
+        "item" : "01/10/2018",
+        "count" : "237"
+      }, {
+        "item" : "01/01/2026",
+        "count" : "231"
+      }, {
+        "item" : "01/10/2019",
+        "count" : "227"
+      }, {
+        "item" : "01/08/2025",
+        "count" : "222"
+      }, {
+        "item" : "01/03/2019",
+        "count" : "217"
+      }, {
+        "item" : "16/05/2018",
+        "count" : "217"
+      }, {
+        "item" : "01/04/2019",
+        "count" : "215"
+      } ],
+      "smallest" : "01/01/2010",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090591,
+    "name" : "GENERO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "genero",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120988,
+    "cachedContents" : {
+      "non_null" : "402776",
+      "largest" : "NO REPORTA",
+      "null" : "2417",
+      "top" : [ {
+        "item" : "FEMENINO",
+        "count" : "340874"
+      }, {
+        "item" : "MASCULINO",
+        "count" : "61249"
+      }, {
+        "item" : "NO REPORTA",
+        "count" : "653"
+      } ],
+      "smallest" : "FEMENINO",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090592,
+    "name" : "GRUPO ETARIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "grupo_etario",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120989,
+    "cachedContents" : {
+      "non_null" : "404558",
+      "largest" : "MENORES",
+      "null" : "635",
+      "top" : [ {
+        "item" : "ADULTOS",
+        "count" : "253189"
+      }, {
+        "item" : "MENORES",
+        "count" : "80479"
+      }, {
+        "item" : "ADOLESCENTES",
+        "count" : "70890"
+      } ],
+      "smallest" : "ADOLESCENTES",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090593,
+    "name" : "CANTIDAD",
+    "dataTypeName" : "number",
+    "description" : "",
+    "fieldName" : "cantidad",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 130120990,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "1",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "405193"
+      } ],
+      "smallest" : "1",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  }, {
+    "id" : 536090594,
+    "name" : "delito",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "delito",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 135518266,
+    "cachedContents" : {
+      "non_null" : "405193",
+      "largest" : "ARTÍCULO 219 B. OMISIÓN DE DENUNCIA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "ARTÍCULO 209. ACTOS SEXUALES CON MENOR DE 14 AÑOS",
+        "count" : "139901"
+      }, {
+        "item" : "ARTÍCULO 208. ACCESO CARNAL ABUSIVO CON MENOR DE 14 AÑOS",
+        "count" : "85049"
+      }, {
+        "item" : "ARTÍCULO 205. ACCESO CARNAL VIOLENTO",
+        "count" : "59761"
+      }, {
+        "item" : "ARTÍCULO 206. ACTO SEXUAL VIOLENTO",
+        "count" : "43465"
+      }, {
+        "item" : "ARTÍCULO 210 A. ACOSO SEXUAL",
+        "count" : "30514"
+      }, {
+        "item" : "ARTÍCULO 210. ACCESO CARNAL O ACTO SEXUAL ABUSIVO CON INCAPAZ DE RESISTIR",
+        "count" : "16580"
+      }, {
+        "item" : "ARTÍCULO 218. PORNOGRAFÍA CON MENORES",
+        "count" : "11648"
+      }, {
+        "item" : "ARTÍCULO 207. ACCESO CARNAL O ACTO SEXUAL EN PERSONA PUESTA EN INCAPACIDAD DE RESISTIR",
+        "count" : "6653"
+      }, {
+        "item" : "ARTÍCULO 219 A. UTILIZACIÓN O FACILITACIÓN DE MEDIOS DE COMUNICACIÓN PARA OFRECER SERVICIOS SEXUALES DE MENORES",
+        "count" : "2577"
+      }, {
+        "item" : "ARTÍCULO 213. INDUCCIÓN A LA PROSTITUCIÓN",
+        "count" : "2355"
+      }, {
+        "item" : "ARTÍCULO 217 A. DEMANDA DE EXPLOTACION SEXUAL COMERCIAL DE PERSONA MENOR DE 18 AÑOS DE EDAD",
+        "count" : "2135"
+      }, {
+        "item" : "ARTÍCULO 211. ACTOS SEXUALES CON MENOR DE 14 AÑOS (CIRCUNSTANCIAS DE AGRAVACIÓN)",
+        "count" : "819"
+      }, {
+        "item" : "ARTÍCULO 211. ACCESO CARNAL ABUSIVO CON MENOR DE 14 AÑOS (CIRCUNSTANCIAS AGRAVACIÓN)",
+        "count" : "815"
+      }, {
+        "item" : "ARTÍCULO 213 A. PROXENETISMO CON MENOR DE EDAD",
+        "count" : "747"
+      }, {
+        "item" : "ARTÍCULO 211. ACCESO CARNAL O ACTO SEXUAL EN PERSONA PUESTA EN INCAPACIDAD DE RESISTIR  (CIRCUNSTANC",
+        "count" : "646"
+      }, {
+        "item" : "ARTÍCULO 214. CONSTREÑIMIENTO A LA PROSTITUCIÓN",
+        "count" : "316"
+      }, {
+        "item" : "ARTÍCULO 211. ACCESO CARNAL VIOLENTO (CIRCUNSTANCIAS AGRAVACIÓN)",
+        "count" : "316"
+      }, {
+        "item" : "ARTÍCULO 211. ACTO SEXUAL VIOLENTO (CIRCUNSTANCIAS DE AGRAVACIÓN)",
+        "count" : "295"
+      }, {
+        "item" : "ARTÍCULO 211. ACCESO CARNAL O ACTO SEXUAL ABUSIVO CON INCAPAZ DE RESISTIR (CIRCUNSTANCIAS AGRAVACIÓN",
+        "count" : "294"
+      }, {
+        "item" : "ARTÍCULO 217. ESTÍMULO A LA PROSTITUCIÓN DE MENORES",
+        "count" : "223"
+      } ],
+      "smallest" : "ARTÍCULO 205. ACCESO CARNAL VIOLENTO",
+      "count" : "405193",
+      "cardinality" : "405193"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Planeación",
+        "Área o dependencia" : "Oficina TIC",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Municipal",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "policía", "delitos", "sexual" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

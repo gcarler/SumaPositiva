@@ -1,0 +1,69 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test",
+  "cobertura_sql": {
+    "P": {
+      "metas": 0,
+      "nodos": 1
+    },
+    "Q": {
+      "metas": 0,
+      "nodos": 1
+    },
+    "R": {
+      "metas": 0,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [],
+  "nodos": [
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "51031ce0-18a4-510e-b335-c605204e9145",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "a": 2.2,
+        "z": 1.1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "Q",
+      "fuente": "prueba",
+      "id": "863a0c49-8ff5-5f50-9df3-a344f4fe13e4",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "a": 2.2,
+        "z": 1.1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "R",
+      "fuente": "prueba",
+      "id": "342c357b-834f-55bc-a95a-a10d478a0232",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "a": 2.2,
+        "z": 1.1
+      }
+    }
+  ]
+}

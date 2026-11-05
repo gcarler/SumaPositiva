@@ -1,0 +1,20 @@
+{
+  "sondas.xml": {
+    "passed": 15
+  },
+  "corte.xml": {
+    "passed": 5
+  },
+  "monitor.xml": {
+    "passed": 8,
+    "failed": 4
+  },
+  "monitor_r2.xml": {
+    "passed": 8,
+    "failed": 4
+  },
+  "bateria.xml": {
+    "passed": 273,
+    "failed": 5
+  }
+}

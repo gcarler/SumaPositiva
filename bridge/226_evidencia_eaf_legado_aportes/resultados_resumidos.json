@@ -1,0 +1,48 @@
+{
+  "utc": "2026-10-26T06:35:35.072426+00:00",
+  "runs": {
+    "03_casos203_sin_cambiar": {
+      "cases": 94,
+      "passed": 94,
+      "failures": [],
+      "skips": [],
+      "sha256": "678c373743818366d3dc62f9d8446a603c72845f9a94ab95e1545d115c863401"
+    },
+    "04_variantes_propias": {
+      "cases": 40,
+      "passed": 40,
+      "failures": [],
+      "skips": [],
+      "sha256": "94f5d6251597a1513d43740997a999a1319edf0c5a68437673206ee7cd21e1b1"
+    },
+    "05_dirigidas_producto": {
+      "cases": 388,
+      "passed": 388,
+      "failures": [],
+      "skips": [],
+      "sha256": "40c13599fc11d6751723e3860791a5f84253d7c8639f4c751a016e1d771644fe"
+    },
+    "06_http_outbox183": {
+      "cases": 2,
+      "passed": 2,
+      "failures": [],
+      "skips": [],
+      "sha256": "06a740966bc8259ac6bbeca2ebd1e6f9f9ef23d90f795e60c33b0d691621d32f"
+    }
+  },
+  "own_cases": {
+    "historical_reexecuted": 94,
+    "additional_independent": 40,
+    "passed": 134,
+    "failures": 0,
+    "skips": 0
+  },
+  "product_directed": 388,
+  "additional183": 2,
+  "duplicates_not_added_across_iterations": true,
+  "alembic_check": "no nuevas operaciones",
+  "indexes_missing": 0,
+  "global": "No repetida por225;205 histórico anterior al parche, no acredita estos bytes.",
+  "migration_and_CLI203": "No se vuelven a acreditar como nuevos: sin downgrade, reconstrucción o CLI en226.",
+  "status": "APROBADO_AP03_R01_sobre_snapshot215"
+}

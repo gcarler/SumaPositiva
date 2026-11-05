@@ -1,0 +1,11 @@
+{
+  "comando": [
+    "backend/.venv/bin/python",
+    "bridge/169_evidencia_eaf_identidad/validar_entorno.py"
+  ],
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.86,
+  "fecha_utc": "2026-10-26T04:06:41.316876+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

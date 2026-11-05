@@ -1,0 +1,39 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/plataforma/layout,_N_T_/plataforma/mesas/layout,_N_T_/plataforma/mesas/page,_N_T_/plataforma/mesas"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/plataforma/mesas/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 160,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/b734c6ea585336bb36461ee3c3957742ac90f9dd57d503db7541a6b8161f7eab/$/plataforma/mesas",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/plataforma/mesas/page"
+    },
+    "isFallback": false
+  }
+}

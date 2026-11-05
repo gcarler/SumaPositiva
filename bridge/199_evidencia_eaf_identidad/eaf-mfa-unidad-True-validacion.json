@@ -1,0 +1,12 @@
+{
+  "codigo_valido": true,
+  "fallo": "validacion",
+  "excepcion": "ValidationError",
+  "pid_antes": 2889263,
+  "pid_despues": 2889266,
+  "estado_antes_sha256": "47d895e651cc7674c638e9e4246fcfb21cd8c42c518bff841e3d7cf6ecd421d5",
+  "estado_despues_sha256": "47d895e651cc7674c638e9e4246fcfb21cd8c42c518bff841e3d7cf6ecd421d5",
+  "igualdad_completa": true,
+  "sesion_utilizable": true,
+  "campos": "Usuario/hash, sesiones/cívicas y acreditación, cola/tokens, factor/contador/códigos y eventos"
+}

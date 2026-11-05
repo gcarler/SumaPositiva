@@ -1,0 +1,13 @@
+{
+  "utc": "2026-11-05T03:23:01.644181+00:00",
+  "estado": "integrado_en_banco_local",
+  "version_previa": "data/fuentes_versiones/banco_fuentes_oficiales/20261105T032206Z-e9c449c9",
+  "version_previa_verificada": true,
+  "consolidado_actual_sha256": "31a1aa6ccd66a97799935d503152d414fafd93bfeaf04425ea5c9916dff07c0e",
+  "inventario_actual_sha256": "400a598a6c1748684b677d7724e75d35e3031bd6d7304caad21d4ed1d785962c",
+  "sqlite_original_sin_cambios": true,
+  "bd_csh": "sin conexiones ni modificaciones",
+  "despliegue": false,
+  "commit": false,
+  "push": false
+}

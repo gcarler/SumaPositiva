@@ -1,0 +1,44 @@
+[
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/data/banco_fuentes_oficiales.stage.20261105T033008Z-615edc9f/consolidar_datos_integral.py"
+    ],
+    "returncode": 0,
+    "log": "v6_01.log"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/inventariar_fuentes_polis.py"
+    ],
+    "returncode": 0,
+    "log": "v6_02.log"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "-m",
+      "scripts.validar_banco_staging_polis",
+      "/root/polis/data/banco_fuentes_oficiales.stage.20261105T033008Z-615edc9f"
+    ],
+    "returncode": 0,
+    "log": "v6_03.log"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/inventariar_fuentes_polis.py"
+    ],
+    "returncode": 0,
+    "log": "v6_04.log"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/planificar_actualizaciones_fuentes_polis.py"
+    ],
+    "returncode": 0,
+    "log": "v6_05.log"
+  }
+]

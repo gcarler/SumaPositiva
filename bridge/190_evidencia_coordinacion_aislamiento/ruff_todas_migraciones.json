@@ -1,0 +1,27 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "ruff",
+    "check",
+    "--no-cache",
+    "backend/tests/conftest.py",
+    "backend/tests/database_isolation.py",
+    "backend/tests/test_database_integration.py",
+    "backend/tests/test_migration_database_isolation.py",
+    "backend/tests/test_identidad_migracion.py",
+    "backend/tests/test_cierre01_migracion_asistencia.py",
+    "backend/tests/test_formularios_admin.py",
+    "backend/tests/test_calidad_formularios.py",
+    "backend/tests/test_corridas_pipeline.py",
+    "backend/tests/test_tablas_dea_dmu_lineage.py"
+  ],
+  "database": "polis_test_edd_coord_20261026_d4afb7fa",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.062,
+  "fecha_utc": "2026-10-26T05:08:15.261669+00:00",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

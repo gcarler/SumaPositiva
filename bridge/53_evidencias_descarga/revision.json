@@ -1,0 +1,3528 @@
+{
+  "esquema": "polis.revision_descargas.v1",
+  "fecha_utc": "2026-10-23T17:52:24.776282+00:00",
+  "alcance": "Metadatos públicos, conteos filtrados Cartagena y portales; sin promover datos ni ejecutar extractores originales. HTTP 200 no acredita datos útiles.",
+  "consultas": [
+    {
+      "clave": "arcgis_indemnizaciones",
+      "url_solicitada": "https://vgv.unidadvictimas.gov.co/server/rest/services/UARIV/Indemnizaciones/MapServer/1",
+      "parametros": {
+        "f": "pjson"
+      },
+      "consulta_utc": "2026-10-23T17:52:17.554481+00:00",
+      "http": 200,
+      "url_final": "https://vgv.unidadvictimas.gov.co/server/rest/services/UARIV/Indemnizaciones/MapServer/1?f=pjson",
+      "content_type": "text/plain; charset=UTF-8",
+      "bytes": 10589,
+      "respuesta_completa": true,
+      "sha256": "cf39e3b3aaba9d19176af8d1f269785d0c73e6083ecad9168b8d7a569cb6e9be",
+      "etag": "\"61b4bb33\"",
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/arcgis_indemnizaciones.bin",
+      "duracion_segundos": 0.17
+    },
+    {
+      "clave": "arcgis_irv",
+      "url_solicitada": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer",
+      "parametros": {
+        "f": "pjson"
+      },
+      "consulta_utc": "2026-10-23T17:52:17.400948+00:00",
+      "http": 200,
+      "url_final": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer?f=pjson",
+      "content_type": "text/plain; charset=UTF-8",
+      "bytes": 6789,
+      "respuesta_completa": true,
+      "sha256": "6dc5b8da9f46bf013f50ab0e407c3d4721a639774f4b412acb44356851d817e1",
+      "etag": "\"1ddbeedd\"",
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/arcgis_irv.bin",
+      "duracion_segundos": 0.2
+    },
+    {
+      "clave": "conteo_icbf_bienestarina",
+      "url_solicitada": "https://www.datos.gov.co/resource/crxh-as6c.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:45.880522+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/crxh-as6c.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "2ad0ea5bfb75e1fb819e3838d23c8a5dc0bbc74fef6b9b998e20bc9cfd776956",
+      "etag": "\"aG90ZWwuMTExNTVfMl8yODMzTnVtazVKZndhY0tuY0ZjTWw3YmpWQmlMVQ-jBcpFO19JH8c_F5U6jsdWq-bhTM--gzip--gzip\"",
+      "last_modified": "Thu, 17 Jul 2025 22:49:52 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_icbf_bienestarina.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "1016"
+        }
+      ],
+      "duracion_segundos": 0.73
+    },
+    {
+      "clave": "conteo_icbf_prevencion",
+      "url_solicitada": "https://www.datos.gov.co/resource/g58z-k6f6.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_municipio_atenci_n='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:45.039990+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/g58z-k6f6.json?%24select=count%28%2A%29+as+registros&%24where=codigo_municipio_atenci_n%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "d03071dd6f0e00481060bcfe3db6dbbbf818207e614159bd5026b13b4ca98257",
+      "etag": "\"aG90ZWwuNDQ5NTBfMV80M0F6VHNSS0FUU2NuOVgtaUdud3VNbU9PaEhqcw-sykS5vSBfMZsK2RlGe4aWFGTrcs--gzip--gzip\"",
+      "last_modified": "Fri, 25 Sep 2026 03:55:45 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_icbf_prevencion.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "17368"
+        }
+      ],
+      "duracion_segundos": 1.99
+    },
+    {
+      "clave": "conteo_icbf_primera_infancia",
+      "url_solicitada": "https://www.datos.gov.co/resource/5akr-u7t8.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_municipio_uds='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:44.708227+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/5akr-u7t8.json?%24select=count%28%2A%29+as+registros&%24where=codigo_municipio_uds%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "d17a7ddcb533e3ea43731b358f42bf8b9e0dd4283099950a096c7007387b6290",
+      "etag": "\"aG90ZWwuNjM1MjZfMl82MUFvQ0k2WllDSGxmemVoVjV4Vkh2QjVwNk1xRQ-tbTIJMQyAix-V5_e6jcZMdrvpjY--gzip--gzip\"",
+      "last_modified": "Fri, 25 Sep 2026 03:53:48 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_icbf_primera_infancia.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "7931"
+        }
+      ],
+      "duracion_segundos": 1.17
+    },
+    {
+      "clave": "conteo_icbf_rpc",
+      "url_solicitada": "https://www.datos.gov.co/resource/v9qk-hdcc.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "divipola_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:44.404975+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/v9qk-hdcc.json?%24select=count%28%2A%29+as+registros&%24where=divipola_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 22,
+      "respuesta_completa": true,
+      "sha256": "e410f9f2b8834f0c2a6a3a9f60baa55bea79e9d914a13f52a06137c9cfd117cc",
+      "etag": "\"anVsaWV0dC4xNjgxXzJfMjJyaEdXMXlSRkhFcVRfOWkxbm9ua3QzeDNoNVE--gziMjWshBd06HPVC0OoIWm5Tw0YmQ4---gzip\"",
+      "last_modified": "Fri, 26 Jul 2024 18:58:12 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_icbf_rpc.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "230"
+        }
+      ],
+      "duracion_segundos": 0.3
+    },
+    {
+      "clave": "conteo_icbf_uds",
+      "url_solicitada": "https://www.datos.gov.co/resource/i8ww-5mcf.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:45.291680+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/i8ww-5mcf.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "b334abaad7ffa1153c3c755c397aba67a8bc5942b7777aa72c854f9649b8efea",
+      "etag": "\"Zm94dHJvdC43NTc2MV83XzY5QU12em5qVmw2ZmZrTkZXZDA0RzgzcXQtT3lz--gzijAzgXUpkLMxX4hQXyjls5VWRfxt---gzip\"",
+      "last_modified": "Thu, 15 Oct 2026 22:18:35 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_icbf_uds.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "1681"
+        }
+      ],
+      "duracion_segundos": 1.33
+    },
+    {
+      "clave": "conteo_ideam_calidad_aire",
+      "url_solicitada": "https://www.datos.gov.co/resource/kekd-7v7h.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "c_digo_del_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:44.017640+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/kekd-7v7h.json?%24select=count%28%2A%29+as+registros&%24where=c_digo_del_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 22,
+      "respuesta_completa": true,
+      "sha256": "44c2ee04d03bd6c88a9ea4d1a6642bb24b1b4a19e9300207548dd850c4b06d48",
+      "etag": "\"anVsaWV0dC41MTI0NV8yXzQzM2F4V1dhNXk2VlNoYTQxQnI1MnRGbkRfOUo4--gziuTiTCPk_JPw7H7IdZKUta6HVsJo---gzip\"",
+      "last_modified": "Mon, 19 Oct 2026 15:04:01 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_ideam_calidad_aire.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "156"
+        }
+      ],
+      "duracion_segundos": 0.13
+    },
+    {
+      "clave": "conteo_ins_calidad_agua",
+      "url_solicitada": "https://www.datos.gov.co/resource/nxt2-39c3.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "municipiocodigo='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:44.151546+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/nxt2-39c3.json?%24select=count%28%2A%29+as+registros&%24where=municipiocodigo%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 21,
+      "respuesta_completa": true,
+      "sha256": "19a6902a17733eb113ed644625fdeafc8d9a58d08652c21d953a5ca5f055428f",
+      "etag": "\"aW5kaWEuNjQzNzRfMV8xN09UVFJvQlY0aDlnQ1Q2MHU4dmRBWTRaeDhEVQ-uVt_cK_LqxgXE3sAveKIrByQUfs--gzip--gzip\"",
+      "last_modified": "Tue, 10 Jun 2025 20:01:06 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_ins_calidad_agua.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "17"
+        }
+      ],
+      "duracion_segundos": 0.25
+    },
+    {
+      "clave": "conteo_medicina_examenes_sexuales",
+      "url_solicitada": "https://www.datos.gov.co/resource/hyqu-diue.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:40.565749+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/hyqu-diue.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "56703f255da2001d296280ff43474fbf17dd5846ff2db7f83a4821dbac06c3a0",
+      "etag": "\"Z29sZi4zNzYyOV80Xzc5LWgtSGFON1BKdjY2dW1iOElQRDkzeUVEa2Zj--gziowXKRTtfSR_HPxeVOo7HVqvm4Uz---gzip\"",
+      "last_modified": "Fri, 19 Sep 2025 17:13:53 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_examenes_sexuales.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "5254"
+        }
+      ],
+      "duracion_segundos": 1.0
+    },
+    {
+      "clave": "conteo_medicina_homicidios",
+      "url_solicitada": "https://www.datos.gov.co/resource/vtub-3de2.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:40.477983+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/vtub-3de2.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "0fcbb8d698c2ab9dbaf43dd7d8101da711f62a14981507c3d188eafb8b2950d5",
+      "etag": "\"Z29sZi4zNzYyNV80Xzc2VmVxczY0SFpBOTlfX21USnJCN1Y3Z1dWbFlv--gziowXKRTtfSR_HPxeVOo7HVqvm4Uz---gzip\"",
+      "last_modified": "Fri, 19 Sep 2025 15:58:05 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_homicidios.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "2949"
+        }
+      ],
+      "duracion_segundos": 0.36
+    },
+    {
+      "clave": "conteo_medicina_lesiones_accidentales",
+      "url_solicitada": "https://www.datos.gov.co/resource/6cjn-eevd.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.562015+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/6cjn-eevd.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 22,
+      "respuesta_completa": true,
+      "sha256": "8f30345da9f5a31251c2de7970c6b69847d794a4abbb86514b3c674d1613261f",
+      "etag": "\"aG90ZWwuNTY1MTVfNF83OWd3dzVjaVBLdDh0R1p4M2dxcTZvU05oRGR6RQ-jBcpFO19JH8c_F5U6jsdWq-bhTM--gzip--gzip\"",
+      "last_modified": "Fri, 19 Sep 2025 17:33:51 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_lesiones_accidentales.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "202"
+        }
+      ],
+      "duracion_segundos": 0.37
+    },
+    {
+      "clave": "conteo_medicina_lesiones_transporte",
+      "url_solicitada": "https://www.datos.gov.co/resource/ezhf-hscf.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.575031+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/ezhf-hscf.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "54cf37e3238a22e08597e6302cbf364c3fc28799d68d44d9aa1889937acaf57b",
+      "etag": "\"Z29sZi4zNzYzMl80Xzc2ekRWNlVLRlBaTlowNVpMWW9EaDJjU1hoNTdz--gziowXKRTtfSR_HPxeVOo7HVqvm4Uz---gzip\"",
+      "last_modified": "Mon, 22 Sep 2025 14:09:51 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_lesiones_transporte.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "6532"
+        }
+      ],
+      "duracion_segundos": 1.37
+    },
+    {
+      "clave": "conteo_medicina_suicidios",
+      "url_solicitada": "https://www.datos.gov.co/resource/f75u-mirk.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.270488+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/f75u-mirk.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 22,
+      "respuesta_completa": true,
+      "sha256": "e07de666b5dc7e3f9b02f89e23810b8a578ff416a51123086cbfcbfd81a78724",
+      "etag": "\"Z29sZi4zNzYyN180Xzc2TzZ6YVFrSUQ5N3Z0eGo3N2liX0FrVzlOYm5v--gziowXKRTtfSR_HPxeVOo7HVqvm4Uz---gzip\"",
+      "last_modified": "Fri, 19 Sep 2025 16:21:29 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_suicidios.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "383"
+        }
+      ],
+      "duracion_segundos": 0.3
+    },
+    {
+      "clave": "conteo_medicina_violencia_interpersonal",
+      "url_solicitada": "https://www.datos.gov.co/resource/e3xi-4zq5.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:40.833953+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/e3xi-4zq5.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "3a8fe7ac2eb01caf1637377fa7cea1168bcdfd8c9649fa5fff12019089543c71",
+      "etag": "\"aG90ZWwuNTY1MTRfNV84NFJQSHhrRUhXWUN2S2xkZnc2dlZ4NlFIUTB4NA-jBcpFO19JH8c_F5U6jsdWq-bhTM--gzip--gzip\"",
+      "last_modified": "Mon, 22 Sep 2025 15:43:48 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_violencia_interpersonal.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "20070"
+        }
+      ],
+      "duracion_segundos": 0.44
+    },
+    {
+      "clave": "conteo_medicina_violencia_intrafamiliar",
+      "url_solicitada": "https://www.datos.gov.co/resource/ers2-kerr.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane_municipio='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:40.561768+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/ers2-kerr.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane_municipio%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "4832d0a937fade8e6aa7f30333b007dcd56edc0d3ebdae217214ccebc5024593",
+      "etag": "\"Zm94dHJvdC45NDAwNl80Xzc5QlAtdm9ydWlZQlNUQ2NmbF9ZSGZrYVNMczlV--gziowXKRTtfSR_HPxeVOo7HVqvm4Uz---gzip\"",
+      "last_modified": "Mon, 22 Sep 2025 16:33:25 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_medicina_violencia_intrafamiliar.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "3868"
+        }
+      ],
+      "duracion_segundos": 1.17
+    },
+    {
+      "clave": "conteo_policia_amenazas",
+      "url_solicitada": "https://www.datos.gov.co/resource/meew-mguv.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.930596+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/meew-mguv.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "35680b12ca99c99a0c429b6611174f300a3028076c6108c5f46ed206a5c3eaf1",
+      "etag": "\"aG90ZWwuNTE4NzBfMV8zMV9IN3dFeXJYUWRGeVZSWDBoUDBiMk1TYWtTOA-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 17:04:08 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_amenazas.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "14066"
+        }
+      ],
+      "duracion_segundos": 0.15
+    },
+    {
+      "clave": "conteo_policia_delitos_sexuales",
+      "url_solicitada": "https://www.datos.gov.co/resource/fpe5-yrmw.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:42.942762+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/fpe5-yrmw.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "d2d6cfc9e150f1cdb1edf89fc63ae50c965d4367e5cfb64bffdd27b79729e066",
+      "etag": "\"aG90ZWwuNTE2ODlfMl8zNHRWMjJfcVZBNHpRSXBvOXhRYVBkRl9iTFdwUQ-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 19:44:01 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_delitos_sexuales.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "6910"
+        }
+      ],
+      "duracion_segundos": 1.07
+    },
+    {
+      "clave": "conteo_policia_homicidios",
+      "url_solicitada": "https://www.datos.gov.co/resource/m8fd-ahd9.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "cod_muni='13001'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.730261+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/m8fd-ahd9.json?%24select=count%28%2A%29+as+registros&%24where=cod_muni%3D%2713001%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "f1582cf367e344effb34da276852c3cfc68b168b46c52c5801a98b5be5d31c3b",
+      "etag": "\"aW5kaWEuOTg2M18zXzc3V19kQ0R5Z3k2WTV0Qm1mOUVGcGExQ01Vc0Vv--gzisL8bVNbKPFT73RN5Gi6_Lktoi7a---gzip\"",
+      "last_modified": "Wed, 21 Oct 2026 14:26:45 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_homicidios.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "5938"
+        }
+      ],
+      "duracion_segundos": 0.18
+    },
+    {
+      "clave": "conteo_policia_hurto_vehiculos",
+      "url_solicitada": "https://www.datos.gov.co/resource/9vha-vh9n.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:43.508764+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/9vha-vh9n.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 23,
+      "respuesta_completa": true,
+      "sha256": "f93ae14de77e9328e59ea1a86133f07b18be3878462af6cb88643a2480519c77",
+      "etag": "\"aG90ZWwuNTE2NzNfMV8zMUlHTFNXaGkxMm90ZFlZdHl0MHQ5RklpaFdsVQ-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 20:18:41 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_hurto_vehiculos.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "8267"
+        }
+      ],
+      "duracion_segundos": 0.18
+    },
+    {
+      "clave": "conteo_policia_hurto_vivienda_comercio",
+      "url_solicitada": "https://www.datos.gov.co/resource/6sqw-8cg5.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:43.685844+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/6sqw-8cg5.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "d41806e4263f55fb90ffcf60f0ceaaaf64e8d1bdfbb21933aaeb87228fdae394",
+      "etag": "\"aG90ZWwuNTE2NzZfMV8zMWVZc0t5YU1tek9RWU9BN0NweXozYWVRQ0ZJbw-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 20:37:18 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_hurto_vivienda_comercio.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "12683"
+        }
+      ],
+      "duracion_segundos": 1.61
+    },
+    {
+      "clave": "conteo_policia_lesiones",
+      "url_solicitada": "https://www.datos.gov.co/resource/72sg-cybi.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:41.909035+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/72sg-cybi.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "ffd5b0474214668e8f8acca4ed06796517591a8cf11728e5f66752047e5042b4",
+      "etag": "\"aG90ZWwuNTE2NjZfMV8zNllHN2RuLURrSFpxdk1DLVM2VDQ1emk4T1lWbw-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 19:24:06 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_lesiones.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "24549"
+        }
+      ],
+      "duracion_segundos": 3.13
+    },
+    {
+      "clave": "conteo_policia_violencia_intrafamiliar",
+      "url_solicitada": "https://www.datos.gov.co/resource/vuyt-mqpw.json",
+      "parametros": {
+        "$select": "count(*) as registros",
+        "$where": "codigo_dane='13001000'"
+      },
+      "consulta_utc": "2026-10-23T17:51:42.085521+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/resource/vuyt-mqpw.json?%24select=count%28%2A%29+as+registros&%24where=codigo_dane%3D%2713001000%27",
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 24,
+      "respuesta_completa": true,
+      "sha256": "3630e341286aa93d217b5ecf27be23bcd70bbbd00af041905a35b647b584a8bf",
+      "etag": "\"aG90ZWwuNTE2NjhfMV8zMHZqUEQ1MEZ5S0hBT0JHajA0VVhnenlXZzdrYw-6_hBiDADBpx_uw0JlOL9wyq9ofI--gzip--gzip\"",
+      "last_modified": "Tue, 01 Sep 2026 17:15:44 GMT",
+      "archivo": "bridge/53_evidencias_descarga/conteo_policia_violencia_intrafamiliar.json",
+      "filas_respuesta": 1,
+      "agregados": [
+        {
+          "registros": "12133"
+        }
+      ],
+      "duracion_segundos": 1.42
+    },
+    {
+      "clave": "metadata_5akr-u7t8",
+      "url_solicitada": "https://www.datos.gov.co/api/views/5akr-u7t8.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.539876+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/5akr-u7t8.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 34814,
+      "respuesta_completa": true,
+      "sha256": "387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_5akr-u7t8.json",
+      "metadata": {
+        "id": "5akr-u7t8",
+        "name": "Caracterización de Beneficiarios de las Modalidades de Primera Infancia del ICBF",
+        "attribution": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/5akr-u7t8",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1790308469,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "vigencia",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_departamento_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_municipio_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_centrozonal_uds",
+          "tipo": "number"
+        },
+        {
+          "nombre": "centro_zonal_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_unidad_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "unidad_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_uds",
+          "tipo": "text"
+        },
+        {
+          "nombre": "modalidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_beneficiario_homologado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etnico",
+          "tipo": "text"
+        },
+        {
+          "nombre": "discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_ubicacion_beneficiario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_atenci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "beneficiarios",
+          "tipo": "number"
+        },
+        {
+          "nombre": "fecha_de_corte",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.37
+    },
+    {
+      "clave": "metadata_6cjn-eevd",
+      "url_solicitada": "https://www.datos.gov.co/api/views/6cjn-eevd.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.541061+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/6cjn-eevd.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 65077,
+      "respuesta_completa": true,
+      "sha256": "1ec776f78ae170dd2d4ccdea89332cd9d67031966a4074aafbb48555efc57387",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_6cjn-eevd.json",
+      "metadata": {
+        "id": "6cjn-eevd",
+        "name": "Lesiones accidentales. Colombia. Años 2015 - 2024. Cifras definitivas",
+        "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758303194,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "contexto_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dias_de_incapacidad_medicolegal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.43
+    },
+    {
+      "clave": "metadata_6sqw-8cg5",
+      "url_solicitada": "https://www.datos.gov.co/api/views/6sqw-8cg5.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.543033+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/6sqw-8cg5.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 15801,
+      "respuesta_completa": true,
+      "sha256": "e7fd294976f4a40791a392a0c369b90ac1e4e89d03ba9e23c51d3d63c08b8f06",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_6sqw-8cg5.json",
+      "metadata": {
+        "id": "6sqw-8cg5",
+        "name": "Reporte Hurto por Modalidades Policía Nacional",
+        "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/6sqw-8cg5",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1788295226,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "armas_medios",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_hurto",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "number"
+        }
+      ],
+      "duracion_segundos": 0.4
+    },
+    {
+      "clave": "metadata_72sg-cybi",
+      "url_solicitada": "https://www.datos.gov.co/api/views/72sg-cybi.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.543852+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "_ssl.c:993: The handshake operation timed out",
+      "duracion_segundos": 45.23
+    },
+    {
+      "clave": "metadata_9vha-vh9n",
+      "url_solicitada": "https://www.datos.gov.co/api/views/9vha-vh9n.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.544535+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/9vha-vh9n.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 15930,
+      "respuesta_completa": true,
+      "sha256": "eda9c566c07eda36e6cb239ef29e836152ce210626401fd597a3aa540dca4a4b",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_9vha-vh9n.json",
+      "metadata": {
+        "id": "9vha-vh9n",
+        "name": "Reporte Hurto por Modalidades Policía Nacional",
+        "attribution": "Dirección de Investigación Criminal e Interpol DIJIN",
+        "attributionLink": "https://www.policia.gov.co/jefatura-nacional-del-servicio-de-policia/dijin",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1788293993,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "armas_medios",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_hurto",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "number"
+        }
+      ],
+      "duracion_segundos": 39.42
+    },
+    {
+      "clave": "metadata_crxh-as6c",
+      "url_solicitada": "https://www.datos.gov.co/api/views/crxh-as6c.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.544869+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/crxh-as6c.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 24672,
+      "respuesta_completa": true,
+      "sha256": "000cd9b740caf8f82c3159a0f185f4fadb507633194755329c4760e0dd07b8f1",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_crxh-as6c.json",
+      "metadata": {
+        "id": "crxh-as6c",
+        "name": "PUNTOS DISTRIBUCIÓN BIENESTARINA ICBF",
+        "attribution": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "attributionLink": "https://www.icbf.gov.co/",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1752792594,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "anno",
+          "tipo": "number"
+        },
+        {
+          "nombre": "codigo_regional",
+          "tipo": "text"
+        },
+        {
+          "nombre": "regional",
+          "tipo": "text"
+        },
+        {
+          "nombre": "centro_zonal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cod_punto_de_entrega",
+          "tipo": "text"
+        },
+        {
+          "nombre": "direccion",
+          "tipo": "text"
+        },
+        {
+          "nombre": "punto_de_entrega",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_responsable",
+          "tipo": "text"
+        },
+        {
+          "nombre": "telefono",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_corte",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 39.53
+    },
+    {
+      "clave": "metadata_e3xi-4zq5",
+      "url_solicitada": "https://www.datos.gov.co/api/views/e3xi-4zq5.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.908201+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/e3xi-4zq5.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 69817,
+      "respuesta_completa": true,
+      "sha256": "0872170c33e24ac82d81d9f585098172eac608027c2f7465561f93cd0aabc242",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_e3xi-4zq5.json",
+      "metadata": {
+        "id": "e3xi-4zq5",
+        "name": "Violencia interpersonal. Colombia, años 2015 a 2024. Cifras definitivas",
+        "attribution": "Alcaldía de Sogamoso, Boyacá",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758555070,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "contexto_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_del_agresor",
+          "tipo": "text"
+        },
+        {
+          "nombre": "presunto_agresor_detallado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dias_de_incapacidad_medicolegal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.13
+    },
+    {
+      "clave": "metadata_ers2-kerr",
+      "url_solicitada": "https://www.datos.gov.co/api/views/ers2-kerr.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.944771+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/ers2-kerr.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 71863,
+      "respuesta_completa": true,
+      "sha256": "cc1ab810a2ae95b04e60dac39223eaf77243e4d7082e077109c41acedbb099d3",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_ers2-kerr.json",
+      "metadata": {
+        "id": "ers2-kerr",
+        "name": "Violencia intrafamiliar. Colombia, años 2015 a 2024. Cifras definitivas",
+        "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758558548,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "contexto_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_del_agresor",
+          "tipo": "text"
+        },
+        {
+          "nombre": "presunto_agresor_detallado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "factor_desencadenante_de_la_agresion",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dias_de_incapacidad_medicolegal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.2
+    },
+    {
+      "clave": "metadata_ezhf-hscf",
+      "url_solicitada": "https://www.datos.gov.co/api/views/ezhf-hscf.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:39.969620+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/ezhf-hscf.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 75455,
+      "respuesta_completa": true,
+      "sha256": "a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_ezhf-hscf.json",
+      "metadata": {
+        "id": "ezhf-hscf",
+        "name": "Lesiones por eventos de transporte. Colombia, años 2015 a 2024. Cifras definitivas",
+        "attribution": "Alcaldía de Apía, Risaralda",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758549825,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "contexto_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_no_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "condicion_de_la_victima_at",
+          "tipo": "text"
+        },
+        {
+          "nombre": "medio_de_desplazamiento_o_transporte",
+          "tipo": "text"
+        },
+        {
+          "nombre": "servicio_del_vehiculo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "clase_o_tipo_de_accidente",
+          "tipo": "text"
+        },
+        {
+          "nombre": "objeto_de_colision",
+          "tipo": "text"
+        },
+        {
+          "nombre": "servicio_del_objeto_de_colision",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dias_de_incapacidad_medicolegal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.1
+    },
+    {
+      "clave": "metadata_f75u-mirk",
+      "url_solicitada": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.038829+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 60292,
+      "respuesta_completa": true,
+      "sha256": "1fa92eb96b0700aa8ebc275b546479a106cd8d576c9ffa5262c3e5a4e568b990",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_f75u-mirk.json",
+      "metadata": {
+        "id": "f75u-mirk",
+        "name": "Presuntos Suicidios. Colombia, 2015 a 2024. Cifras definitivas",
+        "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758298846,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "manera_de_muerte",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "razon_del_suicidio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ancestro_racial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.11
+    },
+    {
+      "clave": "metadata_fpe5-yrmw",
+      "url_solicitada": "https://www.datos.gov.co/api/views/fpe5-yrmw.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.071291+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/fpe5-yrmw.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 18091,
+      "respuesta_completa": true,
+      "sha256": "ef9b30cb9fa309dd3426808bb9d6897ccd754b3c0c07427034fb51700baae42d",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_fpe5-yrmw.json",
+      "metadata": {
+        "id": "fpe5-yrmw",
+        "name": "Reporte  Delitos sexuales Policía Nacional",
+        "attribution": "Dirección de Investigación Criminal e Interpol DIJIN",
+        "attributionLink": "https://www.policia.gov.co/jefatura-nacional-del-servicio-de-policia/dijin",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1788291878,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "armas_medios",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "number"
+        },
+        {
+          "nombre": "delito",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.11
+    },
+    {
+      "clave": "metadata_g58z-k6f6",
+      "url_solicitada": "https://www.datos.gov.co/api/views/g58z-k6f6.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.146141+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/g58z-k6f6.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 28320,
+      "respuesta_completa": true,
+      "sha256": "f869637e87f744cb88c87f6c261d5c39382b2cceed238c8935072f9b7ace4007",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_g58z-k6f6.json",
+      "metadata": {
+        "id": "g58z-k6f6",
+        "name": "Caracterización de Beneficiarios de las Modalidades de Prevención del ICBF",
+        "attribution": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/g58z-k6f6",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1790309326,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "a_o",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_departamento_atenci",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_atenci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_municipio_atenci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_atenci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "area_misional",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_ubicacion_beneficiario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "agrupaci_n_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etnico",
+          "tipo": "text"
+        },
+        {
+          "nombre": "presenta_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "v_ctima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nacionalidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_beneficiario_homologado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_atencion_beneficiario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "corte",
+          "tipo": "text"
+        },
+        {
+          "nombre": "beneficiarios",
+          "tipo": "number"
+        }
+      ],
+      "duracion_segundos": 0.11
+    },
+    {
+      "clave": "metadata_hyqu-diue",
+      "url_solicitada": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.149417+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 64696,
+      "respuesta_completa": true,
+      "sha256": "7b4f509fab6823c4be4f31f9c21cac45f170d535a5352165e0caad9b0596e4f1",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_hyqu-diue.json",
+      "metadata": {
+        "id": "hyqu-diue",
+        "name": "Exámenes médico legales por presunto delito sexual. Colombia, años 2015 a 2024. Cifras definitivas",
+        "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758301767,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_discapacidad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "contexto_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_del_agresor",
+          "tipo": "text"
+        },
+        {
+          "nombre": "presunto_agresor_detallado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.13
+    },
+    {
+      "clave": "metadata_i8ww-5mcf",
+      "url_solicitada": "https://www.datos.gov.co/api/views/i8ww-5mcf.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.184502+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/i8ww-5mcf.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 31364,
+      "respuesta_completa": true,
+      "sha256": "94f5e01fe38846e0c81615b9608245dc0995a6d3387e82669c863a4dc16f1a17",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_i8ww-5mcf.json",
+      "metadata": {
+        "id": "i8ww-5mcf",
+        "name": "Unidades de Servicio (UDS) en Primera Infancia ICBF",
+        "attribution": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "attributionLink": "https://www.icbf.gov.co/",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1792102743,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "vigencia",
+          "tipo": "number"
+        },
+        {
+          "nombre": "codigo_regional",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_regional",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_centro_zonal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "numero_de_contratoo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_unidad_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_unidad_servicio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_ubicacion",
+          "tipo": "text"
+        },
+        {
+          "nombre": "direccion",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_de_corte",
+          "tipo": "text"
+        },
+        {
+          "nombre": "geocoded_column",
+          "tipo": "point"
+        }
+      ],
+      "duracion_segundos": 0.1
+    },
+    {
+      "clave": "metadata_kekd-7v7h",
+      "url_solicitada": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.252456+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 61397,
+      "respuesta_completa": true,
+      "sha256": "66b6c5731fc1ffd08c4d8879881dbdae0a3cb08fa3218caa50fcb445e9b0cac6",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_kekd-7v7h.json",
+      "metadata": {
+        "id": "kekd-7v7h",
+        "name": "Calidad del Aire en Colombia (Promedio Anual)",
+        "attribution": "Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, Bogotá D.C.",
+        "attributionLink": "http://sisaire.ideam.gov.co/ideam-sisaire-web/publicaciones.xhtml?clase=DOCUMENTOS",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1792422278,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id_estacion",
+          "tipo": "number"
+        },
+        {
+          "nombre": "autoridad_ambiental",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estaci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "latitud",
+          "tipo": "number"
+        },
+        {
+          "nombre": "longitud",
+          "tipo": "number"
+        },
+        {
+          "nombre": "variable",
+          "tipo": "text"
+        },
+        {
+          "nombre": "unidades",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tiempo_de_exposici_n_horas",
+          "tipo": "number"
+        },
+        {
+          "nombre": "a_o",
+          "tipo": "number"
+        },
+        {
+          "nombre": "promedio",
+          "tipo": "number"
+        },
+        {
+          "nombre": "suma",
+          "tipo": "number"
+        },
+        {
+          "nombre": "no_de_datos",
+          "tipo": "number"
+        },
+        {
+          "nombre": "representatividad_temporal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "excedencias_limite_actual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "porcentaje_excedencias_limite",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mediana",
+          "tipo": "number"
+        },
+        {
+          "nombre": "percentil_98",
+          "tipo": "number"
+        },
+        {
+          "nombre": "m_ximo",
+          "tipo": "number"
+        },
+        {
+          "nombre": "fechas_horas_del_m_ximo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "m_nimo",
+          "tipo": "number"
+        },
+        {
+          "nombre": "fechas_horas_del_m_nimo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "d_as_de_excedencias",
+          "tipo": "number"
+        },
+        {
+          "nombre": "c_digo_del_departamento",
+          "tipo": "number"
+        },
+        {
+          "nombre": "nombre_del_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "c_digo_del_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_del_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tipo_de_estaci_n",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ubicacion",
+          "tipo": "point"
+        }
+      ],
+      "duracion_segundos": 0.1
+    },
+    {
+      "clave": "metadata_m8fd-ahd9",
+      "url_solicitada": "https://www.datos.gov.co/api/views/m8fd-ahd9.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.279733+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/m8fd-ahd9.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 19509,
+      "respuesta_completa": true,
+      "sha256": "285219f47eca6678253ac30dd6927cd185b49d1eefc5ae9be4f4c2b4c8a626b7",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_m8fd-ahd9.json",
+      "metadata": {
+        "id": "m8fd-ahd9",
+        "name": "HOMICIDIO",
+        "attribution": "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+        "attributionLink": "https://www.mindefensa.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1792593057,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "calendar_date"
+        },
+        {
+          "nombre": "cod_depto",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cod_muni",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "arma_medio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "_modalidad_presunta",
+          "tipo": "text"
+        },
+        {
+          "nombre": "spoa_caracterizacion",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "number"
+        }
+      ],
+      "duracion_segundos": 0.08
+    },
+    {
+      "clave": "metadata_meew-mguv",
+      "url_solicitada": "https://www.datos.gov.co/api/views/meew-mguv.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.285296+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/meew-mguv.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 14773,
+      "respuesta_completa": true,
+      "sha256": "0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_meew-mguv.json",
+      "metadata": {
+        "id": "meew-mguv",
+        "name": "Amenazas Policía Nacional de Colombia",
+        "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/meew-mguv",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1788282306,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "armas_medios",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "number"
+        }
+      ],
+      "duracion_segundos": 0.09
+    },
+    {
+      "clave": "metadata_nxt2-39c3",
+      "url_solicitada": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.352831+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 22485,
+      "respuesta_completa": true,
+      "sha256": "68340c6b4d65e53365990c81c6ef7ae5b3cc902dbf9f22db6a9c3608ed39c3f8",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_nxt2-39c3.json",
+      "metadata": {
+        "id": "nxt2-39c3",
+        "name": "Calidad del Agua para Consumo Humano en Colombia",
+        "attribution": "Instituto Nacional de Salud INS, Bogotá D.C",
+        "attributionLink": "https://www.ins.gov.co/sivicap/Paginas/sivicap.aspx",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1749585666,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamentocodigo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipiocodigo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o",
+          "tipo": "number"
+        },
+        {
+          "nombre": "irca",
+          "tipo": "number"
+        },
+        {
+          "nombre": "nivel_de_riesgo",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ircaurbano",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nivel_de_riesgo_urbano",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ircarural",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nivel_de_riesgo_rural",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.09
+    },
+    {
+      "clave": "metadata_s226-fj9i",
+      "url_solicitada": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.356263+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 17828,
+      "respuesta_completa": true,
+      "sha256": "ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_s226-fj9i.json",
+      "metadata": {
+        "id": "s226-fj9i",
+        "name": "Datos abiertos de las PQRSDF de la Sede Electrónica de la Procuraduría General de la Nación",
+        "attribution": "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/s226-fj9i",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1735660401,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "tipo_de_pqrsdf",
+          "tipo": "text"
+        },
+        {
+          "nombre": "tem_tica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "remitente",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pa_s",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dependencia_actual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_de_radicaci_n",
+          "tipo": "calendar_date"
+        }
+      ],
+      "duracion_segundos": 0.12
+    },
+    {
+      "clave": "metadata_v9qk-hdcc",
+      "url_solicitada": "https://www.datos.gov.co/api/views/v9qk-hdcc.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.373585+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/v9qk-hdcc.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 19507,
+      "respuesta_completa": true,
+      "sha256": "fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_v9qk-hdcc.json",
+      "metadata": {
+        "id": "v9qk-hdcc",
+        "name": "Batería de indicadores de niñez y adolescencia para el proceso de Rendición Pública de Cuentas Territorial",
+        "attribution": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "attributionLink": null,
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1722020361,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "divipola_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "nombre_indicador",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fuente",
+          "tipo": "text"
+        },
+        {
+          "nombre": "derecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "anno_vigencia",
+          "tipo": "number"
+        },
+        {
+          "nombre": "valor_indicador",
+          "tipo": "number"
+        },
+        {
+          "nombre": "unidad_medida",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.1
+    },
+    {
+      "clave": "metadata_vtub-3de2",
+      "url_solicitada": "https://www.datos.gov.co/api/views/vtub-3de2.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.439511+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/vtub-3de2.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 68859,
+      "respuesta_completa": true,
+      "sha256": "e722ed453fd1179d894762dafa9d691793a9120db093190ab3bf30402200ccac",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_vtub-3de2.json",
+      "metadata": {
+        "id": "vtub-3de2",
+        "name": "Presuntos Homicidios. Colombia, 2015 a 2024. Cifras definitivas",
+        "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "attributionLink": "https://www.medicinalegal.gov.co",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1758297367,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "id",
+          "tipo": "text"
+        },
+        {
+          "nombre": "a_o_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_quinquenal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_mayor_menor_de_edad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_de_edad_judicial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ciclo_vital",
+          "tipo": "text"
+        },
+        {
+          "nombre": "sexo_de_la_victima",
+          "tipo": "text"
+        },
+        {
+          "nombre": "estado_civil",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pais_de_nacimiento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escolaridad",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_grupal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pertenencia_etnica",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mes_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "dia_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "rango_de_hora_del_hecho_x_3_horas",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "departamento_del_hecho_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane_departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "escenario_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "zona_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "actividad_durante_el_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "circunstancia_del_hecho_detallada",
+          "tipo": "text"
+        },
+        {
+          "nombre": "manera_de_muerte",
+          "tipo": "text"
+        },
+        {
+          "nombre": "mecanismo_causal_de_la_lesion_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "diagnostico_topografico_de_la_lesion_fatal",
+          "tipo": "text"
+        },
+        {
+          "nombre": "presunto_agresor_detallado",
+          "tipo": "text"
+        },
+        {
+          "nombre": "localidad_del_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "ancestro_racial",
+          "tipo": "text"
+        },
+        {
+          "nombre": "pueblo_indigena",
+          "tipo": "text"
+        },
+        {
+          "nombre": "orientacion_sexual",
+          "tipo": "text"
+        },
+        {
+          "nombre": "identidad_de_genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "transgenero",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.13
+    },
+    {
+      "clave": "metadata_vuyt-mqpw",
+      "url_solicitada": "https://www.datos.gov.co/api/views/vuyt-mqpw.json",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:40.469106+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/vuyt-mqpw.json",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 15759,
+      "respuesta_completa": true,
+      "sha256": "2ad7dea3df53f9ff61cb040ad00208ea25f8c4d94184fa9b6d9f854afd9ad1e3",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/metadata_vuyt-mqpw.json",
+      "metadata": {
+        "id": "vuyt-mqpw",
+        "name": "Reporte Delito Violencia Intrafamiliar Policía Nacional",
+        "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "attributionLink": "https://www.datos.gov.co/d/vuyt-mqpw",
+        "license": {
+          "name": "Creative Commons Attribution | Share Alike 4.0 International",
+          "logoUrl": "images/licenses/cc30bysa.png",
+          "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+        },
+        "rowsUpdatedAt": 1788283189,
+        "publicationStage": "published"
+      },
+      "columnas": [
+        {
+          "nombre": "departamento",
+          "tipo": "text"
+        },
+        {
+          "nombre": "municipio",
+          "tipo": "text"
+        },
+        {
+          "nombre": "codigo_dane",
+          "tipo": "text"
+        },
+        {
+          "nombre": "armas_medios",
+          "tipo": "text"
+        },
+        {
+          "nombre": "fecha_hecho",
+          "tipo": "text"
+        },
+        {
+          "nombre": "genero",
+          "tipo": "text"
+        },
+        {
+          "nombre": "grupo_etario",
+          "tipo": "text"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo": "text"
+        }
+      ],
+      "duracion_segundos": 0.09
+    },
+    {
+      "clave": "portal_00",
+      "url_solicitada": "http://www.ideam.gov.co/web/siac/smbyc",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:46.609658+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "timed out",
+      "duracion_segundos": 5.12
+    },
+    {
+      "clave": "portal_01",
+      "url_solicitada": "https://alertastempranas.defensoria.gov.co/Alerta/Tablero",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:46.616956+00:00",
+      "http": 200,
+      "url_final": "https://alertastempranas.defensoria.gov.co/Alerta/Tablero",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 9133,
+      "respuesta_completa": true,
+      "sha256": "d52af01cc5f63eb1dddabdc8dd07c9c13a5c4a08864bceb84771f3a233a496c0",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_01.html",
+      "enlaces_candidatos": [
+        "https://app.powerbi.com/view?r=eyJrIjoiZjMwNGNkMjgtYjJhMi00ZGJiLWJmMzgtNTQ1ZDA2YzY1ODM0IiwidCI6ImQxMzU1OTA3LWUwN2YtNDkxOC05MGQyLTczODRhN2MxYzFlYSIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiNGVhZmY1M2EtMWI5Yy00ZjZiLWE2ZDktOWVkMjMwMTkxOTBlIiwidCI6ImQxMzU1OTA3LWUwN2YtNDkxOC05MGQyLTczODRhN2MxYzFlYSIsImMiOjR9"
+      ],
+      "duracion_segundos": 0.2
+    },
+    {
+      "clave": "portal_02",
+      "url_solicitada": "https://centralpdet.renovacionterritorio.gov.co/avance-patr/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:46.814264+00:00",
+      "http": 200,
+      "url_final": "https://www.renovacionterritorio.gov.co/central-pdet",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 73753,
+      "respuesta_completa": true,
+      "sha256": "0efd92ba2a802ec8388218aed0cb807404a4eaea92d99a948229acd4570f4994",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_02.html",
+      "enlaces_candidatos": [
+        "https://app.powerbi.com/view?r=eyJrIjoiYjQ5ZmNmMWMtNTI4Mi00Mzg3LWI2MzEtOGUxZjBhYjM5NTE5IiwidCI6IjhmZDEwMTNlLTJhMDgtNGM0Ny05M2Q0LTE2ZTkyOWEyY2E2MSIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiOWVlMzlmNTktYzkyZC00ZDMzLTgzZWEtMTE2YzQyODQ0YjAxIiwidCI6IjhmZDEwMTNlLTJhMDgtNGM0Ny05M2Q0LTE2ZTkyOWEyY2E2MSIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiZGMzYmEzYjUtOWMzZS00MDBkLWI2YWMtYjUzNzIyMTUyOTBkIiwidCI6IjhmZDEwMTNlLTJhMDgtNGM0Ny05M2Q0LTE2ZTkyOWEyY2E2MSIsImMiOjR9",
+        "https://www.renovacionterritorio.gov.co/sites/default/files/2025-10/data_hogares_2022.xlsx",
+        "https://www.renovacionterritorio.gov.co/sites/default/files/2025-10/data_personas_2022.xlsx",
+        "https://www.renovacionterritorio.gov.co/sites/default/files/2026-09/cronograma-de-publicaciones-pdet-2026.xlsx",
+        "https://www.renovacionterritorio.gov.co/sites/default/files/inline-files/certificado-de-usabilidad-y-accesibilidad-web.pdf"
+      ],
+      "duracion_segundos": 0.26
+    },
+    {
+      "clave": "portal_03",
+      "url_solicitada": "https://conflictosambientales.unal.edu.co/oca/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:47.028457+00:00",
+      "error": "ConnectError",
+      "detalle": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)",
+      "duracion_segundos": 0.25
+    },
+    {
+      "clave": "portal_04",
+      "url_solicitada": "https://indepaz.org.co/conflictos-socioambientales-en-colombia/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:47.077338+00:00",
+      "http": 200,
+      "url_final": "https://indepaz.org.co/conflictos-socioambientales-en-colombia/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 271559,
+      "respuesta_completa": true,
+      "sha256": "5d0e2190966c30e58042467d55b4edb8002c26a2b89cca8f985f6841c481194e",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_04.html",
+      "enlaces_candidatos": [
+        "https://indepaz.org.co/wp-content/uploads/2023/02/Informe-Conflictos-Socioambientales-en-Colombia-final.pdf"
+      ],
+      "duracion_segundos": 3.29
+    },
+    {
+      "clave": "portal_05",
+      "url_solicitada": "https://minjusticia.gov.co/transparencia/Paginas/SEJ-Acceso-a-la-Justicia-indice-acceso-efectivo-a-la-justicia.aspx",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:47.273721+00:00",
+      "http": 200,
+      "url_final": "https://minjusticia.gov.co/transparencia/Paginas/SEJ-Acceso-a-la-Justicia-indice-acceso-efectivo-a-la-justicia.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 48295,
+      "respuesta_completa": true,
+      "sha256": "782274e72e8ea64c796e00dfc5d7d604760db900df56d250097732959d8dd63c",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:51:49 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_05.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 11.99
+    },
+    {
+      "clave": "portal_06",
+      "url_solicitada": "https://observatoriomujeres.gov.co/es/OAG",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:50.372287+00:00",
+      "error": "ConnectError",
+      "detalle": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'observatoriomujeres.gov.co'. (_ssl.c:1010)",
+      "duracion_segundos": 1.78
+    },
+    {
+      "clave": "portal_07",
+      "url_solicitada": "https://osc.dnp.gov.co/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:51.729610+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "timed out",
+      "duracion_segundos": 15.05
+    },
+    {
+      "clave": "portal_08",
+      "url_solicitada": "https://portalterritorial.dnp.gov.co/AdmCPBioceanica/iGrupoCMunicipios",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:52.154591+00:00",
+      "error": "ConnectError",
+      "detalle": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)",
+      "duracion_segundos": 0.21
+    },
+    {
+      "clave": "portal_09",
+      "url_solicitada": "https://saga.unodc.org.co/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:52.361811+00:00",
+      "http": 200,
+      "url_final": "https://saga.unodc.org.co/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 20985,
+      "respuesta_completa": true,
+      "sha256": "9f742b24ec78af01ea7dfca15ef7eedf827fc1f68ee872a44f399b2cdf9a76c9",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_09.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 0.59
+    },
+    {
+      "clave": "portal_10",
+      "url_solicitada": "https://sispt.dnp.gov.co/piscc",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:52.949339+00:00",
+      "http": 200,
+      "url_final": "https://sispt.dnp.gov.co/piscc",
+      "content_type": "text/html",
+      "bytes": 15364,
+      "respuesta_completa": true,
+      "sha256": "9e58acf288ee5b231abb70705fbfb629746ae7510598482f8918e88b9c15b88e",
+      "etag": "\"0210196239dd1:0\"",
+      "last_modified": "Mon, 31 Aug 2026 16:02:18 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_10.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 0.33
+    },
+    {
+      "clave": "portal_11",
+      "url_solicitada": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/pobreza-y-desigualdad/pobreza-monetaria-y-multidimensional-en-colombia-2016",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:53.274668+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/pobreza-y-desigualdad/pobreza-monetaria-y-multidimensional-en-colombia-2016",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 60379,
+      "respuesta_completa": true,
+      "sha256": "9e6620c0a68f7e64c8bd8a75b541518ec895b108de3ab2ce970dc1d757a452d3",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:51:53 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_11.html",
+      "enlaces_candidatos": [
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/bol_pobreza_16.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/cp_pobreza_16.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/pres_pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/anex_pobreza_2016.xls",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/anexos_pobreza_departamentos_R2016.xls",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Antioquia_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Cesar_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Narino_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Atlantico_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Choco_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/NSantander_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Bogota_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Cordoba_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Quindio_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Bolivar_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Cundinamarca_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Risaralda_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Boyaca_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Huila_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Santander_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Caldas_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Guajira_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Sucre_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Caqueta_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Magdalena_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Tolima_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Cauca_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Meta_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/Valle_del_Cauca_Pobreza_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/san_andres_2016.pdf",
+        "https://www.dane.gov.co/files/investigaciones/condiciones_vida/pobreza/2016/san_andres_anexos_2016.xls"
+      ],
+      "duracion_segundos": 0.74
+    },
+    {
+      "clave": "portal_12",
+      "url_solicitada": "https://www.dane.gov.co/index.php/estadisticas-por-tema/salud/encuesta-nacional-de-consumo-de-sustancias-psicoactivas-encspa",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:54.015317+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/estadisticas-por-tema/salud/encuesta-nacional-de-consumo-de-sustancias-psicoactivas-encspa",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 52576,
+      "respuesta_completa": true,
+      "sha256": "60c6d4981a3df56c16753cf03daa5f9341db67a28759212c15552ad07dab7948",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:51:54 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_12.html",
+      "enlaces_candidatos": [
+        "https://www.dane.gov.co/files/investigaciones/boletines/encspa/bt-encspa-2019.pdf",
+        "https://www.dane.gov.co/files/investigaciones/boletines/encspa/anexo-encspa-2019.xlsx",
+        "https://www.dane.gov.co/files/investigaciones/boletines/encspa/presentacion-encspa-2019.pdf",
+        "https://www.dane.gov.co/files/investigaciones/boletines/encspa/comunicado-encspa-2019.pdf",
+        "https://www.dane.gov.co/files/investigaciones/fichas/salud/encspa/DSO-ENSCPA-MET-001.pdf",
+        "https://www.dane.gov.co/files/investigaciones/fichas/salud/encspa/DSO-ENCSPA-FME-001.pdf"
+      ],
+      "duracion_segundos": 0.35
+    },
+    {
+      "clave": "portal_13",
+      "url_solicitada": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:54.368353+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 64841,
+      "respuesta_completa": true,
+      "sha256": "eb95905135b339bd3c1675dbe312db1818785d24a4b306807d3a7cc0a3a8d57f",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:50:46 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_13.html",
+      "enlaces_candidatos": [
+        "https://www.dane.gov.co/files/operaciones/ECSC/bol-ECSC-2024.pdf",
+        "https://www.dane.gov.co/files/operaciones/ECSC/pres-ECSC-2024.pdf",
+        "https://www.dane.gov.co/files/operaciones/ECSC/anex-ECSC-2024.xlsx",
+        "https://www.dane.gov.co/files/operaciones/ECSC/bol-ECSC-NJ-2024.pdf",
+        "https://www.dane.gov.co/files/operaciones/ECSC/pres-ECSC-NJ-2024.pdf",
+        "https://www.dane.gov.co/files/operaciones/ECSC/anex-ECSC-NJ-2024.xlsx"
+      ],
+      "duracion_segundos": 0.17
+    },
+    {
+      "clave": "portal_14",
+      "url_solicitada": "https://www.fiscalia.gov.co/colombia/gestion/estadisticas/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:54.540573+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "timed out",
+      "duracion_segundos": 5.03
+    },
+    {
+      "clave": "portal_15",
+      "url_solicitada": "https://www.icbf.gov.co/programas-y-estrategias/archivo-historico-observatorio-del-bienestar-de-la-ninez/datos",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:59.264165+00:00",
+      "http": 200,
+      "url_final": "https://www.icbf.gov.co/programas-y-estrategias/archivo-historico-observatorio-del-bienestar-de-la-ninez/datos",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 116710,
+      "respuesta_completa": true,
+      "sha256": "4c4a16b2316b9cd24563755dfa1451b1fd925e569e368ac6b6eb9cbcf3455052",
+      "etag": "\"1792777846\"",
+      "last_modified": "Fri, 23 Oct 2026 17:50:46 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_15.html",
+      "enlaces_candidatos": [
+        "https://www.icbf.gov.co/system/files/procesos/pt3.rc_protocolo_general_de_servicio_y_atencion_al_ciudadano_v2.pdf",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/BENEFICIARIOS_PREVENCION_16280556587910/ATENCIONICBF",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/INGRESOS_PARD_16280564609400/PARD?publish=yes",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/INDICADORES_16280569970180/Indice?publish=yes",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/ATENCION_PI_16280573552850/Dashboard1?publish=yes",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/EstadisticasMigrantesICBF_16198291803590/INDICE",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/UnidadesMoviles_16217452583780/Caracterizacin",
+        "https://public.tableau.com/app/profile/anal.tica.institucional.icbf/viz/Desvinculados/Portada",
+        "https://www.datos.gov.co/browse?Informaci%C3%B3n-de-la-Entidad_Nombre-de-la-Entidad=Instituto+Colombiano+de+Bienestar+Familiar&q=ICBF",
+        "https://www.icbf.gov.co/sites/default/files/direccion_de_familias_y_comunidades_2024_1.pdf",
+        "https://www.icbf.gov.co/sites/default/files/una_nueva_vida_un_nuevo_amanecer_digital.pdf",
+        "https://www.icbf.gov.co/sites/default/files/colombia_familia_cuidadora_-_febrero_2025.pdf",
+        "https://www.icbf.gov.co/sites/default/files/colombia_familia_cuidadora_-_marzo_2025.pdf",
+        "https://www.icbf.gov.co/sites/default/files/colombia_familia_cuidadora_-_abril_2025.pdf",
+        "https://www.icbf.gov.co/sites/default/files/colombia_familia_cuidadora_-_mayo_2025.pdf",
+        "https://www.icbf.gov.co/sites/default/files/BOLET%C3%8DN%20FEBRERO%20COLOMBIA%20FAMILIA%20CUIDADORA%20.pdf",
+        "https://www.icbf.gov.co/sites/default/files/BOLET%C3%8DN%20CIERRE%20GESTI%C3%93N%202025%20DFC%20COLOMBIA%20FAMILIA%20CUIDADORA%20%20%282%29_compressed.pdf",
+        "https://www.icbf.gov.co/sites/default/files/Boleti%CC%81n%20Abril%20Colombia%20Familia%20Cuidadora%20%281%29.pdf",
+        "https://www.icbf.gov.co/sites/default/files/3248_-_adopta_politica_de_seguridad_y_privacidad_de_la_informacion_ciberseguridad.pdf",
+        "https://www.icbf.gov.co/sites/default/files/politica_de_tratamiento_de_datos_personales_0.pdf",
+        "https://www.icbf.gov.co/sites/default/files/13246_-_establece_politica_editorial_y_de_actualizacion_de_contenidos_we.pdf"
+      ],
+      "duracion_segundos": 5.67
+    },
+    {
+      "clave": "portal_16",
+      "url_solicitada": "https://www.icbf.gov.co/programas-y-estrategias/proteccion/sistema-de-responsabilidad-penal-para-adolescentes-srpa/sistema",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:51:59.572298+00:00",
+      "http": 200,
+      "url_final": "https://www.icbf.gov.co/programas-y-estrategias/proteccion/sistema-de-responsabilidad-penal-para-adolescentes-srpa/sistema",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 118695,
+      "respuesta_completa": true,
+      "sha256": "a6e8660ad599a5ceb5e2fe9a6a3540d02a3cf3c2d4a683558c5a6c6b3f8185f9",
+      "etag": "\"1792777924\"",
+      "last_modified": "Fri, 23 Oct 2026 17:52:04 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_16.html",
+      "enlaces_candidatos": [
+        "https://www.icbf.gov.co/system/files/procesos/pt3.rc_protocolo_general_de_servicio_y_atencion_al_ciudadano_v2.pdf",
+        "https://www.icbf.gov.co/sites/default/files/3248_-_adopta_politica_de_seguridad_y_privacidad_de_la_informacion_ciberseguridad.pdf",
+        "https://www.icbf.gov.co/sites/default/files/politica_de_tratamiento_de_datos_personales_0.pdf",
+        "https://www.icbf.gov.co/sites/default/files/13246_-_establece_politica_editorial_y_de_actualizacion_de_contenidos_we.pdf"
+      ],
+      "duracion_segundos": 5.94
+    },
+    {
+      "clave": "portal_17",
+      "url_solicitada": "https://www.ins.gov.co/buscador-eventos/Paginas/Vista-Boletin-Epidemilogico.aspx",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:04.935636+00:00",
+      "http": 200,
+      "url_final": "https://www.ins.gov.co/buscador-eventos/Paginas/Vista-Boletin-Epidemilogico.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 139402,
+      "respuesta_completa": true,
+      "sha256": "39e9418ecd3540f8833b74d8f97df1e93138db78c7fd776ac58cb13415fc0343",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:52:10 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_17.html",
+      "enlaces_candidatos": [
+        "https://www.ins.gov.co/Transparencia/Documents/POLITICAS%20Y%20CONDICIONES%20DE%20USO%20DEL%20SITIO%20WEB%20DEL%20INS.pdf"
+      ],
+      "duracion_segundos": 5.82
+    },
+    {
+      "clave": "portal_18",
+      "url_solicitada": "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:05.515159+00:00",
+      "http": 200,
+      "url_final": "https://www.jep.gov.co/uia/Paginas/mecanismo_monitoreo/index.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 107379,
+      "respuesta_completa": true,
+      "sha256": "0dcb3cb136194c509c308371bce4f397b67239f70eeebab5c818ca9c19e68879",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 17:52:05 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_18.html",
+      "enlaces_candidatos": [
+        "https://www.jep.gov.co/Documents/Servicio-al-ciudadano/CartaTratoDigno.pdf",
+        "https://www.jep.gov.co/Polticas y Lineamientos/Política de Tratamiento de Datos Personales.pdf",
+        "https://app.powerbi.com/view?r=eyJrIjoiMGE2MmFkMTQtOGQ3MC00MGQ0LWEzYzUtYWQ1NTZkYzljMmE1IiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiMTI1NmVlNGQtZjJhOS00ZjdkLWI5YmYtN2E2ZTcxNWI5NjZlIiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiOWE3ZmE5NzAtY2JjMC00N2NlLWE1M2MtMzlmMTAyYzhjMDlmIiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiZmYwNjE4MmYtZmRlMy00ZjI0LTk0ZmUtNjgwYWNlNGY3Y2Y4IiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiOGRkMTQ2OGEtNzM2YS00ZjFhLTlkZjItNDNhMzgwMjBlMjZkIiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://app.powerbi.com/view?r=eyJrIjoiMDZkNzJjMGYtYzBiYS00NTYxLTkxZTctMDFhYmRkY2Q2MWRlIiwidCI6ImQ3MjlkMmMxLTk4OWUtNDRlNS1iN2M1LTE4MmM5MTRhYzYwNyIsImMiOjR9",
+        "https://www.jep.gov.co/accesibilidad/certificacion2026.pdf"
+      ],
+      "duracion_segundos": 0.56
+    },
+    {
+      "clave": "portal_19",
+      "url_solicitada": "https://www.medicinalegal.gov.co/cifras-de-lesiones-de-causa-externa",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:06.075307+00:00",
+      "http": 403,
+      "url_final": "https://www.medicinalegal.gov.co/cifras-de-lesiones-de-causa-externa",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 5637,
+      "respuesta_completa": true,
+      "sha256": "9ca04df42820b70ad9d30042169eb35780002e69177312c7c86f45d40d66ae09",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_19.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 0.21
+    },
+    {
+      "clave": "portal_20",
+      "url_solicitada": "https://www.medicinalegal.gov.co/cifras-estadisticas/boletines-estadisticos-mensuales",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:06.282114+00:00",
+      "http": 403,
+      "url_final": "https://www.medicinalegal.gov.co/cifras-estadisticas/boletines-estadisticos-mensuales",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 5730,
+      "respuesta_completa": true,
+      "sha256": "8d5586e1f1ad4f0d4bc0a2d999a9c1fbe25019d53f0584984c91641efbe923f9",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_20.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 0.05
+    },
+    {
+      "clave": "portal_21",
+      "url_solicitada": "https://www.migracioncolombia.gov.co/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:06.329561+00:00",
+      "http": 200,
+      "url_final": "https://www.migracioncolombia.gov.co/",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 364723,
+      "respuesta_completa": true,
+      "sha256": "95f135907b005191efcaafefab5967e53f8b39f2c9c9126deab7e4519a26932b",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_21.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 0.5
+    },
+    {
+      "clave": "portal_22",
+      "url_solicitada": "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:06.774809+00:00",
+      "http": 404,
+      "url_final": "https://www.mindefensa.gov.co/irj/portal/Mindefensa/contenido?NavigationTarget=navurl://29751b5980bed2ef21b6728c0326c1f3",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 1164,
+      "respuesta_completa": true,
+      "sha256": "1f135e2ede4d2389e481d51d046e533ac485d15dc83396818d41bb81c7e84045",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_22.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 2.11
+    },
+    {
+      "clave": "portal_23",
+      "url_solicitada": "https://www.mineducacion.gov.co/portal/salaprensa/Noticias/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:06.827042+00:00",
+      "http": 200,
+      "url_final": "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/404764:Sistema-de-Informacion-Unificado-de-Convivencia-Escolar-SIUCE",
+      "content_type": "text/html;charset=UTF-8",
+      "bytes": 113874,
+      "respuesta_completa": true,
+      "sha256": "166e4729ff4fcf446c6823da59d7e2d3c610c061fd4282651122769b8efa1e2a",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_23.html",
+      "enlaces_candidatos": [
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_6.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_7.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_8.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_2.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_3.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_4.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_5.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_16.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_17.xlsx",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_11.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_18.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_9.pdf",
+        "https://www.mineducacion.gov.co/portal/Noticias/Comunicados/articles-404764_recurso_10.pdf"
+      ],
+      "duracion_segundos": 2.2
+    },
+    {
+      "clave": "portal_24",
+      "url_solicitada": "https://www.mininterior.gov.co/grupo-de-lucha-contra-la-trata-de-personas/sistema-nacional-de-informacion-de-trata-de-personas-snitp/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:08.880707+00:00",
+      "http": 200,
+      "url_final": "https://www.mininterior.gov.co/grupo-de-lucha-contra-la-trata-de-personas/sistema-nacional-de-informacion-de-trata-de-personas-snitp/",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 327788,
+      "respuesta_completa": true,
+      "sha256": "93bec2f954727f2deabc4d10da09c64272973686b0565c8ce324670ed7f0a850",
+      "etag": null,
+      "last_modified": "Fri, 23 Oct 2026 01:01:43 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_24.html",
+      "enlaces_candidatos": [
+        "https://www.mininterior.gov.co/wp-content/uploads/2023/04/protocolo-de-identificacion-1.pdf",
+        "https://www.mininterior.gov.co/wp-content/uploads/2022/09/2022-09-22_DOCUMENTO-POLITICA-PUBLICA-DE-PARTICIPACION-CIUDADANA-VERSION-FINAL-AJUSTADA-27092022.pdf",
+        "https://www.mininterior.gov.co/wp-content/uploads/2022/09/ir-a-terminos-y-condiciones-e-uso.pdf",
+        "https://www.mininterior.gov.co/wp-content/uploads/2025/12/politica-proteccion-datos-personales.pdf",
+        "https://www.mininterior.gov.co/wp-content/uploads/2022/09/POLITICA-DE-DERECHOS-DE-AUTOR-MININTERIOR.pdf"
+      ],
+      "duracion_segundos": 1.06
+    },
+    {
+      "clave": "portal_25",
+      "url_solicitada": "https://www.minjusticia.gov.co/programas-co/ODC",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:09.023402+00:00",
+      "http": 200,
+      "url_final": "https://odc.minjusticia.gov.co/odc",
+      "content_type": "text/html",
+      "bytes": 4758,
+      "respuesta_completa": true,
+      "sha256": "290a89e68f4f0da75290589aee504cbfe8d0c49fbc59eaee684ef2986e4faca4",
+      "etag": "\"6aa04235-1296\"",
+      "last_modified": "Tue, 08 Sep 2026 17:13:25 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_25.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 2.23
+    },
+    {
+      "clave": "portal_26",
+      "url_solicitada": "https://www.mintrabajo.gov.co/relaciones-laborales/derechos-fundamentales-del-trabajo/observatorios",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:09.942879+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "timed out",
+      "duracion_segundos": 10.37
+    },
+    {
+      "clave": "portal_27",
+      "url_solicitada": "https://www.policia.gov.co/contenido/estadistica-comportamientos-contrarios-convivencia-ley-1801-2016",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:10.759969+00:00",
+      "http": 404,
+      "url_final": "https://www.policia.gov.co/contenido/estadistica-comportamientos-contrarios-convivencia-ley-1801-2016",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 155568,
+      "respuesta_completa": true,
+      "sha256": "fe8d916f9769098aee185e4c551a26532abf26fb103ed162a473e8858da9bec9",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_27.html",
+      "enlaces_candidatos": [
+        "https://www.policia.gov.co/sites/default/files/2026-02/DirectorioOficinasDeAtencionAlCiudadano.pdf"
+      ],
+      "duracion_segundos": 1.11
+    },
+    {
+      "clave": "portal_28",
+      "url_solicitada": "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:11.252083+00:00",
+      "http": 404,
+      "url_final": "https://www.policia.gov.co/grupo-informacion-criminalidad/estadistica-delictiva",
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 155644,
+      "respuesta_completa": true,
+      "sha256": "2a95335bb34ab8f74d4a578b217f2c115ff8b92e057a82fede1b4f03bcf23fe0",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/portal_28.html",
+      "enlaces_candidatos": [
+        "https://www.policia.gov.co/sites/default/files/2026-02/DirectorioOficinasDeAtencionAlCiudadano.pdf"
+      ],
+      "duracion_segundos": 1.11
+    },
+    {
+      "clave": "portal_29",
+      "url_solicitada": "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:11.867142+00:00",
+      "http": 200,
+      "url_final": "https://www.politicacriminal.gov.co/Observatorio/Observatorio-de-Pol%C3%ADtica-Criminal",
+      "content_type": "text/html",
+      "bytes": 4758,
+      "respuesta_completa": true,
+      "sha256": "290a89e68f4f0da75290589aee504cbfe8d0c49fbc59eaee684ef2986e4faca4",
+      "etag": "\"6aa04235-1296\"",
+      "last_modified": "Tue, 08 Sep 2026 17:13:25 GMT",
+      "archivo": "bridge/53_evidencias_descarga/portal_29.html",
+      "enlaces_candidatos": [],
+      "duracion_segundos": 5.35
+    },
+    {
+      "clave": "portal_30",
+      "url_solicitada": "https://www.sispro.gov.co/Pages/Home.aspx",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:12.366439+00:00",
+      "error": "ConnectTimeout",
+      "detalle": "timed out",
+      "duracion_segundos": 5.03
+    },
+    {
+      "clave": "portal_31",
+      "url_solicitada": "https://www.suin-juriscol.gov.co/",
+      "parametros": null,
+      "consulta_utc": "2026-10-23T17:52:17.212532+00:00",
+      "error": "ConnectError",
+      "detalle": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)",
+      "duracion_segundos": 0.34
+    },
+    {
+      "clave": "ruv_cortes",
+      "url_solicitada": "https://cifras2.unidadvictimas.gov.co/RNI.Reportes.Servicios/api/ListaFechaCorte",
+      "parametros": {
+        "idReporte": "5"
+      },
+      "consulta_utc": "2026-10-23T17:52:17.602483+00:00",
+      "http": 200,
+      "url_final": "https://cifras2.unidadvictimas.gov.co/RNI.Reportes.Servicios/api/ListaFechaCorte?idReporte=5",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 1171,
+      "respuesta_completa": true,
+      "sha256": "5e0cacd6f5c653043deb73dcd8e186293d7be561f960184661ac5e0e441fb99a",
+      "etag": null,
+      "last_modified": null,
+      "archivo": "bridge/53_evidencias_descarga/ruv_cortes.json",
+      "filas_respuesta": 11,
+      "duracion_segundos": 0.12
+    }
+  ],
+  "resumen": {
+    "200": 63,
+    "ConnectError": 4,
+    "ConnectTimeout": 6,
+    "403": 2,
+    "404": 3
+  }
+}

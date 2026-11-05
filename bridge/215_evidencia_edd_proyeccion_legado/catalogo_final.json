@@ -1,0 +1,20 @@
+{
+  "bases": [
+    {
+      "database": "polis_test_edd_legado_20261026_877ccc94",
+      "revision": "0084_aportes_colas_y_apoyos",
+      "uso": "principal",
+      "check": "sin operaciones nuevas",
+      "downgrade_ejecutado": false
+    },
+    {
+      "database": "polis_test_edd_legado_20261026_mig_f32ec3a5",
+      "revision": "0084_aportes_colas_y_apoyos",
+      "uso": "secundaria",
+      "check": "sin operaciones nuevas",
+      "downgrade_ejecutado": false
+    }
+  ],
+  "nuevas_migraciones_215": false,
+  "0084_modificada": false
+}

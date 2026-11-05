@@ -1,0 +1,10 @@
+{
+  "source": "bridge/190_evidencia_coordinacion_aislamiento",
+  "copied_sha256": {
+    "guard/sitecustomize.py": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+    "probar_guardas_v2.py": "9713d9152bf5f3080bc4c70ce099325c5c13ffaf584e06402ac6b8bf62116874",
+    "ejecutar_aislado.py": "97c629530864496d0b8e0976a6eca6c60f7d5c09f863f56faf02c9529b7a321e"
+  },
+  "gate": "No ejecuta pruebas funcionales sin señal de raíz y hash final0084",
+  "limite": "Guarda Python; no sandbox universal de subprocess nativos"
+}

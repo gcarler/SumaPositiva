@@ -1,0 +1,16 @@
+{
+  "fecha_utc": "2026-10-26T06:56:04.370762+00:00",
+  "modo": "publicar",
+  "generador_sha256": "202956eaf155fa6cd2e58d4b6804fefb9390b10de2cbb84cc55b60ddded8460e",
+  "candidato_sha256": "ec1b06f4f255791561308ade00bf4dd7b60b1d3856d1d0ce5fe3f6d5ef5b2823",
+  "anterior_sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+  "anterior_preservado_bytes_exactos": true,
+  "vista_y_version_nueva_identicas": true,
+  "captura_sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+  "captura_bytes": 4815,
+  "fuentes_clave": 43,
+  "artefactos": 1829,
+  "hallazgo_no_localizado_conservado": true,
+  "sin_sql": true,
+  "publicacion_local_activa": true
+}

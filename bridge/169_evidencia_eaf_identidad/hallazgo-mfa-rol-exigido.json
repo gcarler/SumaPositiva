@@ -1,0 +1,16 @@
+{
+  "usuario_id": "01a1766d-dfaf-74ba-a58f-24487bea06e4",
+  "rol_provisionado_en_base_aislada": "administrador_identidades",
+  "configuracion_mfa_roles_exigidos": "administrador_identidades",
+  "http_login": 200,
+  "emitio_token": true,
+  "mfa_requerido_login": false,
+  "estado": {
+    "activo": false,
+    "codigos_restantes": 0,
+    "activado_en": null,
+    "exigido_por_rol": true
+  },
+  "http_directorio_administrativo": 200,
+  "esperado": "Limitar acceso al enrolamiento hasta cumplir MFA exigido por rol"
+}

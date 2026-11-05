@@ -1,0 +1,34 @@
+[
+  {
+    "label": "ruff_check",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "--config",
+      "/root/polis/backend/pyproject.toml",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/verificar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/sellar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_monitor_reinspeccion.py"
+    ],
+    "utc": "2026-11-03T10:53:52.588600+00:00",
+    "returncode": 0,
+    "log": "segunda_ruff_check.log"
+  },
+  {
+    "label": "ruff_format_check",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "format",
+      "--check",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/verificar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/sellar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_monitor_reinspeccion.py"
+    ],
+    "utc": "2026-11-03T10:53:52.619391+00:00",
+    "returncode": 1,
+    "log": "segunda_ruff_format_check.log"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "fecha": "2026-10-27T11:35:12.703552+00:00",
+  "clasificacion": "Contaminacion reproducida entre pruebas; sin correccion de producto",
+  "baseline_consumidores": "3/3 aprobadas",
+  "productores_anteriores": "3/3 aprobadas dejan residuos",
+  "consumidores_tras_productores": "2 fallos originales236 +1 aprobada",
+  "auditoria": {
+    "origen": "backend/tests/test_aportes_legado_publico.py; sembrar_devolucion y casos de JSON heterogeneo sin teardown previo",
+    "filas_legadas_nuevas": 5,
+    "metadatos_crudos": [
+      null,
+      {
+        "canal": "web",
+        "contacto_abierto": "privado-legado215@example.org"
+      },
+      false,
+      [
+        "legado"
+      ],
+      [
+        "legado"
+      ]
+    ],
+    "causa": "Se insertaban raices null/false/lista en tabla institucional append-only; auditoria general valida dict por contrato, mientras prueba de aporte necesita raiz irregular real."
+  },
+  "indicadores": {
+    "origen": "backend/tests/test_presupuesto_e_indicadores.py::test_indicadores_cadena_valor_y_avance",
+    "mediciones_originales_preservadas": true,
+    "mediciones_de_prueba_ya_eliminadas_antes_del_arreglo": true,
+    "fichas_no_restauradas": {
+      "IND-INS-01": {
+        "antes": "2024-ANUAL",
+        "despues": "Q1"
+      },
+      "IND-RES-01": {
+        "antes": "2024-ANUAL",
+        "despues": "Mes 1"
+      }
+    },
+    "causa": "Teardown previo eliminaba dos mediciones y no restauraba valor_actual/porcentaje_avance/metadatos de sus dos fichas; tampoco era finally."
+  },
+  "diagnostico_notificado_antes_de_editar": true,
+  "esquema_privado_autorizado_por_coordinacion": true,
+  "base_antes_conservada_sin_sanear": "polis_test_edd_aislamiento_20261027_antes_8232579c"
+}

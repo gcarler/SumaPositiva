@@ -1,0 +1,1431 @@
+"use client";
+
+import { useEffect, useRef, useState, useCallback } from "react";
+import Feature from "ol/Feature";
+import Map from "ol/Map";
+import View from "ol/View";
+import GeoJSON from "ol/format/GeoJSON";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
+import CircleStyle from "ol/style/Circle";
+import Fill from "ol/style/Fill";
+import Stroke from "ol/style/Stroke";
+import Style from "ol/style/Style";
+import Text from "ol/style/Text";
+import { fromLonLat, toLonLat } from "ol/proj";
+import type { Geometry } from "ol/geom";
+import Point from "ol/geom/Point";
+import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
+import {
+  type VariableMapa,
+  VARIABLE_META,
+  ESTADISTICAS_TERRITORIOS,
+  obtenerValorVariable,
+  interpolarColor,
+} from "../data/estadisticas.data";
+import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
+import type { CapasConfig } from "../components/geovisor-controles";
+import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+import { buscarTerritorioPorCoordenada } from "../services/geovisor-api";
+import { obtenerPoligonosHurtosGeojson } from "../services/hurtos-api";
+import type { CapaEspacial, IndicadorMultifuente } from "../models/geovisor";
+import { listarCapaGeoJSON } from "../services/geovisor-api";
+
+export interface HoverInfo {
+  id: string;
+  nombre: string;
+  tipo:
+    | "localidad"
+    | "corregimiento"
+    | "isla"
+    | "barrio"
+    | "mesa"
+    | "hurto"
+    | "multifuente";
+  ish?: number;
+  poblacion?: number;
+  aportes?: number;
+  alertas?: number;
+  homicidios?: number;
+  mesas?: number;
+  variableValor?: number;
+  variableNombre?: string;
+  variableUnidad?: string;
+  pixel: [number, number];
+  mesaDetalle?: {
+    territorio: string;
+    fecha: string;
+    horario: string;
+    asistentes: number;
+    aforo: number;
+    estado: string;
+    realizada: boolean;
+  };
+  hurtoDetalle?: {
+    poligono_id: number;
+    codigo: string;
+    nombre: string;
+    zona: string;
+    area_km2: number;
+    total_casos: number;
+    densidad_casos_km2: number;
+    porcentaje_total: number;
+    delito_etiqueta: string;
+    anio_etiqueta: string;
+    top_armas: Array<{
+      arma?: string;
+      categoria?: string;
+      cantidad: number;
+      porcentaje: number;
+    }>;
+    top_sitios: Array<{
+      sitio?: string;
+      categoria?: string;
+      cantidad: number;
+      porcentaje: number;
+    }>;
+  };
+  multifuenteDetalle?: {
+    id: string;
+    nombre_indicador: string;
+    codigo_indicador: string;
+    valor: number | string;
+    unidad_medida: string;
+    nivel_riesgo: string;
+    anio_corte: number;
+    fuente_datos: string;
+    territorio: string;
+    dimension: string;
+    url_fuente?: string;
+    nota?: string;
+  };
+}
+
+export interface UseMapaOptions {
+  target: HTMLDivElement | null;
+  onSelectTerritorio: (territorioId: string) => void;
+  onSelectBarrio?: (barrioNombre: string) => void;
+  onHoverInfo: (info: HoverInfo | null) => void;
+  localidadId: string;
+  barrioSeleccionado?: string | null;
+  variableMapa?: VariableMapa;
+  capasVisibles?: CapasConfig;
+  capasOficiales?: CapaEspacial[];
+  mesas?: MesaGeovisor[];
+  mesaSeleccionadaId?: string | null;
+  onSelectMesa?: (mesaId: string) => void;
+  anioHurto?: number | null;
+  delitoHurto?: string | null;
+  onSelectHurto?: (poligonoId: number) => void;
+  capaPersonalizada?: {
+    geojson: unknown;
+    nombre?: string;
+    color?: string;
+  } | null;
+  indicadoresMultifuente?: IndicadorMultifuente[];
+}
+
+/**
+ * Constantes hex obligatorias para capas cartográficas de OpenLayers.
+ * Excepción explícita al no-hardcode-colors para garantizar compatibilidad nativa con Canvas 2D.
+ */
+export const COLORES_MAPA = {
+  loc1: "#e85d04",
+  loc2: "#f48c06",
+  loc3: "#dc2f02",
+  corregimiento: "#6d6875",
+  barrio: "#3a86ff",
+  barrioHover: "#023e8a",
+  hover: "#023e8a",
+  stroke: "#ffffff",
+  strokeHover: "#1a1a2e",
+  heatHigh: "#d62828",
+  heatMid: "#f77f00",
+  heatLow: "#fcbf49",
+} as const;
+
+function normalizar(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+const MAPA_BARRIOS_METADATOS: Record<string, Barrio> = {};
+BARRIOS_CARTAGENA.forEach((b) => {
+  MAPA_BARRIOS_METADATOS[normalizar(b.barrio)] = b;
+});
+
+function crearCapaPuntosAlertas(
+  localidadRef: { current: string },
+  capasRef: { current: CapasConfig },
+): VectorLayer<VectorSource<Feature>> {
+  const puntos = ESTADISTICAS_TERRITORIOS.filter((t) => t.tipo !== "localidad");
+  const geojson = {
+    type: "FeatureCollection",
+    features: puntos.map((t) => ({
+      type: "Feature",
+      id: t.id,
+      geometry: { type: "Point", coordinates: [t.lon, t.lat] },
+      properties: {
+        id: t.id,
+        nombre: t.nombre,
+        tipo: t.tipo,
+        alertas: t.alertas,
+      },
+    })),
+  };
+  const features = new GeoJSON().readFeatures(geojson, {
+    dataProjection: "EPSG:4326",
+    featureProjection: "EPSG:3857",
+  });
+  const fuente = new VectorSource({ features });
+
+  return new VectorLayer({
+    source: fuente,
+    zIndex: 10,
+    declutter: true,
+    style: (feature) => {
+      if (!capasRef.current.puntos) return undefined;
+      const alertas = Number(feature.get("alertas") ?? 0);
+      const colorPunto =
+        alertas >= 5
+          ? COLORES_MAPA.heatHigh
+          : alertas >= 3
+            ? COLORES_MAPA.heatMid
+            : COLORES_MAPA.heatLow;
+
+      const hovered = feature.get("hovered");
+
+      return new Style({
+        image: new CircleStyle({
+          radius: hovered ? 9 : 7,
+          fill: new Fill({ color: colorPunto }),
+          stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 2 }),
+        }),
+        text: capasRef.current.etiquetas
+          ? new Text({
+              text: String(feature.get("nombre") ?? ""),
+              offsetY: -16,
+              font: "600 11px Geist, sans-serif",
+              fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+              stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3 }),
+              overflow: true,
+            })
+          : undefined,
+      });
+    },
+  });
+}
+
+export function useMapa({
+  target,
+  onSelectTerritorio,
+  onSelectBarrio,
+  onHoverInfo,
+  localidadId,
+  barrioSeleccionado = null,
+  variableMapa = "ish",
+  capasVisibles = {
+    localidades: true,
+    corregimientos: true,
+    barrios: true,
+    puntos: true,
+    etiquetas: true,
+  },
+  mesas = [],
+  mesaSeleccionadaId = null,
+  onSelectMesa,
+  anioHurto = null,
+  delitoHurto = null,
+  onSelectHurto,
+  capaPersonalizada = null,
+  indicadoresMultifuente = [],
+  capasOficiales = [],
+}: UseMapaOptions) {
+  const mapaRef = useRef<Map | null>(null);
+  const [cargando, setCargando] = useState(true);
+
+  const localidadRef = useRef(localidadId);
+  const barrioRef = useRef(barrioSeleccionado);
+  const variableRef = useRef(variableMapa);
+  const capasRef = useRef(capasVisibles);
+
+  const fuenteTerritoriosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteHurtosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteBarriosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
+  const fuentePersonalizadaRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteCapasOficialesRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteMultifuenteRef = useRef<VectorSource<Feature> | null>(null);
+  const mesasRef = useRef(mesas);
+  const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
+  const onSelectHurtoRef = useRef(onSelectHurto);
+
+  useEffect(() => {
+    onSelectHurtoRef.current = onSelectHurto;
+  }, [onSelectHurto]);
+
+  // Carga reactiva de polígonos analíticos de hurtos cuando se activa alguna capa de delitos
+  useEffect(() => {
+    const hayHurtos = Boolean(
+      capasVisibles?.hurtoMotocicletas ||
+      capasVisibles?.hurtoResidencias ||
+      capasVisibles?.hurtoComercio,
+    );
+    if (!fuenteHurtosRef.current) return;
+
+    if (!hayHurtos) {
+      fuenteHurtosRef.current.clear(true);
+      return;
+    }
+
+    const numHurtosActivos =
+      (capasVisibles?.hurtoMotocicletas ? 1 : 0) +
+      (capasVisibles?.hurtoResidencias ? 1 : 0) +
+      (capasVisibles?.hurtoComercio ? 1 : 0);
+
+    let delitoParam: string | undefined = undefined;
+    if (numHurtosActivos === 1) {
+      if (capasVisibles?.hurtoMotocicletas) delitoParam = "HURTO MOTOCICLETA";
+      else if (capasVisibles?.hurtoResidencias)
+        delitoParam = "HURTO RESIDENCIAS";
+      else if (capasVisibles?.hurtoComercio) delitoParam = "HURTO COMERCIO";
+    } else if (delitoHurto && delitoHurto !== "TODOS") {
+      if (delitoHurto === "hurto_motocicletas")
+        delitoParam = "HURTO MOTOCICLETA";
+      else if (delitoHurto === "hurto_residencias")
+        delitoParam = "HURTO RESIDENCIAS";
+      else if (delitoHurto === "hurto_comercio") delitoParam = "HURTO COMERCIO";
+    }
+
+    let activo = true;
+    obtenerPoligonosHurtosGeojson({
+      delito: delitoParam,
+      anio: anioHurto ?? undefined,
+    })
+      .then((fc) => {
+        if (!activo || !fuenteHurtosRef.current) return;
+        fuenteHurtosRef.current.clear(true);
+        const format = new GeoJSON();
+        const feats = format.readFeatures(fc, {
+          dataProjection: "EPSG:4326",
+          featureProjection: "EPSG:3857",
+        });
+        feats.forEach((f) => {
+          f.set("tipo", "hurto");
+          f.set("delito_etiqueta", delitoParam ?? "Consolidado 3 Capas Drive");
+          f.set("anio_etiqueta", anioHurto ? `Año ${anioHurto}` : "2018–2026");
+        });
+        fuenteHurtosRef.current.addFeatures(feats);
+        mapaRef.current?.renderSync();
+      })
+      .catch((err) => {
+        console.warn("Fallo al cargar polígonos de analítica de hurtos:", err);
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, [
+    capasVisibles?.hurtoMotocicletas,
+    capasVisibles?.hurtoResidencias,
+    capasVisibles?.hurtoComercio,
+    delitoHurto,
+    anioHurto,
+  ]);
+
+  useEffect(() => {
+    localidadRef.current = localidadId;
+    barrioRef.current = barrioSeleccionado;
+    variableRef.current = variableMapa;
+    capasRef.current = capasVisibles;
+    mesasRef.current = mesas;
+    mesaSeleccionadaRef.current = mesaSeleccionadaId;
+
+    if (fuenteMesasRef.current) {
+      fuenteMesasRef.current.clear(true);
+      const features = new GeoJSON().readFeatures(
+        {
+          type: "FeatureCollection",
+          features: mesas
+            .map((mesa) => ({
+              type: "Feature",
+              id: mesa.id,
+              geometry:
+                mesa.longitud_referencia !== null &&
+                mesa.latitud_referencia !== null
+                  ? {
+                      type: "Point",
+                      coordinates: [
+                        mesa.longitud_referencia,
+                        mesa.latitud_referencia,
+                      ],
+                    }
+                  : null,
+              properties: {
+                id: mesa.id,
+                nombre: mesa.nombre,
+                realizada: mesa.realizada,
+                estado: mesa.estado,
+                total_asistentes: mesa.total_asistentes,
+                horario: mesa.horario,
+                fecha: mesa.fecha,
+                territorio_nombre: mesa.territorio_nombre,
+                aforo: mesa.aforo ?? 80,
+                tipo: "mesa",
+              },
+            }))
+            .filter((feature) => feature.geometry !== null),
+        },
+        { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
+      );
+      fuenteMesasRef.current.addFeatures(features);
+    }
+    mapaRef.current?.getLayers().forEach((layer) => layer.changed());
+  }, [
+    localidadId,
+    barrioSeleccionado,
+    variableMapa,
+    capasVisibles,
+    mesas,
+    mesaSeleccionadaId,
+  ]);
+
+  // Manejo de foco al cambiar localidad
+  useEffect(() => {
+    if (!mapaRef.current || !fuenteTerritoriosRef.current) return;
+    if (localidadId === "todas") {
+      mapaRef.current.getView().animate({
+        center: fromLonLat([-75.5144, 10.391]),
+        zoom: 11.5,
+        duration: 500,
+      });
+      return;
+    }
+    const features = fuenteTerritoriosRef.current.getFeatures();
+    const targetFeature = features.find((f) => f.get("id") === localidadId);
+    if (targetFeature) {
+      const geom = targetFeature.getGeometry();
+      if (geom) {
+        mapaRef.current.getView().fit(geom.getExtent(), {
+          duration: 600,
+          maxZoom: 13.5,
+          padding: [60, 60, 60, 60],
+        });
+      }
+      return;
+    }
+    const punto = fuentePuntosRef.current
+      ?.getFeatures()
+      .find((feature) => feature.get("id") === localidadId);
+    const geometriaPunto = punto?.getGeometry();
+    const coordenada =
+      geometriaPunto instanceof Point
+        ? geometriaPunto.getCoordinates()
+        : undefined;
+    if (coordenada)
+      mapaRef.current
+        .getView()
+        .animate({ center: coordenada, zoom: 13.5, duration: 500 });
+  }, [localidadId]);
+
+  // Manejo de foco al seleccionar un barrio
+  useEffect(() => {
+    if (!barrioSeleccionado || !mapaRef.current || !fuenteBarriosRef.current)
+      return;
+    const targetNombre = normalizar(barrioSeleccionado);
+    const featureEncontrada = fuenteBarriosRef.current
+      .getFeatures()
+      .find((f) => {
+        const nom = normalizar(String(f.get("nombre") ?? ""));
+        return nom.includes(targetNombre) || targetNombre.includes(nom);
+      });
+
+    if (featureEncontrada) {
+      const geom = featureEncontrada.getGeometry();
+      if (geom) {
+        mapaRef.current.getView().fit(geom.getExtent(), {
+          duration: 600,
+          maxZoom: 16,
+          padding: [80, 80, 80, 80],
+        });
+      }
+    }
+  }, [barrioSeleccionado]);
+
+  // Manejo de foco y vuelo cartográfico cinematográfico (flyTo) al seleccionar una mesa (GEO-DOCK-03)
+  useEffect(() => {
+    if (!mesaSeleccionadaId || !mapaRef.current) return;
+    const mesa = mesasRef.current.find((m) => m.id === mesaSeleccionadaId);
+    if (
+      mesa &&
+      mesa.longitud_referencia !== null &&
+      mesa.latitud_referencia !== null
+    ) {
+      mapaRef.current.getView().animate({
+        center: fromLonLat([mesa.longitud_referencia, mesa.latitud_referencia]),
+        zoom: 15.5,
+        duration: 600,
+      });
+    }
+  }, [mesaSeleccionadaId]);
+
+  // Montaje de OpenLayers y capas coropléticas
+  useEffect(() => {
+    if (!target) return;
+
+    /* 1. Capa Poligonal Coroplética de Territorios (GEOJSON_TERRITORIOS) */
+    const format = new GeoJSON();
+    const featsTerritorios = format.readFeatures(GEOJSON_TERRITORIOS, {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:3857",
+    });
+    const fuenteTerritorios = new VectorSource({ features: featsTerritorios });
+    fuenteTerritoriosRef.current = fuenteTerritorios;
+
+    const capaTerritorios = new VectorLayer({
+      source: fuenteTerritorios,
+      zIndex: 2,
+      style: (feature) => {
+        const id = String(feature.get("id") ?? "");
+        const nombre = String(feature.get("nombre") ?? "");
+        const esRural = id === "rural-insular";
+
+        if (esRural && !capasRef.current.corregimientos) return undefined;
+        if (!esRural && !capasRef.current.localidades) return undefined;
+
+        const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id);
+        const valores = ESTADISTICAS_TERRITORIOS.map((t) =>
+          obtenerValorVariable(t, variableRef.current),
+        );
+        const minVal = Math.min(...valores);
+        const maxVal = Math.max(...valores);
+
+        const val = stats
+          ? obtenerValorVariable(stats, variableRef.current)
+          : 0;
+        const colorChoropleth = interpolarColor(val, minVal, maxVal);
+
+        const coincideLocalidad =
+          localidadRef.current === "todas" || localidadRef.current === id;
+        const hovered = feature.get("hovered");
+        const esSeleccionado = localidadRef.current === id;
+
+        const colorRelleno = hovered
+          ? `${COLORES_MAPA.hover}99`
+          : coincideLocalidad
+            ? `${colorChoropleth}cc`
+            : `${colorChoropleth}33`;
+
+        const colorBorde =
+          hovered || esSeleccionado
+            ? COLORES_MAPA.strokeHover
+            : COLORES_MAPA.stroke;
+
+        const meta = VARIABLE_META[variableRef.current];
+
+        return new Style({
+          fill: new Fill({ color: colorRelleno }),
+          stroke: new Stroke({
+            color: colorBorde,
+            width: hovered || esSeleccionado ? 3 : 1.5,
+          }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: `${nombre}\n${meta.label}: ${val.toLocaleString("es-CO")} ${meta.unidad}`,
+                font: "600 11.5px Geist, sans-serif",
+                fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+                stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3.5 }),
+                overflow: true,
+              })
+            : undefined,
+        });
+      },
+    });
+
+    /* 2. Capa de Barrios (217 polígonos catastrales) */
+    const fuenteBarrios = new VectorSource();
+    fuenteBarriosRef.current = fuenteBarrios;
+
+    const capaBarrios = new VectorLayer({
+      source: fuenteBarrios,
+      zIndex: 4,
+      style: (feature, resolution) => {
+        if (!capasRef.current.barrios) return undefined;
+        const nombre = String(feature.get("nombre") ?? "");
+        const hovered = feature.get("hovered");
+        const targetNombre = normalizar(barrioRef.current ?? "");
+        const esSeleccionado =
+          Boolean(barrioRef.current) &&
+          (normalizar(nombre).includes(targetNombre) ||
+            targetNombre.includes(normalizar(nombre)));
+
+        if (esSeleccionado || hovered) {
+          return new Style({
+            fill: new Fill({ color: `${COLORES_MAPA.barrioHover}55` }),
+            stroke: new Stroke({ color: COLORES_MAPA.barrioHover, width: 2.5 }),
+            text: new Text({
+              text: nombre,
+              font: "600 11.5px Geist, sans-serif",
+              fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+              stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3 }),
+              overflow: true,
+            }),
+          });
+        }
+
+        // Mostrar barrios a resolución detallada (zoom >= 13)
+        if (resolution > 60) {
+          return new Style({
+            stroke: new Stroke({
+              color: `${COLORES_MAPA.barrio}33`,
+              width: 0.75,
+            }),
+          });
+        }
+
+        return new Style({
+          fill: new Fill({ color: `${COLORES_MAPA.barrio}15` }),
+          stroke: new Stroke({ color: `${COLORES_MAPA.barrio}88`, width: 1 }),
+          text: new Text({
+            text: nombre,
+            font: "500 10px Geist, sans-serif",
+            fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+            stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 2.5 }),
+            overflow: true,
+          }),
+        });
+      },
+    });
+
+    /* 3. Capa de Puntos de Alertas SAT */
+    const capaPuntos = crearCapaPuntosAlertas(localidadRef, capasRef);
+    fuentePuntosRef.current = capaPuntos.getSource() ?? null;
+    const fuenteMesas = new VectorSource<Feature>();
+    fuenteMesasRef.current = fuenteMesas;
+    const puntosMesas = new GeoJSON().readFeatures(
+      {
+        type: "FeatureCollection",
+        features: mesasRef.current
+          .map((mesa) => ({
+            type: "Feature",
+            id: mesa.id,
+            geometry:
+              mesa.longitud_referencia !== null &&
+              mesa.latitud_referencia !== null
+                ? {
+                    type: "Point",
+                    coordinates: [
+                      mesa.longitud_referencia,
+                      mesa.latitud_referencia,
+                    ],
+                  }
+                : null,
+            properties: {
+              id: mesa.id,
+              nombre: mesa.nombre,
+              realizada: mesa.realizada,
+              estado: mesa.estado,
+              total_asistentes: mesa.total_asistentes,
+              horario: mesa.horario,
+              fecha: mesa.fecha,
+              territorio_nombre: mesa.territorio_nombre,
+              aforo: mesa.aforo ?? 80,
+              tipo: "mesa",
+            },
+          }))
+          .filter((feature) => feature.geometry !== null),
+      },
+      { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
+    );
+    fuenteMesas.addFeatures(puntosMesas);
+    const capaMesas = new VectorLayer({
+      source: fuenteMesas,
+      zIndex: 20,
+      declutter: true,
+      style: (feature) => {
+        const estado = String(feature.get("estado") ?? "").toUpperCase();
+        const realizada =
+          feature.get("realizada") === true ||
+          estado === "FINALIZADA" ||
+          estado === "ACTA_CONCERTADA" ||
+          estado === "REALIZADA";
+        const enCurso = estado === "EN_DELIBERACION" || estado === "EN_CURSO";
+        const seleccionada =
+          String(feature.get("id")) === mesaSeleccionadaRef.current;
+        const hovered = feature.get("hovered") === true;
+
+        // Semáforo:
+        // 🟢 Verde: Mesa Realizada / Cerrada
+        // 🔵 Azul: Mesa en Curso
+        // 🟡 Amarillo / Ember: Mesa Programada
+        const color = realizada ? "#16a34a" : enCurso ? "#2563eb" : "#e85d04";
+
+        if (seleccionada) {
+          // Estilo compuesto: Halo exterior luminoso + Núcleo destacado (GEO-DOCK-03)
+          return [
+            new Style({
+              image: new CircleStyle({
+                radius: 19,
+                fill: new Fill({ color: "rgba(232, 93, 4, 0.28)" }),
+                stroke: new Stroke({ color: "#e85d04", width: 2.5 }),
+              }),
+            }),
+            new Style({
+              image: new CircleStyle({
+                radius: 11,
+                fill: new Fill({ color }),
+                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+              }),
+              text: capasRef.current.etiquetas
+                ? new Text({
+                    text: `📍 ${String(feature.get("nombre") ?? "Mesa")}`,
+                    offsetY: -22,
+                    font: "700 12px Geist, sans-serif",
+                    fill: new Fill({ color: "#e85d04" }),
+                    stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+                    overflow: true,
+                  })
+                : undefined,
+            }),
+          ];
+        }
+
+        const radius = hovered ? 10 : 8;
+
+        return new Style({
+          image: new CircleStyle({
+            radius,
+            fill: new Fill({ color }),
+            stroke: new Stroke({
+              color: "#ffffff",
+              width: hovered ? 2.5 : 2,
+            }),
+          }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: String(feature.get("nombre") ?? "Mesa"),
+                offsetY: -18,
+                font: "600 11px Geist, sans-serif",
+                fill: new Fill({ color: "#111827" }),
+                stroke: new Stroke({ color: "#ffffff", width: 3 }),
+                overflow: true,
+              })
+            : undefined,
+        });
+      },
+    });
+
+    /* 4. Capa Analítica de Hurtos (Urbano y Rural SIEDCO) */
+    const fuenteHurtos = new VectorSource<Feature>();
+    fuenteHurtosRef.current = fuenteHurtos;
+
+    const capaHurtos = new VectorLayer({
+      source: fuenteHurtos,
+      zIndex: 5,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const total = Number(feature.get("total_casos") ?? 0);
+        const porcentaje = Number(feature.get("porcentaje_total") ?? 0);
+        const nombre = String(feature.get("nombre") ?? "Polígono");
+        const zona = String(feature.get("zona") ?? "URBANA");
+
+        const numHurtos =
+          (capasRef.current.hurtoMotocicletas ? 1 : 0) +
+          (capasRef.current.hurtoResidencias ? 1 : 0) +
+          (capasRef.current.hurtoComercio ? 1 : 0);
+
+        let baseColor = "#ef4444";
+        if (numHurtos === 1) {
+          if (capasRef.current.hurtoMotocicletas) baseColor = "#f97316";
+          else if (capasRef.current.hurtoResidencias) baseColor = "#8b5cf6";
+          else if (capasRef.current.hurtoComercio) baseColor = "#06b6d4";
+        } else if (delitoHurto === "hurto_motocicletas") {
+          baseColor = "#f97316";
+        } else if (delitoHurto === "hurto_residencias") {
+          baseColor = "#8b5cf6";
+        } else if (delitoHurto === "hurto_comercio") {
+          baseColor = "#06b6d4";
+        }
+
+        const esUrbano = zona === "URBANA";
+        const esRural =
+          !esUrbano || feature.get("codigo") === "CARTAGENA_RURAL";
+        const opacidad = hovered ? "88" : esUrbano ? "55" : "28";
+        const strokeColor = hovered ? "#1a1a2e" : baseColor;
+        const strokeWidth = hovered ? 3.5 : esUrbano ? 2.5 : 2;
+        const lineDash = !hovered && !esUrbano ? [6, 4] : undefined;
+
+        const estiloBase = new Style({
+          fill: new Fill({ color: `${baseColor}${opacidad}` }),
+          stroke: new Stroke({
+            color: strokeColor,
+            width: strokeWidth,
+            lineDash,
+          }),
+        });
+
+        if (!capasRef.current.etiquetas) return estiloBase;
+
+        const estiloTexto = new Style({
+          // Si es rural o insular, proyectar la etiqueta en las coordenadas reales insulares [-75.64, 10.22]
+          geometry: esRural
+            ? new Point(fromLonLat([-75.64, 10.22]))
+            : undefined,
+          text: new Text({
+            text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,
+            font: "700 11.5px Geist, sans-serif",
+            fill: new Fill({ color: "#111827" }),
+            stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+            overflow: true,
+          }),
+        });
+
+        return [estiloBase, estiloTexto];
+      },
+    });
+
+    /* 5. Capa Vectorial de GeoJSON Personalizado (Cargado en Frontend) */
+    const fuentePersonalizada = new VectorSource<Feature>();
+    fuentePersonalizadaRef.current = fuentePersonalizada;
+    const capaPersonalizadaLayer = new VectorLayer({
+      source: fuentePersonalizada,
+      zIndex: 16,
+      style: (feature) => {
+        const color = (feature.get("customColor") as string) || "#e85d04";
+        return new Style({
+          fill: new Fill({ color: `${color}44` }),
+          stroke: new Stroke({ color: color, width: 2.5 }),
+          image: new CircleStyle({
+            radius: 7,
+            fill: new Fill({ color }),
+            stroke: new Stroke({ color: "#ffffff", width: 2 }),
+          }),
+        });
+      },
+    });
+
+    /* 6a. Capa Vectorial Dinámica de Capas Oficiales */
+    const fuenteCapasOficiales = new VectorSource<Feature>();
+    fuenteCapasOficialesRef.current = fuenteCapasOficiales;
+    const capaCapasOficialesLayer = new VectorLayer({
+      source: fuenteCapasOficiales,
+      zIndex: 13,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const color = String(feature.get("customColor") ?? "#e85d04");
+        const nombre = String(feature.get("capa_nombre") ?? "");
+        const opacidad = hovered ? "88" : "46";
+        return new Style({
+          fill: new Fill({ color: `${color}${opacidad}` }),
+          stroke: new Stroke({
+            color: hovered ? "#0f172a" : color,
+            width: hovered ? 3.2 : 2.2,
+          }),
+          text:
+            capasRef.current.etiquetas && nombre
+              ? new Text({
+                  text: nombre,
+                  font: "600 10.5px Geist, sans-serif",
+                  fill: new Fill({ color: "#111827" }),
+                  stroke: new Stroke({ color: "#ffffff", width: 3 }),
+                  overflow: true,
+                })
+              : undefined,
+        });
+      },
+    });
+
+    const fuenteMultifuente = new VectorSource<Feature>();
+    fuenteMultifuenteRef.current = fuenteMultifuente;
+    const capaMultifuenteLayer = new VectorLayer({
+      source: fuenteMultifuente,
+      zIndex: 14,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const color = (feature.get("color") as string) || "#ea580c";
+        const indNombre = String(feature.get("nombre_indicador") ?? "");
+        const valor = String(feature.get("valor") ?? "");
+        const unidad = String(feature.get("unidad_medida") ?? "");
+        const nivelRiesgo = String(
+          feature.get("nivel_riesgo") ?? "",
+        ).toUpperCase();
+
+        const opacidad = hovered ? "90" : "55";
+        const strokeColor = hovered ? "#0f172a" : color;
+        const strokeWidth = hovered ? 3.5 : 2;
+
+        return new Style({
+          fill: new Fill({ color: `${color}${opacidad}` }),
+          stroke: new Stroke({ color: strokeColor, width: strokeWidth }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: `${indNombre}\n${valor} ${unidad} [${nivelRiesgo}]`,
+                font: "700 11.5px Geist, sans-serif",
+                fill: new Fill({ color: "#0f172a" }),
+                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+                overflow: true,
+              })
+            : undefined,
+        });
+      },
+    });
+
+    const mapa = new Map({
+      target,
+      layers: [
+        new TileLayer({ source: new OSM() }),
+        capaTerritorios,
+        capaHurtos,
+        capaMultifuenteLayer,
+        capaCapasOficialesLayer,
+        capaBarrios,
+        capaPuntos,
+        capaMesas,
+        capaPersonalizadaLayer,
+      ],
+      view: new View({
+        center: fromLonLat([-75.5144, 10.391]),
+        zoom: 11.5,
+        minZoom: 9,
+        maxZoom: 18,
+      }),
+    });
+    mapaRef.current = mapa;
+
+    // Cargar barrios en background
+    let cancelado = false;
+    fetch("/geodatos/cartagena_barrios.geojson")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((resBarrios) => {
+        if (!resBarrios || cancelado) return;
+        const featsBarrios = format.readFeatures(resBarrios, {
+          dataProjection: "EPSG:4326",
+          featureProjection: "EPSG:3857",
+        });
+        fuenteBarrios.addFeatures(featsBarrios);
+        setCargando(false);
+      })
+      .catch(() => {
+        if (!cancelado) setCargando(false);
+      });
+
+    const featureAtPixel = (pixel: number[]) => {
+      let found: Feature<Geometry> | undefined;
+      mapa.forEachFeatureAtPixel(pixel, (feature) => {
+        found = feature as Feature<Geometry>;
+        return true;
+      });
+      return found;
+    };
+
+    const handleClick = (event: { pixel: number[]; coordinate?: number[] }) => {
+      const feature = featureAtPixel(event.pixel);
+      if (!feature) {
+        if (event.coordinate) {
+          const [lon, lat] = toLonLat(event.coordinate);
+          buscarTerritorioPorCoordenada(lat, lon)
+            .then((resultados) => {
+              if (cancelado || !resultados || resultados.length === 0) return;
+              const territorio =
+                resultados.find(
+                  (r) =>
+                    r.tipo_territorio === "barrio" ||
+                    r.tipo_territorio === "corregimiento" ||
+                    r.tipo_territorio === "zona_insular",
+                ) ||
+                resultados.find((r) => r.tipo_territorio === "localidad") ||
+                resultados[0];
+
+              if (territorio) {
+                const idCanonica = territorio.codigo
+                  .toLowerCase()
+                  .replace("-", "");
+                const local = ESTADISTICAS_TERRITORIOS.find(
+                  (item) =>
+                    item.id.toLowerCase() === idCanonica ||
+                    item.id === territorio.id ||
+                    item.nombre.toLowerCase() ===
+                      territorio.nombre.toLowerCase(),
+                );
+                onSelectTerritorio(local ? local.id : territorio.id);
+                if (onSelectBarrio && territorio.nombre) {
+                  onSelectBarrio(territorio.nombre);
+                }
+              }
+            })
+            .catch(() => {});
+        }
+        return;
+      }
+      if (feature.get("tipo") === "mesa") {
+        const idMesa = feature.get("id");
+        if (typeof idMesa === "string") onSelectMesa?.(idMesa);
+        return;
+      }
+      if (feature.get("tipo") === "hurto") {
+        const idPol = Number(feature.get("poligono_id") ?? 0);
+        onSelectHurtoRef.current?.(idPol);
+        return;
+      }
+
+      const id = feature.get("id");
+      if (typeof id === "string") {
+        onSelectTerritorio(id);
+        return;
+      }
+
+      const nombre = feature.get("nombre");
+      if (typeof nombre === "string") {
+        const t = ESTADISTICAS_TERRITORIOS.find(
+          (item) => item.nombre.toLowerCase() === nombre.toLowerCase(),
+        );
+        if (t) {
+          onSelectTerritorio(t.id);
+          return;
+        }
+
+        const meta = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+        if (meta && onSelectBarrio) {
+          onSelectBarrio(meta.barrio);
+          onSelectTerritorio(meta.localidadId);
+        }
+      }
+    };
+
+    const handlePointerMove = (event: { pixel: number[] }) => {
+      if (event.pixel === undefined) return;
+      const pixel = event.pixel as [number, number];
+      const feature = featureAtPixel(pixel);
+      target.style.cursor = feature ? "pointer" : "grab";
+
+      const todasLasCapas = [
+        capaTerritorios,
+        capaHurtos,
+        capaMultifuenteLayer,
+        capaBarrios,
+        capaPuntos,
+        capaMesas,
+      ];
+      todasLasCapas.forEach((capa) => {
+        capa
+          .getSource()
+          ?.getFeatures()
+          .forEach((elemento) => {
+            const hovered = elemento === feature;
+            if (elemento.get("hovered") !== hovered) {
+              elemento.set("hovered", hovered, true);
+              elemento.changed();
+            }
+          });
+      });
+
+      if (!feature) {
+        onHoverInfo(null);
+        return;
+      }
+
+      if (feature.get("tipo") === "multifuente") {
+        onHoverInfo({
+          id: String(feature.get("id") ?? "multifuente"),
+          nombre: String(
+            feature.get("nombre_indicador") ?? "Indicador Multifuente",
+          ),
+          tipo: "multifuente",
+          pixel,
+          multifuenteDetalle: {
+            id: String(feature.get("id") ?? ""),
+            nombre_indicador: String(feature.get("nombre_indicador") ?? ""),
+            codigo_indicador: String(feature.get("codigo_indicador") ?? ""),
+            valor: feature.get("valor") ?? "",
+            unidad_medida: String(feature.get("unidad_medida") ?? ""),
+            nivel_riesgo: String(feature.get("nivel_riesgo") ?? ""),
+            anio_corte: Number(feature.get("anio_corte") ?? 0),
+            fuente_datos: String(feature.get("fuente_datos") ?? ""),
+            territorio: String(
+              feature.get("nombre_territorio") ??
+                "Cartagena (Perímetro Urbano y Rural)",
+            ),
+            dimension: String(
+              feature.get("nombre_dimension") ?? "Seguridad Humana",
+            ),
+            url_fuente:
+              (feature.get("url_fuente") as string | undefined) ?? undefined,
+            nota: (feature.get("nota") as string | undefined) ?? undefined,
+          },
+        });
+        return;
+      }
+
+      const id = String(feature.get("id") ?? "");
+      const nombre = String(feature.get("nombre") ?? "");
+
+      if (feature.get("tipo") === "hurto") {
+        onHoverInfo({
+          id: String(feature.get("poligono_id") ?? "hurto"),
+          nombre: String(feature.get("nombre") ?? "Polígono Delictivo"),
+          tipo: "hurto",
+          pixel,
+          hurtoDetalle: {
+            poligono_id: Number(feature.get("poligono_id") ?? 0),
+            codigo: String(feature.get("codigo") ?? ""),
+            nombre: String(feature.get("nombre") ?? ""),
+            zona: String(feature.get("zona") ?? ""),
+            area_km2: Number(feature.get("area_km2") ?? 0),
+            total_casos: Number(feature.get("total_casos") ?? 0),
+            densidad_casos_km2: Number(feature.get("densidad_casos_km2") ?? 0),
+            porcentaje_total: Number(feature.get("porcentaje_total") ?? 0),
+            delito_etiqueta: String(feature.get("delito_etiqueta") ?? "Hurtos"),
+            anio_etiqueta: String(feature.get("anio_etiqueta") ?? "2018–2026"),
+            top_armas:
+              (feature.get("top_armas") as Array<{
+                arma: string;
+                cantidad: number;
+                porcentaje: number;
+              }>) ?? [],
+            top_sitios:
+              (feature.get("top_sitios") as Array<{
+                sitio: string;
+                cantidad: number;
+                porcentaje: number;
+              }>) ?? [],
+          },
+        });
+        return;
+      }
+
+      if (feature.get("tipo") === "mesa") {
+        const mesa = mesasRef.current.find((item) => item.id === id);
+        if (mesa) {
+          onHoverInfo({
+            id: mesa.id,
+            nombre: mesa.nombre,
+            tipo: "mesa",
+            pixel,
+            mesaDetalle: {
+              territorio: mesa.territorio_nombre || "Distrito de Cartagena",
+              fecha: mesa.fecha || "Por confirmar",
+              horario: mesa.horario || "08:30 – 12:00",
+              asistentes: mesa.total_asistentes,
+              aforo: mesa.aforo ?? 80,
+              estado: mesa.estado,
+              realizada: mesa.realizada,
+            },
+          });
+          return;
+        }
+      }
+      const stats = ESTADISTICAS_TERRITORIOS.find(
+        (t) => t.id === id || t.nombre === nombre,
+      );
+
+      if (stats) {
+        const meta = VARIABLE_META[variableRef.current];
+        const val = obtenerValorVariable(stats, variableRef.current);
+        onHoverInfo({
+          id: stats.id,
+          nombre: stats.nombre,
+          tipo: stats.tipo,
+          ish: stats.ish,
+          poblacion: stats.poblacion,
+          aportes: stats.aportesCiudadanos,
+          alertas: stats.alertas,
+          homicidios: stats.homicidios,
+          mesas: stats.mesasRealizadas,
+          variableValor: val,
+          variableNombre: meta.label,
+          variableUnidad: meta.unidad,
+          pixel,
+        });
+        return;
+      }
+
+      // Barrio
+      const metaBarrio = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+      onHoverInfo({
+        id: nombre,
+        nombre: metaBarrio ? metaBarrio.barrio : nombre,
+        tipo: "barrio",
+        pixel,
+      });
+    };
+
+    mapa.on("click", handleClick);
+    mapa.on("pointermove", handlePointerMove);
+
+    const observer = new ResizeObserver(() => mapa.updateSize());
+    observer.observe(target);
+    mapa.updateSize();
+
+    return () => {
+      cancelado = true;
+      observer.disconnect();
+      mapa.un("click", handleClick);
+      mapa.un("pointermove", handlePointerMove);
+      mapa.setTarget(undefined);
+      mapaRef.current = null;
+      fuenteMesasRef.current = null;
+      fuentePuntosRef.current = null;
+      fuenteHurtosRef.current = null;
+      fuentePersonalizadaRef.current = null;
+      fuenteMultifuenteRef.current = null;
+      fuenteCapasOficialesRef.current = null;
+    };
+  }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
+
+  // Carga reactiva de capas multifuente (multiples indicadores activos)
+  useEffect(() => {
+    if (!fuenteMultifuenteRef.current || !mapaRef.current) return;
+    const fuente = fuenteMultifuenteRef.current;
+    fuente.clear(true);
+    if (!indicadoresMultifuente.length) return;
+
+    try {
+      const format = new GeoJSON();
+      const colorPorRiesgo = (riesgoRaw: string) => {
+        const riesgo = String(riesgoRaw || "").toLowerCase();
+        if (riesgo === "critico") return "#dc2626";
+        if (riesgo === "alto") return "#ea580c";
+        if (riesgo === "medio") return "#eab308";
+        if (riesgo === "bajo") return "#10b981";
+        return "#2563eb";
+      };
+
+      const todasLasFeatures: Feature[] = [];
+      indicadoresMultifuente.forEach((indicador) => {
+        const colorRiesgo = colorPorRiesgo(indicador.nivel_riesgo);
+        const codTerr = indicador.codigo_territorio;
+        const esDesagregado =
+          Boolean(codTerr) &&
+          codTerr !== "DISTRITO-CTG" &&
+          codTerr !== "todos" &&
+          codTerr !== "distrito";
+        let featuresIndicador: Feature[] = [];
+
+        if (esDesagregado && codTerr) {
+          const idBuscado = codTerr.toLowerCase();
+          const featuresFiltradas = GEOJSON_TERRITORIOS.features.filter((f) => {
+            const propId = String(f.properties?.id ?? "").toLowerCase();
+            return propId === idBuscado || propId.includes(idBuscado);
+          });
+          if (featuresFiltradas.length > 0) {
+            featuresIndicador = format.readFeatures(
+              {
+                type: "FeatureCollection",
+                features: featuresFiltradas,
+              },
+              {
+                dataProjection: "EPSG:4326",
+                featureProjection: "EPSG:3857",
+              },
+            );
+          }
+        }
+
+        if (featuresIndicador.length === 0) {
+          featuresIndicador = format.readFeatures(GEOJSON_TERRITORIOS, {
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:3857",
+          });
+        }
+
+        featuresIndicador.forEach((feature) => {
+          feature.set("tipo", "multifuente");
+          feature.set("id", indicador.id);
+          feature.set("color", colorRiesgo);
+          feature.set("nombre_indicador", indicador.nombre_indicador);
+          feature.set("codigo_indicador", indicador.codigo_indicador);
+          feature.set("valor", indicador.valor);
+          feature.set("unidad_medida", indicador.unidad_medida);
+          feature.set("nivel_riesgo", indicador.nivel_riesgo);
+          feature.set("anio_corte", indicador.anio_corte);
+          feature.set("fuente_datos", indicador.fuente_datos);
+          feature.set(
+            "nombre_territorio",
+            indicador.nombre_territorio ||
+              (esDesagregado
+                ? feature.get("nombre")
+                : "Toda la ciudad (Perimetro Urbano y Rural)"),
+          );
+          feature.set(
+            "nombre_dimension",
+            indicador.nombre_dimension ??
+              indicador.codigo_dimension ??
+              "Seguridad Humana",
+          );
+          const meta = indicador.metadatos ?? {};
+          feature.set(
+            "url_fuente",
+            typeof meta.url_fuente === "string" ? meta.url_fuente : undefined,
+          );
+          feature.set(
+            "nota",
+            typeof meta.nota_origen === "string" ? meta.nota_origen : undefined,
+          );
+        });
+        todasLasFeatures.push(...featuresIndicador);
+      });
+
+      fuente.addFeatures(todasLasFeatures);
+      mapaRef.current.renderSync();
+      const extent = fuente.getExtent();
+      if (extent && !extent.some((v) => !isFinite(v))) {
+        mapaRef.current.getView().fit(extent, {
+          duration: 700,
+          padding: [60, 60, 60, 60],
+          maxZoom: 14,
+        });
+      }
+    } catch (err) {
+      console.warn("Fallo al proyectar capas multifuente en OpenLayers:", err);
+    }
+  }, [indicadoresMultifuente]);
+
+  // Carga reactiva de capas oficiales desde /geodatos/capas
+  useEffect(() => {
+    if (!fuenteCapasOficialesRef.current || !mapaRef.current) return;
+    const fuente = fuenteCapasOficialesRef.current;
+    fuente.clear(true);
+    if (!capasOficiales.length) return;
+
+    const capasActivas = capasOficiales.filter(
+      (capa) =>
+        Boolean(capa.codigo) && Boolean(capasVisibles?.[capa.codigo ?? ""]),
+    );
+    if (!capasActivas.length) return;
+
+    let activo = true;
+    void (async () => {
+      try {
+        const resultados = await Promise.allSettled(
+          capasActivas.map(async (capa) => ({
+            capa,
+            geojson: await listarCapaGeoJSON(capa.codigo ?? String(capa.id)),
+          })),
+        );
+        if (!activo) return;
+        const format = new GeoJSON();
+        resultados.forEach((resultado) => {
+          if (resultado.status !== "fulfilled") return;
+          const feats = format.readFeatures(resultado.value.geojson, {
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:3857",
+          });
+          const color =
+            resultado.value.capa.color_estilo ??
+            resultado.value.capa.color_hex ??
+            "#e85d04";
+          feats.forEach((feature) => {
+            feature.set(
+              "capa_codigo",
+              resultado.value.capa.codigo ?? String(resultado.value.capa.id),
+            );
+            feature.set("capa_nombre", resultado.value.capa.nombre);
+            feature.set("customColor", color);
+          });
+          fuente.addFeatures(feats);
+        });
+        mapaRef.current?.renderSync();
+      } catch (err) {
+        console.warn("Fallo al proyectar capas oficiales en OpenLayers:", err);
+      }
+    })();
+
+    return () => {
+      activo = false;
+    };
+  }, [capasOficiales, capasVisibles]);
+
+  // Carga reactiva de capa GeoJSON personalizada importada en el frontend
+  useEffect(() => {
+    if (!fuentePersonalizadaRef.current || !mapaRef.current) return;
+    fuentePersonalizadaRef.current.clear(true);
+    if (!capaPersonalizada?.geojson) return;
+    try {
+      const format = new GeoJSON();
+      const feats = format.readFeatures(capaPersonalizada.geojson, {
+        dataProjection: "EPSG:4326",
+        featureProjection: "EPSG:3857",
+      });
+      const color = capaPersonalizada.color || "#e85d04";
+      feats.forEach((f) => {
+        f.set("customColor", color);
+        f.set("customName", capaPersonalizada.nombre);
+      });
+      fuentePersonalizadaRef.current.addFeatures(feats);
+      const extent = fuentePersonalizadaRef.current.getExtent();
+      if (extent && !extent.some((v) => !isFinite(v))) {
+        mapaRef.current.getView().fit(extent, {
+          duration: 600,
+          padding: [50, 50, 50, 50],
+          maxZoom: 16,
+        });
+      }
+    } catch (e) {
+      console.warn("Error al renderizar capa GeoJSON personalizada:", e);
+    }
+  }, [capaPersonalizada]);
+
+  // Controles del mapa
+  const zoomIn = useCallback(() => {
+    if (!mapaRef.current) return;
+    const view = mapaRef.current.getView();
+    view.animate({ zoom: (view.getZoom() ?? 11) + 1, duration: 250 });
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    if (!mapaRef.current) return;
+    const view = mapaRef.current.getView();
+    view.animate({ zoom: (view.getZoom() ?? 11) - 1, duration: 250 });
+  }, []);
+
+  const centrarCartagena = useCallback(() => {
+    if (!mapaRef.current) return;
+    mapaRef.current.getView().animate({
+      center: fromLonLat([-75.5144, 10.391]),
+      zoom: 11.5,
+      duration: 500,
+    });
+  }, []);
+
+  const volarACoordenadas = useCallback(
+    (lon: number, lat: number, zoom = 15.5) => {
+      if (!mapaRef.current) return;
+      mapaRef.current.getView().animate({
+        center: fromLonLat([lon, lat]),
+        zoom,
+        duration: 600,
+      });
+    },
+    [],
+  );
+
+  const exportarPng = useCallback(() => {
+    if (!mapaRef.current) return;
+    mapaRef.current.once("rendercomplete", () => {
+      const canvas = document.querySelector(
+        ".ol-viewport canvas",
+      ) as HTMLCanvasElement;
+      if (!canvas) return;
+      const link = document.createElement("a");
+      link.download = `geovisor-cartagena-${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+    mapaRef.current.renderSync();
+  }, []);
+
+  return {
+    cargando,
+    zoomIn,
+    zoomOut,
+    centrarCartagena,
+    exportarPng,
+    volarACoordenadas,
+  };
+}

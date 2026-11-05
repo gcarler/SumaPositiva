@@ -1,0 +1,21 @@
+{
+  "usuario_id": "01a1766d-d323-794d-8b26-b543ff5e953f",
+  "max_intentos_configurado": 3,
+  "http_intentos": [
+    401,
+    401,
+    401,
+    401,
+    401,
+    401,
+    401
+  ],
+  "estado_desde_conexion_nueva": {
+    "intentos_fallidos": 0,
+    "bloqueado_hasta": null,
+    "activo": true
+  },
+  "eventos_fallo": [],
+  "esperado": "Al tercer fallo persistir bloqueo de cuenta y rechazar siguientes con 429",
+  "cumple": false
+}

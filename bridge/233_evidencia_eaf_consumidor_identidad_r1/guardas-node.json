@@ -1,0 +1,10 @@
+{
+  "negativas": [
+    "TCP externo antes de conectar",
+    "DNS externo antes de resolver",
+    "escritura fuera de211 antes de crear"
+  ],
+  "count": 3,
+  "sentinel_creado": false,
+  "limites": "Guarda de API JavaScript/Node; no cubre toda llamada nativa, subproceso, symlink o red de Chromium. Chrome usa rutas propias y bloqueo de peticiones antes de red."
+}

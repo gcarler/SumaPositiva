@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-26T06:21:10.905356+00:00",
+  "copies_unchanged": {
+    "guard/sitecustomize.py": "704053e21fe70c8de4aed238343082eca531311c51d59bcd69400821eb2012e8",
+    "test_atomicidad.py": "a27d21acd30cd2130d0d1413fcae36d0266c3bb7390ab9c9e34d511c80101325",
+    "test_colas.py": "99d37a4bd6e8ca41711410402c120a34f927b81728ad7d67a1e04b34291b124f",
+    "test_principales.py": "a213a7e1d0026190a8a94aa347f35c8944c8e59e859fb8e9ba4e5fe205a66d9d",
+    "test_adicionales.py": "1477164b1295b817a150d61e054ea535d6f86e489c40b26781cfe862b5f203e8"
+  },
+  "runner_changes": [
+    "prefijo y secretos sintéticos propios",
+    "señal225 y cotejo hashes finales por archivo"
+  ],
+  "guard_verification_changes": [
+    "prefijo propio",
+    "una sola base positiva; sin ensayos destructivos de downgrade"
+  ],
+  "cases_changes": "ninguno: cuatro archivos203 copiados byte a byte, rutas resueltas por __file__ y base.json nuevos; evidencia histórica intacta"
+}

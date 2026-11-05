@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-26T05:07:59.452358+00:00",
+  "estado": "fuentes congeladas a la espera de check global aislado",
+  "autor": "EDD /root/edd_aportes_go_live",
+  "sha256": {
+    "backend/app/modules/aportes/models.py": "db935837c586c3a790db55a9cbbe4c25846b2ee35540c9b48d52e8524d17ace9",
+    "backend/app/modules/aportes/repository.py": "db0b89eabdf953d953ed778b3e502ea79dde0f42c972df3b7bd0751832baba8b",
+    "backend/app/modules/aportes/schemas.py": "b1cd3eb43a06fa8426b1d480814347cf8ff21c1d83358e5d62b5558ad077a82d",
+    "backend/app/modules/aportes/service.py": "66a3406f719a2128f0e70ed8c872482c141bdcb3e784924d1c516e74be8fe78c",
+    "backend/app/modules/notificaciones/models.py": "8956802e4c997542781e29c76dd9ad540b4af014d82b7196379b10a4e261ca27",
+    "backend/app/modules/notificaciones/service.py": "a3e85672d9084f1065a491e10b290cddb55c05cdb275749e11d0eeee2b9592c4",
+    "backend/app/modules/notificaciones/correo.py": "6b49c65ac7a43643060d89798515eefbb9d051164d127d713333c9766c09a378",
+    "backend/app/modules/notificaciones/worker.py": "74c36b07a67c01b9d50532cdc6584443d10b77a9e5439bbe7109a5ae60d5468f",
+    "backend/app/modules/canales/models.py": "09cd40cf5e3471d9f1a85cf4358cd8b713414b9afab5f35414f3e8e11e5d7ac2",
+    "backend/app/modules/canales/repository.py": "0ba7e96795669bd8d4e3ef9a93ebec671f7b4ee0a5b905190ff27db2f30d28b8",
+    "backend/app/modules/canales/schemas.py": "67aae96d7d1efd946cf885c32c30842281b1bce3a45fc1bca21a65bda0fa1111",
+    "backend/app/modules/canales/service.py": "6f7d38b339c1ee61018b7dd2e334b6b77b59d53ed8e459bea55c33d75db9108a",
+    "backend/app/modules/canales/router.py": "c4336bd638dc43c4604ea558d47fb8db5a9cc116850ca41d026d1857a14a0740",
+    "backend/alembic/versions/0084_aportes_colas_y_apoyos.py": "42e31aba0f92e3efa61c73b75269e4ceb86696306b8f541c1e407503ffbcac6d",
+    "backend/scripts/procesar_colas_aportes.py": "a9f0d4692d1d0d057f2981e45d3af3e794251dbdd57a128f2288a04d9b84873b",
+    "backend/tests/test_aportes.py": "f5ce7789394cb552da00c1c6f898df7b3b6581be964b8c29e624598d47a564f2",
+    "backend/tests/test_canal_whatsapp.py": "00ddd4db2ee833406022450512946b844c0b2781483da0526fff59b9827f2d95",
+    "backend/tests/test_notificaciones_y_radicacion.py": "f5f724b364521b7b770f24f587a206b74ef9175abc9fa30f03a32ab4a5af79b3",
+    "backend/tests/test_aportes_remediacion.py": "5724052513b8e9c874545ea797478ea739ae61d5083272e76d0b69fce708f615",
+    "backend/tests/test_whatsapp_remediacion.py": "69c576f665dbc41633f12112474b2a0dad6d0bac5c25e843ba48d9ce2a6c24a4"
+  }
+}

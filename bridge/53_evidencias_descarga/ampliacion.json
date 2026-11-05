@@ -1,0 +1,189 @@
+[
+  {
+    "clave": "catalogo_fiscalia_procesos",
+    "url_solicitada": "https://api.us.socrata.com/api/catalog/v1",
+    "parametros": {
+      "search_context": "www.datos.gov.co",
+      "q": "Conteo de Procesos V2",
+      "limit": 5
+    },
+    "consulta_utc": "2026-10-23T17:52:49.223117+00:00",
+    "http": 200,
+    "url_final": "https://api.us.socrata.com/api/catalog/v1?search_context=www.datos.gov.co&q=Conteo+de+Procesos+V2&limit=5",
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 77244,
+    "respuesta_completa": true,
+    "sha256": "59fae6d70c5faabd2e6241521b45454fa4623bafd2750a334a2f8bf8178ce8a5",
+    "archivo": "bridge/53_evidencias_descarga/catalogo_fiscalia_procesos.json",
+    "resultados": [
+      {
+        "id": "p6dx-8zbt",
+        "nombre": "SECOP II - Procesos de Contratación",
+        "atribucion": "Agencia Nacional de Contratación Pública - Colombia Compra Eficiente, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Estadísticas-Nacionales/SECOP-II-Procesos-de-Contratación/p6dx-8zbt"
+      },
+      {
+        "id": "rpmr-utcd",
+        "nombre": "SECOP Integrado",
+        "atribucion": "Agencia Nacional de Contratación Pública - Colombia Compra Eficiente, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Estadísticas-Nacionales/SECOP-Integrado/rpmr-utcd"
+      },
+      {
+        "id": "f789-7hwg",
+        "nombre": "SECOP I - Procesos de Compra Pública",
+        "atribucion": "Agencia Nacional de Contratación Pública - Colombia Compra Eficiente, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Estadísticas-Nacionales/SECOP-I-Procesos-de-Compra-Pública/f789-7hwg"
+      },
+      {
+        "id": "tb27-zmix",
+        "nombre": "Contratos Secop II",
+        "atribucion": "Agencia Nacional de Contratación Pública - Colombia Compra Eficiente, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Gastos-Gubernamentales/Contratos-Secop-II/tb27-zmix"
+      },
+      {
+        "id": "wxd8-ucns",
+        "nombre": "Delitos Informaticos V1",
+        "atribucion": "Fiscalía General de la Nación, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Justicia-y-Derecho/Delitos-Informaticos-V1/wxd8-ucns"
+      }
+    ]
+  },
+  {
+    "clave": "catalogo_fiscalia_indiciados",
+    "url_solicitada": "https://api.us.socrata.com/api/catalog/v1",
+    "parametros": {
+      "search_context": "www.datos.gov.co",
+      "q": "Conteo de Indiciados V2",
+      "limit": 5
+    },
+    "consulta_utc": "2026-10-23T17:52:49.223718+00:00",
+    "http": 200,
+    "url_final": "https://api.us.socrata.com/api/catalog/v1?search_context=www.datos.gov.co&q=Conteo+de+Indiciados+V2&limit=5",
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 28849,
+    "respuesta_completa": true,
+    "sha256": "eaabb39664ebb6ad7efa44d4aca77af88a5a9df825a454d6ec0035c6910fb26e",
+    "archivo": "bridge/53_evidencias_descarga/catalogo_fiscalia_indiciados.json",
+    "resultados": [
+      {
+        "id": "fhc4-jjti",
+        "nombre": "DA-SIVIGILA 2021 INS",
+        "atribucion": "Instituto Nacional de Salud INS, Bogotá D:C",
+        "url": "https://www.datos.gov.co/Salud-y-Protección-Social/DA-SIVIGILA-2021-INS/fhc4-jjti"
+      },
+      {
+        "id": "4s78-bzvq",
+        "nombre": "Contratos Servicios Primera Infancia ICBF",
+        "atribucion": "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "url": "https://www.datos.gov.co/Planeación/Contratos-Servicios-Primera-Infancia-ICBF/4s78-bzvq"
+      },
+      {
+        "id": "esjr-xkft",
+        "nombre": "Ingreso y Salida de Personas Nuevo Terminal de Duitama",
+        "atribucion": "Alcaldía de Duitama, Boyacá",
+        "url": "https://www.datos.gov.co/Comercio-Industria-y-Turismo/Ingreso-y-Salida-de-Personas-Nuevo-Terminal-de-Dui/esjr-xkft"
+      },
+      {
+        "id": "s53k-ztax",
+        "nombre": "Conteo de Autos y Motos",
+        "atribucion": "Alcaldía de Duitama, Boyacá",
+        "url": "https://www.datos.gov.co/Ciencia-Tecnología-e-Innovación/Conteo-de-Autos-y-Motos/s53k-ztax"
+      },
+      {
+        "id": "6ymu-tzvs",
+        "nombre": "Conteo Vehicular (Simmtrafficdata)",
+        "atribucion": null,
+        "url": "https://www.datos.gov.co/dataset/Conteo-Vehicular-Simmtrafficdata-/6ymu-tzvs"
+      }
+    ]
+  },
+  {
+    "clave": "dane_ecsc_anexo",
+    "url_solicitada": "https://www.dane.gov.co/files/operaciones/ECSC/anex-ECSC-2024.xlsx",
+    "parametros": null,
+    "consulta_utc": "2026-10-23T17:52:49.224348+00:00",
+    "http": 200,
+    "url_final": "https://www.dane.gov.co/files/operaciones/ECSC/anex-ECSC-2024.xlsx",
+    "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "bytes": 543732,
+    "respuesta_completa": true,
+    "sha256": "9bed1cd4e9d9fb4ee9e770f977ffec1adee48dfea4bc3ab2d2f882d635fab06e",
+    "archivo": "bridge/53_evidencias_descarga/dane_ecsc_anexo.xlsx",
+    "contenido_zip": [
+      "[Content_Types].xml",
+      "_rels/.rels",
+      "xl/workbook.xml",
+      "xl/_rels/workbook.xml.rels",
+      "xl/worksheets/sheet1.xml",
+      "xl/worksheets/sheet2.xml",
+      "xl/worksheets/sheet3.xml",
+      "xl/worksheets/sheet4.xml",
+      "xl/worksheets/sheet5.xml",
+      "xl/worksheets/sheet6.xml",
+      "xl/worksheets/sheet7.xml",
+      "xl/worksheets/sheet8.xml",
+      "xl/worksheets/sheet9.xml",
+      "xl/worksheets/sheet10.xml",
+      "xl/worksheets/sheet11.xml",
+      "xl/worksheets/sheet12.xml",
+      "xl/worksheets/sheet13.xml",
+      "xl/worksheets/sheet14.xml",
+      "xl/worksheets/sheet15.xml",
+      "xl/worksheets/sheet16.xml",
+      "xl/worksheets/sheet17.xml",
+      "xl/worksheets/sheet18.xml",
+      "xl/worksheets/sheet19.xml",
+      "xl/worksheets/sheet20.xml",
+      "xl/worksheets/sheet21.xml",
+      "xl/worksheets/sheet22.xml",
+      "xl/worksheets/sheet23.xml",
+      "xl/worksheets/sheet24.xml",
+      "xl/worksheets/sheet25.xml",
+      "xl/worksheets/sheet26.xml",
+      "xl/worksheets/sheet27.xml",
+      "xl/worksheets/sheet28.xml",
+      "xl/worksheets/sheet29.xml",
+      "xl/worksheets/sheet30.xml",
+      "xl/worksheets/sheet31.xml"
+    ],
+    "zip_legible": true
+  },
+  {
+    "clave": "dnp_terridata_zip",
+    "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "parametros": null,
+    "consulta_utc": "2026-10-23T17:52:49.586615+00:00",
+    "http": 200,
+    "url_final": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "content_type": "application/x-zip-compressed",
+    "bytes": 305031,
+    "respuesta_completa": true,
+    "sha256": "f89e2b5110347f1d7b59d0debe067ba915efcc5e373322169c5f675af10d50a6",
+    "archivo": "bridge/53_evidencias_descarga/dnp_terridata_zip.zip",
+    "contenido_zip": [
+      "TerriData13001.xlsx"
+    ],
+    "zip_legible": true
+  },
+  {
+    "clave": "conteo_procuraduria",
+    "url_solicitada": "https://www.datos.gov.co/resource/s226-fj9i.json",
+    "parametros": {
+      "$select": "count(*) as registros",
+      "$where": "departamento='BOLIVAR' AND municipio='CARTAGENA' AND fecha_de_radicaci_n IS NOT NULL"
+    },
+    "consulta_utc": "2026-10-23T17:52:49.847341+00:00",
+    "http": 200,
+    "url_final": "https://www.datos.gov.co/resource/s226-fj9i.json?%24select=count%28%2A%29+as+registros&%24where=departamento%3D%27BOLIVAR%27+AND+municipio%3D%27CARTAGENA%27+AND+fecha_de_radicaci_n+IS+NOT+NULL",
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 22,
+    "respuesta_completa": true,
+    "sha256": "27c9f6f2f5cb4a96d2bddb4de949274f7af28e3e5e2ba49ebbda60dad4473dcc",
+    "archivo": "bridge/53_evidencias_descarga/conteo_procuraduria.json",
+    "respuesta": [
+      {
+        "registros": "323"
+      }
+    ]
+  }
+]

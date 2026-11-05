@@ -1,0 +1,24 @@
+{
+  "esquema": "polis.piloto_118_manifiesto.v1",
+  "tarea": "FB-TERR-NUM-01",
+  "hashes": {
+    "zip": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+    "txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+    "parser": "60eae40d516f14a0f619b8e571d564e9f3c215a64ac58aa3ff559154708177c4",
+    "regla": "decimal_coma_miles_terridata.v1",
+    "filas_jsonl": "a6f30f18dccc7950ba12ed5dc83012fd3e46b03870660c1cbfbd3c8323c02e4c",
+    "resumen": "5d8909ba84612990b8abc02d762426b0590ee82b23b21ccb1cb85f7fbc4a308e"
+  },
+  "resultados": {
+    "filas": 12899,
+    "decimal_validado": 12077,
+    "formato_no_regla": 0,
+    "conversiones_por_estado_fila": {
+      "aceptada": 12072,
+      "retiene": 3,
+      "rechazada": 2
+    }
+  },
+  "guion": "bridge/118_validacion_parser_numerico/guion_piloto_118.py",
+  "fin_utc": "2026-10-25T20:20:07.886772+00:00"
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "test": "tests.test_google_workspace_sync::test_report_has_a_verifiable_sha256_seal",
+    "reason": "Requiere el guion oficial del usuario del documento nativo (/tmp/user_google_doc_content.txt o POLIS_USER_OUTLINE_PATH); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_7_dimensiones_v2_con_10_bloques_profundos_y_metas_reales_bd_csh",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_nodos_espacial_predictivo::test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_pdd_metas_oficiales_4637_normalizadas_en_8_planes_bd_csh",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_preservacion_estricta_ceros_observados_vs_none_en_8_planes",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_persistencia_pg::test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_persistencia_pg::test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_revision_por_meta::test_integracion_bd_csh_pdd_2024_2027_universo_y_trazabilidad",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_revision_por_meta::test_integracion_bd_csh_filtro_por_dependencia",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_revision_por_meta::test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_revision_por_meta::test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_revision_por_meta::test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  },
+  {
+    "test": "tests.test_pdt_sispt_dnp_evaluador::test_evaluar_universo_sispt_dnp_bd_csh_4637_metas_8_planes",
+    "reason": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+  }
+]

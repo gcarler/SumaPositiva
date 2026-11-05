@@ -1,0 +1,1329 @@
+{
+  "id" : "5akr-u7t8",
+  "name" : "Caracterización de Beneficiarios de las Modalidades de Primera Infancia del ICBF",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+  "attributionLink" : "https://www.datos.gov.co/d/5akr-u7t8",
+  "averageRating" : 0,
+  "category" : "Inclusión Social y Reconciliación",
+  "createdAt" : 1632318645,
+  "description" : "Este dataset contiene información sobre la caracterización de la población atendida, la modalidad de atención y las unidades de servicio que prestan servicios en modalidades de primera infancia. \nEsta información proviene del sistema de información \"Cuentame\".\nIncluye todos los beneficiarios atendidos, es decir, tanto los activos a la fecha de corte como aquellos que se retiraron durante la vigencia.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 844,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 41640029,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1758592307,
+  "publicationGroup" : 18453264,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1790308469,
+  "rowsUpdatedBy" : "gk4s-qz54",
+  "tableId" : 20103176,
+  "totalTimesRated" : 0,
+  "viewCount" : 3655,
+  "viewLastModified" : 1790308427,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1632971095,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 7133874,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1632946537,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "read"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1632971095,
+      "failureCount" : 0,
+      "startedAt" : 1632971095,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "gk4s-qz54",
+      "displayName" : "Analítica Institucional ICBF"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 618025470,
+    "name" : "Vigencia",
+    "dataTypeName" : "text",
+    "description" : "Vigencia en la que la UDS presta el servicio.",
+    "fieldName" : "vigencia",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557956,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "2026",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2025",
+        "count" : "503754"
+      }, {
+        "item" : "2026",
+        "count" : "1"
+      } ],
+      "smallest" : "2025",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025471,
+    "name" : "Codigo Departamento UDS",
+    "dataTypeName" : "text",
+    "description" : "Código DANE según División Político Administrativa (DIVIPOLA) del Departamento dónde atiende la UDS.",
+    "fieldName" : "codigo_departamento_uds",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557952,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "44",
+        "count" : "99755"
+      }, {
+        "item" : "05",
+        "count" : "32010"
+      }, {
+        "item" : "23",
+        "count" : "27094"
+      }, {
+        "item" : "19",
+        "count" : "25415"
+      }, {
+        "item" : "52",
+        "count" : "24380"
+      }, {
+        "item" : "13",
+        "count" : "24358"
+      }, {
+        "item" : "47",
+        "count" : "23966"
+      }, {
+        "item" : "76",
+        "count" : "21710"
+      }, {
+        "item" : "20",
+        "count" : "21302"
+      }, {
+        "item" : "08",
+        "count" : "20547"
+      }, {
+        "item" : "27",
+        "count" : "20174"
+      }, {
+        "item" : "54",
+        "count" : "18427"
+      }, {
+        "item" : "68",
+        "count" : "15354"
+      }, {
+        "item" : "25",
+        "count" : "14148"
+      }, {
+        "item" : "41",
+        "count" : "13076"
+      }, {
+        "item" : "11",
+        "count" : "13039"
+      }, {
+        "item" : "15",
+        "count" : "12958"
+      }, {
+        "item" : "73",
+        "count" : "12578"
+      }, {
+        "item" : "70",
+        "count" : "12544"
+      }, {
+        "item" : "50",
+        "count" : "7618"
+      } ],
+      "smallest" : "05",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025472,
+    "name" : "Departamento UDS",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Departamento dónde atiende la UDS.",
+    "fieldName" : "departamento_uds",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557933,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "Vichada",
+      "null" : "0",
+      "top" : [ {
+        "item" : "La Guajira",
+        "count" : "99755"
+      }, {
+        "item" : "Antioquia",
+        "count" : "32010"
+      }, {
+        "item" : "Córdoba",
+        "count" : "27094"
+      }, {
+        "item" : "Cauca",
+        "count" : "25415"
+      }, {
+        "item" : "Nariño",
+        "count" : "24380"
+      }, {
+        "item" : "Bolívar",
+        "count" : "24358"
+      }, {
+        "item" : "Magdalena",
+        "count" : "23966"
+      }, {
+        "item" : "Valle Del Cauca",
+        "count" : "21710"
+      }, {
+        "item" : "Cesar",
+        "count" : "21302"
+      }, {
+        "item" : "Atlántico",
+        "count" : "20547"
+      }, {
+        "item" : "Chocó",
+        "count" : "20174"
+      }, {
+        "item" : "Norte De Santander",
+        "count" : "18427"
+      }, {
+        "item" : "Santander",
+        "count" : "15354"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "14148"
+      }, {
+        "item" : "Huila",
+        "count" : "13076"
+      }, {
+        "item" : "Bogota D.C.",
+        "count" : "13039"
+      }, {
+        "item" : "Boyacá",
+        "count" : "12958"
+      }, {
+        "item" : "Tolima",
+        "count" : "12578"
+      }, {
+        "item" : "Sucre",
+        "count" : "12544"
+      }, {
+        "item" : "Meta",
+        "count" : "7618"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025473,
+    "name" : "Codigo Municipio UDS",
+    "dataTypeName" : "text",
+    "description" : "Código DANE según División Político Administrativa (DIVIPOLA) del Municipio dónde atiende la UDS",
+    "fieldName" : "codigo_municipio_uds",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557953,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "99773",
+      "null" : "0",
+      "top" : [ {
+        "item" : "44847",
+        "count" : "30654"
+      }, {
+        "item" : "44560",
+        "count" : "24898"
+      }, {
+        "item" : "44001",
+        "count" : "23568"
+      }, {
+        "item" : "44430",
+        "count" : "13457"
+      }, {
+        "item" : "11001",
+        "count" : "13039"
+      }, {
+        "item" : "08001",
+        "count" : "10026"
+      }, {
+        "item" : "13001",
+        "count" : "7931"
+      }, {
+        "item" : "27001",
+        "count" : "6831"
+      }, {
+        "item" : "05001",
+        "count" : "6825"
+      }, {
+        "item" : "54001",
+        "count" : "6367"
+      }, {
+        "item" : "76001",
+        "count" : "5788"
+      }, {
+        "item" : "23001",
+        "count" : "5364"
+      }, {
+        "item" : "52835",
+        "count" : "5189"
+      }, {
+        "item" : "20001",
+        "count" : "4841"
+      }, {
+        "item" : "76109",
+        "count" : "4784"
+      }, {
+        "item" : "47001",
+        "count" : "4458"
+      }, {
+        "item" : "70001",
+        "count" : "3227"
+      }, {
+        "item" : "47189",
+        "count" : "2925"
+      }, {
+        "item" : "23417",
+        "count" : "2838"
+      }, {
+        "item" : "66001",
+        "count" : "2702"
+      } ],
+      "smallest" : "05001",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025474,
+    "name" : "Municipio UDS",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Municipio dónde atiende la UDS.",
+    "fieldName" : "municipio_uds",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557934,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "Zona Bananera",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Uribia",
+        "count" : "30654"
+      }, {
+        "item" : "Manaure",
+        "count" : "25198"
+      }, {
+        "item" : "Riohacha",
+        "count" : "23568"
+      }, {
+        "item" : "Maicao",
+        "count" : "13457"
+      }, {
+        "item" : "Bogota, D.C.",
+        "count" : "13039"
+      }, {
+        "item" : "Barranquilla",
+        "count" : "10026"
+      }, {
+        "item" : "Cartagena De Indias",
+        "count" : "7931"
+      }, {
+        "item" : "Quibdo",
+        "count" : "6831"
+      }, {
+        "item" : "Medellin",
+        "count" : "6825"
+      }, {
+        "item" : "Cucuta",
+        "count" : "6367"
+      }, {
+        "item" : "Cali",
+        "count" : "5788"
+      }, {
+        "item" : "Monteria",
+        "count" : "5364"
+      }, {
+        "item" : "San Andres De Tumaco",
+        "count" : "5189"
+      }, {
+        "item" : "Valledupar",
+        "count" : "4841"
+      }, {
+        "item" : "Buenaventura",
+        "count" : "4784"
+      }, {
+        "item" : "Santa Marta",
+        "count" : "4458"
+      }, {
+        "item" : "Sincelejo",
+        "count" : "3227"
+      }, {
+        "item" : "Cienaga",
+        "count" : "2925"
+      }, {
+        "item" : "Lorica",
+        "count" : "2838"
+      }, {
+        "item" : "Pereira",
+        "count" : "2702"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025475,
+    "name" : "Codigo CentroZonal UDS",
+    "dataTypeName" : "number",
+    "description" : "Código del centro zonal a la que está adscrita la UDS. La Regional corresponde a una división administrativa del ICBF en función de la División Político Administrativa del País.",
+    "fieldName" : "codigo_centrozonal_uds",
+    "position" : 6,
+    "renderTypeName" : "number",
+    "tableColumnId" : 139557935,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "9902",
+      "null" : "0",
+      "top" : [ {
+        "item" : "4409",
+        "count" : "26522"
+      }, {
+        "item" : "4404",
+        "count" : "24933"
+      }, {
+        "item" : "4401",
+        "count" : "24380"
+      }, {
+        "item" : "4405",
+        "count" : "14363"
+      }, {
+        "item" : "2701",
+        "count" : "9201"
+      }, {
+        "item" : "2001",
+        "count" : "7782"
+      }, {
+        "item" : "5203",
+        "count" : "7745"
+      }, {
+        "item" : "1905",
+        "count" : "7325"
+      }, {
+        "item" : "802",
+        "count" : "6992"
+      }, {
+        "item" : "4704",
+        "count" : "6713"
+      }, {
+        "item" : "2301",
+        "count" : "6376"
+      }, {
+        "item" : "1903",
+        "count" : "6240"
+      }, {
+        "item" : "2306",
+        "count" : "6196"
+      }, {
+        "item" : "4403",
+        "count" : "5460"
+      }, {
+        "item" : "516",
+        "count" : "5189"
+      }, {
+        "item" : "2004",
+        "count" : "5016"
+      }, {
+        "item" : "7614",
+        "count" : "4784"
+      }, {
+        "item" : "2003",
+        "count" : "4662"
+      }, {
+        "item" : "1902",
+        "count" : "4622"
+      }, {
+        "item" : "5404",
+        "count" : "4203"
+      } ],
+      "smallest" : "501",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025476,
+    "name" : "Centro Zonal UDS",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Centro Zonal al que está adscrito la UDS. El Centro Zonal corresponde a las unidades de atención que se crean a nivel municipal, distrital y local para la prestación de los servicios del ICBF.",
+    "fieldName" : "centro_zonal_uds",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557936,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "CZ ZIPAQUIRA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CZ ICHITKI WAYUUWAAPULE",
+        "count" : "26522"
+      }, {
+        "item" : "CZ MANAURE",
+        "count" : "24933"
+      }, {
+        "item" : "CZ RIOHACHA 1",
+        "count" : "24380"
+      }, {
+        "item" : "CZ MAICAO",
+        "count" : "14363"
+      }, {
+        "item" : "CZ NORTE",
+        "count" : "11981"
+      }, {
+        "item" : "CZ QUIBDO",
+        "count" : "9201"
+      }, {
+        "item" : "CZ VALLEDUPAR 1",
+        "count" : "7782"
+      }, {
+        "item" : "CZ TUMACO",
+        "count" : "7745"
+      }, {
+        "item" : "CZ SUROCCIDENTE",
+        "count" : "6992"
+      }, {
+        "item" : "CZ CIENAGA",
+        "count" : "6713"
+      }, {
+        "item" : "CZ 1 MONTERIA",
+        "count" : "6376"
+      }, {
+        "item" : "CZ INDIGENA",
+        "count" : "6240"
+      }, {
+        "item" : "CZ LORICA",
+        "count" : "6196"
+      }, {
+        "item" : "CZ FONSECA",
+        "count" : "5460"
+      }, {
+        "item" : "CZ URABA",
+        "count" : "5189"
+      }, {
+        "item" : "CZ AGUACHICA",
+        "count" : "5016"
+      }, {
+        "item" : "CZ BUENAVENTURA",
+        "count" : "4784"
+      }, {
+        "item" : "CZ CHIRIGUANA",
+        "count" : "4662"
+      }, {
+        "item" : "CZ CENTRO",
+        "count" : "4622"
+      }, {
+        "item" : "CZ OCAÑA",
+        "count" : "4203"
+      } ],
+      "smallest" : "CZ 1 MONTERIA",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025477,
+    "name" : "Codigo Unidad Servicio",
+    "dataTypeName" : "text",
+    "description" : "Código de la Unidad de Servicio. La UDS corresponde al lugar físico donde se presta el servicio.",
+    "fieldName" : "codigo_unidad_servicio",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557954,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "997731155730",
+      "null" : "0",
+      "top" : [ {
+        "item" : "4400100002607",
+        "count" : "128"
+      }, {
+        "item" : "4456000000193",
+        "count" : "115"
+      }, {
+        "item" : "4456000002138",
+        "count" : "112"
+      }, {
+        "item" : "4456000000816",
+        "count" : "111"
+      }, {
+        "item" : "4400100001267",
+        "count" : "110"
+      }, {
+        "item" : "4456000001920",
+        "count" : "108"
+      }, {
+        "item" : "4484700001399",
+        "count" : "107"
+      }, {
+        "item" : "4456000000500",
+        "count" : "106"
+      }, {
+        "item" : "4456000000819",
+        "count" : "104"
+      }, {
+        "item" : "4484700000908",
+        "count" : "103"
+      }, {
+        "item" : "4456000001922",
+        "count" : "99"
+      }, {
+        "item" : "4400100001715",
+        "count" : "99"
+      }, {
+        "item" : "4400100000063",
+        "count" : "98"
+      }, {
+        "item" : "4484700002732",
+        "count" : "98"
+      }, {
+        "item" : "4400100001118",
+        "count" : "97"
+      }, {
+        "item" : "4400100001714",
+        "count" : "97"
+      }, {
+        "item" : "4456000001688",
+        "count" : "96"
+      }, {
+        "item" : "4400100000060",
+        "count" : "96"
+      }, {
+        "item" : "4484700000704",
+        "count" : "95"
+      }, {
+        "item" : "4456000000554",
+        "count" : "95"
+      } ],
+      "smallest" : "0500100019984",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025478,
+    "name" : "Unidad Servicio",
+    "dataTypeName" : "text",
+    "description" : "Nombre de la Unidad de Servicio. La UDS corresponde al lugar físico donde se presta el servicio",
+    "fieldName" : "unidad_servicio",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557937,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "ZURRIA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "MIS PRIMEROS PASOS",
+        "count" : "2191"
+      }, {
+        "item" : "LOS PITUFOS",
+        "count" : "1875"
+      }, {
+        "item" : "LOS ANGELITOS",
+        "count" : "1527"
+      }, {
+        "item" : "MIS ANGELITOS",
+        "count" : "1452"
+      }, {
+        "item" : "MI PEQUEÑO MUNDO",
+        "count" : "1431"
+      }, {
+        "item" : "DIVINO NIÑO",
+        "count" : "1410"
+      }, {
+        "item" : "CARITAS FELICES",
+        "count" : "1289"
+      }, {
+        "item" : "LA ESPERANZA",
+        "count" : "1136"
+      }, {
+        "item" : "PEQUEÑOS GIGANTES",
+        "count" : "1127"
+      }, {
+        "item" : "MI SEGUNDO HOGAR",
+        "count" : "1026"
+      }, {
+        "item" : "LOS CARIÑOSITOS",
+        "count" : "869"
+      }, {
+        "item" : "LOS BULLICIOSOS",
+        "count" : "849"
+      }, {
+        "item" : "GOTITAS DE AMOR",
+        "count" : "840"
+      }, {
+        "item" : "MIS AMIGUITOS",
+        "count" : "799"
+      }, {
+        "item" : "CARITAS ALEGRES",
+        "count" : "763"
+      }, {
+        "item" : "MANITAS CREATIVAS",
+        "count" : "753"
+      }, {
+        "item" : "MIS PEQUEÑOS ANGELITOS",
+        "count" : "717"
+      }, {
+        "item" : "LOS AMIGUITOS",
+        "count" : "711"
+      }, {
+        "item" : "TRAVESURAS",
+        "count" : "693"
+      }, {
+        "item" : "GOTICAS DE AMOR",
+        "count" : "668"
+      } ],
+      "smallest" : "01 SONRISAS DEL CORAZON GUANGUITA ALTO I",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025479,
+    "name" : "Estado UDS",
+    "dataTypeName" : "text",
+    "description" : "Estado de la Unidad de Servicio a la fecha de corte.",
+    "fieldName" : "estado_uds",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557938,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "INACTIVA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "ACTIVA",
+        "count" : "500507"
+      }, {
+        "item" : "INACTIVA",
+        "count" : "3248"
+      } ],
+      "smallest" : "ACTIVA",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025480,
+    "name" : "Modalidad",
+    "dataTypeName" : "text",
+    "description" : "Nombre de la modalidad a la que pertenece el servicio prestado al beneficiario",
+    "fieldName" : "modalidad",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557939,
+    "cachedContents" : {
+      "non_null" : "180811",
+      "largest" : "SERVICIO DE EDUCACIÓN COMUNITARIO A LA PRIMERA INFANCIA",
+      "null" : "322944",
+      "top" : [ {
+        "item" : "SERVICIO DE EDUCACIÓN COMUNITARIO A LA PRIMERA INFANCIA",
+        "count" : "175484"
+      }, {
+        "item" : "CONVENIOS ESPECIALES",
+        "count" : "5327"
+      } ],
+      "smallest" : "CONVENIOS ESPECIALES",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025481,
+    "name" : "Nombre Servicio",
+    "dataTypeName" : "text",
+    "description" : "Nombre del servicio prestado al beneficiario",
+    "fieldName" : "nombre_servicio",
+    "position" : 12,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557940,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "SERVICIO ESPECIAL PARA LA PRIMERA INFANCIA - INSTITUCIONAL",
+      "null" : "0",
+      "top" : [ {
+        "item" : "HCB - A - FAMILIAR Y COMUNITARIA",
+        "count" : "96801"
+      }, {
+        "item" : "MAI – LA GUAJIRA",
+        "count" : "82757"
+      }, {
+        "item" : "EDUCACIÓN INICIAL EN EL HOGAR - A - FAMILIAR Y COMUNITARIA",
+        "count" : "77693"
+      }, {
+        "item" : "EDUCACIÓN INICIAL CAMPESINA - A - PROPIA E INTERCULTURAL",
+        "count" : "52234"
+      }, {
+        "item" : "HCB FAMI BIENVENIR - FAMILIAR Y COMUNITARIA",
+        "count" : "46169"
+      }, {
+        "item" : "EDUCACIÓN INICIAL CAMPESINA - B - PROPIA E INTERCULTURAL",
+        "count" : "40675"
+      }, {
+        "item" : "EDUCACIÓN INICIAL PROPIA DIARIA - PROPIA E INTERCULTURAL",
+        "count" : "25347"
+      }, {
+        "item" : "HCB FAMI - FAMILIAR Y COMUNITARIA",
+        "count" : "22789"
+      }, {
+        "item" : "CENTRO DE DESARROLLO INFANTIL - A - INSTITUCIONAL",
+        "count" : "18626"
+      }, {
+        "item" : "HOGAR INFANTIL – INSTITUCIONAL",
+        "count" : "5865"
+      }, {
+        "item" : "HCB - B - FAMILIAR Y COMUNITARIA",
+        "count" : "5161"
+      }, {
+        "item" : "JARDINES INTERCULTURALES DE EDUCACIÓN INICIAL - A - PROPIA E INTERCULTURAL",
+        "count" : "4802"
+      }, {
+        "item" : "JARDÍN COMUNITARIO - FAMILIAR Y COMUNITARIA",
+        "count" : "4564"
+      }, {
+        "item" : "PROPIA CRIC - PROPIA E INTERCULTURAL",
+        "count" : "4446"
+      }, {
+        "item" : "SERVICIO ESPECIAL PARA LA PRIMERA INFANCIA - INSTITUCIONAL",
+        "count" : "3744"
+      }, {
+        "item" : "EDUCACIÓN INICIAL PROPIA PERIÓDICA – PROPIA E INTERCULTURAL",
+        "count" : "3338"
+      }, {
+        "item" : "CENTRO DE DESARROLLO INFANTIL - D – INSTITUCIONAL",
+        "count" : "2231"
+      }, {
+        "item" : "SEMILLAS DE VIDA - CRIC",
+        "count" : "2178"
+      }, {
+        "item" : "SERVICIO ESPECIAL PARA LA PRIMERA INFANCIA - FAMILIAR/COMUNITARIA",
+        "count" : "1583"
+      }, {
+        "item" : "RAÍZ Y RETOÑO – PUEBLOS AISO",
+        "count" : "986"
+      } ],
+      "smallest" : "CENTRO DE DESARROLLO INFANTIL - A - INSTITUCIONAL",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025483,
+    "name" : "Tipo de Beneficiario",
+    "dataTypeName" : "text",
+    "description" : "Especifica a que grupo de atención pertenece el beneficiario",
+    "fieldName" : "tipo_beneficiario_homologado",
+    "position" : 14,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557942,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "PERSONA GESTANTE",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NIÑO O NIÑA ENTRE 6 MESES Y 5 AÑOS Y 11 MESES",
+        "count" : "318561"
+      }, {
+        "item" : "PERSONA GESTANTE",
+        "count" : "82920"
+      }, {
+        "item" : "MENOR DE SEIS MESES",
+        "count" : "43918"
+      }, {
+        "item" : "JOVEN",
+        "count" : "10911"
+      }, {
+        "item" : "ADULTOS DE 29 A 39 AÑOS",
+        "count" : "10329"
+      }, {
+        "item" : "NIÑO O NIÑA DE 6 AÑOS A 9 AÑOS, 11 MESES, 29 DAS",
+        "count" : "10276"
+      }, {
+        "item" : "ADULTOS ENTRE 40 Y 59",
+        "count" : "9284"
+      }, {
+        "item" : "ADULTO MAYOR DE 60 AÑOS",
+        "count" : "5603"
+      }, {
+        "item" : "NIÑO O NIÑA 10 AÑOS A 13 AÑOS, 11 MESES, 29 DIAS",
+        "count" : "4967"
+      }, {
+        "item" : "ADOLESCENTE",
+        "count" : "3381"
+      }, {
+        "item" : "NIÑAS Y NIÑOS DEL RANGO DE 18 MESES A 4 AÑOS, 11 MESES Y 29 DIAS",
+        "count" : "1375"
+      }, {
+        "item" : "NIÑAS Y NIÑOS HASTA LOS CINCO (5) AÑOS, ONCE (11) MESES VEINTINUEVE (29) DAS",
+        "count" : "1021"
+      }, {
+        "item" : "NIÑA O NIÑO ENTRE LOS 7 MESES Y (2) DOS AÑOS DE EDAD",
+        "count" : "728"
+      }, {
+        "item" : "NIÑA O NIÑO HASTA LOS CUATRO (4) AÑOS, ONCE (11) MESES Y VEINTINUEVE (29) DIAS",
+        "count" : "259"
+      }, {
+        "item" : "NIÑA O NIÑO DESDE LOS SIETE (7) MESES HASTA LOS DOS (2) AÑOS, ONCE (11) MESES Y VEINTINUEVE (29) DIAS",
+        "count" : "172"
+      }, {
+        "item" : "NIÑAS Y NIÑOS MENORES DE 7 MESES",
+        "count" : "50"
+      } ],
+      "smallest" : "ADOLESCENTE",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025484,
+    "name" : "Sexo",
+    "dataTypeName" : "text",
+    "description" : "Sexo del beneficiario",
+    "fieldName" : "sexo",
+    "position" : 15,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557943,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "M",
+      "null" : "0",
+      "top" : [ {
+        "item" : "M",
+        "count" : "296680"
+      }, {
+        "item" : "H",
+        "count" : "206912"
+      }, {
+        "item" : "I",
+        "count" : "163"
+      } ],
+      "smallest" : "H",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025485,
+    "name" : "Rango Edad",
+    "dataTypeName" : "text",
+    "description" : "Grupo etario al cual pertenece el beneficiario",
+    "fieldName" : "rango_edad",
+    "position" : 16,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557944,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "6 Meses - 5 años",
+        "count" : "260107"
+      }, {
+        "item" : "0-6 Meses",
+        "count" : "104247"
+      }, {
+        "item" : "Mayor a 18 Años",
+        "count" : "102883"
+      }, {
+        "item" : "14 - 17 Años",
+        "count" : "18947"
+      }, {
+        "item" : "6 - 8 Años",
+        "count" : "9345"
+      }, {
+        "item" : "9 - 13 Años",
+        "count" : "8225"
+      }, {
+        "item" : "Sin información",
+        "count" : "1"
+      } ],
+      "smallest" : "0-6 Meses",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025486,
+    "name" : "Grupo Etnico",
+    "dataTypeName" : "text",
+    "description" : "Grupo étnico al que pertenece el beneficiario",
+    "fieldName" : "grupo_etnico",
+    "position" : 17,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557945,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "ROM/GITANO",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NO SE AUTORRECONOCE EN NINGUNO DE LOS ANTERIORES",
+        "count" : "389195"
+      }, {
+        "item" : "INDÍGENA",
+        "count" : "96285"
+      }, {
+        "item" : "AFROCOLOMBIANO (A)",
+        "count" : "16566"
+      }, {
+        "item" : "COMUNIDAD NEGRA",
+        "count" : "1370"
+      }, {
+        "item" : "RAIZAL",
+        "count" : "307"
+      }, {
+        "item" : "PALENQUERO (A)",
+        "count" : "31"
+      }, {
+        "item" : "ROM/GITANO",
+        "count" : "1"
+      } ],
+      "smallest" : "AFROCOLOMBIANO (A)",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025487,
+    "name" : "Presenta Discapacidad",
+    "dataTypeName" : "text",
+    "description" : "Campo de autorreconocimiento donde el beneficiario indica si presenta alguna discapacidad",
+    "fieldName" : "discapacidad",
+    "position" : 18,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557955,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "SI",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NO",
+        "count" : "500775"
+      }, {
+        "item" : "SI",
+        "count" : "2980"
+      } ],
+      "smallest" : "NO",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025488,
+    "name" : "Zona Ubicacion Beneficiario",
+    "dataTypeName" : "text",
+    "description" : "Zona de ubicación del beneficiario",
+    "fieldName" : "zona_ubicacion_beneficiario",
+    "position" : 19,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557946,
+    "cachedContents" : {
+      "non_null" : "502723",
+      "largest" : "RESTO",
+      "null" : "1032",
+      "top" : [ {
+        "item" : "RESTO",
+        "count" : "302869"
+      }, {
+        "item" : "CABECERA",
+        "count" : "199854"
+      } ],
+      "smallest" : "CABECERA",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025489,
+    "name" : "Pais Nacimiento",
+    "dataTypeName" : "text",
+    "description" : "País de Nacimiento del beneficiario",
+    "fieldName" : "pais_nacimiento",
+    "position" : 20,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557947,
+    "cachedContents" : {
+      "non_null" : "503718",
+      "largest" : "Yemen",
+      "null" : "37",
+      "top" : [ {
+        "item" : "Colombia",
+        "count" : "461037"
+      }, {
+        "item" : "Venezuela",
+        "count" : "37209"
+      }, {
+        "item" : "Ecuador",
+        "count" : "2061"
+      }, {
+        "item" : "Chile",
+        "count" : "941"
+      }, {
+        "item" : "Peru",
+        "count" : "577"
+      }, {
+        "item" : "Brasil",
+        "count" : "384"
+      }, {
+        "item" : "Estados Unidos",
+        "count" : "328"
+      }, {
+        "item" : "España",
+        "count" : "289"
+      }, {
+        "item" : "Panama",
+        "count" : "187"
+      }, {
+        "item" : "Mexico",
+        "count" : "135"
+      }, {
+        "item" : "Argentina",
+        "count" : "124"
+      }, {
+        "item" : "Vanuatu",
+        "count" : "60"
+      }, {
+        "item" : "Bolivia",
+        "count" : "45"
+      }, {
+        "item" : "Francia",
+        "count" : "22"
+      }, {
+        "item" : "Costa Rica",
+        "count" : "20"
+      }, {
+        "item" : "Italia",
+        "count" : "17"
+      }, {
+        "item" : "Canada",
+        "count" : "16"
+      }, {
+        "item" : "Guatemala",
+        "count" : "16"
+      }, {
+        "item" : "Alemania",
+        "count" : "16"
+      }, {
+        "item" : "Republica Dominicana",
+        "count" : "15"
+      } ],
+      "smallest" : "Afganistan",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025490,
+    "name" : "Estado Atención",
+    "dataTypeName" : "text",
+    "description" : "Indica el estado de vinculación del beneficiario",
+    "fieldName" : "estado_atenci_n",
+    "position" : 21,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557948,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "I",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "338751"
+      }, {
+        "item" : "A",
+        "count" : "164636"
+      }, {
+        "item" : "I",
+        "count" : "251"
+      }, {
+        "item" : "2",
+        "count" : "117"
+      } ],
+      "smallest" : "1",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025499,
+    "name" : "Beneficiarios",
+    "dataTypeName" : "number",
+    "description" : "Cantidad de beneficiarios",
+    "fieldName" : "beneficiarios",
+    "position" : 22,
+    "renderTypeName" : "number",
+    "tableColumnId" : 139557931,
+    "cachedContents" : {
+      "non_null" : "503755",
+      "largest" : "523",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "212171"
+      }, {
+        "item" : "2",
+        "count" : "86918"
+      }, {
+        "item" : "3",
+        "count" : "50726"
+      }, {
+        "item" : "4",
+        "count" : "35595"
+      }, {
+        "item" : "5",
+        "count" : "27765"
+      }, {
+        "item" : "6",
+        "count" : "21470"
+      }, {
+        "item" : "7",
+        "count" : "16417"
+      }, {
+        "item" : "8",
+        "count" : "11808"
+      }, {
+        "item" : "9",
+        "count" : "8003"
+      }, {
+        "item" : "10",
+        "count" : "5507"
+      }, {
+        "item" : "11",
+        "count" : "3577"
+      }, {
+        "item" : "12",
+        "count" : "2639"
+      }, {
+        "item" : "13",
+        "count" : "2069"
+      }, {
+        "item" : "14",
+        "count" : "1734"
+      }, {
+        "item" : "15",
+        "count" : "1420"
+      }, {
+        "item" : "16",
+        "count" : "1236"
+      }, {
+        "item" : "17",
+        "count" : "1117"
+      }, {
+        "item" : "18",
+        "count" : "948"
+      }, {
+        "item" : "19",
+        "count" : "941"
+      }, {
+        "item" : "20",
+        "count" : "815"
+      } ],
+      "smallest" : "1",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025500,
+    "name" : "Fecha de Corte",
+    "dataTypeName" : "text",
+    "description" : "Corte de la información",
+    "fieldName" : "fecha_de_corte",
+    "position" : 23,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139557932,
+    "cachedContents" : {
+      "non_null" : "0",
+      "null" : "503755",
+      "count" : "503755",
+      "cardinality" : "503755"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Igualdad",
+        "Área o dependencia" : "Dirección de planeación y control de la gestión",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "primera infancia", "icbf" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

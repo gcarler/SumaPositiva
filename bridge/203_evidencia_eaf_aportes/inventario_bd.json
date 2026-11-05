@@ -1,0 +1,2642 @@
+{
+  "versions": {
+    "python": "3.12.14",
+    "sqlalchemy": "2.0.54",
+    "alembic": "1.20.0",
+    "asyncpg": "0.31.0",
+    "psycopg": "3.3.6",
+    "fastapi": "0.142.2",
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1"
+  },
+  "metadata": {
+    "participacion_ciudadana.propuestas_ciudadanas": {
+      "columns": [
+        "id",
+        "codigo_radicado",
+        "linea_id",
+        "dimension_id",
+        "territorio_id",
+        "tipo_aporte",
+        "titulo",
+        "descripcion",
+        "autor_nombre",
+        "es_anonimo",
+        "sesion_id",
+        "huella_hash",
+        "metadata_enfoque",
+        "archivos_adjuntos",
+        "apoyos_contador",
+        "estado",
+        "activo",
+        "es_territorio_etnico",
+        "requiere_consulta_previa",
+        "ruta_etnica_diferenciada",
+        "consejo_comunitario",
+        "metadatos",
+        "correo_contacto",
+        "creado_en",
+        "actualizado_en"
+      ],
+      "indexes": [
+        "idx_prop_consulta_previa",
+        "idx_prop_territorio_etnico",
+        "idx_propuestas_activo",
+        "idx_propuestas_dimension",
+        "idx_propuestas_huella",
+        "idx_propuestas_linea",
+        "idx_propuestas_metadata_enfoque_gin",
+        "idx_propuestas_sesion",
+        "idx_propuestas_territorio",
+        "idx_propuestas_tipo",
+        "idx_propuestas_titulo_trgm",
+        "ix_propuestas_ciudadanas_codigo_radicado"
+      ],
+      "checks": [
+        {
+          "name": "chk_estado_propuesta",
+          "sql": "estado IN ('borrador', 'publicado', 'en_revision', 'incorporado', 'rechazado')"
+        },
+        {
+          "name": "chk_tipo_aporte",
+          "sql": "tipo_aporte IN ('propuesta', 'observacion', 'alerta_comunitaria', 'anotacion', 'pregunta')"
+        }
+      ],
+      "comment": "Aportes, propuestas y alertas ciudadanas para la formulaci\u00f3n de pol\u00edticas p\u00fablicas con enfoque diferencial y anclaje territorial"
+    },
+    "participacion_ciudadana.apoyos_propuestas": {
+      "columns": [
+        "id",
+        "propuesta_id",
+        "sujeto_id",
+        "tipo_sujeto",
+        "trazabilidad",
+        "creado_en"
+      ],
+      "indexes": [
+        "idx_apoyos_propuesta",
+        "idx_apoyos_sujeto"
+      ],
+      "checks": [
+        {
+          "name": "chk_tipo_sujeto",
+          "sql": "tipo_sujeto IN ('usuario', 'sesion_anonima')"
+        }
+      ],
+      "comment": "Registro de respaldos \u00fanicos (1 ciudadano = 1 voto) a propuestas"
+    },
+    "participacion_ciudadana.evidencias_multimedia": {
+      "columns": [
+        "id",
+        "propuesta_id",
+        "autor_sujeto_id",
+        "nombre_archivo_original",
+        "nombre_archivo_seguro",
+        "ruta_almacenamiento",
+        "tipo_mime",
+        "tamano_bytes",
+        "hash_sha256",
+        "exif_despojado",
+        "creado_en"
+      ],
+      "indexes": [
+        "idx_evidencias_autor",
+        "idx_evidencias_hash",
+        "idx_evidencias_propuesta"
+      ],
+      "checks": [],
+      "comment": "Registro pericial de evidencias fotogr\u00e1ficas comunitarias con despojo estricto de metadatos EXIF y coordenadas GPS (Ley 1581/12)"
+    },
+    "participacion_ciudadana.notificaciones_transaccionales": {
+      "columns": [
+        "id",
+        "codigo_radicado",
+        "destinatario_correo",
+        "tipo_evento",
+        "asunto",
+        "cuerpo_html",
+        "estado_envio",
+        "error_detalle",
+        "intentos",
+        "proximo_intento_en",
+        "reclamo_token",
+        "reclamo_vence_en",
+        "creado_en",
+        "enviado_en",
+        "simulado_en"
+      ],
+      "indexes": [
+        "idx_notif_codigo_radicado",
+        "idx_notif_cola",
+        "idx_notif_creado_en",
+        "idx_notif_destinatario"
+      ],
+      "checks": [
+        {
+          "name": "chk_notificaciones_tipo_evento",
+          "sql": "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion')"
+        },
+        {
+          "name": "chk_notificaciones_estado_envio",
+          "sql": "estado_envio IN ('pendiente', 'procesando', 'enviado', 'simulado', 'fallido')"
+        }
+      ],
+      "comment": "Constancias de radicaci\u00f3n y avisos transaccionales para erradicar el silencio administrativo (C-150/15)"
+    },
+    "auditoria.registros_auditoria": {
+      "columns": [
+        "id",
+        "tabla_afectada",
+        "registro_id",
+        "accion",
+        "usuario_id",
+        "causal",
+        "justificacion_motivada",
+        "metadatos",
+        "creado_en"
+      ],
+      "indexes": [
+        "idx_auditoria_accion",
+        "idx_auditoria_tabla_registro"
+      ],
+      "checks": [],
+      "comment": "Log de auditor\u00eda forense inmutable y registro de razones motivadas (C-150/15)"
+    },
+    "mesas_trabajo.fotos_mesa": {
+      "columns": [
+        "id",
+        "mesa_id",
+        "evidencia_id",
+        "subido_por_id",
+        "autorizacion_imagen",
+        "estado",
+        "observacion_revision",
+        "revisada_por_id",
+        "revisada_en",
+        "creado_en"
+      ],
+      "indexes": [
+        "idx_fotos_mesa_publicas",
+        "idx_fotos_mesa_revision"
+      ],
+      "checks": [
+        {
+          "name": "chk_fotos_mesa_aprobacion_autorizada",
+          "sql": "estado <> 'APROBADA' OR autorizacion_imagen"
+        },
+        {
+          "name": "chk_fotos_mesa_estado",
+          "sql": "estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')"
+        }
+      ],
+      "comment": "Relaci\u00f3n de evidencias fotogr\u00e1ficas sanitizadas de mesas; solo im\u00e1genes aprobadas se exponen p\u00fablicamente."
+    },
+    "participacion_ciudadana.whatsapp_inbox": {
+      "columns": [
+        "id",
+        "cuenta_proveedor",
+        "mensaje_externo_id",
+        "contenido_hash",
+        "payload",
+        "estado",
+        "intentos",
+        "error_codigo",
+        "propuesta_id",
+        "resultado",
+        "reclamo_token",
+        "reclamo_vence_en",
+        "proximo_intento_en",
+        "recibido_en",
+        "procesado_en"
+      ],
+      "indexes": [
+        "idx_whatsapp_inbox_cola"
+      ],
+      "checks": [
+        {
+          "name": "chk_whatsapp_inbox_estado",
+          "sql": "estado IN ('pendiente', 'procesando', 'procesado', 'rechazado', 'error')"
+        }
+      ],
+      "comment": "Recepci\u00f3n privada durable y resultado por mensaje WhatsApp"
+    },
+    "participacion_ciudadana.migracion_apoyos_0084": {
+      "columns": [
+        "propuesta_id",
+        "filas_antes",
+        "filas_despues",
+        "contador_antes",
+        "contador_despues",
+        "capturado_en"
+      ],
+      "indexes": [],
+      "checks": [],
+      "comment": "Antes y despu\u00e9s de la consolidaci\u00f3n de apoyos registrados en revisi\u00f3n0084"
+    }
+  },
+  "environment": {
+    "database": "polis_test_eaf_aportes_r2_20261026_cb6a2bfe",
+    "db_role": "polis",
+    "version": "PostgreSQL 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, 64-bit",
+    "pid": 2923258
+  },
+  "extensions": [
+    {
+      "extname": "address_standardizer",
+      "extversion": "3.6.2"
+    },
+    {
+      "extname": "ltree",
+      "extversion": "1.3"
+    },
+    {
+      "extname": "pg_trgm",
+      "extversion": "1.6"
+    },
+    {
+      "extname": "pgcrypto",
+      "extversion": "1.4"
+    },
+    {
+      "extname": "pgrouting",
+      "extversion": "4.0.1"
+    },
+    {
+      "extname": "plpgsql",
+      "extversion": "1.0"
+    },
+    {
+      "extname": "postgis",
+      "extversion": "3.6.2"
+    }
+  ],
+  "alembic_version": [
+    {
+      "version_num": "0084_aportes_colas_y_apoyos"
+    }
+  ],
+  "functions": [
+    {
+      "schema": "auditoria",
+      "proname": "prevenir_modificacion_auditoria",
+      "arguments": "",
+      "security_definer": false,
+      "owner": "polis",
+      "proconfig": null,
+      "proacl": null,
+      "current_role_execute": true,
+      "public_execute": true
+    },
+    {
+      "schema": "participacion_ciudadana",
+      "proname": "actualizar_contador_apoyos",
+      "arguments": "",
+      "security_definer": false,
+      "owner": "polis",
+      "proconfig": null,
+      "proacl": null,
+      "current_role_execute": true,
+      "public_execute": true
+    },
+    {
+      "schema": "public",
+      "proname": "actualizar_marca_temporal",
+      "arguments": "",
+      "security_definer": false,
+      "owner": "polis",
+      "proconfig": null,
+      "proacl": null,
+      "current_role_execute": true,
+      "public_execute": true
+    },
+    {
+      "schema": "public",
+      "proname": "generar_uuid_v7",
+      "arguments": "",
+      "security_definer": false,
+      "owner": "polis",
+      "proconfig": null,
+      "proacl": null,
+      "current_role_execute": true,
+      "public_execute": true
+    }
+  ],
+  "schema_privileges": [
+    {
+      "nspname": "auditoria",
+      "owner": "polis",
+      "current_role_create": true,
+      "public_create": false
+    },
+    {
+      "nspname": "participacion_ciudadana",
+      "owner": "polis",
+      "current_role_create": true,
+      "public_create": false
+    },
+    {
+      "nspname": "public",
+      "owner": "pg_database_owner",
+      "current_role_create": true,
+      "public_create": false
+    }
+  ],
+  "triggers": [
+    {
+      "nspname": "auditoria",
+      "relname": "registros_auditoria",
+      "tgname": "trg_inmutabilidad_auditoria",
+      "definition": "CREATE TRIGGER trg_inmutabilidad_auditoria BEFORE DELETE OR UPDATE ON auditoria.registros_auditoria FOR EACH ROW EXECUTE FUNCTION auditoria.prevenir_modificacion_auditoria()",
+      "proname": "prevenir_modificacion_auditoria",
+      "prosecdef": false
+    },
+    {
+      "nspname": "participacion_ciudadana",
+      "relname": "apoyos_propuestas",
+      "tgname": "trg_actualizar_contador_apoyos",
+      "definition": "CREATE TRIGGER trg_actualizar_contador_apoyos AFTER INSERT OR DELETE ON participacion_ciudadana.apoyos_propuestas FOR EACH ROW EXECUTE FUNCTION participacion_ciudadana.actualizar_contador_apoyos()",
+      "proname": "actualizar_contador_apoyos",
+      "prosecdef": false
+    },
+    {
+      "nspname": "participacion_ciudadana",
+      "relname": "propuestas_ciudadanas",
+      "tgname": "trg_actualizar_propuestas",
+      "definition": "CREATE TRIGGER trg_actualizar_propuestas BEFORE UPDATE ON participacion_ciudadana.propuestas_ciudadanas FOR EACH ROW EXECUTE FUNCTION actualizar_marca_temporal()",
+      "proname": "actualizar_marca_temporal",
+      "prosecdef": false
+    }
+  ],
+  "constraints": [
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_ambito_not_null",
+      "contype": "n",
+      "definition": "NOT NULL ambito",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_codigo_key",
+      "contype": "u",
+      "definition": "UNIQUE (codigo)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_codigo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_dimension_seguridad_not_null",
+      "contype": "n",
+      "definition": "NOT NULL dimension_seguridad",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_entidad_not_null",
+      "contype": "n",
+      "definition": "NOT NULL entidad",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_estado_entrega_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado_entrega",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_nombre_fuente_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre_fuente",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_periodicidad_not_null",
+      "contype": "n",
+      "definition": "NOT NULL periodicidad",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_responsable_contacto_not_null",
+      "contype": "n",
+      "definition": "NOT NULL responsable_contacto",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_tipo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.fuentes_informacion",
+      "conname": "fuentes_informacion_variables_solicitadas_not_null",
+      "contype": "n",
+      "definition": "NOT NULL variables_solicitadas",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "chk_causal_devolucion",
+      "contype": "c",
+      "definition": "CHECK (((causal)::text = ANY ((ARRAY['tecnica'::character varying, 'juridica'::character varying, 'presupuestal'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_accion_not_null",
+      "contype": "n",
+      "definition": "NOT NULL accion",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_causal_not_null",
+      "contype": "n",
+      "definition": "NOT NULL causal",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_justificacion_motivada_not_null",
+      "contype": "n",
+      "definition": "NOT NULL justificacion_motivada",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_metadatos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL metadatos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_registro_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL registro_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_tabla_afectada_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tabla_afectada",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "auditoria.registros_auditoria",
+      "conname": "registros_auditoria_usuario_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (usuario_id) REFERENCES autenticacion.usuarios(id) ON DELETE RESTRICT",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "chk_fotos_mesa_aprobacion_autorizada",
+      "contype": "c",
+      "definition": "CHECK ((((estado)::text <> 'APROBADA'::text) OR autorizacion_imagen))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "chk_fotos_mesa_estado",
+      "contype": "c",
+      "definition": "CHECK (((estado)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'APROBADA'::character varying, 'RECHAZADA'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_autorizacion_imagen_not_null",
+      "contype": "n",
+      "definition": "NOT NULL autorizacion_imagen",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_evidencia_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (evidencia_id) REFERENCES participacion_ciudadana.evidencias_multimedia(id) ON DELETE CASCADE",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_evidencia_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL evidencia_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_mesa_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (mesa_id) REFERENCES mesas_trabajo.mesas(id) ON DELETE CASCADE",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_mesa_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL mesa_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_revisada_por_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (revisada_por_id) REFERENCES autenticacion.usuarios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "fotos_mesa_subido_por_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (subido_por_id) REFERENCES autenticacion.usuarios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "mesas_trabajo.fotos_mesa",
+      "conname": "uq_fotos_mesa_evidencia",
+      "contype": "u",
+      "definition": "UNIQUE (evidencia_id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_acciones_involucramiento_not_null",
+      "contype": "n",
+      "definition": "NOT NULL acciones_involucramiento",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_codigo_key",
+      "contype": "u",
+      "definition": "UNIQUE (codigo)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_codigo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_contacto_not_null",
+      "contype": "n",
+      "definition": "NOT NULL contacto",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_dimensiones_principales_not_null",
+      "contype": "n",
+      "definition": "NOT NULL dimensiones_principales",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_es_demostracion_not_null",
+      "contype": "n",
+      "definition": "NOT NULL es_demostracion",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_expectativas_principales_not_null",
+      "contype": "n",
+      "definition": "NOT NULL expectativas_principales",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_mesas_asistidas_not_null",
+      "contype": "n",
+      "definition": "NOT NULL mesas_asistidas",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_nivel_interes_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nivel_interes",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_nivel_poder_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nivel_poder",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_nombre_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_postura_not_null",
+      "contype": "n",
+      "definition": "NOT NULL postura",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_propuestas_radicadas_not_null",
+      "contype": "n",
+      "definition": "NOT NULL propuestas_radicadas",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_territorio_not_null",
+      "contype": "n",
+      "definition": "NOT NULL territorio",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.actores_estrategicos",
+      "conname": "actores_estrategicos_tipo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_propuesta_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (propuesta_id) REFERENCES participacion_ciudadana.propuestas_ciudadanas(id) ON DELETE CASCADE",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_propuesta_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL propuesta_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_sujeto_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL sujeto_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_tipo_sujeto_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo_sujeto",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "apoyos_propuestas_trazabilidad_not_null",
+      "contype": "n",
+      "definition": "NOT NULL trazabilidad",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "chk_tipo_sujeto",
+      "contype": "c",
+      "definition": "CHECK (((tipo_sujeto)::text = ANY ((ARRAY['usuario'::character varying, 'sesion_anonima'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.apoyos_propuestas",
+      "conname": "uq_apoyo_propuesta_sujeto",
+      "contype": "u",
+      "definition": "UNIQUE (propuesta_id, sujeto_id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_codigo_unico_key",
+      "contype": "u",
+      "definition": "UNIQUE (codigo_unico)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_codigo_unico_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo_unico",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_desglose_poblacional_not_null",
+      "contype": "n",
+      "definition": "NOT NULL desglose_poblacional",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_entidad_convocante_not_null",
+      "contype": "n",
+      "definition": "NOT NULL entidad_convocante",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_fecha_not_null",
+      "contype": "n",
+      "definition": "NOT NULL fecha",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_lugar_not_null",
+      "contype": "n",
+      "definition": "NOT NULL lugar",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_nombre_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_territorio_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_tipo_escenario_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo_escenario",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.escenarios_especiales",
+      "conname": "escenarios_especiales_total_asistentes_not_null",
+      "contype": "n",
+      "definition": "NOT NULL total_asistentes",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "chk_evidencias_tipo_mime",
+      "contype": "c",
+      "definition": "CHECK (((tipo_mime)::text = ANY ((ARRAY['image/jpeg'::character varying, 'image/png'::character varying, 'image/webp'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_exif_despojado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL exif_despojado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_hash_sha256_not_null",
+      "contype": "n",
+      "definition": "NOT NULL hash_sha256",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_nombre_archivo_original_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre_archivo_original",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_nombre_archivo_seguro_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre_archivo_seguro",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_propuesta_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (propuesta_id) REFERENCES participacion_ciudadana.propuestas_ciudadanas(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_ruta_almacenamiento_not_null",
+      "contype": "n",
+      "definition": "NOT NULL ruta_almacenamiento",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_tamano_bytes_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tamano_bytes",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.evidencias_multimedia",
+      "conname": "evidencias_multimedia_tipo_mime_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo_mime",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "ck_formularios_consulta_documento_objeto",
+      "contype": "c",
+      "definition": "CHECK (((documento_constructor IS NULL) OR (jsonb_typeof(documento_constructor) = 'object'::text)))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "ck_formularios_consulta_estado_valido",
+      "contype": "c",
+      "definition": "CHECK (((estado)::text = ANY ((ARRAY['BORRADOR'::character varying, 'PUBLICADO'::character varying, 'CERRADO'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "ck_formularios_consulta_preguntas_array",
+      "contype": "c",
+      "definition": "CHECK ((jsonb_typeof(esquema_preguntas) = 'array'::text))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_codigo_key",
+      "contype": "u",
+      "definition": "UNIQUE (codigo)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_codigo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_descripcion_not_null",
+      "contype": "n",
+      "definition": "NOT NULL descripcion",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_dimension_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (dimension_id) REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_enfoque_diferencial_habilitado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL enfoque_diferencial_habilitado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_esquema_preguntas_not_null",
+      "contype": "n",
+      "definition": "NOT NULL esquema_preguntas",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_permite_evidencias_not_null",
+      "contype": "n",
+      "definition": "NOT NULL permite_evidencias",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_slug_not_null",
+      "contype": "n",
+      "definition": "NOT NULL slug",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_territorio_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "formularios_consulta_titulo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL titulo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.formularios_consulta",
+      "conname": "uq_formulario_slug",
+      "contype": "u",
+      "definition": "UNIQUE (slug)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_capturado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL capturado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_contador_antes_not_null",
+      "contype": "n",
+      "definition": "NOT NULL contador_antes",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_contador_despues_not_null",
+      "contype": "n",
+      "definition": "NOT NULL contador_despues",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_filas_antes_not_null",
+      "contype": "n",
+      "definition": "NOT NULL filas_antes",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_filas_despues_not_null",
+      "contype": "n",
+      "definition": "NOT NULL filas_despues",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "migracion_apoyos_0084_propuesta_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL propuesta_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.migracion_apoyos_0084",
+      "conname": "pk_migracion_apoyos_0084",
+      "contype": "p",
+      "definition": "PRIMARY KEY (propuesta_id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "chk_notificaciones_estado_envio",
+      "contype": "c",
+      "definition": "CHECK (((estado_envio)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'enviado'::character varying, 'simulado'::character varying, 'fallido'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "chk_notificaciones_tipo_evento",
+      "contype": "c",
+      "definition": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_asunto_not_null",
+      "contype": "n",
+      "definition": "NOT NULL asunto",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_codigo_radicado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo_radicado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_cuerpo_html_not_null",
+      "contype": "n",
+      "definition": "NOT NULL cuerpo_html",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_destinatario_correo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL destinatario_correo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_estado_envio_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado_envio",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_intentos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL intentos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+      "conname": "notificaciones_transaccionales_tipo_evento_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo_evento",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "chk_estado_propuesta",
+      "contype": "c",
+      "definition": "CHECK (((estado)::text = ANY ((ARRAY['borrador'::character varying, 'publicado'::character varying, 'en_revision'::character varying, 'incorporado'::character varying, 'rechazado'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "chk_tipo_aporte",
+      "contype": "c",
+      "definition": "CHECK (((tipo_aporte)::text = ANY ((ARRAY['propuesta'::character varying, 'observacion'::character varying, 'alerta_comunitaria'::character varying, 'anotacion'::character varying, 'pregunta'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_activo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL activo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_apoyos_contador_not_null",
+      "contype": "n",
+      "definition": "NOT NULL apoyos_contador",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_archivos_adjuntos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL archivos_adjuntos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_autor_nombre_not_null",
+      "contype": "n",
+      "definition": "NOT NULL autor_nombre",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_codigo_radicado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo_radicado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_descripcion_not_null",
+      "contype": "n",
+      "definition": "NOT NULL descripcion",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_dimension_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (dimension_id) REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_es_anonimo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL es_anonimo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_es_territorio_etnico_not_null",
+      "contype": "n",
+      "definition": "NOT NULL es_territorio_etnico",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_linea_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (linea_id) REFERENCES motor_politicas.lineas_estrategicas(id) ON DELETE RESTRICT",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_linea_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL linea_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_metadata_enfoque_not_null",
+      "contype": "n",
+      "definition": "NOT NULL metadata_enfoque",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_metadatos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL metadatos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_requiere_consulta_previa_not_null",
+      "contype": "n",
+      "definition": "NOT NULL requiere_consulta_previa",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_ruta_etnica_diferenciada_not_null",
+      "contype": "n",
+      "definition": "NOT NULL ruta_etnica_diferenciada",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_territorio_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_tipo_aporte_not_null",
+      "contype": "n",
+      "definition": "NOT NULL tipo_aporte",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+      "conname": "propuestas_ciudadanas_titulo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL titulo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "ck_respuestas_formulario_datos_objeto",
+      "contype": "c",
+      "definition": "CHECK ((jsonb_typeof(datos_respuesta) = 'object'::text))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "ck_respuestas_formulario_enfoque_objeto",
+      "contype": "c",
+      "definition": "CHECK ((jsonb_typeof(datos_enfoque) = 'object'::text))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "ck_respuestas_formulario_evidencias_array",
+      "contype": "c",
+      "definition": "CHECK ((jsonb_typeof(evidencias) = 'array'::text))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "fk_respuestas_formulario_formulario_id_formularios_consulta",
+      "contype": "f",
+      "definition": "FOREIGN KEY (formulario_id) REFERENCES participacion_ciudadana.formularios_consulta(id) ON DELETE RESTRICT",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_datos_enfoque_not_null",
+      "contype": "n",
+      "definition": "NOT NULL datos_enfoque",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_datos_respuesta_not_null",
+      "contype": "n",
+      "definition": "NOT NULL datos_respuesta",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_evidencias_not_null",
+      "contype": "n",
+      "definition": "NOT NULL evidencias",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_formulario_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL formulario_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_sujeto_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL sujeto_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "respuestas_formulario_territorio_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.respuestas_formulario",
+      "conname": "uq_respuesta_formulario_sujeto",
+      "contype": "u",
+      "definition": "UNIQUE (formulario_id, sujeto_id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_activa_not_null",
+      "contype": "n",
+      "definition": "NOT NULL activa",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_expira_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL expira_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_huella_hash_not_null",
+      "contype": "n",
+      "definition": "NOT NULL huella_hash",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_metadatos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL metadatos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.sesiones_anonimas",
+      "conname": "sesiones_anonimas_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "chk_estado_testimonio",
+      "contype": "c",
+      "definition": "CHECK (((estado)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'APROBADO'::character varying, 'DESTACADO'::character varying, 'RECHAZADO'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_activo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL activo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_actualizado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL actualizado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_codigo_unico_key",
+      "contype": "u",
+      "definition": "UNIQUE (codigo_unico)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_codigo_unico_not_null",
+      "contype": "n",
+      "definition": "NOT NULL codigo_unico",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_creado_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL creado_en",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_dimension_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (dimension_id) REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_metadatos_enfoque_not_null",
+      "contype": "n",
+      "definition": "NOT NULL metadatos_enfoque",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_moderado_por_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (moderado_por_id) REFERENCES autenticacion.usuarios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_nombre_autor_not_null",
+      "contype": "n",
+      "definition": "NOT NULL nombre_autor",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_relato_not_null",
+      "contype": "n",
+      "definition": "NOT NULL relato",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_territorio_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.testimonios_comunitarios",
+      "conname": "testimonios_comunitarios_titulo_not_null",
+      "contype": "n",
+      "definition": "NOT NULL titulo",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "chk_whatsapp_inbox_estado",
+      "contype": "c",
+      "definition": "CHECK (((estado)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'procesado'::character varying, 'rechazado'::character varying, 'error'::character varying])::text[])))",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "fk_whatsapp_inbox_propuesta_id_propuestas_ciudadanas",
+      "contype": "f",
+      "definition": "FOREIGN KEY (propuesta_id) REFERENCES participacion_ciudadana.propuestas_ciudadanas(id) ON DELETE RESTRICT",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "pk_whatsapp_inbox",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "uq_whatsapp_inbox_mensaje",
+      "contype": "u",
+      "definition": "UNIQUE (cuenta_proveedor, mensaje_externo_id)",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_contenido_hash_not_null",
+      "contype": "n",
+      "definition": "NOT NULL contenido_hash",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_cuenta_proveedor_not_null",
+      "contype": "n",
+      "definition": "NOT NULL cuenta_proveedor",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_estado_not_null",
+      "contype": "n",
+      "definition": "NOT NULL estado",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_intentos_not_null",
+      "contype": "n",
+      "definition": "NOT NULL intentos",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_mensaje_externo_id_not_null",
+      "contype": "n",
+      "definition": "NOT NULL mensaje_externo_id",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_payload_not_null",
+      "contype": "n",
+      "definition": "NOT NULL payload",
+      "condeferrable": false,
+      "condeferred": false
+    },
+    {
+      "table_name": "participacion_ciudadana.whatsapp_inbox",
+      "conname": "whatsapp_inbox_recibido_en_not_null",
+      "contype": "n",
+      "definition": "NOT NULL recibido_en",
+      "condeferrable": false,
+      "condeferred": false
+    }
+  ],
+  "indexes": [
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "fuentes_informacion_codigo_key",
+      "indexdef": "CREATE UNIQUE INDEX fuentes_informacion_codigo_key ON auditoria.fuentes_informacion USING btree (codigo)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "fuentes_informacion_pkey",
+      "indexdef": "CREATE UNIQUE INDEX fuentes_informacion_pkey ON auditoria.fuentes_informacion USING btree (id)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "idx_fuentes_ambito",
+      "indexdef": "CREATE INDEX idx_fuentes_ambito ON auditoria.fuentes_informacion USING btree (ambito)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "idx_fuentes_dimension",
+      "indexdef": "CREATE INDEX idx_fuentes_dimension ON auditoria.fuentes_informacion USING btree (dimension_seguridad)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "idx_fuentes_estado",
+      "indexdef": "CREATE INDEX idx_fuentes_estado ON auditoria.fuentes_informacion USING btree (estado_entrega)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "fuentes_informacion",
+      "indexname": "idx_fuentes_radicado",
+      "indexdef": "CREATE INDEX idx_fuentes_radicado ON auditoria.fuentes_informacion USING btree (radicado_solicitud)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "registros_auditoria",
+      "indexname": "idx_auditoria_accion",
+      "indexdef": "CREATE INDEX idx_auditoria_accion ON auditoria.registros_auditoria USING btree (accion)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "registros_auditoria",
+      "indexname": "idx_auditoria_tabla_registro",
+      "indexdef": "CREATE INDEX idx_auditoria_tabla_registro ON auditoria.registros_auditoria USING btree (tabla_afectada, registro_id)"
+    },
+    {
+      "schemaname": "auditoria",
+      "tablename": "registros_auditoria",
+      "indexname": "registros_auditoria_pkey",
+      "indexdef": "CREATE UNIQUE INDEX registros_auditoria_pkey ON auditoria.registros_auditoria USING btree (id)"
+    },
+    {
+      "schemaname": "mesas_trabajo",
+      "tablename": "fotos_mesa",
+      "indexname": "fotos_mesa_pkey",
+      "indexdef": "CREATE UNIQUE INDEX fotos_mesa_pkey ON mesas_trabajo.fotos_mesa USING btree (id)"
+    },
+    {
+      "schemaname": "mesas_trabajo",
+      "tablename": "fotos_mesa",
+      "indexname": "idx_fotos_mesa_publicas",
+      "indexdef": "CREATE INDEX idx_fotos_mesa_publicas ON mesas_trabajo.fotos_mesa USING btree (mesa_id, creado_en DESC) WHERE ((estado)::text = 'APROBADA'::text)"
+    },
+    {
+      "schemaname": "mesas_trabajo",
+      "tablename": "fotos_mesa",
+      "indexname": "idx_fotos_mesa_revision",
+      "indexdef": "CREATE INDEX idx_fotos_mesa_revision ON mesas_trabajo.fotos_mesa USING btree (creado_en) WHERE ((estado)::text = 'PENDIENTE'::text)"
+    },
+    {
+      "schemaname": "mesas_trabajo",
+      "tablename": "fotos_mesa",
+      "indexname": "uq_fotos_mesa_evidencia",
+      "indexdef": "CREATE UNIQUE INDEX uq_fotos_mesa_evidencia ON mesas_trabajo.fotos_mesa USING btree (evidencia_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "actores_estrategicos",
+      "indexname": "actores_estrategicos_codigo_key",
+      "indexdef": "CREATE UNIQUE INDEX actores_estrategicos_codigo_key ON participacion_ciudadana.actores_estrategicos USING btree (codigo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "actores_estrategicos",
+      "indexname": "actores_estrategicos_pkey",
+      "indexdef": "CREATE UNIQUE INDEX actores_estrategicos_pkey ON participacion_ciudadana.actores_estrategicos USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "actores_estrategicos",
+      "indexname": "idx_actores_demostracion",
+      "indexdef": "CREATE INDEX idx_actores_demostracion ON participacion_ciudadana.actores_estrategicos USING btree (es_demostracion)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "actores_estrategicos",
+      "indexname": "idx_actores_territorio",
+      "indexdef": "CREATE INDEX idx_actores_territorio ON participacion_ciudadana.actores_estrategicos USING btree (territorio)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "actores_estrategicos",
+      "indexname": "idx_actores_tipo",
+      "indexdef": "CREATE INDEX idx_actores_tipo ON participacion_ciudadana.actores_estrategicos USING btree (tipo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "apoyos_propuestas",
+      "indexname": "apoyos_propuestas_pkey",
+      "indexdef": "CREATE UNIQUE INDEX apoyos_propuestas_pkey ON participacion_ciudadana.apoyos_propuestas USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "apoyos_propuestas",
+      "indexname": "idx_apoyos_propuesta",
+      "indexdef": "CREATE INDEX idx_apoyos_propuesta ON participacion_ciudadana.apoyos_propuestas USING btree (propuesta_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "apoyos_propuestas",
+      "indexname": "idx_apoyos_sujeto",
+      "indexdef": "CREATE INDEX idx_apoyos_sujeto ON participacion_ciudadana.apoyos_propuestas USING btree (sujeto_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "apoyos_propuestas",
+      "indexname": "uq_apoyo_propuesta_sujeto",
+      "indexdef": "CREATE UNIQUE INDEX uq_apoyo_propuesta_sujeto ON participacion_ciudadana.apoyos_propuestas USING btree (propuesta_id, sujeto_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "escenarios_especiales",
+      "indexname": "escenarios_especiales_codigo_unico_key",
+      "indexdef": "CREATE UNIQUE INDEX escenarios_especiales_codigo_unico_key ON participacion_ciudadana.escenarios_especiales USING btree (codigo_unico)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "escenarios_especiales",
+      "indexname": "escenarios_especiales_pkey",
+      "indexdef": "CREATE UNIQUE INDEX escenarios_especiales_pkey ON participacion_ciudadana.escenarios_especiales USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "escenarios_especiales",
+      "indexname": "idx_escenarios_fecha",
+      "indexdef": "CREATE INDEX idx_escenarios_fecha ON participacion_ciudadana.escenarios_especiales USING btree (fecha)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "escenarios_especiales",
+      "indexname": "idx_escenarios_territorio",
+      "indexdef": "CREATE INDEX idx_escenarios_territorio ON participacion_ciudadana.escenarios_especiales USING btree (territorio_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "escenarios_especiales",
+      "indexname": "idx_escenarios_tipo",
+      "indexdef": "CREATE INDEX idx_escenarios_tipo ON participacion_ciudadana.escenarios_especiales USING btree (tipo_escenario)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "evidencias_multimedia",
+      "indexname": "evidencias_multimedia_pkey",
+      "indexdef": "CREATE UNIQUE INDEX evidencias_multimedia_pkey ON participacion_ciudadana.evidencias_multimedia USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "evidencias_multimedia",
+      "indexname": "idx_evidencias_autor",
+      "indexdef": "CREATE INDEX idx_evidencias_autor ON participacion_ciudadana.evidencias_multimedia USING btree (autor_sujeto_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "evidencias_multimedia",
+      "indexname": "idx_evidencias_hash",
+      "indexdef": "CREATE INDEX idx_evidencias_hash ON participacion_ciudadana.evidencias_multimedia USING btree (hash_sha256)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "evidencias_multimedia",
+      "indexname": "idx_evidencias_propuesta",
+      "indexdef": "CREATE INDEX idx_evidencias_propuesta ON participacion_ciudadana.evidencias_multimedia USING btree (propuesta_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "formularios_consulta_codigo_key",
+      "indexdef": "CREATE UNIQUE INDEX formularios_consulta_codigo_key ON participacion_ciudadana.formularios_consulta USING btree (codigo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "formularios_consulta_pkey",
+      "indexdef": "CREATE UNIQUE INDEX formularios_consulta_pkey ON participacion_ciudadana.formularios_consulta USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_codigo",
+      "indexdef": "CREATE INDEX idx_formularios_codigo ON participacion_ciudadana.formularios_consulta USING btree (codigo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_dimension",
+      "indexdef": "CREATE INDEX idx_formularios_dimension ON participacion_ciudadana.formularios_consulta USING btree (dimension_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_estado",
+      "indexdef": "CREATE INDEX idx_formularios_estado ON participacion_ciudadana.formularios_consulta USING btree (estado)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_territorio",
+      "indexdef": "CREATE INDEX idx_formularios_territorio ON participacion_ciudadana.formularios_consulta USING btree (territorio_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "formularios_consulta",
+      "indexname": "uq_formulario_slug",
+      "indexdef": "CREATE UNIQUE INDEX uq_formulario_slug ON participacion_ciudadana.formularios_consulta USING btree (slug)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "migracion_apoyos_0084",
+      "indexname": "pk_migracion_apoyos_0084",
+      "indexdef": "CREATE UNIQUE INDEX pk_migracion_apoyos_0084 ON participacion_ciudadana.migracion_apoyos_0084 USING btree (propuesta_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "notificaciones_transaccionales",
+      "indexname": "idx_notif_codigo_radicado",
+      "indexdef": "CREATE INDEX idx_notif_codigo_radicado ON participacion_ciudadana.notificaciones_transaccionales USING btree (codigo_radicado)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "notificaciones_transaccionales",
+      "indexname": "idx_notif_cola",
+      "indexdef": "CREATE INDEX idx_notif_cola ON participacion_ciudadana.notificaciones_transaccionales USING btree (estado_envio, proximo_intento_en)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "notificaciones_transaccionales",
+      "indexname": "idx_notif_creado_en",
+      "indexdef": "CREATE INDEX idx_notif_creado_en ON participacion_ciudadana.notificaciones_transaccionales USING btree (creado_en)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "notificaciones_transaccionales",
+      "indexname": "idx_notif_destinatario",
+      "indexdef": "CREATE INDEX idx_notif_destinatario ON participacion_ciudadana.notificaciones_transaccionales USING btree (destinatario_correo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "notificaciones_transaccionales",
+      "indexname": "notificaciones_transaccionales_pkey",
+      "indexdef": "CREATE UNIQUE INDEX notificaciones_transaccionales_pkey ON participacion_ciudadana.notificaciones_transaccionales USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_prop_consulta_previa",
+      "indexdef": "CREATE INDEX idx_prop_consulta_previa ON participacion_ciudadana.propuestas_ciudadanas USING btree (requiere_consulta_previa) WHERE (requiere_consulta_previa = true)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_prop_territorio_etnico",
+      "indexdef": "CREATE INDEX idx_prop_territorio_etnico ON participacion_ciudadana.propuestas_ciudadanas USING btree (es_territorio_etnico) WHERE (es_territorio_etnico = true)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_activo",
+      "indexdef": "CREATE INDEX idx_propuestas_activo ON participacion_ciudadana.propuestas_ciudadanas USING btree (activo)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_dimension",
+      "indexdef": "CREATE INDEX idx_propuestas_dimension ON participacion_ciudadana.propuestas_ciudadanas USING btree (dimension_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_huella",
+      "indexdef": "CREATE INDEX idx_propuestas_huella ON participacion_ciudadana.propuestas_ciudadanas USING btree (huella_hash)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_linea",
+      "indexdef": "CREATE INDEX idx_propuestas_linea ON participacion_ciudadana.propuestas_ciudadanas USING btree (linea_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_metadata_enfoque_gin",
+      "indexdef": "CREATE INDEX idx_propuestas_metadata_enfoque_gin ON participacion_ciudadana.propuestas_ciudadanas USING gin (metadata_enfoque)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_sesion",
+      "indexdef": "CREATE INDEX idx_propuestas_sesion ON participacion_ciudadana.propuestas_ciudadanas USING btree (sesion_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_territorio",
+      "indexdef": "CREATE INDEX idx_propuestas_territorio ON participacion_ciudadana.propuestas_ciudadanas USING btree (territorio_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_tipo",
+      "indexdef": "CREATE INDEX idx_propuestas_tipo ON participacion_ciudadana.propuestas_ciudadanas USING btree (tipo_aporte)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "idx_propuestas_titulo_trgm",
+      "indexdef": "CREATE INDEX idx_propuestas_titulo_trgm ON participacion_ciudadana.propuestas_ciudadanas USING gin (titulo gin_trgm_ops)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "ix_propuestas_ciudadanas_codigo_radicado",
+      "indexdef": "CREATE UNIQUE INDEX ix_propuestas_ciudadanas_codigo_radicado ON participacion_ciudadana.propuestas_ciudadanas USING btree (codigo_radicado)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "propuestas_ciudadanas",
+      "indexname": "propuestas_ciudadanas_pkey",
+      "indexdef": "CREATE UNIQUE INDEX propuestas_ciudadanas_pkey ON participacion_ciudadana.propuestas_ciudadanas USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "respuestas_formulario",
+      "indexname": "idx_respuestas_formulario",
+      "indexdef": "CREATE INDEX idx_respuestas_formulario ON participacion_ciudadana.respuestas_formulario USING btree (formulario_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "respuestas_formulario",
+      "indexname": "idx_respuestas_sujeto",
+      "indexdef": "CREATE INDEX idx_respuestas_sujeto ON participacion_ciudadana.respuestas_formulario USING btree (sujeto_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "respuestas_formulario",
+      "indexname": "respuestas_formulario_pkey",
+      "indexdef": "CREATE UNIQUE INDEX respuestas_formulario_pkey ON participacion_ciudadana.respuestas_formulario USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "respuestas_formulario",
+      "indexname": "uq_respuesta_formulario_sujeto",
+      "indexdef": "CREATE UNIQUE INDEX uq_respuesta_formulario_sujeto ON participacion_ciudadana.respuestas_formulario USING btree (formulario_id, sujeto_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "sesiones_anonimas",
+      "indexname": "idx_sesiones_expira",
+      "indexdef": "CREATE INDEX idx_sesiones_expira ON participacion_ciudadana.sesiones_anonimas USING btree (expira_en)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "sesiones_anonimas",
+      "indexname": "idx_sesiones_huella",
+      "indexdef": "CREATE INDEX idx_sesiones_huella ON participacion_ciudadana.sesiones_anonimas USING btree (huella_hash)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "sesiones_anonimas",
+      "indexname": "sesiones_anonimas_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sesiones_anonimas_pkey ON participacion_ciudadana.sesiones_anonimas USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "idx_testimonios_dimension",
+      "indexdef": "CREATE INDEX idx_testimonios_dimension ON participacion_ciudadana.testimonios_comunitarios USING btree (dimension_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "idx_testimonios_estado",
+      "indexdef": "CREATE INDEX idx_testimonios_estado ON participacion_ciudadana.testimonios_comunitarios USING btree (estado) WHERE (activo = true)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "idx_testimonios_fecha",
+      "indexdef": "CREATE INDEX idx_testimonios_fecha ON participacion_ciudadana.testimonios_comunitarios USING btree (creado_en DESC)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "idx_testimonios_territorio",
+      "indexdef": "CREATE INDEX idx_testimonios_territorio ON participacion_ciudadana.testimonios_comunitarios USING btree (territorio_id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "testimonios_comunitarios_codigo_unico_key",
+      "indexdef": "CREATE UNIQUE INDEX testimonios_comunitarios_codigo_unico_key ON participacion_ciudadana.testimonios_comunitarios USING btree (codigo_unico)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "testimonios_comunitarios",
+      "indexname": "testimonios_comunitarios_pkey",
+      "indexdef": "CREATE UNIQUE INDEX testimonios_comunitarios_pkey ON participacion_ciudadana.testimonios_comunitarios USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "whatsapp_inbox",
+      "indexname": "idx_whatsapp_inbox_cola",
+      "indexdef": "CREATE INDEX idx_whatsapp_inbox_cola ON participacion_ciudadana.whatsapp_inbox USING btree (estado, proximo_intento_en)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "whatsapp_inbox",
+      "indexname": "pk_whatsapp_inbox",
+      "indexdef": "CREATE UNIQUE INDEX pk_whatsapp_inbox ON participacion_ciudadana.whatsapp_inbox USING btree (id)"
+    },
+    {
+      "schemaname": "participacion_ciudadana",
+      "tablename": "whatsapp_inbox",
+      "indexname": "uq_whatsapp_inbox_mensaje",
+      "indexdef": "CREATE UNIQUE INDEX uq_whatsapp_inbox_mensaje ON participacion_ciudadana.whatsapp_inbox USING btree (cuenta_proveedor, mensaje_externo_id)"
+    }
+  ],
+  "metadata_index_comparison": {
+    "participacion_ciudadana.propuestas_ciudadanas": {
+      "missing_indexes": [],
+      "metadata_checks": [
+        {
+          "name": "chk_estado_propuesta",
+          "sql": "estado IN ('borrador', 'publicado', 'en_revision', 'incorporado', 'rechazado')"
+        },
+        {
+          "name": "chk_tipo_aporte",
+          "sql": "tipo_aporte IN ('propuesta', 'observacion', 'alerta_comunitaria', 'anotacion', 'pregunta')"
+        }
+      ],
+      "database_checks": [
+        {
+          "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+          "conname": "chk_estado_propuesta",
+          "contype": "c",
+          "definition": "CHECK (((estado)::text = ANY ((ARRAY['borrador'::character varying, 'publicado'::character varying, 'en_revision'::character varying, 'incorporado'::character varying, 'rechazado'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        },
+        {
+          "table_name": "participacion_ciudadana.propuestas_ciudadanas",
+          "conname": "chk_tipo_aporte",
+          "contype": "c",
+          "definition": "CHECK (((tipo_aporte)::text = ANY ((ARRAY['propuesta'::character varying, 'observacion'::character varying, 'alerta_comunitaria'::character varying, 'anotacion'::character varying, 'pregunta'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "participacion_ciudadana.apoyos_propuestas": {
+      "missing_indexes": [],
+      "metadata_checks": [
+        {
+          "name": "chk_tipo_sujeto",
+          "sql": "tipo_sujeto IN ('usuario', 'sesion_anonima')"
+        }
+      ],
+      "database_checks": [
+        {
+          "table_name": "participacion_ciudadana.apoyos_propuestas",
+          "conname": "chk_tipo_sujeto",
+          "contype": "c",
+          "definition": "CHECK (((tipo_sujeto)::text = ANY ((ARRAY['usuario'::character varying, 'sesion_anonima'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "participacion_ciudadana.evidencias_multimedia": {
+      "missing_indexes": [],
+      "metadata_checks": [],
+      "database_checks": [
+        {
+          "table_name": "participacion_ciudadana.evidencias_multimedia",
+          "conname": "chk_evidencias_tipo_mime",
+          "contype": "c",
+          "definition": "CHECK (((tipo_mime)::text = ANY ((ARRAY['image/jpeg'::character varying, 'image/png'::character varying, 'image/webp'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "participacion_ciudadana.notificaciones_transaccionales": {
+      "missing_indexes": [],
+      "metadata_checks": [
+        {
+          "name": "chk_notificaciones_tipo_evento",
+          "sql": "tipo_evento IN ('radicacion', 'cambio_estado', 'priorizacion')"
+        },
+        {
+          "name": "chk_notificaciones_estado_envio",
+          "sql": "estado_envio IN ('pendiente', 'procesando', 'enviado', 'simulado', 'fallido')"
+        }
+      ],
+      "database_checks": [
+        {
+          "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+          "conname": "chk_notificaciones_estado_envio",
+          "contype": "c",
+          "definition": "CHECK (((estado_envio)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'enviado'::character varying, 'simulado'::character varying, 'fallido'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        },
+        {
+          "table_name": "participacion_ciudadana.notificaciones_transaccionales",
+          "conname": "chk_notificaciones_tipo_evento",
+          "contype": "c",
+          "definition": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "auditoria.registros_auditoria": {
+      "missing_indexes": [],
+      "metadata_checks": [],
+      "database_checks": [
+        {
+          "table_name": "auditoria.registros_auditoria",
+          "conname": "chk_causal_devolucion",
+          "contype": "c",
+          "definition": "CHECK (((causal)::text = ANY ((ARRAY['tecnica'::character varying, 'juridica'::character varying, 'presupuestal'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "mesas_trabajo.fotos_mesa": {
+      "missing_indexes": [],
+      "metadata_checks": [
+        {
+          "name": "chk_fotos_mesa_aprobacion_autorizada",
+          "sql": "estado <> 'APROBADA' OR autorizacion_imagen"
+        },
+        {
+          "name": "chk_fotos_mesa_estado",
+          "sql": "estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')"
+        }
+      ],
+      "database_checks": [
+        {
+          "table_name": "mesas_trabajo.fotos_mesa",
+          "conname": "chk_fotos_mesa_aprobacion_autorizada",
+          "contype": "c",
+          "definition": "CHECK ((((estado)::text <> 'APROBADA'::text) OR autorizacion_imagen))",
+          "condeferrable": false,
+          "condeferred": false
+        },
+        {
+          "table_name": "mesas_trabajo.fotos_mesa",
+          "conname": "chk_fotos_mesa_estado",
+          "contype": "c",
+          "definition": "CHECK (((estado)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'APROBADA'::character varying, 'RECHAZADA'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "participacion_ciudadana.whatsapp_inbox": {
+      "missing_indexes": [],
+      "metadata_checks": [
+        {
+          "name": "chk_whatsapp_inbox_estado",
+          "sql": "estado IN ('pendiente', 'procesando', 'procesado', 'rechazado', 'error')"
+        }
+      ],
+      "database_checks": [
+        {
+          "table_name": "participacion_ciudadana.whatsapp_inbox",
+          "conname": "chk_whatsapp_inbox_estado",
+          "contype": "c",
+          "definition": "CHECK (((estado)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'procesado'::character varying, 'rechazado'::character varying, 'error'::character varying])::text[])))",
+          "condeferrable": false,
+          "condeferred": false
+        }
+      ]
+    },
+    "participacion_ciudadana.migracion_apoyos_0084": {
+      "missing_indexes": [],
+      "metadata_checks": [],
+      "database_checks": []
+    }
+  }
+}

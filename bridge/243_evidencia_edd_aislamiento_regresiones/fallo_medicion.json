@@ -1,0 +1,6 @@
+{
+  "inyeccion": "despues del primer POST201 real, antes de devolver respuesta al test",
+  "pid_observador": 3541032,
+  "medicion_confirmada": "01a17d22-f301-7e7a-ba09-fcdd48aa38aa",
+  "segunda_medicion_ejecutada": false
+}

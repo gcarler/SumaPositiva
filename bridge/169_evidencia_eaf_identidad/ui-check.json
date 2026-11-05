@@ -1,0 +1,13 @@
+{
+  "comando": [
+    "bun",
+    "run",
+    "ui:check"
+  ],
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "codigo_salida": 0,
+  "duracion_segundos": 1.924,
+  "guarda_sha256_al_iniciar": "1eccee26b01add52a79c987bbc821ed62f74efe312dda59f89fc1b71f8f4feaa",
+  "fecha_utc": "2026-10-26T04:14:50.978367+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

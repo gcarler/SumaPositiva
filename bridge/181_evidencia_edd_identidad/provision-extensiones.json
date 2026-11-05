@@ -1,0 +1,19 @@
+{
+  "comando": [
+    "runuser",
+    "-u",
+    "postgres",
+    "--",
+    "psql",
+    "-X",
+    "--set=ON_ERROR_STOP=1",
+    "--dbname=polis_test_edd_identidad_20261026_14e4fd5ddd",
+    "--command=CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSION IF NOT EXISTS ltree; CREATE EXTENSION IF NOT EXISTS pgcrypto; CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+  ],
+  "base": "polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.811,
+  "guarda_sha256_al_iniciar": "c5369632fedc9272ab6c71f253bcf5cfd01cd9c2c25baa73f66238641ee57a84",
+  "fecha_utc": "2026-10-26T04:37:44.301767+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

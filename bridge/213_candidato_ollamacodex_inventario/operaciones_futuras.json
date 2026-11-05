@@ -1,0 +1,70 @@
+{
+  "tarea": "OL-FUENTES-SHA-02",
+  "estado": "propuesta_no_ejecutada",
+  "fecha_utc": "2026-10-26T05:57:08.479856+00:00",
+  "origen_local_congelado": {
+    "inventario": {
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/inventario_pipeline_2026.sha-5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+      "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+      "bytes": 1638638
+    },
+    "resumen": {
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+      "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+      "bytes": 4815
+    },
+    "candidato": {
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/candidato_inventario_20261026T20261026T055656.sha-0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082.json",
+      "sha256": "0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082",
+      "bytes": 1638713
+    },
+    "manifiesto": {
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/manifiesto_captura.json",
+      "sha256": "1e1a2c766829b824055bc1de869fc1f2db94378f1ed6378e942f099a702709e7",
+      "bytes": 1977
+    }
+  },
+  "destino_futuro": {
+    "ruta": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-26/resumen_sincronizacion.7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256_esperado": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "bytes_esperados": 4815,
+    "debe_ser_captura_nueva": true
+  },
+  "precondiciones": [
+    "Hash del inventario activo debe seguir siendo 5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.",
+    "Hash del resumen activo debe seguir siendo 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.",
+    "Ruta de destino en data/.../versiones/... no debe existir y no debe ser symlink.",
+    "No hay symlinks en componentes de la capa data/... y del destino.",
+    "No usar sobrescritura ni reutilizar rutas existentes."
+  ],
+  "orden_publicacion": [
+    "Verificar hashes de origen antes de mover cualquier dato.",
+    "Crear el directorio de destino con permisos exclusivos y sin sobrescritura.",
+    "Copiar exactamente y bajo hash el resumen congelado al destino futuro.",
+    "Volver a cotejar SHA y bytes del destino.",
+    "Crear y validar en 213 el candidato del inventario con el mismo conteo de fuentes, paquetes y artefactos.",
+    "Solo despues de validar, considerar el candidato como entrada de inventario; no ejecutarlo todavia porque la ruta futura no existe."
+  ],
+  "rechazos": {
+    "sobrescritura": "rechazar",
+    "symlink": "rechazar",
+    "destiny_exists": "rechazar",
+    "hash_mismatch": "rechazar"
+  },
+  "notas": {
+    "original_historico": {
+      "sha256_esperado": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+      "bytes_esperados": 51693,
+      "estado": "no_localizado",
+      "diferencia_semantica": "no_comprobada"
+    },
+    "cargable_ahora": false,
+    "razon_no_cargable": "ruta futura aun no existe"
+  },
+  "sin_red": true,
+  "sin_sql": true,
+  "sin_pytest": true,
+  "sin_commit": true,
+  "sin_push": true,
+  "sin_despliegue": true
+}

@@ -1,0 +1,25 @@
+{
+  "conteos_por_tipo": {
+    "EXACTO_BPIM_PROYECTO": 21,
+    "PROGRAMA_Y_DEPENDENCIA_ACREDITADOS": 2487,
+    "VINCULO_SECTORIAL_INFERIDO": 2129
+  },
+  "corpus_sha256": "ce3931389dc36c78755fdad3f362a10a6cc4e225cbf9e7bf655b95fc7156d80e",
+  "criterio_muestra": "SHA-256 ascendente, hasta 10 por plan/tipo; exactos completos",
+  "esquema": "polis.corpus_revision_vinculos.v1",
+  "estratos": 19,
+  "muestra": 181,
+  "planes": [
+    "PDD_2012_2015",
+    "PDD_2013_2015",
+    "PDD_2016_2019",
+    "PDD_2020_2023",
+    "PDD_2024_2027",
+    "PDL_1_2024_2027",
+    "PDL_2_2024_2027",
+    "PDL_3_2024_2027"
+  ],
+  "sin_documento_y_pagina_en_muestra": 181,
+  "snapshot_sha256": "c76b5188ce707b02c67135114c727055052befef0f55a52e37a1be72e49695ad",
+  "total_vinculos": 4637
+}

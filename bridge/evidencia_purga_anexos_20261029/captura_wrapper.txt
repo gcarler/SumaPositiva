@@ -1,0 +1,5 @@
+[2026-10-29 10:26:42] === INICIANDO CICLO DE PURGA PROGRAMADA DE ANEXOS (OPS-PURGA-01) ===
+[2026-10-29 10:26:42] Ejecutando previsualización de purga (retención: 30 días)...
+[2026-10-29 10:26:43] Previsualización: 0 candidatos, 0 errores. Manifiesto: /root/polis/backups/purga_anexos/previsualizacion_20261029_102642.json
+[2026-10-29 10:26:43] Sin candidatos para purgar en esta corrida. Ciclo finalizado.
+[2026-10-29 10:26:43] === CICLO DE PURGA DE ANEXOS FINALIZADO EXITOSAMENTE (sin cambios) ===

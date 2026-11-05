@@ -1,0 +1,103 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test_sintetica",
+  "cobertura_sql": {
+    "PDD_2016_2019": {
+      "metas": 1,
+      "nodos": 1
+    },
+    "PDD_2020_2023": {
+      "metas": 1,
+      "nodos": 1
+    },
+    "PDL_1_2024_2027": {
+      "metas": 1,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [
+    {
+      "codigo": "M0",
+      "codigo_plan": "PDD_2016_2019",
+      "datos_oficiales": {},
+      "fila_fuente": null,
+      "fuente": null,
+      "id": "f4c1137a-cca3-5e09-9de6-574ab4606e74",
+      "indicador": null,
+      "linea_id": "9bb59ade-f227-55d4-9929-3f6f468f6b60",
+      "linea_nombre": null,
+      "nombre": "Salud",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": null
+    },
+    {
+      "codigo": "M1",
+      "codigo_plan": "PDD_2020_2023",
+      "datos_oficiales": {},
+      "fila_fuente": null,
+      "fuente": null,
+      "id": "6a12ad1f-f70e-575b-89a6-3a1b5dff6836",
+      "indicador": null,
+      "linea_id": "1f69ace8-5e73-5a5e-a041-612b75646731",
+      "linea_nombre": null,
+      "nombre": "Salud",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": null
+    },
+    {
+      "codigo": "M2",
+      "codigo_plan": "PDL_1_2024_2027",
+      "datos_oficiales": {},
+      "fila_fuente": null,
+      "fuente": null,
+      "id": "185c2b37-06d9-566f-bf4f-058241fbf6b4",
+      "indicador": null,
+      "linea_id": "a9b5dca6-5466-53fd-bdf1-9bc083e42c67",
+      "linea_nombre": null,
+      "nombre": "Salud",
+      "tipo_meta": "RESULTADO",
+      "unidad_medida": null
+    }
+  ],
+  "nodos": [
+    {
+      "codigo": "P0",
+      "codigo_plan": "PDD_2016_2019",
+      "fuente": null,
+      "id": "9bb59ade-f227-55d4-9929-3f6f468f6b60",
+      "metadatos": {},
+      "nivel": "PROGRAMA",
+      "nombre": "Salud",
+      "orden": 0,
+      "parent_id": null,
+      "ppi_anual_cop": {}
+    },
+    {
+      "codigo": "P1",
+      "codigo_plan": "PDD_2020_2023",
+      "fuente": null,
+      "id": "1f69ace8-5e73-5a5e-a041-612b75646731",
+      "metadatos": {},
+      "nivel": "PROGRAMA",
+      "nombre": "Salud",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {}
+    },
+    {
+      "codigo": "P2",
+      "codigo_plan": "PDL_1_2024_2027",
+      "fuente": null,
+      "id": "a9b5dca6-5466-53fd-bdf1-9bc083e42c67",
+      "metadatos": {},
+      "nivel": "PROGRAMA",
+      "nombre": "Salud",
+      "orden": 2,
+      "parent_id": null,
+      "ppi_anual_cop": {}
+    }
+  ]
+}

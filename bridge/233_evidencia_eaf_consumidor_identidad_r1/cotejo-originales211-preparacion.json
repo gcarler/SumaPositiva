@@ -1,0 +1,493 @@
+{
+  "fecha_utc": "2026-10-26T06:41:27.714809+00:00",
+  "cantidad": 81,
+  "archivos": [
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/api-r1.log",
+      "esperado211": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/api-r2.log",
+      "esperado211": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/base.json",
+      "esperado211": "9d35e23ac23f1fa291d9d987eefb03dd11f034a87d45f6cb8f24b33104cb2a8d",
+      "actual": "9d35e23ac23f1fa291d9d987eefb03dd11f034a87d45f6cb8f24b33104cb2a8d",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-con-api-r1.json",
+      "esperado211": "a3ce56d30a2533c77df9c405a89df6c637f6b1e6cfb71ebdffd4d4081e954e0d",
+      "actual": "a3ce56d30a2533c77df9c405a89df6c637f6b1e6cfb71ebdffd4d4081e954e0d",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-con-api-r1.log",
+      "esperado211": "b3dcb496268e4d244d34e012b7706b0afeb185dd8ff6a8e712eefad2ae13c880",
+      "actual": "b3dcb496268e4d244d34e012b7706b0afeb185dd8ff6a8e712eefad2ae13c880",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-con-api-r2.json",
+      "esperado211": "ab93f3d083a1b1405b32d23a2a456ea072249115c4a5e57a041a18b60a6728bf",
+      "actual": "ab93f3d083a1b1405b32d23a2a456ea072249115c4a5e57a041a18b60a6728bf",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-con-api-r2.log",
+      "esperado211": "0391a2e5f29242c2d6e655b976f32c28f9d7e4e340f6e73962e1d8e2b6192ea1",
+      "actual": "0391a2e5f29242c2d6e655b976f32c28f9d7e4e340f6e73962e1d8e2b6192ea1",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-next.json",
+      "esperado211": "0327b9bd7868d9bdd3dba8dccad2225cc0f87f946831e42894817dc50ebb9905",
+      "actual": "0327b9bd7868d9bdd3dba8dccad2225cc0f87f946831e42894817dc50ebb9905",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/build-next.log",
+      "esperado211": "d84067270a61c4ff7bf07b137a332c71ca3d455d63502ad2e1e2c484a0830e86",
+      "actual": "d84067270a61c4ff7bf07b137a332c71ca3d455d63502ad2e1e2c484a0830e86",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/conexiones_rechazadas.jsonl",
+      "esperado211": "91b8e721c8dcf6201fcc3b9100fa48a630a04b437bd807edab9f8d6616155051",
+      "actual": "91b8e721c8dcf6201fcc3b9100fa48a630a04b437bd807edab9f8d6616155051",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/congelacion.json",
+      "esperado211": "126faadc6083d3a0ad461ab07c0c96633530f60e3a3e729549d02752d1489d43",
+      "actual": "126faadc6083d3a0ad461ab07c0c96633530f60e3a3e729549d02752d1489d43",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/contrastar_propio.mjs",
+      "esperado211": "4610cf2b62110cd03220908eb542687d93a03022b79a60d34d6188134eacdfff",
+      "actual": "4610cf2b62110cd03220908eb542687d93a03022b79a60d34d6188134eacdfff",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/contratos-propios.json",
+      "esperado211": "06cd32fa5e8b0679e367704720d92080590a59fd25140763896db650bdbebd6c",
+      "actual": "06cd32fa5e8b0679e367704720d92080590a59fd25140763896db650bdbebd6c",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/contratos-propios.log",
+      "esperado211": "6e4fe7d676a2b66e430774dd40670a920b51e3727e886e02d53961ac97fb9728",
+      "actual": "6e4fe7d676a2b66e430774dd40670a920b51e3727e886e02d53961ac97fb9728",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/cotejo-fuente-copiada-final.json",
+      "esperado211": "a370d645dcfb5164ba6107d006035a5dc9b839381bb9090c3b818f69ec78ae66",
+      "actual": "a370d645dcfb5164ba6107d006035a5dc9b839381bb9090c3b818f69ec78ae66",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/cotejo-fuente-copiada.json",
+      "esperado211": "b7f7d5cb09c73358d4ffcabd1a4dda318d4e4b4e6d7f7500d3627c8bcb8cf217",
+      "actual": "b7f7d5cb09c73358d4ffcabd1a4dda318d4e4b4e6d7f7500d3627c8bcb8cf217",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/db_control.py",
+      "esperado211": "530df06611832b9b364c7618df8d82cf9a13310f614c3a3918961f863f71a606",
+      "actual": "530df06611832b9b364c7618df8d82cf9a13310f614c3a3918961f863f71a606",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/ejecutar.py",
+      "esperado211": "56911809b4fff41be6cc4538a8c5548818044163ab7406c1372fbfebe75ecf62",
+      "actual": "56911809b4fff41be6cc4538a8c5548818044163ab7406c1372fbfebe75ecf62",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/escenarios-r1.jsonl",
+      "esperado211": "f88c098be111898e31b9be479d572045006fa6ee3a225f59c77ba5b422e76dee",
+      "actual": "f88c098be111898e31b9be479d572045006fa6ee3a225f59c77ba5b422e76dee",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/escenarios-r2.jsonl",
+      "esperado211": "8e1ee99bdd17e92a95acb657f45bd6cfd0080ad2b2e4885280b3e2b90acec07b",
+      "actual": "8e1ee99bdd17e92a95acb657f45bd6cfd0080ad2b2e4885280b3e2b90acec07b",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/frontend-check.json",
+      "esperado211": "3e206327c09c5519760d21a85efc066e0d2a149f79ecbeb2b2080f9d548e82a8",
+      "actual": "3e206327c09c5519760d21a85efc066e0d2a149f79ecbeb2b2080f9d548e82a8",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/frontend-check.log",
+      "esperado211": "83e0aeaa512d38a6402e81efd2946e704e846ec1a6a30ac2321ed0a450e8db2c",
+      "actual": "83e0aeaa512d38a6402e81efd2946e704e846ec1a6a30ac2321ed0a450e8db2c",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guard/sitecustomize.py",
+      "esperado211": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+      "actual": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guard_node.cjs",
+      "esperado211": "e9cc455ec842122f769620cf3a6ce8c3133904b522d506199cad391e6d43da0d",
+      "actual": "e9cc455ec842122f769620cf3a6ce8c3133904b522d506199cad391e6d43da0d",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guardas-node.json",
+      "esperado211": "9f5766193ca4be65b9b4ff38510430a1cdbb6676f14c74cc280f71d23abb40dc",
+      "actual": "9f5766193ca4be65b9b4ff38510430a1cdbb6676f14c74cc280f71d23abb40dc",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guardas-node.log",
+      "esperado211": "a99500893a6f9aa95cea76e065968b1569100630bead325d6838c192595cd3d3",
+      "actual": "a99500893a6f9aa95cea76e065968b1569100630bead325d6838c192595cd3d3",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guardas-previas.json",
+      "esperado211": "a0d877e0362159c88c60e6901c6b252e46eedbfb680b3de3c1eec5c8fd399adc",
+      "actual": "a0d877e0362159c88c60e6901c6b252e46eedbfb680b3de3c1eec5c8fd399adc",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guardas-previas.log",
+      "esperado211": "02873c5b06714fe2475d859c60b35487eaa902d55abffaf477565b2ef6087b47",
+      "actual": "02873c5b06714fe2475d859c60b35487eaa902d55abffaf477565b2ef6087b47",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/guardas_verificadas_v2.json",
+      "esperado211": "a5dbbd90ddc730f095a4893b850b87b6d51c8510f15e193468c1c9e257d1cf4c",
+      "actual": "a5dbbd90ddc730f095a4893b850b87b6d51c8510f15e193468c1c9e257d1cf4c",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/higiene-evidencia.json",
+      "esperado211": "d77616a6bba2a8bcbe5680008b04e772cb96a1bda2d35c9f2d9845c5095218d7",
+      "actual": "d77616a6bba2a8bcbe5680008b04e772cb96a1bda2d35c9f2d9845c5095218d7",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/historias-identidad.json",
+      "esperado211": "9df1cebfc433dd87303f1e4ac9b23cd276be85f436dfaadacac3388829d07310",
+      "actual": "9df1cebfc433dd87303f1e4ac9b23cd276be85f436dfaadacac3388829d07310",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/historias-identidad.log",
+      "esperado211": "eb91982e1c566858d4bd10d2faa1e98f4a6daeeb484690329f635e40495c8faf",
+      "actual": "eb91982e1c566858d4bd10d2faa1e98f4a6daeeb484690329f635e40495c8faf",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/http-r1.jsonl",
+      "esperado211": "db0d15a54b1a045762e392699318873635581d996052906eee54c2f70d732a7c",
+      "actual": "db0d15a54b1a045762e392699318873635581d996052906eee54c2f70d732a7c",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/http-r2.jsonl",
+      "esperado211": "88b27cfee9d95d9a7a96000619ac77d44e1aa5631710fdade90a1e61b690d0f4",
+      "actual": "88b27cfee9d95d9a7a96000619ac77d44e1aa5631710fdade90a1e61b690d0f4",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/integrar.py",
+      "esperado211": "39c90d9ce3bb2e0a1ed6795d0c4d5856e44e4b28fa43b5b67873e6d0dfe65ca0",
+      "actual": "39c90d9ce3bb2e0a1ed6795d0c4d5856e44e4b28fa43b5b67873e6d0dfe65ca0",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/navegador-r1.log",
+      "esperado211": "a4ea9d49a4f4ba6348e1a367c7841aef06862b06b30124f25e5423e861ac59d6",
+      "actual": "a4ea9d49a4f4ba6348e1a367c7841aef06862b06b30124f25e5423e861ac59d6",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/navegador-r1.mjs",
+      "esperado211": "9e16ad2a39abdd2eddf5f32675275608815110aeb31c5cfac1a2e0bf180d286e",
+      "actual": "9e16ad2a39abdd2eddf5f32675275608815110aeb31c5cfac1a2e0bf180d286e",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/navegador-r2.log",
+      "esperado211": "6299ec66f9fe370e0d0f19c35f7d7b0a5e6f6b7c1e32d65c4e80aedf476d29be",
+      "actual": "6299ec66f9fe370e0d0f19c35f7d7b0a5e6f6b7c1e32d65c4e80aedf476d29be",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/navegador.mjs",
+      "esperado211": "2bd414d6767998d6a356eb36ae62869cc2fece71f2335ddb14f42ac7cf51b4ec",
+      "actual": "2bd414d6767998d6a356eb36ae62869cc2fece71f2335ddb14f42ac7cf51b4ec",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/next-r1.log",
+      "esperado211": "40ef12a5d187c916a9b0adf8a86adf2063100dfca0bad300f01a3bdcd9f3e6c6",
+      "actual": "40ef12a5d187c916a9b0adf8a86adf2063100dfca0bad300f01a3bdcd9f3e6c6",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/next-r2.log",
+      "esperado211": "663c9595f016b2a42da8846d5e46e24ed9474e692d5ea24e9915ee5ad23d7428",
+      "actual": "663c9595f016b2a42da8846d5e46e24ed9474e692d5ea24e9915ee5ad23d7428",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/nota-cierre.json",
+      "esperado211": "c50245f52ea513aaeacd6b1a775e2ec0c342846331d539791ccaf615acebf904",
+      "actual": "c50245f52ea513aaeacd6b1a775e2ec0c342846331d539791ccaf615acebf904",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/probar_guardas.py",
+      "esperado211": "aa9a0df3100f8210b03cb7b2ba2d4639fc2074204aa3a542ac5d8a8315c0ebdb",
+      "actual": "aa9a0df3100f8210b03cb7b2ba2d4639fc2074204aa3a542ac5d8a8315c0ebdb",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/probar_node.mjs",
+      "esperado211": "5412ae7819cb380be9ff7b0d8ca1c3e97b70aa4d0b56da2c5b0fcfcd961a9e94",
+      "actual": "5412ae7819cb380be9ff7b0d8ca1c3e97b70aa4d0b56da2c5b0fcfcd961a9e94",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-409-factor-activo.png",
+      "esperado211": "257f308618cbb2c2d4ee55c0da015bddc213134819ca16be742a3498ad266dd8",
+      "actual": "257f308618cbb2c2d4ee55c0da015bddc213134819ca16be742a3498ad266dd8",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-activacion-401.png",
+      "esperado211": "440b291c83095c523e43b7924a9e981f4c3cabee40c490ec70eb3ee74a854c42",
+      "actual": "440b291c83095c523e43b7924a9e981f4c3cabee40c490ec70eb3ee74a854c42",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-activada-cuenta.png",
+      "esperado211": "a675e177a1ccd111529b792a61efc39efd1c27dbac15371bf1d8e9b9af0c98f9",
+      "actual": "a675e177a1ccd111529b792a61efc39efd1c27dbac15371bf1d8e9b9af0c98f9",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-enrolamiento-320-claro.png",
+      "esperado211": "21092919c07359ab94124ddc76e21ce3d2be50a92572f369504ec618eb4b606b",
+      "actual": "21092919c07359ab94124ddc76e21ce3d2be50a92572f369504ec618eb4b606b",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-error-estado.png",
+      "esperado211": "b91d0500e9445f72b16e760cb140c60b0049655ed4f16b02f8dbbdc7ec4a2087",
+      "actual": "b91d0500e9445f72b16e760cb140c60b0049655ed4f16b02f8dbbdc7ec4a2087",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-limitada-403.png",
+      "esperado211": "3e6005c4f709ca4f15f99e1919798c308d5a8392c27774b27cfe7000d6c73595",
+      "actual": "3e6005c4f709ca4f15f99e1919798c308d5a8392c27774b27cfe7000d6c73595",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-plataforma-tras-activar.png",
+      "esperado211": "40cece56ebfe4072f20cbfbe6cf55967a62410d13d995c168b8aab8c8b33ef8f",
+      "actual": "40cece56ebfe4072f20cbfbe6cf55967a62410d13d995c168b8aab8c8b33ef8f",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-previa-sin-acreditar.png",
+      "esperado211": "aa16571ff05e48613efad33a38cca0dedd9e1d0dc05c3ffcf299c649ff9976a7",
+      "actual": "aa16571ff05e48613efad33a38cca0dedd9e1d0dc05c3ffcf299c649ff9976a7",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-relogin-320-oscuro.png",
+      "esperado211": "92db8157c45fa99c65c053da4f290cda84b2c0d16178d2a3b71aca992a833020",
+      "actual": "92db8157c45fa99c65c053da4f290cda84b2c0d16178d2a3b71aca992a833020",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r1-restaurada-320-oscuro.png",
+      "esperado211": "48272cc0045f5c69924576e73a83759b9c5f0679e4686a7d53de073b60cacfaf",
+      "actual": "48272cc0045f5c69924576e73a83759b9c5f0679e4686a7d53de073b60cacfaf",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-409-factor-activo.png",
+      "esperado211": "257f308618cbb2c2d4ee55c0da015bddc213134819ca16be742a3498ad266dd8",
+      "actual": "257f308618cbb2c2d4ee55c0da015bddc213134819ca16be742a3498ad266dd8",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-activacion-400.png",
+      "esperado211": "440b291c83095c523e43b7924a9e981f4c3cabee40c490ec70eb3ee74a854c42",
+      "actual": "440b291c83095c523e43b7924a9e981f4c3cabee40c490ec70eb3ee74a854c42",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-activada-cuenta.png",
+      "esperado211": "ffe639043071788896226eefc46be92eecabbbfb82f5e304d3b70d0f8f862f2f",
+      "actual": "ffe639043071788896226eefc46be92eecabbbfb82f5e304d3b70d0f8f862f2f",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-enrolamiento-320-claro.png",
+      "esperado211": "97ea924d4dbac2c3e488b59d401af0b9aa1a94c300d9ff1f93992ae9f6a9b352",
+      "actual": "97ea924d4dbac2c3e488b59d401af0b9aa1a94c300d9ff1f93992ae9f6a9b352",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-error-estado.png",
+      "esperado211": "b91d0500e9445f72b16e760cb140c60b0049655ed4f16b02f8dbbdc7ec4a2087",
+      "actual": "b91d0500e9445f72b16e760cb140c60b0049655ed4f16b02f8dbbdc7ec4a2087",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-limitada-403.png",
+      "esperado211": "215f92e8927a3f861eb6d60f7a471531976cdb38d9646933dec7bd2331d6bb0a",
+      "actual": "215f92e8927a3f861eb6d60f7a471531976cdb38d9646933dec7bd2331d6bb0a",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-magic-limitada.png",
+      "esperado211": "27670f7f9b6c149927d07535f59606e27c8069ca77f16090c1a53c46825cfabb",
+      "actual": "27670f7f9b6c149927d07535f59606e27c8069ca77f16090c1a53c46825cfabb",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-plataforma-tras-activar.png",
+      "esperado211": "40cece56ebfe4072f20cbfbe6cf55967a62410d13d995c168b8aab8c8b33ef8f",
+      "actual": "40cece56ebfe4072f20cbfbe6cf55967a62410d13d995c168b8aab8c8b33ef8f",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-previa-sin-acreditar.png",
+      "esperado211": "aa16571ff05e48613efad33a38cca0dedd9e1d0dc05c3ffcf299c649ff9976a7",
+      "actual": "aa16571ff05e48613efad33a38cca0dedd9e1d0dc05c3ffcf299c649ff9976a7",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-relogin-320-oscuro.png",
+      "esperado211": "f5cce1689ec5f8ff22f6349e00c726be253ad38fef736f7385819e0d1e5773cf",
+      "actual": "f5cce1689ec5f8ff22f6349e00c726be253ad38fef736f7385819e0d1e5773cf",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/r2-restaurada-320-oscuro.png",
+      "esperado211": "48272cc0045f5c69924576e73a83759b9c5f0679e4686a7d53de073b60cacfaf",
+      "actual": "48272cc0045f5c69924576e73a83759b9c5f0679e4686a7d53de073b60cacfaf",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/registro-inicial.json",
+      "esperado211": "7e3641c1dbea62a6a017d895cd1897b0bf43f448977b46110cfd8e2c5f914b3b",
+      "actual": "7e3641c1dbea62a6a017d895cd1897b0bf43f448977b46110cfd8e2c5f914b3b",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/resumen-navegador-r1.json",
+      "esperado211": "f6dd5a2d748f75f144c6cd5a5443a5582bb4186d741848573037cd55a1dfb541",
+      "actual": "f6dd5a2d748f75f144c6cd5a5443a5582bb4186d741848573037cd55a1dfb541",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/resumen-navegador-r2.json",
+      "esperado211": "9c9a211deffaced627214d993501f46a16087a0da3d66532212ac8168156e74f",
+      "actual": "9c9a211deffaced627214d993501f46a16087a0da3d66532212ac8168156e74f",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/serve_api.py",
+      "esperado211": "bcb3416b8f47f4843a5a49ce25e7b466534067430a3b4423fd23fdb0c1360501",
+      "actual": "bcb3416b8f47f4843a5a49ce25e7b466534067430a3b4423fd23fdb0c1360501",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/snapshot-final.json",
+      "esperado211": "cd8b62f718c51977e33b14bf9854d3d24fb8dc9f2ab1b47bad775e2005548196",
+      "actual": "cd8b62f718c51977e33b14bf9854d3d24fb8dc9f2ab1b47bad775e2005548196",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/snapshot-inicial.json",
+      "esperado211": "426c50253e0a7c72d74287d7955a810ddb40955a7bc5491b217b0c2d9124ac01",
+      "actual": "426c50253e0a7c72d74287d7955a810ddb40955a7bc5491b217b0c2d9124ac01",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/stack-final-r1.json",
+      "esperado211": "9efe0dedf1e657bef28c13b79a590b92be0d17d7e9249b21a62c5f67d9c99141",
+      "actual": "9efe0dedf1e657bef28c13b79a590b92be0d17d7e9249b21a62c5f67d9c99141",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/stack-final-r2.json",
+      "esperado211": "a97e211116146de6619e2cbb0878225a3f7c56250e7c9de27311f2fb7d58d014",
+      "actual": "a97e211116146de6619e2cbb0878225a3f7c56250e7c9de27311f2fb7d58d014",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/stack-inicio-r1.json",
+      "esperado211": "a885712fcd04f0b3d0d670d456202888ea2ae20a698b63d5392b60905ec22f88",
+      "actual": "a885712fcd04f0b3d0d670d456202888ea2ae20a698b63d5392b60905ec22f88",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/stack-inicio-r2.json",
+      "esperado211": "60f8178a943b6fa06f1c407b020893cc7c744f2e1bf8c5cb9c9a276508d3d0b0",
+      "actual": "60f8178a943b6fa06f1c407b020893cc7c744f2e1bf8c5cb9c9a276508d3d0b0",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/upgrade-vacio.json",
+      "esperado211": "60db228f73a9e18c033a6e1dccb04a3ff9127f2909ecc43110c6f36c0373281c",
+      "actual": "60db228f73a9e18c033a6e1dccb04a3ff9127f2909ecc43110c6f36c0373281c",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/upgrade-vacio.log",
+      "esperado211": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "actual": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_evidencia_eaf_consumidor_identidad/versiones.json",
+      "esperado211": "510f2a1dd9acbf9745f39a3fe56530dfff87c7cdf7f0399f45169034f9f15842",
+      "actual": "510f2a1dd9acbf9745f39a3fe56530dfff87c7cdf7f0399f45169034f9f15842",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_reinspeccion_eaf_consumidor_identidad.md",
+      "esperado211": "90bc98574fc127ab9c8acdc7db7533fe4eab4eb5237d8c9de3e2c1b3e7355257",
+      "actual": "90bc98574fc127ab9c8acdc7db7533fe4eab4eb5237d8c9de3e2c1b3e7355257",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/199_reinspeccion_eaf_identidad.md",
+      "esperado": "51faa11b68b050ace4ef7d2707e3ea431cdd9b857cb4ab2b8b2ffde7a4611601",
+      "actual": "51faa11b68b050ace4ef7d2707e3ea431cdd9b857cb4ab2b8b2ffde7a4611601",
+      "coincide": true
+    },
+    {
+      "archivo": "bridge/211_reinspeccion_eaf_consumidor_identidad.md",
+      "esperado": "90bc98574fc127ab9c8acdc7db7533fe4eab4eb5237d8c9de3e2c1b3e7355257",
+      "actual": "90bc98574fc127ab9c8acdc7db7533fe4eab4eb5237d8c9de3e2c1b3e7355257",
+      "coincide": true
+    }
+  ],
+  "archivos_unicos": 80
+}

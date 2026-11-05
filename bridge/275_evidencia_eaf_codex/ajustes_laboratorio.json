@@ -1,0 +1,13 @@
+{
+  "causas": [
+    "Primera coleccion sin 2 fixtures locales (128/75)",
+    "Snapshot inicial omitio la migracion 0094 no versionada; son errores de preparacion del auditor, no defectos de la entrega",
+    "R2: dos fallos de inventario por referencia 213 ausente en la copia privada"
+  ],
+  "acciones": [
+    "Copiar fixtures con SHA",
+    "Copiar migracion original sin editar y registrar SHA",
+    "Interrumpir primera suite global y repetir sobre snapshot_v2",
+    "Copiar captura 213 original con SHA y revalidar todo el archivo: 39 passed; sin recomponer resultado global ni ejecutar otra suite completa"
+  ]
+}

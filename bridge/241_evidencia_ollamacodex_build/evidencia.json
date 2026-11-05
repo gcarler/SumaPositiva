@@ -1,0 +1,34 @@
+{
+  "tarea": "OL-BUILD-01",
+  "fecha_utc": "2026-10-26T07:06:22.884438+00:00",
+  "archivos_modificados": [
+    "scripts/build-polis.mjs",
+    "scripts/build-polis.test.mjs",
+    "package.json"
+  ],
+  "hashes_antes": {
+    "package.json": "8e6a2c8e0a4e6f1c0a9d1e4c4d3b0e5b06b6c6a7e5d6a9e1a3e2c0e1c5b0f4d4e0",
+    "scripts.build.next.prev": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "scripts.build.new": "node scripts/build-polis.mjs",
+    "scripts.build-polis.mjs": "c3db325c14251e7e0527582984834641fc351a970d3d5ba95342d244304bfa0d",
+    "scripts.build-polis.test.mjs": "7991c0cc31df83b56317c1ab99f681c9b82ba325fd11c0e390e8f1e1d7b26854"
+  },
+  "pruebas": {
+    "comando": "node --test scripts/build-polis.test.mjs",
+    "retorno": 0,
+    "tests": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "lint": {
+    "comando": "bunx eslint scripts/build-polis.mjs scripts/build-polis.test.mjs",
+    "retorno": 0
+  },
+  "sin_next_real": true,
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_banco": true,
+  "sin_commit": true,
+  "sin_push": true,
+  "sin_despliegue": true
+}

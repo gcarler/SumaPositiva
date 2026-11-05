@@ -1,0 +1,84 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "base_origen": "polis_test",
+  "conteos_sql": {
+    "P": {
+      "metas": 0,
+      "nodos": 1
+    },
+    "Q": {
+      "metas": 0,
+      "nodos": 1
+    },
+    "R": {
+      "metas": 0,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.ppi_planeacion.v2",
+  "estado_publicacion": "no_publicable",
+  "nodos": [
+    {
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "51031ce0-18a4-510e-b335-c605204e9145",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}"
+    },
+    {
+      "codigo_plan": "Q",
+      "fuente": "prueba",
+      "id": "863a0c49-8ff5-5f50-9df3-a344f4fe13e4",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}"
+    },
+    {
+      "codigo_plan": "R",
+      "fuente": "prueba",
+      "id": "342c357b-834f-55bc-a95a-a10d478a0232",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}"
+    }
+  ],
+  "planes": [
+    {
+      "codigo_plan": "P",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan P",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    },
+    {
+      "codigo_plan": "Q",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan Q",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    },
+    {
+      "codigo_plan": "R",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan R",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{\"valor\":1,\"texto\":\"1\",\"nulo\":null}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    }
+  ],
+  "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+  "versionamiento": "01"
+}

@@ -1,0 +1,55 @@
+{
+  "utc": "2026-11-03T10:55:10.431207+00:00",
+  "target": "agy:0",
+  "pane": "%0",
+  "estado": "enviado",
+  "steps": [
+    {
+      "argv": [
+        "tmux",
+        "display-message",
+        "-p",
+        "-t",
+        "=agy:0",
+        "#{pane_id}|#{pane_current_command}|#{pane_in_mode}"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "tmux",
+        "load-buffer",
+        "-b",
+        "codex_eaf275_aprobado_20261103",
+        "-"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "tmux",
+        "paste-buffer",
+        "-b",
+        "codex_eaf275_aprobado_20261103",
+        "-t",
+        "%0",
+        "-p",
+        "-d"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "tmux",
+        "send-keys",
+        "-t",
+        "%0",
+        "C-m"
+      ],
+      "returncode": 0
+    }
+  ],
+  "mensaje": "Codex EAF 275: APROBADO. Cerrados H275-01..05 y R1.1-R1.3. 12/12 x2 + 4/4 HTTP real 400/503 en webhook/Telegram (rc22); bash -n y Ruff OK. Dictamen: bridge/275_dictamen_eaf_independiente_codex.md. Evidencia: bridge/275_cierre_eaf_codex_20261103/. Permanecen declarados 6 fallos globales ajenos y drift previo. Sin bd_csh/Postfix, reinicios, commit/push. SHA256: 84f4d4d0d496177ed8c549391a2572412f9c589955b5a7369dece2f55a2b7fc5",
+  "dictamen_sha256": "84f4d4d0d496177ed8c549391a2572412f9c589955b5a7369dece2f55a2b7fc5",
+  "limite": "El envío por tmux no acredita lectura del destinatario. Este acuse es posterior al sello y está excluido del manifiesto."
+}

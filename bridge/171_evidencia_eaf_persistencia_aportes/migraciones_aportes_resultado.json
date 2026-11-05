@@ -1,0 +1,57 @@
+{
+  "database": "polis_test_eaf_aportes_20261026_ef6a0ce9",
+  "ids": {
+    "proposal": "9fc9436d-8a83-4c88-be23-0f0135a16c04",
+    "subject": "3024d471-e252-410d-87dc-bfabb7db37a6",
+    "audit": "f62120a3-64fd-4aa1-9994-920e33e0638c"
+  },
+  "heads": [
+    "0083_conciliador_gold_set"
+  ],
+  "steps": [
+    "downgrade 0055",
+    "upgrade head: aportes/apoyos/auditor\u00eda anteriores conservados",
+    "alembic check despu\u00e9s de upgrade con datos",
+    "downgrade base: tablas aplicaci\u00f3n vac\u00edas, extensiones preinstaladas retenidas",
+    "reconstrucci\u00f3n upgrade head; upgrade head idempotente; alembic check"
+  ],
+  "before": {
+    "id": "9fc9436d-8a83-4c88-be23-0f0135a16c04",
+    "linea_id": "7132df1a-f44e-579d-86d7-a9e9c1c6cafd",
+    "titulo": "EAF aporte previo 0056",
+    "descripcion": "Datos sint\u00e9ticos conservados",
+    "estado": "rechazado",
+    "metadatos": {
+      "eaf": 171
+    },
+    "apoyos_contador": 1
+  },
+  "after": {
+    "conserved": {
+      "id": "9fc9436d-8a83-4c88-be23-0f0135a16c04",
+      "linea_id": "7132df1a-f44e-579d-86d7-a9e9c1c6cafd",
+      "titulo": "EAF aporte previo 0056",
+      "descripcion": "Datos sint\u00e9ticos conservados",
+      "estado": "rechazado",
+      "metadatos": {
+        "eaf": 171
+      },
+      "apoyos_contador": 1
+    },
+    "assigned_code": "POL-2026-0009",
+    "support_count": 1,
+    "audit_count": 1,
+    "observer_pid": 2848502
+  },
+  "after_base": {
+    "application_tables": [],
+    "extensions_retained": [
+      "ltree",
+      "pg_trgm",
+      "pgcrypto",
+      "pgrouting",
+      "plpgsql",
+      "postgis"
+    ]
+  }
+}

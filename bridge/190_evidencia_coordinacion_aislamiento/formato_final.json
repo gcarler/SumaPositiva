@@ -1,0 +1,23 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "ruff",
+    "format",
+    "--check",
+    "--no-cache",
+    "backend/alembic/env.py",
+    "backend/app/core/config.py",
+    "backend/tests/test_config.py",
+    "backend/tests/test_geodatos_analitica_hurtos.py",
+    "backend/tests/test_geodatos_test_isolation_policy.py"
+  ],
+  "database": "polis_test_edd_coord_20261026_d4afb7fa",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.058,
+  "fecha_utc": "2026-10-26T04:44:23.399149+00:00",
+  "guarda_sha256": "4f29b9abaa66ddd663567f8e5417dbf5a6de812fbe81539b961d039761c3c4bb",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

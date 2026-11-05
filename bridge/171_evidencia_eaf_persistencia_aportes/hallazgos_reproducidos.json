@@ -1,0 +1,218 @@
+{
+  "REPRODUCE_smtp_crear_commit": {
+    "scenario": "REPRODUCE_smtp_crear_commit",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:43.450191+00:00",
+    "transport": "CaptureSMTP.send_message; no socket",
+    "sent_attempts": [
+      {
+        "subject": "POLIS: Constancia de Radicación POL-2026-0082 - Cartagena Ciudad de Derechos",
+        "recipient": "eaf-sintetico@example.invalid"
+      }
+    ],
+    "observer_pid": 2849947,
+    "before": null,
+    "after": null
+  },
+  "REPRODUCE_smtp_crear_validation": {
+    "scenario": "REPRODUCE_smtp_crear_validation",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:43.595721+00:00",
+    "transport": "CaptureSMTP.send_message; no socket",
+    "sent_attempts": [
+      {
+        "subject": "POLIS: Constancia de Radicación POL-2026-0083 - Cartagena Ciudad de Derechos",
+        "recipient": "eaf-sintetico@example.invalid"
+      }
+    ],
+    "observer_pid": 2849952,
+    "before": null,
+    "after": null
+  },
+  "REPRODUCE_smtp_actualizar_commit": {
+    "scenario": "REPRODUCE_smtp_actualizar_commit",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:43.858592+00:00",
+    "transport": "CaptureSMTP.send_message; no socket",
+    "sent_attempts": [
+      {
+        "subject": "POLIS: Actualización de propuesta POL-2026-0084 - En revision",
+        "recipient": "eaf-sintetico@example.invalid"
+      }
+    ],
+    "observer_pid": 2849959,
+    "before": {
+      "id": "01a17671-5e75-7bbf-8eb2-52931e7184d8",
+      "codigo_radicado": "POL-2026-0084",
+      "titulo": "EAF SMTP e1ebd6de175240dc92dabf976ad93910",
+      "estado": "publicado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 0,
+      "notifications": 1
+    },
+    "after": {
+      "id": "01a17671-5e75-7bbf-8eb2-52931e7184d8",
+      "codigo_radicado": "POL-2026-0084",
+      "titulo": "EAF SMTP e1ebd6de175240dc92dabf976ad93910",
+      "estado": "publicado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 0,
+      "notifications": 1
+    }
+  },
+  "REPRODUCE_initial_state_rechazado": {
+    "scenario": "REPRODUCE_initial_state_rechazado",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:44.131803+00:00",
+    "http_status": 201,
+    "observer_pid": 2849966,
+    "state": {
+      "id": "01a17671-6009-7e8e-ad18-bae0e9fbdcdf",
+      "codigo_radicado": "POL-2026-0085",
+      "titulo": "EAF estado rechazado",
+      "estado": "rechazado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 0,
+      "notifications": 0
+    }
+  },
+  "REPRODUCE_initial_state_incorporado": {
+    "scenario": "REPRODUCE_initial_state_incorporado",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:44.337961+00:00",
+    "http_status": 201,
+    "observer_pid": 2849971,
+    "state": {
+      "id": "01a17671-60d3-7d08-8647-7e7cf7af056a",
+      "codigo_radicado": "POL-2026-0086",
+      "titulo": "EAF estado incorporado",
+      "estado": "incorporado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 0,
+      "notifications": 0
+    }
+  },
+  "REPRODUCE_public_contact_email": {
+    "scenario": "REPRODUCE_public_contact_email",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:45.078613+00:00",
+    "detail_status": 200,
+    "list_status": 200,
+    "exposed_field": "metadatos.correo_contacto",
+    "synthetic_email": "contacto-eaf@example.invalid"
+  },
+  "REPRODUCE_concurrent_devolutions": {
+    "scenario": "REPRODUCE_concurrent_devolutions",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:45.322176+00:00",
+    "accepted": 2,
+    "causes": [
+      "tecnica",
+      "presupuestal"
+    ],
+    "observer_pid": 2849999,
+    "state": {
+      "id": "01a17671-6454-78d3-a76a-c790923d4749",
+      "codigo_radicado": "POL-2026-0088",
+      "titulo": "EAF c7c8c2b082844ea99324d900e4ee177b",
+      "estado": "rechazado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 2,
+      "notifications": 0
+    }
+  },
+  "REPRODUCE_same_account_two_supports": {
+    "scenario": "REPRODUCE_same_account_two_supports",
+    "run": "12_escenarios_eaf_final",
+    "utc": "2026-10-26T04:21:47.991668+00:00",
+    "account_id": "01a17671-6c7d-70b8-b65c-d57c169ae2f9",
+    "login_statuses": [
+      200,
+      200
+    ],
+    "vote_statuses": [
+      200,
+      200
+    ],
+    "observer_pid": 2850045,
+    "state": {
+      "id": "01a17671-6ef9-7e71-8f95-e8629d3b7934",
+      "codigo_radicado": "POL-2026-0093",
+      "titulo": "EAF mismo usuario dos sesiones",
+      "estado": "publicado",
+      "activo": true,
+      "apoyos_contador": 2,
+      "supports": [
+        "(UUID('454623ce-39ee-4af0-868c-915bd5ee926c'), 'usuario')",
+        "(UUID('db52f2d2-da1f-41db-99ee-0255ae557c7e'), 'usuario')"
+      ],
+      "audits": 0,
+      "notifications": 0
+    }
+  },
+  "REPRODUCE_concurrent_authorized_http_devolutions": {
+    "scenario": "REPRODUCE_concurrent_authorized_http_devolutions",
+    "run": "15_devolucion_http_concurrente",
+    "utc": "2026-10-26T04:25:58.874867+00:00",
+    "http_statuses": [
+      201,
+      201
+    ],
+    "actor_id": "01a17675-40c9-7950-b1fe-b154010013f6",
+    "causes": [
+      "presupuestal",
+      "tecnica"
+    ],
+    "observer_pid": 2852158,
+    "state": {
+      "id": "01a17675-428c-7c80-b29f-36b714dae5af",
+      "codigo_radicado": "POL-2026-0114",
+      "titulo": "EAF devolución HTTP concurrente",
+      "estado": "rechazado",
+      "activo": true,
+      "apoyos_contador": 0,
+      "supports": [],
+      "audits": 2,
+      "notifications": 0
+    }
+  },
+  "REPRODUCE_whatsapp_partial_ack_duplicate_replay": {
+    "scenario": "REPRODUCE_whatsapp_partial_ack_duplicate_replay",
+    "run": "16_webhook_parcial",
+    "utc": "2026-10-26T04:28:28.392350+00:00",
+    "first_status": 200,
+    "first_body_status": "error_captured",
+    "persisted_after_first": [
+      {
+        "id": "01a17677-8adc-7f78-83cb-e86e2cab05d2",
+        "codigo_radicado": "POL-2026-0115",
+        "message_id": "eaf-wa-d38c66a38ca14dbc87d6e8d52fb24d7f-1"
+      }
+    ],
+    "replay_status": 200,
+    "persisted_after_replay": [
+      {
+        "id": "01a17677-8adc-7f78-83cb-e86e2cab05d2",
+        "codigo_radicado": "POL-2026-0115",
+        "message_id": "eaf-wa-d38c66a38ca14dbc87d6e8d52fb24d7f-1"
+      },
+      {
+        "id": "01a17677-8b30-7236-8ff1-e143df4f9eca",
+        "codigo_radicado": "POL-2026-0116",
+        "message_id": "eaf-wa-d38c66a38ca14dbc87d6e8d52fb24d7f-1"
+      }
+    ],
+    "third_valid_message_persisted": false,
+    "outbound_whatsapp": "none; incoming ASGI TestClient only"
+  }
+}

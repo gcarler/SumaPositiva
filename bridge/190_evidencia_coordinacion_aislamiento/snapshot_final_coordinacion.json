@@ -1,0 +1,22 @@
+{
+  "backend/app/core/config.py": "4dc91565b834d287255a170f1176018de8482d59bb464a0c6e57c0a992d0f086",
+  "backend/.env.example": "f1c799266057af3cc6411fc6f1c83af13077f8b55e096180e5c5fe1f45ca25cb",
+  "backend/alembic/env.py": "e4db97ad85d33b69781a0388d647ab7e0338ac9bc161bd5d8e37c69f1b01cbce",
+  "backend/pyproject.toml": "57093d7e58b4fba8869df46e84a1807e834b569e6bb36cfbfd02df792ea000c2",
+  ".github/workflows/check.yml": "9dcad790fac347edb4b9a188c6757fec347eba4ef4d96231c1c5143db3b5e11b",
+  "backend/tests/conftest.py": "01d11ddf3e6cf50b72bec2dad5fff3e00ded78225b62740932b847e3f70daf1d",
+  "backend/tests/database_isolation.py": "c4cffe3f4760ad80d9d548cfbe70c6371ca2de607587d39789e52503087f1edd",
+  "backend/tests/test_database_integration.py": "f3d8e6e6b91d2e340a219bcf26a616e012ca02032976f45e8107c0b3a6aebb18",
+  "backend/tests/test_migration_database_isolation.py": "2f34c2f34ba698a7ee9eba293f6e9de81ec66a7cf463d9731e110c0d33e5bcd1",
+  "backend/tests/test_geodatos_analitica_hurtos.py": "0f5601a8e2647b567af4512905a79ec992e166b4e9cd5c1eccc25138ce279c38",
+  "backend/tests/test_geodatos_test_isolation_policy.py": "6c9664362a6083c39828c281b3e073c73e88bdc27d1a6b3cfbff4c2c31022978",
+  "backend/tests/test_config.py": "e991331bf6d0e33c72cd7d5b832853e7b6cbd8b44b0721f56e85c2eed1b2e5c0",
+  "backend/tests/test_identidad_migracion.py": "ec6f9d369dcc7106e684ad58eb1f850f2ceb0d6564122511d0e1e390f489cbde",
+  "backend/tests/test_cierre01_migracion_asistencia.py": "75e866330b5b8d1acb2aa028cabe8ec16b2b5b5961253f8ec23187f7f3e9f7b3",
+  "backend/tests/test_formularios_admin.py": "1c2b9c6e48d2e97fec104f3129d6f2d2013aea72e519b715186170281335bda2",
+  "backend/tests/test_calidad_formularios.py": "448764c2fcd56cd5759b321442c6abbe8dcd2f81b32b742834cc81b30fd004eb",
+  "backend/tests/test_corridas_pipeline.py": "9306e6a73570ced4cf7f0649b8316dd10548185bde2614b4c465d86b982a0afb",
+  "backend/tests/test_tablas_dea_dmu_lineage.py": "b9c3f9ada53a57b509acfb870198656effb1288d1645b6268ad2fe8211fecea0",
+  "docs/identidad.md": "a38cb758b63aab6353834ae41621d8621ade7ee054a8a03c7497ced91f707f3f",
+  "docs/permisos-api.md": "b375f65e9343a55c73a8a717b615e879e45e330627c1bc075f8d1eee4b48dac8"
+}

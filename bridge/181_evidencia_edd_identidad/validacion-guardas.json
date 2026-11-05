@@ -1,0 +1,13 @@
+{
+  "base": "polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "rechazos_antes_io": [
+    "psycopg",
+    "SMTP",
+    "DNS",
+    "red",
+    "archivo",
+    "asyncpg"
+  ],
+  "conexion_positiva_base_propia": true,
+  "smtp_real": false
+}

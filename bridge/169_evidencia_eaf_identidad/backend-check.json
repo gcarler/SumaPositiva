@@ -1,0 +1,12 @@
+{
+  "comando": [
+    "bun",
+    "run",
+    "backend:check"
+  ],
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "codigo_salida": 143,
+  "duracion_segundos": 50.109,
+  "fecha_utc": "2026-10-26T04:05:42.119672+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

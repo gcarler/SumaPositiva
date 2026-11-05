@@ -1,0 +1,34 @@
+{
+  "utc": "2026-11-05T03:40:46.808886+00:00",
+  "estado": "verificado",
+  "artefactos_inventario_verificados": 1928,
+  "discrepancias_sha": [],
+  "valores_preexistentes_preservados": 2263,
+  "clasificaciones_preexistentes_preservadas": 2263,
+  "dimensiones_de_los_77_reemplazados_preservadas": true,
+  "sqlite_y_extracciones_socrata_sin_cambios": true,
+  "clasificaciones_portal_en_producto_canonico": {
+    "COM": 7,
+    "PERS": 119,
+    "SAT": 7
+  },
+  "observaciones_portal_canonicas": 133,
+  "derivacion": "data/capas_analiticas/derivaciones/a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa-2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e-v2.json",
+  "derivacion_sha256": "d1dd97b93efdd613b67fc48b9495d9bfe8f76fd604559cc5f89053ce62fcb898",
+  "artefactos_derivados": {
+    "canonico_ruta": "data/capas_analiticas/observaciones/ed5dbdafaa57c8fbddd908b46087758109c6f1bb17b708282fb780ec9f385b56.jsonl",
+    "canonico_sha256": "ed5dbdafaa57c8fbddd908b46087758109c6f1bb17b708282fb780ec9f385b56",
+    "consolidado_sha256": "a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa",
+    "contraste_ruta": "data/capas_analiticas/contrastes/ea705f0b298e883896f2e57f40ee7af64911b6817feb650f1810b53bff6b2622.json",
+    "contraste_sha256": "ea705f0b298e883896f2e57f40ee7af64911b6817feb650f1810b53bff6b2622",
+    "inventario_sha256": "2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e",
+    "paneles_series_ruta": "data/capas_analiticas/paneles_series_7d/207e6c05da3a2ea5c12cd8a7ec56eff57219d1e2639bc931eddbe3ed70c0dc75.json",
+    "paneles_series_sha256": "207e6c05da3a2ea5c12cd8a7ec56eff57219d1e2639bc931eddbe3ed70c0dc75",
+    "series_7d_ruta": "data/capas_analiticas/indicadores_7d/4925e9a45599487c92cba1b7913fcb9e25e80ec09a1abd900f847c464d8fc8e7.jsonl",
+    "series_7d_sha256": "4925e9a45599487c92cba1b7913fcb9e25e80ec09a1abd900f847c464d8fc8e7",
+    "tablero_operacion_ruta": "data/capas_analiticas/tablero_operacion_fuentes/4b5f515144ffef92b1d02e4c9f05fd30a7d9730d9f641bc8fb264c58f68ad7a9.json",
+    "tablero_operacion_sha256": "4b5f515144ffef92b1d02e4c9f05fd30a7d9730d9f641bc8fb264c58f68ad7a9"
+  },
+  "staging_propios_residuales": [],
+  "pytest": "no ejecutado"
+}

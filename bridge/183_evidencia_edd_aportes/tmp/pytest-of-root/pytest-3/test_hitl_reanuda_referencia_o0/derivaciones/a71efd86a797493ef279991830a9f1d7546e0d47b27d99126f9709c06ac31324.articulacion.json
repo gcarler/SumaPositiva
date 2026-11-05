@@ -1,0 +1,81 @@
+{
+  "alcance": "SOLO_ARTICULACION_PA_POR_CORTE",
+  "cobertura": {
+    "actividades_incluidas_en_muestra": 1,
+    "base_origen": "polis_test_sintetica",
+    "estado_publicacion": "no_publicable",
+    "filtro_textual_aplicado": false,
+    "instantanea_sha256": "ea1d2d3f688aeceef1eb6aec04862d6204217291afa413101ad70e59b61cbf3b",
+    "limite": "Solo filtro de plan; sin filtro léxico, clasificación 7D, ejecución o impacto acreditado.",
+    "metas_con_multiples_actividades": 0,
+    "metas_distintas": 1,
+    "metas_sin_pa_identificado": 0,
+    "modo_matriz": "MATERIALIZADA",
+    "muestra_truncada": false,
+    "origen": "MATRIZ_PLANEACION_CONGELADA",
+    "pares_meta_pa_sin_truncar": 1,
+    "promedio_avance_fisico_universo_filtrado_pct": null,
+    "registros_incluidos_en_muestra": 0,
+    "run_id": "e075ff62-9a1e-4e84-ba9c-eda176107132",
+    "suma_apropiacion_universo_filtrado_cop": null,
+    "suma_compromisos_universo_filtrado_cop": null,
+    "total_actividades_pa_coincidentes_sin_truncar": 1,
+    "total_registros_triada_coincidentes_sin_truncar": null
+  },
+  "consulta": {
+    "archivo": null,
+    "codigo_plan": "TODOS",
+    "dimension_sh": "TODAS",
+    "grado_frontalidad": "TODOS",
+    "pregunta": "¿Cómo se articulan las metas con las actividades PA?",
+    "profundidad": "forense"
+  },
+  "corte": {
+    "estado_calidad": "ambar",
+    "estado_publicacion": "no_publicable",
+    "manifiesto": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_hitl_reanuda_referencia_o0/corte.json",
+    "run_id": "e075ff62-9a1e-4e84-ba9c-eda176107132",
+    "sha256": "55113db354cc1d1166110cc00038eceda93356e509a254c17f9ba409f0ab5452"
+  },
+  "esquema": "polis.articulacion_planeacion_corte.v1",
+  "estado_publicacion": "no_publicable",
+  "herramientas_invocadas": [
+    {
+      "herramienta": "tool_cruzar_actividades_pa_bpim",
+      "parametros": {
+        "codigo_plan": "TODOS",
+        "pregunta": "¿Cómo se articulan las metas con las actividades PA?"
+      },
+      "registros_recuperados": 1
+    }
+  ],
+  "limite": "Cruces descriptivos; sin clasificación 7D, montos, inferencia LLM externa ni evaluación causal.",
+  "modelo": "polis-pdd-function-cognitive",
+  "muestra": [
+    {
+      "actividad_pa_codigo": "PA1",
+      "actividad_pa_id": "320acd63-798a-4a2a-a0f9-5af64bb32576",
+      "codigo_bpim": "BP1",
+      "codigo_meta": "M1",
+      "codigo_plan": "PDD_SINTETICO",
+      "documento_evidencia": null,
+      "estado_correspondencia": "CANDIDATO_BPIM_VIGENCIA",
+      "instantanea_sha256": "ea1d2d3f688aeceef1eb6aec04862d6204217291afa413101ad70e59b61cbf3b",
+      "meta_id": "b9248e23-3f95-4e3c-8710-b80c46cebe4d",
+      "nombre_meta": "Meta sintética",
+      "nombre_nodo": null,
+      "pagina_evidencia": null,
+      "programa_pdd_id": null,
+      "programa_pdd_nombre": null,
+      "sha256_documento": null,
+      "vigencia": 2024
+    }
+  ],
+  "run_id": "e075ff62-9a1e-4e84-ba9c-eda176107132",
+  "uso": {
+    "input_tokens": 228,
+    "output_tokens": 15,
+    "requests": 2
+  },
+  "version_prompt": "articulacion_planeacion_corte.v1"
+}

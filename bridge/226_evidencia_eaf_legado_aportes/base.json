@@ -1,0 +1,14 @@
+{
+  "database": "polis_test_eaf_legado_r3_20261026_8b4a11fc",
+  "creada_utc": "2026-10-26T06:21:12.318321+00:00",
+  "template": "template0",
+  "extensiones_locales": [
+    "postgis",
+    "ltree",
+    "pgcrypto",
+    "pg_trgm",
+    "pgrouting",
+    "address_standardizer"
+  ],
+  "limite": "Solo base nueva propia; roles/servicios/productiva sin cambios"
+}

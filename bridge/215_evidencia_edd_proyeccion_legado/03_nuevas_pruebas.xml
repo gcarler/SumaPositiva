@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="13" skipped="0" tests="149" time="35.775" timestamp="2026-10-26T06:10:06.062052+00:00" hostname="srv2006133"><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[etnia_bool]" time="0.770" /><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[bandera_texto]" time="0.561" /><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[bandera_null]" time="0.558" /><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_null]" time="0.486"><failure message="AssertionError: assert {'id': '730db...OTIVADA', ...} == {'id': '730db...4+00:00', ...}&#10;  &#10;  Omitting 8 identical items, use -vv to show&#10;  Differing items:&#10;  {'creado_en': '2026-10-26T06:10:18.336494Z'} != {'creado_en': '2026-10-26T06:10:18.336494+00:00'}&#10;  Use -v to get more diff">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cbbc39820&gt;
+legado = None
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200
+        assert len(respuesta.json()) == 1
+        original = antes["auditoria"][0]
+        esperado = {clave: valor for clave, valor in original.items() if clave != "metadatos"}
+        esperado["metadatos"] = {}
+&gt;       assert respuesta.json()[0] == esperado
+E       AssertionError: assert {'id': '730db...OTIVADA', ...} == {'id': '730db...4+00:00', ...}
+E         
+E         Omitting 8 identical items, use -vv to show
+E         Differing items:
+E         {'creado_en': '2026-10-26T06:10:18.336494Z'} != {'creado_en': '2026-10-26T06:10:18.336494+00:00'}
+E         Use -v to get more diff
+
+backend/tests/test_aportes_legado_publico.py:159: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_false]" time="0.568"><failure message="AssertionError: assert {'id': 'd7c3a...OTIVADA', ...} == {'id': 'd7c3a...2+00:00', ...}&#10;  &#10;  Omitting 8 identical items, use -vv to show&#10;  Differing items:&#10;  {'creado_en': '2026-10-26T06:10:19.252892Z'} != {'creado_en': '2026-10-26T06:10:19.252892+00:00'}&#10;  Use -v to get more diff">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cbbcdb590&gt;
+legado = False
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200
+        assert len(respuesta.json()) == 1
+        original = antes["auditoria"][0]
+        esperado = {clave: valor for clave, valor in original.items() if clave != "metadatos"}
+        esperado["metadatos"] = {}
+&gt;       assert respuesta.json()[0] == esperado
+E       AssertionError: assert {'id': 'd7c3a...OTIVADA', ...} == {'id': 'd7c3a...2+00:00', ...}
+E         
+E         Omitting 8 identical items, use -vv to show
+E         Differing items:
+E         {'creado_en': '2026-10-26T06:10:19.252892Z'} != {'creado_en': '2026-10-26T06:10:19.252892+00:00'}
+E         Use -v to get more diff
+
+backend/tests/test_aportes_legado_publico.py:159: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_lista]" time="1.265"><failure message="AssertionError: assert {'id': '6150c...OTIVADA', ...} == {'id': '6150c...6+00:00', ...}&#10;  &#10;  Omitting 8 identical items, use -vv to show&#10;  Differing items:&#10;  {'creado_en': '2026-10-26T06:10:20.545256Z'} != {'creado_en': '2026-10-26T06:10:20.545256+00:00'}&#10;  Use -v to get more diff">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cbba79640&gt;
+legado = ['legado']
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200
+        assert len(respuesta.json()) == 1
+        original = antes["auditoria"][0]
+        esperado = {clave: valor for clave, valor in original.items() if clave != "metadatos"}
+        esperado["metadatos"] = {}
+&gt;       assert respuesta.json()[0] == esperado
+E       AssertionError: assert {'id': '6150c...OTIVADA', ...} == {'id': '6150c...6+00:00', ...}
+E         
+E         Omitting 8 identical items, use -vv to show
+E         Differing items:
+E         {'creado_en': '2026-10-26T06:10:20.545256Z'} != {'creado_en': '2026-10-26T06:10:20.545256+00:00'}
+E         Use -v to get more diff
+
+backend/tests/test_aportes_legado_publico.py:159: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-genero]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[True-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[False-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[0-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-genero]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-ciclo_vital]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-hecho_victimizante]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[1.5-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor5-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-genero]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-hecho_victimizante]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-tipo_discapacidad]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor6-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_publico_no_coacciona_tipos[valor7-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[None-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[None-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[None-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[None-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_0-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_0-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_0-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_0-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0.0-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0.0-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0.0-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[0.0-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1.0-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1.0-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1.0-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1.0-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[true-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[true-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[true-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[true-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[false-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[false-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[false-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[false-persona_cuidadora]" time="0.003" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_1-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_1-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_1-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[1_1-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[texto_heredado-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[texto_heredado-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[texto_heredado-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[texto_heredado-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor9-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor9-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor9-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor9-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor10-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor10-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor10-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor10-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor11-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor11-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor11-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_publica_no_infiere_desde_tipos_heredados[valor11-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[None-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[indigena-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-etnia]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-genero]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-ciclo_vital]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-hecho_victimizante]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-tipo_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_texto_declarado_valido_se_conserva[texto v\xe1lido-organizacion_social]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[False-es_victima_conflicto]" time="0.002" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[False-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[False-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[False-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[True-es_victima_conflicto]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[True-situacion_discapacidad]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[True-poblacion_campesina]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_bandera_booleana_declarada_se_conserva[True-persona_cuidadora]" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_proyeccion_aplica_limite_real_sin_truncar_y_cierra_campos_abiertos" time="0.001" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[None]" time="1.730" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[False]" time="1.499" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[True]" time="1.407" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[0]" time="1.412" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[1.5]" time="1.353" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[texto_heredado]" time="1.451" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[legado6]" time="1.647" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[legado7]" time="1.448" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[legado8]" time="1.447" /><testcase classname="tests.test_aportes_legado_publico" name="test_lectura_y_gestion_legada_conservan_json_y_permisos[legado9]" time="1.402" /><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[None]" time="0.614"><failure message="AssertionError: assert '2026-10-26T06:10:36.020775Z' == '2026-10-26T0....020775+00:00'&#10;  &#10;  - 2026-10-26T06:10:36.020775+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:36.020775Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cbabebf80&gt;
+legado = None
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:36.020775Z' == '2026-10-26T0....020775+00:00'
+E             
+E             - 2026-10-26T06:10:36.020775+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:36.020775Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[False]" time="0.584"><failure message="AssertionError: assert '2026-10-26T06:10:36.586493Z' == '2026-10-26T0....586493+00:00'&#10;  &#10;  - 2026-10-26T06:10:36.586493+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:36.586493Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cbab73d40&gt;
+legado = False
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:36.586493Z' == '2026-10-26T0....586493+00:00'
+E             
+E             - 2026-10-26T06:10:36.586493+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:36.586493Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[True]" time="0.622"><failure message="AssertionError: assert '2026-10-26T06:10:37.323882Z' == '2026-10-26T0....323882+00:00'&#10;  &#10;  - 2026-10-26T06:10:37.323882+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:37.323882Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba727830&gt;
+legado = True
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:37.323882Z' == '2026-10-26T0....323882+00:00'
+E             
+E             - 2026-10-26T06:10:37.323882+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:37.323882Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[0]" time="0.523"><failure message="AssertionError: assert '2026-10-26T06:10:37.838663Z' == '2026-10-26T0....838663+00:00'&#10;  &#10;  - 2026-10-26T06:10:37.838663+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:37.838663Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba7d7bc0&gt;
+legado = 0
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:37.838663Z' == '2026-10-26T0....838663+00:00'
+E             
+E             - 2026-10-26T06:10:37.838663+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:37.838663Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[1.5]" time="0.522"><failure message="AssertionError: assert '2026-10-26T06:10:38.371248Z' == '2026-10-26T0....371248+00:00'&#10;  &#10;  - 2026-10-26T06:10:38.371248+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:38.371248Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba6a60c0&gt;
+legado = 1.5
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:38.371248Z' == '2026-10-26T0....371248+00:00'
+E             
+E             - 2026-10-26T06:10:38.371248+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:38.371248Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[texto_heredado]" time="0.491"><failure message="AssertionError: assert '2026-10-26T06:10:38.914600Z' == '2026-10-26T0...38.9146+00:00'&#10;  &#10;  - 2026-10-26T06:10:38.9146+00:00&#10;  ?                         -  ^^^&#10;  + 2026-10-26T06:10:38.914600Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba67e660&gt;
+legado = 'texto_heredado'
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:38.914600Z' == '2026-10-26T0...38.9146+00:00'
+E             
+E             - 2026-10-26T06:10:38.9146+00:00
+E             ?                         -  ^^^
+E             + 2026-10-26T06:10:38.914600Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[legado6]" time="0.555"><failure message="AssertionError: assert '2026-10-26T06:10:39.427641Z' == '2026-10-26T0....427641+00:00'&#10;  &#10;  - 2026-10-26T06:10:39.427641+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:39.427641Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba508d40&gt;
+legado = []
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:39.427641Z' == '2026-10-26T0....427641+00:00'
+E             
+E             - 2026-10-26T06:10:39.427641+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:39.427641Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[legado7]" time="1.171"><failure message="AssertionError: assert '2026-10-26T06:10:40.673613Z' == '2026-10-26T0....673613+00:00'&#10;  &#10;  - 2026-10-26T06:10:40.673613+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:40.673613Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba58b860&gt;
+legado = [None, {'contacto_abierto': 'privado-legado215@example.org'}]
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:40.673613Z' == '2026-10-26T0....673613+00:00'
+E             
+E             - 2026-10-26T06:10:40.673613+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:40.673613Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[legado8]" time="0.453"><failure message="AssertionError: assert '2026-10-26T06:10:41.107711Z' == '2026-10-26T0....107711+00:00'&#10;  &#10;  - 2026-10-26T06:10:41.107711+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:41.107711Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba5d1c10&gt;
+legado = {'canal': {'contacto_abierto': 'privado-legado215@example.org'}, 'tipo_mensaje': ['+573005552150'], 'destinos_privados': 'privado-legado215@example.org'}
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:41.107711Z' == '2026-10-26T0....107711+00:00'
+E             
+E             - 2026-10-26T06:10:41.107711+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:41.107711Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro[legado9]" time="0.487"><failure message="AssertionError: assert '2026-10-26T06:10:41.592024Z' == '2026-10-26T0....592024+00:00'&#10;  &#10;  - 2026-10-26T06:10:41.592024+00:00&#10;  ?                           ^^^^^^&#10;  + 2026-10-26T06:10:41.592024Z&#10;  ?                           ^">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x747cba6e9910&gt;
+legado = {'canal': 'mesa', 'tipo_mensaje': 'audio', 'destinos_privados': ['privado-legado215@example.org', '+573005552150']}
+
+    @pytest.mark.parametrize("legado", RAICES + [
+        {"canal": {"contacto_abierto": CONTACTO}, "tipo_mensaje": [TELEFONO], "destinos_privados": CONTACTO},
+        {"canal": "mesa", "tipo_mensaje": "audio", "destinos_privados": [CONTACTO, TELEFONO]},
+    ])
+    def test_historial_raices_heterogeneas_no_omite_decisiones_ni_amplia_filtro(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        visible = sembrar_devolucion(database_url, aporte_id, legado)
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, accion="EVENTO_PRIVADO_215")
+        sembrar_devolucion(database_url, aporte_id, {"destinos_privados": CONTACTO}, tabla="otra_tabla_215")
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+        assert respuesta.status_code == 200 and len(respuesta.json()) == 1
+        original = next(fila for fila in antes["auditoria"] if fila["id"] == visible)
+        for campo in ("id", "tabla_afectada", "registro_id", "accion", "usuario_id", "causal",
+                      "justificacion_motivada", "creado_en"):
+&gt;           assert respuesta.json()[0][campo] == original[campo]
+E           AssertionError: assert '2026-10-26T06:10:41.592024Z' == '2026-10-26T0....592024+00:00'
+E             
+E             - 2026-10-26T06:10:41.592024+00:00
+E             ?                           ^^^^^^
+E             + 2026-10-26T06:10:41.592024Z
+E             ?                           ^
+
+backend/tests/test_aportes_legado_publico.py:277: AssertionError</failure></testcase></testsuite></testsuites>

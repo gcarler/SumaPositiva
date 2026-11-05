@@ -1,0 +1,20 @@
+{
+  "comando": [
+    "backend/.venv/bin/pytest",
+    "backend/tests/test_cierre06_mfa_totp.py",
+    "backend/tests/test_magic_link.py",
+    "backend/tests/test_identidad_completa.py",
+    "backend/tests/test_identidad_y_permisos.py",
+    "backend/tests/test_control_fases_y_oauth.py",
+    "backend/tests/test_transaction_policy.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/181_evidencia_edd_identidad/pytest-base-identidad.xml"
+  ],
+  "base": "polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "codigo_salida": 1,
+  "duracion_segundos": 54.672,
+  "guarda_sha256_al_iniciar": "c5369632fedc9272ab6c71f253bcf5cfd01cd9c2c25baa73f66238641ee57a84",
+  "fecha_utc": "2026-10-26T04:39:21.308305+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

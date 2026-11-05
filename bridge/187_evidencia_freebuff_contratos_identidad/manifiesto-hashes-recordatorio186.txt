@@ -1,0 +1,9 @@
+87449c6c710b885b49eb6deb141de639f05f9122bcf8656cb618cbf7015443c6  ../../src/features/sesion/services/identidad-api.ts
+8ad9ddbf7053256a930103cd06ef44eddcdecb37bb3c7998d4e8c27bbab9eb76  ../../src/features/sesion/services/sincronizar-sesion.ts
+87b8ad0f7a1f1f6a9f55d91974c207863d6556a084191508848791cb5385d2c1  ../../src/features/sesion/services/sincronizar-sesion.test.ts
+48a62350987d22afa8571b36165ca5ddd495e947a72c32dae2f99235758676dd  ../../src/features/sesion/state/session-store.ts
+434db3f3099c52fb8e26e0d4d977f5ca72387a2f4bf6835eeabf382f276f1f00  ../../src/features/plataforma/components/plataforma-shell.tsx
+227a3497e40a2f3b1493bc6762a6b25a12a4f5a2717ba4839b60da1031f9017a  ../../src/app/_stories/plataforma-restringida.stories.tsx
+123be6bca0de664544482f48d6553df3bb2fe8d1725c2df89de3cb65ef186f10  ../../next.config.ts
+9995735093866205dadfd62ba122e86f55ed9983749e4d2aa839a6ed93010cc5  ui-test-recordatorio186.log
+dd1f65c8eb2a96ff5e6e583fe00a3750fd021a52554d544afb5547e93ff9287c  archivos-cambiados.txt

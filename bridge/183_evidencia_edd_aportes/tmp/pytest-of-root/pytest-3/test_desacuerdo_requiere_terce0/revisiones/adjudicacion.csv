@@ -1,0 +1,3 @@
+grupo_id,corpus_sha256,adjudicador_id,decision,justificacion,evidencia
+2aba085569d64e9bab75,55748b3502604e2b2e40884ab6eb60c69c1e1f1a1a9e93d1344dd722009f7569,adjudicador_c,SALUD,Definición y alcance comprobados,https://example.org/fuente
+c50458a716645389d5e2,55748b3502604e2b2e40884ab6eb60c69c1e1f1a1a9e93d1344dd722009f7569,,,,

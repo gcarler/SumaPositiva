@@ -1,0 +1,114 @@
+{
+  "utc": "2026-11-02T04:02:11.940803+00:00",
+  "unidades": {
+    "polis-herald-resumen.service": {
+      "installed": true,
+      "installed_sha256": "7dffebcf37374eda3effaeeb6e4f4e247ecd5fbf3316b59677fc635a7186611d",
+      "source_sha256": "7dffebcf37374eda3effaeeb6e4f4e247ecd5fbf3316b59677fc635a7186611d",
+      "properties": {
+        "argv": [
+          "systemctl",
+          "show",
+          "polis-herald-resumen.service",
+          "--no-pager",
+          "-p",
+          "LoadState,ActiveState,SubState,UnitFileState,Result,ExecMainStatus,ExecMainStartTimestamp,ExecMainExitTimestamp,LastTriggerUSec,NextElapseUSecRealtime,TimersCalendar,Triggers,TriggeredBy"
+        ],
+        "returncode": 0,
+        "stdout": "Triggers=\nTriggeredBy=polis-herald-resumen.timer\nLoadState=loaded\nActiveState=inactive\nSubState=dead\nUnitFileState=static\nResult=success\nExecMainStartTimestamp=Sun 2026-11-01 20:39:27 UTC\nExecMainExitTimestamp=Sun 2026-11-01 20:39:29 UTC\nExecMainStatus=0",
+        "stderr": ""
+      }
+    },
+    "polis-herald-resumen.timer": {
+      "installed": true,
+      "installed_sha256": "d9f787fec6951ce170ea6ee84ec096440a2254940b5384647fb03b5a7cdc0957",
+      "source_sha256": "d9f787fec6951ce170ea6ee84ec096440a2254940b5384647fb03b5a7cdc0957",
+      "properties": {
+        "argv": [
+          "systemctl",
+          "show",
+          "polis-herald-resumen.timer",
+          "--no-pager",
+          "-p",
+          "LoadState,ActiveState,SubState,UnitFileState,Result,ExecMainStatus,ExecMainStartTimestamp,ExecMainExitTimestamp,LastTriggerUSec,NextElapseUSecRealtime,TimersCalendar,Triggers,TriggeredBy"
+        ],
+        "returncode": 0,
+        "stdout": "Triggers=polis-herald-resumen.service\nTriggeredBy=\nLoadState=loaded\nActiveState=active\nSubState=waiting\nUnitFileState=enabled\nTimersCalendar={ OnCalendar=*-*-* 07:00:00 America/Bogota ; next_elapse=Mon 2026-11-02 12:00:00 UTC }\nNextElapseUSecRealtime=Mon 2026-11-02 12:00:00 UTC\nLastTriggerUSec=\nResult=success",
+        "stderr": ""
+      }
+    },
+    "polis-herald.service": {
+      "installed": true,
+      "installed_sha256": "0947eb86e6aa48b0d2b3c4800d3cca06f220b0f529b0d5a7cc0b7d52e76d8ea8",
+      "source_sha256": "0947eb86e6aa48b0d2b3c4800d3cca06f220b0f529b0d5a7cc0b7d52e76d8ea8",
+      "properties": {
+        "argv": [
+          "systemctl",
+          "show",
+          "polis-herald.service",
+          "--no-pager",
+          "-p",
+          "LoadState,ActiveState,SubState,UnitFileState,Result,ExecMainStatus,ExecMainStartTimestamp,ExecMainExitTimestamp,LastTriggerUSec,NextElapseUSecRealtime,TimersCalendar,Triggers,TriggeredBy"
+        ],
+        "returncode": 0,
+        "stdout": "Triggers=\nTriggeredBy=\nLoadState=loaded\nActiveState=active\nSubState=running\nUnitFileState=enabled\nResult=success\nExecMainStartTimestamp=Sun 2026-11-01 21:13:38 UTC\nExecMainExitTimestamp=\nExecMainStatus=0",
+        "stderr": ""
+      }
+    }
+  },
+  "journal_resumen_clasificado": [
+    {
+      "timestamp_us": "1793565567799525",
+      "clase": "inicio_unidad"
+    },
+    {
+      "timestamp_us": "1793565568904860",
+      "clase": "encolado_destinatario"
+    },
+    {
+      "timestamp_us": "1793565568904860",
+      "clase": "total_encolado",
+      "destinatarios": 1,
+      "fecha": "2026-11-01"
+    },
+    {
+      "timestamp_us": "1793565569271638",
+      "clase": "desactivacion_correcta"
+    },
+    {
+      "timestamp_us": "1793565569272467",
+      "clase": "fin_unidad"
+    },
+    {
+      "timestamp_us": "1793565569272892",
+      "clase": "otro"
+    }
+  ],
+  "journal_returncode": 0,
+  "checks": [
+    {
+      "argv": [
+        "systemd-analyze",
+        "verify",
+        "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot/deploy/systemd/polis-herald-resumen.service",
+        "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot/deploy/systemd/polis-herald-resumen.timer"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "/usr/lib/systemd/system/xfs_scrub_all.service:26: Support for option CPUAccounting= has been removed and it is ignored\n/usr/lib/systemd/system/system-xfs_scrub.slice:15: Support for option CPUAccounting= has been removed and it is ignored"
+    },
+    {
+      "argv": [
+        "bash",
+        "-n",
+        "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot/scripts/monitor_sistema_polis.sh"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "primer_disparo_programado_utc": "2026-11-02T12:00:00Z",
+  "sin_consultas_bd_produccion": true,
+  "sin_arranques_ni_reinicios": true
+}

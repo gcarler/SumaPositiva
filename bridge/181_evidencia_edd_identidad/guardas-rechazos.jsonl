@@ -1,0 +1,4 @@
+{"clase": "dns_externo", "detalle": "consulta externa bloqueada", "pid": 2859419}
+{"clase": "red_externa", "detalle": "destino externo bloqueado sin registrar direcci\u00f3n ni credenciales", "pid": 2859419}
+{"clase": "escritura_repositorio", "detalle": "bridge/181_guarda_rechazar_sintetico", "pid": 2859419}
+{"clase": "escritura_repositorio", "detalle": "backups", "pid": 2859512}

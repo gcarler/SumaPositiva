@@ -1,0 +1,14 @@
+{
+  "misma_cuenta_otra_sesion": 403,
+  "claims_privilegiados_sin_prueba": 403,
+  "otra_cuenta": 403,
+  "session_owner_incorrecto": 401,
+  "versiones_factor": {
+    "id": 403,
+    "activado_en": 403,
+    "secreto_cifrado": 403
+  },
+  "sal_rotada": 403,
+  "anonimo": 403,
+  "limite": "Manipulación de filas sintéticas simula replay; no se afirma capacidad externa de modificar esas filas"
+}

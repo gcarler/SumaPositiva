@@ -1,0 +1,136 @@
+"""El inventario local conserva procedencia sin promocionar fuentes inciertas."""
+
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+
+
+def _modulo():
+    ruta = Path(__file__).resolve().parents[2] / "scripts" / "inventariar_fuentes_polis.py"
+    spec = importlib.util.spec_from_file_location("inventariar_fuentes_polis_test", ruta)
+    assert spec and spec.loader
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+def test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales():
+    modulo = _modulo()
+    inventario = modulo.generar()
+    assert inventario["fuentes_clave"] == 43
+    assert inventario["artefactos"] >= 1700
+    assert any(a["paquete_clave"] == "planes_accion" for a in inventario["archivos"])
+    assert not any(a["ruta"].startswith("data/capas_analiticas/cortes/") for a in inventario["archivos"])
+    assert not any(a["ruta"].startswith("data/capas_analiticas/derivaciones/") for a in inventario["archivos"])
+    assert not any(a["ruta"] in modulo.EXCLUIR_MUTABLES for a in inventario["archivos"])
+    recibidos_drive = [a for a in inventario["archivos"] if a["evidencia_origen"].get("drive_file_ids")]
+    assert len(recibidos_drive) == 1403
+    assert all(a["evidencia_origen"]["custodio_confirmado"] is False for a in recibidos_drive)
+    assert len(inventario["corte_consolidado_sha256"]) == 64
+    assert all(len(archivo["sha256"]) == 64 for archivo in inventario["archivos"])
+    assert all(len(fuente["sha256_contenido"]) == 64 for fuente in inventario["fuentes"])
+    claves = {fuente["fuente_clave"] for fuente in inventario["fuentes"]}
+    assert {
+        "medicina_homicidios",
+        "fiscalia_spoa_procesos_por_anio_hecho",
+        "dane_poblacion_vigencia_censal",
+        "drive_excel_policial_11_delitos",
+        "fiscalia_spoa_busquedas_por_anio_hecho",
+    } <= claves
+
+
+def test_inventario_no_declara_drive_como_fuente_institucional():
+    fuentes = _modulo().generar()["fuentes"]
+    drive = [fuente for fuente in fuentes if "archivo_usuario_drive" in fuente["origenes"]]
+    assert drive and all(fuente["es_fuente_independiente"] is False for fuente in drive)
+    assert all(fuente["estado_promocion"] == "pendiente_validacion" for fuente in fuentes)
+
+
+def test_staging_inventaria_hashes_de_su_propia_version(monkeypatch, tmp_path):
+    modulo = _modulo()
+    staging = tmp_path / "banco_fuentes_oficiales.stage.prueba"
+    staging.mkdir()
+    consolidado = staging / "indicadores_consolidados_cartagena_2026.csv"
+    consolidado.write_text(
+        "origen,fuente_clave,custodio,dataset_id,indicador,anio,subtipo,valor,unidad,ambito,"
+        "estado_validacion,url_fuente,fecha_extraccion\n"
+        "prueba,clave,Entidad,dataset,indicador,2026,total,1,casos,municipio,prueba,https://example.org,"
+        "2026-10-22\n"
+    )
+    activo = tmp_path / "banco_fuentes_oficiales"
+    activo.mkdir()
+    (activo / consolidado.name).write_text("version anterior")
+    monkeypatch.setattr(modulo, "RAIZ", tmp_path)
+    monkeypatch.setattr(modulo, "BANCO", staging)
+    monkeypatch.setattr(modulo, "CONSOLIDADO", consolidado)
+    monkeypatch.setattr(modulo, "SALIDA", staging / "inventario_pipeline_2026.json")
+    monkeypatch.setattr(modulo, "RAICES", (staging,))
+    inventario = modulo.generar()
+    fila = next(archivo for archivo in inventario["archivos"] if archivo["ruta"].endswith(consolidado.name))
+    assert fila["ruta"] == "banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv"
+    assert fila["sha256"] == hashlib.sha256(consolidado.read_bytes()).hexdigest()
+
+
+def test_inventario_publicado_coincide_con_archivos_actuales():
+    raiz = Path(__file__).resolve().parents[2]
+    inventario = json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text())
+    for archivo in inventario["archivos"]:
+        ruta = raiz / archivo["ruta"]
+        assert ruta.is_file(), archivo["ruta"]
+        assert hashlib.sha256(ruta.read_bytes()).hexdigest() == archivo["sha256"], archivo["ruta"]
+
+
+def test_version_de_fuente_no_cambia_por_fecha_de_extraccion_ni_orden(monkeypatch, tmp_path):
+    modulo = _modulo()
+    filas = (
+        "origen,fuente_clave,custodio,dataset_id,indicador,anio,subtipo,valor,unidad,ambito,"
+        "estado_validacion,url_fuente,fecha_extraccion\n"
+        "origen,clave,Entidad,dataset,indicador,2024,total,1,casos,municipio,disponible,https://example.org,FECHA\n"
+        "origen,clave,Entidad,dataset,indicador,2025,total,2,casos,municipio,disponible,https://example.org,FECHA\n"
+    )
+    archivo = tmp_path / "indicadores.csv"
+    monkeypatch.setattr(modulo, "CONSOLIDADO", archivo)
+    archivo.write_text(filas.replace("FECHA", "2026-10-21"))
+    primera = modulo._registro_fuentes()[0]
+    lineas = filas.replace("FECHA", "2026-10-22").splitlines(keepends=True)
+    archivo.write_text("".join([lineas[0], lineas[2], lineas[1]]))
+    segunda = modulo._registro_fuentes()[0]
+    assert primera["sha256_contenido"] == segunda["sha256_contenido"]
+    assert primera["ultima_extraccion_utc"] != segunda["ultima_extraccion_utc"]
+
+
+def test_inventario_guarda_instantanea_inmutable_antes_de_actualizar_vista(tmp_path):
+    modulo = _modulo()
+    salida = tmp_path / "banco" / "inventario_pipeline_2026.json"
+    versiones = tmp_path / "versiones"
+    primero = {"esquema": "polis.inventario_fuentes.v1", "artefactos": 1}
+    ruta_primera = modulo.escribir_inventario(primero, salida, versiones)
+    contenido_primero = salida.read_bytes()
+    assert ruta_primera.read_bytes() == contenido_primero
+    assert ruta_primera.stem == hashlib.sha256(contenido_primero).hexdigest()
+    assert modulo.escribir_inventario(primero, salida, versiones) == ruta_primera
+    segundo = {"esquema": "polis.inventario_fuentes.v1", "artefactos": 2}
+    ruta_segunda = modulo.escribir_inventario(segundo, salida, versiones)
+    assert ruta_segunda != ruta_primera
+    assert ruta_primera.read_bytes() == contenido_primero
+    assert salida.read_bytes() == ruta_segunda.read_bytes()
+
+
+def test_checkpoints_operativos_no_cambian_el_inventario_de_fuentes(tmp_path, monkeypatch):
+    modulo = _modulo()
+    planes = tmp_path / "data/planes_desarrollo"
+    planes.mkdir(parents=True)
+    checkpoint = planes / "checkpoints_pdt_ai_evaluator.json"
+    checkpoint.write_text('{"threads": {"primero": "en_curso"}}')
+    cache = planes / "cache_motor_futuro.json"
+    cache.write_text('{"estado": "primero"}')
+    (planes / "documento.md").write_text("Documento de fuente conservado")
+    monkeypatch.setattr(modulo, "RAIZ", tmp_path)
+    monkeypatch.setattr(modulo, "RAICES", (planes,))
+    primero = modulo._registro_artefactos()
+    checkpoint.write_text('{"threads": {"otro": "completado"}}')
+    cache.write_text('{"estado": "segundo"}')
+    segundo = modulo._registro_artefactos()
+    assert primero == segundo
+    assert [fila["ruta"] for fila in segundo] == ["data/planes_desarrollo/documento.md"]

@@ -1,0 +1,73 @@
+{
+  "fecha_utc": "2026-10-27T12:01:22.494306+00:00",
+  "fuentes": {
+    "src/features/politicas/state/hero-store.ts": "6927c9042e89afc77c1619ba0074076a590fab08ddca9f1c7e5e7e9ae3081c9c",
+    "src/features/politicas/state/hero-store.test.ts": "2817bdcad57c91317964700e9962049515cd2b686a267422cbcf4208097e36eb",
+    "src/features/politicas/components/hero-home-showcase.tsx": "bfdf6b3b089bac86d9caa688cde066247fe9d1677b984b28fd42b5f0b469fcaa",
+    "src/features/politicas/components/hero-home-showcase.test.tsx": "2a9b8aaaec670be6d5dea143e9f98c50e35682f8e5694e08a0c2cb46515b1840",
+    "src/features/politicas/components/hero-page-banner.tsx": "fe5213b2e26d9982a84f7924bc7d201cb0875b33484758aff076bc6150db3a0a",
+    "src/features/politicas/components/hero-page-banner.test.tsx": "eca84003a0dbe136fb9c14f671cbe085844f27b576eb8bda104d443a43fc963b",
+    "src/features/plataforma/components/gestor-heros-plataforma.tsx": "55b0635b59043385d7bcdb40075a7026204dcfb1cb333ce84ccec58fa4a7c2d9",
+    "src/features/plataforma/components/gestor-heros-plataforma.test.tsx": "3b5fafcc8f81cc9c38833e03c8528ebe4147bc94145b12752e6cd23d2eadabc9",
+    "src/app/_stories/gestor-heros.stories.tsx": "7694ad160697faf5cd5d44be6ec806ed83d472aae76922ed6d665acfbc57f6ab"
+  },
+  "fuentes_tarea_coinciden_con_build_final": true,
+  "dependencias_integradas_otro_agente": {
+    "src/features/politicas/data/hero-pages.data.ts": "71582c1ac260087cabbad3a30451cd1872eab7f16e1e1f9761672b8db7147add",
+    "backend/app/modules/politicas/router.py": "b6fc5305281eeec78815523b934a63d511db645f3d71be9f25aaf584a052baa3",
+    "backend/app/modules/politicas/schemas.py": "31bf8741253ac22f0fd5c1df638678ac4b40175e5e6e4c606ed1bdbc5d4635b2",
+    "backend/tests/test_politicas_heros.py": "603eaf4bdc2bd071440ab45a0624fa3b154a4ed1fda59962aa6714044727d176",
+    "docs/permisos-api.md": "f43e7ed6a641e591c2c113867e663c37d7476c86cb1c602928193577915994b4"
+  },
+  "build_aislado": {
+    "raiz": "/tmp/polis-hero-243-ygu0hkw2",
+    "next_rc": 0,
+    "storybook_rc": 0
+  },
+  "validacion_visual": [
+    {
+      "ancho": 320,
+      "anchoDocumento": 320,
+      "anchoCuerpo": 320,
+      "tema": "light",
+      "formulario": true,
+      "tituloConservado": true,
+      "imagenesEnBiblioteca": 6,
+      "desbordes": [],
+      "errores": []
+    },
+    {
+      "ancho": 1440,
+      "anchoDocumento": 1440,
+      "anchoCuerpo": 1440,
+      "tema": "light",
+      "formulario": true,
+      "tituloConservado": true,
+      "imagenesEnBiblioteca": 6,
+      "desbordes": [],
+      "errores": []
+    },
+    {
+      "ancho": 320,
+      "anchoDocumento": 320,
+      "anchoCuerpo": 320,
+      "tema": "dark",
+      "formulario": true,
+      "tituloConservado": true,
+      "imagenesEnBiblioteca": 6,
+      "desbordes": [],
+      "errores": []
+    },
+    {
+      "ancho": 1440,
+      "anchoDocumento": 1440,
+      "anchoCuerpo": 1440,
+      "tema": "dark",
+      "formulario": true,
+      "tituloConservado": true,
+      "imagenesEnBiblioteca": 6,
+      "desbordes": [],
+      "errores": []
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "comando": "backend/.venv/bin/ruff check --no-cache --config backend/pyproject.toml scripts/inventariar_fuentes_polis.py backend/tests/test_inventario_fuentes_polis.py",
+  "cwd": "/root/polis",
+  "inicio_utc": "2026-10-26T06:44:11.090Z",
+  "chunk_id": "05381f",
+  "wall_time_seconds": 0.000013499,
+  "exit_code": 0,
+  "original_token_count": 5,
+  "output": "All checks passed!\n",
+  "fin_utc": "2026-10-26T06:44:11.215Z"
+}

@@ -1,0 +1,1221 @@
+{
+  "id" : "i8ww-5mcf",
+  "name" : "Unidades de Servicio (UDS) en Primera Infancia ICBF",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+  "attributionLink" : "https://www.icbf.gov.co/",
+  "averageRating" : 0,
+  "category" : "Inclusión Social y Reconciliación",
+  "createdAt" : 1564182206,
+  "description" : "Este conjunto de datos presenta las Unidades de Servicio (UDS) activas a la fecha de corte que prestan los servicios de primera infancia del ICBF por medio de las cuales se atiende a las niñas, niños y las mujeres gestantes.\n\nLa UDS corresponde al lugar físico donde se presta el servicio a los usuarios de cada modalidad de Primera Infancia.\n\nEn las UDS que prestan servicios en las modalidades comunitarias puede obtener una caracterización de las madres y padres comunitarios consultando el siguiente conjunto de datos y cruzando por la variable Unidad de Servicio: \n\nhttps://www.datos.gov.co/dataset/Caracterizaci-n-Madres-y-Padres-Comunitarios-ICBF/ixwb-p9qb",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 8735,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 41640034,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1758596527,
+  "publicationGroup" : 16390240,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1792102743,
+  "rowsUpdatedBy" : "gk4s-qz54",
+  "tableId" : 20103179,
+  "totalTimesRated" : 0,
+  "viewCount" : 38195,
+  "viewLastModified" : 1792102710,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1566834941,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 7133877,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1566834941,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1566834941,
+      "failureCount" : 0,
+      "startedAt" : 1566834941,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "vdxn-ik82",
+      "displayName" : "ICBF"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 618025521,
+    "name" : "Vigencia",
+    "dataTypeName" : "number",
+    "description" : "Vigencia en la que la UDS presta el servicio.",
+    "fieldName" : "vigencia",
+    "position" : 1,
+    "renderTypeName" : "number",
+    "tableColumnId" : 86461215,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "2026",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2024",
+        "count" : "30078"
+      }, {
+        "item" : "2026",
+        "count" : "20371"
+      }, {
+        "item" : "2025",
+        "count" : "7503"
+      } ],
+      "smallest" : "2024",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : {
+      "precisionStyle" : "standard",
+      "noCommas" : "true",
+      "align" : "center"
+    }
+  }, {
+    "id" : 618025522,
+    "name" : "Código Regional",
+    "dataTypeName" : "text",
+    "description" : "Código de la Regional a la que está adscrita la UDS. La Regional corresponde a una división administrativa del ICBF en función de la División Político Administrativa del País.",
+    "fieldName" : "codigo_regional",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461225,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "05",
+        "count" : "4437"
+      }, {
+        "item" : "44",
+        "count" : "4294"
+      }, {
+        "item" : "23",
+        "count" : "3777"
+      }, {
+        "item" : "13",
+        "count" : "3699"
+      }, {
+        "item" : "08",
+        "count" : "3648"
+      }, {
+        "item" : "19",
+        "count" : "3558"
+      }, {
+        "item" : "47",
+        "count" : "3498"
+      }, {
+        "item" : "76",
+        "count" : "3237"
+      }, {
+        "item" : "52",
+        "count" : "3015"
+      }, {
+        "item" : "20",
+        "count" : "2422"
+      }, {
+        "item" : "11",
+        "count" : "2316"
+      }, {
+        "item" : "54",
+        "count" : "2221"
+      }, {
+        "item" : "70",
+        "count" : "2135"
+      }, {
+        "item" : "27",
+        "count" : "2117"
+      }, {
+        "item" : "68",
+        "count" : "1998"
+      }, {
+        "item" : "41",
+        "count" : "1767"
+      }, {
+        "item" : "15",
+        "count" : "1766"
+      }, {
+        "item" : "25",
+        "count" : "1624"
+      }, {
+        "item" : "73",
+        "count" : "1105"
+      }, {
+        "item" : "50",
+        "count" : "1043"
+      } ],
+      "smallest" : "05",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : {
+      "align" : "center"
+    }
+  }, {
+    "id" : 618025523,
+    "name" : "Nombre Regional",
+    "dataTypeName" : "text",
+    "description" : "Nombre de la Regional a la que está adscrita la UDS. La Regional corresponde a una división administrativa del ICBF en función de la División Político Administrativa del País.",
+    "fieldName" : "nombre_regional",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461217,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "Vichada",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Antioquia",
+        "count" : "4437"
+      }, {
+        "item" : "La Guajira",
+        "count" : "4294"
+      }, {
+        "item" : "Córdoba",
+        "count" : "3777"
+      }, {
+        "item" : "Bolívar",
+        "count" : "3699"
+      }, {
+        "item" : "Atlántico",
+        "count" : "3648"
+      }, {
+        "item" : "Cauca",
+        "count" : "3558"
+      }, {
+        "item" : "Magdalena",
+        "count" : "3498"
+      }, {
+        "item" : "Valle Del Cauca",
+        "count" : "3237"
+      }, {
+        "item" : "Nariño",
+        "count" : "3015"
+      }, {
+        "item" : "Cesar",
+        "count" : "2422"
+      }, {
+        "item" : "Bogota D.C.",
+        "count" : "2316"
+      }, {
+        "item" : "Norte De Santander",
+        "count" : "2221"
+      }, {
+        "item" : "Sucre",
+        "count" : "2135"
+      }, {
+        "item" : "Chocó",
+        "count" : "2117"
+      }, {
+        "item" : "Santander",
+        "count" : "1998"
+      }, {
+        "item" : "Huila",
+        "count" : "1767"
+      }, {
+        "item" : "Boyacá",
+        "count" : "1766"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "1624"
+      }, {
+        "item" : "Tolima",
+        "count" : "1105"
+      }, {
+        "item" : "Meta",
+        "count" : "1043"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025524,
+    "name" : "Nombre Centro Zonal",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Centro Zonal al que está adscrito la UDS. El Centro Zonal corresponde a las unidades de atención que se crean a nivel municipal, distrital y local para la prestación de los servicios del ICBF.",
+    "fieldName" : "nombre_centro_zonal",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461218,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "CZ ZIPAQUIRA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CZ NORTE",
+        "count" : "1569"
+      }, {
+        "item" : "CZ SUROCCIDENTE",
+        "count" : "1314"
+      }, {
+        "item" : "CZ VALLEDUPAR 1",
+        "count" : "1120"
+      }, {
+        "item" : "CZ CIENAGA",
+        "count" : "1064"
+      }, {
+        "item" : "CZ MANAURE",
+        "count" : "1004"
+      }, {
+        "item" : "CZ 1 MONTERIA",
+        "count" : "952"
+      }, {
+        "item" : "CZ ICHITKI WAYUUWAAPULE",
+        "count" : "949"
+      }, {
+        "item" : "CZ BUENAVENTURA",
+        "count" : "931"
+      }, {
+        "item" : "CZ RIOHACHA 1",
+        "count" : "920"
+      }, {
+        "item" : "CZ INDIGENA",
+        "count" : "913"
+      }, {
+        "item" : "CZ TUMACO",
+        "count" : "905"
+      }, {
+        "item" : "CZ DE LA VIRGEN Y TURISTICO",
+        "count" : "850"
+      }, {
+        "item" : "CZ LORICA",
+        "count" : "849"
+      }, {
+        "item" : "CZ QUIBDO",
+        "count" : "833"
+      }, {
+        "item" : "CZ MAICAO",
+        "count" : "673"
+      }, {
+        "item" : "CZ CENTRO",
+        "count" : "673"
+      }, {
+        "item" : "CZ HIPODROMO",
+        "count" : "673"
+      }, {
+        "item" : "CZ URABA",
+        "count" : "669"
+      }, {
+        "item" : "CZ BOSTON",
+        "count" : "656"
+      }, {
+        "item" : "CZ SINCELEJO",
+        "count" : "629"
+      } ],
+      "smallest" : "CZ 1 MONTERIA",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025525,
+    "name" : "Código DANE Departamento",
+    "dataTypeName" : "text",
+    "description" : "Código DANE según División Político Administrativa (DIVIPOLA) del Departamento dónde atiende la UDS.",
+    "fieldName" : "codigo_dane_departamento",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461226,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "05",
+        "count" : "4437"
+      }, {
+        "item" : "44",
+        "count" : "4294"
+      }, {
+        "item" : "23",
+        "count" : "3777"
+      }, {
+        "item" : "13",
+        "count" : "3699"
+      }, {
+        "item" : "08",
+        "count" : "3648"
+      }, {
+        "item" : "19",
+        "count" : "3554"
+      }, {
+        "item" : "47",
+        "count" : "3498"
+      }, {
+        "item" : "76",
+        "count" : "3237"
+      }, {
+        "item" : "52",
+        "count" : "3019"
+      }, {
+        "item" : "20",
+        "count" : "2422"
+      }, {
+        "item" : "11",
+        "count" : "2316"
+      }, {
+        "item" : "54",
+        "count" : "2221"
+      }, {
+        "item" : "70",
+        "count" : "2135"
+      }, {
+        "item" : "27",
+        "count" : "2117"
+      }, {
+        "item" : "68",
+        "count" : "1998"
+      }, {
+        "item" : "15",
+        "count" : "1780"
+      }, {
+        "item" : "41",
+        "count" : "1767"
+      }, {
+        "item" : "25",
+        "count" : "1624"
+      }, {
+        "item" : "73",
+        "count" : "1105"
+      }, {
+        "item" : "50",
+        "count" : "1043"
+      } ],
+      "smallest" : "05",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : {
+      "align" : "center"
+    }
+  }, {
+    "id" : 618025526,
+    "name" : "Departamento",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Departamento dónde atiende la UDS.",
+    "fieldName" : "departamento",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461219,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "Vichada",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Antioquia",
+        "count" : "4437"
+      }, {
+        "item" : "La Guajira",
+        "count" : "4294"
+      }, {
+        "item" : "Córdoba",
+        "count" : "3777"
+      }, {
+        "item" : "Bolívar",
+        "count" : "3699"
+      }, {
+        "item" : "Atlántico",
+        "count" : "3648"
+      }, {
+        "item" : "Cauca",
+        "count" : "3554"
+      }, {
+        "item" : "Magdalena",
+        "count" : "3498"
+      }, {
+        "item" : "Valle Del Cauca",
+        "count" : "3237"
+      }, {
+        "item" : "Nariño",
+        "count" : "3019"
+      }, {
+        "item" : "Cesar",
+        "count" : "2422"
+      }, {
+        "item" : "Bogota D.C.",
+        "count" : "2316"
+      }, {
+        "item" : "Norte De Santander",
+        "count" : "2221"
+      }, {
+        "item" : "Sucre",
+        "count" : "2135"
+      }, {
+        "item" : "Chocó",
+        "count" : "2117"
+      }, {
+        "item" : "Santander",
+        "count" : "1998"
+      }, {
+        "item" : "Boyacá",
+        "count" : "1780"
+      }, {
+        "item" : "Huila",
+        "count" : "1767"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "1624"
+      }, {
+        "item" : "Tolima",
+        "count" : "1105"
+      }, {
+        "item" : "Meta",
+        "count" : "1043"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025527,
+    "name" : "Código DANE Municipio",
+    "dataTypeName" : "text",
+    "description" : "Código DANE según División Político Administrativa (DIVIPOLA) del Municipio dónde atiende la UDS",
+    "fieldName" : "codigo_dane_municipio",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461227,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "99773",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001",
+        "count" : "2316"
+      }, {
+        "item" : "08001",
+        "count" : "1830"
+      }, {
+        "item" : "13001",
+        "count" : "1681"
+      }, {
+        "item" : "44847",
+        "count" : "1183"
+      }, {
+        "item" : "05001",
+        "count" : "1119"
+      }, {
+        "item" : "44560",
+        "count" : "999"
+      }, {
+        "item" : "76109",
+        "count" : "931"
+      }, {
+        "item" : "54001",
+        "count" : "931"
+      }, {
+        "item" : "76001",
+        "count" : "873"
+      }, {
+        "item" : "44001",
+        "count" : "834"
+      }, {
+        "item" : "23001",
+        "count" : "809"
+      }, {
+        "item" : "20001",
+        "count" : "808"
+      }, {
+        "item" : "47001",
+        "count" : "657"
+      }, {
+        "item" : "70001",
+        "count" : "629"
+      }, {
+        "item" : "52835",
+        "count" : "611"
+      }, {
+        "item" : "44430",
+        "count" : "560"
+      }, {
+        "item" : "47189",
+        "count" : "522"
+      }, {
+        "item" : "27001",
+        "count" : "520"
+      }, {
+        "item" : "08758",
+        "count" : "496"
+      }, {
+        "item" : "66001",
+        "count" : "412"
+      } ],
+      "smallest" : "05001",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : {
+      "align" : "center"
+    }
+  }, {
+    "id" : 618025528,
+    "name" : "Municipio",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Municipio dónde atiende la UDS.",
+    "fieldName" : "municipio",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461220,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "Zona Bananera",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Bogota, D.C.",
+        "count" : "2316"
+      }, {
+        "item" : "Barranquilla",
+        "count" : "1830"
+      }, {
+        "item" : "Cartagena De Indias",
+        "count" : "1681"
+      }, {
+        "item" : "Uribia",
+        "count" : "1183"
+      }, {
+        "item" : "Medellin",
+        "count" : "1119"
+      }, {
+        "item" : "Manaure",
+        "count" : "1023"
+      }, {
+        "item" : "Cucuta",
+        "count" : "931"
+      }, {
+        "item" : "Buenaventura",
+        "count" : "931"
+      }, {
+        "item" : "Cali",
+        "count" : "873"
+      }, {
+        "item" : "Riohacha",
+        "count" : "834"
+      }, {
+        "item" : "Monteria",
+        "count" : "809"
+      }, {
+        "item" : "Valledupar",
+        "count" : "808"
+      }, {
+        "item" : "Santa Marta",
+        "count" : "657"
+      }, {
+        "item" : "Sincelejo",
+        "count" : "629"
+      }, {
+        "item" : "San Andres De Tumaco",
+        "count" : "611"
+      }, {
+        "item" : "Maicao",
+        "count" : "560"
+      }, {
+        "item" : "Cienaga",
+        "count" : "522"
+      }, {
+        "item" : "Quibdo",
+        "count" : "520"
+      }, {
+        "item" : "Soledad",
+        "count" : "496"
+      }, {
+        "item" : "Pereira",
+        "count" : "412"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025539,
+    "name" : "Numero de Contrato",
+    "dataTypeName" : "text",
+    "description" : "Número de contrato asignado a la Entidad Contratista",
+    "fieldName" : "numero_de_contratoo",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161990823,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "OD 99 420259 00050 2026",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11022842025",
+        "count" : "221"
+      }, {
+        "item" : "01160752024",
+        "count" : "201"
+      }, {
+        "item" : "08009282024",
+        "count" : "173"
+      }, {
+        "item" : "05017562025",
+        "count" : "164"
+      }, {
+        "item" : "08008002025",
+        "count" : "149"
+      }, {
+        "item" : "01160742024",
+        "count" : "147"
+      }, {
+        "item" : "05013682026",
+        "count" : "117"
+      }, {
+        "item" : "66005632024",
+        "count" : "117"
+      }, {
+        "item" : "66005622024",
+        "count" : "114"
+      }, {
+        "item" : "66005642024",
+        "count" : "112"
+      }, {
+        "item" : "76010152026",
+        "count" : "110"
+      }, {
+        "item" : "76010232026",
+        "count" : "106"
+      }, {
+        "item" : "20006412024",
+        "count" : "103"
+      }, {
+        "item" : "20006252024",
+        "count" : "101"
+      }, {
+        "item" : "20006422024",
+        "count" : "101"
+      }, {
+        "item" : "76010162026",
+        "count" : "97"
+      }, {
+        "item" : "13010712024",
+        "count" : "96"
+      }, {
+        "item" : "19010632024",
+        "count" : "96"
+      }, {
+        "item" : "20006212024",
+        "count" : "95"
+      }, {
+        "item" : "47006752025",
+        "count" : "94"
+      } ],
+      "smallest" : "01160742024",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025530,
+    "name" : "Código Unidad Servicio",
+    "dataTypeName" : "text",
+    "description" : "Código de la Unidad de Servicio. La UDS corresponde al lugar físico donde se presta el servicio.",
+    "fieldName" : "codigo_unidad_servicio",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461228,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "997731155730",
+      "null" : "0",
+      "top" : [ {
+        "item" : "230011127931",
+        "count" : "1"
+      }, {
+        "item" : "270251136343",
+        "count" : "1"
+      }, {
+        "item" : "735041128756",
+        "count" : "1"
+      }, {
+        "item" : "2700100084855",
+        "count" : "1"
+      }, {
+        "item" : "7000100133345",
+        "count" : "1"
+      }, {
+        "item" : "1935500136047",
+        "count" : "1"
+      }, {
+        "item" : "1954800049470",
+        "count" : "1"
+      }, {
+        "item" : "252601118623",
+        "count" : "1"
+      }, {
+        "item" : "0523700078365",
+        "count" : "1"
+      }, {
+        "item" : "7600100054277",
+        "count" : "1"
+      }, {
+        "item" : "7610900091575",
+        "count" : "1"
+      }, {
+        "item" : "4456000001731",
+        "count" : "1"
+      }, {
+        "item" : "198241146415",
+        "count" : "1"
+      }, {
+        "item" : "0800100030794",
+        "count" : "1"
+      }, {
+        "item" : "0588700083025",
+        "count" : "1"
+      }, {
+        "item" : "5220700025932",
+        "count" : "1"
+      }, {
+        "item" : "410011155361",
+        "count" : "1"
+      }, {
+        "item" : "2000100064563",
+        "count" : "1"
+      }, {
+        "item" : "680811124535",
+        "count" : "1"
+      }, {
+        "item" : "4700100039441",
+        "count" : "1"
+      } ],
+      "smallest" : "0500100019984",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025531,
+    "name" : "Nombre Unidad Servicio",
+    "dataTypeName" : "text",
+    "description" : "Nombre de la Unidad de Servicio. La UDS corresponde al lugar físico donde se presta el servicio",
+    "fieldName" : "nombre_unidad_servicio",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461221,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "ZURRIA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "LOS PITUFOS",
+        "count" : "392"
+      }, {
+        "item" : "MIS PRIMEROS PASOS",
+        "count" : "311"
+      }, {
+        "item" : "LOS ANGELITOS",
+        "count" : "285"
+      }, {
+        "item" : "DIVINO NIÑO",
+        "count" : "263"
+      }, {
+        "item" : "MIS ANGELITOS",
+        "count" : "247"
+      }, {
+        "item" : "MI PEQUEÑO MUNDO",
+        "count" : "243"
+      }, {
+        "item" : "CARITAS FELICES",
+        "count" : "202"
+      }, {
+        "item" : "MI SEGUNDO HOGAR",
+        "count" : "195"
+      }, {
+        "item" : "LOS CARIÑOSITOS",
+        "count" : "179"
+      }, {
+        "item" : "LOS BULLICIOSOS",
+        "count" : "173"
+      }, {
+        "item" : "PEQUEÑOS GIGANTES",
+        "count" : "164"
+      }, {
+        "item" : "LOS AMIGUITOS",
+        "count" : "160"
+      }, {
+        "item" : "MIS AMIGUITOS",
+        "count" : "153"
+      }, {
+        "item" : "LA ESPERANZA",
+        "count" : "127"
+      }, {
+        "item" : "CARITAS ALEGRES",
+        "count" : "125"
+      }, {
+        "item" : "TRAVESURAS",
+        "count" : "123"
+      }, {
+        "item" : "LOS OSITOS",
+        "count" : "115"
+      }, {
+        "item" : "MIS PEQUEÑOS ANGELITOS",
+        "count" : "114"
+      }, {
+        "item" : "MANITAS CREATIVAS",
+        "count" : "107"
+      }, {
+        "item" : "GOTITAS DE AMOR",
+        "count" : "99"
+      } ],
+      "smallest" : "0D CARIÑOSITOS 6",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025534,
+    "name" : "Zona Ubicación",
+    "dataTypeName" : "text",
+    "description" : "Zona de atención de la Unidad de Servicio. Toma los siguientes valores: C - Cabecera, R - Resto.",
+    "fieldName" : "zona_ubicacion",
+    "position" : 14,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461216,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "R",
+      "null" : "0",
+      "top" : [ {
+        "item" : "C",
+        "count" : "32986"
+      }, {
+        "item" : "R",
+        "count" : "24966"
+      } ],
+      "smallest" : "C",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025535,
+    "name" : "Dirección",
+    "dataTypeName" : "text",
+    "description" : "Dirección de Ubicación de la Unidad de Servicio.",
+    "fieldName" : "direccion",
+    "position" : 15,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461222,
+    "cachedContents" : {
+      "non_null" : "57704",
+      "largest" : "ZUNGO EMBARCADERO BARRIO PUEBLO NUEVO",
+      "null" : "248",
+      "top" : [ {
+        "item" : "CALLE PRINCIPAL",
+        "count" : "40"
+      }, {
+        "item" : "KILOMETRO 20 VIA VALLEDUPAR MARGEN DERECHO",
+        "count" : "30"
+      }, {
+        "item" : "CL PRINCIPAL",
+        "count" : "26"
+      }, {
+        "item" : "SALON COMUNAL",
+        "count" : "23"
+      }, {
+        "item" : "CL CENTRAL",
+        "count" : "23"
+      }, {
+        "item" : "CASETA COMUNAL",
+        "count" : "22"
+      }, {
+        "item" : "CORREGIMIENTO JONJONCITO, VIA KATANAMANA PASANDO POR KAWAMANA A 15 KM APROXIMADAMENTE ENTRANDO POR EL MARGEN IZQUIERDO.",
+        "count" : "22"
+      }, {
+        "item" : "CALLE CENTRAL",
+        "count" : "20"
+      }, {
+        "item" : "KM5 VÌA MAICAO MARGEN DERECHO",
+        "count" : "16"
+      }, {
+        "item" : "VEREDA BUENOS AIRES",
+        "count" : "16"
+      }, {
+        "item" : "SAN ISIDRO",
+        "count" : "15"
+      }, {
+        "item" : "RIO SAN JUAN",
+        "count" : "15"
+      }, {
+        "item" : "VEREDA SAN ISIDRO",
+        "count" : "15"
+      }, {
+        "item" : "SANTA CRUZ",
+        "count" : "15"
+      }, {
+        "item" : "MACUIRA",
+        "count" : "14"
+      }, {
+        "item" : "VEREDA SANTA ROSA",
+        "count" : "14"
+      }, {
+        "item" : "SAN MIGUEL",
+        "count" : "13"
+      }, {
+        "item" : "BAJO C LA COLONIA",
+        "count" : "13"
+      }, {
+        "item" : "NUEVA VENECIA",
+        "count" : "13"
+      }, {
+        "item" : "KM 35 VIA RIOHACHA - MAICAO",
+        "count" : "13"
+      } ],
+      "smallest" : "0 0 0 BLOQUE 22 APT 1 NORTE BARRIO 3 DE JULIO",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025536,
+    "name" : "Estado",
+    "dataTypeName" : "text",
+    "description" : "Estado de la Unidad de Servicio a la fecha de corte.",
+    "fieldName" : "estado",
+    "position" : 16,
+    "renderTypeName" : "text",
+    "tableColumnId" : 86461223,
+    "cachedContents" : {
+      "non_null" : "57952",
+      "largest" : "INACTIVA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "ACTIVA",
+        "count" : "57588"
+      }, {
+        "item" : "INACTIVA",
+        "count" : "364"
+      } ],
+      "smallest" : "ACTIVA",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  }, {
+    "id" : 618025537,
+    "name" : "Fecha de corte",
+    "dataTypeName" : "text",
+    "description" : "Fecha de corte de generación de la información.",
+    "fieldName" : "fecha_de_corte",
+    "position" : 17,
+    "renderTypeName" : "text",
+    "tableColumnId" : 104000177,
+    "cachedContents" : {
+      "non_null" : "0",
+      "null" : "57952",
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : {
+      "view" : "date_dmonthy"
+    }
+  }, {
+    "id" : 618025538,
+    "name" : "Georreferenciación",
+    "dataTypeName" : "point",
+    "description" : "Coordenada geoespacial en la que se encuentra ubicada la unidad de servicio",
+    "fieldName" : "geocoded_column",
+    "position" : 18,
+    "renderTypeName" : "point",
+    "tableColumnId" : 116681398,
+    "cachedContents" : {
+      "non_null" : "57586",
+      "null" : "366",
+      "top" : [ {
+        "item" : {
+          "coordinates" : [ -75.479425, 10.39104722222222 ],
+          "type" : "Point"
+        },
+        "count" : "42"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.52944444444444, 10.43583333333333 ],
+          "type" : "Point"
+        },
+        "count" : "30"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.56797194444444, 9.30346888888889 ],
+          "type" : "Point"
+        },
+        "count" : "30"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.50073583333334, 10.37143138888889 ],
+          "type" : "Point"
+        },
+        "count" : "26"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.53, 8.465 ],
+          "type" : "Point"
+        },
+        "count" : "25"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.42449583333334, 9.24014611111111 ],
+          "type" : "Point"
+        },
+        "count" : "22"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.47379722222223, 10.40325833333333 ],
+          "type" : "Point"
+        },
+        "count" : "19"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.72972222222222, 10.81888888888889 ],
+          "type" : "Point"
+        },
+        "count" : "17"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.08382777777777, 9.951139999999999 ],
+          "type" : "Point"
+        },
+        "count" : "17"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.50524583333333, 10.38770111111111 ],
+          "type" : "Point"
+        },
+        "count" : "17"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.62805555555555, 8.54111111111111 ],
+          "type" : "Point"
+        },
+        "count" : "17"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.46090000000001, 6.648269444444444 ],
+          "type" : "Point"
+        },
+        "count" : "16"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.58127222222222, 9.52751388888889 ],
+          "type" : "Point"
+        },
+        "count" : "16"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.28553055555555, 10.60512777777778 ],
+          "type" : "Point"
+        },
+        "count" : "16"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.52506666666666, 10.43828611111111 ],
+          "type" : "Point"
+        },
+        "count" : "16"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.04998888888889, 10.34997777777778 ],
+          "type" : "Point"
+        },
+        "count" : "15"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.08138888888888, 9.947777777777778 ],
+          "type" : "Point"
+        },
+        "count" : "15"
+      }, {
+        "item" : {
+          "coordinates" : [ -77.02349722222222, 3.885336111111111 ],
+          "type" : "Point"
+        },
+        "count" : "14"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.77830555555555, 10.85405555555556 ],
+          "type" : "Point"
+        },
+        "count" : "13"
+      }, {
+        "item" : {
+          "coordinates" : [ -75.42194444444445, 7.968611111111112 ],
+          "type" : "Point"
+        },
+        "count" : "12"
+      } ],
+      "count" : "57952",
+      "cardinality" : "57952"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Igualdad",
+        "Área o dependencia" : "Dirección de planeación y control de la gestión",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Anual"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "unidades de servicio", "primera infancia", "niñas y niños", "madres", "comunitarias" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

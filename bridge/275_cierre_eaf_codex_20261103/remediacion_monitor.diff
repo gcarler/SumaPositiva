@@ -1,0 +1,52 @@
+--- monitor_reinspeccion_anterior.sh
++++ monitor_cierre_20261103.sh
+@@ -78,7 +78,7 @@
+   # 1. Webhook genérico (Discord / Slack / Teams / custom HTTP)
+   if [[ -n "${POLIS_ALERT_WEBHOOK_URL:-}" ]]; then
+     log_msg "INFO" "Enviando alerta a webhook configurado..."
+-    if curl -s -m 5 -X POST -H "Content-Type: application/json" \
++    if curl -s -f -m 5 -X POST -H "Content-Type: application/json" \
+       -d "{\"content\": \"⚠️ **POLIS CARTAGENA — ALERTA CRÍTICA** [$TIMESTAMP]\n**$titulo**\n$cuerpo\"}" \
+       "$POLIS_ALERT_WEBHOOK_URL" >/dev/null 2>&1; then
+       log_msg "INFO" "Alerta webhook despachada exitosamente."
+@@ -93,7 +93,7 @@
+   if [[ -n "${POLIS_TELEGRAM_BOT_TOKEN:-}" && -n "${POLIS_TELEGRAM_CHAT_ID:-}" ]]; then
+     log_msg "INFO" "Enviando alerta a Telegram Bot..."
+     local mensaje="🚨 *POLIS Cartagena — Alerta del Watchdog* 🚨%0A%0A*Fecha UTC:* \`$TIMESTAMP\`%0A*Alerta:* $titulo%0A*Detalles:* \`$cuerpo\`"
+-    if curl -s -m 5 -X POST "https://api.telegram.org/bot${POLIS_TELEGRAM_BOT_TOKEN}/sendMessage" \
++    if curl -s -f -m 5 -X POST "https://api.telegram.org/bot${POLIS_TELEGRAM_BOT_TOKEN}/sendMessage" \
+       -d "chat_id=${POLIS_TELEGRAM_CHAT_ID}&text=${mensaje}&parse_mode=Markdown" >/dev/null 2>&1; then
+       log_msg "INFO" "Alerta Telegram despachada exitosamente."
+       enviada=true
+@@ -108,10 +108,10 @@
+     echo "Para activarlas, agregue las variables en /root/polis/backend/.env o en el entorno del sistema."
+   fi
+ 
+-  if [[ "$intento_fallido" == true && "$enviada" == false ]]; then
+-    return 1
+-  fi
+-  return 0
++  if [[ "$enviada" == true ]]; then
++    return 0
++  fi
++  return 1
+ }
+ 
+ ESTADO_GLOBAL=0
+@@ -204,12 +204,11 @@
+     fi
+   fi
+ else
+-  # Recuperación: limpiar el sello para que la próxima degradación alerte de inmediato.
+-  if [[ -f "$HERALD_ALERT_STATE_FILE" ]]; then
++  # Recuperación: limpiar el sello solo en modo cron para que la próxima degradación alerte de inmediato.
++  # Los modos de diagnóstico (--check y --json) son estrictamente de solo lectura.
++  if [[ "$MODO" == "cron" && -f "$HERALD_ALERT_STATE_FILE" ]]; then
+     rm -f "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
+-    if [[ "$MODO" == "cron" ]]; then
+-      log_msg "INFO" "Herald recuperado (saludable); sello de cooldown eliminado."
+-    fi
++    log_msg "INFO" "Herald recuperado (saludable); sello de cooldown eliminado."
+   fi
+ fi
+ 

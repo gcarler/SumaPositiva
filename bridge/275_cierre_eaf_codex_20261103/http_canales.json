@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/canales_http",
+    "--junitxml=/root/polis/bridge/275_cierre_eaf_codex_20261103/http_canales.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/snapshot",
+  "inicio_utc": "2026-11-03T10:48:20.151548+00:00",
+  "segundos": 9.348,
+  "returncode": 0,
+  "bases": [],
+  "smtp": "no utilizado",
+  "red_real": "solo 127.0.0.1; URL Telegram sustituida antes de curl real"
+}

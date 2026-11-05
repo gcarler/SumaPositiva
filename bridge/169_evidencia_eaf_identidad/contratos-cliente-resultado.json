@@ -1,0 +1,61 @@
+[
+  {
+    "ruta": "GET /identidad/mfa/estado",
+    "claves_respuesta_api": [
+      "activo",
+      "codigos_restantes",
+      "activado_en",
+      "exigido_por_rol"
+    ],
+    "cliente_acepta_respuesta": false,
+    "errores": [
+      {
+        "code": "invalid_type",
+        "path": [
+          "ultimo_uso_en"
+        ],
+        "expected": "string"
+      }
+    ]
+  },
+  {
+    "ruta": "POST /identidad/mfa/iniciar",
+    "claves_respuesta_api": [
+      "secreto_b32",
+      "otpauth_uri",
+      "qr_code_base64"
+    ],
+    "cliente_acepta_respuesta": false,
+    "errores": [
+      {
+        "code": "invalid_type",
+        "path": [
+          "uri_totp"
+        ],
+        "expected": "string"
+      }
+    ]
+  },
+  {
+    "ruta": "POST /identidad/usuarios/{id}/ambitos",
+    "claves_respuesta_api": [
+      "id",
+      "usuario_id",
+      "tipo_ambito",
+      "identificador_territorial",
+      "activo",
+      "creado_en",
+      "actualizado_en"
+    ],
+    "cliente_acepta_respuesta": false,
+    "errores": [
+      {
+        "code": "invalid_type",
+        "path": [
+          "asignado_en"
+        ],
+        "expected": "string"
+      }
+    ]
+  }
+]

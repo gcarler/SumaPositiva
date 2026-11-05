@@ -1,0 +1,551 @@
+"use client";
+
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { apiFetch } from "@/core/http/api-client";
+import {
+  HERO_HOME_SLIDES,
+  type HeroPageConfig,
+} from "@/features/politicas/data/hero-pages.data";
+
+export interface HeroImageOption {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  archivo: string;
+  thumbnail: string;
+  enfoque: string;
+}
+
+export interface HeroImageItem extends HeroImageOption {
+  habilitada: boolean;
+}
+
+export type NuevaImagenHero = Omit<HeroImageOption, "id"> & {
+  id?: string;
+  habilitada?: boolean;
+};
+
+export const HERO_IMAGE_OPTIONS: HeroImageItem[] = [
+  {
+    id: "asamblea-claustro",
+    titulo: "Cabildo Abierto y Foro Ciudadano",
+    descripcion:
+      "Vista aérea de asamblea y cabildo masivo en patio colonial cartagenero con amplia deliberación ciudadana.",
+    archivo: "/images/hero/hero-asamblea-claustro.webp",
+    thumbnail: "/images/hero/hero-asamblea-claustro-thumb.webp",
+    enfoque: "Cabildo Masivo Territorial",
+    habilitada: true,
+  },
+  {
+    id: "dialogo-comunitario",
+    titulo: "Diálogo Social y Rendición de Cuentas",
+    descripcion:
+      "Conversatorio abierto al aire libre con micrófono ciudadano y concertación institucional directa.",
+    archivo: "/images/hero/hero-dialogo-comunitario.webp",
+    thumbnail: "/images/hero/hero-dialogo-comunitario-thumb.webp",
+    enfoque: "Transparencia y Diálogo Directo",
+    habilitada: true,
+  },
+  {
+    id: "enfoque-diferencial",
+    titulo: "Taller Diferencial de Género y Juventud",
+    descripcion:
+      "Espacio inclusivo con el Observatorio de Equidad y organizaciones comunitarias de mujeres y jóvenes.",
+    archivo: "/images/hero/hero-enfoque-diferencial.webp",
+    thumbnail: "/images/hero/hero-enfoque-diferencial-thumb.webp",
+    enfoque: "Inclusión y Género",
+    habilitada: true,
+  },
+  {
+    id: "marco-logico",
+    titulo: "Matriz de Marco Lógico y Proyectos",
+    descripcion:
+      "Mesa comunitaria con líderes y jóvenes formulando proyectos territoriales con la matriz de relatoría técnica.",
+    archivo: "/images/hero/hero-marco-logico.webp",
+    thumbnail: "/images/hero/hero-marco-logico-thumb.webp",
+    enfoque: "Metodología Participativa & Comunitaria",
+    habilitada: true,
+  },
+  {
+    id: "mesa-deliberativa",
+    titulo: "Mesa Redonda y Concertación Temática",
+    descripcion:
+      "Trabajo deliberativo en equipo con carpetas, relatoría y concertación de compromisos ciudadanos.",
+    archivo: "/images/hero/hero-mesa-deliberativa.webp",
+    thumbnail: "/images/hero/hero-mesa-deliberativa-thumb.webp",
+    enfoque: "Mesas Temáticas POLIS",
+    habilitada: true,
+  },
+  {
+    id: "ninguna",
+    titulo: "Solo Retícula Institucional",
+    descripcion:
+      "Fondo minimalista oficial con retícula de puntos de alta legibilidad sin fotografía de fondo.",
+    archivo: "",
+    thumbnail: "",
+    enfoque: "Fondo Minimalista Oficial",
+    habilitada: true,
+  },
+];
+
+export const HERO_DEFAULT_IMAGE_ID = "asamblea-claustro";
+export const HERO_DEFAULT_OPACIDAD = 80;
+export const HERO_MIN_OPACIDAD = 10;
+export const HERO_MAX_OPACIDAD = 95;
+export const HERO_DEFAULT_INTERVALO_SEGUNDOS = 7;
+
+
+interface HeroDatos {
+  imagenesCatalogo: HeroImageItem[];
+  slides: HeroPageConfig[];
+  heroImageId: string;
+  opacidad: number;
+  modoCarrusel: boolean;
+  intervaloSegundos: number;
+  pausado: boolean;
+  indiceActivo: number;
+  pageImages: Record<string, string>;
+  cargandoServidor: boolean;
+  guardandoServidor: boolean;
+}
+
+export interface HeroConfigState extends HeroDatos {
+  setHeroImageId: (id: string) => void;
+  setOpacidad: (opacidad: number) => void;
+  setModoCarrusel: (activo: boolean) => void;
+  setIntervaloSegundos: (segundos: number) => void;
+  setPausado: (pausado: boolean) => void;
+  siguienteImagen: () => void;
+  anteriorImagen: () => void;
+  irAImagen: (id: string) => void;
+  togglePausa: () => void;
+  setPageImage: (pageKey: string, imageSrcOrId: string) => void;
+  resetPageImage: (pageKey: string) => void;
+  resetAllPageImages: () => void;
+  resetearHeroConfig: () => void;
+  toggleHabilitarImagen: (id: string) => void;
+  agregarImagen: (imagen: NuevaImagenHero) => HeroImageItem;
+  eliminarImagen: (id: string) => void;
+  restaurarCatalogoOficial: () => void;
+  agregarSlide: (slide: HeroPageConfig) => void;
+  eliminarSlide: (slideId: string) => void;
+  actualizarSlide: (slideId: string, datos: Partial<HeroPageConfig>) => void;
+  reordenarSlides: (slides: HeroPageConfig[]) => void;
+  sincronizarConServidor: () => Promise<void>;
+  guardarEnServidor: () => Promise<boolean>;
+  restablecerHerosOficiales: () => Promise<boolean>;
+}
+
+const catalogoOficial = () => HERO_IMAGE_OPTIONS.map((imagen) => ({ ...imagen }));
+const SIN_FOTOGRAFIA = HERO_IMAGE_OPTIONS[HERO_IMAGE_OPTIONS.length - 1];
+const storageFallback = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+};
+
+function esDataUrlImagenValida(valor: string): boolean {
+  const coincidencia = /^data:image\/([a-z0-9.!#$&*+=/-]+);base64,([A-Za-z0-9+/]+={0,2})$/.exec(valor);
+  if (!coincidencia) return false;
+  const tipo = (coincidencia[1] ?? "").toLowerCase();
+  const datos = coincidencia[2] ?? "";
+  let bytes: string;
+  try {
+    bytes = atob(datos);
+  } catch {
+    return false;
+  }
+  if (!bytes) return false;
+  const firma = (octetos: number[]) => octetos.every((octeto, indice) => bytes.charCodeAt(indice) === octeto);
+  if (tipo === "svg+xml") return /^<(?:\?xml|svg)/.test(bytes.trim());
+  if (tipo === "png") return firma([0x89, 0x50, 0x4e, 0x47]);
+  if (tipo === "jpeg" || tipo === "jpg") return firma([0xff, 0xd8, 0xff]);
+  if (tipo === "gif") return bytes.startsWith("GIF8");
+  if (tipo === "bmp") return bytes.startsWith("BM");
+  if (tipo === "webp") return bytes.startsWith("RIFF") && bytes.slice(8, 12) === "WEBP";
+  if (tipo === "avif") return bytes.slice(4, 8) === "ftyp";
+  return false;
+}
+
+/** Misma validación para el formulario, las acciones y los datos rehidratados. */
+export function esRutaImagenHero(valor: string): boolean {
+  if (!valor || /[\\\u0000-\u0020]/.test(valor)) return false;
+  if (valor.startsWith("data:image/")) return esDataUrlImagenValida(valor);
+  if (valor.startsWith("/images/")) {
+    try {
+      const ruta = decodeURIComponent(valor.split(/[?#]/)[0]);
+      return !ruta.split("/").some((parte) => parte === "." || parte === "..") &&
+        !/[\\\u0000-\u0020]/.test(ruta) &&
+        /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(ruta);
+    } catch {
+      return false;
+    }
+  }
+  try {
+    const url = new URL(valor);
+    return url.protocol === "https:" && Boolean(url.hostname) && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
+function respaldo(catalogo: HeroImageItem[]): HeroImageItem {
+  return catalogo.find((imagen) => imagen.id === HERO_DEFAULT_IMAGE_ID && imagen.habilitada) ??
+    catalogo.find((imagen) => imagen.habilitada && imagen.archivo) ?? SIN_FOTOGRAFIA;
+}
+
+function esSeleccionable(valor: string, catalogo: HeroImageItem[]): boolean {
+  const imagen = catalogo.find((opcion) => opcion.id === valor || (opcion.archivo && opcion.archivo === valor));
+  if (imagen) return imagen.habilitada;
+  if (HERO_IMAGE_OPTIONS.some((opcion) => opcion.id === valor || (opcion.archivo && opcion.archivo === valor))) {
+    return false;
+  }
+  return esRutaImagenHero(valor);
+}
+
+function clavePagina(clave: string): string {
+  return clave.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
+}
+
+function indiceImagen(id: string, catalogo: HeroImageItem[]): number {
+  return Math.max(0, catalogo.filter((imagen) => imagen.habilitada && imagen.archivo).findIndex((imagen) => imagen.id === id));
+}
+
+function reconciliarCatalogo(estado: HeroDatos, catalogo: HeroImageItem[]): Partial<HeroDatos> {
+  const retiradas = estado.imagenesCatalogo.filter((imagen) =>
+    !catalogo.some((actual) => actual.id === imagen.id && actual.habilitada));
+  const resolver = (valor: string) =>
+    retiradas.some((imagen) => imagen.id === valor || (imagen.archivo && imagen.archivo === valor)) ||
+    !esSeleccionable(valor, catalogo) ? respaldo(catalogo).id : valor;
+  const heroImageId = resolver(estado.heroImageId);
+  return {
+    imagenesCatalogo: catalogo,
+    heroImageId,
+    indiceActivo: indiceImagen(heroImageId, catalogo),
+    pageImages: Object.fromEntries(Object.entries(estado.pageImages).map(([clave, valor]) => [clave, resolver(valor)])),
+  };
+}
+
+function validarImagen(imagen: NuevaImagenHero, id: string): HeroImageItem {
+  const titulo = imagen.titulo.trim();
+  const descripcion = imagen.descripcion.trim();
+  const enfoque = imagen.enfoque.trim();
+  const archivo = imagen.archivo.trim();
+  const thumbnail = imagen.thumbnail.trim() || archivo;
+  if (!titulo || titulo.length > 160) throw new Error("Escribe un título de hasta 160 caracteres.");
+  if (!descripcion || descripcion.length > 1200) throw new Error("Escribe una descripción de hasta 1200 caracteres.");
+  if (!enfoque || enfoque.length > 200) throw new Error("Escribe un enfoque de hasta 200 caracteres.");
+  if (!/^[a-zA-Z0-9_-]+$/.test(id)) throw new Error("El identificador de la imagen no es válido.");
+  if (!esRutaImagenHero(archivo)) throw new Error("La imagen debe tener una URL HTTPS o una ruta de imagen /images/ válida.");
+  if (!esRutaImagenHero(thumbnail)) throw new Error("La miniatura debe tener una URL HTTPS o una ruta de imagen /images/ válida.");
+  return { id, titulo, descripcion, enfoque, archivo, thumbnail, habilitada: imagen.habilitada ?? true };
+}
+
+function esObjeto(valor: unknown): valor is Record<string, unknown> {
+  return typeof valor === "object" && valor !== null && !Array.isArray(valor);
+}
+
+function leerCatalogo(valor: unknown): HeroImageItem[] {
+  if (!Array.isArray(valor)) return catalogoOficial();
+  const catalogo: HeroImageItem[] = [];
+  for (const fila of valor) {
+    if (!esObjeto(fila) || typeof fila.id !== "string" ||
+      typeof fila.titulo !== "string" || typeof fila.descripcion !== "string" ||
+      typeof fila.enfoque !== "string" || typeof fila.archivo !== "string" ||
+      typeof fila.thumbnail !== "string" || (fila.habilitada !== undefined && typeof fila.habilitada !== "boolean") ||
+      catalogo.some((imagen) => imagen.id === fila.id)) continue;
+    try {
+      if (fila.id === "ninguna" && fila.archivo === "" && fila.thumbnail === "") {
+        catalogo.push({ ...SIN_FOTOGRAFIA, habilitada: fila.habilitada !== false });
+      } else {
+        catalogo.push(validarImagen({ titulo: fila.titulo, descripcion: fila.descripcion,
+          enfoque: fila.enfoque, archivo: fila.archivo, thumbnail: fila.thumbnail,
+          habilitada: fila.habilitada !== false }, fila.id));
+      }
+    } catch { /* Una entrada inválida no se convierte en una URL renderizable. */ }
+  }
+  return catalogo;
+}
+
+export function normalizarConfiguracionHero(valor: unknown): HeroDatos {
+  const previo = esObjeto(valor) ? valor : {};
+  const imagenesCatalogo = leerCatalogo(previo.imagenesCatalogo);
+  const heroImageId = typeof previo.heroImageId === "string" && esSeleccionable(previo.heroImageId, imagenesCatalogo)
+    ? previo.heroImageId : respaldo(imagenesCatalogo).id;
+  const pageImages = esObjeto(previo.pageImages) ? Object.fromEntries(Object.entries(previo.pageImages)
+    .filter((entrada): entrada is [string, string] => typeof entrada[1] === "string")
+    .map(([clave, imagen]) => [clavePagina(clave), esSeleccionable(imagen, imagenesCatalogo) ? imagen : respaldo(imagenesCatalogo).id])) : {};
+  if ("home" in pageImages) pageImages.home = heroImageId;
+  const slides = Array.isArray(previo.slides) && previo.slides.length > 0
+    ? (previo.slides as HeroPageConfig[])
+    : HERO_HOME_SLIDES;
+  return {
+    imagenesCatalogo,
+    slides,
+    heroImageId,
+    pageImages,
+    cargandoServidor: false,
+    guardandoServidor: false,
+    opacidad: typeof previo.opacidad === "number" && Number.isFinite(previo.opacidad)
+      ? Math.max(HERO_MIN_OPACIDAD, Math.min(HERO_MAX_OPACIDAD, Math.round(previo.opacidad))) : HERO_DEFAULT_OPACIDAD,
+    modoCarrusel: typeof previo.modoCarrusel === "boolean" ? previo.modoCarrusel : true,
+    intervaloSegundos: typeof previo.intervaloSegundos === "number" && Number.isFinite(previo.intervaloSegundos)
+      ? Math.max(1, Math.round(previo.intervaloSegundos)) : HERO_DEFAULT_INTERVALO_SEGUNDOS,
+    pausado: typeof previo.pausado === "boolean" ? previo.pausado : false,
+    indiceActivo: indiceImagen(heroImageId, imagenesCatalogo),
+  };
+}
+
+export function obtenerOpcionesCarrusel(catalogo = useHeroConfigStore.getState().imagenesCatalogo): HeroImageItem[] {
+  return catalogo.filter((imagen) => imagen.habilitada && imagen.archivo);
+}
+
+export function obtenerOpcionHero(id: string, catalogo = useHeroConfigStore.getState().imagenesCatalogo): HeroImageItem {
+  return catalogo.find((imagen) => imagen.id === id && imagen.habilitada) ?? respaldo(catalogo);
+}
+
+export const useHeroConfigStore = create<HeroConfigState>()(
+  persist(
+    (set, get) => ({
+      ...normalizarConfiguracionHero(null),
+      setHeroImageId: (heroImageId) => {
+        const estado = get();
+        if (!esSeleccionable(heroImageId, estado.imagenesCatalogo)) return;
+        set({ heroImageId, indiceActivo: indiceImagen(heroImageId, estado.imagenesCatalogo),
+          ...(estado.pageImages.home ? { pageImages: { ...estado.pageImages, home: heroImageId } } : {}) });
+      },
+      setOpacidad: (opacidad) => {
+        if (Number.isFinite(opacidad)) set({ opacidad: Math.max(HERO_MIN_OPACIDAD, Math.min(HERO_MAX_OPACIDAD, Math.round(opacidad))) });
+      },
+      setModoCarrusel: (modoCarrusel) => set({ modoCarrusel }),
+      setIntervaloSegundos: (intervaloSegundos) => {
+        if (Number.isFinite(intervaloSegundos)) set({ intervaloSegundos: Math.max(1, Math.round(intervaloSegundos)) });
+      },
+      setPausado: (pausado) => set({ pausado }),
+      siguienteImagen: () => {
+        const estado = get();
+        const opciones = obtenerOpcionesCarrusel(estado.imagenesCatalogo);
+        if (!opciones.length) return;
+        const indice = opciones.findIndex((imagen) => imagen.id === estado.heroImageId);
+        get().setHeroImageId(opciones[(indice + 1) % opciones.length].id);
+      },
+      anteriorImagen: () => {
+        const estado = get();
+        const opciones = obtenerOpcionesCarrusel(estado.imagenesCatalogo);
+        if (!opciones.length) return;
+        const indice = opciones.findIndex((imagen) => imagen.id === estado.heroImageId);
+        get().setHeroImageId(opciones[(indice < 0 ? opciones.length - 1 : (indice - 1 + opciones.length) % opciones.length)].id);
+      },
+      irAImagen: (id) => get().setHeroImageId(id),
+      togglePausa: () => set((estado) => ({ pausado: !estado.pausado })),
+      setPageImage: (pageKey, imageSrcOrId) => {
+        const estado = get();
+        if (!esSeleccionable(imageSrcOrId, estado.imagenesCatalogo)) return;
+        const key = clavePagina(pageKey);
+        set({ pageImages: { ...estado.pageImages, [key]: imageSrcOrId },
+          ...(key === "home" ? { heroImageId: imageSrcOrId, indiceActivo: indiceImagen(imageSrcOrId, estado.imagenesCatalogo) } : {}) });
+      },
+      resetPageImage: (pageKey) => {
+        const key = clavePagina(pageKey);
+        const pageImages = { ...get().pageImages };
+        delete pageImages[key];
+        set({ pageImages, ...(key === "home" ? { heroImageId: respaldo(get().imagenesCatalogo).id, indiceActivo: 0 } : {}) });
+      },
+      resetAllPageImages: () => set({ pageImages: {}, heroImageId: respaldo(get().imagenesCatalogo).id, indiceActivo: 0 }),
+      resetearHeroConfig: () => set(normalizarConfiguracionHero(null)),
+      toggleHabilitarImagen: (id) => set((estado) => reconciliarCatalogo(estado,
+        estado.imagenesCatalogo.map((imagen) => imagen.id === id ? { ...imagen, habilitada: !imagen.habilitada } : imagen))),
+      agregarImagen: (nueva) => {
+        const id = nueva.id?.trim() || `hero-${crypto.randomUUID()}`;
+        if (get().imagenesCatalogo.some((imagen) => imagen.id === id) || HERO_IMAGE_OPTIONS.some((imagen) => imagen.id === id)) {
+          throw new Error("Ya existe una imagen con ese identificador o está reservado para el catálogo oficial.");
+        }
+        const imagen = validarImagen(nueva, id);
+        set((estado) => ({ imagenesCatalogo: [...estado.imagenesCatalogo, imagen] }));
+        return imagen;
+      },
+      eliminarImagen: (id) => set((estado) => reconciliarCatalogo(estado, estado.imagenesCatalogo.filter((imagen) => imagen.id !== id))),
+      restaurarCatalogoOficial: () => set((estado) => reconciliarCatalogo(estado, catalogoOficial())),
+      agregarSlide: (slide: HeroPageConfig) => {
+        set((estado) => {
+          const slidesActuales = estado.slides?.length ? estado.slides : [...HERO_HOME_SLIDES];
+          const existe = slidesActuales.findIndex((s) => s.id === slide.id);
+          const slides = existe >= 0 ? slidesActuales.map((s, i) => (i === existe ? slide : s)) : [...slidesActuales, slide];
+          const catExiste = estado.imagenesCatalogo.findIndex((c) => c.id === slide.id);
+          const nuevaImg: HeroImageItem = {
+            id: slide.id,
+            titulo: slide.titulo,
+            descripcion: slide.subtitulo,
+            archivo: slide.imagenFondo,
+            thumbnail: slide.imagenFondo,
+            enfoque: slide.enfoque || slide.badgeTexto,
+            habilitada: true,
+          };
+          const imagenesCatalogo = catExiste >= 0
+            ? estado.imagenesCatalogo.map((c, i) => (i === catExiste ? nuevaImg : c))
+            : [...estado.imagenesCatalogo, nuevaImg];
+          return { slides, imagenesCatalogo };
+        });
+      },
+      eliminarSlide: (slideId: string) => {
+        const estado = get();
+        const slidesActuales = estado.slides?.length ? estado.slides : [...HERO_HOME_SLIDES];
+        if (slidesActuales.length <= 1) {
+          throw new Error("No es posible eliminar la última diapositiva del carrusel.");
+        }
+        const slides = slidesActuales.filter((s) => s.id !== slideId);
+        const imagenesCatalogo = estado.imagenesCatalogo.map((img) =>
+          img.id === slideId ? { ...img, habilitada: false } : img
+        );
+        const heroImageId = estado.heroImageId === slideId ? slides[0].id : estado.heroImageId;
+        set({
+          slides,
+          imagenesCatalogo,
+          heroImageId,
+          indiceActivo: 0,
+        });
+      },
+      actualizarSlide: (slideId: string, datos: Partial<HeroPageConfig>) => {
+        set((estado) => {
+          const slidesActuales = estado.slides?.length ? estado.slides : [...HERO_HOME_SLIDES];
+          const slides = slidesActuales.map((s) => (s.id === slideId ? { ...s, ...datos } : s));
+          return { slides };
+        });
+      },
+      reordenarSlides: (slides: HeroPageConfig[]) => set({ slides }),
+      sincronizarConServidor: async () => {
+        try {
+          const res = await fetch("/api/v1/politicas/heros");
+          if (!res.ok) return;
+          const datos = await res.json();
+          if (datos && Array.isArray(datos.slides) && datos.slides.length > 0) {
+            set((estado) => ({
+              slides: datos.slides,
+              opacidad: typeof datos.opacidad === "number" ? datos.opacidad : estado.opacidad,
+              modoCarrusel: typeof datos.modoCarrusel === "boolean" ? datos.modoCarrusel : estado.modoCarrusel,
+              intervaloSegundos: typeof datos.intervaloSegundos === "number" ? datos.intervaloSegundos : estado.intervaloSegundos,
+              pageImages: datos.pageImages ? { ...estado.pageImages, ...datos.pageImages } : estado.pageImages,
+              imagenesCatalogo: Array.isArray(datos.catalogoImagenes) && datos.catalogoImagenes.length > 0
+                ? leerCatalogo(datos.catalogoImagenes)
+                : estado.imagenesCatalogo,
+            }));
+          }
+        } catch {
+          /* Fallback resiliente */
+        }
+      },
+      guardarEnServidor: async () => {
+        const estado = get();
+        set({ guardandoServidor: true });
+        try {
+          const slidesParaGuardar = estado.slides?.length
+            ? estado.slides
+            : obtenerOpcionesCarrusel(estado.imagenesCatalogo).map((opt) => {
+                const canonical = HERO_HOME_SLIDES.find((s) => s.id === opt.id);
+                return (
+                  canonical || {
+                    id: opt.id,
+                    titulo: opt.titulo,
+                    subtitulo: opt.descripcion,
+                    enfoque: opt.enfoque,
+                    imagenFondo: opt.archivo,
+                    ubicacionReal: opt.enfoque,
+                    altura: "fullscreen" as const,
+                    badgeTexto: opt.enfoque || opt.titulo,
+                    activa: true,
+                  }
+                );
+              });
+          const payload = {
+            slides: slidesParaGuardar,
+            catalogoImagenes: estado.imagenesCatalogo.map((img) => ({
+              id: img.id,
+              titulo: img.titulo,
+              descripcion: img.descripcion,
+              archivo: img.archivo,
+              thumbnail: img.thumbnail || img.archivo,
+              enfoque: img.enfoque,
+            })),
+            opacidad: estado.opacidad,
+            modoCarrusel: estado.modoCarrusel,
+            intervaloSegundos: estado.intervaloSegundos,
+            pageImages: estado.pageImages,
+          };
+          await apiFetch("/politicas/heros", {
+            method: "PUT",
+            body: payload,
+          });
+          set({ guardandoServidor: false });
+          return true;
+        } catch (err) {
+          set({ guardandoServidor: false });
+          console.error("Error al persistir heros en servidor:", err);
+          return false;
+        }
+      },
+      restablecerHerosOficiales: async () => {
+        const resetData = normalizarConfiguracionHero(null);
+        set({ ...resetData, slides: [...HERO_HOME_SLIDES] });
+        try {
+          await apiFetch("/politicas/heros", {
+            method: "PUT",
+            body: {
+              slides: HERO_HOME_SLIDES,
+              catalogoImagenes: HERO_IMAGE_OPTIONS.map((img) => ({
+                id: img.id,
+                titulo: img.titulo,
+                descripcion: img.descripcion,
+                archivo: img.archivo,
+                thumbnail: img.thumbnail || img.archivo,
+                enfoque: img.enfoque,
+              })),
+              opacidad: 80,
+              modoCarrusel: true,
+              intervaloSegundos: 7,
+              pageImages: {},
+            },
+          });
+          return true;
+        } catch {
+          return true;
+        }
+      },
+    }),
+    {
+      name: "polis_hero_config",
+      version: 1,
+      storage: createJSONStorage(() => {
+        try {
+          if (typeof window !== "undefined") return window.localStorage;
+          if (typeof globalThis.localStorage !== "undefined") return globalThis.localStorage;
+        } catch { /* El catálogo sigue siendo utilizable sin almacenamiento disponible. */ }
+        return storageFallback;
+      }),
+      partialize: (estado) => ({
+        imagenesCatalogo: estado.imagenesCatalogo,
+        slides: estado.slides,
+        heroImageId: estado.heroImageId,
+        opacidad: estado.opacidad,
+        modoCarrusel: estado.modoCarrusel,
+        intervaloSegundos: estado.intervaloSegundos,
+        pausado: estado.pausado,
+        indiceActivo: estado.indiceActivo,
+        pageImages: estado.pageImages,
+      }),
+      migrate: (persistido) => normalizarConfiguracionHero(persistido),
+      merge: (persistido, actual) => ({ ...actual, ...normalizarConfiguracionHero(persistido) }),
+    }
+  )
+);
+
+/** Resuelve referencias vigentes; una imagen retirada o deshabilitada no se renderiza. */
+export function resolverImagenHero(idOrSrc: string, catalogo = useHeroConfigStore.getState().imagenesCatalogo): string {
+  if (!idOrSrc || idOrSrc === "ninguna") return "";
+  const imagen = catalogo.find((opcion) => opcion.id === idOrSrc || (opcion.archivo && opcion.archivo === idOrSrc));
+  if (imagen) return imagen.habilitada ? imagen.archivo : respaldo(catalogo).archivo;
+  if (HERO_IMAGE_OPTIONS.some((opcion) => opcion.id === idOrSrc || (opcion.archivo && opcion.archivo === idOrSrc))) {
+    return respaldo(catalogo).archivo;
+  }
+  return esRutaImagenHero(idOrSrc) ? idOrSrc : respaldo(catalogo).archivo;
+}

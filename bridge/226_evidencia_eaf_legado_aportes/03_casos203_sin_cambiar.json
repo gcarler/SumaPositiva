@@ -1,0 +1,18 @@
+{
+  "comando": [
+    "backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "bridge/226_evidencia_eaf_legado_aportes/test_atomicidad.py",
+    "bridge/226_evidencia_eaf_legado_aportes/test_colas.py",
+    "bridge/226_evidencia_eaf_legado_aportes/test_principales.py",
+    "bridge/226_evidencia_eaf_legado_aportes/test_adicionales.py",
+    "-q"
+  ],
+  "database": "polis_test_eaf_legado_r3_20261026_8b4a11fc",
+  "codigo_salida": 0,
+  "duracion_segundos": 50.715,
+  "fecha_utc": "2026-10-26T06:26:26.214260+00:00",
+  "guarda_sha256": "704053e21fe70c8de4aed238343082eca531311c51d59bcd69400821eb2012e8",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

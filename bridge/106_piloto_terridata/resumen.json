@@ -1,0 +1,357 @@
+{
+  "conteos": {
+    "por_advertencia": {
+      "campo_obligatorio_vacio": 2,
+      "descripcion_general_no_serie_estadistica_automatica": 102,
+      "mes_0_sin_regla_proveedor_acreditada": 8,
+      "numerico_formato_no_compatible:decimal_simple_v1": 12077,
+      "sin_valor_declarado": 659,
+      "temporalidad_preservada_sin_regla_proveedor": 12891
+    },
+    "por_estado_fila": {
+      "aceptada": 158,
+      "rechazada": 2,
+      "retiene": 12739
+    },
+    "por_estado_identidad": {
+      "concordante_declarada": 12899
+    },
+    "por_estado_temporalidad": {
+      "declarada_sin_regla_proveedor": 12891,
+      "mes_0_sin_regla_proveedor": 8
+    },
+    "por_estado_valor_numerico": {
+      "formato_no_regla": 12077,
+      "no_presente": 822
+    }
+  },
+  "ejecucion_utc": "2026-10-25T13:48:44.057255+00:00",
+  "ejemplos_por_estado": {
+    "aceptada": [
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 6,
+        "orden": 5
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 7,
+        "orden": 6
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 8,
+        "orden": 7
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 9,
+        "orden": 8
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 10,
+        "orden": 9
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 11,
+        "orden": 10
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 12,
+        "orden": 11
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 103,
+        "orden": 102
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 6963,
+        "orden": 6962
+      },
+      {
+        "advertencias": [
+          "temporalidad_preservada_sin_regla_proveedor"
+        ],
+        "estado_fila": "aceptada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 6964,
+        "orden": 6963
+      }
+    ],
+    "rechazada": [
+      {
+        "advertencias": [
+          "campo_obligatorio_vacio",
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor"
+        ],
+        "estado_fila": "rechazada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 7584,
+        "orden": 7583
+      },
+      {
+        "advertencias": [
+          "campo_obligatorio_vacio",
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor"
+        ],
+        "estado_fila": "rechazada",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 7592,
+        "orden": 7591
+      }
+    ],
+    "retiene": [
+      {
+        "advertencias": [
+          "mes_0_sin_regla_proveedor_acreditada",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "mes_0_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 2,
+        "orden": 1
+      },
+      {
+        "advertencias": [
+          "mes_0_sin_regla_proveedor_acreditada",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "mes_0_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 3,
+        "orden": 2
+      },
+      {
+        "advertencias": [
+          "mes_0_sin_regla_proveedor_acreditada",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "mes_0_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 4,
+        "orden": 3
+      },
+      {
+        "advertencias": [
+          "mes_0_sin_regla_proveedor_acreditada",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "mes_0_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 5,
+        "orden": 4
+      },
+      {
+        "advertencias": [
+          "mes_0_sin_regla_proveedor_acreditada",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "mes_0_sin_regla_proveedor",
+        "estado_valor_numerico": "no_presente",
+        "linea_final": 13,
+        "orden": 12
+      },
+      {
+        "advertencias": [
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 14,
+        "orden": 13
+      },
+      {
+        "advertencias": [
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 15,
+        "orden": 14
+      },
+      {
+        "advertencias": [
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 16,
+        "orden": 15
+      },
+      {
+        "advertencias": [
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 17,
+        "orden": 16
+      },
+      {
+        "advertencias": [
+          "numerico_formato_no_compatible:decimal_simple_v1",
+          "temporalidad_preservada_sin_regla_proveedor",
+          "descripcion_general_no_serie_estadistica_automatica"
+        ],
+        "estado_fila": "retiene",
+        "estado_identidad": "concordante_declarada",
+        "estado_temporalidad": "declarada_sin_regla_proveedor",
+        "estado_valor_numerico": "formato_no_regla",
+        "linea_final": 18,
+        "orden": 17
+      }
+    ]
+  },
+  "esquema": "polis.piloto_terridata_resumen.v1",
+  "estado": "piloto_ingesta_local_pendiente_validacion_semantica",
+  "insumo_txt": {
+    "bytes": 2853390,
+    "codificacion": "utf-8-sig",
+    "delimitador": "|",
+    "fecha_captura_declarada": null,
+    "miembro": "TerriData13001.txt",
+    "sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2"
+  },
+  "insumo_zip": {
+    "bytes": 114090,
+    "ruta": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+    "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+  },
+  "limites": [
+    "Sin sumar datos ni elegir cifra final.",
+    "Sin certificar DIVIPOLA, proyecciones, vigencia, unidad de observacion ni calidad semantica.",
+    "Sin extraer rutas del ZIP al filesystem.",
+    "Sin red ni SQL."
+  ],
+  "parser": {
+    "conteos_parser": {
+      "filas_aceptadas": 158,
+      "filas_ancho_inconsistente": 0,
+      "filas_campo_obligatorio_vacio": 2,
+      "filas_celda_excede_limite": 0,
+      "filas_con_cualitativo": 335,
+      "filas_con_mes_0": 8,
+      "filas_con_numerico_sin_regla": 12077,
+      "filas_con_valor_numerico_valido": 0,
+      "filas_datos": 12899,
+      "filas_descripcion_general": 102,
+      "filas_identidad_concordante_declarada": 12899,
+      "filas_identidad_discordante_declarada": 0,
+      "filas_identidad_no_contrastable": 0,
+      "filas_identidad_no_evaluable": 0,
+      "filas_rechazadas": 2,
+      "filas_retenidas": 12739,
+      "filas_sin_valor_declarado": 659
+    },
+    "esquema": "polis.parser_terridata.v1",
+    "filas_resultado": 12899,
+    "sha256_bytes_txt_resultado": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+    "version": "terridata_txt.v1"
+  },
+  "salidas": {
+    "filas_bytes": 13191372,
+    "filas_jsonl": "bridge/106_piloto_terridata/filas.jsonl",
+    "filas_sha256": "77b358fcb06aa675cd4871eaed29acffac065d340236079b12689c3b4459ef4a"
+  }
+}

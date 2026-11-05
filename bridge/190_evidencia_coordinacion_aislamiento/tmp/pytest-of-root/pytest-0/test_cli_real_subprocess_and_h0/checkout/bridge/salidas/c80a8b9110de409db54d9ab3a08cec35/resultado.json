@@ -1,0 +1,219 @@
+{
+  "conteos": {
+    "observaciones_declaradas": 2,
+    "pares_comparables": 1,
+    "pares_con_diferencia_numerica": 1,
+    "pares_emitidos": 1,
+    "pares_entre_productos": 0,
+    "pares_inter_fuentes": 1,
+    "pares_no_comparables": 0,
+    "pares_pendientes": 0,
+    "pares_revision_conflicto_version": 0,
+    "pares_revision_interna": 0,
+    "pares_revision_interna_con_cambio_metodologico": 0,
+    "pares_revision_version_desconocida": 0
+  },
+  "esquema": "polis.contraste_retrospectivo.v1",
+  "estado": "prototipo_pendiente_revision_e_integracion",
+  "limites": [
+    "No se acreditan hechos ni acceso al contenido original.",
+    "No se suma, promedia ni elige cifra única.",
+    "No se interpreta causalidad ni subregistro.",
+    "No se reconstruyen versiones ausentes.",
+    "No se transforman unidades ni escalas.",
+    "No se abren URLs ni bases externas."
+  ],
+  "metodo": "puro_conservador",
+  "modo_pareo": "pares_solicitados",
+  "observaciones_declaradas": [
+    {
+      "criterio_localizacion": "ocurrencia",
+      "definicion_metodologica": "definicion-sintetica-v1",
+      "evidencias": [],
+      "explicaciones": [],
+      "fecha_referencia": {
+        "fecha": null,
+        "precision": null,
+        "tipo": "ocurrencia"
+      },
+      "fechas_proceso": [],
+      "fuente_id": "fuente-sintetica-a",
+      "id": "a",
+      "indicador_fenomeno": "indicador-sintetico",
+      "periodo_fenomeno": {
+        "fin": "2020-12-31",
+        "granularidad": "anual",
+        "inicio": "2020-01-01",
+        "tipo": "ocurrencia"
+      },
+      "poblacion": "poblacion-sintetica",
+      "producto_id": "producto-sintetico-a",
+      "territorio": "territorio-sintetico",
+      "unidad_medida": "conteo",
+      "unidad_observacion": "evento-sintetico",
+      "universo": "universo-sintetico",
+      "valor_original": "10.50",
+      "valor_original_texto": "10.50",
+      "version_id": "v1",
+      "version_sha256_declarado": null
+    },
+    {
+      "criterio_localizacion": "ocurrencia",
+      "definicion_metodologica": "definicion-sintetica-v1",
+      "evidencias": [],
+      "explicaciones": [],
+      "fecha_referencia": {
+        "fecha": null,
+        "precision": null,
+        "tipo": "ocurrencia"
+      },
+      "fechas_proceso": [],
+      "fuente_id": "fuente-sintetica-b",
+      "id": "b",
+      "indicador_fenomeno": "indicador-sintetico",
+      "periodo_fenomeno": {
+        "fin": "2020-12-31",
+        "granularidad": "anual",
+        "inicio": "2020-01-01",
+        "tipo": "ocurrencia"
+      },
+      "poblacion": "poblacion-sintetica",
+      "producto_id": "producto-sintetico-b",
+      "territorio": "territorio-sintetico",
+      "unidad_medida": "conteo",
+      "unidad_observacion": "evento-sintetico",
+      "universo": "universo-sintetico",
+      "valor_original": "3.25",
+      "valor_original_texto": "3.25",
+      "version_id": "v1",
+      "version_sha256_declarado": null
+    }
+  ],
+  "pares": [
+    {
+      "diferencia_valor": {
+        "diferencia_texto": "725E-2",
+        "tipo": "resta_decimal_exacta"
+      },
+      "diferencias_metadatos": [
+        {
+          "a": "producto-sintetico-a",
+          "b": "producto-sintetico-b",
+          "bloquea_comparabilidad": false,
+          "campo": "producto_id",
+          "estado": "informativo",
+          "requiere_igualdad": false
+        },
+        {
+          "a": "definicion-sintetica-v1",
+          "b": "definicion-sintetica-v1",
+          "bloquea_comparabilidad": true,
+          "campo": "definicion_metodologica",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "indicador-sintetico",
+          "b": "indicador-sintetico",
+          "bloquea_comparabilidad": true,
+          "campo": "indicador_fenomeno",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "evento-sintetico",
+          "b": "evento-sintetico",
+          "bloquea_comparabilidad": true,
+          "campo": "unidad_observacion",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "conteo",
+          "b": "conteo",
+          "bloquea_comparabilidad": true,
+          "campo": "unidad_medida",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "universo-sintetico",
+          "b": "universo-sintetico",
+          "bloquea_comparabilidad": true,
+          "campo": "universo",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "poblacion-sintetica",
+          "b": "poblacion-sintetica",
+          "bloquea_comparabilidad": true,
+          "campo": "poblacion",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "territorio-sintetico",
+          "b": "territorio-sintetico",
+          "bloquea_comparabilidad": true,
+          "campo": "territorio",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "ocurrencia",
+          "b": "ocurrencia",
+          "bloquea_comparabilidad": true,
+          "campo": "criterio_localizacion",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "{\"tipo\":\"ocurrencia\",\"inicio\":\"2020-01-01\",\"fin\":\"2020-12-31\",\"granularidad\":\"anual\"}",
+          "b": "{\"tipo\":\"ocurrencia\",\"inicio\":\"2020-01-01\",\"fin\":\"2020-12-31\",\"granularidad\":\"anual\"}",
+          "bloquea_comparabilidad": true,
+          "campo": "periodo_fenomeno",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": "ocurrencia",
+          "b": "ocurrencia",
+          "bloquea_comparabilidad": true,
+          "campo": "fecha_referencia.tipo",
+          "estado": "coincidente",
+          "requiere_igualdad": true
+        },
+        {
+          "a": null,
+          "b": null,
+          "bloquea_comparabilidad": false,
+          "campo": "fecha_referencia.fecha",
+          "estado": "informativo",
+          "requiere_igualdad": false
+        },
+        {
+          "a": null,
+          "b": null,
+          "bloquea_comparabilidad": false,
+          "campo": "fecha_referencia.precision",
+          "estado": "informativo",
+          "requiere_igualdad": false
+        }
+      ],
+      "estado_comparabilidad": "comparable_segun_metadatos_declarados",
+      "estado_revision": "no_revision",
+      "explicaciones": [],
+      "observacion_a_id": "a",
+      "observacion_b_id": "b",
+      "razones_abstencion": [],
+      "tipo": "contraste_inter_fuentes"
+    }
+  ],
+  "pendientes": [],
+  "verificacion": {
+    "bytes_originales": "no_verificados",
+    "evidencias_externas": "no_verificadas",
+    "metadatos_declarados": "revisados_contra_valores_aportados"
+  }
+}

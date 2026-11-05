@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="17" time="14.259" timestamp="2026-10-26T05:50:33.760728+00:00" hostname="srv2006133"><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_citizen_state_rejected_http_and_service[en_revision]" time="0.277" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_citizen_state_rejected_http_and_service[incorporado]" time="0.207" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_citizen_state_rejected_http_and_service[rechazado]" time="0.180" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_closed_privacy_creation_update_detail_list_and_devolution" time="0.521"><failure message="AssertionError: {&quot;detail&quot;:[{&quot;type&quot;:&quot;value_error&quot;,&quot;loc&quot;:[&quot;body&quot;,&quot;correo&quot;],&quot;msg&quot;:&quot;value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email.&quot;,&quot;input&quot;:&quot;eaf203-6974f043fa1f4def97553e2144e4efe6@example.invalid&quot;,&quot;ctx&quot;:{&quot;reason&quot;:&quot;The part after the @-sign is a special-use or reserved name that cannot be used with email.&quot;}}]}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">def test_closed_privacy_creation_update_detail_list_and_devolution():
+        with TestClient(create_app(b.client_settings())) as client:
+&gt;           _,heads=account(client,True)
+                    ^^^^^^^^^^^^^^^^^^^^
+
+bridge/203_evidencia_eaf_aportes/test_principales.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = &lt;starlette.testclient.TestClient object at 0x7e35d5acf830&gt;
+authority = True
+
+    def account(client,authority=False):
+        email='eaf203-'+uuid.uuid4().hex+'@example.invalid'; credentials={'correo':email,'contrasena':'Eaf203Ciudadano*2026'}
+        r=client.post('/api/v1/identidad/registro',json={**credentials,'nombres':'EAF','apellidos':'Sintético'})
+&gt;       assert r.status_code==201,r.text
+E       AssertionError: {"detail":[{"type":"value_error","loc":["body","correo"],"msg":"value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email.","input":"eaf203-6974f043fa1f4def97553e2144e4efe6@example.invalid","ctx":{"reason":"The part after the @-sign is a special-use or reserved name that cannot be used with email."}}]}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_principales.py:38: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[None]" time="0.283" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[True]" time="0.295" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[17]" time="0.284" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[private203@example.invalid]" time="0.290" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[legacy4]" time="0.354" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_heterogeneous_legacy_json_closed[legacy5]" time="0.285" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_account_support_between_logins_and_concurrent_toggles" time="0.071"><failure message="AssertionError: {&quot;detail&quot;:[{&quot;type&quot;:&quot;value_error&quot;,&quot;loc&quot;:[&quot;body&quot;,&quot;correo&quot;],&quot;msg&quot;:&quot;value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email.&quot;,&quot;input&quot;:&quot;eaf203-7c8a3e546bf849a6b0369a8a34d88c11@example.invalid&quot;,&quot;ctx&quot;:{&quot;reason&quot;:&quot;The part after the @-sign is a special-use or reserved name that cannot be used with email.&quot;}}]}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">def test_account_support_between_logins_and_concurrent_toggles():
+        with TestClient(create_app(b.client_settings())) as client:
+&gt;           uid,heads=account(client);p=asyncio.run(proposal());path='/api/v1/aportes/'+str(p.id)+'/apoyar'
+                      ^^^^^^^^^^^^^^^
+
+bridge/203_evidencia_eaf_aportes/test_principales.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+client = &lt;starlette.testclient.TestClient object at 0x7e35d59910d0&gt;
+authority = False
+
+    def account(client,authority=False):
+        email='eaf203-'+uuid.uuid4().hex+'@example.invalid'; credentials={'correo':email,'contrasena':'Eaf203Ciudadano*2026'}
+        r=client.post('/api/v1/identidad/registro',json={**credentials,'nombres':'EAF','apellidos':'Sintético'})
+&gt;       assert r.status_code==201,r.text
+E       AssertionError: {"detail":[{"type":"value_error","loc":["body","correo"],"msg":"value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email.","input":"eaf203-7c8a3e546bf849a6b0369a8a34d88c11@example.invalid","ctx":{"reason":"The part after the @-sign is a special-use or reserved name that cannot be used with email."}}]}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_principales.py:38: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_invalid_registered_principal_rejected[revoked]" time="0.284" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_invalid_registered_principal_rejected[inactive]" time="0.303" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_invalid_registered_principal_rejected[mismatch]" time="0.321" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_invalid_registered_principal_rejected[expired]" time="0.324" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_anonymous_sessions_separate_and_check_constraint" time="0.342" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_principales" name="test_concurrent_devolution_one_durable_and_refresh" time="0.341" /></testsuite></testsuites>

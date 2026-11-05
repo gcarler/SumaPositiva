@@ -1,0 +1,165 @@
+{
+  "anios": [
+    {
+      "anio": 2012,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2013,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2014,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2015,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2016,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2017,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2018,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2019,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2020,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2021,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2022,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2023,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2024,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "1",
+      "factor_mostrado_8d": "1.00000000",
+      "ipc_diciembre": "200",
+      "ipc_promedio_anual": "200.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2025,
+      "estado": "anio_completo",
+      "factor_cop_promedio_2024": "2",
+      "factor_mostrado_8d": "2.00000000",
+      "ipc_diciembre": "100",
+      "ipc_promedio_anual": "100.000000",
+      "meses_disponibles": 12,
+      "ultimo_mes": "Diciembre"
+    },
+    {
+      "anio": 2026,
+      "estado": "parcial_no_deflactar_flujo_anual",
+      "factor_cop_promedio_2024": null,
+      "factor_mostrado_8d": null,
+      "ipc_diciembre": null,
+      "ipc_promedio_anual": null,
+      "meses_disponibles": 9,
+      "ultimo_mes": "Septiembre"
+    }
+  ],
+  "base_indice": "diciembre_2018_igual_100",
+  "base_pesos_constantes": "promedio_anual_2024",
+  "esquema": "polis.ipc_deflactor_flujos_anuales.v2",
+  "estado_publicacion": "no_publicable",
+  "fecha_actualizacion_dane": "2026-10-07",
+  "fuente": "DANE, IPC total nacional, índices serie de empalme",
+  "fuente_sha256": "6f698cf524a472e11f9158b5ea1e1c4ede2aa2c5901d87ec5bb72ae985647fad",
+  "limitacion": "Solo flujos anuales completos; 2026 y asignaciones multianuales requieren corte mensual.",
+  "metodo": "IPC promedio de los 12 meses de 2024 dividido por IPC promedio de los 12 meses del año origen",
+  "redondeo": "cociente Decimal con 28 dígitos de precisión; vista a 8 decimales y COP a centavos",
+  "url_fuente": "https://www.dane.gov.co/files/operaciones/IPC/sep2026/anex-IPC-Indices-sep2026.xlsx"
+}

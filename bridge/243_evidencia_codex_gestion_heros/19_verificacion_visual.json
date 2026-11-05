@@ -1,0 +1,168 @@
+[
+  {
+    "ancho": 320,
+    "anchoDocumento": 565,
+    "anchoCuerpo": 565,
+    "tema": "light",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [
+      {
+        "etiqueta": "DIV",
+        "texto": "01Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro HistóricoDeshab",
+        "clase": "flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "01Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro Histórico",
+        "clase": "flex items-center gap-2.5 min-w-0"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro Histórico",
+        "clase": "min-w-0"
+      },
+      {
+        "etiqueta": "P",
+        "texto": "Cabildo Abierto y Foro Ciudadano",
+        "clase": "text-xs font-bold text-[var(--text-primary)] truncate"
+      },
+      {
+        "etiqueta": "P",
+        "texto": "Claustro de la Merced — Centro Histórico",
+        "clase": "text-[10px] text-[var(--text-secondary)] truncate"
+      },
+      {
+        "etiqueta": "BUTTON",
+        "texto": "Deshabilitar",
+        "clase": "inline-flex items-center justify-center whitespace-nowrap font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring rounded-full border border-transparent hover:text-text-primary h-7 px-2 text-[11px] text-[var(--danger)] hover:bg-[var(--danger)]/10 shrink-0 gap-1"
+      },
+      {
+        "etiqueta": "svg",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "02Diálogo Social y Escucha BarrialSector El Pozón — Localidad 2 (De la Virgen y ",
+        "clase": "flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "02Diálogo Social y Escucha BarrialSector El Pozón — Localidad 2 (De la Virgen y ",
+        "clase": "flex items-center gap-2.5 min-w-0"
+      }
+    ],
+    "errores": []
+  },
+  {
+    "ancho": 1440,
+    "anchoDocumento": 1440,
+    "anchoCuerpo": 1440,
+    "tema": "light",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  },
+  {
+    "ancho": 320,
+    "anchoDocumento": 565,
+    "anchoCuerpo": 565,
+    "tema": "dark",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [
+      {
+        "etiqueta": "DIV",
+        "texto": "01Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro HistóricoDeshab",
+        "clase": "flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "01Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro Histórico",
+        "clase": "flex items-center gap-2.5 min-w-0"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "Cabildo Abierto y Foro CiudadanoClaustro de la Merced — Centro Histórico",
+        "clase": "min-w-0"
+      },
+      {
+        "etiqueta": "P",
+        "texto": "Cabildo Abierto y Foro Ciudadano",
+        "clase": "text-xs font-bold text-[var(--text-primary)] truncate"
+      },
+      {
+        "etiqueta": "P",
+        "texto": "Claustro de la Merced — Centro Histórico",
+        "clase": "text-[10px] text-[var(--text-secondary)] truncate"
+      },
+      {
+        "etiqueta": "BUTTON",
+        "texto": "Deshabilitar",
+        "clase": "inline-flex items-center justify-center whitespace-nowrap font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring rounded-full border border-transparent hover:text-text-primary h-7 px-2 text-[11px] text-[var(--danger)] hover:bg-[var(--danger)]/10 shrink-0 gap-1"
+      },
+      {
+        "etiqueta": "svg",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "path",
+        "texto": "",
+        "clase": {}
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "02Diálogo Social y Escucha BarrialSector El Pozón — Localidad 2 (De la Virgen y ",
+        "clase": "flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
+      },
+      {
+        "etiqueta": "DIV",
+        "texto": "02Diálogo Social y Escucha BarrialSector El Pozón — Localidad 2 (De la Virgen y ",
+        "clase": "flex items-center gap-2.5 min-w-0"
+      }
+    ],
+    "errores": []
+  },
+  {
+    "ancho": 1440,
+    "anchoDocumento": 1440,
+    "anchoCuerpo": 1440,
+    "tema": "dark",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  }
+]

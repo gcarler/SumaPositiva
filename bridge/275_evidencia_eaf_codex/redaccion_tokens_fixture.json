@@ -1,0 +1,8 @@
+{
+  "archivos_saneados": [
+    "backend-check-r1.log",
+    "backend-check-r2.log"
+  ],
+  "tipo": "tokens sinteticos de laboratorio en tracebacks de pytest",
+  "no_tokens_productivos": true
+}

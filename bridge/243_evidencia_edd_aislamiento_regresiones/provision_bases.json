@@ -1,0 +1,38 @@
+{
+  "bases": [
+    {
+      "database": "polis_test_edd_aislamiento_20261027_antes_8232579c",
+      "uso": "antes",
+      "origen": "nueva desde template0",
+      "estado": "provisionada",
+      "fecha": "2026-10-27T11:20:02.929873+00:00",
+      "fecha_provision": "2026-10-27T11:20:08.586128+00:00",
+      "owner": "polis",
+      "extensions": [
+        "pgcrypto",
+        "postgis",
+        "ltree",
+        "unaccent",
+        "pg_trgm"
+      ]
+    },
+    {
+      "database": "polis_test_edd_aislamiento_20261027_despues_74fa3566",
+      "uso": "despues",
+      "origen": "nueva desde template0",
+      "estado": "provisionada",
+      "fecha": "2026-10-27T11:20:02.934175+00:00",
+      "fecha_provision": "2026-10-27T11:20:10.502628+00:00",
+      "owner": "polis",
+      "extensions": [
+        "pgcrypto",
+        "postgis",
+        "ltree",
+        "unaccent",
+        "pg_trgm"
+      ]
+    }
+  ],
+  "sin_datos_copiados": true,
+  "sin_roles_alterados": true
+}

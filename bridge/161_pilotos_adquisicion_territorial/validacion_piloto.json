@@ -1,0 +1,215 @@
+{
+  "tarea": "OL-TERR-ADQ-02",
+  "fecha_utc": "2026-10-26T03:48:53.833861Z",
+  "host_oficial": "terridata.dnp.gov.co",
+  "url_patron": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData{codigo}.txt.zip",
+  "objetivos": 4,
+  "respuestas": 4,
+  "zip_validos": 4,
+  "txt_validos": 4,
+  "parseos": 4,
+  "entidades_ingeridas_banco": 0,
+  "entidades_sin_datos": 0,
+  "entidades_error_descarga": 0,
+  "codigo_sha256": {
+    "script_adquisicion": "b47718fba7fc3d273db8ff71e4d2c30585d3d2223993446577c5e2f4eb41f2f6",
+    "manifiesto_lote": "6954d4fd460c32386d813c9fc1776b23bba43ab1666129b5b793798ca545f585",
+    "zip_75_13001": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+  },
+  "entidades": [
+    {
+      "codigo": "13001",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+      "estado_http": [
+        200
+      ],
+      "content_type": "application/x-zip-compressed",
+      "etag": "\"1d68bd549626dd1:0\"",
+      "last_modified": "Fri, 07 Aug 2026 17:58:19 GMT",
+      "bytes_zip": 114090,
+      "sha256_zip": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+      "sha256_txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+      "bytes_txt": 2853390,
+      "miembro": "TerriData13001.txt",
+      "crc_valido": true,
+      "encabezado_13_conforme": true,
+      "parseo": {
+        "codigos_entidad_presentes": [
+          "13001"
+        ],
+        "entidades_presentes": [
+          "Cartagena"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12891,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12899,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12897,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 822,
+          "valor_numerico_valido": 12077
+        },
+        "filas_total": 12899
+      },
+      "error_parser": null,
+      "comparacion_13001": {
+        "ambas_versiones_conservadas": true,
+        "txt_75_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+        "txt_igual": true,
+        "txt_nuevo_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+        "zip_75_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+        "zip_igual": true,
+        "zip_nuevo_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+      },
+      "raw_ruta": "raw/13001/original.respuesta.bin"
+    },
+    {
+      "codigo": "13673",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13673.txt.zip",
+      "estado_http": [
+        200
+      ],
+      "content_type": "application/x-zip-compressed",
+      "etag": "\"20e0866f9626dd1:0\"",
+      "last_modified": "Fri, 07 Aug 2026 17:59:04 GMT",
+      "bytes_zip": 103394,
+      "sha256_zip": "b9e7672d7ae7044181c4b3910d927576e65b1dfc057544e4a7e6f6235711eda2",
+      "sha256_txt": "e3833026873719aa30aa4aac7afa045a09df3d95ef0009e1553691a12e4176ac",
+      "bytes_txt": 2822512,
+      "miembro": "TerriData13673.txt",
+      "crc_valido": true,
+      "encabezado_13_conforme": true,
+      "parseo": {
+        "codigos_entidad_presentes": [
+          "13673"
+        ],
+        "entidades_presentes": [
+          "Santa Catalina"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12725,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12733,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12731,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 1494,
+          "valor_numerico_valido": 11239
+        },
+        "filas_total": 12733
+      },
+      "error_parser": null,
+      "comparacion_13001": null,
+      "raw_ruta": "raw/13673/original.respuesta.bin"
+    },
+    {
+      "codigo": "23660",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData23660.txt.zip",
+      "estado_http": [
+        200
+      ],
+      "content_type": "application/x-zip-compressed",
+      "etag": "\"d184834e9726dd1:0\"",
+      "last_modified": "Fri, 07 Aug 2026 18:05:19 GMT",
+      "bytes_zip": 108832,
+      "sha256_zip": "0d12c51c43a3f9eefab36006b18e1c9c1595dfc75b1c142da213bfb2ec4a1fc2",
+      "sha256_txt": "56927d9d4677e61de0a10a54cfeaaee75c33096d6f20a6aef808a17291f54e92",
+      "bytes_txt": 2791867,
+      "miembro": "TerriData23660.txt",
+      "crc_valido": true,
+      "encabezado_13_conforme": true,
+      "parseo": {
+        "codigos_entidad_presentes": [
+          "23660"
+        ],
+        "entidades_presentes": [
+          "Sahagún"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 12877,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 12885,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 12883,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 1553,
+          "valor_numerico_valido": 11332
+        },
+        "filas_total": 12885
+      },
+      "error_parser": null,
+      "comparacion_13001": null,
+      "raw_ruta": "raw/23660/original.respuesta.bin"
+    },
+    {
+      "codigo": "11001",
+      "url": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData11001.txt.zip",
+      "estado_http": [
+        200
+      ],
+      "content_type": "application/x-zip-compressed",
+      "etag": "\"5955c539626dd1:0\"",
+      "last_modified": "Fri, 07 Aug 2026 17:58:17 GMT",
+      "bytes_zip": 119235,
+      "sha256_zip": "f2ff0718158884a21f94f021db14bd5f2c638c1a12b1aeb62b2feddbf8501a78",
+      "sha256_txt": "32d62761d384d93a943e851391f93b5f63ec9afecdaa02fb9e25e95f228e1946",
+      "bytes_txt": 2927313,
+      "miembro": "TerriData11001.txt",
+      "crc_valido": true,
+      "encabezado_13_conforme": true,
+      "parseo": {
+        "codigos_entidad_presentes": [
+          "11001"
+        ],
+        "entidades_presentes": [
+          "Bogotá"
+        ],
+        "estados": {
+          "aceptadas": 0,
+          "anio_conforme": 13402,
+          "anio_no_conforme": 0,
+          "estructura_no_evaluable": 0,
+          "identidad_concordante": 0,
+          "identidad_discordante": 13410,
+          "identidad_no_contrastable": 0,
+          "identidad_no_evaluable": 0,
+          "mes_0": 8,
+          "rechazadas": 2,
+          "retenidas": 13408,
+          "valor_numerico_formato_no_regla": 0,
+          "valor_numerico_no_presente": 839,
+          "valor_numerico_valido": 12571
+        },
+        "filas_total": 13410
+      },
+      "error_parser": null,
+      "comparacion_13001": null,
+      "raw_ruta": "raw/11001/original.respuesta.bin"
+    }
+  ],
+  "limites": {
+    "no_acredita_cobertura_nacional": true,
+    "no_acredita_condiciones_de_uso": true,
+    "no_acredita_estatus_juridico": true,
+    "no_acredita_validacion_semantica": true
+  }
+}

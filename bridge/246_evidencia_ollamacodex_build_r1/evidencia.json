@@ -1,0 +1,32 @@
+{
+  "tarea": "OL-BUILD-01-R1",
+  "fecha_utc": "2026-10-27T11:21:59.438328+00:00",
+  "archivos_modificados": [
+    "scripts/build-polis.mjs",
+    "scripts/build-polis.test.mjs",
+    "package.json"
+  ],
+  "hashes_finales": {
+    "scripts.build-polis.mjs": "ca12eef7b9f9857b919ef28cac911f2dae0ed80c947fb0e2c08d799ef7c9c13c",
+    "scripts.build-polis.test.mjs": "3f7fbf23453b169fa2afa13b8c7b797b9c0e963b5c661269aac1639c9d31f2dc",
+    "package.json": "fa6e056fd02ed5f679a95045f498a4b25955b99db6a6cf5a744301b6bf527e5e"
+  },
+  "pruebas": {
+    "comando": "node --test scripts/build-polis.test.mjs",
+    "retorno": 0,
+    "tests": 18,
+    "passed": 18,
+    "failed": 0
+  },
+  "lint": {
+    "comando": "bunx eslint scripts/build-polis.mjs scripts/build-polis.test.mjs",
+    "retorno": 0
+  },
+  "sin_next_real": true,
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_banco": true,
+  "sin_commit": true,
+  "sin_push": true,
+  "sin_despliegue": true
+}

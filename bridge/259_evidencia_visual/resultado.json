@@ -1,0 +1,225 @@
+{
+  "fecha": "2026-10-28T13:42:38.528Z",
+  "casos": [
+    {
+      "estado": "PASS",
+      "id": "pestaña activa claro/1440",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy claro/1440",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página claro/1440",
+      "detalle": "scrollWidth=1440 clientWidth=1440"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril claro/1440",
+      "detalle": "scrollWidth=1086 clientWidth=1086"
+    },
+    {
+      "estado": "PASS",
+      "id": "panel TC-04 claro/1440",
+      "detalle": "SidePanel del editor abierto tras clic en fila"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola claro/1440",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa claro/768",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy claro/768",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página claro/768",
+      "detalle": "scrollWidth=768 clientWidth=768"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril claro/768",
+      "detalle": "scrollWidth=686 clientWidth=686"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola claro/768",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa claro/375",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy claro/375",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página claro/375",
+      "detalle": "scrollWidth=375 clientWidth=375"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril claro/375",
+      "detalle": "scrollWidth=680 clientWidth=309"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola claro/375",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa claro/320",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy claro/320",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página claro/320",
+      "detalle": "scrollWidth=320 clientWidth=320"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril claro/320",
+      "detalle": "scrollWidth=680 clientWidth=254"
+    },
+    {
+      "estado": "PASS",
+      "id": "panel TC-04 claro/320",
+      "detalle": "SidePanel del editor abierto tras clic en fila"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola claro/320",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa oscuro/1440",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy oscuro/1440",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página oscuro/1440",
+      "detalle": "scrollWidth=1440 clientWidth=1440"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril oscuro/1440",
+      "detalle": "scrollWidth=1086 clientWidth=1086"
+    },
+    {
+      "estado": "PASS",
+      "id": "panel TC-04 oscuro/1440",
+      "detalle": "SidePanel del editor abierto tras clic en fila"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola oscuro/1440",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa oscuro/768",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy oscuro/768",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página oscuro/768",
+      "detalle": "scrollWidth=768 clientWidth=768"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril oscuro/768",
+      "detalle": "scrollWidth=686 clientWidth=686"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola oscuro/768",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa oscuro/375",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy oscuro/375",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página oscuro/375",
+      "detalle": "scrollWidth=375 clientWidth=375"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril oscuro/375",
+      "detalle": "scrollWidth=680 clientWidth=309"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola oscuro/375",
+      "detalle": "sin errores de consola"
+    },
+    {
+      "estado": "PASS",
+      "id": "pestaña activa oscuro/320",
+      "detalle": "data-state=active tras el clic"
+    },
+    {
+      "estado": "PASS",
+      "id": "rótulo Hoy oscuro/320",
+      "detalle": "«Hoy: 28 oct» visible"
+    },
+    {
+      "estado": "PASS",
+      "id": "sin overflow página oscuro/320",
+      "detalle": "scrollWidth=320 clientWidth=320"
+    },
+    {
+      "estado": "PASS",
+      "id": "carril oscuro/320",
+      "detalle": "scrollWidth=680 clientWidth=254"
+    },
+    {
+      "estado": "PASS",
+      "id": "panel TC-04 oscuro/320",
+      "detalle": "SidePanel del editor abierto tras clic en fila"
+    },
+    {
+      "estado": "PASS",
+      "id": "consola oscuro/320",
+      "detalle": "sin errores de consola"
+    }
+  ]
+}

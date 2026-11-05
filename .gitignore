@@ -124,3 +124,5 @@ bridge/201_cierre_pilotos_fuentes/
 bridge/177_fichas_cuatro_territorios/
 bridge/185_reproduccion_fichas/
 bridge/58_adquisiciones_fuentes/
+# Cachés de compilación del visor estadístico (artefactos turbopack locales)
+**/compilacion_next/cache/

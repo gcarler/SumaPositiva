@@ -1,0 +1,84 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "base_origen": "polis_test_sintetica",
+  "conteos_sql": {
+    "PDD_2016_2019": {
+      "metas": 1,
+      "nodos": 1
+    },
+    "PDD_2020_2023": {
+      "metas": 1,
+      "nodos": 1
+    },
+    "PDL_1_2024_2027": {
+      "metas": 1,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.ppi_planeacion.v2",
+  "estado_publicacion": "no_publicable",
+  "nodos": [
+    {
+      "codigo_plan": "PDD_2016_2019",
+      "fuente": null,
+      "id": "9bb59ade-f227-55d4-9929-3f6f468f6b60",
+      "metadatos": "null",
+      "nivel": "PROGRAMA",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}"
+    },
+    {
+      "codigo_plan": "PDD_2020_2023",
+      "fuente": null,
+      "id": "1f69ace8-5e73-5a5e-a041-612b75646731",
+      "metadatos": "null",
+      "nivel": "PROGRAMA",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}"
+    },
+    {
+      "codigo_plan": "PDL_1_2024_2027",
+      "fuente": null,
+      "id": "a9b5dca6-5466-53fd-bdf1-9bc083e42c67",
+      "metadatos": "null",
+      "nivel": "PROGRAMA",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}"
+    }
+  ],
+  "planes": [
+    {
+      "codigo_plan": "PDD_2016_2019",
+      "fuentes": "null",
+      "metadatos": null,
+      "nombre_oficial": "PDD_2016_2019",
+      "periodo": "2024-2027",
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}",
+      "ppi_total_constante_2025_cop": "123.45",
+      "ppi_total_corriente_cop": "9007199254740993.01"
+    },
+    {
+      "codigo_plan": "PDD_2020_2023",
+      "fuentes": "null",
+      "metadatos": null,
+      "nombre_oficial": "PDD_2020_2023",
+      "periodo": "2024-2027",
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}",
+      "ppi_total_constante_2025_cop": "123.45",
+      "ppi_total_corriente_cop": "9007199254740993.01"
+    },
+    {
+      "codigo_plan": "PDL_1_2024_2027",
+      "fuentes": "null",
+      "metadatos": null,
+      "nombre_oficial": "PDL_1_2024_2027",
+      "periodo": "2024-2027",
+      "ppi_anual_cop": "{\"2026\":9007199254740993.01,\"array\":[null,0,false,\"0\"]}",
+      "ppi_total_constante_2025_cop": "123.45",
+      "ppi_total_corriente_cop": "0"
+    }
+  ],
+  "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+  "versionamiento": "01"
+}

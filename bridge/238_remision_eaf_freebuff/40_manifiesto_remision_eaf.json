@@ -1,0 +1,122 @@
+{
+  "tarea": "238 remision EAF - revision preventiva pre-freeze",
+  "generado_utc": "2026-10-26T08:09:13Z",
+  "nota": "El propio manifiesto y el .tar.gz quedan fuera del auto-hash (convencion 201). El sha256 del bundle se registra en 40_bundle_sha256.txt junto al tar, fuera del tar.",
+  "miembros": [
+    {
+      "ruta": "src/features/sesion/components/cuenta-usuario.tsx",
+      "sha256": "8d1d8f449264d7a15ec1d6752930680c7ca92a77896030dec8fa46010055db90",
+      "bytes": 21076
+    },
+    {
+      "ruta": "src/features/sesion/services/sincronizar-sesion.ts",
+      "sha256": "ef9b6e05375a74c94d72a66f73acf46e8f4ef5ffe9304673db384c1aa23c2f14",
+      "bytes": 3398
+    },
+    {
+      "ruta": "src/features/sesion/services/sincronizar-sesion.test.ts",
+      "sha256": "cfdfb05f17f380915e66982c1bfb5fd27fa7fa15e6d40e90dbb6f7b906ee2035",
+      "bytes": 9306
+    },
+    {
+      "ruta": "src/app/_stories/identidad.stories.tsx",
+      "sha256": "d0259411c6cf69e7338ac16ec99ee837a54c3aa63d9c30cf427a862ebeba5a5e",
+      "bytes": 26087
+    },
+    {
+      "ruta": "bridge/238_entrega_freebuff_consumidor_mfa_final.md",
+      "sha256": "ce2ec4050800685618f0e18ae1480b0a3b6cc8e887b28c4412ecb3a3c46cfbf0",
+      "bytes": 6184
+    },
+    {
+      "ruta": "bridge/238_propuesta_exclusion_lint_snapshots.md",
+      "sha256": "ccec76d867baa6c0c2423efc0d5ea5c6634324bf5568aef12849ad6d3b02eb77",
+      "bytes": 5337
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_buntest_final_070911.log",
+      "sha256": "a685c6731cb5b84a6edbfe6bc632b5da8ddedd2e0ac74a8e520cbc05bb9b0e20",
+      "bytes": 9053
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_buntest_sesion_df_070619.log",
+      "sha256": "fd479a9583bbfede292296d72cfe2416bac505c67ec273a930c4508eea23c50b",
+      "bytes": 9053
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_check_065926.log",
+      "sha256": "23146400dc40fd005518480ebe22a0cc6a9ce1ec9545aacc937560883d136b76",
+      "bytes": 3385089
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_lint_alcance_b_070857.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_lint_src_071259.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_typecheck_b_071030.log",
+      "sha256": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92",
+      "bytes": 15
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_ui_estab_1_065636.log",
+      "sha256": "f46f4b1e30bdefde9ee3d54fcb58e3415ffb943acba850da17d4f9117bad3024",
+      "bytes": 18806
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_ui_estab_2_065725.log",
+      "sha256": "5b59b92aa0f0addfd2d14299a42d908cb11d60836340f7a9f96540398be7e5ca",
+      "bytes": 19730
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_ui_estab_3_065818.log",
+      "sha256": "35b9bb1a1ecbed5d61777aee1eaf12f000822233a861267df4e83bc4bfee1c91",
+      "bytes": 19287
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_ui_final_b_071041.log",
+      "sha256": "c8b96df366b52696a4a2664d16c8c15e994d48c04d979d9af3ef286d434e1ebb",
+      "bytes": 18504
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_ui_post_guarda_070619.log",
+      "sha256": "65c28544b99954503e4657c74bf68dc7f08e0a4e8e01deb31c8061462acf092e",
+      "bytes": 19657
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_uicheck_final_071350.log",
+      "sha256": "f8f7f056e9f404002bcfc118fcbc051dfca210b6f2490f49e946b48f4e08f08f",
+      "bytes": 115
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_vit_hist_dos_070535.log",
+      "sha256": "91790c36039fe75a64a1bb673854c7432111632c92dd9ce2b150972fe5e25eb0",
+      "bytes": 2478
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_vit_hist_final_071041.log",
+      "sha256": "b197f8343fe4b6ea0263fd120ee4bb1c5dc6a0f2e0b10b2005012eeed65b5c29",
+      "bytes": 2616
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/238_vit_restringida_a1_065603.log",
+      "sha256": "0c333051f92d5aa694435ec1e35396faaafd6023a7d496fe52c1de0016c3573d",
+      "bytes": 1089
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/30_hashes_sha256.txt",
+      "sha256": "220abd2379965eb0143aeb71a87b4f98ccf0cea880c9c329ad2772e720fb50c3",
+      "bytes": 693
+    },
+    {
+      "ruta": "bridge/238_evidencia_freebuff_consumidor_mfa/31_estado_final_corridas_238.json",
+      "sha256": "cf76225aca1c34de9758910a0ec82fbabe527b0c379499a0e99cd37735d0cc49",
+      "bytes": 3347
+    }
+  ]
+}

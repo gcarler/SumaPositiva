@@ -1,0 +1,9 @@
+{"canal": "asyncpg", "base_intentada": "fuera_de_alcance_eaf", "pid": 2833880}
+{"canal": "psycopg_async", "base_intentada": "fuera_de_alcance_eaf", "pid": 2833880}
+{"canal": "psycopg", "base_intentada": "fuera_de_alcance_eaf", "pid": 2833880}
+{"canal": "sqlalchemy:postgresql", "base_intentada": "fuera_de_alcance_eaf", "pid": 2833880}
+{"canal": "asyncpg", "base_intentada": "fuera_de_alcance_eaf", "pid": 2835813}
+{"canal": "psycopg_async", "base_intentada": "fuera_de_alcance_eaf", "pid": 2835813}
+{"canal": "psycopg", "base_intentada": "fuera_de_alcance_eaf", "pid": 2835813}
+{"canal": "sqlalchemy:postgresql", "base_intentada": "fuera_de_alcance_eaf", "pid": 2835813}
+{"canal": "sqlalchemy:postgresql", "base_intentada": "bd_csh", "pid": 2835942}

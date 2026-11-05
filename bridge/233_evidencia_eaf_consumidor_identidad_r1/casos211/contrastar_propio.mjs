@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {tokenSchema,usuarioSchema,mfaEstadoSchema,mfaIniciarSchema,ambitoTerritorialSchema} from './fuente/src/features/sesion/services/identidad-api.ts';
+const out=new URL('./',import.meta.url), root=new URL('../../',out);
+const load=p=>JSON.parse(readFileSync(new URL(p,root),'utf8'));
+const a=load('bridge/181_evidencia_edd_identidad/contratos-identidad-final.json').ejemplos;
+const b=load('bridge/169_evidencia_eaf_identidad/contrato-mfa-respuestas-api-sanitizadas.json');
+const c=load('bridge/169_evidencia_eaf_identidad/contrato-ambito-respuesta-api.json');
+const pairs=[['181.login_limitado',tokenSchema,a.login_limitado],['181.login_desafio',tokenSchema,a.login_desafio],['181.login_completo',tokenSchema,a.login_completo],['181.perfil_limitado',usuarioSchema,a.perfil_limitado],['181.estado_pendiente',mfaEstadoSchema,a.estado_pendiente],['181.estado_acreditado',mfaEstadoSchema,a.estado_acreditado],['181.enrolamiento',mfaIniciarSchema,a.enrolamiento],['181.ambito',ambitoTerritorialSchema,a.ambito],['169.estado',mfaEstadoSchema,b.estado],['169.inicio',mfaIniciarSchema,b.inicio],['169.ambito',ambitoTerritorialSchema,c]];
+const cases=pairs.map(([name,schema,input])=>{const parsed=schema.safeParse(structuredClone(input));return {caso:name,aceptado:parsed.success,claves_entrada:Object.keys(input),claves_salida:parsed.success?Object.keys(parsed.data):[],errores:parsed.success?[]:parsed.error.issues.map(x=>({code:x.code,path:x.path}))};});
+assert(cases.every(x=>x.aceptado));
+assert(!('ultimo_uso_en' in mfaEstadoSchema.shape));assert(!('uri_totp' in mfaIniciarSchema.shape));assert(!('asignado_en' in ambitoTerritorialSchema.shape));
+assert.equal(a.login_limitado.mfa_enrolamiento_requerido,true);assert.equal(a.login_limitado.mfa_requerido,false);assert.equal(a.login_desafio.mfa_requerido,true);assert.equal(a.login_desafio.token_acceso,'');assert.equal(a.estado_acreditado.sesion_verificada,true);
+const result={fecha_utc:new Date().toISOString(),nota:'Parseo propio de entradas reales sanitizadas sin añadir campos; Google/SMTP no evaluados por estos fixtures',casos:cases,esquema_sha256:createHash('sha256').update(readFileSync(new URL('fuente/src/features/sesion/services/identidad-api.ts',out))).digest('hex')};
+writeFileSync(new URL('contratos-propios.json',out),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({casos:cases.length,aceptados:cases.filter(x=>x.aceptado).length}));

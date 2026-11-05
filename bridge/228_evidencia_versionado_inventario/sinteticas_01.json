@@ -1,0 +1,26 @@
+{
+  "comando": [
+    "/root/polis/backend/.venv/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "-p",
+    "no:cacheprovider",
+    "backend/tests/test_inventario_fuentes_polis.py",
+    "-k",
+    "not test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales and not test_inventario_no_declara_drive_como_fuente_institucional and not test_inventario_publicado_coincide_con_archivos_actuales",
+    "--basetemp",
+    "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01",
+    "--junitxml",
+    "/root/polis/bridge/228_evidencia_versionado_inventario/sinteticas_01.xml",
+    "-q"
+  ],
+  "inicio_utc": "2026-10-26T06:39:45.695547+00:00",
+  "fin_utc": "2026-10-26T06:39:46.500813+00:00",
+  "returncode": 0,
+  "sin_conftest": true,
+  "sin_sql": true,
+  "sin_red": true,
+  "integrales_activas_no_ejecutadas": true
+}

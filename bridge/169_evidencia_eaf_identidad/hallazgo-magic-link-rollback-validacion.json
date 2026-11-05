@@ -1,0 +1,13 @@
+{
+  "filas_antes": 0,
+  "excepcion_inyectada": "ValidationError",
+  "http": 500,
+  "estado_desde_conexion_nueva": [
+    {
+      "id": "01a1766d-e7e3-7106-86d4-5453023cef8b",
+      "tokens_persistidos": 1,
+      "eventos_persistidos": 1
+    }
+  ],
+  "esperado": "No deben persistir usuario, token/cola ni evento si la respuesta no valida"
+}

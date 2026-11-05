@@ -1,0 +1,20 @@
+{
+  "archivos_incompletos": [],
+  "entrada": "bridge/entrada.json",
+  "estado": "prototipo_pendiente_revision_e_integracion",
+  "fecha_ejecucion": "2026-10-26T05:36:19.039526+00:00",
+  "limites": [
+    "No se acreditan hechos ni acceso al contenido original.",
+    "No se suma, promedia ni elige cifra única.",
+    "No se interpreta causalidad ni subregistro.",
+    "No se reconstruyen versiones ausentes.",
+    "No se transforman unidades ni escalas.",
+    "No se abren URLs ni bases externas."
+  ],
+  "modo_calculo": "nucleo_puro_conservador",
+  "sha256_entrada": "4df65506d4dc98a1e2be7fd072edc77ff88e7f50c89560052f7b005792823827",
+  "sha256_salida": "8ac8901df705e14e83c0facde659e90522437c722266bad487fe1fa8968a4b90",
+  "sin_integracion_productiva": true,
+  "sin_red": true,
+  "sin_sql": true
+}

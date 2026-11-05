@@ -1,0 +1,60 @@
+{
+  "esquema": "polis.parser_terridata.v2",
+  "version_parser": "terridata_txt.v2",
+  "regla_numerica": "decimal_coma_miles_terridata.v1",
+  "estado": "regla_numerica_implementada_piloto_pendiente_revision",
+  "insumo": {
+    "ruta_zip": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+    "sha256_zip": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+    "bytes_zip": 114090,
+    "miembro": "TerriData13001.txt",
+    "sha256_txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+    "bytes_txt": 2853390,
+    "crc_verificado": true,
+    "sin_extraccion_filesystem": true
+  },
+  "conteos": {
+    "filas_datos": 12899,
+    "filas_aceptadas": 12230,
+    "filas_retenidas": 667,
+    "filas_rechazadas": 2,
+    "filas_ancho_inconsistente": 0,
+    "filas_celda_excede_limite": 0,
+    "filas_campo_obligatorio_vacio": 2,
+    "filas_con_valor_numerico_valido": 12077,
+    "filas_con_numerico_sin_regla": 0,
+    "filas_con_cualitativo": 335,
+    "filas_sin_valor_declarado": 659,
+    "filas_con_mes_0": 8,
+    "filas_descripcion_general": 102,
+    "filas_identidad_concordante_declarada": 12899,
+    "filas_identidad_discordante_declarada": 0,
+    "filas_identidad_no_contrastable": 0,
+    "filas_identidad_no_evaluable": 0
+  },
+  "valor_numerico_por_estado_fila": {
+    "decimal_validado": {
+      "aceptada": 12072,
+      "retiene": 3,
+      "rechazada": 2
+    },
+    "formato_no_regla": {
+      "aceptada": 0,
+      "retiene": 0,
+      "rechazada": 0
+    },
+    "no_presente_total": 822
+  },
+  "identidad": {
+    "codigo_departamento": "13",
+    "nombre_departamento": null,
+    "codigo_entidad": "13001",
+    "nombre_entidad": null,
+    "nivel_territorial": null
+  },
+  "inicio_utc": "2026-10-25T20:20:07.863294+00:00",
+  "sin_sql": true,
+  "sin_red": true,
+  "sin_promocion_banco": true,
+  "tarea": "FB-TERR-NUM-01"
+}

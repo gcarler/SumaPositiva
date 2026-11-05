@@ -1,0 +1,21 @@
+{
+  "catalogo": {
+    "ruta": "c.json",
+    "sha256": "1",
+    "total_metas": 1
+  },
+  "esquema_salida": "polis.trazador_indicadores_planeacion.v1",
+  "inventario": {
+    "artefactos": 1,
+    "ruta": "i.json",
+    "sha256": "2"
+  },
+  "lista": {
+    "rows": 1,
+    "ruta": "l.csv",
+    "sha256": "3"
+  },
+  "resumen": {
+    "total_registros": 1
+  }
+}

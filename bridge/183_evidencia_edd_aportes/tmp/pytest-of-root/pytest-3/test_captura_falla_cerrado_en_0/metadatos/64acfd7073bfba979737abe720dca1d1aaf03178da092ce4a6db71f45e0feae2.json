@@ -1,0 +1,23 @@
+{
+  "datasets_capturados": 0,
+  "datasets_con_alerta_atribucion": 0,
+  "datasets_esperados": 2,
+  "errores": [
+    {
+      "dataset_id": "g58z-k6f6",
+      "detalle": "Metadatos con identidad ajena al dataset g58z-k6f6",
+      "error": "ValueError"
+    },
+    {
+      "dataset_id": "vtub-3de2",
+      "detalle": "Metadatos con identidad ajena al dataset vtub-3de2",
+      "error": "ValueError"
+    }
+  ],
+  "esquema": "polis.metadatos_socrata.v1",
+  "estado": "CAPTURA_PARCIAL",
+  "fichas": [],
+  "inventario_fuentes_sha256": "4990eaf0219c7ba1e68a5b7384470c4fdb895f97f86e9a70d3c2efd11e598deb",
+  "licencias_declaradas": 0,
+  "regla": "Metadato del portal; exige cotejar custodio, licencia de derivados y comparabilidad."
+}

@@ -1,0 +1,299 @@
+--- a/src/features/proyectos/views/proyectos-view.tsx
++++ b/src/features/proyectos/views/proyectos-view.tsx
+@@ -9,6 +9,7 @@
+   Filter,
+   LayoutList,
+   LayoutGrid,
++  Paperclip,
+   Search,
+ } from "lucide-react";
+ import { Badge } from "@/shared/ui/badge";
+@@ -196,9 +197,10 @@
+   };
+ 
+   /** Acción principal: abre la ficha de detalle; el botón Editar vive dentro. */
+-  const abrirActividad = (a: ActividadProyecto) => {
++  const abrirActividad = (a: ActividadProyecto, seccionInicial?: "anexos") => {
+     openPanel("ficha-actividad-proyecto", {
+       actividad: a,
++      seccionInicial,
+       onEditar: () => abrirEdicion(a),
+     });
+   };
+@@ -217,11 +219,10 @@
+           </Badge>
+         </div>
+         <p className="text-xs text-text-secondary">
+-          Vista read-only que integra tareas de comunicaciones y agendas de
+-          mesas y formularios de consulta de la formulación. Para editar, cada
+-          actividad abre su módulo dueño; esta vista no duplica la
+-          persistencia. La gestión de los planes de desarrollo vive en el
+-          módulo de Seguimiento PAS.
++          Consulta tareas de comunicaciones, agendas de mesas y formularios de
++          consulta. Abre una actividad para ver su ficha o utiliza Adjuntos para
++          cargar y descargar documentos según tus permisos. Los datos de la
++          actividad se editan desde su módulo de origen.
+         </p>
+       </header>
+ 
+@@ -358,7 +359,12 @@
+                     <div><dt className="text-xs text-text-tertiary">Responsable / Territorio</dt><dd>{a.responsable || "Sin asignar"} · {a.territorio}</dd></div>
+                     {a.etapa && <div><dt className="text-xs text-text-tertiary">Etapa</dt><dd>{a.etapa}</dd></div>}
+                   </dl>
+-                  <Button variant="outline" size="sm" className="mt-auto self-start" onClick={() => abrirActividad(a)} aria-label={`Abrir actividad ${a.titulo}`}>Abrir actividad</Button>
++                  <div className="mt-auto flex flex-wrap gap-2">
++                    <Button variant="outline" size="sm" onClick={() => abrirActividad(a)} aria-label={`Abrir actividad ${a.titulo}`}>Abrir actividad</Button>
++                    <Button variant="outline" size="sm" onClick={() => abrirActividad(a, "anexos")} aria-label={`Ver adjuntos de ${a.titulo}`}>
++                      <Paperclip className="size-3.5" aria-hidden="true" />Adjuntos
++                    </Button>
++                  </div>
+                 </article>
+               ))}
+             </CollectionLayout>
+@@ -385,6 +391,7 @@
+                     <th scope="col" className="px-3 py-2">Estado</th>
+                     <th scope="col" className="px-3 py-2">Avance</th>
+                     <th scope="col" className="px-3 py-2">Responsable</th>
++                    <th scope="col" className="px-3 py-2">Adjuntos</th>
+                   </tr>
+                 </thead>
+                 <tbody className="divide-y divide-border">
+@@ -425,6 +432,11 @@
+                       <td className="px-3 py-2 text-xs text-text-secondary">
+                         {a.responsable || "—"}
+                       </td>
++                      <td className="px-3 py-2">
++                        <Button variant="outline" size="sm" onClick={() => abrirActividad(a, "anexos")} aria-label={`Ver adjuntos de ${a.titulo}`}>
++                          <Paperclip className="size-3.5" aria-hidden="true" />Adjuntos
++                        </Button>
++                      </td>
+                     </tr>
+                   ))}
+                 </tbody>
+--- a/src/features/proyectos/panels/ficha-actividad-panel.tsx
++++ b/src/features/proyectos/panels/ficha-actividad-panel.tsx
+@@ -27,6 +27,7 @@
+ import { Button } from "@/shared/ui/button";
+ import { EmptyState } from "@/shared/ui/empty-state";
+ import { Input } from "@/shared/ui/input";
++import { FormField } from "@/shared/ui/form-field";
+ import { tienePermiso, useSesionStore } from "@/features/sesion/state/session-store";
+ import {
+   ESTADOS_CANONICOS,
+@@ -144,7 +145,7 @@
+   props,
+ }: {
+   entryKey: string;
+-  props?: { actividad: ActividadProyecto; onEditar?: () => void };
++  props?: { actividad: ActividadProyecto; onEditar?: () => void; seccionInicial?: "anexos" };
+ }) {
+   const { closeTop, closeToKey } = usePanels();
+   const router = useRouter();
+@@ -166,6 +167,13 @@
+   const [confirmarEliminarId, setConfirmarEliminarId] = useState<string | null>(null);
+ 
+   const fileInputRef = useRef<HTMLInputElement>(null);
++  const anexosRef = useRef<HTMLElement>(null);
++
++  useEffect(() => {
++    if (props?.seccionInicial === "anexos") {
++      anexosRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
++    }
++  }, [props?.seccionInicial, a?.id]);
+ 
+   useEffect(() => {
+     if (!a?.id) return;
+@@ -227,6 +235,7 @@
+       (!!sesion.rol && ROLES_GESTION_PROYECTOS.includes(sesion.rol)));
+ 
+   const manejarSeleccionarArchivo = (e: React.ChangeEvent<HTMLInputElement>) => {
++    if (subiendo) return;
+     const files = e.target.files;
+     if (files && files.length > 0) {
+       setArchivoSeleccionado(files[0]);
+@@ -236,7 +245,7 @@
+   const manejarDrop = (e: React.DragEvent<HTMLDivElement>) => {
+     e.preventDefault();
+     setArrastrando(false);
+-    if (!puedeEditar) return;
++    if (!puedeEditar || subiendo) return;
+     const files = e.dataTransfer.files;
+     if (files && files.length > 0) {
+       setArchivoSeleccionado(files[0]);
+@@ -245,7 +254,7 @@
+ 
+   const manejarDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+     e.preventDefault();
+-    if (puedeEditar) {
++    if (puedeEditar && !subiendo) {
+       setArrastrando(true);
+     }
+   };
+@@ -257,6 +266,7 @@
+ 
+   const manejarSubir = async (e: React.FormEvent) => {
+     e.preventDefault();
++    if (subiendo) return;
+     if (!archivoSeleccionado) {
+       toast.error("Selecciona un archivo antes de subir.");
+       return;
+@@ -264,6 +274,11 @@
+ 
+     if (archivoSeleccionado.size > 25 * 1024 * 1024) {
+       toast.error("El archivo excede el tamaño máximo permitido de 25 MB.");
++      return;
++    }
++
++    if (archivoSeleccionado.size === 0) {
++      toast.error("El archivo seleccionado está vacío.");
+       return;
+     }
+ 
+@@ -376,7 +391,7 @@
+           {!puedeEditar && (
+             <p className="mt-3 text-2xs text-text-tertiary">
+               Lectura institucional: tu rol no tiene permisos de edición sobre esta actividad. Los
+-              archivos adjuntos pueden ser consultados y descargados libremente.
++              archivos adjuntos están disponibles para consulta y descarga con tu sesión.
+             </p>
+           )}
+         </section>
+@@ -405,6 +420,7 @@
+ 
+         {/* ================= ANEXOS Y ARCHIVOS ADJUNTOS ================= */}
+         <section
++          ref={anexosRef}
+           aria-label="Anexos y archivos adjuntos"
+           className="space-y-4 rounded-xl border border-border bg-surface-1 p-4"
+         >
+@@ -441,7 +457,7 @@
+                 <Input
+                   ref={fileInputRef}
+                   type="file"
+-                  id="archivo-anexo-input"
++                  aria-label="Archivo adjunto de la actividad"
+                   className="hidden"
+                   onChange={manejarSeleccionarArchivo}
+                   disabled={subiendo}
+@@ -449,23 +465,20 @@
+                 />
+ 
+                 {!archivoSeleccionado ? (
+-                  <div
+-                    role="button"
+-                    tabIndex={0}
+-                    onClick={() => fileInputRef.current?.click()}
+-                    onKeyDown={(e) => {
+-                      if (e.key === "Enter" || e.key === " ") {
+-                        e.preventDefault();
+-                        fileInputRef.current?.click();
+-                      }
+-                    }}
+-                    className="flex cursor-pointer flex-col items-center gap-1.5 focus:outline-none"
+-                  >
++                  <div className="flex flex-col items-center gap-2">
+                     <UploadCloud className="size-6 text-text-tertiary" aria-hidden="true" />
+                     <span className="text-xs font-medium text-text-primary">
+-                      Arrastra un archivo aquí o{" "}
+-                      <span className="text-primary underline">haz clic para examinar</span>
++                      Arrastra un archivo aquí o selecciónalo desde tu equipo.
+                     </span>
++                    <Button
++                      type="button"
++                      variant="outline"
++                      size="sm"
++                      disabled={subiendo}
++                      onClick={() => fileInputRef.current?.click()}
++                    >
++                      Seleccionar archivo
++                    </Button>
+                     <span className="text-2xs text-text-tertiary">
+                       Formatos: Documentos oficiales, hojas de cálculo, presentaciones o evidencias fotográficas
+                     </span>
+@@ -493,6 +506,8 @@
+                       }}
+                       className="size-7 p-0 text-text-tertiary hover:text-text-primary"
+                       title="Quitar archivo"
++                      aria-label="Quitar archivo seleccionado"
++                      disabled={subiendo}
+                     >
+                       <X className="size-4" aria-hidden="true" />
+                     </Button>
+@@ -502,15 +517,23 @@
+ 
+               {archivoSeleccionado && (
+                 <div className="space-y-2">
+-                  <Input
+-                    type="text"
+-                    value={descripcionAnexo}
+-                    onChange={(e) => setDescripcionAnexo(e.target.value)}
+-                    placeholder="Descripción o nota opcional sobre el anexo (ej. Acta firmada, lista de asistencia)..."
+-                    maxLength={250}
+-                    disabled={subiendo}
+-                    className="text-xs"
+-                  />
++                  <FormField
++                    label="Descripción del adjunto"
++                    description="Opcional. Indica el contenido o propósito del documento."
++                  >
++                    {(field) => (
++                      <Input
++                        {...field}
++                        type="text"
++                        value={descripcionAnexo}
++                        onChange={(e) => setDescripcionAnexo(e.target.value)}
++                        placeholder="Por ejemplo: acta firmada o lista de asistencia"
++                        maxLength={250}
++                        disabled={subiendo}
++                        className="text-xs"
++                      />
++                    )}
++                  </FormField>
+                   <div className="flex items-center justify-end gap-2">
+                     <Button
+                       type="button"
+@@ -613,6 +636,7 @@
+                           disabled={esDescargando}
+                           className="size-8 p-0"
+                           title="Descargar archivo"
++                          aria-label={`Descargar ${anexo.nombre_archivo}`}
+                         >
+                           {esDescargando ? (
+                             <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+@@ -641,6 +665,7 @@
+                                   size="sm"
+                                   onClick={() => setConfirmarEliminarId(null)}
+                                   className="size-8 p-0"
++                                  aria-label={`Cancelar eliminación de ${anexo.nombre_archivo}`}
+                                 >
+                                   <X className="size-3.5" aria-hidden="true" />
+                                 </Button>
+@@ -654,6 +679,7 @@
+                                 disabled={esEliminando}
+                                 className="size-8 p-0 text-text-tertiary hover:text-destructive"
+                                 title="Eliminar anexo"
++                                aria-label={`Eliminar ${anexo.nombre_archivo}`}
+                               >
+                                 <Trash2 className="size-3.5" aria-hidden="true" />
+                               </Button>
+--- a/src/features/proyectos/services/proyectos-api.ts
++++ b/src/features/proyectos/services/proyectos-api.ts
+@@ -80,6 +80,8 @@
+       method: "POST",
+       body: formData,
+       headers: cabeceras(),
++      timeoutMs: 120_000,
++      retry: { retries: 0 },
+     },
+   );
+ }
+--- a/src/app/_composition/panel-contracts.d.ts
++++ b/src/app/_composition/panel-contracts.d.ts
+@@ -123,6 +123,7 @@
+     /** Ficha de detalle de una actividad del agregado de Proyectos (read-only). */
+     "ficha-actividad-proyecto": {
+       actividad: ActividadProyecto;
++      seccionInicial?: "anexos";
+       /** Acción de edición del módulo dueño; la vista decide por permiso. */
+       onEditar?: () => void;
+     };

@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/canales_http_r2",
+    "--junitxml=/root/polis/bridge/275_cierre_eaf_codex_20261103/http_canales_r2.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/snapshot",
+  "inicio_utc": "2026-11-03T10:54:09.574254+00:00",
+  "segundos": 9.331,
+  "returncode": 0,
+  "bases": [],
+  "smtp": "no utilizado",
+  "source_test_sha256": "d0e81d0459871646c7c6fbdacfb20d6521b9a40651f9cb66a200962aaacd01ae",
+  "red_real": "solo loopback"
+}

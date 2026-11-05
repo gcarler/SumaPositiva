@@ -1,0 +1,9 @@
+{
+  "corrida": "03_nuevas_pruebas",
+  "resultado_original": "136 passed / 13 failed",
+  "clasificacion": "error propio de la asercion de fecha; producto devolvio200 y ocho columnas identicas",
+  "causa": "PostgreSQL to_jsonb serializa UTC +00:00; Pydantic serializa Z; mismo instante con microsegundos",
+  "correccion": "comparar datetime con zona y microsegundos en vez de exigir igual representacion de cadena",
+  "sin_cambio_producto_para_este_ajuste": true,
+  "evidencia_original_conservada": true
+}

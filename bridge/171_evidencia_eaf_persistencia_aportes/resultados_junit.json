@@ -1,0 +1,74 @@
+{
+  "12_escenarios_eaf_final.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "51",
+      "time": "23.094",
+      "timestamp": "2026-10-26T04:21:24.904233+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "10_escenarios_eaf.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "2",
+      "skipped": "0",
+      "tests": "51",
+      "time": "31.372",
+      "timestamp": "2026-10-26T04:20:11.822589+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "16_webhook_parcial.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "8.706",
+      "timestamp": "2026-10-26T04:28:19.693834+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "15_devolucion_http_concurrente.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "9.954",
+      "timestamp": "2026-10-26T04:25:48.934828+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "13_suites_pertinentes.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "164",
+      "time": "46.119",
+      "timestamp": "2026-10-26T04:22:07.489040+00:00",
+      "hostname": "srv2006133"
+    }
+  ],
+  "05_backend_check_guardas.xml": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "14",
+      "skipped": "16",
+      "tests": "1336",
+      "time": "490.140",
+      "timestamp": "2026-10-26T04:10:02.427297+00:00",
+      "hostname": "srv2006133"
+    }
+  ]
+}

@@ -1,0 +1,289 @@
+{
+  "database": "polis_test_edd_coord_20261026_d4afb7fa",
+  "tablas": {
+    "auditoria.fuentes_informacion": {
+      "filas": 18,
+      "sha256_contenido": "3f58e00837d0e2f64b9a3919eb96f225fe2632d7f967e245f42d7b5c3452c3fe"
+    },
+    "auditoria.registros_auditoria": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "autenticacion.ambitos_territoriales_usuario": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "autenticacion.eventos_identidad": {
+      "filas": 118,
+      "sha256_contenido": "72bfb959ea563c45854c4f6372b1e534b56442330184e478857700352d33a538"
+    },
+    "autenticacion.limites_acceso": {
+      "filas": 118,
+      "sha256_contenido": "4a62a9acb502b542c3cf4ec4319bb4e6181f9a88e57bc941e8ba0430a0e4fc47"
+    },
+    "autenticacion.roles": {
+      "filas": 5,
+      "sha256_contenido": "9944faa0a7335ea6c8f0d30cf5f8089c1bc2c9fa88f9c3e47d33bcae9089a12b"
+    },
+    "autenticacion.sesiones_usuario": {
+      "filas": 58,
+      "sha256_contenido": "fa28a0a8a5d70aaae2d8821efeb31fa2878e094d071bfdc5f807f8c9532303fb"
+    },
+    "autenticacion.tokens_accion": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "autenticacion.usuarios": {
+      "filas": 58,
+      "sha256_contenido": "9f75525efa8def3fdcbef2d1598af3e85a0e433b881dc4084586c3802a9c13e2"
+    },
+    "autenticacion.usuarios_mfa": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "comunicacion.noticias": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "comunicacion.tareas_comunicacion": {
+      "filas": 18,
+      "sha256_contenido": "a6de2a7a9f3d0f46f388e13962a1d2ab7a845c4a28eafa754ca65e2ab2b8a2c9"
+    },
+    "geodatos.capas_geovisor": {
+      "filas": 7,
+      "sha256_contenido": "9a925fc4a9ebd1e2494af4644cc16cecc08a74682484d67b5fb13f4c8f4c98fd"
+    },
+    "geodatos.estadisticas_hurtos": {
+      "filas": 8,
+      "sha256_contenido": "bd40916f006045b25ac95a3a6a30b2828d20cd27ba67f6387f315f46d46e8f4d"
+    },
+    "geodatos.geometrias_capas": {
+      "filas": 4,
+      "sha256_contenido": "fc2c8e5a344b1cccf36724b9ff21662a51503454557de5910cde4e9ad0c61f8a"
+    },
+    "geodatos.indicadores_territorio": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "geodatos.poligonos_analitica_hurtos": {
+      "filas": 2,
+      "sha256_contenido": "effda37192af20a5853f1b8e00d34c6083fc259a2bae64e8f6e710c11f7356d4"
+    },
+    "geodatos.territorios": {
+      "filas": 15,
+      "sha256_contenido": "03ae90e8d3d1134a041afc213d36ad87cfca15ee8a3fbb5bd2509cffa4405f71"
+    },
+    "indicadores.fichas_tecnicas_indicadores": {
+      "filas": 11,
+      "sha256_contenido": "ad5d32a611b02850211e9cdba7288afb016f6419ad5f278efff0057516115076"
+    },
+    "indicadores.mediciones_indicador": {
+      "filas": 11,
+      "sha256_contenido": "fe65beeb838a40c814f07a0708c2f02623c7ad8b026caf5da0913bd3b116c29a"
+    },
+    "mesas_trabajo.actas_comunitarias": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "mesas_trabajo.agendas": {
+      "filas": 38,
+      "sha256_contenido": "850f28c4b8514190ea39a11bad62e1dcbf2de82ad5b10ce07a01f30a0022641e"
+    },
+    "mesas_trabajo.fotos_mesa": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "mesas_trabajo.mesas": {
+      "filas": 4,
+      "sha256_contenido": "87cb0733c2911929071a26a6378ed92398168820157c2eda31e8b1cd69e4956e"
+    },
+    "mesas_trabajo.participantes_mesa": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "motor_instrumentos.instrumentos": {
+      "filas": 6,
+      "sha256_contenido": "62501ceea7fa55020f1625e0e4cc92b4d2785f88d5d6f51de05cb80c0c9e120f"
+    },
+    "motor_instrumentos.nodos_instrumento": {
+      "filas": 35,
+      "sha256_contenido": "dc1f420864d52652c32871ba8f0aa989fcfa1633f8680b5ac55d3d53824b071d"
+    },
+    "motor_politicas.banco_alternativas": {
+      "filas": 8,
+      "sha256_contenido": "fc8711d53cd2ab49ca5afcdff4e7f4fdf199a7c03ee4a4f3bf737bd25053d903"
+    },
+    "motor_politicas.dimensiones_seguridad_humana": {
+      "filas": 7,
+      "sha256_contenido": "bf9cf675b71bfc30ba4accc0f9e61d2ceac5c198a1a3c00c653ccff58e7bd55c"
+    },
+    "motor_politicas.fases_politica": {
+      "filas": 3,
+      "sha256_contenido": "c486d9009f4e69313fe75e5db18cd31eba66967cedd57cdb6e15c0838a1bc8b0"
+    },
+    "motor_politicas.lineas_estrategicas": {
+      "filas": 7,
+      "sha256_contenido": "9bba535c2d2c25d59f5c7d9b44f5456acecaabc437da06a1a3eacba2df0f96d6"
+    },
+    "participacion_ciudadana.actores_estrategicos": {
+      "filas": 17,
+      "sha256_contenido": "ce0939a7dceedd8d9ff94d2be3cca1dfc14e37be201b47b63aa73d3c8fdb217a"
+    },
+    "participacion_ciudadana.apoyos_propuestas": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.escenarios_especiales": {
+      "filas": 3,
+      "sha256_contenido": "c9fbe488377e85720dd825e8d20771ef3aac75c12829809b65bb87b8bdc8c42d"
+    },
+    "participacion_ciudadana.evidencias_multimedia": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.formularios_consulta": {
+      "filas": 4,
+      "sha256_contenido": "ee0f026cac33633c6670ee16861364b34bdde9f96744478d4f2a3dbfeb6bf4de"
+    },
+    "participacion_ciudadana.migracion_apoyos_0084": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.notificaciones_transaccionales": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.propuestas_ciudadanas": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.respuestas_formulario": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "participacion_ciudadana.sesiones_anonimas": {
+      "filas": 96,
+      "sha256_contenido": "0d7934a34013384b0e7497ac8b61248ae5af77e4988616a311b12fde3ef0a79f"
+    },
+    "participacion_ciudadana.testimonios_comunitarios": {
+      "filas": 4,
+      "sha256_contenido": "388aac8361b72d2b839a3b687eb38b71321f495653e715c00494fd715d61ae9e"
+    },
+    "participacion_ciudadana.whatsapp_inbox": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "presupuesto.asignaciones_presupuestales": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "presupuesto.fuentes_financiacion": {
+      "filas": 8,
+      "sha256_contenido": "8083bfd65c542adfbd2f11084f9efea49f46205603744e42a11b67c983dbf452"
+    },
+    "seguimiento.actividades_plan_accion": {
+      "filas": 12,
+      "sha256_contenido": "573e6447a85e1273c59efb4b8e4ebdcbe6b352cf136fb7cf11d6a7124fd51692"
+    },
+    "seguimiento.archivos_plan_ingeridos": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.artefactos_fuente": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.compromisos_pas": {
+      "filas": 10,
+      "sha256_contenido": "bdcaad69fdf421c0ee473b0f727134a33dabe34449d13f4761aacd94affabb66"
+    },
+    "seguimiento.conciliador_gold_set": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.contratos_fuente": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.corridas_pipeline": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.corridas_pipeline_pasos": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.fuentes_datos": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.fuentes_versiones": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.lotes_fuente": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.lotes_ingesta_planes": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.paquetes_artefactos": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_correspondencias_meta_pa_bpim": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_dmu_ese_centros_salud": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_dmu_ieo_oficiales": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_evidencia_paginas": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_fuentes_financiacion_dmu": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_lineas_y_programas": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_metas_oficiales": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdd_vinculos_meta_pa_triada": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdt_ai_checkpoints_hitl": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdt_ai_evaluaciones": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.pdt_ai_hallazgos_revision": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.planes_desarrollo_distrital": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "seguimiento.registros_triada_normalizados": {
+      "filas": 0,
+      "sha256_contenido": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

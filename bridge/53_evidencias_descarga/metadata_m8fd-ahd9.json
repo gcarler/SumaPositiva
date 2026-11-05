@@ -1,0 +1,800 @@
+{
+  "id" : "m8fd-ahd9",
+  "name" : "HOMICIDIO",
+  "assetType" : "dataset",
+  "attribution" : "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+  "attributionLink" : "https://www.mindefensa.gov.co",
+  "averageRating" : 0,
+  "category" : "Seguridad y Defensa",
+  "createdAt" : 1656953773,
+  "description" : "Es toda muerte que fuere causada por otra persona por cualquier tipo de elemento. (Se mide en víctimas). \n\nIncluye: HOMICIDIO INTENCIONAL",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 6478,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 42015646,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1773948375,
+  "publicationGroup" : 18768131,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1792593057,
+  "rowsUpdatedBy" : "g7xk-p77r",
+  "tableId" : 20313465,
+  "totalTimesRated" : 0,
+  "viewCount" : 38717,
+  "viewLastModified" : 1792592805,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1657654403,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 7394939,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1656954008,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1657654404,
+      "failureCount" : 0,
+      "startedAt" : 1657654403,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "g7xk-p77r",
+      "displayName" : "Observatorio MDN"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 628917595,
+    "name" : "FECHA HECHO",
+    "dataTypeName" : "calendar_date",
+    "description" : "",
+    "fieldName" : "fecha_hecho",
+    "position" : 1,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 142857613,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "2026-09-30T00:00:00.000",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2003-01-01T00:00:00.000",
+        "count" : "144"
+      }, {
+        "item" : "2004-01-01T00:00:00.000",
+        "count" : "137"
+      }, {
+        "item" : "2005-01-01T00:00:00.000",
+        "count" : "132"
+      }, {
+        "item" : "2015-01-01T00:00:00.000",
+        "count" : "125"
+      }, {
+        "item" : "2009-01-01T00:00:00.000",
+        "count" : "121"
+      }, {
+        "item" : "2003-12-25T00:00:00.000",
+        "count" : "120"
+      }, {
+        "item" : "2011-01-01T00:00:00.000",
+        "count" : "118"
+      }, {
+        "item" : "2015-12-25T00:00:00.000",
+        "count" : "117"
+      }, {
+        "item" : "2014-01-01T00:00:00.000",
+        "count" : "116"
+      }, {
+        "item" : "2003-05-25T00:00:00.000",
+        "count" : "115"
+      }, {
+        "item" : "2006-01-01T00:00:00.000",
+        "count" : "113"
+      }, {
+        "item" : "2007-01-01T00:00:00.000",
+        "count" : "110"
+      }, {
+        "item" : "2021-12-25T00:00:00.000",
+        "count" : "110"
+      }, {
+        "item" : "2003-04-06T00:00:00.000",
+        "count" : "110"
+      }, {
+        "item" : "2013-01-01T00:00:00.000",
+        "count" : "109"
+      }, {
+        "item" : "2011-12-25T00:00:00.000",
+        "count" : "107"
+      }, {
+        "item" : "2004-12-25T00:00:00.000",
+        "count" : "107"
+      }, {
+        "item" : "2008-01-01T00:00:00.000",
+        "count" : "107"
+      }, {
+        "item" : "2012-01-01T00:00:00.000",
+        "count" : "105"
+      }, {
+        "item" : "2023-01-01T00:00:00.000",
+        "count" : "105"
+      } ],
+      "smallest" : "2003-01-01T00:00:00.000",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : {
+      "view" : "date_dmy"
+    }
+  }, {
+    "id" : 628917596,
+    "name" : "COD_DEPTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "cod_depto",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145024433,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "76",
+        "count" : "67446"
+      }, {
+        "item" : "05",
+        "count" : "53874"
+      }, {
+        "item" : "11",
+        "count" : "30271"
+      }, {
+        "item" : "19",
+        "count" : "14938"
+      }, {
+        "item" : "08",
+        "count" : "14769"
+      }, {
+        "item" : "54",
+        "count" : "14406"
+      }, {
+        "item" : "52",
+        "count" : "12942"
+      }, {
+        "item" : "13",
+        "count" : "10715"
+      }, {
+        "item" : "25",
+        "count" : "10427"
+      }, {
+        "item" : "66",
+        "count" : "10372"
+      }, {
+        "item" : "68",
+        "count" : "9304"
+      }, {
+        "item" : "50",
+        "count" : "8721"
+      }, {
+        "item" : "47",
+        "count" : "8637"
+      }, {
+        "item" : "73",
+        "count" : "8302"
+      }, {
+        "item" : "23",
+        "count" : "7756"
+      }, {
+        "item" : "17",
+        "count" : "7619"
+      }, {
+        "item" : "41",
+        "count" : "7556"
+      }, {
+        "item" : "20",
+        "count" : "6945"
+      }, {
+        "item" : "63",
+        "count" : "5395"
+      }, {
+        "item" : "44",
+        "count" : "5331"
+      } ],
+      "smallest" : "05",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917597,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 142857615,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "VALLE DEL CAUCA",
+        "count" : "67446"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "53874"
+      }, {
+        "item" : "BOGOTA D.C.",
+        "count" : "30271"
+      }, {
+        "item" : "CAUCA",
+        "count" : "14938"
+      }, {
+        "item" : "ATLANTICO",
+        "count" : "14769"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "14406"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "12942"
+      }, {
+        "item" : "BOLIVAR",
+        "count" : "10715"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "10427"
+      }, {
+        "item" : "RISARALDA",
+        "count" : "10372"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "9304"
+      }, {
+        "item" : "META",
+        "count" : "8721"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "8637"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "8302"
+      }, {
+        "item" : "CORDOBA",
+        "count" : "7756"
+      }, {
+        "item" : "CALDAS",
+        "count" : "7619"
+      }, {
+        "item" : "HUILA",
+        "count" : "7556"
+      }, {
+        "item" : "CESAR",
+        "count" : "6945"
+      }, {
+        "item" : "QUINDIO",
+        "count" : "5395"
+      }, {
+        "item" : "LA GUAJIRA",
+        "count" : "5331"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917598,
+    "name" : "COD_MUNI",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "cod_muni",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 145024434,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "99773",
+      "null" : "0",
+      "top" : [ {
+        "item" : "76001",
+        "count" : "33520"
+      }, {
+        "item" : "11001",
+        "count" : "30271"
+      }, {
+        "item" : "05001",
+        "count" : "18069"
+      }, {
+        "item" : "08001",
+        "count" : "8646"
+      }, {
+        "item" : "54001",
+        "count" : "7359"
+      }, {
+        "item" : "13001",
+        "count" : "5938"
+      }, {
+        "item" : "66001",
+        "count" : "5239"
+      }, {
+        "item" : "76520",
+        "count" : "4328"
+      }, {
+        "item" : "52835",
+        "count" : "4046"
+      }, {
+        "item" : "76109",
+        "count" : "3796"
+      }, {
+        "item" : "47001",
+        "count" : "3694"
+      }, {
+        "item" : "25754",
+        "count" : "3571"
+      }, {
+        "item" : "08758",
+        "count" : "3493"
+      }, {
+        "item" : "76834",
+        "count" : "3441"
+      }, {
+        "item" : "50001",
+        "count" : "3244"
+      }, {
+        "item" : "68001",
+        "count" : "2878"
+      }, {
+        "item" : "20001",
+        "count" : "2604"
+      }, {
+        "item" : "17001",
+        "count" : "2421"
+      }, {
+        "item" : "63001",
+        "count" : "2334"
+      }, {
+        "item" : "05088",
+        "count" : "2300"
+      } ],
+      "smallest" : "05001",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917599,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 142857617,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "ZONA BANANERA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CALI",
+        "count" : "33520"
+      }, {
+        "item" : "BOGOTA D.C.",
+        "count" : "30271"
+      }, {
+        "item" : "MEDELLIN",
+        "count" : "18069"
+      }, {
+        "item" : "BARRANQUILLA",
+        "count" : "8646"
+      }, {
+        "item" : "CUCUTA",
+        "count" : "7359"
+      }, {
+        "item" : "CARTAGENA DE INDIAS",
+        "count" : "5938"
+      }, {
+        "item" : "PEREIRA",
+        "count" : "5239"
+      }, {
+        "item" : "PALMIRA",
+        "count" : "4328"
+      }, {
+        "item" : "SAN ANDRES DE TUMACO",
+        "count" : "4046"
+      }, {
+        "item" : "BUENAVENTURA",
+        "count" : "3796"
+      }, {
+        "item" : "SANTA MARTA",
+        "count" : "3694"
+      }, {
+        "item" : "SOACHA",
+        "count" : "3571"
+      }, {
+        "item" : "SOLEDAD",
+        "count" : "3493"
+      }, {
+        "item" : "TULUA",
+        "count" : "3441"
+      }, {
+        "item" : "VILLAVICENCIO",
+        "count" : "3244"
+      }, {
+        "item" : "BUCARAMANGA",
+        "count" : "2878"
+      }, {
+        "item" : "VALLEDUPAR",
+        "count" : "2604"
+      }, {
+        "item" : "MANIZALES",
+        "count" : "2421"
+      }, {
+        "item" : "ARMENIA",
+        "count" : "2382"
+      }, {
+        "item" : "BELLO",
+        "count" : "2300"
+      } ],
+      "smallest" : "ABEJORRAL",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917600,
+    "name" : "ZONA",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "zona",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 142857618,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "URBANA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "URBANA",
+        "count" : "238675"
+      }, {
+        "item" : "RURAL",
+        "count" : "106520"
+      } ],
+      "smallest" : "RURAL",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917601,
+    "name" : "SEXO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "sexo",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 142857619,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "SIN ESTABLECER",
+      "null" : "0",
+      "top" : [ {
+        "item" : "MASCULINO",
+        "count" : "317458"
+      }, {
+        "item" : "FEMENINO",
+        "count" : "27610"
+      }, {
+        "item" : "NO REPORTA",
+        "count" : "125"
+      }, {
+        "item" : "SIN ESTABLECER",
+        "count" : "2"
+      } ],
+      "smallest" : "FEMENINO",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917603,
+    "name" : "ARMA MEDIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "arma_medio",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 166286286,
+    "cachedContents" : {
+      "non_null" : "344852",
+      "largest" : "VENENO",
+      "null" : "343",
+      "top" : [ {
+        "item" : "ARMA DE FUEGO",
+        "count" : "267420"
+      }, {
+        "item" : "ARMA BLANCA / CORTOPUNZANTE",
+        "count" : "60170"
+      }, {
+        "item" : "CONTUNDENTES",
+        "count" : "10727"
+      }, {
+        "item" : "ARTEFACTO EXPLOSIVO/CARGA DINAMITA",
+        "count" : "1722"
+      }, {
+        "item" : "NO REPORTADO",
+        "count" : "1026"
+      }, {
+        "item" : "CUERDA/SOGA/CADENA",
+        "count" : "822"
+      }, {
+        "item" : "MINA ANTIPERSONA",
+        "count" : "728"
+      }, {
+        "item" : "PUNZANTES",
+        "count" : "324"
+      }, {
+        "item" : "BOLSA PLASTICA",
+        "count" : "312"
+      }, {
+        "item" : "GRANADA DE MANO",
+        "count" : "264"
+      }, {
+        "item" : "CORTANTES",
+        "count" : "253"
+      }, {
+        "item" : "SIN ESTABLECER",
+        "count" : "124"
+      }, {
+        "item" : "COMBUSTIBLE",
+        "count" : "123"
+      }, {
+        "item" : "CINTAS/CINTURON",
+        "count" : "116"
+      }, {
+        "item" : "SIN EMPLEO DE ARMAS",
+        "count" : "93"
+      }, {
+        "item" : "CILINDRO BOMBA",
+        "count" : "86"
+      }, {
+        "item" : "ALMOHADA",
+        "count" : "79"
+      }, {
+        "item" : "VENENO",
+        "count" : "76"
+      }, {
+        "item" : "CARRO BOMBA",
+        "count" : "63"
+      }, {
+        "item" : "DRON / EXPLOSIVO",
+        "count" : "45"
+      } ],
+      "smallest" : "ACIDO",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917604,
+    "name" : " MODALIDAD PRESUNTA",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "_modalidad_presunta",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 166286287,
+    "cachedContents" : {
+      "non_null" : "342771",
+      "largest" : "VIOLENCIA SEXUAL",
+      "null" : "2424",
+      "top" : [ {
+        "item" : "SICARIATO",
+        "count" : "150610"
+      }, {
+        "item" : "RIÑAS",
+        "count" : "74587"
+      }, {
+        "item" : "AGRESION",
+        "count" : "27913"
+      }, {
+        "item" : "NO REPORTADA",
+        "count" : "27000"
+      }, {
+        "item" : "ATRACO",
+        "count" : "16897"
+      }, {
+        "item" : "RIÑA O CONFLICTO ENTRE PANDILLAS",
+        "count" : "6593"
+      }, {
+        "item" : "POR ESTABLECER",
+        "count" : "6458"
+      }, {
+        "item" : "ATACADOS POR GAO O GAO-R",
+        "count" : "6306"
+      }, {
+        "item" : "ATACADOS POR SUBVERSION",
+        "count" : "5863"
+      }, {
+        "item" : "VIOLENCIA INTRAFAMILIAR",
+        "count" : "2881"
+      }, {
+        "item" : "RIÑA ENTRE COMPAÑEROS PERMANENTES",
+        "count" : "1723"
+      }, {
+        "item" : "TERRORISMO",
+        "count" : "1636"
+      }, {
+        "item" : "ENFRENTAMIENTO EJERCOL-SUBVERSION",
+        "count" : "1538"
+      }, {
+        "item" : "SIGNOS DE VIOLENCIA FÍSICA (TORTURA)",
+        "count" : "1242"
+      }, {
+        "item" : "ESTRANGULACION",
+        "count" : "1211"
+      }, {
+        "item" : "ATACADOS POR AUTODEFENSAS",
+        "count" : "1112"
+      }, {
+        "item" : "DEGOLLAMIENTO",
+        "count" : "960"
+      }, {
+        "item" : "SACADO FUERZA DE LA RESIDENCIA",
+        "count" : "864"
+      }, {
+        "item" : "FORCEJEO",
+        "count" : "676"
+      }, {
+        "item" : "ENFRENTAMIENTO ENTRE DELINCUENCIA COMUN",
+        "count" : "614"
+      } ],
+      "smallest" : "AGRESION",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917605,
+    "name" : "SPOA_CARACTERIZACION",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "spoa_caracterizacion",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 166286288,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "HOMICIDIO INTENCIONAL O CON DOLO",
+      "null" : "0",
+      "top" : [ {
+        "item" : "HOMICIDIO INTENCIONAL O CON DOLO",
+        "count" : "343276"
+      }, {
+        "item" : "FEMINICIDIO",
+        "count" : "1919"
+      } ],
+      "smallest" : "FEMINICIDIO",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  }, {
+    "id" : 628917602,
+    "name" : "CANTIDAD",
+    "dataTypeName" : "number",
+    "description" : "",
+    "fieldName" : "cantidad",
+    "position" : 11,
+    "renderTypeName" : "number",
+    "tableColumnId" : 142857620,
+    "cachedContents" : {
+      "non_null" : "345195",
+      "largest" : "38",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "344604"
+      }, {
+        "item" : "2",
+        "count" : "549"
+      }, {
+        "item" : "3",
+        "count" : "24"
+      }, {
+        "item" : "4",
+        "count" : "7"
+      }, {
+        "item" : "5",
+        "count" : "4"
+      }, {
+        "item" : "9",
+        "count" : "2"
+      }, {
+        "item" : "38",
+        "count" : "1"
+      }, {
+        "item" : "7",
+        "count" : "1"
+      }, {
+        "item" : "8",
+        "count" : "1"
+      }, {
+        "item" : "10",
+        "count" : "1"
+      }, {
+        "item" : "14",
+        "count" : "1"
+      } ],
+      "smallest" : "1",
+      "count" : "345195",
+      "cardinality" : "345195"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Defensa",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Mensual"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "g7xk-p77r",
+    "displayName" : "Observatorio MDN",
+    "screenName" : "Observatorio MDN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "g7xk-p77r",
+    "displayName" : "Observatorio MDN",
+    "screenName" : "Observatorio MDN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "homicidio", "observatoriomdn" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

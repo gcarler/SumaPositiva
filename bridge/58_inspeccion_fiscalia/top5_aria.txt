@@ -1,0 +1,154 @@
+- application:
+  - list:
+    - listitem:
+      - button "Show keyboard shortcuts"
+    - listitem:
+      - link "Show screen reader tips (opens in new tab)":
+        - /url: https://go.microsoft.com/fwlink/?linkid=852575
+        - text: Show screen reader tips
+      - img
+    - listitem:
+      - button "Skip to main content"
+  - region "Power BI Report":
+    - heading "Power BI Report" [level=2]
+    - group:
+      - grid:
+        - row "Inicio ¿Dónde ocurrieron los hechos? ¿Cuándo ocurrieron los hechos? ¿Qué delitos han ocurrido? ¿Cuál es el estado de los procesos?":
+          - gridcell "Inicio":
+            - button "Inicio":
+              - img
+              - text: Inicio
+          - gridcell "¿Dónde ocurrieron los hechos?":
+            - button "¿Dónde ocurrieron los hechos?" [pressed]:
+              - img
+              - text: ¿Dónde ocurrieron los hechos?
+          - gridcell "¿Cuándo ocurrieron los hechos?":
+            - button "¿Cuándo ocurrieron los hechos?":
+              - img
+              - text: ¿Cuándo ocurrieron los hechos?
+          - gridcell "¿Qué delitos han ocurrido?":
+            - button "¿Qué delitos han ocurrido?":
+              - img
+              - text: ¿Qué delitos han ocurrido?
+          - gridcell "¿Cuál es el estado de los procesos?":
+            - button "¿Cuál es el estado de los procesos?":
+              - img
+              - text: ¿Cuál es el estado de los procesos?
+    - img "Image"
+    - link "Web URL"
+    - group:
+      - 'img "Label Actualización Fuente: Procesos registrados en SPOA, creados desde el 01/01/2010 hasta el 30/09/2026. La información se actualiza mensualmente.."': "Fuente: Procesos registrados en SPOA, creados desde el 01/01/2010 hasta el 30/09/2026. La información se actualiza men…"
+    - link "Bookmark"
+    - group "Año del hecho":
+      - heading "Año del hecho" [level=3]
+    - group "Total de Procesos por Departamento / Municipio de Hechos":
+      - heading "Total de Procesos por Departamento / Municipio de Hechos" [level=3]
+      - application "Map Application":
+        - region "Interactive Map"
+        - text: ©2026 TomTom
+        - link "Provide Map Data Feedback":
+          - /url: https://aka.ms/azuremaps-feedback?feedbackep=UrlAzureMapsWebSdk&cp=2.842170943040401e-14~-0.3327146426344143&lvl=1.0794847633688243
+          - text: Feedback
+        - img
+    - group:
+      - heading "Departamento" [level=3]
+      - combobox "Departamento": All 
+    - group:
+      - heading "Municipio" [level=3]
+      - combobox "Municipio": All 
+    - group "Búsqueda de delito por palabra clave Digitando una palabra clave usted puede consultar la información asociada":
+      - heading "Búsqueda de delito por palabra clave" [level=3]
+      - button "Filter settings, Contains any":
+        - button "Filter settings, Contains any"
+      - textbox "Enter DELITO":
+        - /placeholder: Digite palabra clave sin tilde
+        - text: Digite palabra clave sin tilde
+      - button "Apply button": 
+    - group "Top 5 de lugares de hechos":
+      - heading "Top 5 de lugares de hechos" [level=3]
+      - document:
+        - button "Scroll up"
+        - button "Scroll down"
+        - button "Scroll left"
+        - button "Scroll right"
+        - grid:
+          - row "Row Selection Departamento Municipio Nro. de procesos":
+            - columnheader "Row Selection"
+            - columnheader "Departamento"
+            - columnheader "Municipio"
+            - columnheader "Nro. de procesos"
+          - row "Select Row Bogotá, D.C. Bogotá, D.C. 5,510,341 Additional Conditional Formatting":
+            - gridcell "Select Row":
+              - checkbox "Select Row"
+              - text: Select Row
+            - gridcell "Bogotá, D.C."
+            - gridcell "Bogotá, D.C."
+            - gridcell "5,510,341 Additional Conditional Formatting"
+          - row "Select Row Antioquia Medellín 1,698,850 Additional Conditional Formatting":
+            - gridcell "Select Row":
+              - checkbox "Select Row"
+              - text: Select Row
+            - gridcell "Antioquia"
+            - gridcell "Medellín"
+            - gridcell "1,698,850 Additional Conditional Formatting"
+          - row "Select Row Valle Del Cauca Cali 1,266,703 Additional Conditional Formatting":
+            - gridcell "Select Row":
+              - checkbox "Select Row"
+              - text: Select Row
+            - gridcell "Valle Del Cauca"
+            - gridcell "Cali"
+            - gridcell "1,266,703 Additional Conditional Formatting"
+          - row "Select Row Atlántico Barranquilla 699,792 Additional Conditional Formatting":
+            - gridcell "Select Row":
+              - checkbox "Select Row"
+              - text: Select Row
+            - gridcell "Atlántico"
+            - gridcell "Barranquilla"
+            - gridcell "699,792 Additional Conditional Formatting"
+          - row "Select Row Bolívar Cartagena De Indias 502,027 Additional Conditional Formatting":
+            - gridcell "Select Row":
+              - checkbox "Select Row"
+              - text: Select Row
+            - gridcell "Bolívar"
+            - gridcell "Cartagena De Indias"
+            - gridcell "502,027 Additional Conditional Formatting"
+    - group "Procesos Registrados":
+      - text: Procesos Registrados
+      - img "Total Procesos Unicos 22,854,732.": 22,854,732
+    - img "Sin ubicación":
+      - heading "Sin ubicación" [level=3]
+    - img "Urbana":
+      - heading "Urbana" [level=3]
+    - img "Rural":
+      - heading "Rural" [level=3]
+    - group:
+      - img "Total Procesos Urbano 13,148,325.": 13,148,325
+    - group:
+      - img "Total Procesos Rural 2,154,478.": 2,154,478
+    - group:
+      - img
+    - img "Image"
+    - group:
+      - img "Narrativa Ciudadana En el periodo consultado, se registraron 22.854.732 procesos únicos en el sistema SPOA. De estos, 13.148.325 procesos corresponden a hechos ocurridos en zona urbana y 2.154.478 a zona rural. Adicionalmente, 7.551.929 procesos no cuentan con información de ubicación del hecho. El municipio con mayor número de registros fue Bogotá, D.C., con 5.510.341 procesos reportados..": En el periodo consultado, se registraron 22.854.732 procesos únicos en el sistema SPOA. De estos, 13.148.325 procesos corresponden a hechos ocurridos en zona urbana y 2.154.478 a zona rural. Adicionalmente, 7.551.929 procesos no cuentan con información de ubicación del hecho. El municipio con mayor número de registros fue Bogotá, D.C., con 5.510.341 procesos reportados.
+- button "Zoom Out": "-"
+- button "Zoom In": +
+- button "Zoom level. Click to open the Zoom dialog box": 117%
+- button "Fit to page": 
+- link "Microsoft Power BI (Opens in new tab)":
+  - /url: https://go.microsoft.com/fwlink/?LinkID=722383&clcid=0x409
+  - text: Microsoft Power BI
+- button "Previous Page": 
+- text: 2 of 7
+- button "Next Page": 
+- link "Share via Facebook":
+  - /url: https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fapp.powerbi.com%2Fview%3Fr%3DeyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9%26pageName%3Db6114a00b492111d6f20
+- link "Share via Twitter":
+  - /url: https://twitter.com/intent/tweet?text=https%3A%2F%2Fapp.powerbi.com%2Fview%3Fr%3DeyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9%26pageName%3Db6114a00b492111d6f20
+- link "Share via LinkedIn":
+  - /url: https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fapp.powerbi.com%2Fview%3Fr%3DeyJrIjoiMzEwN2ZiZTMtYTRlYS00ZTFkLWFlNGItMjljNDk1NmEzMGE2IiwidCI6Ijg3OWQ1YjhhLWM0NjctNDRmOS1hZGY0LTg3N2M2MWFkZGRjZSIsImMiOjR9%26pageName%3Db6114a00b492111d6f20
+- button "Share": 
+- button "Open in full-screen mode": 
+- tooltip "Next Page"
+- img
+- alert: Report Zoomed To 117%
+- text: Page 2 of 7 Next Page Button Pressed Enter or Space

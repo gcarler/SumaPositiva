@@ -1,0 +1,25 @@
+[
+  {
+    "nombre": "check-global",
+    "exit_code": 0,
+    "comando": [
+      "bun",
+      "run",
+      "check"
+    ]
+  },
+  {
+    "nombre": "diff-check",
+    "exit_code": 0,
+    "comando": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "src/features/proyectos/views/proyectos-view.tsx",
+      "src/features/proyectos/panels/ficha-actividad-panel.tsx",
+      "src/features/proyectos/services/proyectos-api.ts",
+      "src/app/_composition/panel-contracts.d.ts"
+    ]
+  }
+]

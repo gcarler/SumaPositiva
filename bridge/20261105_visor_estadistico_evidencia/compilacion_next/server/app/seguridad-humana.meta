@@ -1,0 +1,34 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/seguridad-humana/layout,_N_T_/seguridad-humana/page,_N_T_/seguridad-humana"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/seguridad-humana/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/57a7a110acafe03aa6ef0e5747e8ce4ad11f09d399bb4c0ed0b3950f0d268705/$/seguridad-humana",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/seguridad-humana/page"
+    },
+    "isFallback": false
+  }
+}

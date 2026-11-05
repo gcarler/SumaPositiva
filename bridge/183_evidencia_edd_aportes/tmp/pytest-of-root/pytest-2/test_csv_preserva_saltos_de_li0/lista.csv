@@ -1,0 +1,3 @@
+catalogo_sha256,meta_id,codigo_plan,codigo_meta,tipo_meta,nombre_meta,nodo_id,linea_nombre,documento_fuente,fila_fuente,estado_revision,motivo
+0,01a14673-6772-714c-8fa6-6299b28a1add,PLAN_A,M-0001,PRODUCTO,"META
+OBJETIVO",nodo-1,Linea uno,documento_prueba.md,1,PENDIENTE_COTEJO_DOCUMENTAL,Indicador ausente en catálogo

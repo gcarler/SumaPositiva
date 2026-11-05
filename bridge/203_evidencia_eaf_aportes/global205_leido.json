@@ -1,0 +1,119 @@
+{
+  "origin": "Coordinación; lectura/cotejo EAF203, no ejecución propia",
+  "sha256": {
+    "bridge/205_evidencia_temporales_pruebas/backend_check_final.json": "f6cc6760e08408cedc0ae30b45f542f4900e8f3d9b245f6ac3797aa96393b663",
+    "bridge/205_evidencia_temporales_pruebas/backend_check_final.log": "7846f47a98fdee1d02790141346485e72a59adfc6bcaae5f3b16d2e59ccd9e1b",
+    "bridge/205_evidencia_temporales_pruebas/backend_check_final.xml": "183cfb1a90e627531c01fec1c574b0137c86815e85797bf05f8cf6194be4af47",
+    "bridge/205_evidencia_temporales_pruebas/resultado_global_clasificado.json": "657f0d7dea751d3086f1f4156aa7ff4dc7592b892ce0524dde0a6cc847a9549d",
+    "bridge/205_evidencia_temporales_pruebas/snapshot_inicial.json": "23f005f284b826954d48c9d6a995e4e20e95cf69f98ab0339475c0604a7ede82",
+    "bridge/205_evidencia_temporales_pruebas/snapshot_final.json": "142501447f381eddd48c03d9ba032c03411a893581cc0703187a75d7150c2eae",
+    "bridge/205_evidencia_temporales_pruebas/ruff_final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "bridge/205_evidencia_temporales_pruebas/format_final.log": "8e93d18ae56550d4eef2feac77e6630617c7e169246e56e39c75d58b46167985",
+    "bridge/205_evidencia_temporales_pruebas/guardas_verificadas_v2.json": "4382a60752d52ecef4a96a1b6d8fe6936b0f5a1e59b78f1684a539e231a6c31e"
+  },
+  "tests": 1450,
+  "passed": 1431,
+  "failed": 3,
+  "skipped": 16,
+  "snapshot_sources": 548,
+  "current_source_differences": [],
+  "classification": {
+    "fecha_utc": "2026-10-26T05:53:11.657337+00:00",
+    "pruebas_recogidas": 1450,
+    "aprobadas": 1431,
+    "fallidas": 3,
+    "omitidas": 16,
+    "fallos": [
+      {
+        "test": "tests.test_catalogo_fuentes_versionado::test_carga_real_no_duplica_y_no_promueve",
+        "categoria": "integridad_inventario_corpus",
+        "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+        "traza": "backend/tests/test_catalogo_fuentes_versionado.py:24: in test_carga_real_no_duplica_y_no_promueve\n    primera = asyncio.run(cargar(prepared_test_database, inventario))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\nbackend/scripts/cargar_catalogo_fuentes.py:105: in cargar\n    verificar_inventario(inventario)\nbackend/scripts/cargar_catalogo_fuentes.py:85: in verificar_inventario\n    raise ValueError(f\"Artefacto ausente o con SHA distinto: {archivo['ruta']}\")\nE   ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json"
+      },
+      {
+        "test": "tests.test_catalogo_fuentes_versionado::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion",
+        "categoria": "integridad_inventario_corpus",
+        "mensaje": "ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+        "traza": "backend/tests/test_catalogo_fuentes_versionado.py:103: in test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion\n    asyncio.run(cargar(prepared_test_database, inventario))\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\nbackend/scripts/cargar_catalogo_fuentes.py:105: in cargar\n    verificar_inventario(inventario)\nbackend/scripts/cargar_catalogo_fuentes.py:85: in verificar_inventario\n    raise ValueError(f\"Artefacto ausente o con SHA distinto: {archivo['ruta']}\")\nE   ValueError: Artefacto ausente o con SHA distinto: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json"
+      },
+      {
+        "test": "tests.test_inventario_fuentes_polis::test_inventario_publicado_coincide_con_archivos_actuales",
+        "categoria": "integridad_inventario_corpus",
+        "mensaje": "AssertionError: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json\nassert '7dfb91e3942e...a771be8c02f38' == 'a7443aa121b2...005037aa6dc7a'\n  \n  - a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a\n  + 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+        "traza": "backend/tests/test_inventario_fuentes_polis.py:81: in test_inventario_publicado_coincide_con_archivos_actuales\n    assert hashlib.sha256(ruta.read_bytes()).hexdigest() == archivo[\"sha256\"], archivo[\"ruta\"]\nE   AssertionError: data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json\nE   assert '7dfb91e3942e...a771be8c02f38' == 'a7443aa121b2...005037aa6dc7a'\nE     \nE     - a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a\nE     + 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+      }
+    ],
+    "omisiones": [
+      {
+        "test": "tests.test_google_workspace_sync::test_report_has_a_verifiable_sha256_seal",
+        "causa": "Requiere el guion oficial del usuario del documento nativo (/tmp/user_google_doc_content.txt o POLIS_USER_OUTLINE_PATH); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_embudo_analitico_3_etapas_y_evolucion_8_planes_4637_metas",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_macro_v2_monografias_8_planes_top30_secretarias_y_embudo_vinculos",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_diagnostico_seguridad_humana_8planes::test_7_dimensiones_v2_con_10_bloques_profundos_y_metas_reales_bd_csh",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_nodos_espacial_predictivo::test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_pdd_metas_oficiales_4637_normalizadas_en_8_planes_bd_csh",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_pdd_vinculos_meta_pa_triada_4637_filas_en_8_planes_bd_csh",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_normalizador_y_vinculos_8planes::test_preservacion_estricta_ceros_observados_vs_none_en_8_planes",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_persistencia_pg::test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_persistencia_pg::test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_revision_por_meta::test_integracion_bd_csh_pdd_2024_2027_universo_y_trazabilidad",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_revision_por_meta::test_integracion_bd_csh_filtro_por_dependencia",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_revision_por_meta::test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_revision_por_meta::test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_revision_por_meta::test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      },
+      {
+        "test": "tests.test_pdt_sispt_dnp_evaluador::test_evaluar_universo_sispt_dnp_bd_csh_4637_metas_8_planes",
+        "causa": "Requiere el corpus de análisis PDD/PDL (bd_csh caliente o polis_test* provisionado con scripts de ingesta); no disponible en este entorno"
+      }
+    ],
+    "snapshot_identico": true,
+    "archivos_snapshot": 548,
+    "codigo_salida_check": 1,
+    "aprobacion_global": false
+  },
+  "global_approved": false,
+  "late_SQL_injection_reached": false
+}

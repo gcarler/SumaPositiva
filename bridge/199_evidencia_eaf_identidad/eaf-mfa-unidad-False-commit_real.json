@@ -1,0 +1,12 @@
+{
+  "codigo_valido": false,
+  "fallo": "commit_real",
+  "excepcion": "IntegrityError",
+  "pid_antes": 2889081,
+  "pid_despues": 2889085,
+  "estado_antes_sha256": "91cc40971c38e26a1e082ca652760cc1570d80e78f40a26baa2bffa4ee3c8982",
+  "estado_despues_sha256": "91cc40971c38e26a1e082ca652760cc1570d80e78f40a26baa2bffa4ee3c8982",
+  "igualdad_completa": true,
+  "sesion_utilizable": true,
+  "campos": "Usuario/hash, sesiones/cívicas y acreditación, cola/tokens, factor/contador/códigos y eventos"
+}

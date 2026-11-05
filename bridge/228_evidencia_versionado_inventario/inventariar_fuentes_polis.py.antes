@@ -1,0 +1,330 @@
+"""Inventario reproducible de fuentes y artefactos locales de seguridad humana.
+
+Conserva la distinción entre la clave de una serie y la fuente institucional.
+No modifica los insumos ni promociona registros de calidad incierta.
+"""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+import os
+import tempfile
+from collections import defaultdict
+from datetime import UTC, datetime
+from pathlib import Path
+
+RAIZ = Path(__file__).resolve().parents[1]
+BANCO = Path(
+    os.environ.get("POLIS_INVENTARIO_BANCO", RAIZ / "data/banco_fuentes_oficiales")
+)
+CONSOLIDADO = BANCO / "indicadores_consolidados_cartagena_2026.csv"
+SALIDA = BANCO / "inventario_pipeline_2026.json"
+VERSIONES_INVENTARIO = RAIZ / "data/fuentes_versiones/inventarios"
+PLAN_OPERATIVO = BANCO / "plan_actualizacion_2026.json"
+SOLICITUDES = BANCO / "solicitudes_datos_pendientes_2026.json"
+RAICES = (
+    BANCO,
+    RAIZ / "data/cartografia_fuentes",
+    RAIZ / "data/analisis_planes",
+    RAIZ / "data/planes_desarrollo",
+    RAIZ / "data/planes_accion",
+    RAIZ / "data/capas_analiticas",
+    RAIZ / "geodatos_cartagena",
+    RAIZ / "public/geodatos",
+)
+IGNORAR = {"__pycache__", ".DS_Store", ".gitkeep"}
+EXCLUIR_PREFIJOS = (
+    "data/capas_analiticas/cortes/",
+    "data/capas_analiticas/derivaciones/",
+    "data/capas_analiticas/tablero_operacion_fuentes/",
+    "data/planes_desarrollo/cache_",
+    "data/planes_desarrollo/checkpoints_",
+)
+EXCLUIR_MUTABLES = {
+    "data/planes_desarrollo/cache_inteligencia_triada_6m.json",
+    "data/planes_desarrollo/cache_pdt_ai_evaluator.json",
+    "data/planes_desarrollo/estado_sistema_multiagente_pdd.json",
+    "data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json",
+}
+PAQUETES = {
+    "banco_local": {
+        "prefijo": "data/banco_fuentes_oficiales/",
+        "descripcion": "Archivos locales de extracción, revisión y consolidación de indicadores",
+        "atribucion": "mixta_pendiente_verificacion",
+    },
+    "cartografia_recepcion": {
+        "prefijo": "data/cartografia_fuentes/",
+        "descripcion": "Capas recibidas, versiones curadas y auditorías cartográficas",
+        "atribucion": "custodio_y_edicion_pendientes_verificacion",
+    },
+    "analisis_derivados": {
+        "prefijo": "data/analisis_planes/",
+        "descripcion": "Informes y gráficas derivados de análisis previos",
+        "atribucion": "producto_analitico_no_fuente_independiente",
+    },
+    "planes_locales": {
+        "prefijo": "data/planes_desarrollo/",
+        "descripcion": "Documentos y extracciones de planes de desarrollo y acción",
+        "atribucion": "edicion_documental_pendiente_verificacion",
+    },
+    "planes_accion": {
+        "prefijo": "data/planes_accion/",
+        "descripcion": "Planes de acción recibidos, catálogo Drive y extracciones documentales",
+        "atribucion": "custodio_y_edicion_pendientes_verificacion",
+    },
+    "analitica_canonica": {
+        "prefijo": "data/capas_analiticas/",
+        "descripcion": "Cortes derivados tipados y manifiestos de calidad",
+        "atribucion": "derivado_no_fuente_independiente",
+    },
+    "geodatos_recepcion": {
+        "prefijo": "geodatos_cartagena/",
+        "descripcion": "Paquete cartográfico recibido y sus componentes de formato",
+        "atribucion": "custodio_y_edicion_pendientes_verificacion",
+    },
+    "geodatos_publicados": {
+        "prefijo": "public/geodatos/",
+        "descripcion": "Copias técnicas de geodatos para la interfaz",
+        "atribucion": "derivado_no_fuente_independiente",
+    },
+}
+
+
+def _paquete(ruta: str) -> str:
+    if ruta.startswith("banco_fuentes_oficiales/"):
+        return "banco_local"
+    return next(
+        clave for clave, ficha in PAQUETES.items() if ruta.startswith(ficha["prefijo"])
+    )
+
+
+def _indice_drive() -> tuple[dict[str, dict], dict[str, list[dict]], str]:
+    ruta = RAIZ / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
+    if not ruta.is_file():
+        return {}, {}, ""
+    entradas = json.loads(ruta.read_text(encoding="utf-8"))
+    por_sha: dict[str, list[dict]] = defaultdict(list)
+    for entrada in entradas:
+        if entrada.get("sha256"):
+            por_sha[entrada["sha256"]].append(entrada)
+    return {entrada["id"]: entrada for entrada in entradas}, por_sha, _sha256(ruta)
+
+
+def _evidencia_drive(
+    ruta: str, sha: str, indice: tuple[dict[str, dict], dict[str, list[dict]], str]
+) -> dict:
+    base = "data/planes_accion/drive_sector_seguridad/"
+    if not ruta.startswith(base):
+        return {}
+    por_id, por_sha, catalogo_sha = indice
+    nombre = Path(ruta).stem
+    if ruta.startswith(base + "archivos/"):
+        entrada = por_id.get(nombre)
+        if entrada and entrada.get("sha256") != sha:
+            raise ValueError(f"SHA del catálogo Drive no coincide: {ruta}")
+        relacionadas = [entrada] if entrada else []
+        relacion = "original_recibido"
+    elif ruta.startswith(base + "archivos_pdf/"):
+        relacionadas = por_sha.get(sha, [])
+        relacion = "original_pdf_recibido"
+    elif ruta.startswith(base + "anydoc_md/"):
+        relacionadas = por_sha.get(nombre, [])
+        relacion = "transcripcion_de_pdf"
+    else:
+        return {}
+    return {
+        "catalogo_ruta": base + "catalogo_drive_1383.json",
+        "catalogo_sha256": catalogo_sha,
+        "relacion": relacion,
+        "drive_file_ids": sorted({entrada["id"] for entrada in relacionadas}),
+        "rutas_drive": sorted(
+            {entrada["path"] for entrada in relacionadas if entrada.get("path")}
+        ),
+        "custodio_confirmado": False,
+    }
+
+
+def _sha256(ruta: Path) -> str:
+    digest = hashlib.sha256()
+    with ruta.open("rb") as archivo:
+        for bloque in iter(lambda: archivo.read(1024 * 1024), b""):
+            digest.update(bloque)
+    return digest.hexdigest()
+
+
+def _registro_fuentes() -> list[dict]:
+    grupos: dict[str, dict] = {}
+    with CONSOLIDADO.open(encoding="utf-8", newline="") as archivo:
+        for fila in csv.DictReader(archivo):
+            clave = fila["fuente_clave"]
+            grupo = grupos.setdefault(
+                clave,
+                {
+                    "fuente_clave": clave,
+                    "custodios": set(),
+                    "dataset_ids": set(),
+                    "origenes": set(),
+                    "indicadores": set(),
+                    "unidades": set(),
+                    "ambitos": set(),
+                    "estados_calidad": set(),
+                    "anios": set(),
+                    "urls": set(),
+                    "fechas_extraccion": set(),
+                    "filas": 0,
+                    "_filas_version": [],
+                },
+            )
+            for campo, valor in (
+                ("custodios", fila["custodio"]),
+                ("dataset_ids", fila["dataset_id"]),
+                ("origenes", fila["origen"]),
+                ("indicadores", fila["indicador"]),
+                ("unidades", fila["unidad"]),
+                ("ambitos", fila["ambito"]),
+                ("estados_calidad", fila["estado_validacion"]),
+                ("anios", fila["anio"]),
+                ("urls", fila["url_fuente"]),
+                ("fechas_extraccion", fila["fecha_extraccion"]),
+            ):
+                if valor:
+                    grupo[campo].add(valor)
+            grupo["filas"] += 1
+            # Una consulta nueva no crea versión si sus observaciones son idénticas.
+            contenido = {
+                campo: valor
+                for campo, valor in fila.items()
+                if campo != "fecha_extraccion"
+            }
+            grupo["_filas_version"].append(
+                json.dumps(contenido, ensure_ascii=False, sort_keys=True)
+            )
+    salida = []
+    for grupo in grupos.values():
+        filas_version = grupo.pop("_filas_version")
+        sha = hashlib.sha256("\n".join(sorted(filas_version)).encode()).hexdigest()
+        for clave, valor in list(grupo.items()):
+            if isinstance(valor, set):
+                grupo[clave] = sorted(valor)
+        grupo["sha256_contenido"] = sha
+        grupo["version_id"] = sha[:16]
+        grupo["ultima_extraccion_utc"] = max(grupo["fechas_extraccion"], default=None)
+        grupo["licencia"] = "por_verificar"
+        grupo["contrato"] = "observacion_agregada_v1"
+        grupo["es_fuente_independiente"] = not any(
+            origen in {"icbf_rpc_compilacion", "archivo_usuario_drive"}
+            for origen in grupo["origenes"]
+        )
+        grupo["estado_promocion"] = "pendiente_validacion"
+        salida.append(grupo)
+    return sorted(salida, key=lambda fila: fila["fuente_clave"])
+
+
+def _registro_artefactos() -> list[dict]:
+    resultado = []
+    indice_drive = _indice_drive()
+    for raiz in RAICES:
+        for ruta in sorted(raiz.rglob("*")):
+            if (
+                not ruta.is_file()
+                or ruta in {SALIDA, PLAN_OPERATIVO, SOLICITUDES}
+                or any(parte in IGNORAR for parte in ruta.parts)
+            ):
+                continue
+            relativo = ruta.relative_to(RAIZ).as_posix()
+            if raiz == BANCO and BANCO.name != "banco_fuentes_oficiales":
+                relativo = relativo.replace(BANCO.name, "banco_fuentes_oficiales", 1)
+            if relativo.startswith(EXCLUIR_PREFIJOS) or relativo in EXCLUIR_MUTABLES:
+                # Cortes y caches mutables no pueden incluir su propia huella.
+                continue
+            sha = _sha256(ruta)
+            resultado.append(
+                {
+                    "ruta": relativo,
+                    "paquete_clave": _paquete(relativo),
+                    "evidencia_origen": _evidencia_drive(relativo, sha, indice_drive),
+                    "sha256": sha,
+                    "version_id": sha[:16],
+                    "bytes": ruta.stat().st_size,
+                    "formato": ruta.suffix.lower().lstrip(".") or "sin_extension",
+                    "rol": "derivado"
+                    if (
+                        ruta.name.startswith(("indicadores_consolidados", "cache_"))
+                        or relativo.startswith(
+                            ("public/geodatos/", "data/capas_analiticas/")
+                        )
+                    )
+                    else "insumo_o_evidencia",
+                    "estado_calidad": "sin_evaluacion_por_artefacto",
+                }
+            )
+    return resultado
+
+
+def generar() -> dict:
+    fuentes = _registro_fuentes()
+    artefactos = _registro_artefactos()
+    identidades: dict[str, list[str]] = defaultdict(list)
+    for fuente in fuentes:
+        for custodio in fuente["custodios"]:
+            for dataset in fuente["dataset_ids"]:
+                identidades[f"{custodio}|{dataset}"].append(fuente["fuente_clave"])
+    return {
+        "esquema": "polis.inventario_fuentes.v1",
+        "generado_utc": datetime.now(UTC).isoformat(),
+        "corte_consolidado_sha256": _sha256(CONSOLIDADO),
+        "fuentes_clave": len(fuentes),
+        "artefactos": len(artefactos),
+        "identidades_con_multiples_claves": {
+            identidad: claves
+            for identidad, claves in sorted(identidades.items())
+            if len(set(claves)) > 1
+        },
+        "regla": "Clave de serie no equivale a fuente independiente; la promoción requiere licencia y control de calidad.",
+        "paquetes": PAQUETES,
+        "fuentes": fuentes,
+        "archivos": artefactos,
+    }
+
+
+def escribir_inventario(
+    inventario: dict, salida: Path = SALIDA, versiones: Path = VERSIONES_INVENTARIO
+) -> Path:
+    """Conserva la copia exacta por SHA antes de reemplazar la vista mutable."""
+    contenido = (json.dumps(inventario, ensure_ascii=False, indent=2) + "\n").encode()
+    sha = hashlib.sha256(contenido).hexdigest()
+    versiones.mkdir(parents=True, exist_ok=True)
+    inmutable = versiones / f"{sha}.json"
+    try:
+        with inmutable.open("xb") as archivo:
+            archivo.write(contenido)
+            archivo.flush()
+            os.fsync(archivo.fileno())
+    except FileExistsError:
+        if inmutable.read_bytes() != contenido:
+            raise ValueError("Instantánea de inventario existente alterada") from None
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(
+        dir=salida.parent, prefix=f".{salida.name}.", delete=False
+    ) as archivo:
+        archivo.write(contenido)
+        archivo.flush()
+        os.fsync(archivo.fileno())
+        temporal = Path(archivo.name)
+    os.replace(temporal, salida)
+    return inmutable
+
+
+def main() -> None:
+    inventario = generar()
+    version = escribir_inventario(inventario)
+    print(
+        f"Inventariadas {inventario['fuentes_clave']} claves y {inventario['artefactos']} artefactos; "
+        f"instantánea {version.name}"
+    )
+
+
+if __name__ == "__main__":
+    main()

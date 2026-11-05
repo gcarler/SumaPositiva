@@ -1,0 +1,21 @@
+{
+  "existente": false,
+  "fallo": "validacion",
+  "excepcion": "ValidationError",
+  "pid_antes": 2888840,
+  "pid_despues": 2888846,
+  "estado_antes_sha256": "c513c140950c45562d3b2bea8c93a5cf0717c326d1f8723bf3d88698217aa19a",
+  "estado_despues_sha256": "c513c140950c45562d3b2bea8c93a5cf0717c326d1f8723bf3d88698217aa19a",
+  "igualdad_completa": true,
+  "conteos_despues": {
+    "usuario": 0,
+    "sesiones": 0,
+    "civicas": 0,
+    "tokens": 0,
+    "eventos": 0,
+    "mfa": 0
+  },
+  "filas_restriccion_commit": null,
+  "sesion_utilizable": true,
+  "eventos_consultados_por_uuid_sin_depender_de_usuario_existente": true
+}

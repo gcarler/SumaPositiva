@@ -1,0 +1,13 @@
+{
+  "inyeccion": "despues de todos los asserts crudos del test original",
+  "esquema": "test_legado_aportes_95e681e332c34b2fb3a20c48af769b72",
+  "pid_observador": 3540699,
+  "filas_crudas": [
+    {
+      "id": "030bb7e6-09e9-4e47-8a4a-fd0c2c4941bd",
+      "metadatos": [
+        "legado"
+      ]
+    }
+  ]
+}

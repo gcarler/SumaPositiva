@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-27T11:35:38.692361+00:00",
+  "sha256": {
+    "src/features/politicas/state/hero-store.ts": "3a2cd83b9c360b25059b11b44625c7e2a34919dfa84ba9f514e9ac66ffeabad1",
+    "src/features/politicas/components/hero-home-showcase.tsx": "af6e368bf7dbab9e86335a1a4f6779d1361f5a16544ce71e184bdbc1cb787c73",
+    "src/features/plataforma/components/gestor-heros-plataforma.tsx": "6bf3f009f95eb4b8d08757547c1aee59bd1294c1285ba51a9cea8b1be474615c"
+  },
+  "causa": "Cambios concurrentes de agy2 en mismos archivos detectados; se preserva captura antes de integración. No se atribuyen los fallos a versión estable."
+}

@@ -1,0 +1,39 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/plataforma/layout,_N_T_/plataforma/geovisor/layout,_N_T_/plataforma/geovisor/page,_N_T_/plataforma/geovisor"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/plataforma/geovisor/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 160,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/6e9cfdf862c438f7940e1ec75e0d2e385be3ad725f30d8806c7090f4b8037dc2/$/plataforma/geovisor",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/plataforma/geovisor/page"
+    },
+    "isFallback": false
+  }
+}

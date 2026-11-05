@@ -1,0 +1,14 @@
+[
+  {
+    "nombre": "check-global",
+    "comando": "bun run check",
+    "exit_code": 1,
+    "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/check-global.log"
+  },
+  {
+    "nombre": "typecheck",
+    "comando": "bun run typecheck",
+    "exit_code": 0,
+    "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/typecheck.log"
+  }
+]

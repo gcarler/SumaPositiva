@@ -1,0 +1,2214 @@
+{
+  "id" : "vtub-3de2",
+  "name" : "Presuntos Homicidios. Colombia, 2015 a 2024. Cifras definitivas",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+  "attributionLink" : "https://www.medicinalegal.gov.co",
+  "averageRating" : 0,
+  "category" : "Justicia y Derecho",
+  "createdAt" : 1614718775,
+  "description" : "Contiene información prevalente de los presuntos homicidios ocurridos en el territorio nacional Colombiano en el periodo de tiempo comprendido entre los años 2015 a 2024, de los cuales tiene conocimiento y son registrados por el Instituto Nacional de Medicina Legal y Ciencias Forenses.\nSu opinión es muy importante para nosotros, ya que nos ayuda a mejorar los servicios que brindamos; por tal motivo, le agradecemos responder la siguiente encuesta relacionada con la satisfacción de consulta de datos abiertos: https://forms.office.com/r/CGD4hDTEX8.\n\nObservaciones Generales:\n1.\tEn concordancia con el quehacer misional del INMLCF, de acuerdo con lo establecido en el Artículo 35 de la Ley 938 de 2004, la entidad provee cifras estadísticas obtenidas de la práctica forense, esto con el objetivo de que puedan ser consultadas por el público en general, y también para que sean utilizadas como insumo para generar políticas públicas y toma de decisiones en cuanto a la mitigación y prevención de las lesiones de causa externa que ocurren en el territorio nacional colombiano.\n2.\tCuando se clasifica un caso en una de las categorías solicitadas, no se tipifica un delito, tampoco se hacen juicios de responsabilidad y no se determina la legalidad o ilegalidad de hecho, toda vez que estas actividades corresponden a las autoridades competentes. La clasificación, de carácter forense, se genera en el contexto de la información aportada por la autoridad, los hallazgos durante el procedimiento de necropsia y del relato de la víctima, dependiendo del contexto de violencia.\n3.\tDe conformidad con el párrafo que antecede, las cifras que aporta la entidad, se entregan a manera de presunción, por cuanto, únicamente mediante las investigaciones a cargo de las diligencias de cada caso, se puede establecer con certeza las circunstancias en las que ocurrieron los hechos.\n4.\tLa información reportada por el Instituto, corresponde solo a los casos abordados por el Instituto Nacional de Medicina Legal y Ciencias Forenses y los incluidos en los sistemas de información del Instituto por el sector salud; dicha aclaración es necesaria dado que, no todos los casos realizados por el sector salud son reportados al sistema medicolegal o no todos los casos investigados por las autoridades judiciales son conocidos por el sistema medicolegal.\n5.\tLos criterios de inclusión contemplan la exigencia que la fecha del hecho se haya dado dentro del periodo solicitado, y que además se presente como un caso que haya sido conocido por el sistema médico forense colombiano mediante solicitud de la autoridad competente. Por lo tanto, son excluidos del análisis los casos conocidos por el Instituto, cuyos hechos hayan ocurrido en un periodo de tiempo diferente.\n\n\nObservaciones para presuntos homicidios: \n6.\tLa definición de homicidio aplicada por el Instituto Nacional de Medicina Legal y Ciencias Forenses - INMLCF, desde el punto de vista médico legal es “El que matare a otro”; de forma intencional o no intencional. \n\n7. \tRelacionado con Presuntos Feminicidios: El Instituto a partir del año 2018 ante la necesidad de poder visibilizar el fenómeno del feminicidio, creó la categoría \"feminicidio\" dentro de la variable \"circunstancia del hecho\", la cual es usada en los casos en que el médico en su quehacer forense durante la necropsia médico legal observa signos físicos que le permiten definirlo como tal. \n\nNo obstante, este delito se define como: “la muerte violenta de mujeres por razones de género, ya sea que tenga lugar dentro de la familia, unidad doméstica o en cualquier otra relación interpersonal, en la comunidad, por parte de cualquier persona, o que sea perpetrada o tolerada por el Estado y sus agentes, por acción u omisión\" (1), y no siempre es posible determinarlo desde nuestro quehacer forense, dado que se requiere ahondar en aspectos de tipo investigativo que no son competencia jurídica de la Entidad. Por lo tanto, las cifras de feminicidios deben ser aportadas por el ente investigador.\n----------------------\n(1) Definición Oficina Regional para América Central del Alto Comisionado de las Naciones Unidas para los Derechos Humanos (OACNUDH) con el apoyo de la Oficina Regional para las Américas y el Caribe de la Entidad de las Naciones Unidas para la Igualdad de Género y el Empoderamiento de las Mujeres (ONU Mujeres) en el marco de la Campaña del Secretario General de las Naciones Unidas ÚNETE para poner fin a la violencia contra las mujeres en el Modelo de Protocolo Latinoamericano de Investigación de las Muertes violentas, recuperado de http://www.ohchr.org/Documents/Issues/Women/WRGS/ProtocoloLatinoamericanoDeInvestigacion.pdf, . página. 14",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 2862,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 41633093,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1758297485,
+  "publicationGroup" : 18099535,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1758297367,
+  "rowsUpdatedBy" : "yqq2-9fsj",
+  "tableId" : 20098666,
+  "totalTimesRated" : 0,
+  "viewCount" : 21222,
+  "viewLastModified" : 1779129971,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1615559174,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 7128632,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1615497052,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1615559174,
+      "failureCount" : 0,
+      "startedAt" : 1615559174,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "yqq2-9fsj",
+      "displayName" : "Instituto Nacional de Medicina Legal y Ciencias Forenses"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 617849350,
+    "name" : "ID",
+    "dataTypeName" : "text",
+    "description" : "Numeración secuencial en el sistema con respecto al registro de los casos.",
+    "fieldName" : "id",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155793536,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "99999",
+      "null" : "0",
+      "top" : [ {
+        "item" : "118912",
+        "count" : "1"
+      }, {
+        "item" : "36146",
+        "count" : "1"
+      }, {
+        "item" : "53623",
+        "count" : "1"
+      }, {
+        "item" : "30543",
+        "count" : "1"
+      }, {
+        "item" : "15967",
+        "count" : "1"
+      }, {
+        "item" : "40442",
+        "count" : "1"
+      }, {
+        "item" : "16715",
+        "count" : "1"
+      }, {
+        "item" : "47586",
+        "count" : "1"
+      }, {
+        "item" : "33223",
+        "count" : "1"
+      }, {
+        "item" : "107349",
+        "count" : "1"
+      }, {
+        "item" : "68832",
+        "count" : "1"
+      }, {
+        "item" : "15976",
+        "count" : "1"
+      }, {
+        "item" : "55482",
+        "count" : "1"
+      }, {
+        "item" : "64951",
+        "count" : "1"
+      }, {
+        "item" : "36232",
+        "count" : "1"
+      }, {
+        "item" : "55208",
+        "count" : "1"
+      }, {
+        "item" : "41570",
+        "count" : "1"
+      }, {
+        "item" : "11139",
+        "count" : "1"
+      }, {
+        "item" : "84765",
+        "count" : "1"
+      }, {
+        "item" : "12377",
+        "count" : "1"
+      } ],
+      "smallest" : "1",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849351,
+    "name" : "Año del hecho",
+    "dataTypeName" : "text",
+    "description" : "Rango de tiempo en el que se dieron los hechos, se encuentra establecido por el período que transcurre desde el día 1 de enero hasta el 31 de diciembre.",
+    "fieldName" : "a_o_del_hecho",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155793537,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "2024",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2023",
+        "count" : "14260"
+      }, {
+        "item" : "2024",
+        "count" : "14021"
+      }, {
+        "item" : "2022",
+        "count" : "13939"
+      }, {
+        "item" : "2021",
+        "count" : "13238"
+      }, {
+        "item" : "2018",
+        "count" : "12130"
+      }, {
+        "item" : "2019",
+        "count" : "11880"
+      }, {
+        "item" : "2015",
+        "count" : "11585"
+      }, {
+        "item" : "2016",
+        "count" : "11532"
+      }, {
+        "item" : "2017",
+        "count" : "11373"
+      }, {
+        "item" : "2020",
+        "count" : "11326"
+      } ],
+      "smallest" : "2015",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849352,
+    "name" : "Grupo de edad quinquenal",
+    "dataTypeName" : "text",
+    "description" : "Tiempo que ha vivido una persona u otro ser vivo contando desde su nacimiento hasta su fallecimiento, capturado en un intervalo de tiempo. Se registra conforme a la fecha de nacimiento indicada en el documento de identidad; en el caso de cadáveres no identificados - CNI se registra según estimación de edad biológica. ",
+    "fieldName" : "grupo_de_edad_quinquenal",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764006,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "(20 a 24)",
+        "count" : "24346"
+      }, {
+        "item" : "(25 a 29)",
+        "count" : "23113"
+      }, {
+        "item" : "(30 a 34)",
+        "count" : "18501"
+      }, {
+        "item" : "(35 a 39)",
+        "count" : "13820"
+      }, {
+        "item" : "(40 a 44)",
+        "count" : "9700"
+      }, {
+        "item" : "(18 a 19)",
+        "count" : "7459"
+      }, {
+        "item" : "(45 a 49)",
+        "count" : "6842"
+      }, {
+        "item" : "(15 a 17)",
+        "count" : "5465"
+      }, {
+        "item" : "(50 a 54)",
+        "count" : "5221"
+      }, {
+        "item" : "(55 a 59)",
+        "count" : "3657"
+      }, {
+        "item" : "(60 a 64)",
+        "count" : "2518"
+      }, {
+        "item" : "(65 a 69)",
+        "count" : "1435"
+      }, {
+        "item" : "(70 a 74)",
+        "count" : "847"
+      }, {
+        "item" : "(10 a 14)",
+        "count" : "788"
+      }, {
+        "item" : "(00 a 04)",
+        "count" : "476"
+      }, {
+        "item" : "(75 a 79)",
+        "count" : "457"
+      }, {
+        "item" : "(80 y más)",
+        "count" : "387"
+      }, {
+        "item" : "(05 a 09)",
+        "count" : "227"
+      }, {
+        "item" : "Sin información",
+        "count" : "19"
+      }, {
+        "item" : "Por determinar",
+        "count" : "6"
+      } ],
+      "smallest" : "(00 a 04)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849353,
+    "name" : "Grupo Mayor Menor de Edad",
+    "dataTypeName" : "text",
+    "description" : "Agrupación según se trate de personas mayores o menores de edad (mayoría de edad a partir de los 18 años, Constitución Política de Colombia 1991).",
+    "fieldName" : "grupo_mayor_menor_de_edad",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597830,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "c) Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "b) Mayores de Edad (>18 años)",
+        "count" : "107637"
+      }, {
+        "item" : "b) Mayor de Edad (>18 Años)",
+        "count" : "10666"
+      }, {
+        "item" : "a) Menores de Edad (<18 años)",
+        "count" : "6038"
+      }, {
+        "item" : "a) Menor de Edad (<18 Años)",
+        "count" : "918"
+      }, {
+        "item" : "c) Sin información",
+        "count" : "25"
+      } ],
+      "smallest" : "a) Menor de Edad (<18 Años)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849354,
+    "name" : "Grupo de Edad judicial",
+    "dataTypeName" : "text",
+    "description" : "Agrupación de casos en rangos de edades que son de interés judicial.",
+    "fieldName" : "grupo_de_edad_judicial",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597829,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "(20 a 24)",
+        "count" : "24346"
+      }, {
+        "item" : "(29 a 34)",
+        "count" : "22679"
+      }, {
+        "item" : "(25 a 28)",
+        "count" : "18935"
+      }, {
+        "item" : "(35 a 39)",
+        "count" : "13820"
+      }, {
+        "item" : "(40 a 44)",
+        "count" : "9700"
+      }, {
+        "item" : "(18 a 19)",
+        "count" : "7459"
+      }, {
+        "item" : "(45 a 49)",
+        "count" : "6842"
+      }, {
+        "item" : "(14 a 17)",
+        "count" : "5894"
+      }, {
+        "item" : "(50 a 54)",
+        "count" : "5221"
+      }, {
+        "item" : "(55 a 59)",
+        "count" : "3657"
+      }, {
+        "item" : "(60 a 64)",
+        "count" : "2518"
+      }, {
+        "item" : "(65 a 69)",
+        "count" : "1435"
+      }, {
+        "item" : "(70 a 74)",
+        "count" : "847"
+      }, {
+        "item" : "(00 a 04)",
+        "count" : "475"
+      }, {
+        "item" : "(75 a 79)",
+        "count" : "457"
+      }, {
+        "item" : "(80 y más)",
+        "count" : "387"
+      }, {
+        "item" : "(10 a 13)",
+        "count" : "359"
+      }, {
+        "item" : "(05 a 09)",
+        "count" : "228"
+      }, {
+        "item" : "Sin información",
+        "count" : "19"
+      }, {
+        "item" : "Por determinar",
+        "count" : "6"
+      } ],
+      "smallest" : "(00 a 04)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849355,
+    "name" : "Ciclo Vital",
+    "dataTypeName" : "text",
+    "description" : "Corresponde al establecimiento de la etapa de desarrollo vital en que se encontraba la víctima, al momento del fallecimiento.",
+    "fieldName" : "ciclo_vital",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597828,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "(29 a 59) Adultez",
+        "count" : "61919"
+      }, {
+        "item" : "(18 a 28) Juventud",
+        "count" : "50740"
+      }, {
+        "item" : "(12 a 17) Adolescencia",
+        "count" : "6136"
+      }, {
+        "item" : "(Más de 60) Adulto Mayor",
+        "count" : "5644"
+      }, {
+        "item" : "(00 a 05) Primera Infancia",
+        "count" : "525"
+      }, {
+        "item" : "(06 a 11) Infancia",
+        "count" : "295"
+      }, {
+        "item" : "Sin información",
+        "count" : "19"
+      }, {
+        "item" : "Por determinar",
+        "count" : "6"
+      } ],
+      "smallest" : "(00 a 05) Primera Infancia",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849356,
+    "name" : "Sexo de la victima",
+    "dataTypeName" : "text",
+    "description" : "Hace referencia al sexo del fallecido. Desde la perspectiva biológica, se refiere a las características genéticas, endocrinas y morfológicas del cuerpo. Las categorías utilizadas para clasificar estas características en los seres humanos son hombre, mujer.",
+    "fieldName" : "sexo_de_la_victima",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764007,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Mujer",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Hombre",
+        "count" : "115147"
+      }, {
+        "item" : "Mujer",
+        "count" : "10030"
+      }, {
+        "item" : "Indeterminado",
+        "count" : "107"
+      } ],
+      "smallest" : "Hombre",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849357,
+    "name" : "Estado Civil",
+    "dataTypeName" : "text",
+    "description" : "Es la situación de cada persona en relación con las leyes o costumbres relativas al matrimonio que existen en el país. Inicialmente era solo uno el estado civil, el de soltero, en aquella época en la que no existía legalmente el matrimonio. Con su institucionalización surge el estado de casado que sólo se perdía con la muerte, adquiriendo el cónyuge supérstite la calidad de viudo. En esos tiempos fueron solo tres los estados civiles: soltero, casado o viudo. Cuando se legaliza el divorcio se suma el de divorciado, lo mismo sucede con la separación de cuerpos para el separado, y, finalmente, con la aceptación de la convivencia, con el conviviente.",
+    "fieldName" : "estado_civil",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597827,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Viudo(a)",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Soltero(a)",
+        "count" : "50663"
+      }, {
+        "item" : "Unión libre",
+        "count" : "38650"
+      }, {
+        "item" : "Sin información",
+        "count" : "20184"
+      }, {
+        "item" : "Casado(a)",
+        "count" : "6193"
+      }, {
+        "item" : "Soltero (a)",
+        "count" : "4763"
+      }, {
+        "item" : "Separado(a), divorciado(a)",
+        "count" : "2731"
+      }, {
+        "item" : "Casado (a)",
+        "count" : "761"
+      }, {
+        "item" : "No aplica",
+        "count" : "705"
+      }, {
+        "item" : "Viudo(a)",
+        "count" : "563"
+      }, {
+        "item" : "Viudo (a)",
+        "count" : "70"
+      }, {
+        "item" : "Unión Libre",
+        "count" : "1"
+      } ],
+      "smallest" : "Casado (a)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849358,
+    "name" : "País de Nacimiento",
+    "dataTypeName" : "text",
+    "description" : "Lugar de nacimiento registrado en el documento de identidad. ",
+    "fieldName" : "pais_de_nacimiento",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597826,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Vietnam",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Colombia",
+        "count" : "117771"
+      }, {
+        "item" : "Venezuela",
+        "count" : "5137"
+      }, {
+        "item" : "Sin información",
+        "count" : "1741"
+      }, {
+        "item" : "Sin Información",
+        "count" : "335"
+      }, {
+        "item" : "Ecuador",
+        "count" : "79"
+      }, {
+        "item" : "Estados Unidos",
+        "count" : "35"
+      }, {
+        "item" : "Perú",
+        "count" : "20"
+      }, {
+        "item" : "España",
+        "count" : "13"
+      }, {
+        "item" : "México",
+        "count" : "13"
+      }, {
+        "item" : "Italia",
+        "count" : "11"
+      }, {
+        "item" : "República Dominicana",
+        "count" : "10"
+      }, {
+        "item" : "Brasil",
+        "count" : "10"
+      }, {
+        "item" : "Costa Rica",
+        "count" : "8"
+      }, {
+        "item" : "Panamá",
+        "count" : "7"
+      }, {
+        "item" : "Francia",
+        "count" : "7"
+      }, {
+        "item" : "Cuba",
+        "count" : "6"
+      }, {
+        "item" : "China",
+        "count" : "6"
+      }, {
+        "item" : "Países Bajos",
+        "count" : "6"
+      }, {
+        "item" : "Alemania",
+        "count" : "5"
+      }, {
+        "item" : "Reino Unido",
+        "count" : "5"
+      } ],
+      "smallest" : "Alemania",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849359,
+    "name" : "Escolaridad",
+    "dataTypeName" : "text",
+    "description" : "Se refiere al grado de escolaridad más alto al cual ha llegado la persona de acuerdo con los niveles del sistema educativo formal: preescolar, básica en sus niveles de primaria, secundaria, media y superior.",
+    "fieldName" : "escolaridad",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597825,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Universitario",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Educación básica primaria",
+        "count" : "37657"
+      }, {
+        "item" : "Sin información",
+        "count" : "23037"
+      }, {
+        "item" : "Educación media o secundaria alta",
+        "count" : "18487"
+      }, {
+        "item" : "Educación básica secundaria o secundaria baja",
+        "count" : "17193"
+      }, {
+        "item" : "Educación inicial y educación preescolar",
+        "count" : "11499"
+      }, {
+        "item" : "Sin Información",
+        "count" : "3708"
+      }, {
+        "item" : "Sin escolaridad",
+        "count" : "3148"
+      }, {
+        "item" : "Preescolar",
+        "count" : "2979"
+      }, {
+        "item" : "Educación técnica profesional y tecnológica",
+        "count" : "2557"
+      }, {
+        "item" : "Básica secundaria",
+        "count" : "2257"
+      }, {
+        "item" : "Básica primaria",
+        "count" : "2132"
+      }, {
+        "item" : "Ninguna",
+        "count" : "263"
+      }, {
+        "item" : "Tecnológica",
+        "count" : "172"
+      }, {
+        "item" : "Universitario",
+        "count" : "81"
+      }, {
+        "item" : "No aplica",
+        "count" : "40"
+      }, {
+        "item" : "Especialización, maestría o equivalente",
+        "count" : "18"
+      }, {
+        "item" : "Especialización, Maestría o equivalente",
+        "count" : "15"
+      }, {
+        "item" : "Básica Primaria",
+        "count" : "14"
+      }, {
+        "item" : "Básica Secundaria",
+        "count" : "12"
+      }, {
+        "item" : "Profesional",
+        "count" : "7"
+      } ],
+      "smallest" : "Básica primaria",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849360,
+    "name" : "Pertenencia Grupal",
+    "dataTypeName" : "text",
+    "description" : "Se entienden como las características de las personas o grupos sociales, que los hacen más frágiles o susceptibles para enfrentar los riesgos, lo que hace que la probabilidad de la ocurrencia de la violencia y de la afectación sea mayor que en cualquier otra persona.  Podrán constituir condición de vulnerabilidad, entre otras, las siguientes: la edad, la discapacidad, la pertenencia a comunidades indígenas o a minorías, la victimización, la migración y el desplazamiento interno, la pobreza, el género y la privación de libertad. La concreta determinación de las personas en condición de vulnerabilidad en cada país dependerá de sus características específicas, o incluso de su nivel de desarrollo social y económico.",
+    "fieldName" : "pertenencia_grupal",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597824,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Trabajadora sexual",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Ninguno",
+        "count" : "77874"
+      }, {
+        "item" : "Sin información",
+        "count" : "20741"
+      }, {
+        "item" : "Persona adicta a una droga natural o sintética",
+        "count" : "5776"
+      }, {
+        "item" : "Otro",
+        "count" : "4332"
+      }, {
+        "item" : "Grupos étnicos",
+        "count" : "4310"
+      }, {
+        "item" : "Campesinos (as) y/o trabajadores (as) del campo",
+        "count" : "3560"
+      }, {
+        "item" : "Consumidores de sustancias psicoactivas (drogas, alcohol, etc.)",
+        "count" : "997"
+      }, {
+        "item" : "Presunto colaborador de grupo ilegal",
+        "count" : "738"
+      }, {
+        "item" : "Persona en situación de calle",
+        "count" : "618"
+      }, {
+        "item" : "Persona en condición de desplazamiento",
+        "count" : "578"
+      }, {
+        "item" : "Persona habitante de  la calle",
+        "count" : "554"
+      }, {
+        "item" : "Ex convictos (as)",
+        "count" : "490"
+      }, {
+        "item" : "Personas bajo custodia",
+        "count" : "487"
+      }, {
+        "item" : "Habitante de la calle",
+        "count" : "389"
+      }, {
+        "item" : "Personas desmovilizadas o reinsertadas",
+        "count" : "305"
+      }, {
+        "item" : "Pertenencia múltiple",
+        "count" : "302"
+      }, {
+        "item" : "persona en condición de desplazamiento",
+        "count" : "264"
+      }, {
+        "item" : "Pertenecientes a grupos étnicos",
+        "count" : "245"
+      }, {
+        "item" : "Funcionarios judiciales",
+        "count" : "242"
+      }, {
+        "item" : "Persona en situación de la calle",
+        "count" : "230"
+      } ],
+      "smallest" : "Asociacion gremial / ONG DDHH - Lider Indigena",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849389,
+    "name" : "Pertenencia Étnica",
+    "dataTypeName" : "text",
+    "description" : "Se refiere a la identificación de las personas como integrantes de alguno de los cuatro grupos étnicos reconocidos en Colombia (población Afrocolombiana o Afrodescendiente; Negra, Raizal del Archipiélago de San Andrés, Providencia y Santa Catalina; o Palenquera de San Basilio de Palenque - Mathes - Bolívar); Indígena y Gitano - Rrom; la información es aportada por la autoridad competente mediante acta de inspección técnica a cadáver y lo referido por la persona reclamante del cadáver.",
+    "fieldName" : "pertenencia_etnica",
+    "position" : 12,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161918164,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin Pertenencia Étnica",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin Pertenencia Étnica",
+        "count" : "73755"
+      }, {
+        "item" : "Sin información",
+        "count" : "47188"
+      }, {
+        "item" : "Negro/Afrodescendiente",
+        "count" : "2807"
+      }, {
+        "item" : "Indígena",
+        "count" : "1425"
+      }, {
+        "item" : "Raizal",
+        "count" : "73"
+      }, {
+        "item" : "Sin Información",
+        "count" : "33"
+      }, {
+        "item" : "Palenquero",
+        "count" : "3"
+      } ],
+      "smallest" : "Indígena",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849361,
+    "name" : "Mes del hecho",
+    "dataTypeName" : "text",
+    "description" : "Tiempo determinado por el mes en el cuál se establece el momento en que ocurrieron los hechos.",
+    "fieldName" : "mes_del_hecho",
+    "position" : 13,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764005,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "diciembre",
+        "count" : "9372"
+      }, {
+        "item" : "enero",
+        "count" : "8508"
+      }, {
+        "item" : "julio",
+        "count" : "8359"
+      }, {
+        "item" : "mayo",
+        "count" : "8281"
+      }, {
+        "item" : "agosto",
+        "count" : "8230"
+      }, {
+        "item" : "noviembre",
+        "count" : "8102"
+      }, {
+        "item" : "junio",
+        "count" : "8044"
+      }, {
+        "item" : "octubre",
+        "count" : "7996"
+      }, {
+        "item" : "marzo",
+        "count" : "7978"
+      }, {
+        "item" : "septiembre",
+        "count" : "7892"
+      }, {
+        "item" : "abril",
+        "count" : "7703"
+      }, {
+        "item" : "febrero",
+        "count" : "7326"
+      }, {
+        "item" : "Mayo",
+        "count" : "2523"
+      }, {
+        "item" : "Agosto",
+        "count" : "2427"
+      }, {
+        "item" : "Diciembre",
+        "count" : "2411"
+      }, {
+        "item" : "Junio",
+        "count" : "2352"
+      }, {
+        "item" : "Octubre",
+        "count" : "2347"
+      }, {
+        "item" : "Septiembre",
+        "count" : "2294"
+      }, {
+        "item" : "Julio",
+        "count" : "2288"
+      }, {
+        "item" : "Noviembre",
+        "count" : "2257"
+      } ],
+      "smallest" : "abril",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849362,
+    "name" : "Dia del hecho",
+    "dataTypeName" : "text",
+    "description" : "Día de la semana en la que ocurrieron los hechos.",
+    "fieldName" : "dia_del_hecho",
+    "position" : 14,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764004,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Viernes",
+      "null" : "0",
+      "top" : [ {
+        "item" : "domingo",
+        "count" : "20575"
+      }, {
+        "item" : "sábado",
+        "count" : "15728"
+      }, {
+        "item" : "lunes",
+        "count" : "13540"
+      }, {
+        "item" : "viernes",
+        "count" : "12698"
+      }, {
+        "item" : "jueves",
+        "count" : "11895"
+      }, {
+        "item" : "martes",
+        "count" : "11712"
+      }, {
+        "item" : "miércoles",
+        "count" : "11643"
+      }, {
+        "item" : "Domingo",
+        "count" : "5459"
+      }, {
+        "item" : "Sábado",
+        "count" : "4408"
+      }, {
+        "item" : "Lunes",
+        "count" : "3799"
+      }, {
+        "item" : "Viernes",
+        "count" : "3737"
+      }, {
+        "item" : "Martes",
+        "count" : "3314"
+      }, {
+        "item" : "Jueves",
+        "count" : "3287"
+      }, {
+        "item" : "Miércoles",
+        "count" : "3255"
+      }, {
+        "item" : "Sin información",
+        "count" : "234"
+      } ],
+      "smallest" : "domingo",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849363,
+    "name" : "Rango de Hora del Hecho X 3 Horas",
+    "dataTypeName" : "text",
+    "description" : "Intervalo de tiempo o categoría cronológica, en el cual se establece que sucedieron los hechos.",
+    "fieldName" : "rango_de_hora_del_hecho_x_3_horas",
+    "position" : 15,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597823,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin información",
+        "count" : "73982"
+      }, {
+        "item" : "(18:00 a 20:59)",
+        "count" : "6708"
+      }, {
+        "item" : "(21:00 a 23:59)",
+        "count" : "6441"
+      }, {
+        "item" : "18:00 a 20:59",
+        "count" : "4503"
+      }, {
+        "item" : "21:00 a 23:59",
+        "count" : "4128"
+      }, {
+        "item" : "(15:00 a 17:59)",
+        "count" : "3657"
+      }, {
+        "item" : "(00:00 a 02:59)",
+        "count" : "3535"
+      }, {
+        "item" : "(12:00 a 14:59)",
+        "count" : "3052"
+      }, {
+        "item" : "(09:00 a 11:59)",
+        "count" : "2608"
+      }, {
+        "item" : "15:00 a 17:59",
+        "count" : "2600"
+      }, {
+        "item" : "(03:00 a 05:59)",
+        "count" : "2559"
+      }, {
+        "item" : "00:00 a 02:59",
+        "count" : "2309"
+      }, {
+        "item" : "12:00 a 14:59",
+        "count" : "2165"
+      }, {
+        "item" : "(06:00 a 08:59)",
+        "count" : "2155"
+      }, {
+        "item" : "09:00 a 11:59",
+        "count" : "1798"
+      }, {
+        "item" : "03:00 a 05:59",
+        "count" : "1641"
+      }, {
+        "item" : "06:00 a 08:59",
+        "count" : "1441"
+      }, {
+        "item" : "09:00 A 11:59",
+        "count" : "2"
+      } ],
+      "smallest" : "(00:00 a 02:59)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849364,
+    "name" : "Código Dane Municipio",
+    "dataTypeName" : "text",
+    "description" : "División Político Administrativa (DIVIPOLA). Es una codificación estándar, numérica, que identifica a las entidades territoriales dándole a cada municipio, una identidad única, inconfundible y homogénea.",
+    "fieldName" : "codigo_dane_municipio",
+    "position" : 16,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597822,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "999",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001",
+        "count" : "11667"
+      }, {
+        "item" : "76001",
+        "count" : "11408"
+      }, {
+        "item" : "5001",
+        "count" : "4729"
+      }, {
+        "item" : "8001",
+        "count" : "3846"
+      }, {
+        "item" : "13001",
+        "count" : "2949"
+      }, {
+        "item" : "54001",
+        "count" : "2599"
+      }, {
+        "item" : "52835",
+        "count" : "1726"
+      }, {
+        "item" : "8758",
+        "count" : "1628"
+      }, {
+        "item" : "25754",
+        "count" : "1624"
+      }, {
+        "item" : "76520",
+        "count" : "1460"
+      }, {
+        "item" : "47001",
+        "count" : "1422"
+      }, {
+        "item" : "66001",
+        "count" : "1304"
+      }, {
+        "item" : "27001",
+        "count" : "1228"
+      }, {
+        "item" : "76834",
+        "count" : "1208"
+      }, {
+        "item" : "50001",
+        "count" : "1179"
+      }, {
+        "item" : "68001",
+        "count" : "1129"
+      }, {
+        "item" : "76109",
+        "count" : "1057"
+      }, {
+        "item" : "19698",
+        "count" : "1049"
+      }, {
+        "item" : "20001",
+        "count" : "1003"
+      }, {
+        "item" : "63001",
+        "count" : "928"
+      } ],
+      "smallest" : "11001",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849365,
+    "name" : "Municipio del hecho DANE",
+    "dataTypeName" : "text",
+    "description" : "Entidad territorial fundamental de la división político-administrativa del Estado colombiano, donde ocurrieron los hechos. También corresponde a la ciudad, distrito, municipio, pueblo o sitio específico, donde ocurrieron los hechos.",
+    "fieldName" : "municipio_del_hecho_dane",
+    "position" : 17,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764002,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Zona Bananera",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Cali",
+        "count" : "9984"
+      }, {
+        "item" : "Bogotá, D.C.",
+        "count" : "8992"
+      }, {
+        "item" : "Medellín",
+        "count" : "4729"
+      }, {
+        "item" : "Barranquilla",
+        "count" : "3846"
+      }, {
+        "item" : "Bogotá D.C.",
+        "count" : "2674"
+      }, {
+        "item" : "Cartagena de Indias",
+        "count" : "2659"
+      }, {
+        "item" : "Cúcuta",
+        "count" : "2599"
+      }, {
+        "item" : "Soledad",
+        "count" : "1628"
+      }, {
+        "item" : "Soacha",
+        "count" : "1625"
+      }, {
+        "item" : "San Andrés de Tumaco",
+        "count" : "1595"
+      }, {
+        "item" : "Palmira",
+        "count" : "1460"
+      }, {
+        "item" : "Santiago de Cali",
+        "count" : "1424"
+      }, {
+        "item" : "Santa Marta",
+        "count" : "1422"
+      }, {
+        "item" : "Pereira",
+        "count" : "1304"
+      }, {
+        "item" : "Quibdó",
+        "count" : "1228"
+      }, {
+        "item" : "Tuluá",
+        "count" : "1208"
+      }, {
+        "item" : "Villavicencio",
+        "count" : "1179"
+      }, {
+        "item" : "Bucaramanga",
+        "count" : "1129"
+      }, {
+        "item" : "Buenaventura",
+        "count" : "1057"
+      }, {
+        "item" : "Santander de Quilichao",
+        "count" : "1049"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849366,
+    "name" : "Departamento del hecho DANE",
+    "dataTypeName" : "text",
+    "description" : "Para Colombia: Entidad territorial de primer nivel de la división político-administrativa del Estado que agrupa municipios y áreas no municipalizadas (departamento), donde ocurrieron los hechos. Fuera de Colombia: entidad territorial que se establece por división política-administrativa del país donde ocurrieron los hechos (esto de acuerdo a clasificación internacional).",
+    "fieldName" : "departamento_del_hecho_dane",
+    "position" : 18,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764003,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Vichada",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Valle del Cauca",
+        "count" : "23491"
+      }, {
+        "item" : "Antioquia",
+        "count" : "18852"
+      }, {
+        "item" : "Bogotá, D.C.",
+        "count" : "8992"
+      }, {
+        "item" : "Atlántico",
+        "count" : "6608"
+      }, {
+        "item" : "Cauca",
+        "count" : "6258"
+      }, {
+        "item" : "Norte de Santander",
+        "count" : "5461"
+      }, {
+        "item" : "Bolívar",
+        "count" : "4930"
+      }, {
+        "item" : "Cundinamarca",
+        "count" : "4186"
+      }, {
+        "item" : "Nariño",
+        "count" : "3660"
+      }, {
+        "item" : "Magdalena",
+        "count" : "3382"
+      }, {
+        "item" : "Santander",
+        "count" : "3357"
+      }, {
+        "item" : "Tolima",
+        "count" : "2893"
+      }, {
+        "item" : "Huila",
+        "count" : "2801"
+      }, {
+        "item" : "Meta",
+        "count" : "2789"
+      }, {
+        "item" : "Cesar",
+        "count" : "2761"
+      }, {
+        "item" : "Bogotá D.C.",
+        "count" : "2674"
+      }, {
+        "item" : "Córdoba",
+        "count" : "2611"
+      }, {
+        "item" : "Risaralda",
+        "count" : "2515"
+      }, {
+        "item" : "La Guajira",
+        "count" : "1994"
+      }, {
+        "item" : "Chocó",
+        "count" : "1897"
+      } ],
+      "smallest" : "Amazonas",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849367,
+    "name" : "Código Dane Departamento",
+    "dataTypeName" : "text",
+    "description" : "División Político Administrativa (DIVIPOLA). Es una codificación estándar, numérica, que identifica a las entidades territoriales dándole a cada departamento, una identidad única, inconfundible y homogénea.",
+    "fieldName" : "codigo_dane_departamento",
+    "position" : 19,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597821,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "999",
+      "null" : "0",
+      "top" : [ {
+        "item" : "76",
+        "count" : "23491"
+      }, {
+        "item" : "5",
+        "count" : "18852"
+      }, {
+        "item" : "11",
+        "count" : "11666"
+      }, {
+        "item" : "8",
+        "count" : "6608"
+      }, {
+        "item" : "19",
+        "count" : "6258"
+      }, {
+        "item" : "54",
+        "count" : "5461"
+      }, {
+        "item" : "13",
+        "count" : "4930"
+      }, {
+        "item" : "25",
+        "count" : "4186"
+      }, {
+        "item" : "52",
+        "count" : "3660"
+      }, {
+        "item" : "47",
+        "count" : "3382"
+      }, {
+        "item" : "68",
+        "count" : "3357"
+      }, {
+        "item" : "73",
+        "count" : "2893"
+      }, {
+        "item" : "41",
+        "count" : "2801"
+      }, {
+        "item" : "50",
+        "count" : "2789"
+      }, {
+        "item" : "20",
+        "count" : "2761"
+      }, {
+        "item" : "23",
+        "count" : "2611"
+      }, {
+        "item" : "66",
+        "count" : "2515"
+      }, {
+        "item" : "63",
+        "count" : "1999"
+      }, {
+        "item" : "44",
+        "count" : "1994"
+      }, {
+        "item" : "27",
+        "count" : "1897"
+      } ],
+      "smallest" : "11",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849368,
+    "name" : "Escenario del Hecho",
+    "dataTypeName" : "text",
+    "description" : "Clasificación del lugar donde ocurrieron los hechos.",
+    "fieldName" : "escenario_del_hecho",
+    "position" : 20,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597820,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Zonas de Actividades Agropecuarias",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Vía Pública",
+        "count" : "35752"
+      }, {
+        "item" : "Vía pública",
+        "count" : "29406"
+      }, {
+        "item" : "Vivienda",
+        "count" : "16519"
+      }, {
+        "item" : "Otros",
+        "count" : "5363"
+      }, {
+        "item" : "Espacios Terrestres al Aire Libre (Bosque,Potrero,Montaña,Playa,Etc)",
+        "count" : "4697"
+      }, {
+        "item" : "Sin Información",
+        "count" : "3979"
+      }, {
+        "item" : "Espacios terrestres al aire libre (bosque, potrero, montaña, playa, etc.)",
+        "count" : "3822"
+      }, {
+        "item" : "Sin información",
+        "count" : "3193"
+      }, {
+        "item" : "Calle (Autopista,Avenida,Dentro de La Ciudad)",
+        "count" : "2979"
+      }, {
+        "item" : "Calle (autopista, avenida, dentro de la ciudad)",
+        "count" : "2528"
+      }, {
+        "item" : "Lugares de Esparcimiento con Expendio de Alcohol",
+        "count" : "1750"
+      }, {
+        "item" : "Lugares de esparcimiento con expendio de alcohol",
+        "count" : "1538"
+      }, {
+        "item" : "Carretera (Fuera de La Ciudad)",
+        "count" : "1313"
+      }, {
+        "item" : "Zonas de Actividades Agropecuarias",
+        "count" : "1310"
+      }, {
+        "item" : "Carretera (fuera de la ciudad)",
+        "count" : "1264"
+      }, {
+        "item" : "Espacios Acuáticos al Aire Libre (Mar,Río,Arroyo,Humedal,Lago,Etc)",
+        "count" : "1112"
+      }, {
+        "item" : "Espacios acuáticos al aire libre (mar, río, arroyo, humedal, lago, etc.)",
+        "count" : "923"
+      }, {
+        "item" : "Centro de Atención Médica (Hospital,Clínica,Consultorio,Etc)",
+        "count" : "892"
+      }, {
+        "item" : "Establecimiento Comercial (Tienda,Centro Comercial,Almacén,Plaza de Mercado)",
+        "count" : "700"
+      }, {
+        "item" : "Zonas de actividades agropecuarias",
+        "count" : "527"
+      } ],
+      "smallest" : "Ambulancia - transporte sanitario",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849369,
+    "name" : "Zona del Hecho",
+    "dataTypeName" : "text",
+    "description" : "Clasificación del territorio que diferencia los espacios comprendidos dentro del casco urbano de un municipio y los centros poblados (zona urbana), de los que están fuera de él (zona rural).",
+    "fieldName" : "zona_del_hecho",
+    "position" : 21,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597819,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Cabecera municipal",
+        "count" : "88108"
+      }, {
+        "item" : "Parte rural (vereda y campo)",
+        "count" : "29200"
+      }, {
+        "item" : "Centro poblado(corregimiento, inspección de policía y caserío)",
+        "count" : "3336"
+      }, {
+        "item" : "Centro poblado (corregimiento, inspección de policía y caserío)",
+        "count" : "3079"
+      }, {
+        "item" : "Sin información",
+        "count" : "1561"
+      } ],
+      "smallest" : "Cabecera municipal",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849370,
+    "name" : "Actividad Durante el Hecho",
+    "dataTypeName" : "text",
+    "description" : "Clasificación de las tareas u operaciones que se encontraba realizando la persona en el momento de los hechos. Nota: para suicidios no se puede establecer exactamente la actividad que estaba realizando la víctima al momento de la muerte, por lo tanto para esta manera de muerte no aplica.",
+    "fieldName" : "actividad_durante_el_hecho",
+    "position" : 22,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597818,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin información",
+        "count" : "52747"
+      }, {
+        "item" : "Otra",
+        "count" : "30298"
+      }, {
+        "item" : "Actividades relacionadas con la asistencia a eventos culturales, de entretenimiento y/o deportivos",
+        "count" : "13226"
+      }, {
+        "item" : "Actividades de tiempo libre",
+        "count" : "9272"
+      }, {
+        "item" : "Actividades vitales o relacionadas con el cuidado personal",
+        "count" : "4533"
+      }, {
+        "item" : "Actividades de trabajo doméstico no pagado para el uso del propio hogar",
+        "count" : "4229"
+      }, {
+        "item" : "Actividades relacionadas con el trabajo remunerado",
+        "count" : "4001"
+      }, {
+        "item" : "Actividades ilícitas o delictivas",
+        "count" : "2162"
+      }, {
+        "item" : "Actividades de desplazamiento de un lugar a otro",
+        "count" : "1396"
+      }, {
+        "item" : "Actividades relacionadas con los deportes y el ejercicio físico",
+        "count" : "1171"
+      }, {
+        "item" : "Actividades relacionadas con enfrentamientos armados",
+        "count" : "1148"
+      }, {
+        "item" : "Actividades relacionadas con el estudio y el aprendizaje",
+        "count" : "285"
+      }, {
+        "item" : "Durante una retención ilegal (secuestro)",
+        "count" : "262"
+      }, {
+        "item" : "Durante una retención legal (preso detenido)",
+        "count" : "173"
+      }, {
+        "item" : "Actividades de desplazamiento de un lugar a otro.",
+        "count" : "105"
+      }, {
+        "item" : "Misión humanitaria, médica y/o sanitaria",
+        "count" : "97"
+      }, {
+        "item" : "Actividades relacionadas con manifestaciones públicas (marchas, protestas, etc)",
+        "count" : "75"
+      }, {
+        "item" : "Actividades relacionadas con manifestaciones públicas (Marchas, protestas, etc)",
+        "count" : "58"
+      }, {
+        "item" : "Quehacer habitualmente no remunerado",
+        "count" : "18"
+      }, {
+        "item" : "Actividades relacionadas con los deportes y el ejercicio físico.",
+        "count" : "15"
+      } ],
+      "smallest" : "Actividades de desplazamiento de un lugar a otro",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849371,
+    "name" : "Circunstancia del Hecho Detallada",
+    "dataTypeName" : "text",
+    "description" : "Establece una relación entre la víctima y la situación del entorno en el momento de los hechos. Dicha relación con el entorno está determinada fundamentalmente por la posibilidad de reconocer la presencia o ausencia de intervención humana. Una circunstancia es un acontecimiento o condición que se relaciona con un hecho.",
+    "fieldName" : "circunstancia_del_hecho_detallada",
+    "position" : 23,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597817,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Violencia Sociopolitica",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin información",
+        "count" : "80847"
+      }, {
+        "item" : "Ajuste de cuentas",
+        "count" : "8598"
+      }, {
+        "item" : "Riña",
+        "count" : "7935"
+      }, {
+        "item" : "Sicariato",
+        "count" : "6864"
+      }, {
+        "item" : "Venganza o ajuste de cuentas",
+        "count" : "3311"
+      }, {
+        "item" : "Otra",
+        "count" : "2444"
+      }, {
+        "item" : "Otro",
+        "count" : "2162"
+      }, {
+        "item" : "Acción grupos alzados al margen de la ley",
+        "count" : "1902"
+      }, {
+        "item" : "Atraco callejero o intento de",
+        "count" : "1761"
+      }, {
+        "item" : "Ajuste de cuentas - venganza",
+        "count" : "1317"
+      }, {
+        "item" : "Hurto",
+        "count" : "1300"
+      }, {
+        "item" : "Violencia de pareja",
+        "count" : "933"
+      }, {
+        "item" : "Enfrentamiento armado",
+        "count" : "815"
+      }, {
+        "item" : "Feminicidio",
+        "count" : "808"
+      }, {
+        "item" : "Otras",
+        "count" : "806"
+      }, {
+        "item" : "Acción militar",
+        "count" : "763"
+      }, {
+        "item" : "Violencia entre otros familiares",
+        "count" : "678"
+      }, {
+        "item" : "Intervención Legal",
+        "count" : "247"
+      }, {
+        "item" : "Conflicto de pareja",
+        "count" : "215"
+      }, {
+        "item" : "Violencia a niños, niñas y adolescentes",
+        "count" : "203"
+      } ],
+      "smallest" : "Aborto forzado",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849372,
+    "name" : "Manera de muerte",
+    "dataTypeName" : "text",
+    "description" : "Se establece la manera o tipo de muerte (presuntos homicidios, suicidios, muertes por eventos de transporte y muertes por lesiones accidentales), de acuerdo a la evaluación de la hipótesis e información aportada por la autoridad judicial que atiende el caso, correlacionado con los resultados de laboratorio, los estudios adicionales (de ser necesario), y los hallazgos propios obtenidos de la necropsia médico legal.",
+    "fieldName" : "manera_de_muerte",
+    "position" : 24,
+    "renderTypeName" : "text",
+    "tableColumnId" : 132764001,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "1 Presuntos Homicidios",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1 Presuntos Homicidios",
+        "count" : "125284"
+      } ],
+      "smallest" : "1 Presuntos Homicidios",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849373,
+    "name" : "Mecanismo Causal de la Lesión Fatal",
+    "dataTypeName" : "text",
+    "description" : "Se clasifican los casos de muerte de acuerdo a la causa principal que la originó, pueden ser por algún tipo de trauma o lesión externa.",
+    "fieldName" : "mecanismo_causal_de_la_lesion_fatal",
+    "position" : 25,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597816,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Tóxico",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Proyectil de arma de fuego",
+        "count" : "92687"
+      }, {
+        "item" : "Cortopunzante",
+        "count" : "16654"
+      }, {
+        "item" : "Corto punzante",
+        "count" : "4644"
+      }, {
+        "item" : "Contundente",
+        "count" : "3722"
+      }, {
+        "item" : "Generadores de asfixia",
+        "count" : "2569"
+      }, {
+        "item" : "Cortocontundente",
+        "count" : "2111"
+      }, {
+        "item" : "Agentes y mecanismo explosivo",
+        "count" : "631"
+      }, {
+        "item" : "Corto contundente",
+        "count" : "543"
+      }, {
+        "item" : "Cortante",
+        "count" : "534"
+      }, {
+        "item" : "Punzante",
+        "count" : "280"
+      }, {
+        "item" : "Por determinar",
+        "count" : "273"
+      }, {
+        "item" : "Tóxico",
+        "count" : "171"
+      }, {
+        "item" : "Térmico",
+        "count" : "158"
+      }, {
+        "item" : "Mecanismo o agente explosivo",
+        "count" : "142"
+      }, {
+        "item" : "Agente o mecanismo explosivo",
+        "count" : "99"
+      }, {
+        "item" : "Otros",
+        "count" : "26"
+      }, {
+        "item" : "Eléctrico",
+        "count" : "12"
+      }, {
+        "item" : "Proyectil de Arma de Fuego",
+        "count" : "11"
+      }, {
+        "item" : "Otra",
+        "count" : "7"
+      }, {
+        "item" : "Caústico",
+        "count" : "4"
+      } ],
+      "smallest" : "Agente o mecanismo explosivo",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849374,
+    "name" : "Diagnostico Topográfico de la Lesión Fatal",
+    "dataTypeName" : "text",
+    "description" : "Zona anatómica general establecida por la necropsia, donde se produjo la lesión.",
+    "fieldName" : "diagnostico_topografico_de_la_lesion_fatal",
+    "position" : 26,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597815,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Trauma facial",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Politraumatismo",
+        "count" : "51131"
+      }, {
+        "item" : "Trauma craneano",
+        "count" : "32524"
+      }, {
+        "item" : "Trauma de Tórax",
+        "count" : "23068"
+      }, {
+        "item" : "Trauma de cuello",
+        "count" : "6677"
+      }, {
+        "item" : "Trauma de abdomen",
+        "count" : "4349"
+      }, {
+        "item" : "Trauma de tórax",
+        "count" : "2486"
+      }, {
+        "item" : "Sin información",
+        "count" : "1844"
+      }, {
+        "item" : "Trauma de miembros",
+        "count" : "1220"
+      }, {
+        "item" : "Trauma facial",
+        "count" : "770"
+      }, {
+        "item" : "Por determinar",
+        "count" : "616"
+      }, {
+        "item" : "Sin lesiones",
+        "count" : "288"
+      }, {
+        "item" : "Trauma área Pélvica",
+        "count" : "263"
+      }, {
+        "item" : "Trauma área pélvica",
+        "count" : "26"
+      }, {
+        "item" : "Área genital / Paragenital",
+        "count" : "21"
+      }, {
+        "item" : "Área genital / paragenital",
+        "count" : "1"
+      } ],
+      "smallest" : "Área genital / paragenital",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849375,
+    "name" : "Presunto Agresor Detallado",
+    "dataTypeName" : "text",
+    "description" : "Caracterización de la persona que se presume, o se sabe, ha sido el causante de la muerte. Dicha caracterización se establece en función de la relación existente entre el agredido y el agresor, de acuerdo con los grados de cercanía entre ellos; va desde los lazos de consanguinidad, hasta el desconocimiento absoluto del victimario por parte de la víctima. Nota: aplica únicamente para homicidios.",
+    "fieldName" : "presunto_agresor_detallado",
+    "position" : 27,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597814,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Vecino",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin información",
+        "count" : "65054"
+      }, {
+        "item" : "Agresor desconocido",
+        "count" : "41095"
+      }, {
+        "item" : "Fuerzas irregulares",
+        "count" : "3831"
+      }, {
+        "item" : "Conocido sin ningun trato",
+        "count" : "2641"
+      }, {
+        "item" : "Delincuencia común",
+        "count" : "2586"
+      }, {
+        "item" : "Fuerzas militares",
+        "count" : "1135"
+      }, {
+        "item" : "Policía",
+        "count" : "1029"
+      }, {
+        "item" : "ELN",
+        "count" : "952"
+      }, {
+        "item" : "Amigo (a)",
+        "count" : "792"
+      }, {
+        "item" : "Compañero (a)  permanente",
+        "count" : "672"
+      }, {
+        "item" : "Pandillas",
+        "count" : "607"
+      }, {
+        "item" : "Vecino",
+        "count" : "540"
+      }, {
+        "item" : "FARC",
+        "count" : "398"
+      }, {
+        "item" : "Otras guerrillas",
+        "count" : "356"
+      }, {
+        "item" : "Conocido sin ningún trato",
+        "count" : "298"
+      }, {
+        "item" : "Otros familiares civiles o consanguíneos",
+        "count" : "274"
+      }, {
+        "item" : "Compañero (a) de trabajo",
+        "count" : "240"
+      }, {
+        "item" : "Hermano (a)",
+        "count" : "193"
+      }, {
+        "item" : "Compañero (a) permanente",
+        "count" : "184"
+      }, {
+        "item" : "Paramilitares",
+        "count" : "166"
+      } ],
+      "smallest" : "Abuelo (a)",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849383,
+    "name" : "Localidad del Hecho",
+    "dataTypeName" : "text",
+    "description" : "Se denomina localidad a una unidad administrativa de la ciudad principal del país que agrupa sectores o barrios determinados. El término localidad se emplea en las ciudades que corresponden a Distritos como es Bogotá. La capital de Colombia cuenta con una división administrativa de veinte localidades.",
+    "fieldName" : "localidad_del_hecho",
+    "position" : 28,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597806,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Usme",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Sin información",
+        "count" : "113810"
+      }, {
+        "item" : "Ciudad Bolivar",
+        "count" : "2168"
+      }, {
+        "item" : "Kennedy",
+        "count" : "1483"
+      }, {
+        "item" : "Bosa",
+        "count" : "1131"
+      }, {
+        "item" : "Usme",
+        "count" : "856"
+      }, {
+        "item" : "Suba",
+        "count" : "778"
+      }, {
+        "item" : "Rafael Uribe Uribe",
+        "count" : "749"
+      }, {
+        "item" : "San Cristobal",
+        "count" : "716"
+      }, {
+        "item" : "Engativa",
+        "count" : "587"
+      }, {
+        "item" : "Los Martires",
+        "count" : "507"
+      }, {
+        "item" : "Usaquen",
+        "count" : "460"
+      }, {
+        "item" : "Santa Fe",
+        "count" : "385"
+      }, {
+        "item" : "Tunjuelito",
+        "count" : "367"
+      }, {
+        "item" : "Fontibon",
+        "count" : "257"
+      }, {
+        "item" : "Puente Aranda",
+        "count" : "243"
+      }, {
+        "item" : "Santa fe",
+        "count" : "194"
+      }, {
+        "item" : "Antonio Nariño",
+        "count" : "171"
+      }, {
+        "item" : "Chapinero",
+        "count" : "154"
+      }, {
+        "item" : "Barrios Unidos",
+        "count" : "117"
+      }, {
+        "item" : "Teusaquillo",
+        "count" : "89"
+      } ],
+      "smallest" : "Antonio Nariño",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849384,
+    "name" : "Ancestro Racial",
+    "dataTypeName" : "text",
+    "description" : "Descendencia de cada uno de los grandes grupos étnicos en que se suele dividir la especie humana, teniendo en cuenta ciertas características físicas distintivas, como el color de la piel o el cabello, que se transmiten por herencia de generación en generación [Raza], la cual es determinada por el perito, según hallazgos durante la necropsia.",
+    "fieldName" : "ancestro_racial",
+    "position" : 29,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155597805,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Sin Información",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Mestizo",
+        "count" : "97161"
+      }, {
+        "item" : "Negro",
+        "count" : "10809"
+      }, {
+        "item" : "Sin Información",
+        "count" : "9876"
+      }, {
+        "item" : "Blanco",
+        "count" : "2821"
+      }, {
+        "item" : "Mulato",
+        "count" : "1860"
+      }, {
+        "item" : "Indigena",
+        "count" : "1599"
+      }, {
+        "item" : "Sin información",
+        "count" : "1028"
+      }, {
+        "item" : "Indígena",
+        "count" : "103"
+      }, {
+        "item" : "Amarilla",
+        "count" : "22"
+      }, {
+        "item" : "Amarillo",
+        "count" : "5"
+      } ],
+      "smallest" : "Amarilla",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849388,
+    "name" : "Pueblo Indígena",
+    "dataTypeName" : "text",
+    "description" : "Grupo de familias de ascendencia amerindia que tiene conciencia de su identidad y conserva valores, rasgos, usos y costumbres de su cultura, así como las formas de gobierno, gestión, control social o sistemas normativos propios que lo distinguen de otros grupos étnicos (DANE). Hace referencia al posible pueblo indígena que pertenecía la víctima.",
+    "fieldName" : "pueblo_indigena",
+    "position" : 30,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161918163,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Zenú",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No aplica",
+        "count" : "75393"
+      }, {
+        "item" : "No había sido implementada",
+        "count" : "34490"
+      }, {
+        "item" : "No Aplica",
+        "count" : "13942"
+      }, {
+        "item" : "Nasa - Páez",
+        "count" : "552"
+      }, {
+        "item" : "Awa",
+        "count" : "116"
+      }, {
+        "item" : "Wayuu",
+        "count" : "88"
+      }, {
+        "item" : "Pasto",
+        "count" : "72"
+      }, {
+        "item" : "Embera",
+        "count" : "60"
+      }, {
+        "item" : "Indígenas",
+        "count" : "59"
+      }, {
+        "item" : "Embera-Chamí",
+        "count" : "53"
+      }, {
+        "item" : "Nasa",
+        "count" : "46"
+      }, {
+        "item" : "Sin Información",
+        "count" : "33"
+      }, {
+        "item" : "Pastos",
+        "count" : "25"
+      }, {
+        "item" : "Inga",
+        "count" : "22"
+      }, {
+        "item" : "Indígena",
+        "count" : "20"
+      }, {
+        "item" : "Senú",
+        "count" : "20"
+      }, {
+        "item" : "Yanacona",
+        "count" : "16"
+      }, {
+        "item" : "Tikuna",
+        "count" : "13"
+      }, {
+        "item" : "Uwa - Tunebo",
+        "count" : "12"
+      }, {
+        "item" : "Embera Katío",
+        "count" : "12"
+      } ],
+      "smallest" : "Achagua",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849387,
+    "name" : "Orientación Sexual",
+    "dataTypeName" : "text",
+    "description" : "Se refiere a la atracción afectiva, erótica o sexual de una persona hacia otras, según el sexo de las personas hacia las que se orienta el deseo; las categorías son heterosexual, homosexual, bisexual, asexual, no sabe / no informa. En fallecidos se recopila la información de acuerdo a la información registrada en el acta de inspección al cadáver.",
+    "fieldName" : "orientacion_sexual",
+    "position" : 31,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161918162,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "No Sabe / No Informa",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No había sido implementada",
+        "count" : "83064"
+      }, {
+        "item" : "No Sabe / No Informa",
+        "count" : "21811"
+      }, {
+        "item" : "Heterosexual",
+        "count" : "18978"
+      }, {
+        "item" : "Asexual",
+        "count" : "1108"
+      }, {
+        "item" : "Homosexual",
+        "count" : "158"
+      }, {
+        "item" : "No aplica",
+        "count" : "107"
+      }, {
+        "item" : "No Aplica",
+        "count" : "49"
+      }, {
+        "item" : "Bisexual",
+        "count" : "9"
+      } ],
+      "smallest" : "Asexual",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849386,
+    "name" : "Identidad de Género",
+    "dataTypeName" : "text",
+    "description" : "En lo que respecta a “Identidad de Género”, es el auto reconocimiento que una persona hace de sí misma a partir de la construcción social, histórica y cultural de lo que se ha definido lo femenino, lo masculino o la transición entre ambos; las categorías son: masculino, femenino y transgénero. En fallecidos se recopila la información de acuerdo a la información registrada en el acta de inspección al cadáver.",
+    "fieldName" : "identidad_de_genero",
+    "position" : 32,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161918161,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Transgénero",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No había sido implementada",
+        "count" : "83064"
+      }, {
+        "item" : "Masculino",
+        "count" : "24905"
+      }, {
+        "item" : "No Sabe / No Informa",
+        "count" : "15177"
+      }, {
+        "item" : "Femenino",
+        "count" : "1939"
+      }, {
+        "item" : "No aplica",
+        "count" : "107"
+      }, {
+        "item" : "No Aplica",
+        "count" : "49"
+      }, {
+        "item" : "Transgénero",
+        "count" : "43"
+      } ],
+      "smallest" : "Femenino",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  }, {
+    "id" : 617849385,
+    "name" : "Transgénero",
+    "dataTypeName" : "text",
+    "description" : "Es la identidad en la que no coincide el sexo biológico con las características inscritas en lo que la expectativa colectiva ha construido social, histórica y culturalmente como femenino o masculino. En fallecidos se recopila la información de acuerdo a la información registrada en el acta de inspección al cadáver.",
+    "fieldName" : "transgenero",
+    "position" : 33,
+    "renderTypeName" : "text",
+    "tableColumnId" : 161918160,
+    "cachedContents" : {
+      "non_null" : "125284",
+      "largest" : "Travesti",
+      "null" : "0",
+      "top" : [ {
+        "item" : "No había sido implementada",
+        "count" : "83064"
+      }, {
+        "item" : "No Sabe / No Informa",
+        "count" : "42022"
+      }, {
+        "item" : "No aplica",
+        "count" : "107"
+      }, {
+        "item" : "No Aplica",
+        "count" : "49"
+      }, {
+        "item" : "Transexual",
+        "count" : "28"
+      }, {
+        "item" : "Travesti",
+        "count" : "9"
+      }, {
+        "item" : "Transgénero",
+        "count" : "5"
+      } ],
+      "smallest" : "No aplica",
+      "count" : "125284",
+      "cardinality" : "125284"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Justicia y Derecho",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Anual"
+      }
+    }
+  },
+  "owner" : {
+    "id" : "yqq2-9fsj",
+    "displayName" : "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "profileImageUrlLarge" : "/api/users/yqq2-9fsj/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/yqq2-9fsj/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/yqq2-9fsj/profile_images/TINY",
+    "screenName" : "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "yqq2-9fsj",
+    "displayName" : "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "profileImageUrlLarge" : "/api/users/yqq2-9fsj/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/yqq2-9fsj/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/yqq2-9fsj/profile_images/TINY",
+    "screenName" : "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "lesiones fatales", "homicidios", "medicina legal" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

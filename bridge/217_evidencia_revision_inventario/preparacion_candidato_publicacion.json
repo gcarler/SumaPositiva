@@ -1,0 +1,23 @@
+{
+  "fecha_preparacion_utc": "2026-10-26T06:45:38.342114+00:00",
+  "candidato_sha256": "ec1b06f4f255791561308ade00bf4dd7b60b1d3856d1d0ce5fe3f6d5ef5b2823",
+  "origen223_sha256": "369e55b7643352ff37909c0b6cd8be45b6781ab7d4db0c953738a7f4629f18d1",
+  "unicos_cambios_vs223": [
+    "generado_utc",
+    "inventario_anterior.ruta/estado",
+    "captura_control.ruta_inventariada/estado",
+    "retirar validaciones de disponibilidad futura para no arrastrar estado obsoleto"
+  ],
+  "validaciones_219_retiradas": {
+    "fuentes": 43,
+    "paquetes": 8,
+    "archivos": 1829,
+    "entradas_sustituidas": 1,
+    "ruta_unica_captura": true,
+    "prefijo_paquete": "data/planes_accion/",
+    "prefijo_valido": true,
+    "cargable_ahora": false,
+    "motivo_no_cargable": "ruta futura no existe todavia"
+  },
+  "sin_publicacion": true
+}

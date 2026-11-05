@@ -1,0 +1,7 @@
+{
+  "dictamen_original_sha256": "f12facbcdde8e2c989cc581aaa337096a7da16354439a95f7f3aa80b9658bcd4",
+  "fuente_scripts": "bridge/275_evidencia_eaf_codex/",
+  "codigo_app": "solo lectura",
+  "puerto": 5433,
+  "copias_de_evidencia_original": "sin modificaciones"
+}

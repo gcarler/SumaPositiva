@@ -1,0 +1,26 @@
+[
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "--config",
+      "/root/polis/backend/pyproject.toml",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/verificar_cierre_datos.py",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/cerrar_integracion_v6.py"
+    ],
+    "returncode": 0,
+    "log": "ruff_verificadores.log"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "format",
+      "--check",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/verificar_cierre_datos.py",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/cerrar_integracion_v6.py"
+    ],
+    "returncode": 0,
+    "log": "formato_verificadores.log"
+  }
+]

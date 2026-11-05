@@ -1,0 +1,56 @@
+{
+  "tarea": "238 - revision preventiva pre-freeze (guardas de token en cuenta-usuario.tsx)",
+  "fecha_congelacion": "2026-10-26T07:14Z",
+  "cambios": [
+    "src/features/sesion/components/cuenta-usuario.tsx: activarMfa y desactivarMfa verifican vigencia del token capturado (tokenInicial) antes de cualquier escritura de estado local y antes/despues de cada await relevante, incluida la escritura actualizarPerfil(perfil)",
+    "src/app/_stories/identidad.stories.tsx: nueva historia ActivacionMfaSesionReemplazada con respuesta diferida de perfil y sesion reemplazada en vuelo; verifica que no se escribe perfil/mensaje de la sesion anterior"
+  ],
+  "corridas": [
+    {
+      "comando": "bun test src/features/sesion/serv... (unitarias sesion)",
+      "retorno": "exit 0 - 26 pass / 0 fail / 62 expect()",
+      "evidencia": "238_buntest_final_070911.log"
+    },
+    {
+      "comando": "bunx vitest run --project storybook (archivo identidad.stories)",
+      "retorno": "exit 0 - 2 files / 37 tests passed, incluye ActivacionMfaSesionReemplazada 355ms",
+      "evidencia": "238_vit_hist_final_071041.log"
+    },
+    {
+      "comando": "bunx vitest run --project storybook (suite completa)",
+      "retorno": "exit 0 - 19 files / 235 tests passed",
+      "evidencia": "238_ui_final_b_071041.log"
+    },
+    {
+      "comando": "bun run typecheck",
+      "retorno": "exit 0",
+      "evidencia": "238_typecheck_b_071030.log"
+    },
+    {
+      "comando": "bun run ui:check",
+      "retorno": "exit 0 - tokens, capas, inventario, historias y politica a11y correctos",
+      "evidencia": "238_uicheck_final_071350.log"
+    },
+    {
+      "comando": "bunx eslint src scripts/ui-policy.mjs scripts/ui-policy.test.mjs (alcance real del cambio)",
+      "retorno": "exit 0, sin hallazgos",
+      "evidencia": "238_lint_src_071259.log"
+    },
+    {
+      "comando": "bun run check (completo)",
+      "retorno": "exit 1 - SOLO por etapa lint; hallazgos 100% en snapshots congelados de evidencia, ajenos al alcance 238",
+      "evidencia": "238_check_065926.log"
+    }
+  ],
+  "diagnostico_lint": {
+    "causa_exacta": "La etapa lint de bun run check ejecuta eslint sobre todo el repo y encuentra errores preexistentes en artefactos congelados de corridas EAF/EDD anteriores: snapshot bridge/211_evidencia_eaf_consumidor_identidad/fuente/.next-eaf211 (chunks build, standalone duplicado, tipos generados), guard_node.cjs de 211 y 233 (incluida preparacion_sellada), scripts/build-polis.mjs y scripts/build-polis.test.mjs. ~3.458 lineas de error, ninguna en src/ del alcance 238 tras las correcciones de identidad.stories.tsx (corridas 238_vit_hist_dos y 238_check previas).",
+    "alcance_238": "limpio: eslint de src + scripts de politica UI retorna exit 0 (238_lint_src_071259.log)",
+    "recomendacion": "Excluir snapshots de evidencia (bridge/**/fuente/, guard_node.cjs, duplicados standalone) y artefactos generados del lint del repo en una decision de producto/EAF documentada; no corresponde al alcance preventivo 238."
+  },
+  "estabilidad": [
+    "238_ui_estab_1_065636.log",
+    "238_ui_estab_2_065725.log",
+    "238_ui_estab_3_065818.log"
+  ],
+  "nota": "Los logs usan nombres unicos con sufijo 238_*; no se sobrescribieron evidencias de 221 ni de rangos anteriores. Verificacion preventiva hecha por el implementador; no constituye dictamen EAF."
+}

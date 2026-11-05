@@ -1,0 +1,6 @@
+{
+  "fecha_utc": "2026-10-26T05:22:39.518849+00:00",
+  "archivos_texto_examinados": 149,
+  "coincidencias": [],
+  "criterios": "DSN/contraseña local resuelta por igualdad exacta y patrón JWT; no acredita ausencia universal de datos sensibles"
+}

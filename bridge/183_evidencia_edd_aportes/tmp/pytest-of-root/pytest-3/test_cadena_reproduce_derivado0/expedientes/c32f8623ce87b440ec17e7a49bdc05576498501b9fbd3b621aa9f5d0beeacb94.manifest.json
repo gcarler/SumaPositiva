@@ -1,0 +1,12 @@
+{
+  "esquema": "polis.expedientes_serie_7d.v2",
+  "estado_publicacion": "no_publicable",
+  "estados_revision": {
+    "documentado_no_publicable": 1
+  },
+  "expedientes": 1,
+  "limite": "Expedientes descriptivos por punto; no acreditan causalidad ni dictámenes de planes.",
+  "paneles_sha256": "a44063ecbda9946bc9b2a8c85dce4594ff3054eefcf47fed416b80580f9b8547",
+  "salida_sha256": "c32f8623ce87b440ec17e7a49bdc05576498501b9fbd3b621aa9f5d0beeacb94",
+  "series_7d_sha256": "5c3642e12addb82e0f7b2d13086d09fffa9839cf9a145bc47edb3ef4cebaf438"
+}

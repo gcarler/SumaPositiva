@@ -1,0 +1,17 @@
+{
+  "label": "sintaxis",
+  "argv": [
+    "bash",
+    "-n",
+    "/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/snapshot/scripts/monitor_sistema_polis.sh"
+  ],
+  "cwd": "/root/polis/bridge/275_cierre_eaf_codex_20261103/.runtime/snapshot",
+  "inicio_utc": "2026-11-03T10:47:05.466813+00:00",
+  "segundos": 0.005,
+  "returncode": 0,
+  "log": "sintaxis.log",
+  "databases": [],
+  "smtp": "no utilizado",
+  "servicios": "stubs",
+  "plugins_pytest": "carga automática deshabilitada; sin conftest de aplicación"
+}

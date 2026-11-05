@@ -1,0 +1,30 @@
+{
+  "esquema": "gold_set_conciliacion",
+  "version": 1,
+  "semilla": "semilla-x",
+  "pares": [
+    {
+      "id": "p1",
+      "par_tipo": "positivo",
+      "codigo_plan": "PDD_2024_2027",
+      "meta_id": "00000000-0000-0000-0000-4566b9c58adc",
+      "codigo_meta": "M-0001",
+      "nombre_meta": null,
+      "indicador_meta": null,
+      "actividad_pa_id": null,
+      "codigo_actividad": null,
+      "meta_producto_vigencia": null,
+      "descripcion_actividad": null,
+      "codigo_bpim": null,
+      "tipo_vinculo_conciliador": "EXACTO_BPIM_PROYECTO",
+      "score_confianza": null,
+      "anotador_a": "juez-carmen",
+      "etiqueta_a": "VINCULO_INCORRECTO",
+      "anotador_b": null,
+      "etiqueta_b": null,
+      "estado": "pendiente",
+      "etiqueta_adjudicada": null,
+      "adjudicador": null
+    }
+  ]
+}

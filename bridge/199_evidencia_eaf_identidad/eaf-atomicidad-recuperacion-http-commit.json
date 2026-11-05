@@ -1,0 +1,11 @@
+{
+  "usuario_id": "01a176a2-a5e6-7997-bc56-cf4a74964960",
+  "http": 409,
+  "respuesta": {
+    "detail": "Conflicto de integridad de datos: el recurso ya existe o infringe una restricción de unicidad distrital."
+  },
+  "igualdad_completa": true,
+  "pid_observador_antes": 2892949,
+  "pid_observador_despues": 2892952,
+  "fallo": "FK diferida real al commit, tras flush de hash/sesiones/token/evento"
+}

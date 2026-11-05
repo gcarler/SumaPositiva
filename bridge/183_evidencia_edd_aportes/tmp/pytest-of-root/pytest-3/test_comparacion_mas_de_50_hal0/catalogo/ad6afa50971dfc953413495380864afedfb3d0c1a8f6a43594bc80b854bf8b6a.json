@@ -1,0 +1,832 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test",
+  "cobertura_sql": {
+    "P": {
+      "metas": 0,
+      "nodos": 51
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [],
+  "nodos": [
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "028b3b12-c9bf-57a8-8984-5fad4dc99b4d",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "07184c1d-76b4-549c-8fad-513b234a81fd",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "0db27745-558a-5a2b-ab8f-2a806e9feca0",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "1f76a981-25b0-5ad8-bd1c-1c39e374d736",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "1fc4fc2f-21cd-5d64-a6e3-b7c4fd1d04ae",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "2256a09d-c407-5d86-b805-7c154ddc4edb",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "28f1d9f0-ea55-552e-bf69-3058a4f63105",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "2dfad79d-1abe-53d6-a4d7-0f868d016822",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "2e4dcce1-414e-55df-bc0a-44c03c6db98b",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "36c9fddb-3a76-5da5-84f0-af922c2617f5",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "3963c5d9-45cc-5f3b-b75b-b8c9bc4dca26",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "3d4cbd14-0b69-525f-b982-c40de59e7b9d",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "4eaaa189-eb43-5d9d-95e0-cf12b468f8ea",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5105099b-a4b9-50bb-953a-b4178abb2634",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "559720ca-ad83-5564-a789-3c6a6ca0fa16",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "576f4f82-20d3-5632-af33-e2c30e7f5080",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5a4c8980-b373-5aaa-ab18-69df4be81406",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5afc8333-4096-5b98-bb1a-efc076b4d032",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5bf66b8c-bb04-5be5-a0d8-12d6f8d8dfdc",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5c0fceab-fb03-5b0f-8c39-d8d6cad97824",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "5c125562-63e5-534b-9d29-8dd2bdf8413e",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "67eb8ade-dfda-5426-90f0-b59d01541e07",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "693be69d-9029-519c-98dd-3edf3b91548c",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "70eecd8c-d014-50a7-a2e6-9a93baccc4ab",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "7341ac34-aa72-54bd-b276-fd5b9e0b6783",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "852574af-213f-5f15-b38d-391517177d21",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "8617ef8b-4b7a-51d2-8f9f-8edac998b042",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "8bc979ba-bd87-599f-8054-e28a68924a91",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "9559283e-f1e8-59b6-afa1-a495a15d406b",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "96e609af-a246-5e26-8f1a-7643c7288672",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a015a079-c7d5-51bb-9598-ce36c1209e05",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a2fd89ef-57cb-5b2f-9a6b-ec0c4f0eb2b9",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a621d1ed-9e03-5eeb-b2d6-32b6353bcdfa",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a7d35368-6d71-532c-a2da-dee7a15214ed",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a7fe8a66-ab05-510d-9ebd-8a572c9178cb",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "a9e1bd93-4ba6-50e9-b92f-ca02139cf601",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "aa718474-a124-556e-9d67-fe6faf85bad9",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "ae2d4f15-9ab1-514b-870a-359e28134369",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "ba2216f1-f2ae-5103-942a-237f47800359",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "bfb7142c-0701-591d-b278-1d8e927f54da",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "c0d156a7-1a17-5ca5-80b8-b14bb322ae36",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "c7cbd25d-e543-5182-8d73-757fda77ed75",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "cd6465a3-bc3c-527f-8ba6-393d786bad29",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "cef6734b-a199-550e-adb9-5f4f1307ff07",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "da35a6e4-adb1-5f10-851d-9415fa79b474",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "dc1faa19-c976-5b83-a1c3-30027d18bf2e",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "e4f34f8d-9154-5bd5-9421-7d9d4e6aaa0b",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "e9cbc9be-61c4-5314-980f-6c4ffdeadf8a",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "f328b454-d0b3-5132-b127-5e295a600cfc",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "f445e44f-c5ed-5e52-b818-c63c17d3212f",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    },
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "f7da81eb-9afa-580a-bf28-83c85474114d",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "fecha_utc": "2026-10-26T05:14:59.821552+00:00",
+  "fuentes_sha256": {
+    "backend/tests/conftest.py": "01d11ddf3e6cf50b72bec2dad5fff3e00ded78225b62740932b847e3f70daf1d",
+    "backend/tests/database_isolation.py": "c4cffe3f4760ad80d9d548cfbe70c6371ca2de607587d39789e52503087f1edd",
+    "backend/tests/test_identidad_migracion.py": "ec6f9d369dcc7106e684ad58eb1f850f2ceb0d6564122511d0e1e390f489cbde",
+    "backend/tests/test_database_integration.py": "f3d8e6e6b91d2e340a219bcf26a616e012ca02032976f45e8107c0b3a6aebb18",
+    "backend/tests/test_geodatos_analitica_hurtos.py": "0f5601a8e2647b567af4512905a79ec992e166b4e9cd5c1eccc25138ce279c38",
+    "backend/pyproject.toml": "57093d7e58b4fba8869df46e84a1807e834b569e6bb36cfbfd02df792ea000c2",
+    "docs/identidad.md": "a38cb758b63aab6353834ae41621d8621ade7ee054a8a03c7497ced91f707f3f",
+    "docs/permisos-api.md": "b375f65e9343a55c73a8a717b615e879e45e330627c1bc075f8d1eee4b48dac8",
+    "docs/transacciones.md": "57fbd93068ae101d0522c8cc27d00bf331b49a565d7431e4c90e77b34647101b"
+  },
+  "origen": "Snapshot posterior al aviso de congelación de fixtures/documentación de raíz; no sustituye snapshot inicial",
+  "iteracion_previa": "El colector intentó incluir test_database_isolation.py, ruta inexistente; falló antes de producir snapshot. Registro de interrupción ya había quedado escrito. Se corrigió únicamente la lista de rutas del colector; sin efecto sobre app, pruebas o bases."
+}

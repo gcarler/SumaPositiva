@@ -1,0 +1,2 @@
+{"iteracion":"04_colas","clase":"defectos del harness EAF","detalle":"Tres all(async_generator) corregidos a lista de observaciones await; Content-Type explícito en caso firma ausente para alcanzar router en vez de parser HTTP. Se conserva log inicial4fallos/22pases."}
+{"iteracion":"06_principales","clase":"datos del harness EAF","detalle":"EmailStr rechaza example.invalid para registro real; se usa example.org sintético, sin SMTP. Dos casos no habían alcanzado funcionalidad. Log conservado."}

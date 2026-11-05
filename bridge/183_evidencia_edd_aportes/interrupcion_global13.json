@@ -1,0 +1,10 @@
+{
+  "motivo": "Coordinaci\u00f3n detect\u00f3 ensayos destructivos compartidos pendientes de separar a migration_database_url",
+  "launcher_pid": 2879344,
+  "descendientes_interrumpidos": [
+    2879345,
+    2879346,
+    2879390
+  ],
+  "fuentes_aplicacion_modificadas": false
+}

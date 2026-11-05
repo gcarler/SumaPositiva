@@ -1,0 +1,22 @@
+{
+  "fecha_utc": "2026-10-26T06:41:27.716828+00:00",
+  "estado": "PREPARACION_SIN_EJECUCION_DE_APLICACION",
+  "head": "07096bcd73531415d8b8329a8aba0ad64fa5d23c",
+  "hashes_entradas": {
+    "AGENTS.md": "bd414aab2de7546998246ea724270838f375830b18b8855be8fb5d93a428ece3",
+    ".agents/skills/polis-ui-review/SKILL.md": "77754cb3f700753b221b841f39c11c69aa6ec5971eeb2991a2ff5bedf031e7b6",
+    ".agents/skills/polis-eaf-transactions/SKILL.md": "d997c2b0506f934e6a9c0bdddeb5ded6af02f78718b8abf4e8c07d3734cca97b",
+    "docs/identidad.md": "a38cb758b63aab6353834ae41621d8621ade7ee054a8a03c7497ced91f707f3f",
+    "docs/permisos-api.md": "8782c05d8f692d87e67091f9ef4d62a4f8c6d4821d2151d37e84dc110d698f2a",
+    "docs/kit-ui-rules.md": "97b64cd453852f34e257ff8bd9a74e8016c6f60e7c7179eee023acefe5cd1032",
+    "docs/design-system.md": "bf4b7a482e7549b27ed87b9ad244e717c2d820b620d5426f360fd8f6effabcbb",
+    "docs/arquitectura.md": "ca6219cbccf40fa87e8df4fa6d2edc89b09c97cd9466c146144288b1369e7000",
+    "docs/transacciones.md": "09eee0b157c39b57b8c729a9c8cc7da545c73b4ccc27f58a55ee2ecf4ed5f834",
+    "docs/equipo_auditores_forenses.md": "eb9e74c67eda8edcb89468e4aed3ac1ae6644ecffaccbc8d6b9eb34b4901d6a7",
+    "bridge/210_encargo_eaf_consumidor_identidad.md": "649f933ae73299a5ea2d91dd2788835417e1166e48e743efc317462df789a1b2",
+    "bridge/211_reinspeccion_eaf_consumidor_identidad.md": "90bc98574fc127ab9c8acdc7db7533fe4eab4eb5237d8c9de3e2c1b3e7355257",
+    "bridge/220_encargo_freebuff_mfa_consumidor_r1.md": "81c430bb2282d2d778340b066bda183fd8975975b1a9471a5e5a75e6a944b901",
+    "bridge/232_encargo_eaf_consumidor_identidad_r1.md": "545fab2eea9e021efbcb74d2c9c3bb6d3ad72972c73d2269d8bfef766ad1ad6c"
+  },
+  "nota": "No es snapshot de aceptación de221: falta señal REINSPECCION_CONSUMIDOR_221. No se copiaron ni ejecutaron fuentes frontend/backend mutables."
+}

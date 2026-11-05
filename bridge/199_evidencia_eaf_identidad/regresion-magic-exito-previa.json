@@ -1,0 +1,9 @@
+{
+  "antes": "b31309bc6b337422190121e4c7fe86f97c22eace174dec84bef3c7f61291f9dd",
+  "despues": "63d70aecc121eb40e936016a6dc1abed0fffefde965ca3b9b4425f5a56b60dfc",
+  "igualdad": false,
+  "pid_antes": 2885273,
+  "pid_despues": 2885276,
+  "post_flush": true,
+  "sesion_utilizable": true
+}

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="12.671" timestamp="2026-10-26T06:09:21.665636+00:00" hostname="srv2006133"><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[etnia_bool]" time="2.563"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87b985a30&gt;
+legado = {'etnia': True}
+
+    @pytest.mark.parametrize("legado", [{"etnia": True}, {"es_victima_conflicto": "texto_heredado"},
+                                        {"es_victima_conflicto": None}], ids=["etnia_bool", "bandera_texto", "bandera_null"])
+    def test_errores203_enfoque_no_interrumpe_detalle_ni_lista(database_url, cliente_legado, legado):
+        aporte_id, titulo, _ = crear_aporte(cliente_legado)
+        escritor = sembrar_enfoque(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        detalle = cliente_legado.get(f"/api/v1/aportes/{aporte_id}")
+        listado = cliente_legado.get("/api/v1/aportes", params={"busqueda": titulo})
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert escritor != lector != posterior and antes == despues
+&gt;       assert detalle.status_code == listado.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:139: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[bandera_texto]" time="0.391"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87a4b9be0&gt;
+legado = {'es_victima_conflicto': 'texto_heredado'}
+
+    @pytest.mark.parametrize("legado", [{"etnia": True}, {"es_victima_conflicto": "texto_heredado"},
+                                        {"es_victima_conflicto": None}], ids=["etnia_bool", "bandera_texto", "bandera_null"])
+    def test_errores203_enfoque_no_interrumpe_detalle_ni_lista(database_url, cliente_legado, legado):
+        aporte_id, titulo, _ = crear_aporte(cliente_legado)
+        escritor = sembrar_enfoque(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        detalle = cliente_legado.get(f"/api/v1/aportes/{aporte_id}")
+        listado = cliente_legado.get("/api/v1/aportes", params={"busqueda": titulo})
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert escritor != lector != posterior and antes == despues
+&gt;       assert detalle.status_code == listado.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:139: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_enfoque_no_interrumpe_detalle_ni_lista[bandera_null]" time="0.366"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87bab30e0&gt;
+legado = {'es_victima_conflicto': None}
+
+    @pytest.mark.parametrize("legado", [{"etnia": True}, {"es_victima_conflicto": "texto_heredado"},
+                                        {"es_victima_conflicto": None}], ids=["etnia_bool", "bandera_texto", "bandera_null"])
+    def test_errores203_enfoque_no_interrumpe_detalle_ni_lista(database_url, cliente_legado, legado):
+        aporte_id, titulo, _ = crear_aporte(cliente_legado)
+        escritor = sembrar_enfoque(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        detalle = cliente_legado.get(f"/api/v1/aportes/{aporte_id}")
+        listado = cliente_legado.get("/api/v1/aportes", params={"busqueda": titulo})
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert escritor != lector != posterior and antes == despues
+&gt;       assert detalle.status_code == listado.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:139: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_null]" time="0.377"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87ba8e000&gt;
+legado = None
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+&gt;       assert respuesta.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:154: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_false]" time="0.317"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87bc2c230&gt;
+legado = False
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+&gt;       assert respuesta.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:154: AssertionError</failure></testcase><testcase classname="tests.test_aportes_legado_publico" name="test_errores203_historial_preserva_decision_con_raiz_irregular[json_lista]" time="0.330"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">database_url = '[DSN_LOCAL_AISLADO]'
+cliente_legado = &lt;starlette.testclient.TestClient object at 0x75a87a437830&gt;
+legado = ['legado']
+
+    @pytest.mark.parametrize("legado", [None, False, ["legado"]], ids=["json_null", "json_false", "json_lista"])
+    def test_errores203_historial_preserva_decision_con_raiz_irregular(database_url, cliente_legado, legado):
+        aporte_id, _, _ = crear_aporte(cliente_legado)
+        audit_id = sembrar_devolucion(database_url, aporte_id, legado)
+        lector, antes = snapshot(database_url, aporte_id)
+        respuesta = cliente_legado.get(f"/api/v1/aportes/{aporte_id}/devolucion-razon")
+        posterior, despues = snapshot(database_url, aporte_id)
+        assert lector != posterior and antes == despues
+&gt;       assert respuesta.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+backend/tests/test_aportes_legado_publico.py:154: AssertionError</failure></testcase></testsuite></testsuites>

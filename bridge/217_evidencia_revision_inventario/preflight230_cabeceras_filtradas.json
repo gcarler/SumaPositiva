@@ -1,0 +1,38 @@
+{
+  "fecha_revision_utc": "2026-10-26T06:41:40.033376+00:00",
+  "evidencia_origen": "bridge/230_preflight_opencode_dane_edad_sexo/preflight.json",
+  "sha256": "11ef389b9e39a464fde52e19c0f9e16dbd1a4c31bb4a8906739d623cd2b65705",
+  "fecha_consulta_registrada_utc": "2026-10-26T06:29:19.692945+00:00",
+  "resultados": [
+    {
+      "paso": "HEAD",
+      "url_solicitada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "estado": 200,
+      "cabeceras": {
+        "Date": "Mon, 26 Oct 2026 06:29:19 GMT",
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Length": "131609579",
+        "Last-Modified": "Fri, 08 Aug 2025 22:00:38 GMT",
+        "Accept-Ranges": "bytes"
+      },
+      "bytes_cuerpo_registrados": 0,
+      "sha256_cuerpo": null
+    },
+    {
+      "paso": "RANGE",
+      "url_solicitada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "estado": 206,
+      "cabeceras": {
+        "Date": "Mon, 26 Oct 2026 06:29:19 GMT",
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Length": "1",
+        "Last-Modified": "Fri, 08 Aug 2025 22:00:38 GMT",
+        "Accept-Ranges": "bytes",
+        "Content-Range": "bytes 0-0/131609579"
+      },
+      "bytes_cuerpo_registrados": 1,
+      "sha256_cuerpo": "5c62e091b8c0565f1bafad0dad5934276143ae2ccef7a5381e8ada5b1a8d26d2"
+    }
+  ],
+  "limite": "Filtrado local del JSON conservado. No nueva consulta ni certificación general del guion. Inicio exacto y URL final separada no registrados."
+}

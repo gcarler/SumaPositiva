@@ -1,0 +1,75 @@
+Show keyboard shortcuts
+Show screen reader tips
+Skip to main content
+Power BI Report
+Inicio
+¿Dónde ocurrieron los hechos?
+¿Cuándo ocurrieron los hechos?
+¿Qué delitos han ocurrido?
+¿Cuál es el estado de los procesos?
+Fuente: Procesos registrados en SPOA, creados desde el 01/01/2010 hasta el 30/09/2026. La información se actualiza men…
+Año del hecho
+Total de Procesos por Departamento / Municipio de Hechos
+
+Map style: blank_accessible.
+
+Map shortcuts: Zoom out: hyphen. Zoom in: plus. Pan right 100 pixels: right arrow. Pan left 100 pixels: left arrow. Pan up 100 pixels: up arrow. Pan down 100 pixels: down arrow. Rotate 15 degrees clockwise: shift + right arrow. Rotate 15 degrees counter clockwise: shift + left arrow. Increase pitch 10 degrees: shift + up arrow. Decrease pitch 10 degrees: shift + down arrow. Jump focus to the map: Escape.
+©2026 TomTom
+Feedback
+Departamento
+All
+Municipio
+All
+Búsqueda de delito por palabra clave
+Filter settings, Contains any
+Top 5 de lugares de hechos
+Scroll up
+Scroll down
+Scroll left
+Scroll right
+Row Selection
+Departamento
+Municipio
+Nro. de procesos
+ 
+Select Row
+Bogotá, D.C.
+Bogotá, D.C.
+5,510,341
+Additional Conditional Formatting
+Select Row
+Antioquia
+Medellín
+1,698,850
+Additional Conditional Formatting
+Select Row
+Valle Del Cauca
+Cali
+1,266,703
+Additional Conditional Formatting
+Select Row
+Atlántico
+Barranquilla
+699,792
+Additional Conditional Formatting
+Select Row
+Bolívar
+Cartagena De Indias
+502,027
+Additional Conditional Formatting
+Procesos Registrados
+22,854,732
+Sin ubicación
+Urbana
+Rural
+13,148,325
+2,154,478
+En el periodo consultado, se registraron 22.854.732 procesos únicos en el sistema SPOA. De estos, 13.148.325 procesos corresponden a hechos ocurridos en zona urbana y 2.154.478 a zona rural. Adicionalmente, 7.551.929 procesos no cuentan con información de ubicación del hecho. El municipio con mayor número de registros fue Bogotá, D.C., con 5.510.341 procesos reportados.
+-
++
+117%
+Microsoft Power BI
+2of7
+Next Page
+Report Zoomed To 117%
+Page 2 of 7 Next Page Button Pressed Enter or Space

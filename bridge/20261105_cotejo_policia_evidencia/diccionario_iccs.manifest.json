@@ -1,0 +1,7 @@
+{
+  "original": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/cuadros_ultimo_mes.xlsx",
+  "sha256_original": "03b708e29f25e2ccf7ec548b63dee970528e8f3c6a73f0e60063ecab319e33aa",
+  "diccionario_sha256": "bfaf7ba322a98c5da1f67866e97d809c01c09220c5c4d69c21098802043e5618",
+  "filas": 19,
+  "regla": "La clave comparativa omite ceros; codigo_publicado conserva el literal institucional."
+}

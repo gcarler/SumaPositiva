@@ -1,0 +1,33 @@
+{
+  "label": "bateria-dirigida",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "backend/tests/test_access_policy.py",
+    "backend/tests/test_calidad_correo_herald.py",
+    "backend/tests/test_servicio_correo_transaccional.py",
+    "backend/tests/test_herald_fase2.py",
+    "backend/tests/test_notificaciones_y_radicacion.py",
+    "backend/tests/test_aportes_remediacion.py",
+    "backend/tests/test_herald_salud_resumen.py",
+    "backend/tests/test_transaction_policy.py",
+    "backend/tests/test_transactions.py",
+    "backend/tests/test_transactions_integration.py",
+    "-q",
+    "-m",
+    "not migration",
+    "--tb=short",
+    "--junitxml=/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/bateria.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/.runtime/snapshot",
+  "start_utc": "2026-11-03T10:19:53.733534+00:00",
+  "seconds": 138.357,
+  "returncode": 1,
+  "log": "bateria-dirigida.log",
+  "databases": [
+    "polis_test_eaf_275_r2_20261103_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

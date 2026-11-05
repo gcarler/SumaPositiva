@@ -1,0 +1,27 @@
+--- antes/backend/app/modules/identidad/schemas.py
++++ despues/backend/app/modules/identidad/schemas.py
+@@ -46,6 +46,7 @@
+     usuario: "UsuarioLectura"
+     mfa_requerido: bool = False
+     token_desafio_mfa: str | None = None
++    mfa_enrolamiento_requerido: bool = False
+ 
+ 
+ class UsuarioLectura(BaseModel):
+@@ -69,6 +70,7 @@
+     codigos_restantes: int
+     activado_en: datetime | None
+     exigido_por_rol: bool
++    sesion_verificada: bool = False
+ 
+ 
+ class MfaIniciarRespuesta(BaseModel):
+@@ -103,6 +105,8 @@
+     nivel_identidad: NivelIdentidadLiteral
+     permisos: list[str]
+     es_anonimo: bool
++    mfa_pendiente: bool = False
++    mfa_verificada: bool = False
+ 
+ 
+ class MensajeRespuesta(BaseModel):

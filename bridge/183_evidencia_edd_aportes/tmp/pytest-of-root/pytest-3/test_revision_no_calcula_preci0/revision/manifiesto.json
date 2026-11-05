@@ -1,0 +1,17 @@
+{
+  "conteos_por_tipo": {
+    "EXACTO_BPIM_PROYECTO": 1,
+    "VINCULO_SECTORIAL_INFERIDO": 1
+  },
+  "corpus_sha256": "11a9cad714a5e9625663ad1ea12044f079d3797d61e9b20d96e93d8548520d26",
+  "criterio_muestra": "SHA-256 ascendente, hasta 10 por plan/tipo; exactos completos",
+  "esquema": "polis.corpus_revision_vinculos.v1",
+  "estratos": 2,
+  "muestra": 2,
+  "planes": [
+    "PDD_2024_2027"
+  ],
+  "sin_documento_y_pagina_en_muestra": 2,
+  "snapshot_sha256": "d57f67aaa6b701830685343a64ad0cdb6eecda8cbc6001202a3c4d22b6127956",
+  "total_vinculos": 2
+}

@@ -1,0 +1,129 @@
+{
+  "esquema": "polis.entrega_fbterr_identity.v1",
+  "tarea": "FB-TERR-ID-01",
+  "agente": "Freebuff",
+  "fecha_utc": "2026-10-26T00:52:00Z",
+  "estado": "catalogo_capturado_versionado_pendiente_revision",
+  "servicio_consultado": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer (GET publico, sin credenciales, solo lectura)",
+  "vintage_fuente": "MGN 2025 (según serviceDescription)",
+  "fecha_adquisicion_utc_1": "2026-10-26T00:49:27Z",
+  "fecha_adquisicion_utc_2_reproduccion": "2026-10-26T00:51:37Z",
+  "reproduccion_byte_identica": true,
+  "capas": {
+    "317": {
+      "nombre": "Municipio",
+      "conteo": 1122,
+      "sha256_respuesta": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+      "bytes": 248745,
+      "exceededTransferLimit": false,
+      "oids_unicos": true
+    },
+    "319": {
+      "nombre": "Departamento",
+      "conteo": 33,
+      "sha256_respuesta": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3",
+      "bytes": 6086,
+      "exceededTransferLimit": false,
+      "oids_unicos": true
+    },
+    "305": {
+      "nombre": "Centros Poblados",
+      "estado": "no consultada",
+      "motivo": "ambito encargo: identidad territorial; centro poblado es nivel distinto, no acreditado"
+    }
+  },
+  "intento_paginado_fallido": {
+    "detalle": "ArcGIS 400 'Unable to perform query operation' con resultOffset/resultRecordCount; supportsPagination=False declarado por la capa",
+    "evidencia": [
+      "originales/capa317_pagina_00.json",
+      "originales/capa317_pagina_00_meta.json"
+    ]
+  },
+  "indice_archivos": {
+    "atributos_crudos_verificacion.json": {
+      "sha256": "abc0c207a12485a1556bea3fe7b58c6651edba73655eb89c0b19954b9bccf3a0",
+      "bytes": 329740
+    },
+    "catalogo_identidad_territorial.json": {
+      "sha256": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+      "bytes": 277494
+    },
+    "guion_captura_128.py": {
+      "sha256": "648d864a497328d8828bd513522c1ec120dc329d0b51e36a165d655475cfb0be",
+      "bytes": 3746
+    },
+    "originales/atributos_crudos.json": {
+      "sha256": "abc0c207a12485a1556bea3fe7b58c6651edba73655eb89c0b19954b9bccf3a0",
+      "bytes": 329740
+    },
+    "originales/capa317_pagina_00.json": {
+      "sha256": "b6d0819923f24325b2dbe4bf74521a2591fab7dd7a6c84c7188b5349163cfe7b",
+      "bytes": 113
+    },
+    "originales/capa317_pagina_00_meta.json": {
+      "sha256": "0b8911947b03eab19a7a8a7f855214afd8cc4278870c9b1265d091d628edb44b",
+      "bytes": 1468
+    },
+    "originales/capa317_peticion_unica.json": {
+      "sha256": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+      "bytes": 248745
+    },
+    "originales/capa317_peticion_unica_meta.json": {
+      "sha256": "91dd75f366a1eb40f008e7686584956fb6cde9beb10ac51642248343fe2c3d2a",
+      "bytes": 1148
+    },
+    "originales/capa319_peticion_unica.json": {
+      "sha256": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3",
+      "bytes": 6086
+    },
+    "originales/capa319_peticion_unica_meta.json": {
+      "sha256": "5c45be6b6a3a90075cd2509e549e83483ddb1f63a01a4ff7a151da7a9fc53fbe",
+      "bytes": 1146
+    },
+    "originales/capa_317_conteo.json": {
+      "sha256": "ce25d6916771e96b317b2b1d379972d16842d06f08dc698d4fc9f433926d9cc3",
+      "bytes": 14
+    },
+    "originales/capa_317_metadata.json": {
+      "sha256": "eb83099740dc7727f9edebf9e7a5690fe99170b7a58528fadab858cdbd792d5b",
+      "bytes": 22100
+    },
+    "originales/capa_319_conteo.json": {
+      "sha256": "52aa0abe7b47012a5285efab6e22093d351180321938c1cdd985859a4bda1c0d",
+      "bytes": 12
+    },
+    "originales/capa_319_metadata.json": {
+      "sha256": "9093693c2b252aed6227e6c3a65078dc9131b14575dbb74978cca96669965419",
+      "bytes": 18934
+    },
+    "originales/captura_resumen.json": {
+      "sha256": "b78aebd2e2dd4be9ec1a8e2e862da74f09cf865b98bddcb0e5f0e8b2c7486412",
+      "bytes": 553
+    },
+    "originales/headers_capa_317.txt": {
+      "sha256": "88ab9c2f205c5e4bd26135608c58059045e37bac885ed4891cc5792e346fc0eb",
+      "bytes": 935
+    },
+    "originales/headers_capa_319.txt": {
+      "sha256": "37119d7f7c2bf05500c57c2e0af1f7dfe0370d8e5d52f675630610b4811c89d5",
+      "bytes": 935
+    },
+    "originales/headers_servicio.txt": {
+      "sha256": "1533750a73bc75cc92501da6023e5b53f7824c178d043a73518f2467c03da204",
+      "bytes": 935
+    },
+    "originales/peticiones_http.json": {
+      "sha256": "1ab8c7f49213866184e2a63b6d1f4c4c2e18e2f701e519e1a4fd0b08e1e08b9e",
+      "bytes": 2983
+    },
+    "originales/servicio_metadata.json": {
+      "sha256": "481380c501aa7e2f7ff09ecddbb13b52308d543af63a7f37bbc7d99c3197d588",
+      "bytes": 4873
+    }
+  },
+  "sin_sql": true,
+  "sin_deploy": true,
+  "sin_escritura_remota": true,
+  "sin_promocion_banco": true,
+  "dictamen_eaf": false
+}

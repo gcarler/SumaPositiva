@@ -1,0 +1,14 @@
+{
+  "comando": [
+    "/root/polis/backend/.venv/bin/ruff",
+    "check",
+    "--no-cache",
+    "--config",
+    "backend/pyproject.toml",
+    "scripts/inventariar_fuentes_polis.py",
+    "backend/tests/test_inventario_fuentes_polis.py"
+  ],
+  "inicio_utc": "2026-10-26T06:39:27.247517+00:00",
+  "fin_utc": "2026-10-26T06:39:27.262075+00:00",
+  "returncode": 1
+}

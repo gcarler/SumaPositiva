@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BcKkbAw3.js";import{n as t,t as n}from"./react-CMSMJo6i.js";var r;function i(){return(i=e((()=>{t(),r=n(e=>({vista:`inicio`,setVista:t=>e({vista:t}),dimensionActivaId:void 0,irADimension:t=>e({vista:`dimensiones`,dimensionActivaId:t})}))})))()}export{r as n,i as t};

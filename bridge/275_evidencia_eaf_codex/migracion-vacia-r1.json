@@ -1,0 +1,22 @@
+{
+  "label": "migracion-vacia-r1",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "alembic",
+    "-c",
+    "backend/alembic.ini",
+    "upgrade",
+    "head"
+  ],
+  "cwd": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot",
+  "start_utc": "2026-11-02T03:38:29.284807+00:00",
+  "seconds": 2.218,
+  "returncode": 0,
+  "log": "migracion-vacia-r1.log",
+  "databases": [
+    "polis_test_eaf_275_codex_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

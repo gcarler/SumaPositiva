@@ -1,0 +1,141 @@
+{
+  "artefactos_sha256": {
+    "ficha.json": "0a15c0c6b32158daba239d9e5ba0281f9d79262b1537c1d3502e7b2fa865f841"
+  },
+  "codigo_sha256": {
+    "cli": "65776615e2d32d985a8730b7f76664142e2ab9cb0f514b43a196f9da8c08070c",
+    "ficha": "b2ef85dafd46b0e153db2ef251743c0d7f7ac7036694ee8680a74bf4a94756a0",
+    "parser": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100"
+  },
+  "conteos": {
+    "contexto_aceptadas": 97,
+    "contexto_rechazadas": 0,
+    "contexto_retenidas": 5,
+    "duplicados_celda": 0,
+    "excluidas_aceptadas": 11281,
+    "excluidas_rechazadas": 2,
+    "excluidas_retenidas": 614,
+    "filas_contexto_general": 102,
+    "filas_excluidas_seleccion": 11897,
+    "filas_total": 12899,
+    "observaciones": 900,
+    "observaciones_aceptadas": 852,
+    "observaciones_rechazadas": 0,
+    "observaciones_retenidas": 48,
+    "series": 889
+  },
+  "corte_conocimiento": {
+    "bases_censales": "desconocido",
+    "fechas_extraccion": "desconocido",
+    "sin_reconstruccion_historica": true,
+    "vintages_acreditadas": []
+  },
+  "corte_observaciones": {
+    "anios_distintos": [
+      2020
+    ],
+    "meses_distintos": [
+      "11",
+      "12",
+      "6",
+      "9"
+    ],
+    "sin_continuidad_acreditada": true
+  },
+  "esquema": "polis.ficha_territorial.manifiesto.v2",
+  "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+  "hashes_resultado": {
+    "ficha": "0a15c0c6b32158daba239d9e5ba0281f9d79262b1537c1d3502e7b2fa865f841",
+    "resultado_parser": "5dcb93a2d1238bffa8a72636a0257c2b4df4dd46d46d2ddcff84edcf992192bc"
+  },
+  "identidad_evidencia_declarada": "bridge/130_cotejo_catalogo_identidad.json",
+  "identidad_resolucion": {
+    "codigo_departamento": "13",
+    "codigo_entidad": "13001",
+    "concordancia_departamento": true,
+    "departamento_catalogo": {
+      "acto_administrativo": "Constitucion Politica de 1886",
+      "anio_creacion": 1886,
+      "anio_version": 2025,
+      "dpto": "13",
+      "nombre": "BOLÍVAR"
+    },
+    "detalle_estado": [
+      "Codigo departamental declarado coincide con el propietario del registro",
+      "Registro tipo MUNICIPIO en la fuente; sin certificar estatus juridico",
+      "anio_version del registro: 2025; metadato de registro MGN2025, distinto de la fecha de adquisicion del catalogo"
+    ],
+    "estado": "encontrado",
+    "metadatos_catalogo": {
+      "bytes_catalogo": 277494,
+      "esquema": "polis.catalogo_identity_territorial.v1",
+      "fecha_adquisicion_utc": "2026-10-26T00:49:27Z",
+      "limites_declarados": [
+        "vintage 2025 no prueba corte 2026 en todas las provincias",
+        "capa 317 no distingue distrito vs municipio a partir de MPIO_TIPO tal como llega; se registra el campo, no se deduce estatus juridico adicional",
+        "centros poblados (capa 305) no consultados: sin cobertura a ese nivel",
+        "geometria no consultada; poblacion no incluida ni certificada"
+      ],
+      "origen": {
+        "capas_consultadas": {
+          "departamentos": {
+            "conteo_esperado": 33,
+            "id": 319,
+            "nombre": "Departamento"
+          },
+          "municipios": {
+            "conteo_esperado": 1122,
+            "id": 317,
+            "nombre": "Municipio"
+          }
+        },
+        "metadato_http_grupo": "ver originales/peticiones_http.json",
+        "niveles_no_consultados": [
+          "305 Centros Poblados"
+        ],
+        "servicio": "https://geoportal.dane.gov.co/mparcgis/rest/services/Divipola/Serv_DIVIPOLA_MGN_2025/FeatureServer",
+        "sha256_respuestas": {
+          "capa317": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c",
+          "capa319": "0400f54a93309c694590904ba02f9a50686560bf714886c33dd3c276210961b3"
+        }
+      },
+      "procedencia": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+      "sha256_bytes_catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+      "vintage_declarado_por_fuente": "MGN 2025"
+    },
+    "nivel": "municipal",
+    "nombre_catalogo": "CARTAGENA DE INDIAS",
+    "nombre_declarado": null,
+    "registro_catalogo": {
+      "anio_creacion": "1599",
+      "anio_version": 2025,
+      "concat": "13001",
+      "dpto": "13",
+      "dpto_nombre": "BOLÍVAR",
+      "mpio": "001",
+      "nombre": "CARTAGENA DE INDIAS",
+      "tipo": "MUNICIPIO"
+    }
+  },
+  "insumos_sha256": {
+    "catalogo": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+    "seleccion": "5d75ca23f799e5f2569fe87db03d225c02f0909edff9922a3a8a5f0c5f1a8db1",
+    "txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+    "zip": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+  },
+  "seleccion": {
+    "anios": [
+      2020
+    ],
+    "descripcion": "Solo observaciones del año 2020",
+    "dimensiones": [],
+    "fuentes_declaradas": [],
+    "indicadores": [],
+    "subcategorias": [],
+    "unidades_medida": []
+  },
+  "sin_promocion_banco": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "version_ficha": "ficha_territorial.v2"
+}

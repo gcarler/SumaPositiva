@@ -1,0 +1,480 @@
+{
+  "fecha": "2026-10-23",
+  "archivos": [
+    {
+      "ruta": "bridge/53_evidencias_descarga/ampliacion.json",
+      "bytes": 7738,
+      "sha256": "d2c35eb6d7187af6c65c3dbd10d18495a8db5efc4119f5b8ac75b35f4c6f7f11"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/arcgis_indemnizaciones.bin",
+      "bytes": 10589,
+      "sha256": "cf39e3b3aaba9d19176af8d1f269785d0c73e6083ecad9168b8d7a569cb6e9be"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/arcgis_irv.bin",
+      "bytes": 6789,
+      "sha256": "6dc5b8da9f46bf013f50ab0e407c3d4721a639774f4b412acb44356851d817e1"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/catalogo_fiscalia_indiciados.json",
+      "bytes": 28849,
+      "sha256": "eaabb39664ebb6ad7efa44d4aca77af88a5a9df825a454d6ec0035c6910fb26e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/catalogo_fiscalia_procesos.json",
+      "bytes": 77244,
+      "sha256": "59fae6d70c5faabd2e6241521b45454fa4623bafd2750a334a2f8bf8178ce8a5"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/consultas_agregadas.json",
+      "bytes": 8816,
+      "sha256": "e6d0008f6d76d98d7ea67fc60281ebf38f3f49971508725fbe362ad36b3571ea"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_icbf_bienestarina.json",
+      "bytes": 23,
+      "sha256": "2ad0ea5bfb75e1fb819e3838d23c8a5dc0bbc74fef6b9b998e20bc9cfd776956"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_icbf_prevencion.json",
+      "bytes": 24,
+      "sha256": "d03071dd6f0e00481060bcfe3db6dbbbf818207e614159bd5026b13b4ca98257"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_icbf_primera_infancia.json",
+      "bytes": 23,
+      "sha256": "d17a7ddcb533e3ea43731b358f42bf8b9e0dd4283099950a096c7007387b6290"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_icbf_rpc.json",
+      "bytes": 22,
+      "sha256": "e410f9f2b8834f0c2a6a3a9f60baa55bea79e9d914a13f52a06137c9cfd117cc"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_icbf_uds.json",
+      "bytes": 23,
+      "sha256": "b334abaad7ffa1153c3c755c397aba67a8bc5942b7777aa72c854f9649b8efea"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_ideam_calidad_aire.json",
+      "bytes": 22,
+      "sha256": "44c2ee04d03bd6c88a9ea4d1a6642bb24b1b4a19e9300207548dd850c4b06d48"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_ins_calidad_agua.json",
+      "bytes": 21,
+      "sha256": "19a6902a17733eb113ed644625fdeafc8d9a58d08652c21d953a5ca5f055428f"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_examenes_sexuales.json",
+      "bytes": 23,
+      "sha256": "56703f255da2001d296280ff43474fbf17dd5846ff2db7f83a4821dbac06c3a0"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_homicidios.json",
+      "bytes": 23,
+      "sha256": "0fcbb8d698c2ab9dbaf43dd7d8101da711f62a14981507c3d188eafb8b2950d5"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_lesiones_accidentales.json",
+      "bytes": 22,
+      "sha256": "8f30345da9f5a31251c2de7970c6b69847d794a4abbb86514b3c674d1613261f"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_lesiones_transporte.json",
+      "bytes": 23,
+      "sha256": "54cf37e3238a22e08597e6302cbf364c3fc28799d68d44d9aa1889937acaf57b"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_suicidios.json",
+      "bytes": 22,
+      "sha256": "e07de666b5dc7e3f9b02f89e23810b8a578ff416a51123086cbfcbfd81a78724"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_violencia_interpersonal.json",
+      "bytes": 24,
+      "sha256": "3a8fe7ac2eb01caf1637377fa7cea1168bcdfd8c9649fa5fff12019089543c71"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_medicina_violencia_intrafamiliar.json",
+      "bytes": 23,
+      "sha256": "4832d0a937fade8e6aa7f30333b007dcd56edc0d3ebdae217214ccebc5024593"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_amenazas.json",
+      "bytes": 24,
+      "sha256": "35680b12ca99c99a0c429b6611174f300a3028076c6108c5f46ed206a5c3eaf1"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_delitos_sexuales.json",
+      "bytes": 23,
+      "sha256": "d2d6cfc9e150f1cdb1edf89fc63ae50c965d4367e5cfb64bffdd27b79729e066"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_homicidios.json",
+      "bytes": 23,
+      "sha256": "f1582cf367e344effb34da276852c3cfc68b168b46c52c5801a98b5be5d31c3b"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_hurto_vehiculos.json",
+      "bytes": 23,
+      "sha256": "f93ae14de77e9328e59ea1a86133f07b18be3878462af6cb88643a2480519c77"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_hurto_vivienda_comercio.json",
+      "bytes": 24,
+      "sha256": "d41806e4263f55fb90ffcf60f0ceaaaf64e8d1bdfbb21933aaeb87228fdae394"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_lesiones.json",
+      "bytes": 24,
+      "sha256": "ffd5b0474214668e8f8acca4ed06796517591a8cf11728e5f66752047e5042b4"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_policia_violencia_intrafamiliar.json",
+      "bytes": 24,
+      "sha256": "3630e341286aa93d217b5ecf27be23bcd70bbbd00af041905a35b647b584a8bf"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/conteo_procuraduria.json",
+      "bytes": 22,
+      "sha256": "27c9f6f2f5cb4a96d2bddb4de949274f7af28e3e5e2ba49ebbda60dad4473dcc"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/dane_ecsc_anexo.xlsx",
+      "bytes": 543732,
+      "sha256": "9bed1cd4e9d9fb4ee9e770f977ffec1adee48dfea4bc3ab2d2f882d635fab06e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/dnp_terridata_zip.zip",
+      "bytes": 305031,
+      "sha256": "f89e2b5110347f1d7b59d0debe067ba915efcc5e373322169c5f675af10d50a6"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_api_actuaciones.json",
+      "bytes": 84,
+      "sha256": "bff22ff692c74d42095bc3a006b8ee5ca234ebcd475e3c050219c435ed45d2a4"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_api_victimas.json",
+      "bytes": 84,
+      "sha256": "bff22ff692c74d42095bc3a006b8ee5ca234ebcd475e3c050219c435ed45d2a4"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_metadata_actuaciones.json",
+      "bytes": 122,
+      "sha256": "15b13d53e71cdff38c6207c3ad841af745fb85723f5e736cecf3b305a4e2a7df"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_metadata_victimas.json",
+      "bytes": 122,
+      "sha256": "15b13d53e71cdff38c6207c3ad841af745fb85723f5e736cecf3b305a4e2a7df"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_powerbi_portada.png",
+      "bytes": 251155,
+      "sha256": "30e0cb18085fd265d014148762ae8fae335052876a0964ec8591c7b6c3bdcc75"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/fiscalia_powerbi_portada.txt",
+      "bytes": 863,
+      "sha256": "6f690db68fe024ce106c7f4eb8437ca6829a7d83e19d5caf7f71c1458ed03f7e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/icbf_rpc_filas_por_anio.json",
+      "bytes": 273,
+      "sha256": "45d660be5dfccb889f648112f6c056fab73a1ad22f4e6de4a45c833b334bc357"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/indemnizaciones_cartagena.json",
+      "bytes": 2574,
+      "sha256": "d1272707edb0175de4d437647889858d9bb72ae770479848eeeb028654e522e6"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/irv_cartagena_2025.json",
+      "bytes": 773,
+      "sha256": "89569a795cabc6bdbb512220399493479d7e534555683d0a534291318516c72c"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/medicina_homicidios_filas_por_anio.json",
+      "bytes": 401,
+      "sha256": "e1e977fcddec9b1562b2ee0b4401436c48c412b453cca548234d55e413c3e4af"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_5akr-u7t8.json",
+      "bytes": 34814,
+      "sha256": "387dbe37af5ed45779c18d385aaac92e4ddaadd0160261c0991fcaebd1537dd6"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_6cjn-eevd.json",
+      "bytes": 65077,
+      "sha256": "1ec776f78ae170dd2d4ccdea89332cd9d67031966a4074aafbb48555efc57387"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_6sqw-8cg5.json",
+      "bytes": 15801,
+      "sha256": "e7fd294976f4a40791a392a0c369b90ac1e4e89d03ba9e23c51d3d63c08b8f06"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_72sg_cybi_reintento.json",
+      "bytes": 18556,
+      "sha256": "4f83c8b5f7f52dfa7155eb0bbc639020f1e0b280a1605c3096ca08fd32ed7349"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_9vha-vh9n.json",
+      "bytes": 15930,
+      "sha256": "eda9c566c07eda36e6cb239ef29e836152ce210626401fd597a3aa540dca4a4b"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_crxh-as6c.json",
+      "bytes": 24672,
+      "sha256": "000cd9b740caf8f82c3159a0f185f4fadb507633194755329c4760e0dd07b8f1"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_e3xi-4zq5.json",
+      "bytes": 69817,
+      "sha256": "0872170c33e24ac82d81d9f585098172eac608027c2f7465561f93cd0aabc242"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_ers2-kerr.json",
+      "bytes": 71863,
+      "sha256": "cc1ab810a2ae95b04e60dac39223eaf77243e4d7082e077109c41acedbb099d3"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_ezhf-hscf.json",
+      "bytes": 75455,
+      "sha256": "a228d83ed961143028ffb91907691482c84a6eb6ed8b06e6236084ec37acdd5c"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_f75u-mirk.json",
+      "bytes": 60292,
+      "sha256": "1fa92eb96b0700aa8ebc275b546479a106cd8d576c9ffa5262c3e5a4e568b990"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_fpe5-yrmw.json",
+      "bytes": 18091,
+      "sha256": "ef9b30cb9fa309dd3426808bb9d6897ccd754b3c0c07427034fb51700baae42d"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_g58z-k6f6.json",
+      "bytes": 28320,
+      "sha256": "f869637e87f744cb88c87f6c261d5c39382b2cceed238c8935072f9b7ace4007"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_hyqu-diue.json",
+      "bytes": 64696,
+      "sha256": "7b4f509fab6823c4be4f31f9c21cac45f170d535a5352165e0caad9b0596e4f1"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_i8ww-5mcf.json",
+      "bytes": 31364,
+      "sha256": "94f5e01fe38846e0c81615b9608245dc0995a6d3387e82669c863a4dc16f1a17"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_kekd-7v7h.json",
+      "bytes": 61397,
+      "sha256": "66b6c5731fc1ffd08c4d8879881dbdae0a3cb08fa3218caa50fcb445e9b0cac6"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_m8fd-ahd9.json",
+      "bytes": 19509,
+      "sha256": "285219f47eca6678253ac30dd6927cd185b49d1eefc5ae9be4f4c2b4c8a626b7"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_meew-mguv.json",
+      "bytes": 14773,
+      "sha256": "0bd197ace61b141c0a58ba024d8139fbc8fc2d2864cd404b926d0a19a57ecf61"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_nxt2-39c3.json",
+      "bytes": 22485,
+      "sha256": "68340c6b4d65e53365990c81c6ef7ae5b3cc902dbf9f22db6a9c3608ed39c3f8"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_s226-fj9i.json",
+      "bytes": 17828,
+      "sha256": "ecab2bf429e7d262757c588c9d741a90623afb60ac76435919665b7fc1672687"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_v9qk-hdcc.json",
+      "bytes": 19507,
+      "sha256": "fe7fce5b8234c694c376261642c39abfd4d3c315cd686ebf983a96feb1a2872f"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_vtub-3de2.json",
+      "bytes": 68859,
+      "sha256": "e722ed453fd1179d894762dafa9d691793a9120db093190ab3bf30402200ccac"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/metadata_vuyt-mqpw.json",
+      "bytes": 15759,
+      "sha256": "2ad7dea3df53f9ff61cb040ad00208ea25f8c4d94184fa9b6d9f854afd9ad1e3"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_descargas_53_ampliacion.py",
+      "bytes": 2805,
+      "sha256": "f6702ce33af0a80f35bce9344fbfbc9156718e58cf7cd2e1ce671f984323d62c"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_descargas_53_consultas_agregadas.py",
+      "bytes": 1945,
+      "sha256": "4c1a8882bc441d4877047aa5bf617369ee1305a03c0b19fa78541999d48ba73e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_descargas_53_matriz.py",
+      "bytes": 7480,
+      "sha256": "8843a2c935eefcd9988c23760d8aceb45b8dc9d5c383815eed7e7194f11ceec7"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_descargas_53_powerbi.mjs",
+      "bytes": 1565,
+      "sha256": "084a8ad3d9f96925ddf4aef3e482bbaa18acd5d694b372e8b7360be625b1fb69"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_descargas_53_servicios.py",
+      "bytes": 2424,
+      "sha256": "1c2c4a2a8163ca28ede11a5d8c6a9952695614144fb2e066b62f0a280f11d12e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/polis_revisar_descargas_53.py",
+      "bytes": 6066,
+      "sha256": "0b38dd03e976706d809421da0c89f46fba0555f35334b745e237e295acc5726b"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_01.html",
+      "bytes": 9133,
+      "sha256": "d52af01cc5f63eb1dddabdc8dd07c9c13a5c4a08864bceb84771f3a233a496c0"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_02.html",
+      "bytes": 73753,
+      "sha256": "0efd92ba2a802ec8388218aed0cb807404a4eaea92d99a948229acd4570f4994"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_04.html",
+      "bytes": 271559,
+      "sha256": "5d0e2190966c30e58042467d55b4edb8002c26a2b89cca8f985f6841c481194e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_05.html",
+      "bytes": 48295,
+      "sha256": "782274e72e8ea64c796e00dfc5d7d604760db900df56d250097732959d8dd63c"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_09.html",
+      "bytes": 20985,
+      "sha256": "9f742b24ec78af01ea7dfca15ef7eedf827fc1f68ee872a44f399b2cdf9a76c9"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_10.html",
+      "bytes": 15364,
+      "sha256": "9e58acf288ee5b231abb70705fbfb629746ae7510598482f8918e88b9c15b88e"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_11.html",
+      "bytes": 60379,
+      "sha256": "9e6620c0a68f7e64c8bd8a75b541518ec895b108de3ab2ce970dc1d757a452d3"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_12.html",
+      "bytes": 52576,
+      "sha256": "60c6d4981a3df56c16753cf03daa5f9341db67a28759212c15552ad07dab7948"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_13.html",
+      "bytes": 64841,
+      "sha256": "eb95905135b339bd3c1675dbe312db1818785d24a4b306807d3a7cc0a3a8d57f"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_15.html",
+      "bytes": 116710,
+      "sha256": "4c4a16b2316b9cd24563755dfa1451b1fd925e569e368ac6b6eb9cbcf3455052"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_16.html",
+      "bytes": 118695,
+      "sha256": "a6e8660ad599a5ceb5e2fe9a6a3540d02a3cf3c2d4a683558c5a6c6b3f8185f9"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_17.html",
+      "bytes": 139402,
+      "sha256": "39e9418ecd3540f8833b74d8f97df1e93138db78c7fd776ac58cb13415fc0343"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_18.html",
+      "bytes": 107379,
+      "sha256": "0dcb3cb136194c509c308371bce4f397b67239f70eeebab5c818ca9c19e68879"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_19.html",
+      "bytes": 5637,
+      "sha256": "9ca04df42820b70ad9d30042169eb35780002e69177312c7c86f45d40d66ae09"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_20.html",
+      "bytes": 5730,
+      "sha256": "8d5586e1f1ad4f0d4bc0a2d999a9c1fbe25019d53f0584984c91641efbe923f9"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_21.html",
+      "bytes": 364723,
+      "sha256": "95f135907b005191efcaafefab5967e53f8b39f2c9c9126deab7e4519a26932b"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_22.html",
+      "bytes": 1164,
+      "sha256": "1f135e2ede4d2389e481d51d046e533ac485d15dc83396818d41bb81c7e84045"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_23.html",
+      "bytes": 113874,
+      "sha256": "166e4729ff4fcf446c6823da59d7e2d3c610c061fd4282651122769b8efa1e2a"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_24.html",
+      "bytes": 327788,
+      "sha256": "93bec2f954727f2deabc4d10da09c64272973686b0565c8ce324670ed7f0a850"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_25.html",
+      "bytes": 4758,
+      "sha256": "290a89e68f4f0da75290589aee504cbfe8d0c49fbc59eaee684ef2986e4faca4"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_27.html",
+      "bytes": 155568,
+      "sha256": "fe8d916f9769098aee185e4c551a26532abf26fb103ed162a473e8858da9bec9"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_28.html",
+      "bytes": 155644,
+      "sha256": "2a95335bb34ab8f74d4a578b217f2c115ff8b92e057a82fede1b4f03bcf23fe0"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/portal_29.html",
+      "bytes": 4758,
+      "sha256": "290a89e68f4f0da75290589aee504cbfe8d0c49fbc59eaee684ef2986e4faca4"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/powerbi_revision.json",
+      "bytes": 525,
+      "sha256": "258faa2ef38b957bbbf82fda0cd68c8d7022f6c475f10e993cd3278a4cb1d3fc"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/revision.json",
+      "bytes": 122719,
+      "sha256": "29a76596a8ea1f51b21aa619664ad5374c2dcaa79b8f399a2b091393b3229f3d"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/ruv_cortes.json",
+      "bytes": 1171,
+      "sha256": "5e0cacd6f5c653043deb73dcd8e186293d7be561f960184661ac5e0e441fb99a"
+    },
+    {
+      "ruta": "bridge/53_evidencias_descarga/servicios.json",
+      "bytes": 4536,
+      "sha256": "786127d584c7cf5f26e4ea1f6b8a20f915130163a67c4cc404cc64128e76fd18"
+    }
+  ]
+}

@@ -1,0 +1,316 @@
+{
+  "entrega": "Vistas Lista y Tarjetas",
+  "fecha_utc": "2026-10-29T00:08:47.525856+00:00",
+  "rama": "remediacion/aud-2026-10-21",
+  "head": "07096bcd73531415d8b8329a8aba0ad64fa5d23c",
+  "alcance": "Colecciones principales de los 16 módulos internos de /plataforma; editores, informes y motores especializados conservan sus interfaces.",
+  "modulos": [
+    {
+      "id": "dashboard",
+      "ruta": "/plataforma",
+      "coleccion": "Resumen, accesos, alertas y agenda",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "formularios",
+      "ruta": "/plataforma/formularios",
+      "coleccion": "Catálogo de formularios",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "geovisor",
+      "ruta": "/plataforma/geovisor",
+      "coleccion": "Catálogo territorial",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "mesas",
+      "ruta": "/plataforma/mesas",
+      "coleccion": "Mesas de trabajo",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "usuarios",
+      "ruta": "/plataforma/usuarios",
+      "coleccion": "Directorio paginado de usuarios",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "contenido",
+      "ruta": "/plataforma/contenido",
+      "coleccion": "Arquitectura y colecciones editoriales y metodológicas",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "noticias",
+      "ruta": "/plataforma/noticias",
+      "coleccion": "Artículos y comunicados",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "testimonios",
+      "ruta": "/plataforma/testimonios",
+      "coleccion": "Cola de moderación",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "fuentes",
+      "ruta": "/plataforma/fuentes",
+      "coleccion": "Fuentes de información",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "actores",
+      "ruta": "/plataforma/actores",
+      "coleccion": "Directorio de actores",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "diagnostico",
+      "ruta": "/plataforma/diagnostico",
+      "coleccion": "Fichas de indicadores de línea base",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "alternativas",
+      "ruta": "/plataforma/alternativas",
+      "coleccion": "Banco de alternativas de solución",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "seguimiento",
+      "ruta": "/plataforma/seguimiento",
+      "coleccion": "Compromisos PAS",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "proyectos",
+      "ruta": "/plataforma/proyectos",
+      "coleccion": "Actividades agregadas por módulo",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "comunicaciones",
+      "ruta": "/plataforma/comunicaciones",
+      "coleccion": "Tareas de comunicación",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    },
+    {
+      "id": "configuracion",
+      "ruta": "/plataforma/configuracion",
+      "coleccion": "Secciones de configuración",
+      "vistas": [
+        "lista",
+        "tarjetas"
+      ]
+    }
+  ],
+  "preferencia": {
+    "clave": "polis-vistas-colecciones-v1",
+    "alcance": "navegador, por módulo",
+    "almacena_datos_de_negocio": false
+  },
+  "checks": [
+    {
+      "nombre": "ui-check",
+      "exit_code": 0,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/ui-check.log",
+      "sha256_log": "f8f7f056e9f404002bcfc118fcbc051dfca210b6f2490f49e946b48f4e08f08f"
+    },
+    {
+      "nombre": "eslint-entrega",
+      "exit_code": 0,
+      "archivos": 24,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/eslint-entrega.log",
+      "sha256_log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "nombre": "diff-check",
+      "exit_code": 0,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/diff-check.log",
+      "sha256_log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "nombre": "next-build",
+      "exit_code": 0,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/build-next-final.log",
+      "sha256_log": "0605d9801c820f0371746ed61298e7ea97989cecf2730d8d895c956f432a4eaa",
+      "avisos_css": 8
+    },
+    {
+      "nombre": "storybook-build",
+      "exit_code": 0,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/build-storybook-final.log",
+      "sha256_log": "7f64c00efdb2d986c73d532da48977a1086765ad086e10a4dd8797b92700f5ac",
+      "avisos_css": 8
+    },
+    {
+      "nombre": "check-global",
+      "comando": "bun run check",
+      "exit_code": 1,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/check-global.log",
+      "sha256_log": "d8bac6beacb2b8351112c0fa772b817a925818f5fa1539030c297ebd296b438d"
+    },
+    {
+      "nombre": "typecheck",
+      "comando": "bun run typecheck",
+      "exit_code": 0,
+      "log": "bridge/evidencia_vistas_lista_tarjetas_20261029/typecheck.log",
+      "sha256_log": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92"
+    }
+  ],
+  "limite_check_global": "ESLint: html sin uso en .tmp-vivo-debug.mjs:16, archivo ajeno a la entrega.",
+  "pruebas_funcionales_ejecutadas": false,
+  "revision_navegador_ejecutada": false,
+  "dictamen_independiente": false,
+  "desplegado": false,
+  "commit_creado": false,
+  "artefactos": {
+    "next_build": "/tmp/polis-vistas-next-final-20261029-istqye63/build",
+    "storybook_build": "/tmp/polis-vistas-storybook-20261029",
+    "active_dist_dir_touched": false
+  },
+  "archivos_implementacion": [
+    {
+      "ruta": "src/features/actores/components/actores-datagrid.tsx",
+      "sha256": "f2158843d640da9021c6dd195b3579aea16cdb778af16ae5ec10d40501b3d1a9"
+    },
+    {
+      "ruta": "src/features/alternativas/views/alternativas-view.tsx",
+      "sha256": "2f86d16519e9fe85d27fed31f00a61862b6e475640900b84f6579e3dc10b7751"
+    },
+    {
+      "ruta": "src/features/comunicaciones/views/comunicaciones-view.tsx",
+      "sha256": "2cc29c4a84ae04f91c60c2a83bfeae42b8a9c7d6b3f36cb05ffc43ae710f5524"
+    },
+    {
+      "ruta": "src/features/diagnostico/views/diagnostico-view.tsx",
+      "sha256": "a1358d00fdae3602e71e6d0aacc77b56935d2f5ff5a49ffe42a487fc0c648123"
+    },
+    {
+      "ruta": "src/features/formularios/panels/formularios-panel.tsx",
+      "sha256": "9ecc2da049e595d09a6a4e311ab15bfa0c69ecc2d349186c8674fde8a33056e9"
+    },
+    {
+      "ruta": "src/features/fuentes/components/fuentes-datagrid.tsx",
+      "sha256": "747629c15d7d0c261e2f58c52605e12a40510aa9ff04e16c01a921afd1528ff6"
+    },
+    {
+      "ruta": "src/features/plataforma/views/actores-view.tsx",
+      "sha256": "2424d5b94541c0eca503962eceaca95a6f1b0f596849281081f351934e3d895c"
+    },
+    {
+      "ruta": "src/features/plataforma/views/configuracion-view.tsx",
+      "sha256": "a8a37271ad7b7118929618351caf4c1bfe72af8fe224b0ae2603f63c4f986ec9"
+    },
+    {
+      "ruta": "src/features/plataforma/views/contenido-view.tsx",
+      "sha256": "590c03a7b484ade4b8ab20d777cb67a50aa22a215ac3e5f568cf29998c366fe9"
+    },
+    {
+      "ruta": "src/features/plataforma/views/dashboard-view.tsx",
+      "sha256": "b21021007f6e1ebc40c918f9a4be2127df9748973790454c5de10cd252371d37"
+    },
+    {
+      "ruta": "src/features/plataforma/views/geovisor-view.tsx",
+      "sha256": "79a23bd84efdb84b088e2a0dc5897446c543ad71084dbc461e86cc7061e78cf3"
+    },
+    {
+      "ruta": "src/features/plataforma/views/mesas-view.tsx",
+      "sha256": "1804cafab8d333de57a197623ed1b153cfd484d23248cb5f32db4d57bab13bba"
+    },
+    {
+      "ruta": "src/features/plataforma/views/usuarios-view.tsx",
+      "sha256": "aea11ac6fbb4f6e228669db95735ca6ca587df05a5d42a2bf4b07343662c3978"
+    },
+    {
+      "ruta": "src/features/politicas/components/arquitectura-politica.tsx",
+      "sha256": "4177cb4c3151b00121b15b7677e5cfb3325649b3b43e62330f505710fcd903f9"
+    },
+    {
+      "ruta": "src/features/proyectos/views/proyectos-view.tsx",
+      "sha256": "fd99c5abbc580a37a82e2c7386ee3a3d9fc789ca82bb3eb92ba1c0363fa3bebb"
+    },
+    {
+      "ruta": "src/features/seguimiento/views/seguimiento-view.tsx",
+      "sha256": "47eb3a1f9a7724ccca8de0964f899d89e36d76568dff9eb78580c2b7dea00192"
+    },
+    {
+      "ruta": "src/features/testimonios/panels/testimonios-moderacion-panel.tsx",
+      "sha256": "206cc1c20d403ec5c0d1d0db4949d7a3c8579d283786666bc49a70a7322d9c84"
+    },
+    {
+      "ruta": "src/core/preferences/collection-view-store.ts",
+      "sha256": "33a0fe4495e39bd6913da649706243033f4c933ddb8ef91c1e4b030687ca2c3a"
+    },
+    {
+      "ruta": "src/shared/ui/collection-view.tsx",
+      "sha256": "4d54292bc33a07b02a8dd97f79274405096c99db09efc06b0cd12c1ca28549fe"
+    },
+    {
+      "ruta": "src/shared/design-system/catalog.ts",
+      "sha256": "ab181b128d8b359f9d8f4195077a7f15649d060db8e9cff2f64def70e46304e7"
+    },
+    {
+      "ruta": "src/app/_stories/collection-view.stories.tsx",
+      "sha256": "00a2ecc0c61d833864080f3da1a3e3f727f1b410c8862b3c284a55b3589f51cc"
+    },
+    {
+      "ruta": "src/features/alternativas/components/alternativas-tabla.tsx",
+      "sha256": "11271de5d266153ff2ac0412245bdec23b33ca62b512937e3002490004fc7ae4"
+    },
+    {
+      "ruta": "src/features/diagnostico/components/linea-base-tabla.tsx",
+      "sha256": "594c90777f675c9fc7ba24b64b7ccf698cd445d039771600edff5eefc6cd6ee9"
+    },
+    {
+      "ruta": "src/features/seguimiento/components/compromisos-tabla.tsx",
+      "sha256": "ba54542d5116d183a0ae484bbabebe90ef8a583efb97addde5985ee7023bf53e"
+    }
+  ]
+}

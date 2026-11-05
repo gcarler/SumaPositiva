@@ -1,0 +1,113 @@
+[
+  {
+    "clave": "fiscalia_metadata_victimas",
+    "url_solicitada": "https://www.datos.gov.co/api/views/4mnf-va5w.json",
+    "parametros": null,
+    "consulta_utc": "2026-10-23T17:53:52.058364+00:00",
+    "http": 403,
+    "url_final": "https://www.datos.gov.co/api/views/4mnf-va5w.json",
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 122,
+    "sha256": "15b13d53e71cdff38c6207c3ad841af745fb85723f5e736cecf3b305a4e2a7df",
+    "archivo": "bridge/53_evidencias_descarga/fiscalia_metadata_victimas.json",
+    "respuesta_resumen": {
+      "code": "authentication_required",
+      "error": true,
+      "message": "You must be logged in to access this resource"
+    }
+  },
+  {
+    "clave": "fiscalia_api_victimas",
+    "url_solicitada": "https://www.datos.gov.co/resource/4mnf-va5w.json",
+    "parametros": {
+      "$select": "count(*) as registros"
+    },
+    "consulta_utc": "2026-10-23T17:53:52.059549+00:00",
+    "http": 403,
+    "url_final": "https://www.datos.gov.co/resource/4mnf-va5w.json?%24select=count%28%2A%29+as+registros",
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 84,
+    "sha256": "bff22ff692c74d42095bc3a006b8ee5ca234ebcd475e3c050219c435ed45d2a4",
+    "archivo": "bridge/53_evidencias_descarga/fiscalia_api_victimas.json",
+    "respuesta_resumen": {
+      "error": true,
+      "message": "You must be logged in to access this resource"
+    }
+  },
+  {
+    "clave": "fiscalia_metadata_actuaciones",
+    "url_solicitada": "https://www.datos.gov.co/api/views/9pc4-8nib.json",
+    "parametros": null,
+    "consulta_utc": "2026-10-23T17:53:52.060304+00:00",
+    "http": 403,
+    "url_final": "https://www.datos.gov.co/api/views/9pc4-8nib.json",
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 122,
+    "sha256": "15b13d53e71cdff38c6207c3ad841af745fb85723f5e736cecf3b305a4e2a7df",
+    "archivo": "bridge/53_evidencias_descarga/fiscalia_metadata_actuaciones.json",
+    "respuesta_resumen": {
+      "code": "authentication_required",
+      "error": true,
+      "message": "You must be logged in to access this resource"
+    }
+  },
+  {
+    "clave": "fiscalia_api_actuaciones",
+    "url_solicitada": "https://www.datos.gov.co/resource/9pc4-8nib.json",
+    "parametros": {
+      "$select": "count(*) as registros"
+    },
+    "consulta_utc": "2026-10-23T17:53:52.282878+00:00",
+    "http": 403,
+    "url_final": "https://www.datos.gov.co/resource/9pc4-8nib.json?%24select=count%28%2A%29+as+registros",
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 84,
+    "sha256": "bff22ff692c74d42095bc3a006b8ee5ca234ebcd475e3c050219c435ed45d2a4",
+    "archivo": "bridge/53_evidencias_descarga/fiscalia_api_actuaciones.json",
+    "respuesta_resumen": {
+      "error": true,
+      "message": "You must be logged in to access this resource"
+    }
+  },
+  {
+    "clave": "metadata_72sg_cybi_reintento",
+    "url_solicitada": "https://www.datos.gov.co/api/views/72sg-cybi.json",
+    "parametros": null,
+    "consulta_utc": "2026-10-23T17:53:52.296424+00:00",
+    "http": 200,
+    "url_final": "https://www.datos.gov.co/api/views/72sg-cybi.json",
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 18556,
+    "sha256": "4f83c8b5f7f52dfa7155eb0bbc639020f1e0b280a1605c3096ca08fd32ed7349",
+    "archivo": "bridge/53_evidencias_descarga/metadata_72sg_cybi_reintento.json"
+  },
+  {
+    "clave": "irv_cartagena_2025",
+    "url_solicitada": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer/15/query",
+    "parametros": {
+      "f": "json",
+      "where": "MPIO_CCDGO='13001'",
+      "outFields": "MPIO_CCDGO,MPIO_CNMBR,IRV_NESTIMADO,IRV_CCLUSTER,IRV_CYEAR",
+      "returnGeometry": "false"
+    },
+    "consulta_utc": "2026-10-23T17:53:52.306477+00:00",
+    "http": 200,
+    "url_final": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer/15/query?f=json&where=MPIO_CCDGO%3D%2713001%27&outFields=MPIO_CCDGO%2CMPIO_CNMBR%2CIRV_NESTIMADO%2CIRV_CCLUSTER%2CIRV_CYEAR&returnGeometry=false",
+    "content_type": "application/json; charset=UTF-8",
+    "bytes": 773,
+    "sha256": "89569a795cabc6bdbb512220399493479d7e534555683d0a534291318516c72c",
+    "archivo": "bridge/53_evidencias_descarga/irv_cartagena_2025.json",
+    "features": [
+      {
+        "attributes": {
+          "MPIO_CCDGO": "13001",
+          "MPIO_CNMBR": "Cartagena de Indias",
+          "IRV_NESTIMADO": 0.1345797,
+          "IRV_CCLUSTER": "Medio Bajo",
+          "IRV_CYEAR": "2025"
+        }
+      }
+    ],
+    "error_servicio": null
+  }
+]

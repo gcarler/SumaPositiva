@@ -1,0 +1,26 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_identidad_completa.py",
+    "backend/tests/test_identidad_y_permisos.py",
+    "backend/tests/test_sesion_anonima.py",
+    "backend/tests/test_magic_link.py",
+    "backend/tests/test_cierre06_mfa_totp.py",
+    "backend/tests/test_control_fases_y_oauth.py",
+    "backend/tests/test_access_policy.py",
+    "backend/tests/test_transactions.py",
+    "backend/tests/test_transactions_integration.py",
+    "backend/tests/test_transaction_policy.py",
+    "-q",
+    "--junitxml=bridge/169_evidencia_eaf_identidad/pytest-identidad-transacciones.xml"
+  ],
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "codigo_salida": 0,
+  "duracion_segundos": 95.779,
+  "fecha_utc": "2026-10-26T04:04:09.533515+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

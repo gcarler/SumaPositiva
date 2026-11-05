@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fasistencia\u002F[mesaId]","\u002Ff\u002F[slug]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

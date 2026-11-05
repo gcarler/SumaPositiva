@@ -1,0 +1,32 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "CATALOGO_FORMULADO_NO_ACREDITA_EJECUCION_NI_CLASIFICACION_7D",
+  "base_origen": "polis_test",
+  "cobertura_sql": {
+    "P": {
+      "metas": 0,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.catalogo_planeacion.v1",
+  "estado_publicacion": "no_publicable",
+  "metas": [],
+  "nodos": [
+    {
+      "codigo": "NODO",
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "0ebe04fa-edda-48fc-b0a7-6c4ad5e1cbba",
+      "metadatos": {},
+      "nivel": "PLAN",
+      "nombre": "Nodo comparado",
+      "orden": 1,
+      "parent_id": null,
+      "ppi_anual_cop": {
+        "nulo": null,
+        "texto": "1",
+        "valor": 1
+      }
+    }
+  ]
+}

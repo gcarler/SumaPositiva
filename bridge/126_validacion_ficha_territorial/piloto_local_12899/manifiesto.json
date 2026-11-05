@@ -1,0 +1,12 @@
+{
+  "artefactos_sha256": {
+    "ficha.json": "a065470bef67cff2b1bf0550f5cfda7a96cdb73f27bce1fd0661b526f5d7345e"
+  },
+  "esquema": "polis.ficha_territorial.manifiesto.v1",
+  "estado_ficha": "ficha_territorial_provisional_pendiente_validacion_semantica",
+  "sha256_parser": "5dcb93a2d1238bffa8a72636a0257c2b4df4dd46d46d2ddcff84edcf992192bc",
+  "sin_promocion_banco": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "version_ficha": "ficha_territorial.v1"
+}

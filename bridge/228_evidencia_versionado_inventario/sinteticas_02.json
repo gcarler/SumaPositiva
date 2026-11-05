@@ -1,0 +1,11 @@
+{
+  "comando": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 backend/.venv/bin/python -B -m pytest --noconftest -p no:cacheprovider backend/tests/test_inventario_fuentes_polis.py -k 'not test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales and not test_inventario_no_declara_drive_como_fuente_institucional and not test_inventario_publicado_coincide_con_archivos_actuales' --basetemp /root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02 --junitxml /root/polis/bridge/228_evidencia_versionado_inventario/sinteticas_02.xml -q",
+  "cwd": "/root/polis",
+  "inicio_utc": "2026-10-26T06:44:11.091Z",
+  "chunk_id": "59b656",
+  "wall_time_seconds": 0.926760469,
+  "exit_code": 0,
+  "original_token_count": 29,
+  "output": "....................................                                     [100%]\n36 passed, 3 deselected in 0.79s\n",
+  "fin_utc": "2026-10-26T06:44:12.215Z"
+}

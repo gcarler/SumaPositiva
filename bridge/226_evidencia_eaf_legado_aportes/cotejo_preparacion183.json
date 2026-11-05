@@ -1,0 +1,15 @@
+{
+  "phase": "preparaci\u00f3n sin se\u00f1al",
+  "source183_count": 20,
+  "changed": {
+    "backend/app/modules/aportes/schemas.py": {
+      "183": "b1cd3eb43a06fa8426b1d480814347cf8ff21c1d83358e5d62b5558ad077a82d",
+      "actual": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1"
+    },
+    "backend/app/modules/aportes/service.py": {
+      "183": "66a3406f719a2128f0e70ed8c872482c141bdcb3e784924d1c516e74be8fe78c",
+      "actual": "2a413c9d53d3a8fdb5c9dc4170655e5cf45ef8a251ed2688d227da3785469244"
+    }
+  },
+  "0084": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5"
+}

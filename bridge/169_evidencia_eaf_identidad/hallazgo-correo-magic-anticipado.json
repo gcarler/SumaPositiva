@@ -1,0 +1,14 @@
+{
+  "http_solicitud": 200,
+  "estado_desde_conexion_nueva": [
+    {
+      "id": "01a1766d-e602-77a2-bc01-9b4a45f37f82",
+      "verificado": true,
+      "enviado": false,
+      "consumido": false,
+      "proposito": "magic_link"
+    }
+  ],
+  "correo_real_enviado": false,
+  "esperado": "correo_verificado_en permanece NULL hasta consumir enlace"
+}

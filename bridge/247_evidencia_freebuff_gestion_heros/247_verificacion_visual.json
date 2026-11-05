@@ -1,0 +1,46 @@
+[
+  {
+    "ancho": 320,
+    "anchoDocumento": 320,
+    "anchoCuerpo": 320,
+    "tema": "light",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  },
+  {
+    "ancho": 1440,
+    "anchoDocumento": 1440,
+    "anchoCuerpo": 1440,
+    "tema": "light",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  },
+  {
+    "ancho": 320,
+    "anchoDocumento": 320,
+    "anchoCuerpo": 320,
+    "tema": "dark",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  },
+  {
+    "ancho": 1440,
+    "anchoDocumento": 1440,
+    "anchoCuerpo": 1440,
+    "tema": "dark",
+    "formulario": true,
+    "tituloConservado": true,
+    "imagenesEnBiblioteca": 6,
+    "desbordes": [],
+    "errores": []
+  }
+]

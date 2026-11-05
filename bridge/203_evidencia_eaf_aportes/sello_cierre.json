@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-26T06:04:13.619833+00:00",
+  "report_sha256": "34e841385f91493364271f08e5f20ecbb78f44ffe04f6fdec64b30173b33f2bc",
+  "manifest_sha256": "d5a70b07e0a6e66a8ba50ec33f011cee3bc17db8f3edce9bb168820d4dc1c7bf",
+  "snapshot_final_sha256": "8c11afb1f79be4597aaeede4b9c9c149c062317e876718908854fc341b9d38a6",
+  "artifact_count_in_manifest": 87,
+  "0084_sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+  "status": "BLOQUEADO_AP03_R01",
+  "frozen": true
+}

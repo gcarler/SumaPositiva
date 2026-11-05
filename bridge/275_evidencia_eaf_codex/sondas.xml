@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="12" failures="0" skipped="0" tests="12" time="13.269" timestamp="2026-11-02T03:37:01.334935+00:00" hostname="srv2006133"><testcase classname="test_sondas_eaf_275" name="test_contrato_permisos_sesiones_reales_y_revocacion" time="0.068"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_exito_auditado_desde_otra_conexion" time="0.048"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_rollback_real[auditoria_flush]" time="0.045"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_rollback_real[commit]" time="0.043"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_rollback_real[cancelacion]" time="0.045"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_rollback_real[validacion]" time="0.054"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_reintento_concurrente_solo_un_actor_confirma" time="0.053"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_latido_falla_sql_y_entrega_posterior_continua" time="0.055"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_antiguedad_usa_pendiente_mas_antiguo" time="0.052"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_resumen_07h_incluye_todas_las_acciones_ultimas_24h" time="0.047"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_resumen_posterior_07h_no_desaparece_en_ambos_dias" time="0.062"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase><testcase classname="test_sondas_eaf_275" name="test_idempotencia_concurrente_diez_invocaciones" time="0.051"><error message="failed on setup with &quot;sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation &quot;participacion_ciudadana.herald_latido&quot; does not exist&#10;[SQL: DELETE FROM participacion_ciudadana.herald_latido]&#10;(Background on this error at: https://sqlalche.me/e/20/f405)&quot;">/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:526: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:773: in _prepare
+    prepared_stmt = await self._connection.prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:638: in prepare
+    return await self._prepare(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:657: in _prepare
+    stmt = await self._get_statement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/asyncpg/connection.py:443: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg/protocol/protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedTableError: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+
+The above exception was the direct cause of the following exception:
+../../test_sondas_eaf_275.py:54: in sessions
+    await conn.execute(text("DELETE FROM participacion_ciudadana.herald_latido"))
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py:659: in execute
+    result = await greenlet_spawn(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1421: in execute
+    return meth(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1643: in _execute_clauseelement
+    ret = self._execute_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1848: in _execute_context
+    return self._exec_single_context(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1988: in _exec_single_context
+    self._handle_dbapi_exception(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2365: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1969: in _exec_single_context
+    self.dialect.do_execute(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:952: in do_execute
+    cursor.execute(statement, parameters)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:585: in execute
+    self._adapt_connection.await_(
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:563: in _prepare_and_execute
+    self._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:513: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+/root/polis/backend/.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py:797: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) &lt;class 'asyncpg.exceptions.UndefinedTableError'&gt;: relation "participacion_ciudadana.herald_latido" does not exist
+E   [SQL: DELETE FROM participacion_ciudadana.herald_latido]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)</error></testcase></testsuite></testsuites>

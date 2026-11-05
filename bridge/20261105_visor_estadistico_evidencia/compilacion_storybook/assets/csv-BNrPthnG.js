@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BcKkbAw3.js";function t(e){if(e==null)return`""`;let t=String(e).replace(/"/g,`""`);return/^[\s]*[=+\-@\t\r]/.test(t)&&(t=`'${t}`),`"${t}"`}var n;function r(){return(r=e((()=>{n=t})))()}export{r as n,t as r,n as t};

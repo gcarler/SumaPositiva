@@ -1,0 +1,26 @@
+--- antes/backend/app/modules/identidad/mfa.py
++++ despues/backend/app/modules/identidad/mfa.py
+@@ -12,6 +12,23 @@
+ from cryptography.fernet import Fernet
+ 
+ from app.core.config import Settings
++
++
++def rol_exige_mfa(codigo_rol: str, settings: Settings) -> bool:
++    roles = {rol.strip().lower() for rol in (settings.mfa_roles_exigidos or "").split(",") if rol.strip()}
++    return codigo_rol.lower() in roles
++
++
++def acreditacion_sesion_mfa(factor, sesion_id, settings: Settings) -> str:
++    """Acreditación del servidor ligada a cuenta, sesión y versión del factor.
++
++    Cambiar el secreto, reactivar o sustituir el factor invalida la acreditación.
++    Ni los claims del JWT ni los metadatos de una sesión anónima la conceden.
++    """
++    contenido = ":".join(
++        [str(factor.usuario_id), str(sesion_id), str(factor.id), str(factor.activado_en), factor.secreto_cifrado]
++    )
++    return hmac.new(settings.ip_salt.encode(), contenido.encode(), hashlib.sha256).hexdigest()
+ 
+ 
+ def obtener_cifrador_mfa(settings: Settings) -> Fernet:

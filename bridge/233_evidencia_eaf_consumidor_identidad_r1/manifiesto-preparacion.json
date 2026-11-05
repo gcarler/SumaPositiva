@@ -1,0 +1,123 @@
+{
+  "fecha_utc": "2026-10-26T06:48:25.461307+00:00",
+  "estado": "PREPARACION_SELLADA_SIN_ACEPTACION_PRODUCTO",
+  "nota": "Copias selladas de preparación. Los archivos de trabajo233 podrán evolucionar tras la señal sin atribuirles los resultados previos.",
+  "archivos": [
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/base.json",
+      "sha256": "8ce1f16cdc27939eb01929ff2e87792ccc3c3acd6765ac720a7d1f258ed01793",
+      "bytes": 476
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos-preparados.md",
+      "sha256": "509368eae51322b57cc53204339227676fc757432bd01ef2912fdb48a671128d",
+      "bytes": 6595
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos211/contrastar_propio.mjs",
+      "sha256": "4610cf2b62110cd03220908eb542687d93a03022b79a60d34d6188134eacdfff",
+      "bytes": 2553
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos211/db_control.py",
+      "sha256": "530df06611832b9b364c7618df8d82cf9a13310f614c3a3918961f863f71a606",
+      "bytes": 3144
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos211/navegador-r1.mjs",
+      "sha256": "9e16ad2a39abdd2eddf5f32675275608815110aeb31c5cfac1a2e0bf180d286e",
+      "bytes": 24102
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos211/navegador.mjs",
+      "sha256": "2bd414d6767998d6a356eb36ae62869cc2fece71f2335ddb14f42ac7cf51b4ec",
+      "bytes": 25069
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/casos211/serve_api.py",
+      "sha256": "bcb3416b8f47f4843a5a49ce25e7b466534067430a3b4423fd23fdb0c1360501",
+      "bytes": 1356
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/conexiones_rechazadas.jsonl",
+      "sha256": "e6575b833c3981ef6a9af8f468ecf25071239b9ff0dec0f1fed555a17e4ffc5a",
+      "bytes": 1426
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/cotejo-originales211-preparacion.json",
+      "sha256": "89a603e074750654e7c3a58354387e930e1dbfbf31cc740c98747dfe0a83c757",
+      "bytes": 24006
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/ejecutar.py",
+      "sha256": "ccff05badb5421651e7bcce0c053909765d2cdf4d899d0370cb110700107650d",
+      "bytes": 7938
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/estado-preparacion.json",
+      "sha256": "b8ea2ef83360342d53941d601292597e11399454ad6fd672607f2f2db428fc43",
+      "bytes": 1170
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/guard/sitecustomize.py",
+      "sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+      "bytes": 5708
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/guard_node.cjs",
+      "sha256": "4d6085debd64d52e11c37b522c485b0aeffe0f560f2011d94f74ae8c4190333f",
+      "bytes": 3573
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/guardas-node.json",
+      "sha256": "bb68323c7b46e279c95763f07e1fd4fcfa43ce1b641d12ba676c519a2d7be910",
+      "bytes": 363
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/guardas_verificadas_v2.json",
+      "sha256": "66153024ee0710c07cf40cb20e64495b2cdd8949be72aaf259027d3e58048bb4",
+      "bytes": 735
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/informe-preparacion.md",
+      "sha256": "3deee1b6bc0b76543ff8765396098ed43c209c270a74e7f9b8d8986cec88496f",
+      "bytes": 3219
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/preparacion-guardas-node.json",
+      "sha256": "285a4c0625b7dc33ef6b41efb9225cf355c57d2162f4ef88532dd37eb8cbc005",
+      "bytes": 396
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/preparacion-guardas-node.log",
+      "sha256": "a99500893a6f9aa95cea76e065968b1569100630bead325d6838c192595cd3d3",
+      "bytes": 15
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/preparacion-guardas-python.json",
+      "sha256": "578c770d7cec4f35808c9416ef57b15ca7f569ddbd170c8e1ab8759de5f95457",
+      "bytes": 430
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/preparacion-guardas-python.log",
+      "sha256": "5b46689632216c19a114947720999740179f2b1031f66a44fef0cf1c47f389eb",
+      "bytes": 657
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/probar_guardas.py",
+      "sha256": "35f6aa293c2e90b79538a908b342399961af7fe836bf55b14521ca2bcb81e79a",
+      "bytes": 3854
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/probar_node.mjs",
+      "sha256": "5412ae7819cb380be9ff7b0d8ca1c3e97b70aa4d0b56da2c5b0fcfcd961a9e94",
+      "bytes": 1081
+    },
+    {
+      "archivo": "bridge/233_evidencia_eaf_consumidor_identidad_r1/preparacion_sellada/snapshot-preparacion.json",
+      "sha256": "85ca5407af1c493f8c353903ffd7ad02a0619dc4419437f6a13d51ee27d89969",
+      "bytes": 1850
+    }
+  ],
+  "cantidad": 23
+}

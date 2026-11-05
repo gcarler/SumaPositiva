@@ -1,0 +1,182 @@
+[
+  {
+    "id": null,
+    "codigo": "UCG-09",
+    "id_propiedad": "01a14fa7-7508-7621-a945-533661176bec",
+    "nombre": "UCG 9 — Histórica y del Caribe Norte (Amberes, Armenia, Barrio Chino)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-10",
+    "id_propiedad": "01a14fa7-7517-702f-985e-786a43e09f75",
+    "nombre": "UCG 10 — Histórica y del Caribe Norte (Alto Bosque, Altos De San Isidro, Bosquecito)"
+  },
+  {
+    "id": null,
+    "codigo": "DISTRITO-CTG",
+    "id_propiedad": "01a0f5dd-538e-7900-afb0-68db850f2153",
+    "nombre": "Distrito Turístico y Cultural de Cartagena de Indias"
+  },
+  {
+    "id": null,
+    "codigo": "LOC-3",
+    "id_propiedad": "01a0f5dd-5391-786c-9f9c-ded0e6dbb0e2",
+    "nombre": "Localidad 3: Industrial y de la Bahía"
+  },
+  {
+    "id": null,
+    "codigo": "LOC-2",
+    "id_propiedad": "01a0f5dd-5391-760c-96f0-d919dd88e7c6",
+    "nombre": "Localidad 2: De la Virgen y Turística"
+  },
+  {
+    "id": null,
+    "codigo": "LOC-1",
+    "id_propiedad": "01a0f5dd-5391-7c5d-b29f-c020e56d7adf",
+    "nombre": "Localidad 1: Histórica y del Caribe Norte"
+  },
+  {
+    "id": null,
+    "codigo": "CORR-BOQUILLA",
+    "id_propiedad": "01a0f5dd-5392-79e4-b09a-1d1f26e7712f",
+    "nombre": "La Boquilla"
+  },
+  {
+    "id": null,
+    "codigo": "CORR-PASACABALLOS",
+    "id_propiedad": "01a0f5dd-5393-7a90-9e85-76997d5fdd4c",
+    "nombre": "Pasacaballos"
+  },
+  {
+    "id": null,
+    "codigo": "CORR-BAYUNCA",
+    "id_propiedad": "01a0f5dd-5393-7fc0-b083-fa4b8c52cc18",
+    "nombre": "Bayunca"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-12",
+    "id_propiedad": "01a14fa7-7522-747f-b09c-5045653f989a",
+    "nombre": "UCG 12 — Industrial y de la Bahía (Almirante Colon, Blas De Lezo, El Campestre)"
+  },
+  {
+    "id": null,
+    "codigo": "BARRIO-CENTRO",
+    "id_propiedad": "01a0f5dd-5395-72f4-88ab-c3d1f39baa6c",
+    "nombre": "Centro Histórico y San Diego"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-01",
+    "id_propiedad": "01a14fa7-74c6-7701-97fe-642d973234ee",
+    "nombre": "UCG 1 — Histórica y del Caribe Norte (Bocagrande, Castillogrande, Centro)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-02",
+    "id_propiedad": "01a14fa7-74e0-7e95-a460-aff8914a50eb",
+    "nombre": "UCG 2 — Histórica y del Caribe Norte (Cerro De La Popa, Espinal, La Paz)"
+  },
+  {
+    "id": null,
+    "codigo": "INS-ROSARIO",
+    "id_propiedad": "01a0f5dd-5393-755a-8f47-7f1a74f95ae3",
+    "nombre": "Archipiélago de Nuestra Señora del Rosario"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-03",
+    "id_propiedad": "01a14fa7-74e2-764d-993a-cdec54698934",
+    "nombre": "UCG 3 — Histórica y del Caribe Norte (Canapote, Daniel Lemaitre, San Bernardo)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-11",
+    "id_propiedad": "01a14fa7-7519-7502-8059-153c8a1fe8b9",
+    "nombre": "UCG 11 — Industrial y de la Bahía (Albornoz, Antonio Jose De Sucre, Arroz Barato)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-13",
+    "id_propiedad": "01a14fa7-7529-7a9a-998f-094c2f072474",
+    "nombre": "UCG 13 — Industrial y de la Bahía (Anita, El Recreo, La Concepcion)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-14",
+    "id_propiedad": "01a14fa7-752a-795f-90d3-4172ca8c8cd1",
+    "nombre": "UCG 14 — Industrial y de la Bahía (Alameda La Victoria, Camilo Torres, Cesar Florez)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-05",
+    "id_propiedad": "01a14fa7-74e5-778d-940b-abe4f41facde",
+    "nombre": "UCG 5 — De la Virgen y Turística (Chiquinquira, Olaya St. Central, Olaya St. Rafael Nuñez)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-06",
+    "id_propiedad": "01a14fa7-74ea-7d19-927a-68379717f2b7",
+    "nombre": "UCG 6 — De la Virgen y Turística (El Pozon, Fredonia, Flor Del Campo)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-07",
+    "id_propiedad": "01a14fa7-74ef-7d4c-8fe3-77faf314486b",
+    "nombre": "UCG 7 — De la Virgen y Turística (Chapacua, Chipre, El Gallo)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-15",
+    "id_propiedad": "01a14fa7-752c-7d08-816c-a037d1749a6b",
+    "nombre": "UCG 15 — Industrial y de la Bahía (El Educador, El Reposo, Henequen)"
+  },
+  {
+    "id": null,
+    "codigo": "BARRIO-GETSEMANI",
+    "id_propiedad": "01a0f5dd-5395-703a-b8ed-f5150954087f",
+    "nombre": "Getsemaní"
+  },
+  {
+    "id": null,
+    "codigo": "BARRIO-MANDELA",
+    "id_propiedad": "01a0f5dd-5395-7ec2-ace1-a713ddc32ce9",
+    "nombre": "Nelson Mandela"
+  },
+  {
+    "id": null,
+    "codigo": "BARRIO-OLAYA",
+    "id_propiedad": "01a0f5dd-5394-71d5-b6dc-52e3a9690f90",
+    "nombre": "Olaya Herrera (Todos los sectores)"
+  },
+  {
+    "id": null,
+    "codigo": "BARRIO-POZON",
+    "id_propiedad": "01a0f5dd-5395-7395-8dd6-c057908e293b",
+    "nombre": "El Pozón"
+  },
+  {
+    "id": null,
+    "codigo": "INS-BARU",
+    "id_propiedad": "01a0f5dd-5393-77af-b2f5-96ea12961d85",
+    "nombre": "Isla de Barú"
+  },
+  {
+    "id": null,
+    "codigo": "INS-TIERRABOMBA",
+    "id_propiedad": "01a0f5dd-5393-7f9a-ad8d-7c466f379695",
+    "nombre": "Isla de Tierra Bomba (Bocachica / Caño del Oro / Punta Arena)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-08",
+    "id_propiedad": "01a14fa7-74f3-7498-9140-f64802566cc7",
+    "nombre": "UCG 8 — Histórica y del Caribe Norte (Buenos Aires, Calamares, Camaguey)"
+  },
+  {
+    "id": null,
+    "codigo": "UCG-04",
+    "id_propiedad": "01a14fa7-74e4-7615-93af-4cac1bcff1f1",
+    "nombre": "UCG 4 — De la Virgen y Turística (Alcibia, Boston, La Candelaria)"
+  }
+]

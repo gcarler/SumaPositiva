@@ -1,0 +1,14 @@
+{
+  "usuario_id": "01a1766d-d9e3-74ab-814f-52eb2b1e8da1",
+  "login_previo_mfa": true,
+  "http_reinicio_sin_contrasena_ni_totp": 200,
+  "http_login_despues": 200,
+  "login_posterior_mfa": false,
+  "login_posterior_emitio_token": true,
+  "estado_desde_conexion_nueva": {
+    "activo": false,
+    "activado_en": null,
+    "codigos": 0
+  },
+  "esperado": "Preservar el factor activo y exigir reautenticación para sustituirlo"
+}

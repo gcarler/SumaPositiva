@@ -1,0 +1,10 @@
+[
+  {
+    "path": "bridge/128_catalogo_identidad_territorial/catalogo_identidad_territorial.json",
+    "sha256": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc"
+  },
+  {
+    "path": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+    "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+  }
+]

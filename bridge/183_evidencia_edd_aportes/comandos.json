@@ -1,0 +1,122 @@
+[
+  {
+    "log": "bridge/183_evidencia_edd_aportes/00_bootstrap.log",
+    "comando": "Bootstrap local registrado en script/manifest de base; sin DSN en evidencia",
+    "exit_code": null
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/01_upgrade_vacio.log",
+    "comando": "$ uv run --project backend alembic -c backend/alembic.ini upgrade head",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/02_atomicidad.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/03_alembic_check.log",
+    "comando": "$ uv run --project backend alembic -c backend/alembic.ini check",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/04_regresiones_aportes.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py -q",
+    "exit_code": 1
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/05_regresiones_completas.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py backend/tests/test_whatsapp_remediacion.py backend/tests/test_canal_whatsapp.py backend/tests/test_notificaciones_y_radicacion.py -q",
+    "exit_code": 1
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/06_suites_dirigidas.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py backend/tests/test_whatsapp_remediacion.py backend/tests/test_aportes.py backend/tests/test_apoyos_unicos.py backend/tests/test_apoyos_voto.py backend/tests/test_devolucion_razones.py backend/tests/test_enfoque_etnico.py backend/tests/test_notificaciones_y_radicacion.py backend/tests/test_canal_whatsapp.py backend/tests/test_transactions.py backend/tests/test_transactions_integration.py backend/tests/test_transaction_policy.py backend/tests/test_access_policy.py -q",
+    "exit_code": 1
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/07_bootstrap_base_final.log",
+    "comando": "Bootstrap local registrado en script/manifest de base; sin DSN en evidencia",
+    "exit_code": null
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/08_migraciones_roundtrip.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/verificar_migraciones.py",
+    "exit_code": 1
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/09_migraciones_roundtrip.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/verificar_migraciones.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/10_suites_dirigidas_finales.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py backend/tests/test_whatsapp_remediacion.py backend/tests/test_aportes.py backend/tests/test_apoyos_unicos.py backend/tests/test_apoyos_voto.py backend/tests/test_devolucion_razones.py backend/tests/test_enfoque_etnico.py backend/tests/test_notificaciones_y_radicacion.py backend/tests/test_canal_whatsapp.py backend/tests/test_transactions.py backend/tests/test_transactions_integration.py backend/tests/test_transaction_policy.py backend/tests/test_access_policy.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/11_bootstrap_migraciones_global.log",
+    "comando": "Bootstrap local registrado en script/manifest de base; sin DSN en evidencia",
+    "exit_code": null
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/12_guardas_finales.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/probar_guardas.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/13_backend_check_global.log",
+    "comando": "$ bun run backend:check",
+    "exit_code": 143
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/14_control_posterior13.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/control_posterior13.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/15_cli_inbox.log",
+    "comando": "$ uv run --project backend python -m scripts.procesar_colas_aportes inbox --limite 3",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/16_cli_outbox.log",
+    "comando": "$ uv run --project backend python -m scripts.procesar_colas_aportes outbox --limite 2",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/17_entorno_final.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/recoger_entorno.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/18_backend_check_global_aislado.log",
+    "comando": "$ bun run backend:check",
+    "exit_code": 1
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/19_contacto_legado_final.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/verificar_contacto_legado.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/20_dirigidas_snapshot_final.log",
+    "comando": "$ uv run --project backend pytest backend/tests/test_aportes_remediacion.py backend/tests/test_whatsapp_remediacion.py backend/tests/test_aportes.py backend/tests/test_apoyos_unicos.py backend/tests/test_apoyos_voto.py backend/tests/test_devolucion_razones.py backend/tests/test_enfoque_etnico.py backend/tests/test_notificaciones_y_radicacion.py backend/tests/test_canal_whatsapp.py backend/tests/test_transactions.py backend/tests/test_transactions_integration.py backend/tests/test_transaction_policy.py backend/tests/test_access_policy.py bridge/183_evidencia_edd_aportes/test_http_y_visibilidad_outbox.py -q",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/21_migraciones_snapshot_final.log",
+    "comando": "$ uv run --project backend python bridge/183_evidencia_edd_aportes/verificar_migraciones_finales.py",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/22_ruff_snapshot_final.log",
+    "comando": "$ uv run --project backend ruff check backend",
+    "exit_code": 0
+  },
+  {
+    "log": "bridge/183_evidencia_edd_aportes/23_formato_snapshot_final.log",
+    "comando": "$ uv run --project backend ruff format --check backend",
+    "exit_code": 0
+  }
+]

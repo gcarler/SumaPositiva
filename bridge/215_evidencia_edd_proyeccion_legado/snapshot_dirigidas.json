@@ -1,0 +1,8 @@
+{
+  "momento": "durante corrida06; ninguna fuente propia editada desde inicio05",
+  "fuentes": {
+    "backend/app/modules/aportes/schemas.py": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1",
+    "backend/app/modules/aportes/service.py": "2a413c9d53d3a8fdb5c9dc4170655e5cf45ef8a251ed2688d227da3785469244",
+    "backend/tests/test_aportes_legado_publico.py": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753"
+  }
+}

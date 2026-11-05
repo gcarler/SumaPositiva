@@ -1,0 +1,33 @@
+[
+  {
+    "label": "formato",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "format",
+      "/root/polis/data/banco_fuentes_oficiales/adquirir_policia_portal.py",
+      "/root/polis/data/banco_fuentes_oficiales/procesar_portal_policia.py",
+      "/root/polis/data/banco_fuentes_oficiales/cotejar_portal_policia.py",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/promover_banco.py",
+      "/root/polis/backend/app/modules/compromisos/taxonomia_7d_polis.py"
+    ],
+    "returncode": 0,
+    "log": "formato.log"
+  },
+  {
+    "label": "ruff",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "--config",
+      "/root/polis/backend/pyproject.toml",
+      "/root/polis/data/banco_fuentes_oficiales/adquirir_policia_portal.py",
+      "/root/polis/data/banco_fuentes_oficiales/procesar_portal_policia.py",
+      "/root/polis/data/banco_fuentes_oficiales/cotejar_portal_policia.py",
+      "/root/polis/bridge/20261105_cotejo_policia_evidencia/promover_banco.py",
+      "/root/polis/backend/app/modules/compromisos/taxonomia_7d_polis.py"
+    ],
+    "returncode": 0,
+    "log": "ruff.log"
+  }
+]

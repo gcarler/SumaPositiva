@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="10.728" timestamp="2026-10-27T11:33:15.471286+00:00" hostname="srv2006133"><testcase classname="tests.test_presupuesto_e_indicadores" name="test_indicadores_cadena_valor_y_avance" time="1.326"><failure message="RuntimeError: EDD243 fallo deliberado despues de primera medicion confirmada">backend/tests/test_presupuesto_e_indicadores.py:193: in test_indicadores_cadena_valor_y_avance
+    resp_med1 = sync_client.post(
+bridge/243_evidencia_edd_aislamiento_regresiones/fallos_controlados.py:45: in post
+    raise RuntimeError('EDD243 fallo deliberado despues de primera medicion confirmada')
+E   RuntimeError: EDD243 fallo deliberado despues de primera medicion confirmada</failure></testcase><testcase classname="tests.test_ingesta_indicadores" name="test_catalogo_fichas_con_mediciones_reales" time="0.655" /><testcase classname="tests.test_ingesta_indicadores" name="test_cadena_valor_indicadores_activa" time="0.234" /></testsuite></testsuites>

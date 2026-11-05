@@ -1,0 +1,12 @@
+{
+  "comando": [
+    "backend/.venv/bin/python",
+    "bridge/203_evidencia_eaf_aportes/verificacion_final.py"
+  ],
+  "database": "polis_test_eaf_aportes_r2_20261026_cb6a2bfe",
+  "codigo_salida": 0,
+  "duracion_segundos": 18.071,
+  "fecha_utc": "2026-10-26T06:00:33.260249+00:00",
+  "guarda_sha256": "704053e21fe70c8de4aed238343082eca531311c51d59bcd69400821eb2012e8",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

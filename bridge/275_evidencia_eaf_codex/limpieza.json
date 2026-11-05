@@ -1,0 +1,12 @@
+{
+  "utc": "2026-11-02T04:01:36.548939+00:00",
+  "bases_eliminadas": [
+    "polis_test_eaf_275_codex",
+    "polis_test_eaf_275_codex_mig",
+    "polis_test_eaf_275_codex_probes"
+  ],
+  "rol_eliminado": "polis_eaf_275_codex",
+  "residuos": "",
+  "credencial_privada_eliminada": true,
+  "bd_csh": "sin conexiones ni cambios"
+}

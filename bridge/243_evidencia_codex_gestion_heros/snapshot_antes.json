@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-27T11:22:31.182264+00:00",
+  "sha256": {
+    "src/features/politicas/state/hero-store.ts": "f29b8bd0919bbce62055e82e25bca551930aa99486eb06c3cffd4b83e26becd9",
+    "src/features/politicas/state/hero-store.test.ts": "b4f9b29c3e4ad68d7ae925841e9522324da51a02646d4c4601ffa59ccd5fa4e7",
+    "src/features/politicas/components/hero-home-showcase.tsx": "1270d8a2a4f4794a5492f21c50f72da1d156cb6e5fde3ee497aa21f0c6e46783",
+    "src/features/politicas/components/hero-home-showcase.test.tsx": "7070a42894ddd9e1e02f5765cde0ca22d8c4981372395100baec054ae3ba6843",
+    "src/features/politicas/components/hero-page-banner.tsx": "055bfa162742b6b963e15ee1ff6c8bb6808d545649d01c62d12bc49d4b11b581",
+    "src/features/politicas/components/hero-page-banner.test.tsx": "604cfd7894cc1a6112bb355d2606d966ee96a094cea4c9ff56e5248828e5a66c",
+    "src/features/plataforma/components/gestor-heros-plataforma.tsx": "f8070f7c91196ea290c595bf1daa1866d377bac3a6700b9cc6782fb9210199e9",
+    "src/features/plataforma/components/gestor-heros-plataforma.test.tsx": "fa181bfe890655b2db3443f048c72017c5ab2004769e7cb42b444903be5637a0"
+  }
+}

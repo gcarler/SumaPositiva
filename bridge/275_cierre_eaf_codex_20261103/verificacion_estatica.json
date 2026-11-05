@@ -1,0 +1,45 @@
+[
+  {
+    "label": "formato_sello",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "format",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/sellar_cierre.py"
+    ],
+    "utc": "2026-11-03T10:54:09.534962+00:00",
+    "returncode": 0,
+    "log": "formato_sello.log"
+  },
+  {
+    "label": "ruff_check",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "--config",
+      "/root/polis/backend/pyproject.toml",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/verificar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/sellar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_monitor_reinspeccion.py"
+    ],
+    "utc": "2026-11-03T10:54:09.556078+00:00",
+    "returncode": 0,
+    "log": "ruff_check.log"
+  },
+  {
+    "label": "ruff_format_check",
+    "argv": [
+      "/root/polis/backend/.venv/bin/ruff",
+      "format",
+      "--check",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/verificar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/sellar_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_http_canales_cierre.py",
+      "/root/polis/bridge/275_cierre_eaf_codex_20261103/test_monitor_reinspeccion.py"
+    ],
+    "utc": "2026-11-03T10:54:09.573793+00:00",
+    "returncode": 0,
+    "log": "ruff_format_check.log"
+  }
+]

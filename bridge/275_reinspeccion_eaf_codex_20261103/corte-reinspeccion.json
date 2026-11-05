@@ -1,0 +1,23 @@
+{
+  "label": "corte-reinspeccion",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/test_corte_reinspeccion.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/corte.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/.runtime/snapshot",
+  "start_utc": "2026-11-03T10:16:25.218377+00:00",
+  "seconds": 20.183,
+  "returncode": 0,
+  "log": "corte-reinspeccion.log",
+  "databases": [
+    "polis_test_eaf_275_r2_20261103_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

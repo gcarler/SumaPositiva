@@ -1,0 +1,7 @@
+{
+  "base": "polis_test_eaf_identidad_20261026_3e460a6d73",
+  "dsn_sin_credenciales": "postgresql+asyncpg://127.0.0.1:5432/polis_test_eaf_identidad_20261026_3e460a6d73",
+  "provision_utc": "2026-10-26T04:00:37.150702+00:00",
+  "credenciales": "Existentes, solo memoria; no se modificaron roles ni servicios",
+  "vacia": true
+}

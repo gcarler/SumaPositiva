@@ -1,0 +1,114 @@
+{
+  "auditoria_principal": [],
+  "fichas": [
+    {
+      "id": "01a17d1c-e766-7a28-84e4-2c04df60e8ff",
+      "codigo": "IND-INS-01",
+      "nombre": "Presupuesto FONSET asignado a programas de convivencia",
+      "creado_en": "2026-10-27T11:26:48.678096+00:00",
+      "metadatos": {
+        "fuente_oficial": "CHIP - Secretaría de Hacienda Distrital",
+        "tiene_mediciones": true,
+        "certificacion_eaf": "2026-10-11T04:22:00Z",
+        "periodo_ultimo_reporte": "2024-ANUAL",
+        "fecha_corte_ultimo_reporte": "2024-12-31"
+      },
+      "definicion": "Total de recursos FONSET destinados",
+      "dimension_id": null,
+      "fuente_datos": "CHIP - Secretaría de Hacienda Distrital",
+      "periodicidad": "Anual",
+      "valor_actual": 2180000000.0,
+      "unidad_medida": "Pesos",
+      "actualizado_en": "2026-10-27T11:26:49.275212+00:00",
+      "metodo_calculo": "(Presupuesto FONSET apropiado para programas MGA)",
+      "tipo_indicador": "insumo",
+      "linea_base_anio": 2023,
+      "meta_anualizada": {},
+      "meta_cuatrienio": 4000000000.0,
+      "linea_base_valor": 1000000000.0,
+      "sentido_esperado": "ascendente",
+      "porcentaje_avance": 39.33,
+      "nodo_instrumento_id": null,
+      "responsable_reporte": "Secretaría de Hacienda",
+      "linea_estrategica_id": null
+    },
+    {
+      "id": "01a17d1c-e767-7992-a44a-4263e9b0ce51",
+      "codigo": "IND-RES-01",
+      "nombre": "Tasa de Homicidios por cada 100.000 habitantes",
+      "creado_en": "2026-10-27T11:26:48.678642+00:00",
+      "metadatos": {
+        "fuente_oficial": "Medicina Legal / Policía MECAR",
+        "tiene_mediciones": true,
+        "certificacion_eaf": "2026-10-11T04:22:00Z",
+        "periodo_ultimo_reporte": "2024-ANUAL",
+        "fecha_corte_ultimo_reporte": "2024-12-31"
+      },
+      "definicion": "Impacto en la reducción de muertes violentas",
+      "dimension_id": null,
+      "fuente_datos": "Medicina Legal / Policía MECAR",
+      "periodicidad": "Mensual",
+      "valor_actual": 29.8,
+      "unidad_medida": "Tasa",
+      "actualizado_en": "2026-10-27T11:26:49.288837+00:00",
+      "metodo_calculo": "(Número de homicidios / Población DANE) * 100.000",
+      "tipo_indicador": "resultado",
+      "linea_base_anio": 2023,
+      "meta_anualizada": {},
+      "meta_cuatrienio": 25.0,
+      "linea_base_valor": 32.5,
+      "sentido_esperado": "descendente",
+      "porcentaje_avance": 36.0,
+      "nodo_instrumento_id": null,
+      "responsable_reporte": "Observatorio del Delito",
+      "linea_estrategica_id": null
+    }
+  ],
+  "mediciones": [
+    {
+      "id": "01a17d1c-e9b8-7e66-8253-a6ceb956dc73",
+      "periodo": "2024-ANUAL",
+      "creado_en": "2026-10-27T11:26:49.272192+00:00",
+      "fecha_corte": "2024-12-31",
+      "indicador_id": "01a17d1c-e766-7a28-84e4-2c04df60e8ff",
+      "valor_medido": 2180000000.0,
+      "observaciones": "Ejecución presupuestal acumulada vigencia 2024 del Fondo Cuenta Territorial de Seguridad y Convivencia Ciudadana (FONSET). Recursos orientados a planes de convivencia y prevención del delito en las 3 localidades de Cartagena.",
+      "actualizado_en": "2026-10-27T11:26:49.272192+00:00",
+      "registrado_por": "Secretaría de Planeación Distrital - Observatorio del Delito / EAF",
+      "es_demostracion": false,
+      "avance_acumulado": 39.33,
+      "evidencia_documental_url": "https://www.cartagena.gov.co/transparencia/presupuesto/fonset-2024"
+    },
+    {
+      "id": "01a17d1c-e9c8-7bf6-b8ab-b49591f490c4",
+      "periodo": "2024-ANUAL",
+      "creado_en": "2026-10-27T11:26:49.288197+00:00",
+      "fecha_corte": "2024-12-31",
+      "indicador_id": "01a17d1c-e767-7992-a44a-4263e9b0ce51",
+      "valor_medido": 29.8,
+      "observaciones": "Tasa distrital de muertes violentas por homicidio por 100.000 habitantes. Consolidado anual verificado por el Observatorio del Delito del Distrito de Cartagena de Indias.",
+      "actualizado_en": "2026-10-27T11:26:49.288197+00:00",
+      "registrado_por": "Secretaría de Planeación Distrital - Observatorio del Delito / EAF",
+      "es_demostracion": false,
+      "avance_acumulado": 36.0,
+      "evidencia_documental_url": "https://www.medicinalegal.gov.co/forensis-cartagena-2024"
+    }
+  ],
+  "esquemas_privados": [],
+  "triggers_principal": [
+    {
+      "activo": "O",
+      "nombre": "trg_inmutabilidad_auditoria",
+      "definicion": "CREATE TRIGGER trg_inmutabilidad_auditoria BEFORE DELETE OR UPDATE ON auditoria.registros_auditoria FOR EACH ROW EXECUTE FUNCTION auditoria.prevenir_modificacion_auditoria()"
+    }
+  ],
+  "database": "polis_test_edd_aislamiento_20261027_despues_74fa3566",
+  "pid": 3540937,
+  "sha256": {
+    "auditoria_principal": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "fichas": "83f244f45ebbd803d1d4f3c1bf38bf552f3157be99bc98223001334af37a074a",
+    "mediciones": "95622241ebdc45c7c1703f3ffcab72099fd7a4d0ce3db4a82804a38a96562c5e",
+    "esquemas_privados": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "triggers_principal": "437182936021a32e6877defb94b5ce06c9b0adf7a5bf00dd1edf4ead7971481b"
+  }
+}

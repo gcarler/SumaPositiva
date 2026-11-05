@@ -1,0 +1,28 @@
+{
+  "sha256": {
+    "docs/permisos-api.md": "8782c05d8f692d87e67091f9ef4d62a4f8c6d4821d2151d37e84dc110d698f2a",
+    "docs/operacion.md": "c0e6feddb7339b3980dd82c5a728ab8764e3a1cd0fd6622daca70bee58b2582f",
+    "docs/transacciones.md": "09eee0b157c39b57b8c729a9c8cc7da545c73b4ccc27f58a55ee2ecf4ed5f834",
+    "docs/identidad.md": "a38cb758b63aab6353834ae41621d8621ade7ee054a8a03c7497ced91f707f3f",
+    "docs/arquitectura.md": "ca6219cbccf40fa87e8df4fa6d2edc89b09c97cd9466c146144288b1369e7000",
+    "docs/equipo_auditores_forenses.md": "eb9e74c67eda8edcb89468e4aed3ac1ae6644ecffaccbc8d6b9eb34b4901d6a7",
+    "AGENTS.md": "bd414aab2de7546998246ea724270838f375830b18b8855be8fb5d93a428ece3",
+    ".agents/skills/polis-eaf-transactions/SKILL.md": "d997c2b0506f934e6a9c0bdddeb5ded6af02f78718b8abf4e8c07d3734cca97b"
+  },
+  "reviewed_contracts": [
+    "intención y aporte atómicos; transporte tras claim confirmado",
+    "HMAC cuerpo crudo; inbox durable distinto de radicación",
+    "simulado con fecha propia; no entrega real",
+    "at least once y duplicados tras aceptación/caída",
+    "scheduler y proveedores por configurar, no acreditados por CLI",
+    "principal estable y permisos actuales",
+    "extensiones y conciliación previa; downgrade condicionado; segunda DB",
+    "texto libre declarado permanece público; JSON privado no amplía salida"
+  ],
+  "assessment": "Documentos coherentes con contratos principales comprobados; no describen ni resuelven HTTP500 de JSON legado irregular R01.",
+  "limits": [
+    "No activación de scheduler, Meta o SMTP",
+    "No validación UI/frontend",
+    "No autorización global ni jurídica"
+  ]
+}

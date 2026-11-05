@@ -1,0 +1,32 @@
+{
+  "fuente": "bridge/149_casos_coordinacion_ficha_r2.json",
+  "casos": [
+    {
+      "caso": "omitir_hallazgo_duplicado_manteniendo_dos_observaciones",
+      "estado": "rechazado",
+      "detalle": "Duplicados no coinciden con contenido"
+    },
+    {
+      "caso": "orden_compartido_observacion_y_excluida",
+      "estado": "rechazado",
+      "detalle": "Ordenes de fila duplicados entre disposiciones"
+    },
+    {
+      "caso": "dos_observaciones_distinto_id_mismo_orden",
+      "estado": "rechazado",
+      "detalle": "Ordenes de fila duplicados entre disposiciones"
+    },
+    {
+      "caso": "identidad_parcial_sin_codigo_entidad_con_catalogo",
+      "estado": "aceptado",
+      "identidad_resolucion": true,
+      "pendiente_divipola": "Identidad DIVIPOLA pendiente de verificacion oficial; codigo_entidad_ausente"
+    },
+    {
+      "caso": "nivel_departamental_explicito",
+      "estado": "verificado",
+      "nivel_resolucion": "departamental",
+      "estado_resolucion": "encontrado"
+    }
+  ]
+}

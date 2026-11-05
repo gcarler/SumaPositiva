@@ -1,0 +1,5 @@
+{
+  "fecha_utc": "2026-10-26T06:53:25.604577+00:00",
+  "resultado": "fallo del comprobador de coordinación",
+  "causa": "Se resolvieron erróneamente nombres relativos del manifiesto contra raíz del repo; se corrige a directorio padre del manifiesto. No defecto de la entrega."
+}

@@ -1,0 +1,21 @@
+{
+  "existente": true,
+  "fallo": "post_flush",
+  "excepcion": "RuntimeError",
+  "pid_antes": 2888830,
+  "pid_despues": 2888833,
+  "estado_antes_sha256": "1f9755b3513fbc564c9f9d17d1b545d0da972fc32309c294452bc5b98851be4c",
+  "estado_despues_sha256": "1f9755b3513fbc564c9f9d17d1b545d0da972fc32309c294452bc5b98851be4c",
+  "igualdad_completa": true,
+  "conteos_despues": {
+    "usuario": 1,
+    "sesiones": 1,
+    "civicas": 1,
+    "tokens": 0,
+    "eventos": 2,
+    "mfa": 0
+  },
+  "filas_restriccion_commit": null,
+  "sesion_utilizable": true,
+  "eventos_consultados_por_uuid_sin_depender_de_usuario_existente": true
+}

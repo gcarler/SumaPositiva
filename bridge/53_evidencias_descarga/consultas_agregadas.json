@@ -1,0 +1,316 @@
+[
+  {
+    "clave": "medicina_homicidios_filas_por_anio",
+    "url_solicitada": "https://www.datos.gov.co/resource/vtub-3de2.json",
+    "parametros": {
+      "$select": "a_o_del_hecho,count(*) as filas",
+      "$where": "codigo_dane_municipio='13001'",
+      "$group": "a_o_del_hecho",
+      "$order": "a_o_del_hecho",
+      "$limit": 100
+    },
+    "consulta_utc": "2026-10-23T17:54:53.514321+00:00",
+    "http": 200,
+    "url_final": "https://www.datos.gov.co/resource/vtub-3de2.json?%24select=a_o_del_hecho%2Ccount%28%2A%29+as+filas&%24where=codigo_dane_municipio%3D%2713001%27&%24group=a_o_del_hecho&%24order=a_o_del_hecho&%24limit=100",
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 401,
+    "sha256": "e1e977fcddec9b1562b2ee0b4401436c48c412b453cca548234d55e413c3e4af",
+    "archivo": "bridge/53_evidencias_descarga/medicina_homicidios_filas_por_anio.json",
+    "respuesta": [
+      {
+        "a_o_del_hecho": "2015",
+        "filas": "290"
+      },
+      {
+        "a_o_del_hecho": "2016",
+        "filas": "258"
+      },
+      {
+        "a_o_del_hecho": "2017",
+        "filas": "265"
+      },
+      {
+        "a_o_del_hecho": "2018",
+        "filas": "230"
+      },
+      {
+        "a_o_del_hecho": "2019",
+        "filas": "197"
+      },
+      {
+        "a_o_del_hecho": "2020",
+        "filas": "233"
+      },
+      {
+        "a_o_del_hecho": "2021",
+        "filas": "245"
+      },
+      {
+        "a_o_del_hecho": "2022",
+        "filas": "393"
+      },
+      {
+        "a_o_del_hecho": "2023",
+        "filas": "427"
+      },
+      {
+        "a_o_del_hecho": "2024",
+        "filas": "411"
+      }
+    ]
+  },
+  {
+    "clave": "icbf_rpc_filas_por_anio",
+    "url_solicitada": "https://www.datos.gov.co/resource/v9qk-hdcc.json",
+    "parametros": {
+      "$select": "anno_vigencia,count(*) as filas",
+      "$where": "divipola_municipio='13001'",
+      "$group": "anno_vigencia",
+      "$order": "anno_vigencia",
+      "$limit": 100
+    },
+    "consulta_utc": "2026-10-23T17:54:53.515018+00:00",
+    "http": 200,
+    "url_final": "https://www.datos.gov.co/resource/v9qk-hdcc.json?%24select=anno_vigencia%2Ccount%28%2A%29+as+filas&%24where=divipola_municipio%3D%2713001%27&%24group=anno_vigencia&%24order=anno_vigencia&%24limit=100",
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 273,
+    "sha256": "45d660be5dfccb889f648112f6c056fab73a1ad22f4e6de4a45c833b334bc357",
+    "archivo": "bridge/53_evidencias_descarga/icbf_rpc_filas_por_anio.json",
+    "respuesta": [
+      {
+        "anno_vigencia": "2017",
+        "filas": "7"
+      },
+      {
+        "anno_vigencia": "2018",
+        "filas": "41"
+      },
+      {
+        "anno_vigencia": "2019",
+        "filas": "50"
+      },
+      {
+        "anno_vigencia": "2020",
+        "filas": "48"
+      },
+      {
+        "anno_vigencia": "2021",
+        "filas": "50"
+      },
+      {
+        "anno_vigencia": "2022",
+        "filas": "19"
+      },
+      {
+        "anno_vigencia": "2023",
+        "filas": "15"
+      }
+    ]
+  },
+  {
+    "clave": "indemnizaciones_cartagena",
+    "url_solicitada": "https://vgv.unidadvictimas.gov.co/server/rest/services/UARIV/Indemnizaciones/MapServer/1/query",
+    "parametros": {
+      "f": "json",
+      "where": "MPIO_CCDGO='13001'",
+      "outFields": "MPIO_CCDGO,MPIO_CNMBR,VIGENCIA,GIROS,PERSONAS,VALOR",
+      "returnGeometry": "false",
+      "resultRecordCount": 100
+    },
+    "consulta_utc": "2026-10-23T17:54:53.515771+00:00",
+    "http": 200,
+    "url_final": "https://vgv.unidadvictimas.gov.co/server/rest/services/UARIV/Indemnizaciones/MapServer/1/query?f=json&where=MPIO_CCDGO%3D%2713001%27&outFields=MPIO_CCDGO%2CMPIO_CNMBR%2CVIGENCIA%2CGIROS%2CPERSONAS%2CVALOR&returnGeometry=false&resultRecordCount=100",
+    "content_type": "application/json; charset=UTF-8",
+    "bytes": 2574,
+    "sha256": "d1272707edb0175de4d437647889858d9bb72ae770479848eeeb028654e522e6",
+    "archivo": "bridge/53_evidencias_descarga/indemnizaciones_cartagena.json",
+    "respuesta": {
+      "displayFieldName": "DPTO_CCDGO",
+      "fieldAliases": {
+        "MPIO_CCDGO": "Código CMunicipio",
+        "MPIO_CNMBR": "Municipio",
+        "VIGENCIA": "VIGENCIA",
+        "GIROS": "GIROS REALIZADOS",
+        "PERSONAS": "PERSONAS ATENDIDAS",
+        "VALOR": "VALOR GIRADO"
+      },
+      "fields": [
+        {
+          "name": "MPIO_CCDGO",
+          "type": "esriFieldTypeString",
+          "alias": "Código CMunicipio",
+          "length": 5
+        },
+        {
+          "name": "MPIO_CNMBR",
+          "type": "esriFieldTypeString",
+          "alias": "Municipio",
+          "length": 100
+        },
+        {
+          "name": "VIGENCIA",
+          "type": "esriFieldTypeString",
+          "alias": "VIGENCIA",
+          "length": 10
+        },
+        {
+          "name": "GIROS",
+          "type": "esriFieldTypeDouble",
+          "alias": "GIROS REALIZADOS"
+        },
+        {
+          "name": "PERSONAS",
+          "type": "esriFieldTypeDouble",
+          "alias": "PERSONAS ATENDIDAS"
+        },
+        {
+          "name": "VALOR",
+          "type": "esriFieldTypeDouble",
+          "alias": "VALOR GIRADO"
+        }
+      ],
+      "features": [
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2019",
+            "GIROS": 1014,
+            "PERSONAS": 961,
+            "VALOR": 8670
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2022",
+            "GIROS": 1231,
+            "PERSONAS": 1158,
+            "VALOR": 13483
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2013",
+            "GIROS": 633,
+            "PERSONAS": 565,
+            "VALOR": 4597
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2020",
+            "GIROS": 1551,
+            "PERSONAS": 1438,
+            "VALOR": 12553
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2014",
+            "GIROS": 982,
+            "PERSONAS": 969,
+            "VALOR": 5294
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2017",
+            "GIROS": 1937,
+            "PERSONAS": 1876,
+            "VALOR": 14999
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2021",
+            "GIROS": 1496,
+            "PERSONAS": 1398,
+            "VALOR": 12207
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2016",
+            "GIROS": 784,
+            "PERSONAS": 777,
+            "VALOR": 5928
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2024",
+            "GIROS": 367,
+            "PERSONAS": 316,
+            "VALOR": 3794
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2009-2011",
+            "GIROS": 1271,
+            "PERSONAS": 1246,
+            "VALOR": 7978
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2023",
+            "GIROS": 1451,
+            "PERSONAS": 1282,
+            "VALOR": 12984
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2012",
+            "GIROS": 1697,
+            "PERSONAS": 1530,
+            "VALOR": 25159
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2015",
+            "GIROS": 892,
+            "PERSONAS": 850,
+            "VALOR": 4753
+          }
+        },
+        {
+          "attributes": {
+            "MPIO_CCDGO": "13001",
+            "MPIO_CNMBR": "Cartagena de Indias",
+            "VIGENCIA": "2018",
+            "GIROS": 1480,
+            "PERSONAS": 1446,
+            "VALOR": 9881
+          }
+        }
+      ]
+    }
+  }
+]

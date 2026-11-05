@@ -1,0 +1,973 @@
+{
+  "id" : "crxh-as6c",
+  "name" : "PUNTOS DISTRIBUCIÓN BIENESTARINA ICBF",
+  "assetType" : "dataset",
+  "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+  "attributionLink" : "https://www.icbf.gov.co/",
+  "averageRating" : 0,
+  "category" : "Inclusión Social y Reconciliación",
+  "createdAt" : 1574977581,
+  "description" : "Este conjunto de datos contiene la relación de los puntos de distribución de bienestarina y sus datos de ubicación y contacto para el corte de información más reciente.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 49752,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 37388076,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1625237175,
+  "publicationGroup" : 16732826,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1752792594,
+  "rowsUpdatedBy" : "gk4s-qz54",
+  "tableId" : 18373948,
+  "totalTimesRated" : 0,
+  "viewCount" : 55802,
+  "viewLastModified" : 1779124691,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1575046926,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 3781823,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1575046926,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1575046926,
+      "failureCount" : 0,
+      "startedAt" : 1575046926,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "vdxn-ik82",
+      "displayName" : "ICBF"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 543793428,
+    "name" : "Año",
+    "dataTypeName" : "number",
+    "description" : "Año de operación del punto de distribución.",
+    "fieldName" : "anno",
+    "position" : 1,
+    "renderTypeName" : "number",
+    "tableColumnId" : 91442986,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "2023",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2020",
+        "count" : "4724"
+      }, {
+        "item" : "2019",
+        "count" : "4532"
+      }, {
+        "item" : "2022",
+        "count" : "4392"
+      }, {
+        "item" : "2023",
+        "count" : "4188"
+      }, {
+        "item" : "2021",
+        "count" : "4129"
+      } ],
+      "smallest" : "2019",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : {
+      "noCommas" : "true",
+      "align" : "center"
+    }
+  }, {
+    "id" : 543793429,
+    "name" : "Codigo Regional",
+    "dataTypeName" : "text",
+    "description" : "Código de la Regional donde opera el punto de distribución. La Regional corresponde a una división administrativa del ICBF en función de la División Político Administrativa del País.",
+    "fieldName" : "codigo_regional",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442985,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11",
+        "count" : "2800"
+      }, {
+        "item" : "13",
+        "count" : "1981"
+      }, {
+        "item" : "5",
+        "count" : "1768"
+      }, {
+        "item" : "76",
+        "count" : "1403"
+      }, {
+        "item" : "47",
+        "count" : "1292"
+      }, {
+        "item" : "8",
+        "count" : "1224"
+      }, {
+        "item" : "54",
+        "count" : "1129"
+      }, {
+        "item" : "20",
+        "count" : "1043"
+      }, {
+        "item" : "15",
+        "count" : "894"
+      }, {
+        "item" : "68",
+        "count" : "831"
+      }, {
+        "item" : "19",
+        "count" : "786"
+      }, {
+        "item" : "25",
+        "count" : "765"
+      }, {
+        "item" : "41",
+        "count" : "646"
+      }, {
+        "item" : "73",
+        "count" : "617"
+      }, {
+        "item" : "27",
+        "count" : "596"
+      }, {
+        "item" : "44",
+        "count" : "543"
+      }, {
+        "item" : "50",
+        "count" : "538"
+      }, {
+        "item" : "23",
+        "count" : "535"
+      }, {
+        "item" : "70",
+        "count" : "453"
+      }, {
+        "item" : "17",
+        "count" : "419"
+      } ],
+      "smallest" : "11",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793430,
+    "name" : "Regional",
+    "dataTypeName" : "text",
+    "description" : "La Regional corresponde a una división administrativa del ICBF en función de la División Político Administrativa del País.",
+    "fieldName" : "regional",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442992,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "BOGOTA",
+        "count" : "2800"
+      }, {
+        "item" : "BOLIVAR",
+        "count" : "1981"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "1768"
+      }, {
+        "item" : "VALLE DEL CAUCA",
+        "count" : "1403"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "1292"
+      }, {
+        "item" : "ATLANTICO",
+        "count" : "1224"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "1129"
+      }, {
+        "item" : "CESAR",
+        "count" : "1043"
+      }, {
+        "item" : "BOYACA",
+        "count" : "894"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "831"
+      }, {
+        "item" : "CAUCA",
+        "count" : "786"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "765"
+      }, {
+        "item" : "HUILA",
+        "count" : "646"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "617"
+      }, {
+        "item" : "CHOCO",
+        "count" : "596"
+      }, {
+        "item" : "LA GUAJIRA",
+        "count" : "543"
+      }, {
+        "item" : "META",
+        "count" : "538"
+      }, {
+        "item" : "CORDOBA",
+        "count" : "535"
+      }, {
+        "item" : "SUCRE",
+        "count" : "453"
+      }, {
+        "item" : "CALDAS",
+        "count" : "419"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793431,
+    "name" : "Centro Zonal",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Centro Zonal donde opera el punto de distribución. El Centro Zonal corresponde a las unidades de atención que se crean a nivel municipal, distrital y local para la prestación de los servicios del ICBF.",
+    "fieldName" : "centro_zonal",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442991,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "VILLAVICENCIO 2",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CZ VALLEDUPAR 1",
+        "count" : "420"
+      }, {
+        "item" : "CZ INTEGRAL NORORIENTAL",
+        "count" : "415"
+      }, {
+        "item" : "CZ DE LA VIRGEN Y TURISTICO",
+        "count" : "404"
+      }, {
+        "item" : "CZ CIUDAD BOLIVAR",
+        "count" : "397"
+      }, {
+        "item" : "CZ CIENAGA",
+        "count" : "391"
+      }, {
+        "item" : "CZ HISTORICO Y DEL CARIBE NORTE",
+        "count" : "385"
+      }, {
+        "item" : "CZ NORTE",
+        "count" : "380"
+      }, {
+        "item" : "CZ INTEGRAL NOROCCIDENTAL",
+        "count" : "327"
+      }, {
+        "item" : "CZ INDUSTRIAL DE LA BAHIA",
+        "count" : "312"
+      }, {
+        "item" : "CZ TUNJA 1",
+        "count" : "295"
+      }, {
+        "item" : "CZ CUCUTA 1",
+        "count" : "256"
+      }, {
+        "item" : "CZ SAN CRISTOBAL SUR",
+        "count" : "251"
+      }, {
+        "item" : "CZ ENGATIVA",
+        "count" : "242"
+      }, {
+        "item" : "CZ HIPODROMO",
+        "count" : "240"
+      }, {
+        "item" : "CZ RAFAEL URIBE",
+        "count" : "235"
+      }, {
+        "item" : "CZ BOSA",
+        "count" : "230"
+      }, {
+        "item" : "CZ CUCUTA 3",
+        "count" : "230"
+      }, {
+        "item" : "CZ NEIVA",
+        "count" : "227"
+      }, {
+        "item" : "CZ CHIRIGUANA",
+        "count" : "224"
+      }, {
+        "item" : "CZ TURBACO",
+        "count" : "222"
+      } ],
+      "smallest" : "AGUSTIN CODAZZI",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793432,
+    "name" : "Código DANE Municipio",
+    "dataTypeName" : "text",
+    "description" : "Código DANE del Municipio dónde opera el punto de distribución.",
+    "fieldName" : "codigo_dane_municipio",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442979,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "99773",
+      "null" : "0",
+      "top" : [ {
+        "item" : "5001",
+        "count" : "1093"
+      }, {
+        "item" : "13001",
+        "count" : "1016"
+      }, {
+        "item" : "54001",
+        "count" : "495"
+      }, {
+        "item" : "76001",
+        "count" : "488"
+      }, {
+        "item" : "8001",
+        "count" : "479"
+      }, {
+        "item" : "47001",
+        "count" : "410"
+      }, {
+        "item" : "11019",
+        "count" : "400"
+      }, {
+        "item" : "20001",
+        "count" : "376"
+      }, {
+        "item" : "11008",
+        "count" : "301"
+      }, {
+        "item" : "41001",
+        "count" : "283"
+      }, {
+        "item" : "11004",
+        "count" : "262"
+      }, {
+        "item" : "11010",
+        "count" : "260"
+      }, {
+        "item" : "11011",
+        "count" : "237"
+      }, {
+        "item" : "11018",
+        "count" : "236"
+      }, {
+        "item" : "11007",
+        "count" : "227"
+      }, {
+        "item" : "76109",
+        "count" : "216"
+      }, {
+        "item" : "70001",
+        "count" : "205"
+      }, {
+        "item" : "50001",
+        "count" : "189"
+      }, {
+        "item" : "47189",
+        "count" : "186"
+      }, {
+        "item" : "73001",
+        "count" : "185"
+      } ],
+      "smallest" : "11001",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793433,
+    "name" : "Municipio",
+    "dataTypeName" : "text",
+    "description" : "Nombre del Municipio dónde opera el punto de distribución.",
+    "fieldName" : "municipio",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442990,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "ZONA BANANERA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "MEDELLÍN",
+        "count" : "1093"
+      }, {
+        "item" : "CARTAGENA DE INDIAS",
+        "count" : "604"
+      }, {
+        "item" : "CALI",
+        "count" : "488"
+      }, {
+        "item" : "BARRANQUILLA",
+        "count" : "477"
+      }, {
+        "item" : "SANTA MARTA",
+        "count" : "410"
+      }, {
+        "item" : "CARTAGENA",
+        "count" : "409"
+      }, {
+        "item" : "CIUDAD BOLIVAR",
+        "count" : "400"
+      }, {
+        "item" : "VALLEDUPAR",
+        "count" : "376"
+      }, {
+        "item" : "KENNEDY",
+        "count" : "301"
+      }, {
+        "item" : "SAN JOSÉ DE CÚCUTA",
+        "count" : "290"
+      }, {
+        "item" : "NEIVA",
+        "count" : "283"
+      }, {
+        "item" : "SAN CRISTOBAL SUR",
+        "count" : "262"
+      }, {
+        "item" : "ENGATIVA",
+        "count" : "260"
+      }, {
+        "item" : "SUBA",
+        "count" : "237"
+      }, {
+        "item" : "RAFAEL URIBE",
+        "count" : "236"
+      }, {
+        "item" : "BOSA",
+        "count" : "227"
+      }, {
+        "item" : "BUENAVENTURA",
+        "count" : "216"
+      }, {
+        "item" : "SINCELEJO",
+        "count" : "205"
+      }, {
+        "item" : "CÚCUTA",
+        "count" : "205"
+      }, {
+        "item" : "VILLAVICENCIO",
+        "count" : "189"
+      } ],
+      "smallest" : "ABEJORRAL",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793434,
+    "name" : "Cod. Punto de Entrega",
+    "dataTypeName" : "text",
+    "description" : "Código de identificación del punto de distribución.",
+    "fieldName" : "cod_punto_de_entrega",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442983,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "99773009",
+      "null" : "0",
+      "top" : [ {
+        "item" : "7301001020",
+        "count" : "6"
+      }, {
+        "item" : "4102770145",
+        "count" : "6"
+      }, {
+        "item" : "4708707280",
+        "count" : "5"
+      }, {
+        "item" : "4104668140",
+        "count" : "5"
+      }, {
+        "item" : "54058200001",
+        "count" : "5"
+      }, {
+        "item" : "76117360010",
+        "count" : "5"
+      }, {
+        "item" : "2004710118",
+        "count" : "5"
+      }, {
+        "item" : "76141090027",
+        "count" : "5"
+      }, {
+        "item" : "1501879001",
+        "count" : "5"
+      }, {
+        "item" : "68040010010",
+        "count" : "5"
+      }, {
+        "item" : "5402001154",
+        "count" : "5"
+      }, {
+        "item" : "2004787139",
+        "count" : "5"
+      }, {
+        "item" : "11000010057",
+        "count" : "5"
+      }, {
+        "item" : "76132460001",
+        "count" : "5"
+      }, {
+        "item" : "1108007080",
+        "count" : "5"
+      }, {
+        "item" : "4101016001",
+        "count" : "5"
+      }, {
+        "item" : "8057700001",
+        "count" : "5"
+      }, {
+        "item" : "8801001015",
+        "count" : "5"
+      }, {
+        "item" : "19010010011",
+        "count" : "5"
+      }, {
+        "item" : "50010010051",
+        "count" : "5"
+      } ],
+      "smallest" : "1010040001",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793435,
+    "name" : "Dirección",
+    "dataTypeName" : "text",
+    "description" : "Dirección del punto de distribución.",
+    "fieldName" : "direccion",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442981,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "YUTO- BARRIO SANTANDER AL FRENTE DE LA EMPRESA  EFICIENTE SE SERVICIOS PÚBLICOS DE YUTO S.A.S",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CABECERA MUNICIPAL",
+        "count" : "36"
+      }, {
+        "item" : "CALLE PRINCIPAL",
+        "count" : "12"
+      }, {
+        "item" : "CL 5 3 14",
+        "count" : "10"
+      }, {
+        "item" : "KR 6 4 15",
+        "count" : "9"
+      }, {
+        "item" : "CL 4 6 07",
+        "count" : "9"
+      }, {
+        "item" : "KR 5 5 36",
+        "count" : "9"
+      }, {
+        "item" : "ALCALDIA MUNICIPAL",
+        "count" : "8"
+      }, {
+        "item" : "CL 3 2 35",
+        "count" : "8"
+      }, {
+        "item" : "CL 6 4 18",
+        "count" : "8"
+      }, {
+        "item" : "KR 4 4 45",
+        "count" : "7"
+      }, {
+        "item" : "CL 3 14 60",
+        "count" : "7"
+      }, {
+        "item" : "KR 50 26 85",
+        "count" : "7"
+      }, {
+        "item" : "CL 1 1 1",
+        "count" : "7"
+      }, {
+        "item" : "CL 7 13 51",
+        "count" : "6"
+      }, {
+        "item" : "CL 161 A 7 B 59",
+        "count" : "6"
+      }, {
+        "item" : "KR 3 1 41",
+        "count" : "6"
+      }, {
+        "item" : "KR 24 35 20",
+        "count" : "6"
+      }, {
+        "item" : "KR 54 44 B 27",
+        "count" : "6"
+      }, {
+        "item" : "TRONCAL DEL CARIBE KM 2 VÍA COROZAL - SINCELEJO BRIGADA DE INFANTERÍA DE MARINA No.1",
+        "count" : "6"
+      }, {
+        "item" : "CL 8 3 36",
+        "count" : "6"
+      } ],
+      "smallest" : "0 0 0 AVENIDA EL ESTUDIANTE INSTALACIONES ICA",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793436,
+    "name" : "Punto de Entrega",
+    "dataTypeName" : "text",
+    "description" : "Nombre del punto de distribución.",
+    "fieldName" : "punto_de_entrega",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442989,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "ZENUFANA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Bodega del Municipio",
+        "count" : "274"
+      }, {
+        "item" : "ALCALDIA",
+        "count" : "67"
+      }, {
+        "item" : "BODEGA DEL MUNICIPIO",
+        "count" : "45"
+      }, {
+        "item" : "ALCALDIA MUNICIPAL",
+        "count" : "35"
+      }, {
+        "item" : "FUERZAS ARMADAS",
+        "count" : "34"
+      }, {
+        "item" : "HOGAR INFANTIL AMIGUITOS",
+        "count" : "17"
+      }, {
+        "item" : "APSEFACOM",
+        "count" : "16"
+      }, {
+        "item" : "CDI NUEVO AMANECER",
+        "count" : "16"
+      }, {
+        "item" : "CRECER EN FAMILIA",
+        "count" : "15"
+      }, {
+        "item" : "Bodega de Alimentos Municipal",
+        "count" : "15"
+      }, {
+        "item" : "HOGAR INFANTIL PILATUNAS",
+        "count" : "15"
+      }, {
+        "item" : "CDI GOTITAS DE AMOR",
+        "count" : "15"
+      }, {
+        "item" : "HOGAR AGRUPADO",
+        "count" : "14"
+      }, {
+        "item" : "FUNDACION HOGARES CLARET",
+        "count" : "14"
+      }, {
+        "item" : "CDI MANITAS CREATIVAS",
+        "count" : "14"
+      }, {
+        "item" : "CDI MI PEQUEÑO MUNDO",
+        "count" : "14"
+      }, {
+        "item" : "Alcaldia Municipal",
+        "count" : "13"
+      }, {
+        "item" : "CDI LAS MARGARITAS",
+        "count" : "12"
+      }, {
+        "item" : "ALDEAS INFANTILES",
+        "count" : "12"
+      }, {
+        "item" : "CDI CASTILLO DE COLORES",
+        "count" : "12"
+      } ],
+      "smallest" : "AATI ALAULAYU APUSHI",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793437,
+    "name" : "Nombre Responsable",
+    "dataTypeName" : "text",
+    "description" : "Nombre del responsable principal del punto de distribución.",
+    "fieldName" : "nombre_responsable",
+    "position" : 10,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442988,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "ZUNILDA AREVALO RODRIGUEZ - 60276060",
+      "null" : "0",
+      "top" : [ {
+        "item" : "NULO NULO NULO NULO - 0",
+        "count" : "10"
+      }, {
+        "item" : "SINDY YOANA ARIZA PUSHAINA - 1121043784",
+        "count" : "7"
+      }, {
+        "item" : "DIANA CAROLINA QUINTANA MARTINEZ - 1129488196",
+        "count" : "6"
+      }, {
+        "item" : "ORLANDO RAFAEL SANTOS CAVADIA - 15612535",
+        "count" : "6"
+      }, {
+        "item" : "AHIXA YAQUELINE CAMPEROS VASQUEZ - 30049799",
+        "count" : "6"
+      }, {
+        "item" : "MARTA LUCIA ZAPATA COLORADO - 38941211",
+        "count" : "6"
+      }, {
+        "item" : "ADALEDIS MARIA MAGDANIEL PERALTA - 40925951",
+        "count" : "6"
+      }, {
+        "item" : "MARIA ALEJANDRA ARANA OQUENDO - 1114880711",
+        "count" : "5"
+      }, {
+        "item" : "MARIA DEL CARMEN NIÑO OMAÑA - 30503745",
+        "count" : "5"
+      }, {
+        "item" : "SOL AYDE HENAO VARGAS - 1128476847",
+        "count" : "5"
+      }, {
+        "item" : "YERLY MARCELA CAICEDO GARZON - 1121857096",
+        "count" : "5"
+      }, {
+        "item" : "MARY RUTH RIVERA BERNAL - 29843330",
+        "count" : "5"
+      }, {
+        "item" : "RUTH EMILCE VELASQUEZ VILLA - 21491536",
+        "count" : "5"
+      }, {
+        "item" : "ORALIA DE JESUS QUICENO JIMENEZ - 26323373",
+        "count" : "5"
+      }, {
+        "item" : "ASTRID CAROLINA SANTANA SANCHEZ - 1128198011",
+        "count" : "5"
+      }, {
+        "item" : "CARMEN CECILIA MORALES PABÓN - 60312529",
+        "count" : "5"
+      }, {
+        "item" : "KATERINE PAOLA TONCEL FERREIRA - 57299946",
+        "count" : "5"
+      }, {
+        "item" : "DORIS MARIA GUTIERREZ SIOSI - 27020569",
+        "count" : "5"
+      }, {
+        "item" : "RUTH VILENA SANDOVAL MARIN - 28262695",
+        "count" : "5"
+      }, {
+        "item" : "CLAUDIA MARCELA BELTRAN RIVERA - 1057784125",
+        "count" : "5"
+      } ],
+      "smallest" : "1109840952 - SANDRA LILIANA YATE",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : { }
+  }, {
+    "id" : 543793438,
+    "name" : "Teléfono",
+    "dataTypeName" : "text",
+    "description" : "Teléfono de contacto del punto de distribución.",
+    "fieldName" : "telefono",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 91442977,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "No tiene",
+      "null" : "0",
+      "top" : [ {
+        "item" : "4377630",
+        "count" : "14"
+      }, {
+        "item" : "3145676841",
+        "count" : "9"
+      }, {
+        "item" : "6745351",
+        "count" : "9"
+      }, {
+        "item" : "3015906936",
+        "count" : "8"
+      }, {
+        "item" : "3114448536",
+        "count" : "6"
+      }, {
+        "item" : "3102606970",
+        "count" : "6"
+      }, {
+        "item" : "3148628595",
+        "count" : "6"
+      }, {
+        "item" : "3015802410",
+        "count" : "6"
+      }, {
+        "item" : "3135726900",
+        "count" : "6"
+      }, {
+        "item" : "3203977786",
+        "count" : "6"
+      }, {
+        "item" : "3153034732",
+        "count" : "6"
+      }, {
+        "item" : "3213429193",
+        "count" : "5"
+      }, {
+        "item" : "3225853321",
+        "count" : "5"
+      }, {
+        "item" : "3205851431",
+        "count" : "5"
+      }, {
+        "item" : "3104535873",
+        "count" : "5"
+      }, {
+        "item" : "3107058500",
+        "count" : "5"
+      }, {
+        "item" : "8480564",
+        "count" : "5"
+      }, {
+        "item" : "3116822045",
+        "count" : "5"
+      }, {
+        "item" : "8720214",
+        "count" : "5"
+      }, {
+        "item" : "3112166928",
+        "count" : "5"
+      } ],
+      "smallest" : "0",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : {
+      "align" : "right"
+    }
+  }, {
+    "id" : 543793440,
+    "name" : "Fecha Corte",
+    "dataTypeName" : "text",
+    "description" : "Fecha de corte de generación de la información del conjunto de datos.",
+    "fieldName" : "fecha_corte",
+    "position" : 12,
+    "renderTypeName" : "text",
+    "tableColumnId" : 138698665,
+    "cachedContents" : {
+      "non_null" : "21965",
+      "largest" : "31/12/2020",
+      "null" : "0",
+      "top" : [ {
+        "item" : "31/12/2020",
+        "count" : "4722"
+      }, {
+        "item" : "31/12/2019",
+        "count" : "4534"
+      }, {
+        "item" : "30/09/2022",
+        "count" : "4392"
+      }, {
+        "item" : "30/06/2023",
+        "count" : "4188"
+      }, {
+        "item" : "30/06/2021",
+        "count" : "4129"
+      } ],
+      "smallest" : "30/06/2021",
+      "count" : "21965",
+      "cardinality" : "21965"
+    },
+    "format" : {
+      "view" : "date_dmy",
+      "align" : "center"
+    }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Igualdad",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    }
+  },
+  "owner" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "gk4s-qz54",
+    "displayName" : "Analítica Institucional ICBF",
+    "screenName" : "Analítica Institucional ICBF",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "icbf", "bienestarina" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

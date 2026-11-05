@@ -1,0 +1,457 @@
+{
+  "tarea": "OL-TERR-ADQ-02-R1",
+  "fecha_utc": "2026-10-26",
+  "hash_parser": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+  "catalogo_sha256": "82a58e467a0bc8f7dd469e5e36ad4d2959669e66c7ca6787815d75d7fd07f6dc",
+  "objetivos": [
+    {
+      "codigo": "13001",
+      "hash_zip": {
+        "codigo": "13001",
+        "zip_ruta": "bridge/161_pilotos_adquisicion_territorial/raw/13001/original.respuesta.bin",
+        "zip_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+        "zip_bytes": 114090,
+        "miembro": "TerriData13001.txt",
+        "txt_sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+        "txt_bytes": 2853390,
+        "crc_valido": true,
+        "cifrado": false,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "encabezado_conforme_13": true
+      },
+      "hash_txt": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+      "identidad_completa_original": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "13",
+          "codigo_entidad": "13001",
+          "nombre_departamento": "BOLÍVAR",
+          "nombre_entidad": "CARTAGENA DE INDIAS",
+          "nivel_territorial": null
+        },
+        "filas_total": 12899,
+        "estado_identidad": {
+          "discordante_declarada": 12899
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12891
+        },
+        "advertencias_frecuentes": {
+          "discordancia_identidad:nombre_departamento": 12899,
+          "discordancia_identidad:nombre_entidad": 12899,
+          "temporalidad_preservada_sin_regla_proveedor": 12891,
+          "sin_valor_declarado": 659,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 12899,
+          "nombre_entidad": 12899
+        },
+        "pares_literal": {
+          "nombre_departamento": [
+            [
+              "Bolívar",
+              "BOLÍVAR"
+            ]
+          ],
+          "nombre_entidad": [
+            [
+              "Cartagena",
+              "CARTAGENA DE INDIAS"
+            ]
+          ]
+        }
+      },
+      "identidad_solo_codigos": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "13",
+          "codigo_entidad": "13001",
+          "nombre_departamento": null,
+          "nombre_entidad": null,
+          "nivel_territorial": null
+        },
+        "filas_total": 12899,
+        "estado_identidad": {
+          "concordante_declarada": 12899
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12891
+        },
+        "advertencias_frecuentes": {
+          "temporalidad_preservada_sin_regla_proveedor": 12891,
+          "sin_valor_declarado": 659,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 0,
+          "nombre_entidad": 0
+        },
+        "pares_literal": {
+          "nombre_departamento": [],
+          "nombre_entidad": []
+        }
+      },
+      "diferencias_con_primera": {
+        "estado_identidad": {
+          "concordante_declarada": 12899
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0
+        }
+      }
+    },
+    {
+      "codigo": "13673",
+      "hash_zip": {
+        "codigo": "13673",
+        "zip_ruta": "bridge/161_pilotos_adquisicion_territorial/raw/13673/original.respuesta.bin",
+        "zip_sha256": "b9e7672d7ae7044181c4b3910d927576e65b1dfc057544e4a7e6f6235711eda2",
+        "zip_bytes": 103394,
+        "miembro": "TerriData13673.txt",
+        "txt_sha256": "e3833026873719aa30aa4aac7afa045a09df3d95ef0009e1553691a12e4176ac",
+        "txt_bytes": 2822512,
+        "crc_valido": true,
+        "cifrado": false,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "encabezado_conforme_13": true
+      },
+      "hash_txt": "e3833026873719aa30aa4aac7afa045a09df3d95ef0009e1553691a12e4176ac",
+      "identidad_completa_original": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "13",
+          "codigo_entidad": "13673",
+          "nombre_departamento": "BOLÍVAR",
+          "nombre_entidad": "SANTA CATALINA",
+          "nivel_territorial": null
+        },
+        "filas_total": 12733,
+        "estado_identidad": {
+          "discordante_declarada": 12733
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12725
+        },
+        "advertencias_frecuentes": {
+          "discordancia_identidad:nombre_departamento": 12733,
+          "discordancia_identidad:nombre_entidad": 12733,
+          "temporalidad_preservada_sin_regla_proveedor": 12725,
+          "sin_valor_declarado": 1331,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 12733,
+          "nombre_entidad": 12733
+        },
+        "pares_literal": {
+          "nombre_departamento": [
+            [
+              "Bolívar",
+              "BOLÍVAR"
+            ]
+          ],
+          "nombre_entidad": [
+            [
+              "Santa Catalina",
+              "SANTA CATALINA"
+            ]
+          ]
+        }
+      },
+      "identidad_solo_codigos": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "13",
+          "codigo_entidad": "13673",
+          "nombre_departamento": null,
+          "nombre_entidad": null,
+          "nivel_territorial": null
+        },
+        "filas_total": 12733,
+        "estado_identidad": {
+          "concordante_declarada": 12733
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12725
+        },
+        "advertencias_frecuentes": {
+          "temporalidad_preservada_sin_regla_proveedor": 12725,
+          "sin_valor_declarado": 1331,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 0,
+          "nombre_entidad": 0
+        },
+        "pares_literal": {
+          "nombre_departamento": [],
+          "nombre_entidad": []
+        }
+      },
+      "diferencias_con_primera": {
+        "estado_identidad": {
+          "concordante_declarada": 12733
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0
+        }
+      }
+    },
+    {
+      "codigo": "23660",
+      "hash_zip": {
+        "codigo": "23660",
+        "zip_ruta": "bridge/161_pilotos_adquisicion_territorial/raw/23660/original.respuesta.bin",
+        "zip_sha256": "0d12c51c43a3f9eefab36006b18e1c9c1595dfc75b1c142da213bfb2ec4a1fc2",
+        "zip_bytes": 108832,
+        "miembro": "TerriData23660.txt",
+        "txt_sha256": "56927d9d4677e61de0a10a54cfeaaee75c33096d6f20a6aef808a17291f54e92",
+        "txt_bytes": 2791867,
+        "crc_valido": true,
+        "cifrado": false,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "encabezado_conforme_13": true
+      },
+      "hash_txt": "56927d9d4677e61de0a10a54cfeaaee75c33096d6f20a6aef808a17291f54e92",
+      "identidad_completa_original": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "23",
+          "codigo_entidad": "23660",
+          "nombre_departamento": "CÓRDOBA",
+          "nombre_entidad": "SAHAGÚN",
+          "nivel_territorial": null
+        },
+        "filas_total": 12885,
+        "estado_identidad": {
+          "discordante_declarada": 12885
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12877
+        },
+        "advertencias_frecuentes": {
+          "discordancia_identidad:nombre_departamento": 12885,
+          "discordancia_identidad:nombre_entidad": 12885,
+          "temporalidad_preservada_sin_regla_proveedor": 12877,
+          "sin_valor_declarado": 1396,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 12885,
+          "nombre_entidad": 12885
+        },
+        "pares_literal": {
+          "nombre_departamento": [
+            [
+              "Córdoba",
+              "CÓRDOBA"
+            ]
+          ],
+          "nombre_entidad": [
+            [
+              "Sahagún",
+              "SAHAGÚN"
+            ]
+          ]
+        }
+      },
+      "identidad_solo_codigos": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "23",
+          "codigo_entidad": "23660",
+          "nombre_departamento": null,
+          "nombre_entidad": null,
+          "nivel_territorial": null
+        },
+        "filas_total": 12885,
+        "estado_identidad": {
+          "concordante_declarada": 12885
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 12877
+        },
+        "advertencias_frecuentes": {
+          "temporalidad_preservada_sin_regla_proveedor": 12877,
+          "sin_valor_declarado": 1396,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 0,
+          "nombre_entidad": 0
+        },
+        "pares_literal": {
+          "nombre_departamento": [],
+          "nombre_entidad": []
+        }
+      },
+      "diferencias_con_primera": {
+        "estado_identidad": {
+          "concordante_declarada": 12885
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0
+        }
+      }
+    },
+    {
+      "codigo": "11001",
+      "hash_zip": {
+        "codigo": "11001",
+        "zip_ruta": "bridge/161_pilotos_adquisicion_territorial/raw/11001/original.respuesta.bin",
+        "zip_sha256": "f2ff0718158884a21f94f021db14bd5f2c638c1a12b1aeb62b2feddbf8501a78",
+        "zip_bytes": 119235,
+        "miembro": "TerriData11001.txt",
+        "txt_sha256": "32d62761d384d93a943e851391f93b5f63ec9afecdaa02fb9e25e95f228e1946",
+        "txt_bytes": 2927313,
+        "crc_valido": true,
+        "cifrado": false,
+        "encabezado_literal": "Código Departamento|Departamento|Código Entidad|Entidad|Dimensión|Subcategoría|Indicador|Dato Numérico|Dato Cualitativo|Año|Mes|Fuente|Unidad de Medida",
+        "errores": [],
+        "encabezado_conforme_13": true
+      },
+      "hash_txt": "32d62761d384d93a943e851391f93b5f63ec9afecdaa02fb9e25e95f228e1946",
+      "identidad_completa_original": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "11",
+          "codigo_entidad": "11001",
+          "nombre_departamento": "BOGOTÁ, D.C.",
+          "nombre_entidad": "BOGOTÁ, D.C.",
+          "nivel_territorial": null
+        },
+        "filas_total": 13410,
+        "estado_identidad": {
+          "discordante_declarada": 13410
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 13402
+        },
+        "advertencias_frecuentes": {
+          "discordancia_identidad:nombre_departamento": 13410,
+          "discordancia_identidad:nombre_entidad": 13410,
+          "temporalidad_preservada_sin_regla_proveedor": 13402,
+          "sin_valor_declarado": 784,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 13410,
+          "nombre_entidad": 13410
+        },
+        "pares_literal": {
+          "nombre_departamento": [
+            [
+              "Bogotá",
+              "BOGOTÁ, D.C."
+            ]
+          ],
+          "nombre_entidad": [
+            [
+              "Bogotá",
+              "BOGOTÁ, D.C."
+            ]
+          ]
+        }
+      },
+      "identidad_solo_codigos": {
+        "fecha_utc": "2026-10-26",
+        "identidad_esperada": {
+          "codigo_departamento": "11",
+          "codigo_entidad": "11001",
+          "nombre_departamento": null,
+          "nombre_entidad": null,
+          "nivel_territorial": null
+        },
+        "filas_total": 13410,
+        "estado_identidad": {
+          "concordante_declarada": 13410
+        },
+        "estado_temporalidad": {
+          "mes_0_sin_regla_proveedor": 8,
+          "declarada_sin_regla_proveedor": 13402
+        },
+        "advertencias_frecuentes": {
+          "temporalidad_preservada_sin_regla_proveedor": 13402,
+          "sin_valor_declarado": 784,
+          "descripcion_general_no_serie_estadistica_automatica": 102,
+          "mes_0_sin_regla_proveedor_acreditada": 8,
+          "campo_obligatorio_vacio": 2
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0,
+          "nombre_departamento": 0,
+          "nombre_entidad": 0
+        },
+        "pares_literal": {
+          "nombre_departamento": [],
+          "nombre_entidad": []
+        }
+      },
+      "diferencias_con_primera": {
+        "estado_identidad": {
+          "concordante_declarada": 13410
+        },
+        "discrepancias_por_campo": {
+          "codigo_departamento": 0,
+          "codigo_entidad": 0
+        }
+      }
+    }
+  ],
+  "limites": {
+    "no_red": true,
+    "no_sql": true,
+    "no_pytest": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_deploy": true,
+    "no_aplicacion_modificada": true,
+    "no_parser_modificado": true,
+    "no_resolver_modificado": true,
+    "no_catalogo_modificado": true,
+    "no_diagnostico_modificado": true
+  }
+}

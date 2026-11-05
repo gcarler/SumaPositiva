@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="40" time="49.997" timestamp="2026-10-26T04:38:27.873350+00:00" hostname="srv2006133"><testcase classname="tests.test_cierre06_mfa_totp" name="test_mfa_utilidades_criptograficas[asyncio]" time="0.120" /><testcase classname="tests.test_cierre06_mfa_totp" name="test_token_desafio_mfa[asyncio]" time="0.004" /><testcase classname="tests.test_cierre06_mfa_totp" name="test_totp_antirreplay_unitario[asyncio]" time="0.002" /><testcase classname="tests.test_cierre06_mfa_totp" name="test_mfa_clave_cifrado_obligatoria[asyncio]" time="0.007" /><testcase classname="tests.test_cierre06_mfa_totp" name="test_flujo_completo_mfa_api" time="2.976" /><testcase classname="tests.test_magic_link" name="test_magic_link_usuario_existente" time="0.982" /><testcase classname="tests.test_magic_link" name="test_magic_link_auto_registro_ciudadano" time="0.636" /><testcase classname="tests.test_magic_link" name="test_magic_link_uso_unico_y_seguridad" time="1.519" /><testcase classname="tests.test_identidad_completa" name="test_login_perfil_y_logout_revoca_en_servidor" time="1.134" /><testcase classname="tests.test_identidad_completa" name="test_sesiones_ajenas_y_cerrar_todas" time="1.729" /><testcase classname="tests.test_identidad_completa" name="test_cambiar_contrasena_revoca_y_exige_actual" time="2.204" /><testcase classname="tests.test_identidad_completa" name="test_verificacion_correo_uso_unico_y_separacion_de_proposito" time="0.932" /><testcase classname="tests.test_identidad_completa" name="test_recuperacion_generica_hash_y_revocacion" time="1.578" /><testcase classname="tests.test_identidad_completa" name="test_cola_correo_retry_y_caducidad" time="1.009" /><testcase classname="tests.test_identidad_completa" name="test_admin_creacion_asignacion_desactivacion_y_ultimo_admin" time="1.815" /><testcase classname="tests.test_identidad_completa" name="test_roles_personalizados_permisos_vigentes_y_proteccion" time="1.599" /><testcase classname="tests.test_identidad_completa" name="test_auditor_consulta_sin_administrar" time="0.947" /><testcase classname="tests.test_identidad_completa" name="test_normalizacion_correo_y_limite_bytes" time="1.039" /><testcase classname="tests.test_identidad_completa" name="test_jwt_caducado_malformado_y_no_persistido" time="0.840" /><testcase classname="tests.test_identidad_completa" name="test_limite_login_persistente_y_smtp_no_configurado" time="0.762" /><testcase classname="tests.test_identidad_completa" name="test_registro_rollback_respuesta_y_evento[asyncio]" time="0.356" /><testcase classname="tests.test_identidad_completa" name="test_desactivacion_revoca_y_no_admite_login" time="2.479" /><testcase classname="tests.test_identidad_completa" name="test_delegacion_no_escalona_a_administrador" time="3.224" /><testcase classname="tests.test_identidad_completa" name="test_correo_sin_secretos_en_eventos_y_append_only" time="1.199" /><testcase classname="tests.test_identidad_completa" name="test_sesion_registrada_participa_en_api_civica" time="0.883" /><testcase classname="tests.test_identidad_completa" name="test_consumo_concurrente_token_solo_una_vez" time="1.082" /><testcase classname="tests.test_identidad_completa" name="test_login_rollback_incluye_sesion_civica_y_evento" time="1.223" /><testcase classname="tests.test_identidad_completa" name="test_configuracion_insegura_no_habilita_identidad_en_produccion" time="0.006" /><testcase classname="tests.test_identidad_completa" name="test_ultimo_administrador_protegido_con_ediciones_concurrentes" time="1.779" /><testcase classname="tests.test_identidad_completa" name="test_cambiar_clave_rollback_conserva_hash_y_sesiones" time="1.683" /><testcase classname="tests.test_identidad_completa" name="test_bootstrap_primer_admin_sin_promover_cuentas" time="0.520" /><testcase classname="tests.test_identidad_completa" name="test_transporte_smtp_tls_y_enlace_en_fragmento" time="0.023" /><testcase classname="tests.test_identidad_y_permisos" name="test_identidad_y_permisos" time="0.861" /><testcase classname="tests.test_control_fases_y_oauth" name="test_oauth_google_funcionario_institucional" time="0.533" /><testcase classname="tests.test_control_fases_y_oauth" name="test_oauth_google_ciudadano_general" time="0.514" /><testcase classname="tests.test_control_fases_y_oauth" name="test_control_fases_dnp_conmutar_web" time="0.659" /><testcase classname="tests.test_control_fases_y_oauth" name="test_auditoria_y_supervision_respaldos" time="1.394"><failure message="RuntimeError: EDD: escritura fuera del directorio de evidencia bloqueada">+ Exception Group Traceback (most recent call last):
+  |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_utils.py", line 107, in create_collapsing_task_group
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 361, in from_call
+    |     result: TResult | None = func()
+    |                              ^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 250, in &lt;lambda&gt;
+    |     lambda: runtest_hook(item=item, **kwds),
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/logging.py", line 865, in pytest_runtest_call
+    |     yield
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/capture.py", line 900, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 53, in run_old_style_hookwrapper
+    |     return result.get_result()
+    |            ^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_result.py", line 103, in get_result
+    |     raise exc.with_traceback(tb)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 38, in run_old_style_hookwrapper
+    |     res = yield
+    |           ^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 53, in run_old_style_hookwrapper
+    |     return result.get_result()
+    |            ^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_result.py", line 103, in get_result
+    |     raise exc.with_traceback(tb)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 38, in run_old_style_hookwrapper
+    |     res = yield
+    |           ^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/skipping.py", line 268, in pytest_runtest_call
+    |     return (yield)
+    |             ^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 184, in pytest_runtest_call
+    |     item.runtest()
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/python.py", line 1707, in runtest
+    |     self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 53, in run_old_style_hookwrapper
+    |     return result.get_result()
+    |            ^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_result.py", line 103, in get_result
+    |     raise exc.with_traceback(tb)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 38, in run_old_style_hookwrapper
+    |     res = yield
+    |           ^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/_pytest/python.py", line 167, in pytest_pyfunc_call
+    |     result = testfunction(**testargs)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/tests/test_control_fases_y_oauth.py", line 162, in test_auditoria_y_supervision_respaldos
+    |     resp_respaldos = client.get("/api/v1/auditoria/respaldos", headers=headers)
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1113, in get
+    |     return self.request(
+    |            ^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 463, in request
+    |     return super().request(
+    |            ^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 797, in request
+    |     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 980, in send
+    |     response = self._send_handling_auth(
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1008, in _send_handling_auth
+    |     response = self._send_handling_redirects(
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1043, in _send_handling_redirects
+    |     response = self._send_single_request(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1076, in _send_single_request
+    |     response = transport.handle_request(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 360, in handle_request
+    |     raise exc
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 357, in handle_request
+    |     portal.call(self.app, scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 340, in call
+    |     return cast(T_Retval, self.start_task_soon(func, *args).result())
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    |     return self.__get_result()
+    |            ^^^^^^^^^^^^^^^^^^^
+    |   File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    |     raise self._exception
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 265, in _call_func
+    |     retval = await retval_or_awaitable
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1215, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 197, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/app/main.py", line 129, in log_request
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 197, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/app/main.py", line 94, in security_headers_and_cookies_middleware
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 91, in __call__
+    |     await self.simple_response(scope, receive, send, request_headers=headers)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 149, in simple_response
+    |     await self.app(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2786, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1817, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2869, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1828, in _handle_selected
+    |     await route.handle(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1817, in handle
+    |     await self.original_router.handle(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2869, in handle
+    |     await included_router._handle_selected(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1843, in _handle_selected
+    |     await original_route.handle(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    |     await effective_context.app(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/root/polis/backend/app/modules/auditoria/router.py", line 79, in obtener_estado_respaldos
+    |     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    |   File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1311, in mkdir
+    |     os.mkdir(self, mode)
+    |   File "/root/polis/bridge/181_evidencia_edd_identidad/sitecustomize.py", line 129, in _audit
+    |     _ruta_escritura(args[0], args[2] if len(args) &gt; 2 else None)
+    |   File "/root/polis/bridge/181_evidencia_edd_identidad/sitecustomize.py", line 106, in _ruta_escritura
+    |     raise RuntimeError("EDD: escritura fuera del directorio de evidencia bloqueada")
+    | RuntimeError: EDD: escritura fuera del directorio de evidencia bloqueada
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/polis/backend/tests/test_control_fases_y_oauth.py", line 162, in test_auditoria_y_supervision_respaldos
+    resp_respaldos = client.get("/api/v1/auditoria/respaldos", headers=headers)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1113, in get
+    return self.request(
+           ^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 463, in request
+    return super().request(
+           ^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 980, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/httpx2/_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 360, in handle_request
+    raise exc
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py", line 357, in handle_request
+    portal.call(self.app, scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 340, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py", line 265, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1215, in __call__
+    await super().__call__(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 197, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/app/main.py", line 129, in log_request
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 197, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/app/main.py", line 94, in security_headers_and_cookies_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 173, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 91, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 149, in simple_response
+    await self.app(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1817, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2869, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1828, in _handle_selected
+    await route.handle(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1817, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2869, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1843, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/polis/backend/app/modules/auditoria/router.py", line 79, in obtener_estado_respaldos
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+  File "/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py", line 1311, in mkdir
+    os.mkdir(self, mode)
+  File "/root/polis/bridge/181_evidencia_edd_identidad/sitecustomize.py", line 129, in _audit
+    _ruta_escritura(args[0], args[2] if len(args) &gt; 2 else None)
+  File "/root/polis/bridge/181_evidencia_edd_identidad/sitecustomize.py", line 106, in _ruta_escritura
+    raise RuntimeError("EDD: escritura fuera del directorio de evidencia bloqueada")
+RuntimeError: EDD: escritura fuera del directorio de evidencia bloqueada
+
+The above exception was the direct cause of the following exception:
+backend/tests/test_control_fases_y_oauth.py:162: in test_auditoria_y_supervision_respaldos
+    resp_respaldos = client.get("/api/v1/auditoria/respaldos", headers=headers)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+backend/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+backend/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:197: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/main.py:129: in log_request
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:173: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:197: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/main.py:94: in security_headers_and_cookies_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:173: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py:91: in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/cors.py:149: in simple_response
+    await self.app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+backend/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1828: in _handle_selected
+    await route.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+backend/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+backend/.venv/lib/python3.12/site-packages/fastapi/routing.py:360: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/modules/auditoria/router.py:79: in obtener_estado_respaldos
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1311: in mkdir
+    os.mkdir(self, mode)
+bridge/181_evidencia_edd_identidad/sitecustomize.py:129: in _audit
+    _ruta_escritura(args[0], args[2] if len(args) &gt; 2 else None)
+bridge/181_evidencia_edd_identidad/sitecustomize.py:106: in _ruta_escritura
+    raise RuntimeError("EDD: escritura fuera del directorio de evidencia bloqueada")
+E   RuntimeError: EDD: escritura fuera del directorio de evidencia bloqueada</failure></testcase><testcase classname="tests.test_control_fases_y_oauth" name="test_google_no_promueve_por_dominio" time="0.455" /><testcase classname="tests.test_control_fases_y_oauth" name="test_google_rollback_usuario_y_sesion" time="0.591" /><testcase classname="tests.test_transaction_policy" name="test_repositorios_no_controlan_transacciones" time="0.052" /></testsuite></testsuites>

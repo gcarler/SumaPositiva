@@ -1,0 +1,31 @@
+{
+  "base_origen": "no_declarada",
+  "conteos_estado": {
+    "CANDIDATO_CODIGO_NOMBRE": 1
+  },
+  "conteos_por_plan": {
+    "PDD_2013_2015": {
+      "CANDIDATO_CODIGO_NOMBRE": 1
+    }
+  },
+  "esquema": "polis.candidatos_programa_meta.v2",
+  "estado_publicacion": "no_publicable",
+  "referencias": {
+    "candidatos": {
+      "filas": 1,
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_corpus_versiona_snapshot_0/candidatos_6c7248e90dc730170726e2f96a0ea46641a00b942da889e4da3b02e987c88948.jsonl",
+      "sha256": "6c7248e90dc730170726e2f96a0ea46641a00b942da889e4da3b02e987c88948"
+    },
+    "metas": {
+      "filas": 1,
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_corpus_versiona_snapshot_0/metas_71071a87e198537a0f97d994bd2e601ef5f88e435fb2316198bc7586d949bc04.jsonl",
+      "sha256": "71071a87e198537a0f97d994bd2e601ef5f88e435fb2316198bc7586d949bc04"
+    },
+    "programas": {
+      "filas": 1,
+      "ruta": "/root/polis/bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_corpus_versiona_snapshot_0/programas_08d0a9b4e2f1ecf8209037029404366ffd9d073121956fd3127e58d362c1070d.jsonl",
+      "sha256": "08d0a9b4e2f1ecf8209037029404366ffd9d073121956fd3127e58d362c1070d"
+    }
+  },
+  "regla": "Candidatura sin acreditar: exige documento, página y revisión antes de persistir."
+}

@@ -1,0 +1,19 @@
+{
+  "label": "backend-check",
+  "argv": [
+    "bun",
+    "run",
+    "backend:check"
+  ],
+  "cwd": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot",
+  "start_utc": "2026-11-02T03:28:21.454054+00:00",
+  "seconds": 20.41,
+  "returncode": 2,
+  "log": "backend-check.log",
+  "databases": [
+    "polis_test_eaf_275_codex",
+    "polis_test_eaf_275_codex_mig"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

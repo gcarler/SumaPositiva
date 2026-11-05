@@ -1,0 +1,7 @@
+{
+  "base": "polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "dsn_sin_credenciales": "postgresql+asyncpg://127.0.0.1:5432/polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "provision_utc": "2026-10-26T04:37:05.993009+00:00",
+  "credenciales": "Existentes, solo memoria; no se modificaron roles ni servicios",
+  "vacia": true
+}

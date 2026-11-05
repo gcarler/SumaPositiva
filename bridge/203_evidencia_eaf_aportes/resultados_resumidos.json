@@ -1,0 +1,90 @@
+{
+  "runs": {
+    "03_atomicidad": {
+      "tests": 41,
+      "passed": 41,
+      "failed": [],
+      "skipped": 0,
+      "sha256": "30d5dcbc4b7ef10b59e4444f484f0f4980938fcec5de7748431487970b9a81b1"
+    },
+    "04_colas": {
+      "tests": 26,
+      "passed": 22,
+      "failed": [
+        "test_inbox_worker_recovery_no_partial_radicado[post_radicacion]",
+        "test_inbox_worker_recovery_no_partial_radicado[commit]",
+        "test_inbox_worker_recovery_no_partial_radicado[cancel]",
+        "test_http_hmac_config_and_durable_ack"
+      ],
+      "skipped": 0,
+      "sha256": "55be29b78cdd5ee6b177b6cb8f670b99312cce06573d58c2d102442638c69a6c"
+    },
+    "05_colas": {
+      "tests": 26,
+      "passed": 26,
+      "failed": [],
+      "skipped": 0,
+      "sha256": "7f433622a8a24c127cf6b0994bd087a624a9e6c243929ae1dea711eca54b6301"
+    },
+    "06_principales": {
+      "tests": 17,
+      "passed": 15,
+      "failed": [
+        "test_closed_privacy_creation_update_detail_list_and_devolution",
+        "test_account_support_between_logins_and_concurrent_toggles"
+      ],
+      "skipped": 0,
+      "sha256": "81b67f9ae247513c2486906b60aeacd335a263ca13df836026662971403d4dd4"
+    },
+    "07_principales": {
+      "tests": 17,
+      "passed": 17,
+      "failed": [],
+      "skipped": 0,
+      "sha256": "66f22aed0615f2ae4c38388efe2eb555085a9c701ae64c99dfea3dcdbca9a567"
+    },
+    "10_adicionales": {
+      "tests": 10,
+      "passed": 4,
+      "failed": [
+        "test_legacy_enfoque_irregular_records_behavior[legacy0]",
+        "test_legacy_enfoque_irregular_records_behavior[legacy1]",
+        "test_legacy_enfoque_irregular_records_behavior[legacy2]",
+        "test_legacy_devolution_json_irregular_records_behavior[None]",
+        "test_legacy_devolution_json_irregular_records_behavior[False]",
+        "test_legacy_devolution_json_irregular_records_behavior[legacy2]"
+      ],
+      "skipped": 0,
+      "sha256": "5d39cccb3afeb35ae05a8138d119e43fc0df00d250503548f418578f5a091b88"
+    },
+    "11_dirigidas_producto": {
+      "tests": 123,
+      "passed": 123,
+      "failed": [],
+      "skipped": 0,
+      "sha256": "2f5b756d7fa4df8169fb68c33c406898ec6429cf01b50b69d7681834ed210b70"
+    },
+    "15_propias_consolidadas": {
+      "tests": 94,
+      "passed": 88,
+      "failed": [
+        "test_legacy_enfoque_irregular_records_behavior[legacy0]",
+        "test_legacy_enfoque_irregular_records_behavior[legacy1]",
+        "test_legacy_enfoque_irregular_records_behavior[legacy2]",
+        "test_legacy_devolution_json_irregular_records_behavior[None]",
+        "test_legacy_devolution_json_irregular_records_behavior[False]",
+        "test_legacy_devolution_json_irregular_records_behavior[legacy2]"
+      ],
+      "skipped": 0,
+      "sha256": "646c8997dd3899ff4ec62f9fe28d0dfce0d041b3e3c3d177c65a20420fd7bf09"
+    }
+  },
+  "unique_own_cases": 94,
+  "own_passed": 88,
+  "own_failed": 6,
+  "migration_script_scenarios": 18,
+  "additional_real_process_crash": 1,
+  "product_directed_passed": 123,
+  "counts_not_added_across_iterations": true,
+  "harness_initial_failures_documented": "ajustes_harness.jsonl"
+}

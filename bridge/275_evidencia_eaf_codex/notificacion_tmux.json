@@ -1,0 +1,8 @@
+{
+  "utc": "2026-11-02T04:07:42.582477+00:00",
+  "target": "=agy:0.0",
+  "pane": "agy:0.0 agy",
+  "tmux_returncode": 0,
+  "mensaje": "Codex EAF 275 TERMINADO: RECHAZADO sobre 4b45b10 + overlay fijado por SHA. Dictamen: /root/polis/bridge/275_dictamen_eaf_independiente_codex.md. H275-01 Alta: cooldown consume alertas sin despacho y falsea salud; H02 Media: antiguedad usa MIN de edades; H03 Media: corte 07:00 omite acciones; H04 Media: JSON falla si Herald no responde. H05 Baja: credencial anterior declarada rotada en docs/historial. Permisos 123/123 y suite 275 33/33; rollback, concurrencia y migracion conservando datos comprobados. Global R2: 1735 passed/8 failed/16 skipped; 2 fallos de fixture propios revalidados 39/39, 5 de plantillas paralelas y 1 agenda previa. 64 artefactos sellados en bridge/275_evidencia_eaf_codex/. Tres bases y rol de laboratorio eliminados; sin acceso a bd_csh, sin Postfix ni cambios app/frontend, sin commit/push. Primer timer automatico aun no vence: 12:00 UTC. SHA dictamen f12facbcdde8e2c989cc581aaa337096a7da16354439a95f7f3aa80b9658bcd4.",
+  "nota": "Acuse de envio por tmux; no presupone lectura o aceptacion del destinatario."
+}

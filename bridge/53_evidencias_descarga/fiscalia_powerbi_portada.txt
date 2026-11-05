@@ -1,0 +1,37 @@
+Show keyboard shortcuts
+Show screen reader tips
+Skip to main content
+Power BI Report
+Inicio
+Condiciones de Uso
+Acerca de esta publicación
+Fuente: Procesos registrados en SPOA, creados desde el 01/01/2010 hasta el 30/09/2026. La información se actualiza mensualmente.
+
+Procesos penales en Colombia 
+
+
+
+
+
+
+
+Este tablero presenta información sobre los procesos penales que, en ejercicio de sus funciones, la Fiscalía General de la Nación ha gestionado en el Sistema Misional SPOA, para el Sistema Penal y Oral Acusatorio, desde el año 2010 hasta la fecha de actualización.
+
+
+
+
+¿Qué deseas consultar?
+
+¿Dónde ocurrieron los hechos?
+¿Cuándo ocurrieron los hechos?
+¿Qué delitos han ocurrido?
+¿Cuál es el estado de los procesos?
+Número de Procesos
+22,854,732
+Número de procesos por año del hecho
+-
++
+117%
+Microsoft Power BI
+1of7
+Report Zoomed To 117%

@@ -1,0 +1,28 @@
+{
+  "notification": "01a176ca-44d1-727b-a940-0f628727d29e",
+  "real_child_exit": 73,
+  "capture_file": "aceptacion_local_3cc7e0bd27294a8292a9d2075276751c.json",
+  "before_recovery": {
+    "id": "01a176ca-44d1-727b-a940-0f628727d29e",
+    "estado_envio": "procesando",
+    "intentos": 1,
+    "reclamo_token": "7cac082a-1526-4ed7-85a8-2014410c9585",
+    "reclamo_vence_en": "2026-10-26 05:59:58.139286+00:00",
+    "proximo_intento_en": null,
+    "enviado_en": null,
+    "simulado_en": null
+  },
+  "after_recovery": {
+    "id": "01a176ca-44d1-727b-a940-0f628727d29e",
+    "estado_envio": "simulado",
+    "intentos": 2,
+    "reclamo_token": null,
+    "reclamo_vence_en": null,
+    "proximo_intento_en": null,
+    "enviado_en": null,
+    "simulado_en": "2026-10-26 05:58:58.927041+00:00"
+  },
+  "simulated_acceptances": 2,
+  "stable_message_id": true,
+  "guarantee": "al menos una vez; posible duplicado tras aceptación y caída; no proveedor real"
+}

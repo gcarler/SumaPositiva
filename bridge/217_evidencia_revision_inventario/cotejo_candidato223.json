@@ -1,0 +1,81 @@
+{
+  "fecha_utc": "2026-10-26T06:39:58.000120+00:00",
+  "inventario_anterior_sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+  "candidato_sha256": "369e55b7643352ff37909c0b6cd8be45b6781ab7d4db0c953738a7f4629f18d1",
+  "conteos": {
+    "fuentes": 43,
+    "paquetes": 8,
+    "artefactos": 1829
+  },
+  "fuentes_paquetes_consolidado_identicos": true,
+  "cambios_artefactos": [
+    {
+      "indice": 1648,
+      "anterior": {
+        "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+        "paquete_clave": "planes_accion",
+        "evidencia_origen": {},
+        "sha256": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+        "version_id": "a7443aa121b28c46",
+        "bytes": 51693,
+        "formato": "json",
+        "rol": "insumo_o_evidencia",
+        "estado_calidad": "sin_evaluacion_por_artefacto"
+      },
+      "nuevo": {
+        "ruta": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-26/resumen_sincronizacion.7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+        "paquete_clave": "planes_accion",
+        "evidencia_origen": {},
+        "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+        "version_id": "7dfb91e3942e4c52",
+        "bytes": 4815,
+        "formato": "json",
+        "rol": "derivado_control",
+        "estado_calidad": "sin_evaluacion_por_artefacto"
+      }
+    }
+  ],
+  "metadata_captura": {
+    "captura_control": {
+      "ruta_origen_213": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+      "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+      "bytes": 4815,
+      "fecha_lectura_utc": "2026-10-26T06:05:52.551550+00:00",
+      "naturaleza": "captura_control_derivado_no_fuente_oficial",
+      "sin_fuente_oficial": true,
+      "sin_validacion_semantica": true,
+      "sin_validacion_censo": true,
+      "sin_revision_licencia": true,
+      "estado": "pendiente_publicacion_ruta_futura",
+      "procedencia_captura": {
+        "captura_origen_ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+        "captura_origen_sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+        "captura_origen_bytes": 4815,
+        "captura_utc": "2026-10-26T06:05:52.550404+00:00",
+        "naturaleza": "captura_control_derivado_no_fuente_oficial",
+        "sin_fuente_oficial": true,
+        "sin_validacion_semantica": true,
+        "sin_validacion_censo": true,
+        "sin_revision_licencia": true
+      }
+    },
+    "hallazgo_historico": {
+      "original": {
+        "ruta": "data/planes_accion/drive_sector_seguridad/resumen_sincronizacion.json",
+        "sha256": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a",
+        "bytes": 51693,
+        "estado": "no_localizado"
+      },
+      "diferencia_semantica": "no_comprobada",
+      "sin_contenido_original": true
+    },
+    "inventario_anterior": {
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/inventario_pipeline_2026.sha-5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+      "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+      "bytes": 1638638,
+      "fecha_captura_utc": "2026-10-26T05:56:56.297352+00:00",
+      "estado": "congelado_en_213"
+    }
+  },
+  "publicado": false
+}

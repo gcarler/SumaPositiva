@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="26" time="21.348" timestamp="2026-10-26T05:48:52.806108+00:00" hostname="srv2006133"><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[success-crear]" time="0.439" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[success-actualizar]" time="0.419" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[post_flush-crear]" time="0.293" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[post_flush-actualizar]" time="0.390" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[validation-crear]" time="0.290" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[validation-actualizar]" time="0.344" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[cancel-crear]" time="0.236" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[cancel-actualizar]" time="0.373" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[commit-crear]" time="0.293" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_intention_atomic_without_transport[commit-actualizar]" time="0.391" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_outbox_claim_before_transport_and_concurrent_exclusion" time="0.427" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_outbox_retry_backoff_and_stable_message_id" time="0.631" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_outbox_fencing_expired_claim" time="0.624" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_outbox_actual_commit_failure_and_recovery[claim]" time="0.459" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_outbox_actual_commit_failure_and_recovery[final]" time="0.493" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_atomic_receipt_valid_short_valid_and_replay" time="0.814" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_concurrent_receipt_collision_and_receiving_account" time="0.315" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_receipt_failure_is_all_or_nothing[post_flush]" time="0.160" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_receipt_failure_is_all_or_nothing[validation]" time="0.171" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_receipt_failure_is_all_or_nothing[cancel]" time="0.181" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_receipt_failure_is_all_or_nothing[commit]" time="0.165" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_worker_recovery_no_partial_radicado[post_radicacion]" time="0.300"><failure message="TypeError: 'async_generator' object is not iterable">stage = 'post_radicacion'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7a0f5bd16090&gt;
+
+    @pytest.mark.parametrize('stage',['post_radicacion','commit','cancel'])
+    async def test_inbox_worker_recovery_no_partial_radicado(stage,monkeypatch):
+        data=payload('Propuesta íntegra durante recuperación del worker')
+        _,rows=await receive(data); iid=rows[0]['id']; engine,sessions=b.factory(); pids=[]
+        try:
+            async with sessions() as session:
+                service=CanalWhatsAppService(session); original=service._radicar_mensaje
+                async def inject(*a,**k):
+                    result=await original(*a,**k); pids.append(result.propuesta_id)
+                    if stage=='post_radicacion':raise RuntimeError('EAF after radicado and notice SQL')
+                    if stage=='cancel':raise asyncio.CancelledError()
+                    await b.commit_failure(session); return result
+                monkeypatch.setattr(service,'_radicar_mensaje',inject)
+                if stage=='cancel':
+                    with pytest.raises(asyncio.CancelledError):await service.procesar_inbox_uno(recepcion_id=iid)
+                else: assert (await service.procesar_inbox_uno(recepcion_id=iid)).estado=='error'
+            row=(await inbox(data))[0]; assert row['propuesta_id'] is None and row['estado']==('procesando' if stage=='cancel' else 'error')
+&gt;           assert pids and all((await b.snapshot(pid))[1] is None for pid in pids)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: 'async_generator' object is not iterable
+
+bridge/203_evidencia_eaf_aportes/test_colas.py:266: TypeError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_worker_recovery_no_partial_radicado[commit]" time="0.405"><failure message="TypeError: 'async_generator' object is not iterable">stage = 'commit'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7a0f5bd15df0&gt;
+
+    @pytest.mark.parametrize('stage',['post_radicacion','commit','cancel'])
+    async def test_inbox_worker_recovery_no_partial_radicado(stage,monkeypatch):
+        data=payload('Propuesta íntegra durante recuperación del worker')
+        _,rows=await receive(data); iid=rows[0]['id']; engine,sessions=b.factory(); pids=[]
+        try:
+            async with sessions() as session:
+                service=CanalWhatsAppService(session); original=service._radicar_mensaje
+                async def inject(*a,**k):
+                    result=await original(*a,**k); pids.append(result.propuesta_id)
+                    if stage=='post_radicacion':raise RuntimeError('EAF after radicado and notice SQL')
+                    if stage=='cancel':raise asyncio.CancelledError()
+                    await b.commit_failure(session); return result
+                monkeypatch.setattr(service,'_radicar_mensaje',inject)
+                if stage=='cancel':
+                    with pytest.raises(asyncio.CancelledError):await service.procesar_inbox_uno(recepcion_id=iid)
+                else: assert (await service.procesar_inbox_uno(recepcion_id=iid)).estado=='error'
+            row=(await inbox(data))[0]; assert row['propuesta_id'] is None and row['estado']==('procesando' if stage=='cancel' else 'error')
+&gt;           assert pids and all((await b.snapshot(pid))[1] is None for pid in pids)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: 'async_generator' object is not iterable
+
+bridge/203_evidencia_eaf_aportes/test_colas.py:266: TypeError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_worker_recovery_no_partial_radicado[cancel]" time="0.297"><failure message="TypeError: 'async_generator' object is not iterable">stage = 'cancel'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7a0f5bd74b30&gt;
+
+    @pytest.mark.parametrize('stage',['post_radicacion','commit','cancel'])
+    async def test_inbox_worker_recovery_no_partial_radicado(stage,monkeypatch):
+        data=payload('Propuesta íntegra durante recuperación del worker')
+        _,rows=await receive(data); iid=rows[0]['id']; engine,sessions=b.factory(); pids=[]
+        try:
+            async with sessions() as session:
+                service=CanalWhatsAppService(session); original=service._radicar_mensaje
+                async def inject(*a,**k):
+                    result=await original(*a,**k); pids.append(result.propuesta_id)
+                    if stage=='post_radicacion':raise RuntimeError('EAF after radicado and notice SQL')
+                    if stage=='cancel':raise asyncio.CancelledError()
+                    await b.commit_failure(session); return result
+                monkeypatch.setattr(service,'_radicar_mensaje',inject)
+                if stage=='cancel':
+                    with pytest.raises(asyncio.CancelledError):await service.procesar_inbox_uno(recepcion_id=iid)
+                else: assert (await service.procesar_inbox_uno(recepcion_id=iid)).estado=='error'
+            row=(await inbox(data))[0]; assert row['propuesta_id'] is None and row['estado']==('procesando' if stage=='cancel' else 'error')
+&gt;           assert pids and all((await b.snapshot(pid))[1] is None for pid in pids)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: 'async_generator' object is not iterable
+
+bridge/203_evidencia_eaf_aportes/test_colas.py:266: TypeError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_inbox_workers_skip_locked_and_fence" time="0.382" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_colas" name="test_http_hmac_config_and_durable_ack" time="0.951"><failure message="assert 422 == 401&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code&#10; +    where &lt;Response [422 Unprocessable Content]&gt; = post('/api/v1/canales/whatsapp/webhook', content=b'{&quot;object&quot;:&quot;whatsapp_business_account&quot;,&quot;entry&quot;:[{&quot;id&quot;:&quot;eaf203-b92650fc37504021a7d5f5c5cc6d3f66&quot;,&quot;changes&quot;:[{&quot;value&quot;:{...ody&quot;:&quot;Entrada HTTP firmada exclusivamente local&quot;},&quot;audio&quot;:null,&quot;image&quot;:null,&quot;document&quot;:null}]},&quot;field&quot;:&quot;messages&quot;}]}]}')&#10; +      where post = &lt;starlette.testclient.TestClient object at 0x7a0f5bc223f0&gt;.post">def test_http_hmac_config_and_durable_ack():
+        data=payload('Entrada HTTP firmada exclusivamente local')
+        body=data.model_dump_json(by_alias=True).encode()
+        with TestClient(create_app(b.client_settings(whatsapp_habilitado=False)),raise_server_exceptions=False) as client:
+            assert client.post('/api/v1/canales/whatsapp/webhook',content=body,headers=signed(body)).status_code==503
+        settings=b.client_settings(whatsapp_habilitado=True,whatsapp_verify_token='verify203',whatsapp_app_secret=SECRET)
+        with TestClient(create_app(settings),raise_server_exceptions=False) as client:
+            route='/api/v1/canales/whatsapp/webhook'
+            assert client.get(route,params={'hub.mode':'subscribe','hub.verify_token':'verify203','hub.challenge':'203'}).status_code==200
+            assert client.get(route,params={'hub.mode':'subscribe','hub.verify_token':'wrong','hub.challenge':'203'}).status_code==403
+&gt;           assert client.post(route,content=body).status_code==401
+E           assert 422 == 401
+E            +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+E            +    where &lt;Response [422 Unprocessable Content]&gt; = post('/api/v1/canales/whatsapp/webhook', content=b'{"object":"whatsapp_business_account","entry":[{"id":"eaf203-b92650fc37504021a7d5f5c5cc6d3f66","changes":[{"value":{...ody":"Entrada HTTP firmada exclusivamente local"},"audio":null,"image":null,"document":null}]},"field":"messages"}]}]}')
+E            +      where post = &lt;starlette.testclient.TestClient object at 0x7a0f5bc223f0&gt;.post
+
+bridge/203_evidencia_eaf_aportes/test_colas.py:301: AssertionError</failure></testcase></testsuite></testsuites>

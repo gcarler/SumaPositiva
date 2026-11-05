@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-26T06:03:28.718385+00:00",
+  "autorizacion_producto": "pendiente_MODIFICAR_APORTES_LEGADO",
+  "propios": {
+    "backend/app/modules/aportes/schemas.py": "b1cd3eb43a06fa8426b1d480814347cf8ff21c1d83358e5d62b5558ad077a82d",
+    "backend/app/modules/aportes/service.py": "66a3406f719a2128f0e70ed8c872482c141bdcb3e784924d1c516e74be8fe78c",
+    "backend/tests/test_aportes_legado_publico.py": null
+  },
+  "protegidos": {
+    "backend/alembic/versions/0084_aportes_colas_y_apoyos.py": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+    "backend/app/modules/auditoria/schemas.py": "a472a6560f029ae562d6a80cd578cdeb2a13dc76cb52c44ed01da9b2dad52dea",
+    "bridge/203_evidencia_eaf_aportes/test_adicionales.py": "1477164b1295b817a150d61e054ea535d6f86e489c40b26781cfe862b5f203e8",
+    "bridge/203_evidencia_eaf_aportes/10_adicionales.xml": "5d39cccb3afeb35ae05a8138d119e43fc0df00d250503548f418578f5a091b88",
+    "bridge/203_evidencia_eaf_aportes/10_adicionales.json": "5a7ef5c2a5b07105d7ea8682e76db0e10d7499ffa8607748842d051e5ebe67ea",
+    "bridge/203_evidencia_eaf_aportes/hallazgo_R01_legado_irregular.json": "a1a1bb5c9dd454b7afbe6909f0fce643f86b4ad53eaa84ba082d0bb6e930f023"
+  },
+  "informe203_markdown": "no disponible todav\u00eda"
+}

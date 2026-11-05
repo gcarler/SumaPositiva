@@ -1,0 +1,19 @@
+{
+  "database_guard": "polis_test_eaf_aportes_20261026_ef6a0ce9",
+  "rejections_before_io": [
+    "asyncpg.connect",
+    "asyncpg.connection.connect",
+    "psycopg.AsyncConnection.connect",
+    "sqlalchemy.asyncpg",
+    "psycopg.connect",
+    "psycopg.Connection.connect",
+    "smtplib.SMTP.connect",
+    "socket.connect external",
+    "socket.getaddrinfo external",
+    "socket.sendto external",
+    "repository write outside evidence"
+  ],
+  "count": 11,
+  "external_connections_opened": 0,
+  "repository_sentinel_created": false
+}

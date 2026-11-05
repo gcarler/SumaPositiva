@@ -1,0 +1,22 @@
+{
+  "artefactos_inventariados": 3,
+  "consolidado_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "esquema": "polis.corte_datos.v1",
+  "estado_calidad": "ambar",
+  "estado_publicacion": "no_publicable",
+  "evaluacion_sha256": "e873b8a2b88cf2d4b9e0c27eeb9f754622cce264b6a9752d89075623ebe8d1b9",
+  "inventario_sha256": "77c5db320dbd4a7474691853ad1f40336441ac015df1f7eeec1699d0df220b22",
+  "run_id": "69131113-137f-4648-879c-a24b6f491c4e",
+  "versiones": [
+    {
+      "fuente_clave": "medicina",
+      "sha256_contenido": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "version_id": "b1"
+    },
+    {
+      "fuente_clave": "policia",
+      "sha256_contenido": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version_id": "a1"
+    }
+  ]
+}

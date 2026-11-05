@@ -1,0 +1,63 @@
+{
+  "utc": "2026-11-03T10:54:41.864399+00:00",
+  "dictamen": "APROBADO",
+  "alcance": "Encargo 275, cierre independiente de sus cinco hallazgos",
+  "head": "625007de093a3560033f1de3eddc0a7e5960302a",
+  "monitor_sha256": "eee0888e5211075906d6896404de895f3b3f7edbb05a5eb2da00aa05572e01de",
+  "dictamen_sha256": "84f4d4d0d496177ed8c549391a2572412f9c589955b5a7369dece2f55a2b7fc5",
+  "pruebas_nuevas": {
+    "monitor_r1": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "monitor_r2": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "http_canales_r2": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "hallazgos": {
+    "H275-01": {
+      "estado": "CERRADO",
+      "R1.1": "CERRADO",
+      "R1.2": "CERRADO",
+      "R1.3": "CERRADO"
+    },
+    "H275-02": {
+      "estado": "CERRADO",
+      "evidencia": "inspección anterior, código sin cambios"
+    },
+    "H275-03": {
+      "estado": "CERRADO",
+      "evidencia": "inspección anterior, código sin cambios"
+    },
+    "H275-04": {
+      "estado": "CERRADO",
+      "evidencia": "repetido en ambas corridas del monitor"
+    },
+    "H275-05": {
+      "estado": "CERRADO en documentos corrientes",
+      "limite": "131 blobs históricos con credencial declarada rotada permanecen"
+    }
+  },
+  "ultimo_check_global": {
+    "nuevo_en_este_cierre": false,
+    "returncode": 1,
+    "passed": 1737,
+    "failed": 6,
+    "skipped": 16
+  },
+  "otros_limites": [
+    "cinco fallos de plantillas y uno de agenda fuera de 275",
+    "drift preexistente de actividades_anexos en alembic check CLI"
+  ]
+}

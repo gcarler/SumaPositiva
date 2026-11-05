@@ -1,0 +1,18 @@
+{
+  "canonico_sha256": "d9fbf3f18dce61619505b05bc8903363e2d5f42266aa0a90799c52fe1db06c34",
+  "colisiones_de_clave": {
+    "valores_contradictorios": 1
+  },
+  "denominador_sha256": "0fbcd121b99dd2646508482c8551aa0bec92769d1af788a11f0b473b87ca240d",
+  "dimensiones": {
+    "SALUD": 2
+  },
+  "esquema": "polis.series_7d.v1",
+  "estado_publicacion": "no_publicable",
+  "filas": 2,
+  "limitacion": "Series por fuente y unidad; no se suman instituciones ni se infiere causalidad.",
+  "provisionales": 0,
+  "ruta": "bridge/183_evidencia_edd_aportes/tmp/pytest-of-root/pytest-3/test_valores_icbf_contradictor0/series/90a52b08bc9632b2a0b0bb2c5a2b0df043a0470e6fb03253d52d24b462b1b6be.jsonl",
+  "salida_sha256": "90a52b08bc9632b2a0b0bb2c5a2b0df043a0470e6fb03253d52d24b462b1b6be",
+  "tasas_municipales": 0
+}

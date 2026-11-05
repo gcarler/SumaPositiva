@@ -1,0 +1,2 @@
+origen,fuente_clave,custodio,dataset_id,indicador,anio,subtipo,valor,unidad,ambito,estado_validacion,url_fuente,fecha_extraccion
+prueba,clave,Entidad,dataset,indicador,2026,total,1,casos,municipio,prueba,https://example.org,2026-10-22

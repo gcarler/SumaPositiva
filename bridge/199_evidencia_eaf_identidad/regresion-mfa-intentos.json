@@ -1,0 +1,26 @@
+{
+  "usuario": "01a17699-736f-7a00-961d-075620003c13",
+  "http": [
+    401,
+    401,
+    429,
+    429,
+    429,
+    429,
+    429
+  ],
+  "pid_observador": 2884922,
+  "primeras_denegaciones_durables": [
+    {
+      "pid": 2884900,
+      "intentos": 1,
+      "http": 401
+    },
+    {
+      "pid": 2884901,
+      "intentos": 2,
+      "http": 401
+    }
+  ],
+  "estado": "e3191a64a16885339c92158b79d30510e3289e16b16492e24cf59069ede17148"
+}

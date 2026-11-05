@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "headers": {
+    "date": "Mon, 26 Oct 2026 00:49:27 GMT",
+    "content-type": "application/json; charset=UTF-8",
+    "cache-control": "must-revalidate,max-age=0,public",
+    "x-content-type-options": "nosniff",
+    "set-cookie": "AGS_ROLES=\"419jqfa+uOZgYod4xPOQ8Q==\"; Version=1; Max-Age=60; Expires=Mon, 26 Oct 2026 00:50:27 GMT; Path=/mparcgis/rest; Secure; HttpOnly",
+    "x-frame-options": "SAMEORIGIN",
+    "x-xss-protection": "1; mode=block",
+    "strict-transport-security": "max-age=31536000; includeSubdomains;",
+    "referrer-policy": "same-origin",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+    "access-control-allow-origin": "https://nowsoft.app",
+    "x-permitted-cross-domain-policies": "none",
+    "x-cacheable": "NO:Got Cookies",
+    "vary": "Origin, Accept-Encoding",
+    "etag": "W/\"60201346\"",
+    "accept-ranges": "bytes",
+    "transfer-encoding": "chunked",
+    "connection": "close"
+  },
+  "bytes": 248745,
+  "sha256": "8981dad787780ca72b77a25d6cb01323496996318fa59e6ecb8b869035e9db8c"
+}

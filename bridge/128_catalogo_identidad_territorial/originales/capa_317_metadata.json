@@ -1,0 +1,984 @@
+{
+ "currentVersion": 11.3,
+ "cimVersion": "3.3.0",
+ "id": 317,
+ "name": "Municipio",
+ "type": "Feature Layer",
+ "parentLayer": null,
+ "defaultVisibility": true,
+ "minScale": 3000000,
+ "maxScale": 0,
+ "canScaleSymbols": false,
+ "geometryType": "esriGeometryPolygon",
+ "description": "",
+ "copyrightText": "",
+ "editFieldsInfo": null,
+ "ownershipBasedAccessControlForFeatures": null,
+ "syncCanReturnChanges": false,
+ "relationships": [],
+ "isDataVersioned": false,
+ "isDataArchived": false,
+ "infoInEstimates": [
+  "extent",
+  "count"
+ ],
+ "isDataBranchVersioned": false,
+ "isDataReplicaTracked": false,
+ "isCoGoEnabled": false,
+ "supportsRollbackOnFailureParameter": true,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportsValidateSQL": true,
+ "supportsCoordinatesQuantization": true,
+ "supportsQuantizationEditMode": true,
+ "supportsCalculate": true,
+ "supportsASyncCalculate": true,
+ "supportsDatumTransformation": true,
+ "advancedQueryCapabilities": {
+  "supportsPagination": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDistance": true,
+  "supportsReturningQueryExtent": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsCurrentUserQueries": true,
+  "supportsQueryWithResultType": true,
+  "supportsReturningGeometryCentroid": true,
+  "supportsSqlExpression": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsQueryAnalytic": true
+ },
+ "advancedQueryAnalyticCapabilities": {
+  "supportsLinearRegression": true,
+  "supportsAsync": true,
+  "supportsPercentileAnalytic": true
+ },
+ "advancedEditingCapabilities": {
+  "supportedSqlFormatsInCalculate": [
+   "standard"
+  ],
+  "supportsAsyncApplyEdits": true,
+  "supportsApplyEditsbyUploadID": true,
+  "supportedApplyEditsUploadIDFormats": "JSON"
+ },
+ "hasGeometryProperties": true,
+ "geometryProperties": {
+  "shapeAreaFieldName": "Shape__Area",
+  "shapeLengthFieldName": "Shape__Length",
+  "units": "esriMeters"
+ },
+ "hasMetadata": true,
+ "extent": {
+  "xmin": -9098767.65992529,
+  "ymin": -471243.53323062387,
+  "xmax": -7441397.98224442,
+  "ymax": 1504865.2504878477,
+  "spatialReference": {
+   "wkid": 102100,
+   "latestWkid": 3857,
+   "xyTolerance": 0.001,
+   "zTolerance": 0.001,
+   "mTolerance": 0.001,
+   "falseX": -20037700,
+   "falseY": -30241100,
+   "xyUnits": 10000,
+   "falseZ": -100000,
+   "zUnits": 10000,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "sourceSpatialReference": {
+  "wkid": 4686,
+  "latestWkid": 4686,
+  "xyTolerance": 8.983157E-9,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -400,
+  "falseY": -400,
+  "xyUnits": 1.11319402081228E9,
+  "falseZ": 0,
+  "zUnits": 1,
+  "falseM": 0,
+  "mUnits": 1
+ },
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriSFS",
+    "style": "esriSFSSolid",
+    "color": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "outline": {
+     "type": "esriSLS",
+     "style": "esriSLSSolid",
+     "color": [
+      168,
+      56,
+      0,
+      255
+     ],
+     "width": 1.25
+    }
+   }
+  },
+  "scaleSymbols": true,
+  "transparency": 0,
+  "labelingInfo": [
+   {
+    "labelExpression": "[MPIO_CCDGO] CONCAT  NEWLINE  CONCAT [MPIO_CNMBRE]",
+    "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+    "multiPart": "labelPerPart",
+    "allowOverrun": true,
+    "deconflictionStrategy": "dynamic",
+    "repeatLabel": false,
+    "useClippedGeometry": false,
+    "stackLabel": true,
+    "stackAlignment": "dynamic",
+    "removeDuplicates": "none",
+    "stackRowLength": 24,
+    "useCodedValues": true,
+    "maxScale": 0,
+    "minScale": 750000,
+    "name": "Default",
+    "priority": 10,
+    "symbol": {
+     "type": "esriTS",
+     "color": [
+      0,
+      0,
+      0,
+      255
+     ],
+     "backgroundColor": null,
+     "borderLineColor": null,
+     "borderLineSize": null,
+     "verticalAlignment": "bottom",
+     "horizontalAlignment": "center",
+     "rightToLeft": false,
+     "angle": 0,
+     "xoffset": 0,
+     "yoffset": 0,
+     "kerning": true,
+     "haloColor": null,
+     "haloSize": null,
+     "font": {
+      "family": "Arial Narrow",
+      "size": 8,
+      "style": "normal",
+      "weight": "bold",
+      "decoration": "none"
+     }
+    }
+   }
+  ]
+ },
+ "hasM": false,
+ "hasZ": false,
+ "allowGeometryUpdates": true,
+ "allowTrueCurvesUpdates": true,
+ "onlyAllowTrueCurveUpdatesByTrueCurveClients": true,
+ "hasAttachments": false,
+ "supportsApplyEditsWithGlobalIds": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "objectIdField": "OBJECTID",
+ "globalIdField": "",
+ "displayField": "dpto_ccdgo",
+ "typeIdField": "",
+ "subtypeField": "",
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null,
+   "editable": false,
+   "nullable": false,
+   "defaultValue": null,
+   "modelName": "OBJECTID"
+  },
+  {
+   "name": "DPTO_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código DIVIPOLA departamento",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 2,
+   "defaultValue": null,
+   "modelName": "DPTO_CCDGO"
+  },
+  {
+   "name": "MPIO_CCDGO",
+   "type": "esriFieldTypeString",
+   "alias": "Código DIVIPOLA municipio",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 3,
+   "defaultValue": null,
+   "modelName": "MPIO_CCDGO"
+  },
+  {
+   "name": "MPIO_CDPMP",
+   "type": "esriFieldTypeString",
+   "alias": "Código DIVIPOLA concatenado departamento y municipio",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 5,
+   "defaultValue": null,
+   "modelName": "MPIO_CDPMP"
+  },
+  {
+   "name": "MPIO_TIPO",
+   "type": "esriFieldTypeString",
+   "alias": "Tipo municipio según DIVIPOLA",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 50,
+   "defaultValue": null,
+   "modelName": "MPIO_TIPO"
+  },
+  {
+   "name": "MPIO_NAREA",
+   "type": "esriFieldTypeDouble",
+   "alias": "Área departamento en kilómetros cuadrados",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "defaultValue": null,
+   "modelName": "MPIO_NAREA"
+  },
+  {
+   "name": "MPIO_NANO",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "Año versión DANE",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "defaultValue": null,
+   "modelName": "MPIO_NANO"
+  },
+  {
+   "name": "DPTO_CNMBRE",
+   "type": "esriFieldTypeString",
+   "alias": "Nombre departamento",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 250,
+   "defaultValue": null,
+   "modelName": "DPTO_CNMBRE"
+  },
+  {
+   "name": "MPIO_CNMBRE",
+   "type": "esriFieldTypeString",
+   "alias": "Nombre municipio",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 250,
+   "defaultValue": null,
+   "modelName": "MPIO_CNMBRE"
+  },
+  {
+   "name": "MPIO_CRSLCION",
+   "type": "esriFieldTypeString",
+   "alias": "Año documento creacion",
+   "domain": null,
+   "editable": true,
+   "nullable": true,
+   "length": 100,
+   "defaultValue": null,
+   "modelName": "MPIO_CRSLCION"
+  }
+ ],
+ "geometryField": {
+  "name": "SHAPE",
+  "type": "esriFieldTypeGeometry",
+  "alias": "SHAPE",
+  "domain": null,
+  "editable": true,
+  "nullable": true,
+  "defaultValue": null,
+  "modelName": "SHAPE"
+ },
+ "datesInUnknownTimezone": false,
+ "dateFieldsTimeReference": {
+  "timeZone": "UTC",
+  "respectsDaylightSaving": false
+ },
+ "preferredTimeReference": null,
+ "types": [],
+ "templates": [
+  {
+   "name": "Amazonas",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Amazonas",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Antioquia",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Antioquia",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Arauca",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Arauca",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Archipiélago de San Andrés, Providencia y Santa Catalina",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Archipiélago de San Andrés, Providencia y Santa Catalina",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Atlántico",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Atlántico",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Bogotá D.C.",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Bogotá D.C.",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Bolívar",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Bolívar",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Boyacá",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Boyacá",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Caldas",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Caldas",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Caquetá",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Caquetá",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Casanare",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Casanare",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Cauca",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Cauca",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Cesar",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Cesar",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Chocó",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Chocó",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Cundinamarca",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Cundinamarca",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Córdoba",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Córdoba",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Guainía",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Guainía",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Guaviare",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Guaviare",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Huila",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Huila",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "La Guajira",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "La Guajira",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Magdalena",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Magdalena",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Meta",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Meta",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Nariño",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Nariño",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Norte de Santander",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Norte de Santander",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Putumayo",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Putumayo",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Quindío",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Quindío",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Risaralda",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Risaralda",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Santander",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Santander",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Sucre",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Sucre",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Tolima",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Tolima",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Valle del Cauca",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Valle del Cauca",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Vaupés",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Vaupés",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  },
+  {
+   "name": "Vichada",
+   "description": "",
+   "prototype": {
+    "attributes": {
+     "NOM_DPTO": "Vichada",
+     "MPIO_CNMBRE": null,
+     "DPTO_CCDGO": null,
+     "MPIO_CCDGO": null,
+     "MPIO_CDPMP": null,
+     "MPIO_TIPO": null,
+     "MPIO_NAREA": null,
+     "MPIO_NANO": null,
+     "DPTO_CNMBRE": null,
+     "MPIO_CRSLCION": null
+    }
+   },
+   "drawingTool": "esriFeatureEditToolPolygon"
+  }
+ ],
+ "maxRecordCount": 2000,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "supportedExportFormats": "sqlite,filegdb,shapefile,csv,geojson",
+ "capabilities": "Query,Create,Update,Delete,Uploads,Editing",
+ "useStandardizedQueries": true,
+ "bigIntegerRestrictedTo53Bits": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "standardMaxRecordCount": 4000,
+ "tileMaxRecordCount": 4000,
+ "standardMaxRecordCountNoGeometry": 32000,
+ "maxRecordCountFactor": 1,
+ "serviceItemId": "1830ebd3e3e1489582542ff05b1bef3b"
+}

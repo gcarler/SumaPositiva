@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-26T04:32:59.751960+00:00",
+  "state": "BLOQUEADO",
+  "database": "polis_test_eaf_aportes_20261026_ef6a0ce9",
+  "source_count": 491,
+  "source_changes": 0,
+  "independent_final_cases": 53,
+  "existing_selected_cases_passed": 164,
+  "global_pytest": {
+    "passed": 1306,
+    "failed": 14,
+    "skipped": 16
+  },
+  "frozen": true
+}

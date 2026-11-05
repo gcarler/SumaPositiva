@@ -1,0 +1,23 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_database_integration.py",
+    "backend/tests/test_migration_database_isolation.py",
+    "backend/tests/test_config.py",
+    "backend/tests/test_geodatos_test_isolation_policy.py",
+    "backend/tests/test_geodatos_analitica_hurtos.py",
+    "--junitxml=bridge/190_evidencia_coordinacion_aislamiento/final_aislamiento_config.xml",
+    "-q",
+    "--tb=short"
+  ],
+  "database": "polis_test_edd_coord_20261026_d4afb7fa",
+  "codigo_salida": 0,
+  "duracion_segundos": 25.981,
+  "fecha_utc": "2026-10-26T05:11:43.092320+00:00",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

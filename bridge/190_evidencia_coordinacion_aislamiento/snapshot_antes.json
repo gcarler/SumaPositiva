@@ -1,0 +1,6 @@
+{
+  "backend/app/core/config.py": "cd81c75951a4d714f53d569b3afe888825aee7d83750d661279c59dd32454481",
+  "backend/.env.example": "c8a96d56c943a41730ce881db078ed7712aead188c7cc6487040307f94036376",
+  "backend/tests/test_config.py": "bc2dbd3019fcca74760a01be7578b3cd1efef0e411e877301cd8c9c3a3da76d4",
+  "backend/tests/test_geodatos_analitica_hurtos.py": "a35ab2c9aa1022d73c92be4222ae16aa55636bac96ed39737b63dfb5905784d5"
+}

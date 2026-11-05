@@ -1,0 +1,3 @@
+module.exports=[609373,a=>{"use strict";var b=a.i(187924),c=a.i(572131),d=a.i(180650),e=a.i(996804),f=a.i(708472);a.s(["default",0,function(){let a=(0,e.useNavigationStore)(a=>a.setVista);return(0,c.useEffect)(()=>{a("geovisor")},[a]),(0,b.jsx)(f.SidebarProvider,{id:"polis-geovisor",children:(0,b.jsxs)("div",{className:"flex h-dvh w-screen flex-col overflow-hidden bg-[var(--surface-0)]",children:[(0,b.jsx)("a",{className:"ui-skip-link",href:"#main-content",children:"Saltar al contenido"}),(0,b.jsx)("main",{id:"main-content",tabIndex:-1,className:"h-full w-full flex-1 min-h-0 min-w-0 overflow-hidden",children:(0,b.jsx)(d.GeovisorView,{})})]})})}])}];
+
+//# sourceMappingURL=src_app_geovisor_page_tsx_0s0x17r._.js.map

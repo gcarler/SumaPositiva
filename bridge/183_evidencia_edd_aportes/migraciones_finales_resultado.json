@@ -1,0 +1,92 @@
+{
+  "database": "polis_test_edd_aportes_20261026_migraciones_4371ebf4",
+  "revision": "0084_aportes_colas_y_apoyos",
+  "escenarios": [
+    {
+      "escenario": "upgrade_vacio_y_metadata",
+      "checks": [
+        {
+          "conname": "chk_notificaciones_estado_envio",
+          "definicion": "CHECK (((estado_envio)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'enviado'::character varying, 'simulado'::character varying, 'fallido'::character varying])::text[])))",
+          "convalidated": true
+        },
+        {
+          "conname": "chk_notificaciones_tipo_evento",
+          "definicion": "CHECK (((tipo_evento)::text = ANY ((ARRAY['radicacion'::character varying, 'cambio_estado'::character varying, 'priorizacion'::character varying])::text[])))",
+          "convalidated": true
+        },
+        {
+          "conname": "chk_tipo_sujeto",
+          "definicion": "CHECK (((tipo_sujeto)::text = ANY ((ARRAY['usuario'::character varying, 'sesion_anonima'::character varying])::text[])))",
+          "convalidated": true
+        },
+        {
+          "conname": "chk_whatsapp_inbox_estado",
+          "definicion": "CHECK (((estado)::text = ANY ((ARRAY['pendiente'::character varying, 'procesando'::character varying, 'procesado'::character varying, 'rechazado'::character varying, 'error'::character varying])::text[])))",
+          "convalidated": true
+        }
+      ]
+    },
+    {
+      "escenario": "downgrade_base_vacio",
+      "tablas_aplicacion": 0
+    },
+    {
+      "escenario": "reconstruccion_repetida",
+      "revision": "0084_aportes_colas_y_apoyos"
+    },
+    {
+      "escenario": "upgrade_ambiguo_rechazado_atomicamente",
+      "revision": "0083_conciliador_gold_set",
+      "apoyo_conservado": true
+    },
+    {
+      "escenario": "legados_conservados_y_consolidados",
+      "journal": [
+        {
+          "propuesta_id": "49215db9-15e3-4167-b235-beae86b02df2",
+          "contador_antes": 99,
+          "contador_despues": 2,
+          "filas_antes": 4,
+          "filas_despues": 2
+        },
+        {
+          "propuesta_id": "5e5fc73b-2b3c-4cf8-8f61-e839dd02d06b",
+          "contador_antes": 99,
+          "contador_despues": 2,
+          "filas_antes": 4,
+          "filas_despues": 2
+        }
+      ],
+      "notificacion_conservada": true,
+      "fecha_simulada_separada": true
+    },
+    {
+      "escenario": "downgrade_compatible_preserva_retiro_y_nuevo_anonimo",
+      "filas_originales_restauradas": 4,
+      "filas_tras_retiro_y_nuevo": 2,
+      "journal_privado_en_auditoria": true,
+      "historial_publico_antiguo_excluye_journal": true
+    },
+    {
+      "escenario": "contacto_solo_privado_bloquea_downgrade",
+      "rollback_integro": true,
+      "revision": "0084_aportes_colas_y_apoyos"
+    },
+    {
+      "escenario": "nuevo_apoyo_cuenta_sin_origen_bloquea_downgrade",
+      "rollback_integro": true,
+      "revision": "0084_aportes_colas_y_apoyos"
+    },
+    {
+      "escenario": "inbox_durable_bloquea_downgrade",
+      "rollback_integro": true,
+      "revision": "0084_aportes_colas_y_apoyos"
+    },
+    {
+      "escenario": "snapshot_migracion_final",
+      "revision": "0084_aportes_colas_y_apoyos",
+      "limite": "Downgrade compatible probado; incompatibles preservan0084 y no son downgrade aprobado"
+    }
+  ]
+}

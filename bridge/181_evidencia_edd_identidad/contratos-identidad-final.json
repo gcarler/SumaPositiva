@@ -1,0 +1,536 @@
+{
+  "nota": "Respuestas HTTP reales; solo valores sensibles sustituidos conservando claves/tipos. Google/SMTP sin activar.",
+  "ejemplos": {
+    "login_limitado": {
+      "token_acceso": "[VALOR_SENSIBLE_RETIRADO]",
+      "tipo_token": "Bearer",
+      "rol": "administrador_identidades",
+      "nivel_identidad": "declarada",
+      "permisos": [],
+      "expira_en": "2026-10-27T04:52:14.186409Z",
+      "usuario": {
+        "id": "01a1768d-4b86-7f90-ad2f-0434880707bd",
+        "rol_id": "01a17680-0fe8-7832-9c54-f6b0daaf4a3a",
+        "correo": "edd-contratos-904f654b31864e3ca65706c4a4dc08c6@example.org",
+        "nivel_identidad": "declarada",
+        "nombres": "Contrato",
+        "apellidos": "Sintetico",
+        "activo": true,
+        "codigo_rol": "administrador_identidades",
+        "permisos": [],
+        "correo_verificado_en": null,
+        "mfa_activo": false
+      },
+      "mfa_requerido": false,
+      "token_desafio_mfa": null,
+      "mfa_enrolamiento_requerido": true
+    },
+    "perfil_limitado": {
+      "id": "01a1768d-4b86-7f90-ad2f-0434880707bd",
+      "rol_id": "01a17680-0fe8-7832-9c54-f6b0daaf4a3a",
+      "correo": "edd-contratos-904f654b31864e3ca65706c4a4dc08c6@example.org",
+      "nivel_identidad": "declarada",
+      "nombres": "Contrato",
+      "apellidos": "Sintetico",
+      "activo": true,
+      "codigo_rol": "administrador_identidades",
+      "permisos": [],
+      "correo_verificado_en": null,
+      "mfa_activo": false
+    },
+    "estado_pendiente": {
+      "activo": false,
+      "codigos_restantes": 0,
+      "activado_en": null,
+      "exigido_por_rol": true,
+      "sesion_verificada": false
+    },
+    "enrolamiento": {
+      "secreto_b32": "[VALOR_SENSIBLE_RETIRADO]",
+      "otpauth_uri": "[VALOR_SENSIBLE_RETIRADO]",
+      "qr_code_base64": "[VALOR_SENSIBLE_RETIRADO]"
+    },
+    "estado_acreditado": {
+      "activo": true,
+      "codigos_restantes": 8,
+      "activado_en": "2026-10-26T04:52:14.314971Z",
+      "exigido_por_rol": true,
+      "sesion_verificada": true
+    },
+    "ambito": {
+      "id": "01a1768d-4da3-76c3-95d0-0938166b4fa6",
+      "usuario_id": "01a1768d-4b86-7f90-ad2f-0434880707bd",
+      "tipo_ambito": "distrital",
+      "identificador_territorial": "13001",
+      "activo": true,
+      "creado_en": "2026-10-26T04:52:14.370932Z",
+      "actualizado_en": "2026-10-26T04:52:14.370932Z"
+    },
+    "login_desafio": {
+      "token_acceso": "",
+      "tipo_token": "Bearer",
+      "rol": "administrador_identidades",
+      "nivel_identidad": "declarada",
+      "permisos": [],
+      "expira_en": "2026-10-26T04:57:14.653990Z",
+      "usuario": {
+        "id": "01a1768d-4b86-7f90-ad2f-0434880707bd",
+        "rol_id": "01a17680-0fe8-7832-9c54-f6b0daaf4a3a",
+        "correo": "edd-contratos-904f654b31864e3ca65706c4a4dc08c6@example.org",
+        "nivel_identidad": "declarada",
+        "nombres": "Contrato",
+        "apellidos": "Sintetico",
+        "activo": true,
+        "codigo_rol": "administrador_identidades",
+        "permisos": [
+          "alternativas:gestionar",
+          "alternativas:leer",
+          "asistencia:verificar",
+          "auditoria:leer",
+          "comunicaciones:gestionar",
+          "comunicaciones:leer",
+          "contenido:leer",
+          "formularios:gestionar",
+          "formularios:leer",
+          "fuentes:gestionar",
+          "fuentes:leer",
+          "ia:analizar",
+          "identidad:auditar",
+          "indicadores:gestionar",
+          "instrumentos:gestionar",
+          "mesas:abrir",
+          "mesas:acuerdos",
+          "mesas:fotos:subir",
+          "politicas:gestionar",
+          "presupuesto:gestionar",
+          "roles:gestionar",
+          "seguimiento:gestionar",
+          "seguimiento:leer",
+          "testimonios:moderar",
+          "usuarios:gestionar",
+          "usuarios:leer"
+        ],
+        "correo_verificado_en": null,
+        "mfa_activo": true
+      },
+      "mfa_requerido": true,
+      "token_desafio_mfa": "[VALOR_SENSIBLE_RETIRADO]",
+      "mfa_enrolamiento_requerido": false
+    },
+    "login_completo": {
+      "token_acceso": "[VALOR_SENSIBLE_RETIRADO]",
+      "tipo_token": "Bearer",
+      "rol": "administrador_identidades",
+      "nivel_identidad": "declarada",
+      "permisos": [
+        "alternativas:gestionar",
+        "alternativas:leer",
+        "asistencia:verificar",
+        "auditoria:leer",
+        "comunicaciones:gestionar",
+        "comunicaciones:leer",
+        "contenido:leer",
+        "formularios:gestionar",
+        "formularios:leer",
+        "fuentes:gestionar",
+        "fuentes:leer",
+        "ia:analizar",
+        "identidad:auditar",
+        "indicadores:gestionar",
+        "instrumentos:gestionar",
+        "mesas:abrir",
+        "mesas:acuerdos",
+        "mesas:fotos:subir",
+        "politicas:gestionar",
+        "presupuesto:gestionar",
+        "roles:gestionar",
+        "seguimiento:gestionar",
+        "seguimiento:leer",
+        "testimonios:moderar",
+        "usuarios:gestionar",
+        "usuarios:leer"
+      ],
+      "expira_en": "2026-10-27T04:52:14.672279Z",
+      "usuario": {
+        "id": "01a1768d-4b86-7f90-ad2f-0434880707bd",
+        "rol_id": "01a17680-0fe8-7832-9c54-f6b0daaf4a3a",
+        "correo": "edd-contratos-904f654b31864e3ca65706c4a4dc08c6@example.org",
+        "nivel_identidad": "declarada",
+        "nombres": "Contrato",
+        "apellidos": "Sintetico",
+        "activo": true,
+        "codigo_rol": "administrador_identidades",
+        "permisos": [
+          "alternativas:gestionar",
+          "alternativas:leer",
+          "asistencia:verificar",
+          "auditoria:leer",
+          "comunicaciones:gestionar",
+          "comunicaciones:leer",
+          "contenido:leer",
+          "formularios:gestionar",
+          "formularios:leer",
+          "fuentes:gestionar",
+          "fuentes:leer",
+          "ia:analizar",
+          "identidad:auditar",
+          "indicadores:gestionar",
+          "instrumentos:gestionar",
+          "mesas:abrir",
+          "mesas:acuerdos",
+          "mesas:fotos:subir",
+          "politicas:gestionar",
+          "presupuesto:gestionar",
+          "roles:gestionar",
+          "seguimiento:gestionar",
+          "seguimiento:leer",
+          "testimonios:moderar",
+          "usuarios:gestionar",
+          "usuarios:leer"
+        ],
+        "correo_verificado_en": null,
+        "mfa_activo": true
+      },
+      "mfa_requerido": false,
+      "token_desafio_mfa": null,
+      "mfa_enrolamiento_requerido": false
+    }
+  },
+  "json_schemas": {
+    "TokenRespuesta": {
+      "$defs": {
+        "UsuarioLectura": {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "rol_id": {
+              "format": "uuid",
+              "title": "Rol Id",
+              "type": "string"
+            },
+            "correo": {
+              "format": "email",
+              "title": "Correo",
+              "type": "string"
+            },
+            "nivel_identidad": {
+              "title": "Nivel Identidad",
+              "type": "string"
+            },
+            "nombres": {
+              "title": "Nombres",
+              "type": "string"
+            },
+            "apellidos": {
+              "title": "Apellidos",
+              "type": "string"
+            },
+            "activo": {
+              "title": "Activo",
+              "type": "boolean"
+            },
+            "codigo_rol": {
+              "title": "Codigo Rol",
+              "type": "string"
+            },
+            "permisos": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Permisos",
+              "type": "array"
+            },
+            "correo_verificado_en": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Correo Verificado En"
+            },
+            "mfa_activo": {
+              "default": false,
+              "title": "Mfa Activo",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "rol_id",
+            "correo",
+            "nivel_identidad",
+            "nombres",
+            "apellidos",
+            "activo",
+            "codigo_rol",
+            "permisos",
+            "correo_verificado_en"
+          ],
+          "title": "UsuarioLectura",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "token_acceso": {
+          "title": "Token Acceso",
+          "type": "string"
+        },
+        "tipo_token": {
+          "default": "Bearer",
+          "title": "Tipo Token",
+          "type": "string"
+        },
+        "rol": {
+          "title": "Rol",
+          "type": "string"
+        },
+        "nivel_identidad": {
+          "title": "Nivel Identidad",
+          "type": "string"
+        },
+        "permisos": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Permisos",
+          "type": "array"
+        },
+        "expira_en": {
+          "format": "date-time",
+          "title": "Expira En",
+          "type": "string"
+        },
+        "usuario": {
+          "$ref": "#/$defs/UsuarioLectura"
+        },
+        "mfa_requerido": {
+          "default": false,
+          "title": "Mfa Requerido",
+          "type": "boolean"
+        },
+        "token_desafio_mfa": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Token Desafio Mfa"
+        },
+        "mfa_enrolamiento_requerido": {
+          "default": false,
+          "title": "Mfa Enrolamiento Requerido",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "token_acceso",
+        "rol",
+        "nivel_identidad",
+        "permisos",
+        "expira_en",
+        "usuario"
+      ],
+      "title": "TokenRespuesta",
+      "type": "object"
+    },
+    "UsuarioLectura": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "rol_id": {
+          "format": "uuid",
+          "title": "Rol Id",
+          "type": "string"
+        },
+        "correo": {
+          "format": "email",
+          "title": "Correo",
+          "type": "string"
+        },
+        "nivel_identidad": {
+          "title": "Nivel Identidad",
+          "type": "string"
+        },
+        "nombres": {
+          "title": "Nombres",
+          "type": "string"
+        },
+        "apellidos": {
+          "title": "Apellidos",
+          "type": "string"
+        },
+        "activo": {
+          "title": "Activo",
+          "type": "boolean"
+        },
+        "codigo_rol": {
+          "title": "Codigo Rol",
+          "type": "string"
+        },
+        "permisos": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Permisos",
+          "type": "array"
+        },
+        "correo_verificado_en": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Correo Verificado En"
+        },
+        "mfa_activo": {
+          "default": false,
+          "title": "Mfa Activo",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "rol_id",
+        "correo",
+        "nivel_identidad",
+        "nombres",
+        "apellidos",
+        "activo",
+        "codigo_rol",
+        "permisos",
+        "correo_verificado_en"
+      ],
+      "title": "UsuarioLectura",
+      "type": "object"
+    },
+    "MfaEstadoLectura": {
+      "properties": {
+        "activo": {
+          "title": "Activo",
+          "type": "boolean"
+        },
+        "codigos_restantes": {
+          "title": "Codigos Restantes",
+          "type": "integer"
+        },
+        "activado_en": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Activado En"
+        },
+        "exigido_por_rol": {
+          "title": "Exigido Por Rol",
+          "type": "boolean"
+        },
+        "sesion_verificada": {
+          "default": false,
+          "title": "Sesion Verificada",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "activo",
+        "codigos_restantes",
+        "activado_en",
+        "exigido_por_rol"
+      ],
+      "title": "MfaEstadoLectura",
+      "type": "object"
+    },
+    "MfaIniciarRespuesta": {
+      "properties": {
+        "secreto_b32": {
+          "title": "Secreto B32",
+          "type": "string"
+        },
+        "otpauth_uri": {
+          "title": "Otpauth Uri",
+          "type": "string"
+        },
+        "qr_code_base64": {
+          "title": "Qr Code Base64",
+          "type": "string"
+        }
+      },
+      "required": [
+        "secreto_b32",
+        "otpauth_uri",
+        "qr_code_base64"
+      ],
+      "title": "MfaIniciarRespuesta",
+      "type": "object"
+    },
+    "AmbitoTerritorialLectura": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "usuario_id": {
+          "format": "uuid",
+          "title": "Usuario Id",
+          "type": "string"
+        },
+        "tipo_ambito": {
+          "title": "Tipo Ambito",
+          "type": "string"
+        },
+        "identificador_territorial": {
+          "title": "Identificador Territorial",
+          "type": "string"
+        },
+        "activo": {
+          "title": "Activo",
+          "type": "boolean"
+        },
+        "creado_en": {
+          "format": "date-time",
+          "title": "Creado En",
+          "type": "string"
+        },
+        "actualizado_en": {
+          "format": "date-time",
+          "title": "Actualizado En",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "usuario_id",
+        "tipo_ambito",
+        "identificador_territorial",
+        "activo",
+        "creado_en",
+        "actualizado_en"
+      ],
+      "title": "AmbitoTerritorialLectura",
+      "type": "object"
+    }
+  }
+}

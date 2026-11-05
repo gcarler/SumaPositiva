@@ -1,0 +1,19 @@
+{
+  "backend/app/modules/identidad/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "backend/app/modules/identidad/ambito_territorial.py": "b7735d6692fc555404a89f8a390876548cc92becd7ad2930d4b2bc2a9b5641b4",
+  "backend/app/modules/identidad/bootstrap.py": "afdae8ed1791a43c2d84bca0062737911bf2dbfdea812bbb11daea447183dbaf",
+  "backend/app/modules/identidad/catalogo.py": "5238a769cf52e9a66f3d881384f7494fe206de83a362bcd1d676a3078c56f57e",
+  "backend/app/modules/identidad/correo.py": "7b853c00a7436894c37da604b2543a2a6fd1667a4ed62b48ae9b79c59b7af488",
+  "backend/app/modules/identidad/deps.py": "2b92f1d66fab9c7339a8b18b56945410c9a817cc7f0ea97a8c4275d08c1fda3b",
+  "backend/app/modules/identidad/mfa.py": "aea11f72d7c7c2fdd09512ba609de69e612dc2b12d9628455bdb6ec48908ae0e",
+  "backend/app/modules/identidad/models.py": "30f4a8972f6967f044bd5168beb2b4df6529065333cc07b280a1177461da94cd",
+  "backend/app/modules/identidad/repository.py": "b9d5106699283b1b0d63766bc1b9b240cd616de00599abba32948edf55b444ba",
+  "backend/app/modules/identidad/router.py": "6b41e439e4efd6d3f5932ad229bbb20b2c8776776a0cead59fad0e4fb27b64ea",
+  "backend/app/modules/identidad/schemas.py": "9723de30ca63a819651d367c3f29478d919102789602489f2af028cbc6c36da0",
+  "backend/app/modules/identidad/security.py": "2128dee0a81def445e26cefb7518d7e2efd23ab71367594fcb6859ceec51be58",
+  "backend/app/modules/identidad/service.py": "3e94348d4b79000c3db620c9a437fd39522244ef5753ea5262738a18e57082c7",
+  "backend/app/modules/identidad/worker_correo.py": "33a85a43d99d7ac18c12bdffc794addb46c94ab3ab33a160680db6797e337ebb",
+  "backend/tests/test_cierre06_mfa_totp.py": "6b8f613e383e5221255b42a7f776ea7ce111dba979bf76c9b4efba34bea50993",
+  "backend/tests/test_magic_link.py": "9f339debfd09400ca049f6d6a1d48640841ce9510444e14cf6fd8c1f3c5d5ab3",
+  "backend/tests/test_control_fases_y_oauth.py": "073e2fccebee92b751642780d301fc708174db6ece58a7f239fc087845630105"
+}

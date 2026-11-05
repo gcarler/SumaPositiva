@@ -1,0 +1,24 @@
+{
+  "positive_database_matches": true,
+  "database_guard": "polis_test_edd_coord_20261026_d4afb7fa",
+  "rejections_before_io": [
+    "asyncpg.connect",
+    "asyncpg.connection.connect",
+    "psycopg.AsyncConnection.connect",
+    "asyncpg correct_db wrong_port",
+    "asyncpg correct_db external_host",
+    "psycopg correct_db wrong_port",
+    "psycopg correct_db external_hostaddr",
+    "sqlalchemy.asyncpg",
+    "psycopg.connect",
+    "psycopg.Connection.connect",
+    "smtplib.SMTP.connect",
+    "socket.connect external",
+    "socket.getaddrinfo external",
+    "socket.sendto external",
+    "repository write outside evidence"
+  ],
+  "count": 15,
+  "external_connections_opened": 0,
+  "repository_sentinel_created": false
+}

@@ -1,0 +1,702 @@
+{
+  "id" : "72sg-cybi",
+  "name" : "Reporte Lesiones Personales y en Accidente de Tránsito Policía Nacional",
+  "assetType" : "dataset",
+  "attribution" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+  "averageRating" : 0,
+  "category" : "Seguridad y Defensa",
+  "createdAt" : 1612972720,
+  "description" : "En este conjunto de datos la ciudadanía puede encontrará información del delito de Lesiones personales y Lesiones en accidente de Tránsito desde  01 de enero del año 2010 al  31 de julio del año 2026.\n\nFuente: DIJIN - Policía Nacional. Datos extraídos el día 31 de agosto del 2026 a las 17:17 horas.\n  cifras sujetas a variación, en proceso de integración y consolidación con información de fiscalía general de la nación.  \n\nSeñor usuario si encuentra alguna inconsistencia en la información publicada, no la puede hacer saber atraves del correo electrónico Dijin.aicri-jef@policia.gov.co.\n\nNota:  se ha realizado actualización en las cifras de todos los delitos, de acuerdo a la nueva metodología de validación de denuncias con la Fiscalía General de la Nación, la cual puede ser encontrada en el link https://www.policia.gov.co/grupo-informacion-criminalidad.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 1581,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 36413494,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1612973237,
+  "publicationGroup" : 18017267,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1788290710,
+  "rowsUpdatedBy" : "bn7v-9rpg",
+  "tableId" : 18017267,
+  "totalTimesRated" : 0,
+  "viewCount" : 9723,
+  "viewLastModified" : 1788290645,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1612973664,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 3216810,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1612973237,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1612973665,
+      "failureCount" : 0,
+      "startedAt" : 1612973664,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "bn7v-9rpg",
+      "displayName" : "DIJIN"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 523917779,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119497,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "VALLE",
+        "count" : "158552"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "141427"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "108306"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "108266"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "70523"
+      }, {
+        "item" : "BOGOTA",
+        "count" : "66776"
+      }, {
+        "item" : "BOYACÁ",
+        "count" : "66126"
+      }, {
+        "item" : "HUILA",
+        "count" : "57291"
+      }, {
+        "item" : "ATLÁNTICO",
+        "count" : "56094"
+      }, {
+        "item" : "RISARALDA",
+        "count" : "49633"
+      }, {
+        "item" : "BOLÍVAR",
+        "count" : "46832"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "46252"
+      }, {
+        "item" : "META",
+        "count" : "46214"
+      }, {
+        "item" : "CALDAS",
+        "count" : "44205"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "40586"
+      }, {
+        "item" : "CAUCA",
+        "count" : "38780"
+      }, {
+        "item" : "CÓRDOBA",
+        "count" : "33111"
+      }, {
+        "item" : "CESAR",
+        "count" : "28408"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "27793"
+      }, {
+        "item" : "QUINDÍO",
+        "count" : "27552"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917780,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119498,
+    "cachedContents" : {
+      "non_null" : "1381404",
+      "largest" : "Zona Bananera",
+      "null" : "12",
+      "top" : [ {
+        "item" : "Bogotá D.C. (CT)",
+        "count" : "66776"
+      }, {
+        "item" : "Cali (CT)",
+        "count" : "53095"
+      }, {
+        "item" : "Medellín (CT)",
+        "count" : "42587"
+      }, {
+        "item" : "Bucaramanga (CT)",
+        "count" : "30395"
+      }, {
+        "item" : "Barranquilla (CT)",
+        "count" : "29341"
+      }, {
+        "item" : "Ibagué (CT)",
+        "count" : "28498"
+      }, {
+        "item" : "Pereira (CT)",
+        "count" : "25638"
+      }, {
+        "item" : "Cartagena (CT)",
+        "count" : "25156"
+      }, {
+        "item" : "Villavicencio (CT)",
+        "count" : "24637"
+      }, {
+        "item" : "Pasto (CT)",
+        "count" : "23351"
+      }, {
+        "item" : "Cúcuta (CT)",
+        "count" : "22328"
+      }, {
+        "item" : "Neiva (CT)",
+        "count" : "21203"
+      }, {
+        "item" : "Manizales (CT)",
+        "count" : "20860"
+      }, {
+        "item" : "Palmira",
+        "count" : "16975"
+      }, {
+        "item" : "Armenia (CT)",
+        "count" : "15500"
+      }, {
+        "item" : "Montería (CT)",
+        "count" : "14681"
+      }, {
+        "item" : "Santa Marta (CT)",
+        "count" : "14397"
+      }, {
+        "item" : "Soacha",
+        "count" : "13941"
+      }, {
+        "item" : "Popayán (CT)",
+        "count" : "13182"
+      }, {
+        "item" : "Dosquebradas",
+        "count" : "12898"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917781,
+    "name" : "CODIGO DANE",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "codigo_dane",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119499,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "99773010",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001000",
+        "count" : "66776"
+      }, {
+        "item" : "76001000",
+        "count" : "53084"
+      }, {
+        "item" : "05001000",
+        "count" : "41321"
+      }, {
+        "item" : "68001000",
+        "count" : "30393"
+      }, {
+        "item" : "08001000",
+        "count" : "29259"
+      }, {
+        "item" : "73001000",
+        "count" : "28109"
+      }, {
+        "item" : "66001000",
+        "count" : "25576"
+      }, {
+        "item" : "50001000",
+        "count" : "24586"
+      }, {
+        "item" : "13001000",
+        "count" : "24549"
+      }, {
+        "item" : "52001000",
+        "count" : "23175"
+      }, {
+        "item" : "54001000",
+        "count" : "22315"
+      }, {
+        "item" : "17001000",
+        "count" : "20839"
+      }, {
+        "item" : "41001000",
+        "count" : "20667"
+      }, {
+        "item" : "76520000",
+        "count" : "16938"
+      }, {
+        "item" : "63001000",
+        "count" : "15182"
+      }, {
+        "item" : "23001000",
+        "count" : "14626"
+      }, {
+        "item" : "47001000",
+        "count" : "14166"
+      }, {
+        "item" : "25754000",
+        "count" : "13876"
+      }, {
+        "item" : "19001000",
+        "count" : "13167"
+      }, {
+        "item" : "66170000",
+        "count" : "12895"
+      } ],
+      "smallest" : "00000000",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917782,
+    "name" : "ARMAS MEDIOS",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "armas_medios",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119500,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "VENENO",
+      "null" : "0",
+      "top" : [ {
+        "item" : "CONTUNDENTES",
+        "count" : "443385"
+      }, {
+        "item" : "ARMA BLANCA / CORTOPUNZANTE",
+        "count" : "260940"
+      }, {
+        "item" : "SIN EMPLEO DE ARMAS",
+        "count" : "227777"
+      }, {
+        "item" : "VEHICULO",
+        "count" : "185803"
+      }, {
+        "item" : "MOTO",
+        "count" : "123781"
+      }, {
+        "item" : "ARMA DE FUEGO",
+        "count" : "55434"
+      }, {
+        "item" : "NO REPORTADO",
+        "count" : "50050"
+      }, {
+        "item" : "ACIDO",
+        "count" : "13301"
+      }, {
+        "item" : "PUNZANTES",
+        "count" : "4963"
+      }, {
+        "item" : "BICICLETA",
+        "count" : "2827"
+      }, {
+        "item" : "ARMA TRAUMATICA",
+        "count" : "2430"
+      }, {
+        "item" : "PERRO",
+        "count" : "2317"
+      }, {
+        "item" : "ARTEFACTO EXPLOSIVO/CARGA DINAMITA",
+        "count" : "1148"
+      }, {
+        "item" : "COMBUSTIBLE",
+        "count" : "909"
+      }, {
+        "item" : "ALIMENTOS VENCIDOS",
+        "count" : "753"
+      }, {
+        "item" : "ESCOPOLAMINA",
+        "count" : "739"
+      }, {
+        "item" : "GRANADA DE MANO",
+        "count" : "677"
+      }, {
+        "item" : "MINA ANTIPERSONA",
+        "count" : "592"
+      }, {
+        "item" : "AGUA CALIENTE",
+        "count" : "510"
+      }, {
+        "item" : "QUIMICOS",
+        "count" : "346"
+      } ],
+      "smallest" : "ACIDO",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917783,
+    "name" : "FECHA HECHO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "fecha_hecho",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119501,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "31/12/2025",
+      "null" : "0",
+      "top" : [ {
+        "item" : "01/01/2017",
+        "count" : "846"
+      }, {
+        "item" : "01/01/2016",
+        "count" : "785"
+      }, {
+        "item" : "01/01/2020",
+        "count" : "772"
+      }, {
+        "item" : "01/01/2019",
+        "count" : "737"
+      }, {
+        "item" : "01/01/2013",
+        "count" : "719"
+      }, {
+        "item" : "01/01/2012",
+        "count" : "709"
+      }, {
+        "item" : "01/01/2022",
+        "count" : "704"
+      }, {
+        "item" : "01/01/2018",
+        "count" : "683"
+      }, {
+        "item" : "01/01/2015",
+        "count" : "674"
+      }, {
+        "item" : "01/01/2023",
+        "count" : "655"
+      }, {
+        "item" : "01/01/2011",
+        "count" : "637"
+      }, {
+        "item" : "25/12/2021",
+        "count" : "625"
+      }, {
+        "item" : "01/01/2014",
+        "count" : "613"
+      }, {
+        "item" : "01/01/2026",
+        "count" : "602"
+      }, {
+        "item" : "01/01/2025",
+        "count" : "586"
+      }, {
+        "item" : "25/12/2016",
+        "count" : "575"
+      }, {
+        "item" : "24/06/2018",
+        "count" : "575"
+      }, {
+        "item" : "01/01/2024",
+        "count" : "567"
+      }, {
+        "item" : "25/12/2018",
+        "count" : "554"
+      }, {
+        "item" : "01/01/2021",
+        "count" : "528"
+      } ],
+      "smallest" : "01/01/2010",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917784,
+    "name" : "GENERO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "genero",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119502,
+    "cachedContents" : {
+      "non_null" : "1379299",
+      "largest" : "NO REPORTA",
+      "null" : "2117",
+      "top" : [ {
+        "item" : "MASCULINO",
+        "count" : "836786"
+      }, {
+        "item" : "FEMENINO",
+        "count" : "542393"
+      }, {
+        "item" : "NO REPORTA",
+        "count" : "120"
+      } ],
+      "smallest" : "FEMENINO",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917785,
+    "name" : "GRUPO ETARIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "grupo_etario",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119503,
+    "cachedContents" : {
+      "non_null" : "1380606",
+      "largest" : "MENORES",
+      "null" : "810",
+      "top" : [ {
+        "item" : "ADULTOS",
+        "count" : "1251812"
+      }, {
+        "item" : "ADOLESCENTES",
+        "count" : "96420"
+      }, {
+        "item" : "MENORES",
+        "count" : "32374"
+      } ],
+      "smallest" : "ADOLESCENTES",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917786,
+    "name" : "DESCRIPCIÓN CONDUCTA",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "descripci_n_conducta",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119504,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "ARTÍCULO 136. LESIONES EN PERSONA PROTEGIDA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "ARTÍCULO 111. LESIONES PERSONALES",
+        "count" : "907890"
+      }, {
+        "item" : "ARTÍCULO 120. LESIONES CULPOSAS ( EN ACCIDENTE DE TRANSITO )",
+        "count" : "455359"
+      }, {
+        "item" : "ARTICULO 120 LESIONES CULPOSAS",
+        "count" : "8651"
+      }, {
+        "item" : "ARTÍCULO 119. LESIONES PERSONALES ( CIRCUNSTANCIAS DE AGRAVACIÓN)",
+        "count" : "4995"
+      }, {
+        "item" : "ARTÍCULO 113. DEFORMIDAD",
+        "count" : "1905"
+      }, {
+        "item" : "ARTÍCULO 125. LESIONES AL FETO",
+        "count" : "653"
+      }, {
+        "item" : "ARTÍCULO 136. LESIONES EN PERSONA PROTEGIDA",
+        "count" : "545"
+      }, {
+        "item" : "ARTÍCULO 115. LESIONES CON PERTURBACION PSIQUICA TRANSITORIA",
+        "count" : "366"
+      }, {
+        "item" : "ARTÍCULO 112. INCAPACIDAD PARA TRABAJAR O ENFERMEDAD",
+        "count" : "358"
+      }, {
+        "item" : "ARTÍCULO 116. PÉRDIDA ANATÓMICA O FUNCIONAL DE UN ÓRGANO O MIEMBRO",
+        "count" : "252"
+      }, {
+        "item" : "ARTÍCULO 126. LESIONE CULPOSAS AL FETO",
+        "count" : "241"
+      }, {
+        "item" : "ARTÍCULO 114. PERTURBACIÓN FUNCIONAL",
+        "count" : "201"
+      } ],
+      "smallest" : "ARTÍCULO 111. LESIONES PERSONALES",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  }, {
+    "id" : 523917787,
+    "name" : "CANTIDAD",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "cantidad",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130119505,
+    "cachedContents" : {
+      "non_null" : "1381416",
+      "largest" : "99",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "985536"
+      }, {
+        "item" : "2",
+        "count" : "228343"
+      }, {
+        "item" : "3",
+        "count" : "75769"
+      }, {
+        "item" : "4",
+        "count" : "34082"
+      }, {
+        "item" : "5",
+        "count" : "17505"
+      }, {
+        "item" : "6",
+        "count" : "10228"
+      }, {
+        "item" : "7",
+        "count" : "6412"
+      }, {
+        "item" : "8",
+        "count" : "4525"
+      }, {
+        "item" : "9",
+        "count" : "3063"
+      }, {
+        "item" : "10",
+        "count" : "2328"
+      }, {
+        "item" : "11",
+        "count" : "1769"
+      }, {
+        "item" : "12",
+        "count" : "1488"
+      }, {
+        "item" : "13",
+        "count" : "1228"
+      }, {
+        "item" : "14",
+        "count" : "1011"
+      }, {
+        "item" : "15",
+        "count" : "926"
+      }, {
+        "item" : "16",
+        "count" : "835"
+      }, {
+        "item" : "17",
+        "count" : "652"
+      }, {
+        "item" : "18",
+        "count" : "621"
+      }, {
+        "item" : "19",
+        "count" : "553"
+      }, {
+        "item" : "20",
+        "count" : "484"
+      } ],
+      "smallest" : "1",
+      "count" : "1381416",
+      "cardinality" : "1381416"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Defensa",
+        "Área o dependencia" : "Secto",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

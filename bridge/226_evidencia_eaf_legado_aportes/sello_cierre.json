@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-26T06:35:35.126700+00:00",
+  "status": "APROBADO_AP03_R01_snapshot215",
+  "report_sha256": "1426e530ec4a348c76e8881b4bd5832a55725f475318e102cb5fe2ce1b874ca9",
+  "manifest_sha256": "d36dc3ed1c993259ce154a13db311498b5b04c97979f4733681f6da27c235905",
+  "snapshot_final_sha256": "f5b4cc2cff976c41dea4541f5f0bafb6f31313652c3b824dee5be1570db9a25c",
+  "artifact_count": 58,
+  "0084_sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+  "frozen": true
+}

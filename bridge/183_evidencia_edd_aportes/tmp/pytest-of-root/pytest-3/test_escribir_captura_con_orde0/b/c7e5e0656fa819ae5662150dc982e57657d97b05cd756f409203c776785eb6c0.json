@@ -1,0 +1,61 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "base_origen": "polis_test_orq_v5_20261022",
+  "conteos_sql": {
+    "P": {
+      "metas": 1,
+      "nodos": 1
+    },
+    "Q": {
+      "metas": 1,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.ppi_planeacion.v2",
+  "estado_publicacion": "no_publicable",
+  "nodos": [
+    {
+      "codigo_plan": "P",
+      "fuente": "prueba",
+      "id": "255b9e7b-4e38-403e-bfe1-ee93ac739c22",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{}"
+    },
+    {
+      "codigo_plan": "Q",
+      "fuente": "prueba",
+      "id": "1545ec5e-a37a-4eaa-a75f-54f9a1f82399",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{}"
+    }
+  ],
+  "planes": [
+    {
+      "codigo_plan": "P",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan de prueba",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    },
+    {
+      "codigo_plan": "Q",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan de prueba",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{}",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null
+    }
+  ],
+  "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+  "versionamiento": "01"
+}

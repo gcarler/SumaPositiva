@@ -1,0 +1,21 @@
+{
+  "signal": "INICIAR_REINSPECCION_APORTES",
+  "utc_received": "2026-10-26T05:33:49.504589+00:00",
+  "0084_sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+  "expected": {
+    "backend/alembic/versions/0084_aportes_colas_y_apoyos.py": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+    "bridge/183_evidencia_edd_aportes/fuentes_propias_finales.json": "850adafcc8a7d065cd19ec5ef527b5b1a41d11c6585a529f6a5d9aeb65586cce",
+    "bridge/183_evidencia_edd_aportes/manifest_evidencia.json": "661b24b11f9b27db5e0ee41a50874c81379fab44870aeac0593453afd739aa5a",
+    "docs/permisos-api.md": "8782c05d8f692d87e67091f9ef4d62a4f8c6d4821d2151d37e84dc110d698f2a",
+    "docs/operacion.md": "c0e6feddb7339b3980dd82c5a728ab8764e3a1cd0fd6622daca70bee58b2582f",
+    "docs/transacciones.md": "09eee0b157c39b57b8c729a9c8cc7da545c73b4ccc27f58a55ee2ecf4ed5f834"
+  },
+  "actual": {
+    "backend/alembic/versions/0084_aportes_colas_y_apoyos.py": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+    "bridge/183_evidencia_edd_aportes/fuentes_propias_finales.json": "850adafcc8a7d065cd19ec5ef527b5b1a41d11c6585a529f6a5d9aeb65586cce",
+    "bridge/183_evidencia_edd_aportes/manifest_evidencia.json": "661b24b11f9b27db5e0ee41a50874c81379fab44870aeac0593453afd739aa5a",
+    "docs/permisos-api.md": "8782c05d8f692d87e67091f9ef4d62a4f8c6d4821d2151d37e84dc110d698f2a",
+    "docs/operacion.md": "c0e6feddb7339b3980dd82c5a728ab8764e3a1cd0fd6622daca70bee58b2582f",
+    "docs/transacciones.md": "09eee0b157c39b57b8c729a9c8cc7da545c73b4ccc27f58a55ee2ecf4ed5f834"
+  }
+}

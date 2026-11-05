@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-26T06:25:12.295501+00:00",
+  "signal": "REINSPECCION_LEGADO_215",
+  "0084_sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5",
+  "fuentes_finales": {
+    "backend/app/modules/aportes/schemas.py": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1",
+    "backend/app/modules/aportes/service.py": "2a413c9d53d3a8fdb5c9dc4170655e5cf45ef8a251ed2688d227da3785469244",
+    "backend/tests/test_aportes_legado_publico.py": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753"
+  },
+  "entrega215": {
+    "bridge/215_entrega_edd_proyeccion_legado.md": "35cddfb93ff50904de8368eb4784090894bfe38adbf33cdf9a6258b24357fd43",
+    "bridge/215_evidencia_edd_proyeccion_legado/manifest_evidencia.json": "9d5d843b285b512a549f9189ba1dc423241b49fd525119958db6187f72568273"
+  }
+}

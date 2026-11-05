@@ -1,0 +1,16 @@
+{
+  "database": "polis_test_edd_legado_20261026_mig_f32ec3a5",
+  "uso": "migraciones",
+  "origen": "nueva desde template0",
+  "estado": "provisionada",
+  "fecha": "2026-10-26T06:06:15.069881+00:00",
+  "fecha_provision": "2026-10-26T06:06:51.518743+00:00",
+  "owner": "polis",
+  "extensions": [
+    "pgcrypto",
+    "postgis",
+    "ltree",
+    "unaccent",
+    "pg_trgm"
+  ]
+}

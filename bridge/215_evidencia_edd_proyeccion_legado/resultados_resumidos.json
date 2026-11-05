@@ -1,0 +1,53 @@
+{
+  "fecha": "2026-10-26T06:19:27.107432+00:00",
+  "resultados_pytest": {
+    "02_regresiones_antes": {
+      "tests": "6",
+      "errors": "0",
+      "failures": "6",
+      "skipped": "0",
+      "time": "12.671"
+    },
+    "03_nuevas_pruebas": {
+      "tests": "149",
+      "errors": "0",
+      "failures": "13",
+      "skipped": "0",
+      "time": "35.775"
+    },
+    "05_nuevas_pruebas": {
+      "tests": "151",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "31.525"
+    },
+    "06_dirigidas_y_transacciones": {
+      "tests": "388",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "100.368"
+    },
+    "07_http_outbox183": {
+      "tests": "2",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "9.087"
+    }
+  },
+  "casos_dirigidos_finales_sin_duplicar_iteraciones": 390,
+  "nuevos_en_su_test": 151,
+  "nuevos_ya_incluidos_en_los388": true,
+  "adicionales183": {
+    "casos": 2,
+    "adaptacion": "solo prefijo de las dos bases nuevas215; copia privada;183 original intacto"
+  },
+  "SQL_HTTP": "6/6 HTTP200 con hashes SQL antes/despues iguales y columnas institucionales conservadas",
+  "ruff": "conforme backend",
+  "formato": "542 archivos conformes",
+  "alembic": "check sin nuevas operaciones en ambas; secundaria nueva upgrade head; sin downgrade",
+  "global": "No ejecutado por instruccion214;205 es evidencia compartida anterior,1431/3/16 con limitaciones de corpus",
+  "sin_dictamen_EAF": true
+}

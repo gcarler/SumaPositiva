@@ -1,0 +1,25 @@
+{
+  "inbox": {
+    "command_log": "12_cli_inbox.log",
+    "results": 17,
+    "closed_technical_output": true,
+    "durable_rows": 17,
+    "only_simulated_transport": true
+  },
+  "outbox": {
+    "command_log": "14_cli_outbox.log",
+    "results": 57,
+    "closed_technical_output": true,
+    "durable_rows": 57,
+    "only_simulated_transport": true
+  },
+  "catalog": {
+    "metadata_tables": 8,
+    "missing_indexes": 0,
+    "check_tipo_sujeto_in_model_and_database": true,
+    "security_definer_functions": 0,
+    "public_create_schemas": 0,
+    "limit": "Rol propietario local; no acredita permisos de producción ni de otros roles."
+  },
+  "database": "polis_test_eaf_aportes_r2_20261026_cb6a2bfe"
+}

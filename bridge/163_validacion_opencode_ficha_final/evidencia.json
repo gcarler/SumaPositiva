@@ -1,0 +1,102 @@
+{
+  "esquema": "polis.evidencia_opencode_ficha_final.v1",
+  "tarea": "OP-TERR-FINAL-01",
+  "fecha_utc": "2026-10-26T03:47:30Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "estado": "validacion_independiente_completada",
+  "alcance": "Solo nucleo+test+CLI contexto; sin app/SQL/red/EAF; sin tests CLI Freebuff",
+  "pytest": {
+    "comando": "cd backend && PYTHONPATH=. .venv/bin/python -m pytest --noconftest tests/test_ficha_territorial_polis.py -q --junitxml=/root/polis/bridge/163_validacion_opencode_ficha_final/pytest_ficha.xml",
+    "xml": "bridge/163_validacion_opencode_ficha_final/pytest_ficha.xml",
+    "tests": 42,
+    "passed": 42,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ruff": {
+    "check": "All checks passed!",
+    "format_check": "3 files already formatted"
+  },
+  "hashes_actuales": {
+    "ficha_territorial_polis.py": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874",
+    "parser_terridata_polis.py": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+    "construir_ficha_territorial_polis.py": "7773e7a307ef8916fe85e6c0613950012dd716a273f2f817686e20198c36b570",
+    "test_ficha_territorial_polis.py": "9272b76e972583f43ea549c4845ec0bf937673c62e35aeb829f303aa15949e50"
+  },
+  "pilotos_157": {
+    "validacion_json": "bridge/157_validacion_coordinacion_ficha_final/validacion.json",
+    "codigo_sin_cambios": true,
+    "pilotos": [
+      {
+        "nombre": "completo",
+        "exit_code_cli": 0,
+        "ordenes_exactos_sin_perdidas": true,
+        "identidad_estado": "encontrado",
+        "conteos": {
+          "filas_total": 12899,
+          "filas_contexto_general": 102,
+          "observaciones": 12797,
+          "filas_excluidas_seleccion": 0,
+          "series": 1423,
+          "duplicados_celda": 2,
+          "observaciones_aceptadas": 12133,
+          "observaciones_retenidas": 662,
+          "observaciones_rechazadas": 2,
+          "contexto_aceptadas": 97,
+          "contexto_retenidas": 5,
+          "contexto_rechazadas": 0
+        },
+        "ficha_sha256": "19e06b4112ca576a25fa31d3deee55d2a5efccac2c2ca9ed43fc7fc407d41f80",
+        "manifiesto_sha256": "6764464808e57f7ae8d2fa33fc9f5241356834a478020d3f43304d197cd8947e"
+      },
+      {
+        "nombre": "filtro-2020",
+        "exit_code_cli": 0,
+        "ordenes_exactos_sin_perdidas": true,
+        "identidad_estado": "encontrado",
+        "conteos": {
+          "filas_total": 12899,
+          "filas_contexto_general": 102,
+          "observaciones": 900,
+          "filas_excluidas_seleccion": 11897,
+          "series": 889,
+          "duplicados_celda": 0,
+          "observaciones_aceptadas": 852,
+          "observaciones_retenidas": 48,
+          "observaciones_rechazadas": 0,
+          "excluidas_aceptadas": 11281,
+          "excluidas_retenidas": 614,
+          "excluidas_rechazadas": 2
+        },
+        "ficha_sha256": "1fc1e9868a523d70b3f041cf066d1b12d493e107175e1ed0f2258c873e572915",
+        "manifiesto_sha256": "f052b80a98db220e031367fd1cb4fd680d0671b6587e7f3d66c08e9bc7644d9e"
+      }
+    ]
+  },
+  "verificaciones_puntuales": {
+    "pertenencia_serie_id": true,
+    "duplicados_contenido": true,
+    "anio_no_evaluable_excluye_no_satisface": true,
+    "estados_conservados": true,
+    "identidad_parcial_nivel_declarado": true,
+    "fuente_unidad_separados": true,
+    "patron_yyyy_parser": true,
+    "sin_aceptar_estado_externo": true,
+    "seleccion_sha_distingue_archivo_vs_canonico": true
+  },
+  "conservados": [
+    "bridge/143_revision_opencode_resolver.md",
+    "bridge/143_validacion_opencode_resolver/",
+    "bridge/146_fe_erratas_opencode_resolver.md",
+    "bridge/146_evidencia_opencode_resolver.json",
+    "bridge/153_revision_opencode_cli_ficha.md",
+    "bridge/153_evidencia_opencode_cli_ficha.json",
+    "bridge/153_precision_hash_seleccion.md"
+  ],
+  "salidas": [
+    "bridge/163_revision_opencode_ficha_final.md",
+    "bridge/163_validacion_opencode_ficha_final/pytest_ficha.xml",
+    "bridge/163_validacion_opencode_ficha_final/hashes_actuales.txt"
+  ]
+}

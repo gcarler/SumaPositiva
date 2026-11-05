@@ -1,0 +1,39 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/plataforma/layout,_N_T_/plataforma/testimonios/layout,_N_T_/plataforma/testimonios/page,_N_T_/plataforma/testimonios"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/plataforma/testimonios/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 160,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/105d59f34920fe07773cdd82daf993e78d1dc6f6ae74cd99c58f1405118d83b4/$/plataforma/testimonios",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/plataforma/testimonios/page"
+    },
+    "isFallback": false
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "corte_consolidado_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "esquema": "polis.tablero_operacion_fuentes.v1",
+  "estado_calidad_global": "ambar",
+  "estado_publicacion": "no_publicable",
+  "evaluacion_sha256": "4bc94f3d6fcd1fbafec2fbc43bb0bb64fe5046716fe87978546daf43c83b678b",
+  "fecha_corte_utc": "2026-10-22T01:00:00+00:00",
+  "fuentes": [
+    {
+      "alertas": [
+        "frescura:espera_entrega_manual",
+        "licencia_por_verificar",
+        "promocion:pendiente_validacion"
+      ],
+      "anios": [
+        "2024",
+        "2025"
+      ],
+      "custodios_declarados": [
+        "Medicina Legal"
+      ],
+      "estado_estructural": "validado_estructural",
+      "estado_promocion": "pendiente_validacion",
+      "estado_revision": "espera_entrega_manual",
+      "filas": 2,
+      "fuente_clave": "medicina_homicidios",
+      "indicadores": [
+        "homicidio"
+      ],
+      "licencia": "por_verificar",
+      "modo_actualizacion": "manual",
+      "problemas_estructurales": [],
+      "proxima_revision_utc": null,
+      "responsable_rol": "custodio",
+      "sha256_contenido": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "ultima_extraccion_utc": "2026-10-22T00:00:00+00:00",
+      "version_id": "bbbbbbbbbbbbbbbb"
+    }
+  ],
+  "fuentes_transversales": [
+    {
+      "alerta": true,
+      "estado_revision": "revision_en_plazo",
+      "fuente_clave": "dane_ipc_nacional_serie_empalmada",
+      "licencia": "por_verificar"
+    }
+  ],
+  "inventario_sha256": "456e1b1b4a0a9e9ba0741db966b4d166563b37f37a2cfb007f204c7a13566164",
+  "limitacion": "La validación estructural no acredita custodia, licencia, comparabilidad ni publicación.",
+  "plan_actualizacion_sha256": "a853bc7bae851cc64e547e2598d3121228eb919c554f668c8f6ba92437a057f3",
+  "problemas_globales": {
+    "licencia": 1
+  },
+  "resumen": {
+    "artefactos": 3,
+    "estados_estructurales": {
+      "validado_estructural": 1
+    },
+    "estados_revision": {
+      "espera_entrega_manual": 1
+    },
+    "filas": 2,
+    "fuentes": 1,
+    "fuentes_con_alerta": 1,
+    "fuentes_transversales": 1,
+    "fuentes_transversales_con_alerta": 1,
+    "motivos_alerta": {
+      "frescura:espera_entrega_manual": 1,
+      "licencia_por_verificar": 1,
+      "promocion:pendiente_validacion": 1
+    }
+  }
+}

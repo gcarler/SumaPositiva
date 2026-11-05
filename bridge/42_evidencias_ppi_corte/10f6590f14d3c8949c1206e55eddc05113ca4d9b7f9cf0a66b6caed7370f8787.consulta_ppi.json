@@ -1,0 +1,333 @@
+{
+  "alcance": "SOLO_PPI_FORMULADO_POR_CORTE_SIN_SQL",
+  "cobertura_financiera": {
+    "catalogo_sha256": "0ccf1867a4dedb045a627a5da0e9b3cd553f9b1d8819e74f92daaf1f1ace5c11",
+    "comparabilidad_financiera_acreditada": false,
+    "conteos_por_plan": {
+      "PDD_2012_2015": {
+        "metas": 469,
+        "nodos": 146
+      },
+      "PDD_2013_2015": {
+        "metas": 676,
+        "nodos": 283
+      },
+      "PDD_2016_2019": {
+        "metas": 898,
+        "nodos": 472
+      },
+      "PDD_2020_2023": {
+        "metas": 947,
+        "nodos": 313
+      },
+      "PDD_2024_2027": {
+        "metas": 1246,
+        "nodos": 236
+      },
+      "PDL_1_2024_2027": {
+        "metas": 110,
+        "nodos": 41
+      },
+      "PDL_2_2024_2027": {
+        "metas": 89,
+        "nodos": 23
+      },
+      "PDL_3_2024_2027": {
+        "metas": 202,
+        "nodos": 59
+      }
+    },
+    "estado_publicacion": "no_publicable",
+    "filtro_textual_aplicado": false,
+    "filtros_aplicados": {
+      "codigo_plan": "TODOS"
+    },
+    "limite": "Numeric copiado y JSONB crudo; sin ejecución, agregación jerárquica, deflación ni ranking.",
+    "origen": "PPI_FORMULADO_CONGELADO",
+    "planes_capturados": 8,
+    "planes_filtrados": 8,
+    "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+    "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455"
+  },
+  "cobertura_metas": {
+    "filtros_aplicados": [
+      "codigo_plan",
+      "primer_termino_nombre_o_indicador"
+    ],
+    "limite": "Las metas no tienen clasificación SH propia; dimensión y frontalidad solo filtran nodos.",
+    "metas_incluidas_en_muestra": 40,
+    "metas_por_plan_totales": {
+      "PDD_2012_2015": 469,
+      "PDD_2013_2015": 676,
+      "PDD_2016_2019": 898,
+      "PDD_2020_2023": 947,
+      "PDD_2024_2027": 1246,
+      "PDL_1_2024_2027": 110,
+      "PDL_2_2024_2027": 89,
+      "PDL_3_2024_2027": 202
+    },
+    "muestra_truncada": true,
+    "planes_evaluados_count": 8,
+    "total_metas_coincidentes_sin_truncar": 4637
+  },
+  "consulta": {
+    "archivo": null,
+    "codigo_plan": "TODOS",
+    "dimension_sh": "TODAS",
+    "grado_frontalidad": "TODOS",
+    "pregunta": "PDD / PA",
+    "profundidad": "forense"
+  },
+  "corte": {
+    "estado_calidad": "ambar",
+    "estado_publicacion": "no_publicable",
+    "manifiesto": "/root/polis/data/capas_analiticas/cortes/e5aea3ea-86e8-486e-9c56-2dfe6e250455.json",
+    "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+    "sha256": "27be1632cbd3d5fd84d37c3a85935d22a53b4bf524da73465b2edf5f86a749b9"
+  },
+  "esquema": "polis.consulta_ppi_corte.v1",
+  "estado_publicacion": "no_publicable",
+  "herramientas_invocadas": [
+    {
+      "herramienta": "tool_conciliar_ppi_plan",
+      "parametros": {
+        "codigo_plan": "TODOS"
+      },
+      "registros_recuperados": 8
+    }
+  ],
+  "modelo": "polis-pdd-function-cognitive",
+  "planes": [
+    {
+      "codigo_plan": "PDD_2012_2015",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "PPI_CRUDO_SIN_COMPARABILIDAD_ACREDITADA",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdd_2012_2015_acuerdo_001_campo_para_todos.md\"]",
+      "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP corrientes\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+      "nombre_oficial": "En Cartagena Hay Campo para Todos",
+      "periodo": "2012–2015",
+      "ppi_anual_cop": "{\"2012\": 718910382000, \"2013\": 712219309000, \"2014\": 787872147000, \"2015\": 830786430000}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "3049788268000.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDD_2012_2015",
+        "fuentes": "[\"pdd_2012_2015_acuerdo_001_campo_para_todos.md\"]",
+        "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP corrientes\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+        "nombre_oficial": "En Cartagena Hay Campo para Todos",
+        "periodo": "2012–2015",
+        "ppi_anual_cop": "{\"2012\": 718910382000, \"2013\": 712219309000, \"2014\": 787872147000, \"2015\": 830786430000}",
+        "ppi_total_constante_2025_cop": "5657100631305.25",
+        "ppi_total_corriente_cop": "3049788268000.00"
+      }
+    },
+    {
+      "codigo_plan": "PDD_2013_2015",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "PPI_CRUDO_SIN_COMPARABILIDAD_ACREDITADA",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md\"]",
+      "metadatos": "{\"nota\": \"El plan maestro reporta importes anuales redondeados; el total oficial prevalece.\", \"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"nota_vigencia\": \"Plan atípico adoptado al final de 2013; el PPI documenta 2014-2015. No se imputa PPI para 2013.\", \"unidad_fuente\": \"miles de COP; convertido a COP\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"norma_adopcion\": \"Acuerdo Distrital 016 de 2013\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+      "nombre_oficial": "Ahora Sí Cartagena",
+      "periodo": "2013–2015",
+      "ppi_anual_cop": "{\"2014\": 919970330000, \"2015\": 954197275000}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "1874167605000.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDD_2013_2015",
+        "fuentes": "[\"pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md\"]",
+        "metadatos": "{\"nota\": \"El plan maestro reporta importes anuales redondeados; el total oficial prevalece.\", \"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"nota_vigencia\": \"Plan atípico adoptado al final de 2013; el PPI documenta 2014-2015. No se imputa PPI para 2013.\", \"unidad_fuente\": \"miles de COP; convertido a COP\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"norma_adopcion\": \"Acuerdo Distrital 016 de 2013\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+        "nombre_oficial": "Ahora Sí Cartagena",
+        "periodo": "2013–2015",
+        "ppi_anual_cop": "{\"2014\": 919970330000, \"2015\": 954197275000}",
+        "ppi_total_constante_2025_cop": "3348648877938.57",
+        "ppi_total_corriente_cop": "1874167605000.00"
+      }
+    },
+    {
+      "codigo_plan": "PDD_2016_2019",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "PPI_CRUDO_SIN_COMPARABILIDAD_ACREDITADA",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdd_2016_2019_acuerdo_006_primero_la_gente.md\"]",
+      "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP corrientes\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+      "nombre_oficial": "Primero la Gente para una Cartagena Sostenible y Competitiva",
+      "periodo": "2016–2019",
+      "ppi_anual_cop": "{\"2016\": 976114000000, \"2017\": 1033268000000, \"2018\": 1115477000000, \"2019\": 1207081000000}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "4331941000000.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDD_2016_2019",
+        "fuentes": "[\"pdd_2016_2019_acuerdo_006_primero_la_gente.md\"]",
+        "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP corrientes\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+        "nombre_oficial": "Primero la Gente para una Cartagena Sostenible y Competitiva",
+        "periodo": "2016–2019",
+        "ppi_anual_cop": "{\"2016\": 976114000000, \"2017\": 1033268000000, \"2018\": 1115477000000, \"2019\": 1207081000000}",
+        "ppi_total_constante_2025_cop": "6688427144190.21",
+        "ppi_total_corriente_cop": "4331941000000.00"
+      }
+    },
+    {
+      "codigo_plan": "PDD_2020_2023",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "CONFLICTO_TOTAL_NARRATIVA_TABLA_SUMATORIA",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdd_2020_2023_salvemos_juntos_cartagena.md\"]",
+      "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP constantes diciembre 2019\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+      "nombre_oficial": "Salvemos Juntos a Cartagena",
+      "periodo": "2020–2023",
+      "ppi_anual_cop": "{\"2020\": 1437205700000, \"2021\": 1473130500000, \"2022\": 1528216600000, \"2023\": 1584429700000}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": null,
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDD_2020_2023",
+        "fuentes": "[\"pdd_2020_2023_salvemos_juntos_cartagena.md\"]",
+        "metadatos": "{\"pdd_only\": true, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_precios\": \"COP constantes diciembre 2019\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\"}",
+        "nombre_oficial": "Salvemos Juntos a Cartagena",
+        "periodo": "2020–2023",
+        "ppi_anual_cop": "{\"2020\": 1437205700000, \"2021\": 1473130500000, \"2022\": 1528216600000, \"2023\": 1584429700000}",
+        "ppi_total_constante_2025_cop": "8834719279068.76",
+        "ppi_total_corriente_cop": "6022982660000.00"
+      }
+    },
+    {
+      "codigo_plan": "PDD_2024_2027",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "SIN_IPC_ANUAL_COMPLETO_2026_2027",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdd_2024_2027_bases_tecnicas.md\", \"pdd_2024_2027_ponencia_2do_debate_pa013.md\"]",
+      "metadatos": "{\"pdd_only\": true, \"programas\": 172, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\", \"impulsores_avance\": 42, \"lineas_estrategicas\": 6}",
+      "nombre_oficial": "Cartagena, Ciudad de Derechos",
+      "periodo": "2024–2027",
+      "ppi_anual_cop": "{\"2024\": 3270509322394, \"2025\": 2953975540173, \"2026\": 3194140433906, \"2027\": 3382228178382}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "12800853474855.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDD_2024_2027",
+        "fuentes": "[\"pdd_2024_2027_bases_tecnicas.md\", \"pdd_2024_2027_ponencia_2do_debate_pa013.md\"]",
+        "metadatos": "{\"pdd_only\": true, \"programas\": 172, \"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"base_constante\": \"COP 2025 con IPC DANE disponible en backend\", \"reconstruccion\": \"MOTOR_EXTRACCION_HOMOLOGACION_PDD_SH_16\", \"impulsores_avance\": 42, \"lineas_estrategicas\": 6}",
+        "nombre_oficial": "Cartagena, Ciudad de Derechos",
+        "periodo": "2024–2027",
+        "ppi_anual_cop": "{\"2024\": 3270509322394, \"2025\": 2953975540173, \"2026\": 3194140433906, \"2027\": 3382228178382}",
+        "ppi_total_constante_2025_cop": "12967649450297.09",
+        "ppi_total_corriente_cop": "12800853474855.00"
+      }
+    },
+    {
+      "codigo_plan": "PDL_1_2024_2027",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "SIN_IPC_ANUAL_COMPLETO_2026_2027",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdl_2024_2027_localidad_1_historica.md\"]",
+      "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 90822361529, \"ppi_funcionamiento_cop\": 6868680000}",
+      "nombre_oficial": "Localidad Histórica y del Caribe Norte",
+      "periodo": "2024–2027",
+      "ppi_anual_cop": "{\"2024\": 22390236924, \"2025\": 23851707764, \"2026\": 25125173348, \"2027\": 26323923493}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "97691041529.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDL_1_2024_2027",
+        "fuentes": "[\"pdl_2024_2027_localidad_1_historica.md\"]",
+        "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 90822361529, \"ppi_funcionamiento_cop\": 6868680000}",
+        "nombre_oficial": "Localidad Histórica y del Caribe Norte",
+        "periodo": "2024–2027",
+        "ppi_anual_cop": "{\"2024\": 22390236924, \"2025\": 23851707764, \"2026\": 25125173348, \"2027\": 26323923493}",
+        "ppi_total_constante_2025_cop": "98832943612.12",
+        "ppi_total_corriente_cop": "97691041529.00"
+      }
+    },
+    {
+      "codigo_plan": "PDL_2_2024_2027",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "SIN_IPC_ANUAL_COMPLETO_2026_2027",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdl_2024_2027_localidad_2_virgen_turistica.md\"]",
+      "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 154248545013.45, \"ppi_funcionamiento_cop\": 7041451395.56}",
+      "nombre_oficial": "Localidad de la Virgen y Turística",
+      "periodo": "2024–2027",
+      "ppi_anual_cop": "{\"2024\": 36958466088.34, \"2025\": 39325286256.64, \"2026\": 41355128312.56, \"2027\": 43651115751.48}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "161289996409.01",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDL_2_2024_2027",
+        "fuentes": "[\"pdl_2024_2027_localidad_2_virgen_turistica.md\"]",
+        "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 154248545013.45, \"ppi_funcionamiento_cop\": 7041451395.56}",
+        "nombre_oficial": "Localidad de la Virgen y Turística",
+        "periodo": "2024–2027",
+        "ppi_anual_cop": "{\"2024\": 36958466088.34, \"2025\": 39325286256.64, \"2026\": 41355128312.56, \"2027\": 43651115751.48}",
+        "ppi_total_constante_2025_cop": "163174878179.53",
+        "ppi_total_corriente_cop": "161289996409.01"
+      }
+    },
+    {
+      "codigo_plan": "PDL_3_2024_2027",
+      "desglose_7d_constante_2025_cop": null,
+      "desglose_abcn_constante_2025_cop": null,
+      "estado_financiero": "SIN_IPC_ANUAL_COMPLETO_2026_2027",
+      "estado_publicacion": "no_publicable",
+      "fuente_cifras": "PPI_FORMULADO_CONGELADO",
+      "fuentes": "[\"pdl_2024_2027_localidad_3_industrial_bahia.md\"]",
+      "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 39000000000, \"ppi_funcionamiento_cop\": 7000000000, \"ppi_inversion_directa_cop\": 39000000000}",
+      "nombre_oficial": "Localidad Industrial y de la Bahía",
+      "periodo": "2024–2027",
+      "ppi_anual_cop": "{\"2024\": 7000000000, \"2025\": 10000000000, \"2026\": 13000000000, \"2027\": 16000000000}",
+      "ppi_sha256": "ae3352f1a69577c5ed6e48d5443796194b08125e52177aa1c246bd59e3ec157e",
+      "ppi_total_constante_2025_cop": null,
+      "ppi_total_corriente_cop": "46000000000.00",
+      "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+      "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+      "valores_crudos": {
+        "codigo_plan": "PDL_3_2024_2027",
+        "fuentes": "[\"pdl_2024_2027_localidad_3_industrial_bahia.md\"]",
+        "metadatos": "{\"ppi_estado\": \"OFICIAL_EXTRAIDO\", \"ppi_inversion_cop\": 39000000000, \"ppi_funcionamiento_cop\": 7000000000, \"ppi_inversion_directa_cop\": 39000000000}",
+        "nombre_oficial": "Localidad Industrial y de la Bahía",
+        "periodo": "2024–2027",
+        "ppi_anual_cop": "{\"2024\": 7000000000, \"2025\": 10000000000, \"2026\": 13000000000, \"2027\": 16000000000}",
+        "ppi_total_constante_2025_cop": "46357000000.00",
+        "ppi_total_corriente_cop": "46000000000.00"
+      }
+    }
+  ],
+  "run_id": "e5aea3ea-86e8-486e-9c56-2dfe6e250455",
+  "uso": {
+    "input_tokens": 1396,
+    "output_tokens": 15,
+    "requests": 2
+  },
+  "version_prompt": "consulta_ppi_corte.v1"
+}

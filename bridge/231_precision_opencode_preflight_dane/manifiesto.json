@@ -1,0 +1,26 @@
+{
+  "tarea": "OP-DANE-PREFLIGHT-02-R1",
+  "fecha": "2026-10-26T06:38:51Z",
+  "agente": "OpenCode (sesion =opencode:0.0)",
+  "preserva": [
+    "bridge/230_preflight_opencode_dane_edad_sexo/*",
+    "bridge/189*",
+    "bridge/195*"
+  ],
+  "sin_red": true,
+  "conteos": {
+    "content_length_head": 131609579,
+    "cuerpo_head": 0,
+    "rango_bytes_recibidos": 1,
+    "content_range": "bytes 0-0/131609579",
+    "total189": 6714476,
+    "lote189_mas_pendiente": 138324055,
+    "limite_lote_128mb": 134217728,
+    "excede_individual_64mb": true,
+    "excede_lote_128mb": true
+  },
+  "hashes": {
+    "preflight_json": "11ef389b9e39a464fde52e19c0f9e16dbd1a4c31bb4a8906739d623cd2b65705",
+    "preflight_py": "69b5fe27b95f195baa7fe299d24514b3eb2348a76a13aed53e5bce88bd933b67"
+  }
+}

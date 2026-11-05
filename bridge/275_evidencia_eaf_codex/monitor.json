@@ -1,0 +1,161 @@
+{
+  "source_sha256": "14394f860d52a6585e84624deef38d60df9c39b27b3957d20743a49fb43e98af",
+  "sandbox_sha256": "ad603297415bb580cc402987ab28006c73a0b14f7112719d862682c062ea79c7",
+  "substituciones_rutas": {
+    "/root/polis/backend/.env": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/monitor/ausente.env",
+    "/var/cache/polis-monitor/herald_ultima_alerta": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/monitor/ultima_alerta",
+    "/var/log/polis-monitor.log": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/monitor/monitor.log"
+  },
+  "stubs": [
+    "curl",
+    "systemctl",
+    "psql",
+    "df",
+    "date"
+  ],
+  "sin_red_ni_bd_ni_servicios_reales": true,
+  "casos": [
+    {
+      "label": "primera_degradacion",
+      "mode": "--cron",
+      "now": 2000000000,
+      "returncode": 1,
+      "alertas_nuevas": 1,
+      "sello": "2000000000",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "[2033-05-18T03:33:20Z] [ALERT] Degradación detectada: [Herald degradado]\n[2033-05-18T03:33:20Z] [INFO] Enviando alerta a webhook configurado...\n[2033-05-18T03:33:20Z] [INFO] Alerta webhook despachada exitosamente.\n"
+    },
+    {
+      "label": "repeticion_dentro_cooldown",
+      "mode": "--cron",
+      "now": 2000000060,
+      "returncode": 0,
+      "alertas_nuevas": 0,
+      "sello": "2000000000",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "2033-05-18T03:34:20Z] [INFO] Herald en estado 'degradado': alerta suprimida por cooldown (7200s).\n[2033-05-18T03:34:20Z] [OK] Todos los servicios saludables (Backend 200, Frontend 200, PG: 1/100 conx, Disco: 10%).\n"
+    },
+    {
+      "label": "cooldown_cumplido",
+      "mode": "--cron",
+      "now": 2000007200,
+      "returncode": 1,
+      "alertas_nuevas": 1,
+      "sello": "2000007200",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "2033-05-18T05:33:20Z] [ALERT] Degradación detectada: [Herald degradado]\n[2033-05-18T05:33:20Z] [INFO] Enviando alerta a webhook configurado...\n[2033-05-18T05:33:20Z] [INFO] Alerta webhook despachada exitosamente.\n"
+    },
+    {
+      "label": "recuperacion",
+      "mode": "--cron",
+      "now": 2000007210,
+      "returncode": 0,
+      "alertas_nuevas": 0,
+      "sello": null,
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "033-05-18T05:33:30Z] [INFO] Herald recuperado (saludable); sello de cooldown eliminado.\n[2033-05-18T05:33:30Z] [OK] Todos los servicios saludables (Backend 200, Frontend 200, PG: 1/100 conx, Disco: 10%).\n"
+    },
+    {
+      "label": "recaida_inmediata",
+      "mode": "--cron",
+      "now": 2000007211,
+      "returncode": 1,
+      "alertas_nuevas": 1,
+      "sello": "2000007211",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "033-05-18T05:33:31Z] [ALERT] Degradación detectada: [Herald degradado]\n[2033-05-18T05:33:31Z] [INFO] Enviando alerta a webhook configurado...\n[2033-05-18T05:33:31Z] [INFO] Alerta webhook despachada exitosamente.\n"
+    },
+    {
+      "label": "lectura_check_consume_sello",
+      "mode": "--check",
+      "now": 2000000000,
+      "returncode": 1,
+      "alertas_nuevas": 0,
+      "sello": "2000000000",
+      "stdout": "==============================================================================\n POLIS Cartagena — Diagnóstico Proactivo de Salud y Servicios\n Fecha y Hora UTC: 2033-05-18T03:33:20Z\n==============================================================================\nCOMPONENTE                     | VALOR / MEDIDA       | UMBRAL       | ESTADO    \n------------------------------------------------------------------------------\npolis-backend.service          | active               | active       | OK        \npolis-frontend.service         | active               | active       | OK        \nFastAPI HTTP Endpoint          | HTTP 200             | HTTP 200     | OK        \nNext.js HTTP Root              | HTTP 200             | HTTP 200     | OK        \nPOLIS Herald (correo)          | degradado            | saludable    | FAIL      \nPostgreSQL bd_csh Conx         | 1 / 100 (1%)         | < 85%        | OK        \nEspacio en Disco (/)           | 10% (100 GB libre)   | < 90%        | OK        \n==============================================================================\n RESULTADO: ALERTA DETECTADA: [Herald degradado] (Código de salida: 1)\n==============================================================================\n",
+      "stderr": "",
+      "log_nuevo": ""
+    },
+    {
+      "label": "cron_tras_check_no_envia",
+      "mode": "--cron",
+      "now": 2000000060,
+      "returncode": 0,
+      "alertas_nuevas": 0,
+      "sello": "2000000000",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "[2033-05-18T03:34:20Z] [INFO] Herald en estado 'degradado': alerta suprimida por cooldown (7200s).\n[2033-05-18T03:34:20Z] [OK] Todos los servicios saludables (Backend 200, Frontend 200, PG: 1/100 conx, Disco: 10%).\n"
+    },
+    {
+      "label": "webhook_fallido",
+      "mode": "--cron",
+      "now": 2000000000,
+      "returncode": 1,
+      "alertas_nuevas": 1,
+      "sello": "2000000000",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "[2033-05-18T03:33:20Z] [ALERT] Degradación detectada: [Herald degradado]\n[2033-05-18T03:33:20Z] [INFO] Enviando alerta a webhook configurado...\n[2033-05-18T03:33:20Z] [WARN] Fallo al despachar alerta webhook.\n"
+    },
+    {
+      "label": "no_reintenta_webhook_fallido",
+      "mode": "--cron",
+      "now": 2000000060,
+      "returncode": 0,
+      "alertas_nuevas": 0,
+      "sello": "2000000000",
+      "stdout": "",
+      "stderr": "",
+      "log_nuevo": "2033-05-18T03:34:20Z] [INFO] Herald en estado 'degradado': alerta suprimida por cooldown (7200s).\n[2033-05-18T03:34:20Z] [OK] Todos los servicios saludables (Backend 200, Frontend 200, PG: 1/100 conx, Disco: 10%).\n"
+    },
+    {
+      "label": "json_normal",
+      "mode": "--json",
+      "now": 2000000000,
+      "returncode": 1,
+      "alertas_nuevas": 0,
+      "sello": "2000000000",
+      "stdout": "{\n  \"timestamp\": \"2033-05-18T03:33:20Z\",\n  \"estado\": \"ALERT\",\n  \"servicios\": {\n    \"backend_systemd\": \"active\",\n    \"frontend_systemd\": \"active\",\n    \"backend_http\": \"200\",\n    \"frontend_http\": \"200\"\n  },\n  \"herald\": {\n    \"estado\": \"degradado\",\n    \"motivos\": \"\\\"Ejecutor sin latido\\\"\",\n    \"alerta_suprimida\": \"NO\"\n  },\n  \"postgresql\": {\n    \"disponible\": \"SI\",\n    \"conexiones_activas\": 1,\n    \"max_conexiones\": 100,\n    \"porcentaje_uso\": 1\n  },\n  \"almacenamiento\": {\n    \"disco_usado_pct\": 10,\n    \"disco_libre_gb\": 100\n  },\n  \"alertas\": \" [Herald degradado]\"\n}\n",
+      "stderr": "",
+      "log_nuevo": "",
+      "json": {
+        "timestamp": "2033-05-18T03:33:20Z",
+        "estado": "ALERT",
+        "servicios": {
+          "backend_systemd": "active",
+          "frontend_systemd": "active",
+          "backend_http": "200",
+          "frontend_http": "200"
+        },
+        "herald": {
+          "estado": "degradado",
+          "motivos": "\"Ejecutor sin latido\"",
+          "alerta_suprimida": "NO"
+        },
+        "postgresql": {
+          "disponible": "SI",
+          "conexiones_activas": 1,
+          "max_conexiones": 100,
+          "porcentaje_uso": 1
+        },
+        "almacenamiento": {
+          "disco_usado_pct": 10,
+          "disco_libre_gb": 100
+        },
+        "alertas": " [Herald degradado]"
+      }
+    },
+    {
+      "label": "json_endpoint_sin_respuesta",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/monitor/monitor.sh: line 257: HERALD_MOTIVOS_JSON: unbound variable\n"
+    }
+  ]
+}

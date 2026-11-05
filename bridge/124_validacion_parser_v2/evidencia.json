@@ -1,0 +1,208 @@
+{
+  "esquema": "polis.revision_parser_v2.cotejo.v1",
+  "estado": "revision_cruzada_pendiente_aceptacion_funcional",
+  "fecha": "2026-10-26",
+  "revisor": "Ollamacodex (sesion =codex:0.0)",
+  "hashes": {
+    "zip": {
+      "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+      "bytes": 114090
+    },
+    "txt": {
+      "sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2",
+      "bytes": 2853390
+    },
+    "jsonl_118": {
+      "sha256": "a6f30f18dccc7950ba12ed5dc83012fd3e46b03870660c1cbfbd3c8323c02e4c",
+      "bytes": 14521247
+    },
+    "guion_118": {
+      "sha256": "f2939b80b3ad0e51d788d5310241e364a98bf8017272d8c673607ecf9e8d6a36",
+      "bytes": 5924
+    },
+    "parser": {
+      "sha256": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100",
+      "bytes": 23283
+    },
+    "tests": {
+      "sha256": "dd58ec7666089067ebcba7d7321e3f2eff4cbcbb8a8a044c589744d778433ef8",
+      "bytes": 11167
+    },
+    "resumen_118": {
+      "sha256": "5d8909ba84612990b8abc02d762426b0590ee82b23b21ccb1cb85f7fbc4a308e",
+      "bytes": 1917
+    },
+    "manifiesto_118": {
+      "sha256": "874e693688658afe72271d5b88d2c01cf7d7157123a51f3a636baee8e4a749f2",
+      "bytes": 886
+    },
+    "comparacion_106": {
+      "sha256": "2772788d0519651a03a6fac8123da5322dc7d8872ea5b9ef7441c20d4cd1049e",
+      "bytes": 1854
+    },
+    "contrato_v2": {
+      "sha256": "2af5ade9ec0e5f9f87df8479c861e719cd4d7cb42dc851e00b1ce5d4c977c619",
+      "bytes": 16546
+    }
+  },
+  "zip_cotejo": {
+    "miembros": [
+      "TerriData13001.txt"
+    ],
+    "miembro_unico": true,
+    "sin_cifrado": true,
+    "crc_verificado": true,
+    "compressed_bytes": 113956,
+    "uncompressed_bytes": 2853390,
+    "zip_bytes": 114090,
+    "zip_sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15"
+  },
+  "filas_observadas": {
+    "total": 12899,
+    "por_estado": {
+      "retiene": 667,
+      "aceptada": 12230,
+      "rechazada": 2
+    },
+    "por_valor_numerico": {
+      "no_presente": 822,
+      "decimal_validado": 12077
+    },
+    "por_regla": {
+      "decimal_coma_miles_terridata.v1": 12899
+    },
+    "mes_0": 8,
+    "cualitativas": 335,
+    "descripcion_general": 102,
+    "por_identidad": {
+      "concordante_declarada": 12899
+    }
+  },
+  "cotejo_118": {
+    "conteos_resumen_118": {
+      "filas_datos": 12899,
+      "filas_aceptadas": 12230,
+      "filas_retenidas": 667,
+      "filas_rechazadas": 2,
+      "filas_ancho_inconsistente": 0,
+      "filas_celda_excede_limite": 0,
+      "filas_campo_obligatorio_vacio": 2,
+      "filas_con_valor_numerico_valido": 12077,
+      "filas_con_numerico_sin_regla": 0,
+      "filas_con_cualitativo": 335,
+      "filas_sin_valor_declarado": 659,
+      "filas_con_mes_0": 8,
+      "filas_descripcion_general": 102,
+      "filas_identidad_concordante_declarada": 12899,
+      "filas_identidad_discordante_declarada": 0,
+      "filas_identidad_no_contrastable": 0,
+      "filas_identidad_no_evaluable": 0
+    },
+    "conteos_manifiesto_118": {
+      "filas": 12899,
+      "decimal_validado": 12077,
+      "formato_no_regla": 0,
+      "conversiones_por_estado_fila": {
+        "aceptada": 12072,
+        "retiene": 3,
+        "rechazada": 2
+      }
+    },
+    "comparacion_118": {
+      "tarea": "FB-TERR-NUM-01",
+      "nota": "comparacion de conteos parser 106 (regla decimal_simple_v1) vs 118 (regla coma/miles explicita); el estado de fila cambia solo por filas cuya unica causa de retencion era el formato numerico",
+      "cambio_estados_esperado": "12739 retenidas_106 = 12072 solo_formato + 3 mes_0 con numero + 664 sin valor; en 118 las 12072 pasan a aceptadas: 12230 = 158 + 12072; retenidas 667 = 3 + 664; rechazadas 2 en ambas",
+      "comparacion": {
+        "filas_datos": {
+          "p106": 12899,
+          "p118": 12899,
+          "igual": true
+        },
+        "filas_aceptadas": {
+          "p106": 158,
+          "p118": 12230,
+          "igual": false
+        },
+        "filas_retenidas": {
+          "p106": 12739,
+          "p118": 667,
+          "igual": false
+        },
+        "filas_rechazadas": {
+          "p106": 2,
+          "p118": 2,
+          "igual": true
+        },
+        "filas_con_valor_numerico_valido": {
+          "p106": 0,
+          "p118": 12077,
+          "igual": false
+        },
+        "filas_con_numerico_sin_regla": {
+          "p106": 12077,
+          "p118": 0,
+          "igual": false
+        },
+        "filas_con_cualitativo": {
+          "p106": 335,
+          "p118": 335,
+          "igual": true
+        },
+        "filas_sin_valor_declarado": {
+          "p106": 659,
+          "p118": 659,
+          "igual": true
+        },
+        "filas_con_mes_0": {
+          "p106": 8,
+          "p118": 8,
+          "igual": true
+        },
+        "filas_descripcion_general": {
+          "p106": 102,
+          "p118": 102,
+          "igual": true
+        },
+        "filas_identidad_concordante_declarada": {
+          "p106": 12899,
+          "p118": 12899,
+          "igual": true
+        },
+        "filas_identidad_discordante_declarada": {
+          "p106": 0,
+          "p118": 0,
+          "igual": true
+        },
+        "filas_identidad_no_contrastable": {
+          "p106": 0,
+          "p118": 0,
+          "igual": true
+        },
+        "filas_identidad_no_evaluable": {
+          "p106": 0,
+          "p118": 0,
+          "igual": true
+        }
+      }
+    },
+    "nota": "El cotejo reprodujo conteos reales y mantiene originales intactos."
+  },
+  "no_ejecutado": [
+    "adquisición",
+    "descarga",
+    "ingesta",
+    "promoción banco",
+    "SQL",
+    "red",
+    "commit",
+    "push",
+    "despliegue",
+    "pytest general",
+    "conftest"
+  ],
+  "limites": [
+    "No dictamen EAF.",
+    "No certifica validez semántica de indicadores ni aptitud de datos.",
+    "No interpreta subregistro ni causalidad."
+  ]
+}

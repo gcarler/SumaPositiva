@@ -1,0 +1,24 @@
+{
+  "label": "monitor-reinspeccion",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/test_monitor_reinspeccion.py",
+    "-q",
+    "--tb=short",
+    "--basetemp=/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/.runtime/tests_monitor",
+    "--junitxml=/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/monitor.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_reinspeccion_eaf_codex_20261103/.runtime/snapshot",
+  "start_utc": "2026-11-03T10:13:44.482003+00:00",
+  "seconds": 15.533,
+  "returncode": 1,
+  "log": "monitor-reinspeccion.log",
+  "databases": [
+    "polis_test_eaf_275_r2_20261103_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

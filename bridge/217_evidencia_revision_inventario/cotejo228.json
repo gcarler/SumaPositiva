@@ -1,0 +1,249 @@
+{
+  "fecha_utc": "2026-10-26T06:53:25.612169+00:00",
+  "manifiesto": "bridge/228_evidencia_versionado_inventario/manifiesto_entrega.json",
+  "sha256": "e4cc87da3ac876abd88f6bbf535bfad67a63b0e2afd6d50160a55bba6ba4bee9",
+  "artefactos_revisados": 275,
+  "discordancias": [],
+  "enlaces_fixture_no_leidos": [
+    {
+      "ruta": "tmp_pytest_01/test_captura_ausente_o_sustitucurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_ausente_o_sustitu0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_captura_control_excluye_mcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_control_excluye_m0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_captura_en_misma_ruta_altcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_captura_en_misma_ruta_alt0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_checkpoints_operativos_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_checkpoints_operativos_no0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_escritura_preserva_bytes_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_escritura_preserva_bytes_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_fallo_al_reemplazar_consecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_fallo_al_reemplazar_conse0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_generar_preserva_metadatacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_generar_preserva_metadata0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_inventario_anterior_ilegicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_inventario_anterior_ilegi3",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_inventario_guarda_instantcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_inventario_guarda_instant0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_metadata_inconsistente_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_metadata_inconsistente_no6",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_precocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_preco0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli0/vista_link.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli0/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli1/padre_link",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli1/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli2/versiones",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli2/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli3/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli3/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symli4/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli4/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_symlicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_symli4",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_publicacion_rechaza_vistacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_publicacion_rechaza_vista0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_referencia_previa_inconsicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_referencia_previa_inconsi2",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_staging_inventaria_hashescurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_staging_inventaria_hashes0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_version_de_fuente_no_cambcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_version_de_fuente_no_camb0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_01/test_version_existente_divergecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_01/test_version_existente_diverge1",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_ausente_o_sustitucurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_ausente_o_sustitu0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_control_excluye_mcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_control_excluye_m0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_captura_en_misma_ruta_altcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_captura_en_misma_ruta_alt0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_checkpoints_operativos_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_checkpoints_operativos_no0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_escritura_preserva_bytes_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_escritura_preserva_bytes_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_fallo_al_reemplazar_consecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_fallo_al_reemplazar_conse0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_preserva_metadatacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_preserva_metadata0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_rechaza_captura_s0/data/planes_accion/drive_sector_seguridad/versiones/2026-10-24/resumen_sincronizacion.7af2a60ea19f01ed994693c141e26ed882a8d65bc553f10af416484d5bb09327.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_rechaza_captura_s0/bridge/copia_captura.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_generar_rechaza_captura_scurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_generar_rechaza_captura_s0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_inventario_anterior_ilegicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_inventario_anterior_ilegi3",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_inventario_guarda_instantcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_inventario_guarda_instant0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_metadata_inconsistente_nocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_metadata_inconsistente_no6",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_precocurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_preco0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli0/vista_link.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli0/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli1/padre_link",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli1/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli2/versiones",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli2/real",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli3/versiones/7e90daebce15aae86940735997d541774c1c9961868d4b7f3248626db2fc54f9.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli3/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symli4/versiones/2df7273b75fd498a48a82a8586e4d8b78c9983810b0c1315c678cd73a8d21c96.json",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli4/real/vista.json",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_symlicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_symli4",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_publicacion_rechaza_vistacurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_publicacion_rechaza_vista0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_referencia_previa_inconsicurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_referencia_previa_inconsi2",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_ruta_de_version_anterior_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_ruta_de_version_anterior_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_staging_inventaria_hashescurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_staging_inventaria_hashes0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_anterior_y_nueva_current",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_anterior_y_nueva_0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_de_fuente_no_cambcurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_de_fuente_no_camb0",
+      "tipo": "fixture_sintetica"
+    },
+    {
+      "ruta": "tmp_pytest_02/test_version_existente_divergecurrent",
+      "destino": "/root/polis/bridge/228_evidencia_versionado_inventario/tmp_pytest_02/test_version_existente_diverge1",
+      "tipo": "fixture_sintetica"
+    }
+  ]
+}

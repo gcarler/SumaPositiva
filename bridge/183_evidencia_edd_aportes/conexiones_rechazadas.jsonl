@@ -1,0 +1,10 @@
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2879135}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2879135}
+{"driver": "psycopg_async", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2879135}
+{"driver": "asyncpg", "database": "polis_test_edd_aportes_20261026_166c0437", "host": "127.0.0.1", "port": 5433, "hostaddr": null, "pid": 2879135}
+{"driver": "asyncpg", "database": "polis_test_edd_aportes_20261026_166c0437", "host": "203.0.113.1", "port": 5432, "hostaddr": null, "pid": 2879135}
+{"driver": "psycopg", "database": "polis_test_edd_aportes_20261026_166c0437", "host": "127.0.0.1", "port": "5433", "hostaddr": null, "pid": 2879135}
+{"driver": "psycopg", "database": "polis_test_edd_aportes_20261026_166c0437", "host": "localhost", "port": "5432", "hostaddr": "203.0.113.1", "pid": 2879135}
+{"driver": "asyncpg", "database": "polis_test_eaf_fuera_de_alcance", "host": "127.0.0.1", "port": null, "hostaddr": null, "pid": 2879135}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2879135}
+{"driver": "psycopg", "database": "polis_test_eaf_fuera_de_alcance", "host": null, "port": null, "hostaddr": null, "pid": 2879135}

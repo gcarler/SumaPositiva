@@ -1,0 +1,34 @@
+{
+  "utc": "2026-11-05T03:30:22.161554+00:00",
+  "estado": "integrado_y_clasificado_en_banco_local",
+  "respaldo_antes_catalogo_v6": "data/fuentes_versiones/banco_fuentes_oficiales/20261105T033008Z-615edc9f",
+  "respaldo_original_antes_ingesta": "data/fuentes_versiones/banco_fuentes_oficiales/20261105T032206Z-e9c449c9",
+  "consolidado_sha256": "a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa",
+  "inventario_sha256": "2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e",
+  "fuentes": 43,
+  "filas_consolidado": 2396,
+  "filas_portal": 133,
+  "clasificacion_version": "seguridad_humana_7d_v6",
+  "clasificacion_portal": {
+    "PERS": 119,
+    "COM": 7,
+    "SAT": 7
+  },
+  "nuevo_portal_sin_clasificar": 0,
+  "sin_clasificar_preexistentes": 144,
+  "calidad_estructural": {
+    "estado": "ambar",
+    "filas_entrada": 2396,
+    "filas_tipadas": 2396,
+    "problemas": {
+      "dimension_sin_clasificar": 144
+    },
+    "contrato": "observacion_agregada_v1"
+  },
+  "bd_csh": "sin conexiones ni cambios",
+  "frontend": "sin cambios",
+  "pytest": "no ejecutado; se validaron datos reales y el corredor existente",
+  "despliegue_remoto": false,
+  "commit": false,
+  "push": false
+}

@@ -1,0 +1,10 @@
+{
+  "backend/tests/test_aportes_legado_publico.py": {
+    "test_functions": 11,
+    "asserts_originales_identicos": 61
+  },
+  "backend/tests/test_presupuesto_e_indicadores.py": {
+    "test_functions": 3,
+    "asserts_originales_identicos": 30
+  }
+}

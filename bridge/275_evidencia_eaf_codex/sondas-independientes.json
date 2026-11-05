@@ -1,0 +1,23 @@
+{
+  "label": "sondas-independientes",
+  "argv": [
+    "/root/polis/backend/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "/root/polis/bridge/275_evidencia_eaf_codex/test_sondas_eaf_275.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=/root/polis/bridge/275_evidencia_eaf_codex/sondas.xml"
+  ],
+  "cwd": "/root/polis/bridge/275_evidencia_eaf_codex/.runtime/snapshot",
+  "start_utc": "2026-11-02T03:37:00.246775+00:00",
+  "seconds": 16.942,
+  "returncode": 1,
+  "log": "sondas-independientes.log",
+  "databases": [
+    "polis_test_eaf_275_codex_probes"
+  ],
+  "smtp_host": "",
+  "snapshot_env_file": false
+}

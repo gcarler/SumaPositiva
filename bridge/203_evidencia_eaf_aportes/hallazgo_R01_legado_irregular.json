@@ -1,0 +1,86 @@
+{
+  "id": "EAF-AP-GOLIVE-02-R01",
+  "tipo": "reproducido",
+  "severidad": "MEDIA",
+  "criterio": "AP-03: lectura pública con JSON legado heterogéneo",
+  "impacto": "HTTP500 en detalle/lista de propuestas con campos internos inválidos de enfoque; HTTP500 en historial con metadatos de auditoría no objeto. Sin divulgación observada. Requiere esos datos legados; no se afirma su presencia en producción ni admisión por esquemas de alta actuales.",
+  "causa": [
+    "enfoque_publico permite bool/null para campos str o bool no nullable antes de validación de salida",
+    "consultar_historial_devolucion valida metadatos dict antes de proyectar JSON legado a objeto público"
+  ],
+  "fuentes": {
+    "backend/app/modules/aportes/schemas.py": "b1cd3eb43a06fa8426b1d480814347cf8ff21c1d83358e5d62b5558ad077a82d",
+    "backend/app/modules/aportes/service.py": "66a3406f719a2128f0e70ed8c872482c141bdcb3e784924d1c516e74be8fe78c",
+    "backend/app/modules/auditoria/schemas.py": "a472a6560f029ae562d6a80cd578cdeb2a13dc76cb52c44ed01da9b2dad52dea"
+  },
+  "evidencia": [
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:54:59.041670+00:00",
+      "proposal": "01a176c6-beb5-7fdf-8bb1-1adc731d672b",
+      "fixture": {
+        "etnia": true
+      },
+      "detail_status": 500,
+      "list_status": 500,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:54:59.574581+00:00",
+      "proposal": "01a176c6-c0d0-74de-b5cd-978437cc902b",
+      "fixture": {
+        "es_victima_conflicto": "texto_heredado"
+      },
+      "detail_status": 500,
+      "list_status": 500,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:54:59.863346+00:00",
+      "proposal": "01a176c6-c200-70ab-b745-d3be07f64d4c",
+      "fixture": {
+        "es_victima_conflicto": null
+      },
+      "detail_status": 500,
+      "list_status": 500,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:55:00.277504+00:00",
+      "proposal": "01a176c6-c30f-7a3b-a500-489a7948130a",
+      "audit": "758c73f8-6594-44a1-bd5d-19ddc32a9690",
+      "root_type": "NoneType",
+      "status": 500,
+      "original_preserved": true
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:55:01.034091+00:00",
+      "proposal": "01a176c6-c572-7298-b685-df82d5ed1731",
+      "audit": "c75da862-8b0b-4504-b370-a44eb0f070cf",
+      "root_type": "bool",
+      "status": 500,
+      "original_preserved": true
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "10_adicionales",
+      "utc": "2026-10-26T05:55:02.767685+00:00",
+      "proposal": "01a176c6-c922-7955-85de-aa925fcb57d6",
+      "audit": "3d19ac49-da4d-45d4-b608-bdaecd8d43ef",
+      "root_type": "list",
+      "status": 500,
+      "original_preserved": true
+    }
+  ],
+  "condicion_cierre": "Normalizar proyección de lectura por tipo antes de validar salida, sin alterar originales privados; mantener pruebas de no divulgación y tipos legados. EDD implementa y EAF reinspecciona.",
+  "limite": "No consulta ni conteo de datos productivos. Sin cambios de app; fixture de enfoque se desactiva solo en base propia después de observar para no contaminar otros casos; JSON original queda intacto."
+}

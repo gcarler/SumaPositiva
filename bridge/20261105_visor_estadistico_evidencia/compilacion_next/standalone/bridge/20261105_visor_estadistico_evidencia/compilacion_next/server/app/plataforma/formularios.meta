@@ -1,0 +1,39 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/plataforma/layout,_N_T_/plataforma/formularios/layout,_N_T_/plataforma/formularios/page,_N_T_/plataforma/formularios"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/plataforma/formularios/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 96,
+            "slots": {
+              "children": {
+                "hints": 160,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/d662dadd9c55e26aa612e5fa02627d53413d5b38b4b6594c06087bd4d657fde8/$/plataforma/formularios",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/plataforma/formularios/page"
+    },
+    "isFallback": false
+  }
+}

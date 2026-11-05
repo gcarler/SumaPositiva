@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="8.706" timestamp="2026-10-26T04:28:19.693834+00:00" hostname="srv2006133"><testcase classname="" name="test_reproduce_webhook_partial_ack_and_duplicate_replay" time="0.500" /></testsuite></testsuites>

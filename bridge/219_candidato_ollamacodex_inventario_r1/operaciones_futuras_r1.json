@@ -1,0 +1,106 @@
+{
+  "candidato_219": {
+    "archivos": 1829,
+    "bytes": 1641042,
+    "cargable_ahora": false,
+    "fuentes": 43,
+    "paquetes": 8,
+    "ruta": "bridge/219_candidato_ollamacodex_inventario_r1/candidato_inventario_r1_2026-10-26.sha-59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce.json",
+    "ruta_futura": "data/planes_accion/drive_sector_seguridad/versiones/2026-10-26/resumen_sincronizacion.7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256": "59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce",
+    "tipo": "inventario_candidato"
+  },
+  "estado_ahora": {
+    "banco_modificado": false,
+    "cargador_usado": false,
+    "codigo_modificado": false,
+    "ejecutado": false,
+    "ruta_futura_existe": false,
+    "sql_ejecutado": false
+  },
+  "fecha_utc_real": "2026-10-26T06:06:08.424796+00:00",
+  "hallazgo_historico_r1": {
+    "bytes": 51693,
+    "diferencia_semantica": "no_comprobada",
+    "original_no_localizado": true,
+    "sha256": "a7443aa121b28c46b1f104d53434f2063a36128734ecc62cf2a005037aa6dc7a"
+  },
+  "orden_publicacion_futuro": [
+    {
+      "operacion": "cotejar_hashes_precondicion",
+      "orden": 1,
+      "resultado_actual": "pendiente",
+      "resultado_esperado": "hashes_iguales_a_213_y_219"
+    },
+    {
+      "operacion": "comprobar_ruta_futura_absente",
+      "orden": 2,
+      "resultado_actual": "pendiente",
+      "resultado_esperado": "ruta_futura_no_existe_y_sin_symlink"
+    },
+    {
+      "operacion": "escribir_resumen_capturado_en_ruta_futura",
+      "orden": 3,
+      "resultado_actual": "pendiente",
+      "resultado_esperado": "archivo_con_bytes_4815_y_sha_7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+    },
+    {
+      "operacion": "validar_conteos_y_unicidad_en_candidato",
+      "orden": 4,
+      "resultado_actual": "validado_en_213_y_219",
+      "resultado_esperado": "43_fuentes_8_paquetes_1829_entradas_sin_duplicados_rutas"
+    },
+    {
+      "operacion": "considerar_candidato_como_inventario_versionado",
+      "orden": 5,
+      "resultado_actual": "pendiente_ejecucion",
+      "resultado_esperado": "candidato_ruta_futura_y_estado_de_inventario_versionado"
+    }
+  ],
+  "origen_213": {
+    "candidato_213": {
+      "bytes": 1638713,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/candidato_inventario_2026-10-26.sha-0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082.json",
+      "sha256": "0d67e858c4b535b36c5e6a6ac2df66fce9923d1f2d21bfcd8f907f5377d58082"
+    },
+    "inventario": {
+      "bytes": 1638638,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/inventario_pipeline_2026.sha-5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c.json",
+      "sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c"
+    },
+    "resumen": {
+      "bytes": 4815,
+      "ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+      "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+    }
+  },
+  "precondiciones": [
+    "hash de 219 debe seguir siendo 59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce",
+    "hash del inventario anterior debe seguir siendo 5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+    "hash del resumen capturado debe seguir siendo 7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38",
+    "ruta futura en data/planes_accion/... no debe existir",
+    "no debe haber symlink en ningun componente de la ruta futura"
+  ],
+  "rechazos": {
+    "conteos_distintos": "rechazar",
+    "hash_distinto": "rechazar",
+    "ruta_existe": "rechazar",
+    "sobrescritura": "rechazar",
+    "symlink": "rechazar"
+  },
+  "resumen_capturado_r1": {
+    "bytes": 4815,
+    "estado": "captura_control_derivado_no_fuente_oficial",
+    "ruta": "bridge/213_candidato_ollamacodex_inventario/resumen_sincronizacion.sha-7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38.json",
+    "sha256": "7dfb91e3942e4c52b05f5c04811ad338943efb5d20f6d8d3a66a771be8c02f38"
+  },
+  "sin_banco": true,
+  "sin_commit": true,
+  "sin_despliegue": true,
+  "sin_modificar_213": true,
+  "sin_push": true,
+  "sin_pytest": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "tarea": "OL-FUENTES-SHA-02-R1"
+}

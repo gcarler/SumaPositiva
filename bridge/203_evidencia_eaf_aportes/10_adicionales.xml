@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="10" time="15.290" timestamp="2026-10-26T05:54:47.542069+00:00" hostname="srv2006133"><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_http_devolutions_concurrent_one_201_one_400" time="1.666" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_http_receipt_real_commit_409_then_recovery" time="0.376" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_inbox_fencing_old_token_cannot_radicate" time="0.372" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_simulation_config_limits" time="0.229" /><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_enfoque_irregular_records_behavior[legacy0]" time="0.302"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = {'etnia': True}
+
+    @pytest.mark.parametrize('legacy',[{'etnia':True},{'es_victima_conflicto':'texto_heredado'},{'es_victima_conflicto':None}])
+    def test_legacy_enfoque_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());asyncio.run(query('UPDATE participacion_ciudadana.propuestas_ciudadanas SET metadata_enfoque=CAST(:m AS jsonb) WHERE id=:id',{'m':json.dumps(legacy),'id':p.id},True))
+        try:
+            with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:
+                detail=client.get('/api/v1/aportes/'+str(p.id));listing=client.get('/api/v1/aportes',params={'busqueda':p.titulo})
+            b.record('AP03_legacy_irregular_enfoque',proposal=p.id,fixture=legacy,detail_status=detail.status_code,list_status=listing.status_code,contact_disclosed='private203@example.invalid' in detail.text)
+&gt;           assert detail.status_code==listing.status_code==200
+E           assert 500 == 200
+E            +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:83: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_enfoque_irregular_records_behavior[legacy1]" time="0.300"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = {'es_victima_conflicto': 'texto_heredado'}
+
+    @pytest.mark.parametrize('legacy',[{'etnia':True},{'es_victima_conflicto':'texto_heredado'},{'es_victima_conflicto':None}])
+    def test_legacy_enfoque_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());asyncio.run(query('UPDATE participacion_ciudadana.propuestas_ciudadanas SET metadata_enfoque=CAST(:m AS jsonb) WHERE id=:id',{'m':json.dumps(legacy),'id':p.id},True))
+        try:
+            with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:
+                detail=client.get('/api/v1/aportes/'+str(p.id));listing=client.get('/api/v1/aportes',params={'busqueda':p.titulo})
+            b.record('AP03_legacy_irregular_enfoque',proposal=p.id,fixture=legacy,detail_status=detail.status_code,list_status=listing.status_code,contact_disclosed='private203@example.invalid' in detail.text)
+&gt;           assert detail.status_code==listing.status_code==200
+E           assert 500 == 200
+E            +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:83: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_enfoque_irregular_records_behavior[legacy2]" time="0.262"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = {'es_victima_conflicto': None}
+
+    @pytest.mark.parametrize('legacy',[{'etnia':True},{'es_victima_conflicto':'texto_heredado'},{'es_victima_conflicto':None}])
+    def test_legacy_enfoque_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());asyncio.run(query('UPDATE participacion_ciudadana.propuestas_ciudadanas SET metadata_enfoque=CAST(:m AS jsonb) WHERE id=:id',{'m':json.dumps(legacy),'id':p.id},True))
+        try:
+            with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:
+                detail=client.get('/api/v1/aportes/'+str(p.id));listing=client.get('/api/v1/aportes',params={'busqueda':p.titulo})
+            b.record('AP03_legacy_irregular_enfoque',proposal=p.id,fixture=legacy,detail_status=detail.status_code,list_status=listing.status_code,contact_disclosed='private203@example.invalid' in detail.text)
+&gt;           assert detail.status_code==listing.status_code==200
+E           assert 500 == 200
+E            +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:83: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_devolution_json_irregular_records_behavior[None]" time="0.373"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = None
+
+    @pytest.mark.parametrize('legacy',[None,False,['legado']])
+    def test_legacy_devolution_json_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());audit_id=uuid.uuid4()
+        asyncio.run(query("INSERT INTO auditoria.registros_auditoria(id,tabla_afectada,registro_id,accion,causal,justificacion_motivada,metadatos) VALUES(:a,'participacion_ciudadana.propuestas_ciudadanas',:p,'DEVOLUCION_MOTIVADA','tecnica','Justificación legada sintética suficientemente detallada',CAST(:m AS jsonb))",{'a':audit_id,'p':p.id,'m':json.dumps(legacy)},True))
+        with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:response=client.get('/api/v1/aportes/'+str(p.id)+'/devolucion-razon')
+        original=asyncio.run(query('SELECT metadatos FROM auditoria.registros_auditoria WHERE id=:id',{'id':audit_id}))[0]['metadatos'];assert original==legacy
+        b.record('AP03_legacy_irregular_audit',proposal=p.id,audit=audit_id,root_type=type(legacy).__name__,status=response.status_code,original_preserved=True)
+&gt;       assert response.status_code==200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:96: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_devolution_json_irregular_records_behavior[False]" time="0.743"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = False
+
+    @pytest.mark.parametrize('legacy',[None,False,['legado']])
+    def test_legacy_devolution_json_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());audit_id=uuid.uuid4()
+        asyncio.run(query("INSERT INTO auditoria.registros_auditoria(id,tabla_afectada,registro_id,accion,causal,justificacion_motivada,metadatos) VALUES(:a,'participacion_ciudadana.propuestas_ciudadanas',:p,'DEVOLUCION_MOTIVADA','tecnica','Justificación legada sintética suficientemente detallada',CAST(:m AS jsonb))",{'a':audit_id,'p':p.id,'m':json.dumps(legacy)},True))
+        with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:response=client.get('/api/v1/aportes/'+str(p.id)+'/devolucion-razon')
+        original=asyncio.run(query('SELECT metadatos FROM auditoria.registros_auditoria WHERE id=:id',{'id':audit_id}))[0]['metadatos'];assert original==legacy
+        b.record('AP03_legacy_irregular_audit',proposal=p.id,audit=audit_id,root_type=type(legacy).__name__,status=response.status_code,original_preserved=True)
+&gt;       assert response.status_code==200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:96: AssertionError</failure></testcase><testcase classname="bridge.203_evidencia_eaf_aportes.test_adicionales" name="test_legacy_devolution_json_irregular_records_behavior[legacy2]" time="1.729"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code">legacy = ['legado']
+
+    @pytest.mark.parametrize('legacy',[None,False,['legado']])
+    def test_legacy_devolution_json_irregular_records_behavior(legacy):
+        p=asyncio.run(proposal());audit_id=uuid.uuid4()
+        asyncio.run(query("INSERT INTO auditoria.registros_auditoria(id,tabla_afectada,registro_id,accion,causal,justificacion_motivada,metadatos) VALUES(:a,'participacion_ciudadana.propuestas_ciudadanas',:p,'DEVOLUCION_MOTIVADA','tecnica','Justificación legada sintética suficientemente detallada',CAST(:m AS jsonb))",{'a':audit_id,'p':p.id,'m':json.dumps(legacy)},True))
+        with TestClient(create_app(b.client_settings()),raise_server_exceptions=False) as client:response=client.get('/api/v1/aportes/'+str(p.id)+'/devolucion-razon')
+        original=asyncio.run(query('SELECT metadatos FROM auditoria.registros_auditoria WHERE id=:id',{'id':audit_id}))[0]['metadatos'];assert original==legacy
+        b.record('AP03_legacy_irregular_audit',proposal=p.id,audit=audit_id,root_type=type(legacy).__name__,status=response.status_code,original_preserved=True)
+&gt;       assert response.status_code==200
+E       assert 500 == 200
+E        +  where 500 = &lt;Response [500 Internal Server Error]&gt;.status_code
+
+bridge/203_evidencia_eaf_aportes/test_adicionales.py:96: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,588 @@
+{
+  "esquema": "polis.parser_terridata.v2",
+  "version_parser": "terridata_txt.v2",
+  "funcion": "parsear_terridata_txt(bytes_txt, captura, identidad_esperada) -> ResultadoParserTerridata (firma sin cambios; regla via MetadatosCapturaTerridata.regla_numerica)",
+  "reglas": {
+    "predeterminada": "decimal_simple_v1",
+    "optativa_explicita": "decimal_coma_miles_terridata.v1",
+    "patron_coma": "[+-]?[0-9]+,[0-9]{2}|[+-]?[0-9]{1,3}(?:\\.[0-9]{3})+,[0-9]{2}",
+    "sin_autodeteccion": true
+  },
+  "limites_coma": {
+    "maximo_digitos_enteros": 18,
+    "maximo_coeficiente_digitos": 20,
+    "observado_106": {
+      "enteros_max": 13,
+      "coeficiente_max": 15,
+      "escala": 2
+    },
+    "nota": "guardias conservadores mayores que lo observado y autocertificadas por implementacion; no son regla certificada por DNP"
+  },
+  "limites_globales": {
+    "MAXIMO_BYTES_TXT": 67108864,
+    "MAXIMO_FILAS_DATOS": 200000,
+    "MAXIMO_CELDA": 2048
+  },
+  "esquema_pydantic_resultado": {
+    "$defs": {
+      "ConteosParserTerridata": {
+        "additionalProperties": false,
+        "properties": {
+          "filas_datos": {
+            "title": "Filas Datos",
+            "type": "integer"
+          },
+          "filas_aceptadas": {
+            "title": "Filas Aceptadas",
+            "type": "integer"
+          },
+          "filas_retenidas": {
+            "title": "Filas Retenidas",
+            "type": "integer"
+          },
+          "filas_rechazadas": {
+            "title": "Filas Rechazadas",
+            "type": "integer"
+          },
+          "filas_ancho_inconsistente": {
+            "title": "Filas Ancho Inconsistente",
+            "type": "integer"
+          },
+          "filas_celda_excede_limite": {
+            "title": "Filas Celda Excede Limite",
+            "type": "integer"
+          },
+          "filas_campo_obligatorio_vacio": {
+            "title": "Filas Campo Obligatorio Vacio",
+            "type": "integer"
+          },
+          "filas_con_valor_numerico_valido": {
+            "title": "Filas Con Valor Numerico Valido",
+            "type": "integer"
+          },
+          "filas_con_numerico_sin_regla": {
+            "title": "Filas Con Numerico Sin Regla",
+            "type": "integer"
+          },
+          "filas_con_cualitativo": {
+            "title": "Filas Con Cualitativo",
+            "type": "integer"
+          },
+          "filas_sin_valor_declarado": {
+            "title": "Filas Sin Valor Declarado",
+            "type": "integer"
+          },
+          "filas_con_mes_0": {
+            "title": "Filas Con Mes 0",
+            "type": "integer"
+          },
+          "filas_descripcion_general": {
+            "title": "Filas Descripcion General",
+            "type": "integer"
+          },
+          "filas_identidad_concordante_declarada": {
+            "title": "Filas Identidad Concordante Declarada",
+            "type": "integer"
+          },
+          "filas_identidad_discordante_declarada": {
+            "title": "Filas Identidad Discordante Declarada",
+            "type": "integer"
+          },
+          "filas_identidad_no_contrastable": {
+            "title": "Filas Identidad No Contrastable",
+            "type": "integer"
+          },
+          "filas_identidad_no_evaluable": {
+            "title": "Filas Identidad No Evaluable",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "filas_datos",
+          "filas_aceptadas",
+          "filas_retenidas",
+          "filas_rechazadas",
+          "filas_ancho_inconsistente",
+          "filas_celda_excede_limite",
+          "filas_campo_obligatorio_vacio",
+          "filas_con_valor_numerico_valido",
+          "filas_con_numerico_sin_regla",
+          "filas_con_cualitativo",
+          "filas_sin_valor_declarado",
+          "filas_con_mes_0",
+          "filas_descripcion_general",
+          "filas_identidad_concordante_declarada",
+          "filas_identidad_discordante_declarada",
+          "filas_identidad_no_contrastable",
+          "filas_identidad_no_evaluable"
+        ],
+        "title": "ConteosParserTerridata",
+        "type": "object"
+      },
+      "FilaTerridata": {
+        "additionalProperties": false,
+        "description": "Fila estructurada con campos originales y estados conservadores.",
+        "properties": {
+          "orden": {
+            "minimum": 1,
+            "title": "Orden",
+            "type": "integer"
+          },
+          "linea_final": {
+            "minimum": 2,
+            "title": "Linea Final",
+            "type": "integer"
+          },
+          "campos_originales": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Campos Originales",
+            "type": "array"
+          },
+          "codigo_departamento": {
+            "title": "Codigo Departamento",
+            "type": "string"
+          },
+          "departamento": {
+            "title": "Departamento",
+            "type": "string"
+          },
+          "codigo_entidad": {
+            "title": "Codigo Entidad",
+            "type": "string"
+          },
+          "entidad": {
+            "title": "Entidad",
+            "type": "string"
+          },
+          "dimension": {
+            "title": "Dimension",
+            "type": "string"
+          },
+          "subcategoria": {
+            "title": "Subcategoria",
+            "type": "string"
+          },
+          "indicador": {
+            "title": "Indicador",
+            "type": "string"
+          },
+          "dato_numerico": {
+            "title": "Dato Numerico",
+            "type": "string"
+          },
+          "dato_cualitativo": {
+            "title": "Dato Cualitativo",
+            "type": "string"
+          },
+          "anio": {
+            "title": "Anio",
+            "type": "string"
+          },
+          "mes": {
+            "title": "Mes",
+            "type": "string"
+          },
+          "fuente": {
+            "title": "Fuente",
+            "type": "string"
+          },
+          "unidad_medida": {
+            "title": "Unidad Medida",
+            "type": "string"
+          },
+          "valor_numerico": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Valor Numerico"
+          },
+          "estado_valor_numerico": {
+            "enum": [
+              "no_presente",
+              "decimal_validado",
+              "formato_no_regla",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Valor Numerico",
+            "type": "string"
+          },
+          "estado_temporalidad": {
+            "enum": [
+              "declarada_sin_regla_proveedor",
+              "mes_0_sin_regla_proveedor",
+              "anio_no_conforme",
+              "mes_no_conforme",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Temporalidad",
+            "type": "string"
+          },
+          "estado_identidad": {
+            "enum": [
+              "concordante_declarada",
+              "discordante_declarada",
+              "no_contrastable",
+              "no_evaluable_por_estructura"
+            ],
+            "title": "Estado Identidad",
+            "type": "string"
+          },
+          "estado_fila": {
+            "enum": [
+              "aceptada",
+              "retiene",
+              "rechazada"
+            ],
+            "title": "Estado Fila",
+            "type": "string"
+          },
+          "advertencias": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Advertencias",
+            "type": "array"
+          },
+          "regla_numerica": {
+            "enum": [
+              "decimal_simple_v1",
+              "decimal_coma_miles_terridata.v1"
+            ],
+            "title": "Regla Numerica",
+            "type": "string"
+          }
+        },
+        "required": [
+          "orden",
+          "linea_final",
+          "campos_originales",
+          "codigo_departamento",
+          "departamento",
+          "codigo_entidad",
+          "entidad",
+          "dimension",
+          "subcategoria",
+          "indicador",
+          "dato_numerico",
+          "dato_cualitativo",
+          "anio",
+          "mes",
+          "fuente",
+          "unidad_medida",
+          "estado_valor_numerico",
+          "estado_temporalidad",
+          "estado_identidad",
+          "estado_fila",
+          "advertencias",
+          "regla_numerica"
+        ],
+        "title": "FilaTerridata",
+        "type": "object"
+      },
+      "IdentidadEsperadaTerridata": {
+        "additionalProperties": false,
+        "description": "Identidad declarada por quien invoca; `nivel_territorial` no tiene columna comparativa.",
+        "properties": {
+          "codigo_departamento": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Codigo Departamento"
+          },
+          "nombre_departamento": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nombre Departamento"
+          },
+          "codigo_entidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Codigo Entidad"
+          },
+          "nombre_entidad": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nombre Entidad"
+          },
+          "nivel_territorial": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nivel Territorial"
+          }
+        },
+        "title": "IdentidadEsperadaTerridata",
+        "type": "object"
+      },
+      "MetadatosCapturaTerridata": {
+        "additionalProperties": false,
+        "description": "Metadatos declarados del TXT recibido. No incluyen ruta a abrir.",
+        "properties": {
+          "canal_declarado": {
+            "const": "TerriData",
+            "title": "Canal Declarado",
+            "type": "string"
+          },
+          "origen_declarado": {
+            "minLength": 1,
+            "title": "Origen Declarado",
+            "type": "string"
+          },
+          "miembro_texto": {
+            "minLength": 1,
+            "title": "Miembro Texto",
+            "type": "string"
+          },
+          "fecha_captura": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fecha Captura"
+          },
+          "sha256_captura_declarado": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Sha256 Captura Declarado"
+          },
+          "codificacion": {
+            "const": "utf-8-sig",
+            "default": "utf-8-sig",
+            "title": "Codificacion",
+            "type": "string"
+          },
+          "delimitador": {
+            "const": "|",
+            "default": "|",
+            "title": "Delimitador",
+            "type": "string"
+          },
+          "regla_numerica": {
+            "default": "decimal_simple_v1",
+            "enum": [
+              "decimal_simple_v1",
+              "decimal_coma_miles_terridata.v1"
+            ],
+            "title": "Regla Numerica",
+            "type": "string"
+          }
+        },
+        "required": [
+          "canal_declarado",
+          "origen_declarado",
+          "miembro_texto"
+        ],
+        "title": "MetadatosCapturaTerridata",
+        "type": "object"
+      },
+      "VerificacionParserTerridata": {
+        "additionalProperties": false,
+        "properties": {
+          "certificacion_divipola": {
+            "const": "no_certificada",
+            "default": "no_certificada",
+            "title": "Certificacion Divipola",
+            "type": "string"
+          },
+          "validacion_semantica": {
+            "const": "no_realizada",
+            "default": "no_realizada",
+            "title": "Validacion Semantica",
+            "type": "string"
+          },
+          "naturaleza_observacion": {
+            "const": "no_inferida",
+            "default": "no_inferida",
+            "title": "Naturaleza Observacion",
+            "type": "string"
+          },
+          "unidad_de_observacion": {
+            "const": "no_inferida",
+            "default": "no_inferida",
+            "title": "Unidad De Observacion",
+            "type": "string"
+          },
+          "terridata_es_productor": {
+            "const": "no",
+            "default": "no",
+            "title": "Terridata Es Productor",
+            "type": "string"
+          },
+          "terridata_es_canal": {
+            "const": "si",
+            "default": "si",
+            "title": "Terridata Es Canal",
+            "type": "string"
+          }
+        },
+        "title": "VerificacionParserTerridata",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Resultado puro del TXT sin ficha normalizada ni persistencia.",
+    "properties": {
+      "esquema": {
+        "const": "polis.parser_terridata.v2",
+        "title": "Esquema",
+        "type": "string"
+      },
+      "version_parser": {
+        "const": "terridata_txt.v2",
+        "title": "Version Parser",
+        "type": "string"
+      },
+      "estado": {
+        "const": "prototipo_parser_pendiente_revision_funcional",
+        "title": "Estado",
+        "type": "string"
+      },
+      "regla_numerica": {
+        "enum": [
+          "decimal_simple_v1",
+          "decimal_coma_miles_terridata.v1"
+        ],
+        "title": "Regla Numerica",
+        "type": "string"
+      },
+      "sha256_bytes_txt": {
+        "title": "Sha256 Bytes Txt",
+        "type": "string"
+      },
+      "bytes_txt": {
+        "title": "Bytes Txt",
+        "type": "integer"
+      },
+      "captura": {
+        "$ref": "#/$defs/MetadatosCapturaTerridata"
+      },
+      "identidad_esperada": {
+        "$ref": "#/$defs/IdentidadEsperadaTerridata"
+      },
+      "encabezado": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Encabezado",
+        "type": "array"
+      },
+      "limites_aplicados": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Limites Aplicados",
+        "type": "array"
+      },
+      "conteos": {
+        "$ref": "#/$defs/ConteosParserTerridata"
+      },
+      "filas": {
+        "items": {
+          "$ref": "#/$defs/FilaTerridata"
+        },
+        "title": "Filas",
+        "type": "array"
+      },
+      "advertencias_globales": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Advertencias Globales",
+        "type": "array"
+      },
+      "pendientes": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Pendientes",
+        "type": "array"
+      },
+      "verificacion": {
+        "$ref": "#/$defs/VerificacionParserTerridata"
+      }
+    },
+    "required": [
+      "esquema",
+      "version_parser",
+      "estado",
+      "regla_numerica",
+      "sha256_bytes_txt",
+      "bytes_txt",
+      "captura",
+      "identidad_esperada",
+      "encabezado",
+      "limites_aplicados",
+      "conteos",
+      "filas",
+      "advertencias_globales",
+      "pendientes",
+      "verificacion"
+    ],
+    "title": "ResultadoParserTerridata",
+    "type": "object"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "database": "polis_test_eaf_consumidor_r1_20261026_c91eeabd",
+  "creada_utc": "2026-10-26T06:41:59.496691+00:00",
+  "template": "template0",
+  "extensiones": [
+    "postgis",
+    "ltree",
+    "pgcrypto",
+    "pg_trgm",
+    "pgrouting",
+    "address_standardizer"
+  ],
+  "nota": "Nueva base propia233; sin cambios de roles o servicios",
+  "aclaracion": "La nota inicial heredada decía211 por texto de plantilla; el nombre real siempre fue el nuevo233 registrado aquí."
+}

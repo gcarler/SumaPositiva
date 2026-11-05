@@ -73,17 +73,19 @@ enviar_alerta_notificacion() {
   local titulo="$1"
   local cuerpo="$2"
   local enviada=false
+  local intento_fallido=false
 
   # 1. Webhook genérico (Discord / Slack / Teams / custom HTTP)
   if [[ -n "${POLIS_ALERT_WEBHOOK_URL:-}" ]]; then
     log_msg "INFO" "Enviando alerta a webhook configurado..."
-    if curl -s -m 5 -X POST -H "Content-Type: application/json" \
+    if curl -s -f -m 5 -X POST -H "Content-Type: application/json" \
       -d "{\"content\": \"⚠️ **POLIS CARTAGENA — ALERTA CRÍTICA** [$TIMESTAMP]\n**$titulo**\n$cuerpo\"}" \
       "$POLIS_ALERT_WEBHOOK_URL" >/dev/null 2>&1; then
       log_msg "INFO" "Alerta webhook despachada exitosamente."
       enviada=true
     else
       log_msg "WARN" "Fallo al despachar alerta webhook."
+      intento_fallido=true
     fi
   fi
 
@@ -91,12 +93,13 @@ enviar_alerta_notificacion() {
   if [[ -n "${POLIS_TELEGRAM_BOT_TOKEN:-}" && -n "${POLIS_TELEGRAM_CHAT_ID:-}" ]]; then
     log_msg "INFO" "Enviando alerta a Telegram Bot..."
     local mensaje="🚨 *POLIS Cartagena — Alerta del Watchdog* 🚨%0A%0A*Fecha UTC:* \`$TIMESTAMP\`%0A*Alerta:* $titulo%0A*Detalles:* \`$cuerpo\`"
-    if curl -s -m 5 -X POST "https://api.telegram.org/bot${POLIS_TELEGRAM_BOT_TOKEN}/sendMessage" \
+    if curl -s -f -m 5 -X POST "https://api.telegram.org/bot${POLIS_TELEGRAM_BOT_TOKEN}/sendMessage" \
       -d "chat_id=${POLIS_TELEGRAM_CHAT_ID}&text=${mensaje}&parse_mode=Markdown" >/dev/null 2>&1; then
       log_msg "INFO" "Alerta Telegram despachada exitosamente."
       enviada=true
     else
       log_msg "WARN" "Fallo al despachar alerta Telegram."
+      intento_fallido=true
     fi
   fi
 
@@ -104,6 +107,11 @@ enviar_alerta_notificacion() {
     echo "[AVISO] No hay variables de alerta configuradas (POLIS_ALERT_WEBHOOK_URL o POLIS_TELEGRAM_*)."
     echo "Para activarlas, agregue las variables en /root/polis/backend/.env o en el entorno del sistema."
   fi
+
+  if [[ "$enviada" == true ]]; then
+    return 0
+  fi
+  return 1
 }
 
 ESTADO_GLOBAL=0
@@ -171,39 +179,36 @@ fi
 # ------------------------------------------------------------------------------
 HERALD_ESTADO="no disponible"
 HERALD_MOTIVOS=""
+HERALD_MOTIVOS_JSON=""
 HERALD_ALERTA_SUPRIMIDA="NO"
 HERALD_BODY=$(curl -s --max-time 4 "$HERALD_HEALTH_URL" 2>/dev/null || true)
 if [[ -n "$HERALD_BODY" ]]; then
   HERALD_ESTADO=$(echo "$HERALD_BODY" | sed -n 's/.*"estado"[[:space:]]*:[[:space:]]*"\([a-z]*\)".*/\1/p' | head -n 1)
   [[ -z "$HERALD_ESTADO" ]] && HERALD_ESTADO="no disponible"
   HERALD_MOTIVOS=$(echo "$HERALD_BODY" | sed -n 's/.*"motivos"[[:space:]]*:[[:space:]]*\[\([^]]*\)\].*/\1/p' | head -n 1)
-  # Motivos escapados para el bloque --json (hallazgo D-4 del dictamen EAF 275):
+  # Motivos escapados para el bloque --json (hallazgo D-4 / H275-04):
   # una comilla o contrabarra futura en un motivo no corrompe el JSON del watchdog.
   HERALD_MOTIVOS_JSON=$(printf '%s' "$HERALD_MOTIVOS" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
 fi
 
 if [[ "$HERALD_ESTADO" != "saludable" ]]; then
+  ESTADO_GLOBAL=1
+  DETALLES_FALLOS="${DETALLES_FALLOS} [Herald ${HERALD_ESTADO}]"
   AHORA_EPOCH=$(date +%s)
   ULTIMA_HERALD_ALERTA=$(cat "$HERALD_ALERT_STATE_FILE" 2>/dev/null || echo 0)
   if [[ "$ULTIMA_HERALD_ALERTA" =~ ^[0-9]+$ ]] && (( AHORA_EPOCH - ULTIMA_HERALD_ALERTA < HERALD_ALERT_COOLDOWN_SEGUNDOS )); then
-    # Segunda alerta dentro de la ventana: visible (tabla/JSON/log), no repetida.
+    # Segunda alerta dentro de la ventana: visible (tabla/JSON/log), no repetida en despacho.
     HERALD_ALERTA_SUPRIMIDA="SI"
     if [[ "$MODO" == "cron" ]]; then
       log_msg "INFO" "Herald en estado '${HERALD_ESTADO}': alerta suprimida por cooldown (${HERALD_ALERT_COOLDOWN_SEGUNDOS}s)."
     fi
-  else
-    ESTADO_GLOBAL=1
-    DETALLES_FALLOS="${DETALLES_FALLOS} [Herald ${HERALD_ESTADO}]"
-    mkdir -p "$(dirname "$HERALD_ALERT_STATE_FILE")" 2>/dev/null || true
-    echo "$AHORA_EPOCH" > "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
   fi
 else
-  # Recuperación: limpiar el sello para que la próxima degradación alerte de inmediato.
-  if [[ -f "$HERALD_ALERT_STATE_FILE" ]]; then
+  # Recuperación: limpiar el sello solo en modo cron para que la próxima degradación alerte de inmediato.
+  # Los modos de diagnóstico (--check y --json) son estrictamente de solo lectura.
+  if [[ "$MODO" == "cron" && -f "$HERALD_ALERT_STATE_FILE" ]]; then
     rm -f "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
-    if [[ "$MODO" == "cron" ]]; then
-      log_msg "INFO" "Herald recuperado (saludable); sello de cooldown eliminado."
-    fi
+    log_msg "INFO" "Herald recuperado (saludable); sello de cooldown eliminado."
   fi
 fi
 
@@ -287,7 +292,23 @@ elif [[ "$MODO" == "cron" ]]; then
     log_msg "OK" "Todos los servicios saludables (Backend 200, Frontend 200, PG: ${PG_ACTUALES}/${PG_MAX} conx, Disco: ${DISK_USED_PCT}%)."
   else
     log_msg "ALERT" "Degradación detectada:${DETALLES_FALLOS}"
-    enviar_alerta_notificacion "Degradación en Producción" "Servicios afectados:${DETALLES_FALLOS}"
+    debe_despachar=true
+    if [[ "$HERALD_ALERTA_SUPRIMIDA" == "SI" ]]; then
+      fallos_sin_herald="${DETALLES_FALLOS// \[Herald ${HERALD_ESTADO}\]/}"
+      fallos_sin_herald="${fallos_sin_herald// /}"
+      if [[ -z "$fallos_sin_herald" ]]; then
+        debe_despachar=false
+      fi
+    fi
+
+    if [[ "$debe_despachar" == true ]]; then
+      if enviar_alerta_notificacion "Degradación en Producción" "Servicios afectados:${DETALLES_FALLOS}"; then
+        if [[ "$HERALD_ESTADO" != "saludable" && "$HERALD_ALERTA_SUPRIMIDA" != "SI" ]]; then
+          mkdir -p "$(dirname "$HERALD_ALERT_STATE_FILE")" 2>/dev/null || true
+          echo "$AHORA_EPOCH" > "$HERALD_ALERT_STATE_FILE" 2>/dev/null || true
+        fi
+      fi
+    fi
   fi
 elif [[ "$MODO" == "test-alert" ]]; then
   echo "=== PRUEBA DE DESPACHO DE ALERTA PROACTIVA (WATCHDOG POLIS) ==="

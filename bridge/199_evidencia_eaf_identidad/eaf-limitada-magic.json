@@ -1,0 +1,21 @@
+{
+  "metodo": "magic",
+  "permisos_token_y_perfil_vacios": true,
+  "operaciones_prohibidas_http": [
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403
+  ],
+  "activacion_habilita_solo_sesion_actual": true,
+  "verificacion_mfa": 200,
+  "replay_recuperacion": 401,
+  "logout_propio": 200
+}

@@ -1,0 +1,11 @@
+--- antes/backend/app/modules/identidad/router.py
++++ despues/backend/app/modules/identidad/router.py
+@@ -117,7 +117,7 @@
+ @router.get("/perfil", response_model=UsuarioLectura)
+ async def obtener_perfil(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
+     exigir_usuario(sujeto)
+-    return await service.obtener_perfil(sujeto.sujeto_id)
++    return await service.obtener_perfil(sujeto.sujeto_id, mfa_pendiente=sujeto.mfa_pendiente)
+ 
+ 
+ @router.patch("/perfil", response_model=UsuarioLectura)

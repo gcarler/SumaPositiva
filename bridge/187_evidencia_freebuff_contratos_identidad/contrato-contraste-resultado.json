@@ -1,0 +1,73 @@
+{
+  "fecha": "2026-10-26T05:01:37.058Z",
+  "resultados": [
+    {
+      "caso": "181 · login_limitado (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · login_desafio (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · login_completo (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · perfil_limitado (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · estado_pendiente (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · estado_acreditado (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · enrolamiento (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "181 · ambito (real)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "169 · GET /identidad/mfa/estado (real, congelado EAF)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "169 · POST /identidad/mfa/iniciar (real, congelado EAF)",
+      "aceptado": true,
+      "errores": []
+    },
+    {
+      "caso": "169 · POST /identidad/usuarios/{id}/ambitos (real, congelado EAF)",
+      "aceptado": true,
+      "errores": []
+    }
+  ],
+  "banderas181": {
+    "caso": "Banderas finales de 181",
+    "login_limitado_marca_enrolamiento": true,
+    "login_desafio_sin_enrolamiento": true,
+    "completo_acredita": true,
+    "estado_usa_sesion_verificada": true
+  },
+  "salvaguardia": {
+    "caso": "Salvaguardia: uri_totp/ultimo_uso_en ausentes del contrato",
+    "clave_uri_totp_descartada": true,
+    "clave_ultimo_uso_en_descartada": true,
+    "respuesta_con_uri_totp_aceptada": false
+  }
+}

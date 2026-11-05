@@ -1,0 +1,82 @@
+{
+  "esquema": "polis.inspeccion_terridata.v1",
+  "url_solicitada": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+  "inicio_utc": "2026-10-24T15:52:30.660146+00:00",
+  "alcance": "inspeccion_tecnica_de_archivo_publico_no_ingesta",
+  "territorio_solicitado": "13001",
+  "estado": "archivo_capturado_estructura_inspeccionada_no_validacion_semantica",
+  "sin_sql": true,
+  "sin_promocion": true,
+  "estado_http": 200,
+  "url_final": "https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData13001.txt.zip",
+  "content_type": "application/x-zip-compressed",
+  "etag": "\"1d68bd549626dd1:0\"",
+  "last_modified": "Fri, 07 Aug 2026 17:58:19 GMT",
+  "archivo": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+  "bytes": 114090,
+  "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+  "miembros": [
+    {
+      "nombre": "TerriData13001.txt",
+      "bytes_declarados": 2853390
+    }
+  ],
+  "txt_miembro": "TerriData13001.txt",
+  "codificacion": "utf-8-sig",
+  "columnas": [
+    "Código Departamento",
+    "Departamento",
+    "Código Entidad",
+    "Entidad",
+    "Dimensión",
+    "Subcategoría",
+    "Indicador",
+    "Dato Numérico",
+    "Dato Cualitativo",
+    "Año",
+    "Mes",
+    "Fuente",
+    "Unidad de Medida"
+  ],
+  "filas": 12899,
+  "filas_ancho_inconsistente": 0,
+  "entidades_declaradas": [
+    "13001"
+  ],
+  "departamentos_declarados": [
+    "13"
+  ],
+  "muestra_primeras_filas": [
+    {
+      "Código Departamento": "13",
+      "Departamento": "Bolívar",
+      "Código Entidad": "13001",
+      "Entidad": "Cartagena",
+      "Dimensión": "Descripción general",
+      "Subcategoría": "Descripción general",
+      "Indicador": "Código DANE",
+      "Dato Numérico": "",
+      "Dato Cualitativo": "13001",
+      "Año": "2000",
+      "Mes": "0",
+      "Fuente": "DANE",
+      "Unidad de Medida": "Texto"
+    },
+    {
+      "Código Departamento": "13",
+      "Departamento": "Bolívar",
+      "Código Entidad": "13001",
+      "Entidad": "Cartagena",
+      "Dimensión": "Descripción general",
+      "Subcategoría": "Descripción general",
+      "Indicador": "Región",
+      "Dato Numérico": "",
+      "Dato Cualitativo": "Caribe",
+      "Año": "2000",
+      "Mes": "0",
+      "Fuente": "DANE",
+      "Unidad de Medida": "Texto"
+    }
+  ],
+  "fin_utc": "2026-10-24T15:53:06.562867+00:00"
+}

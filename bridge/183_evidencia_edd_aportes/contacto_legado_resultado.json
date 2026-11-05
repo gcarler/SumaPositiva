@@ -1,0 +1,47 @@
+{
+  "database": "polis_test_edd_aportes_20261026_migraciones_4371ebf4",
+  "resultados": [
+    {
+      "caso": "largo_256",
+      "upgrade_rechazado": true,
+      "snapshot_antes_sha256": "4bfc460b3a78b1dde50c7f90d9809188205c2039daa24601a61614efdb552014",
+      "snapshot_despues_sha256": "4bfc460b3a78b1dde50c7f90d9809188205c2039daa24601a61614efdb552014",
+      "revision_conservada": "0083_conciliador_gold_set"
+    },
+    {
+      "caso": "objeto",
+      "upgrade_rechazado": true,
+      "snapshot_antes_sha256": "14ecfc0680b34bd6807266ebba4d8d09cb08c7e7c9fe36844b398026eaf4d8f8",
+      "snapshot_despues_sha256": "14ecfc0680b34bd6807266ebba4d8d09cb08c7e7c9fe36844b398026eaf4d8f8",
+      "revision_conservada": "0083_conciliador_gold_set"
+    },
+    {
+      "caso": "numero",
+      "upgrade_rechazado": true,
+      "snapshot_antes_sha256": "5a2e3551c9d59fcb7e1be464532df31242ccae8e57784e266c76237fabe190df",
+      "snapshot_despues_sha256": "5a2e3551c9d59fcb7e1be464532df31242ccae8e57784e266c76237fabe190df",
+      "revision_conservada": "0083_conciliador_gold_set"
+    },
+    {
+      "caso": "booleano",
+      "upgrade_rechazado": true,
+      "snapshot_antes_sha256": "1f1f09d927d9312095cd35d1b3ee719ae74181a7435f1c5be007e1f5279edf78",
+      "snapshot_despues_sha256": "1f1f09d927d9312095cd35d1b3ee719ae74181a7435f1c5be007e1f5279edf78",
+      "revision_conservada": "0083_conciliador_gold_set"
+    },
+    {
+      "caso": "lista",
+      "upgrade_rechazado": true,
+      "snapshot_antes_sha256": "9b61ba84ac1b425d738764a500836495da2c6031621f297e11396ba148c7e4e2",
+      "snapshot_despues_sha256": "9b61ba84ac1b425d738764a500836495da2c6031621f297e11396ba148c7e4e2",
+      "revision_conservada": "0083_conciliador_gold_set"
+    },
+    {
+      "caso": "valido_nulo_y_ausente",
+      "copia_exacta": true,
+      "json_conservado": true,
+      "sin_conversion_ni_truncacion": true,
+      "revision": "0084_aportes_colas_y_apoyos"
+    }
+  ]
+}

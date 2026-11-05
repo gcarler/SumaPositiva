@@ -1,0 +1,199 @@
+diff --git a/backend/app/modules/proyectos/service.py b/backend/app/modules/proyectos/service.py
+index 7850c92..05c6ac4 100644
+--- a/backend/app/modules/proyectos/service.py
++++ b/backend/app/modules/proyectos/service.py
+@@ -149,88 +149,99 @@ class ProyectosService:
+         descripcion: str | None,
+         sujeto: SujetoAutenticadoContexto,
+     ) -> AnexoActividadLectura:
+-        async with transaction(self.session):
+-            existe, modulo_dueno, recurso_id = await self.repository.existe_actividad(actividad_id)
+-            if not existe:
+-                raise HTTPException(
+-                    status_code=status.HTTP_404_NOT_FOUND,
+-                    detail=f"La actividad '{actividad_id}' no existe o no es válida.",
+-                )
++        ruta_disco: Path | None = None
++        try:
++            async with transaction(self.session):
++                existe, modulo_dueno, recurso_id = await self.repository.existe_actividad(actividad_id)
++                if not existe:
++                    raise HTTPException(
++                        status_code=status.HTTP_404_NOT_FOUND,
++                        detail=f"La actividad '{actividad_id}' no existe o no es válida.",
++                    )
+ 
+-            nombre_original = archivo.filename or "archivo_sin_nombre"
+-            nombre_sanitizado = _sanitizar_nombre_archivo(nombre_original)
+-            ext = Path(nombre_sanitizado).suffix.lower()
++                nombre_original = archivo.filename or "archivo_sin_nombre"
++                nombre_sanitizado = _sanitizar_nombre_archivo(nombre_original)
++                ext = Path(nombre_sanitizado).suffix.lower()
+ 
+-            if ext not in EXTENSIONES_PERMITIDAS:
+-                raise HTTPException(
+-                    status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+-                    detail=(
+-                        f"Extensión '{ext}' no permitida. Formatos admitidos: documentos "
+-                        "(PDF, Word, Excel, PowerPoint, TXT, CSV, ZIP) e imágenes (JPG, PNG, WEBP, GIF, SVG)."
+-                    ),
+-                )
++                if ext not in EXTENSIONES_PERMITIDAS:
++                    raise HTTPException(
++                        status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
++                        detail=(
++                            f"Extensión '{ext}' no permitida. Formatos admitidos: documentos "
++                            "(PDF, Word, Excel, PowerPoint, TXT, CSV, ZIP) e imágenes (JPG, PNG, WEBP, GIF, SVG)."
++                        ),
++                    )
+ 
+-            tipo_mime = archivo.content_type or "application/octet-stream"
+-            contenido = await archivo.read()
++                tipo_mime = archivo.content_type or "application/octet-stream"
++                contenido = await archivo.read()
+ 
+-            if len(contenido) == 0:
+-                raise HTTPException(
+-                    status_code=status.HTTP_400_BAD_REQUEST,
+-                    detail="El archivo proporcionado está vacío.",
+-                )
++                if len(contenido) == 0:
++                    raise HTTPException(
++                        status_code=status.HTTP_400_BAD_REQUEST,
++                        detail="El archivo proporcionado está vacío.",
++                    )
+ 
+-            if len(contenido) > MAX_BYTES_ANEXO:
+-                raise HTTPException(
+-                    status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+-                    detail=f"El archivo excede el tamaño máximo permitido de 25 MB ({len(contenido)} bytes recibidos).",
+-                )
++                if len(contenido) > MAX_BYTES_ANEXO:
++                    raise HTTPException(
++                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
++                        detail=(
++                            f"El archivo excede el tamaño máximo permitido de 25 MB ({len(contenido)} bytes recibidos)."
++                        ),
++                    )
+ 
+-            hash_sha256 = hashlib.sha256(contenido).hexdigest()
+-            id_anexo = uuid.uuid4()
+-            nombre_seguro = f"{id_anexo.hex}_{nombre_sanitizado}"
+-            ruta_disco = DIRECTORIO_ANEXOS / nombre_seguro
++                hash_sha256 = hashlib.sha256(contenido).hexdigest()
++                id_anexo = uuid.uuid4()
++                nombre_seguro = f"{id_anexo.hex}_{nombre_sanitizado}"
++                ruta_disco = DIRECTORIO_ANEXOS / nombre_seguro
+ 
+-            # Escribir archivo físico
+-            try:
+-                ruta_disco.write_bytes(contenido)
+-            except Exception as e:
+-                logger.exception("Error al escribir archivo de anexo en disco")
+-                raise HTTPException(
+-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+-                    detail="No se pudo almacenar el archivo en disco.",
+-                ) from e
++                # Escribir archivo físico
++                try:
++                    ruta_disco.write_bytes(contenido)
++                except Exception as e:
++                    logger.exception("Error al escribir archivo de anexo en disco")
++                    raise HTTPException(
++                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
++                        detail="No se pudo almacenar el archivo en disco.",
++                    ) from e
+ 
+-            # Obtener nombre legible del usuario si está disponible
+-            subido_por_nombre = sujeto.rol
+-            subido_por_id = None
+-            if not sujeto.es_anonimo:
+-                subido_por_id = sujeto.sujeto_id
+-                from app.modules.identidad.models import Usuario
++                # Obtener nombre legible del usuario si está disponible
++                subido_por_nombre = sujeto.rol
++                subido_por_id = None
++                if not sujeto.es_anonimo:
++                    subido_por_id = sujeto.sujeto_id
++                    from app.modules.identidad.models import Usuario
+ 
+-                res_u = (
+-                    await self.session.execute(Usuario.__table__.select().where(Usuario.id == subido_por_id))
+-                ).first()
+-                if res_u:
+-                    subido_por_nombre = f"{res_u.nombres} {res_u.apellidos}".strip() or sujeto.rol
++                    res_u = (
++                        await self.session.execute(Usuario.__table__.select().where(Usuario.id == subido_por_id))
++                    ).first()
++                    if res_u:
++                        subido_por_nombre = f"{res_u.nombres} {res_u.apellidos}".strip() or sujeto.rol
+ 
+-            anexo = ActividadAnexo(
+-                id=id_anexo,
+-                actividad_id=actividad_id,
+-                modulo_dueno=modulo_dueno,
+-                recurso_id=recurso_id,
+-                nombre_archivo_original=nombre_original,
+-                nombre_archivo_seguro=nombre_seguro,
+-                ruta_almacenamiento=str(ruta_disco),
+-                tipo_mime=tipo_mime,
+-                tamano_bytes=len(contenido),
+-                hash_sha256=hash_sha256,
+-                descripcion=descripcion.strip() if descripcion else None,
+-                subido_por_sujeto_id=subido_por_id,
+-                subido_por_nombre=subido_por_nombre,
+-            )
++                anexo = ActividadAnexo(
++                    id=id_anexo,
++                    actividad_id=actividad_id,
++                    modulo_dueno=modulo_dueno,
++                    recurso_id=recurso_id,
++                    nombre_archivo_original=nombre_original,
++                    nombre_archivo_seguro=nombre_seguro,
++                    ruta_almacenamiento=str(ruta_disco),
++                    tipo_mime=tipo_mime,
++                    tamano_bytes=len(contenido),
++                    hash_sha256=hash_sha256,
++                    descripcion=descripcion.strip() if descripcion else None,
++                    subido_por_sujeto_id=subido_por_id,
++                    subido_por_nombre=subido_por_nombre,
++                )
+ 
+-            anexo = await self.repository.crear_anexo(anexo)
+-            return self._mapear_anexo_lectura(anexo)
++                anexo = await self.repository.crear_anexo(anexo)
++                return self._mapear_anexo_lectura(anexo)
++        except BaseException:
++            # Compensación de archivo: si el caso de uso revierte (validación,
++            # fallo de persistencia o de commit) después de escribir el fichero
++            # físico, se elimina el huérfano para no dejar basura en el volumen.
++            if ruta_disco is not None:
++                ruta_disco.unlink(missing_ok=True)
++            raise
+ 
+     async def obtener_anexo_para_descarga(
+         self,
+diff --git a/docs/permisos-api.md b/docs/permisos-api.md
+index 126b731..e0cddcc 100644
+--- a/docs/permisos-api.md
++++ b/docs/permisos-api.md
+@@ -452,3 +452,19 @@ controles propios.
+ | --- | --- | --- | --- |
+ | GET | /api/v1/proyectos/actividades | permiso:proyectos:leer@declarada | Proyección agregada read-only de actividades de la política; filtra por módulo y rango de fechas sin mutación. |
+ | GET | /api/v1/proyectos/resumen | permiso:proyectos:leer@declarada | Resumen agregado por módulo y por estado canónico; derivado de la misma proyección read-only. |
++
++### Anexos de actividades — decisión de producto encargo 265 (2026-10-29)
++
++Gestión documental adjunta a actividades de la proyección de proyectos. La
++escritura combina guardas de rol institucional (`administrador_identidades`,
++`autoridad_distrital`, `facilitador_mesa`) con permisos del módulo dueño
++(`proyectos:escribir`, `comunicaciones:gestionar`, `mesas:abrir`,
++`formularios:gestionar`); por esa combinación se clasifican como `sujeto` con
++la guarda explícita descrita en el motivo.
++
++| Método | Ruta | Control | Motivo o condición |
++| --- | --- | --- | --- |
++| GET | /api/v1/proyectos/actividades/{actividad_id}/anexos | permiso:proyectos:leer@declarada | Lectura del listado de anexos activos de la actividad; archivado con soft-delete en `eliminado_en`. |
++| POST | /api/v1/proyectos/actividades/{actividad_id}/anexos | sujeto | Guarda institucional por rol o permiso del módulo dueño; valida extensión permitida, límite de 25 MB y registra hash SHA-256 y auditoría del sujeto. |
++| GET | /api/v1/proyectos/actividades/{actividad_id}/anexos/{anexo_id}/archivo | permiso:proyectos:leer@declarada | Descarga física del anexo con nombre original y `content-disposition: attachment`; exige actividad y anexo activos. |
++| DELETE | /api/v1/proyectos/actividades/{actividad_id}/anexos/{anexo_id} | sujeto | Guarda institucional por rol o permiso del módulo dueño; soft-delete auditable, sin borrado físico inmediato. |

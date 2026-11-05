@@ -1,0 +1,58 @@
+[
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/02_atomicidad.xml",
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/04_regresiones_aportes.xml",
+    "tests": 51,
+    "passed": 50,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/05_regresiones_completas.xml",
+    "tests": 70,
+    "passed": 69,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/06_suites_dirigidas.xml",
+    "tests": 216,
+    "passed": 214,
+    "failed": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/10_suites_dirigidas_finales.xml",
+    "tests": 220,
+    "passed": 220,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/18_backend_check_global_aislado.xml",
+    "tests": 1446,
+    "passed": 1419,
+    "failed": 11,
+    "errors": 0,
+    "skipped": 16
+  },
+  {
+    "archivo": "bridge/183_evidencia_edd_aportes/20_dirigidas_snapshot_final.xml",
+    "tests": 222,
+    "passed": 222,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

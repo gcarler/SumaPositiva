@@ -1,0 +1,22 @@
+{
+  "python": "3.12.14",
+  "paquetes": {
+    "SQLAlchemy": "2.0.54",
+    "alembic": "1.20.0",
+    "asyncpg": "0.31.0",
+    "psycopg": "3.3.6",
+    "fastapi": "0.142.2",
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1",
+    "ruff": "0.16.9"
+  },
+  "bases_permitidas": [
+    "polis_test_edd_aportes_20261026_166c0437",
+    "polis_test_edd_aportes_20261026_migraciones_4371ebf4"
+  ],
+  "SMTP": "deshabilitado",
+  "Meta": "transporte deshabilitado; solo ASGI local",
+  "guardas_subprocesos_nativos": "no cubiertos por la guarda Python",
+  "postgresql": "18.6 (Ubuntu 18.6-0ubuntu0.26.04.1)",
+  "postgis": "3.6.2"
+}

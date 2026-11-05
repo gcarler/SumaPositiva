@@ -1,0 +1,14 @@
+{
+  "corte_sha256": "e6db3099c4ade1e8057c59a14a828acc9d822d54e52de4094669a621f399246b",
+  "esquema": "polis.cadena_analitica_corte.v1",
+  "estado_publicacion": "no_publicable",
+  "expedientes": 1,
+  "expedientes_sha256": "c32f8623ce87b440ec17e7a49bdc05576498501b9fbd3b621aa9f5d0beeacb94",
+  "filas_serie": 1,
+  "fuentes": 1,
+  "inventario_sha256": "33de7000a25500085718d04ed070270fc6afcf0e7b79363eddfaa069394cb14e",
+  "paneles": 1,
+  "paneles_sha256": "a44063ecbda9946bc9b2a8c85dce4594ff3054eefcf47fed416b80580f9b8547",
+  "run_id": "77040dfc-27ca-4d3d-8819-08bf5ed8c194",
+  "serie_sha256": "5c3642e12addb82e0f7b2d13086d09fffa9839cf9a145bc47edb3ef4cebaf438"
+}

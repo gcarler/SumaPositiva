@@ -1,0 +1,16 @@
+{
+  "comando": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "backend/app/modules/identidad",
+    "backend/tests/test_identidad_remediacion_eaf.py",
+    "backend/tests/test_control_fases_y_oauth.py"
+  ],
+  "base": "polis_test_edd_identidad_20261026_14e4fd5ddd",
+  "perfil": "principal",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.015,
+  "guarda_sha256_al_iniciar": "c5369632fedc9272ab6c71f253bcf5cfd01cd9c2c25baa73f66238641ee57a84",
+  "fecha_utc": "2026-10-26T04:52:37.485182+00:00",
+  "variables": "POLIS_TEST_DATABASE_URL y POLIS_DATABASE_URL explícitas, validadas con make_url; SMTP externo desactivado"
+}

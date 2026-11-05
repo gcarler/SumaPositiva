@@ -1,0 +1,6 @@
+{
+  "archivos_texto_examinados": 66,
+  "coincidencias": [],
+  "criterios": "DSN original y contraseña local resuelta por coincidencia exacta; patrón JWT; reporte incluido",
+  "limite": "No demuestra ausencia universal de datos sensibles; las respuestas MFA se sanitizaron en su origen"
+}

@@ -1,0 +1,29 @@
+{
+  "fecha": "2026-10-27T11:36:35.125429+00:00",
+  "hecho": "Durante sellado se detectaron cambios externos de politicas; se conserva deteccion, no revertir ni atribuir a EDD243",
+  "cambios": {
+    "backend/app/modules/politicas/router.py": {
+      "antes": "7e0bded52e5c365ca11a4af95e6158b3455c12f74916f9879e410e07714797d9",
+      "presente": "fd0932c32bc8c5582c0cc24d238bba81e6bdd468a5fe5dcf3bea4ddd08185623",
+      "atribucion": "externa; coordinador informado"
+    },
+    "backend/app/modules/politicas/schemas.py": {
+      "antes": "f767e132bf0618cc8b098f752744ccd366116c6ae2215478e0b80a9c01740047",
+      "presente": "e5f59f29556de8236f3c0a10eaac5d6175792bdf84c573a21efaad670cbca596",
+      "atribucion": "externa; coordinador informado"
+    },
+    "backend/tests/test_aportes_legado_publico.py": {
+      "antes": "093df70a381bc16efa89d25c4e495b3e630c449af8e6e2a145a064218b5e8753",
+      "presente": "d95635793a8acbcac78c122810b4e1a70559ce8b7c437dc4b5ea5b8f29fdaa65",
+      "atribucion": "EDD243"
+    },
+    "backend/tests/test_presupuesto_e_indicadores.py": {
+      "antes": "b6b968c219897ddb86d79881f5b3aa27b9c32b251186cd7aff49bfe7a1d608cc",
+      "presente": "ad41d65144c303abac43fa3951565758204368992b5de2a5c309ba6bb2fe5c52",
+      "atribucion": "EDD243"
+    }
+  },
+  "aviso_coordinacion_enviado": true,
+  "pendiente_senal_estabilidad": false,
+  "resolucion": "ultima corrida dirigida157/157 con snapshot554 identico antes/despues; cambios externos previos separados en cotejo236, sin detener ni revertir heros"
+}

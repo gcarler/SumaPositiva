@@ -1,0 +1,16 @@
+{
+  "comando": [
+    "backend/.venv/bin/ruff",
+    "check",
+    "backend/app/modules/identidad",
+    "backend/tests/test_identidad_remediacion_eaf.py",
+    "backend/tests/test_control_fases_y_oauth.py"
+  ],
+  "database": "polis_test_eaf_identidad2_20261026_99080254",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.027,
+  "fecha_utc": "2026-10-26T05:17:32.451466+00:00",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "migration_database": "polis_test_eaf_identidad2_migrations_20261026_4a8fee4b",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

@@ -1,0 +1,13 @@
+{
+  "comando": [
+    "backend/.venv/bin/python",
+    "bridge/199_evidencia_eaf_identidad/probar_guardas.py"
+  ],
+  "database": "polis_test_eaf_identidad2_20261026_99080254",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.634,
+  "fecha_utc": "2026-10-26T05:03:20.344278+00:00",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621",
+  "migration_database": "polis_test_eaf_identidad2_migrations_20261026_4a8fee4b",
+  "variables": "DSN explícitos; SMTP/red externa/escrituras repo fuera de evidencia bloqueados"
+}

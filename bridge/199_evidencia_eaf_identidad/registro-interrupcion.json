@@ -1,0 +1,20 @@
+{
+  "fecha_registro_utc": "2026-10-26T05:14:03.586592+00:00",
+  "origen": "Instrucción de coordinación recibida por /root",
+  "motivo_comunicado": "Restricción automática de contenido que interrumpió el turno",
+  "acciones": "No se agregan pruebas nuevas; se conservan resultados existentes y solo se continúa el cierre funcional local ya previsto",
+  "situacion_al_retomar": {
+    "pytest_dirigida": {
+      "tests": 213,
+      "fallos": 0
+    },
+    "pytest_probes_ya_ejecutados": {
+      "tests": 22,
+      "fallos": 0
+    },
+    "recuperacion_preservada": "Guion199 ya escrito, pendiente de ejecutar",
+    "migraciones": "Pendientes, fixtures finales recibidas de coordinación",
+    "cliente": "Pendiente congelación187"
+  },
+  "limite": "Los artefactos de las dos corridas muestran salida0; no hay en ellos una denegación de herramienta que permita atribuirles una interrupción técnica"
+}

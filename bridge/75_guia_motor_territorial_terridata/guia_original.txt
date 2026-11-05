@@ -1,0 +1,266 @@
+﻿Transferencia técnica | TerriData → fichas territoriales propias
+GUÍA DE IMPLEMENTACIÓN
+Integración con TerriData y generación de fichas territoriales propias
+Guía de transferencia para implementar el proceso en otra plataforma con un agente de IA
+24 de octubre de 2026 · Basada en la implementación de BdeC_IP
+Destino: equipo técnico y agentes de IA que necesitan reproducir el proceso con trazabilidad, sin depender de las rutas ni de la aplicación original.
+Incluye: adquisición pública, catálogo DIVIPOLA, normalización, persistencia, consultas, generación de fichas, cobertura nacional, pruebas y una instrucción de implementación reutilizable.
+Lectura clave: se distinguen los componentes implementados de las mejoras propuestas para el traslado. Los datos oficiales, las proyecciones y las contingencias sintéticas deben conservar identidades diferentes.
+________________
+
+
+Ruta de lectura
+1. Qué vas a construir y qué demuestra esta guía
+2. Arquitectura: separar adquisición, datos y presentación
+3. Paso 1 — Construir un catálogo territorial verificable
+4. Paso 2 — Localizar y comprobar los archivos públicos
+5. Paso 3 — Descargar con trazabilidad y una caché que no cambie la procedencia
+6. Paso 4 — Interpretar el TXT sin inventar valores
+7. Paso 5 — Definir un modelo canónico y sus reglas de procedencia
+8. Paso 6 — Persistir de forma idempotente y publicar por versión
+9. Paso 7 — Extender el piloto a cobertura nacional medible
+10. Paso 8 — Consultar con fecha de corte y unidades compatibles
+11. Paso 9 — Construir una ficha propia a partir de un único JSON
+12. Paso 10 — Implementar el orquestador sin acoplarlo a una plataforma
+13. Cómo reconocer y utilizar el código existente
+14. Pruebas de aceptación para el agente implementador
+15. Instrucción lista para entregar a otro agente de IA
+16. Plan de ejecución y criterio de terminación
+17. Fuentes, alcance de la verificación y evidencias locales
+________________
+
+
+1. Qué vas a construir y qué demuestra esta guía
+El objetivo es implementar en otra plataforma una integración territorial que descargue datos públicos de TerriData, los conserve con su procedencia, permita consultar series por entidad territorial y produzca fichas propias coherentes en varios formatos. El flujo se reconstruyó mediante lectura del código de BdeC_IP; este documento describe la implementación visible y propone cambios donde el comportamiento actual puede inducir a error. No atribuye una historia de desarrollo que no esté documentada.
+TerriData es el portal del Departamento Nacional de Planeación que ofrece fichas de caracterización, comparaciones, descargas y reportes. El portal oficial permite comprobar estas funciones [S1]. La codificación territorial se contrasta con DIVIPOLA del DANE [S2]. El número de municipios, departamentos o indicadores debe obtenerse de un catálogo fechado; una cifra escrita en el código no prueba que todos se hayan descargado ni que todos tengan datos completos.
+El resultado que debes publicar se denomina “Ficha territorial propia, elaborada con información de las fuentes indicadas”. Aunque algunas clases y archivos del repositorio incluyen la palabra “oficial”, eso no convierte su diseño, cálculos o diagnósticos en una ficha emitida o certificada por el DNP. El dato puede proceder de una entidad oficial y la elaboración seguir siendo propia.
+Convención de lectura: “IMPLEMENTADO” describe lo observado en los módulos revisados. “PROPUESTO PARA EL TRASLADO” es una decisión de diseño o una corrección recomendada; no significa que ya esté resuelta en BdeC_IP. Esta guía no certifica una descarga nacional ni la integridad de todas las bases de datos.
+2. Arquitectura: separar adquisición, datos y presentación
+El recorrido completo debe ser: catálogo territorial → descarga del archivo original → validación del contenido → normalización → almacenamiento versionado → consulta por fecha y procedencia → objeto canónico de ficha → exportadores → control de calidad y publicación. La ficha se genera desde datos estructurados; no se reconstruye leyendo un PDF ya diagramado.
+Pieza observada
+	Función y referencia en el repositorio
+	Catálogo territorial
+	db/banco_territorial.py: BancoTerritorialDNP; búsqueda por DIVIPOLA y metadatos municipales.
+	Adquisición y consulta
+	engine/territorial/terridata_pipeline.py: TerriDataPipeline; descarga TXT/XLSX, lectura ZIP y consultas locales.
+	Perfil territorial
+	engine/territorial/perfilador.py: PerfiladorTerritorial; resuelve e incorpora metadatos territoriales.
+	Fábrica de fichas
+	engine/territorial/generador_ficha_terridata_oficial.py: resolución de entidad, consultas, PDF de ocho páginas y exportaciones.
+	Fuentes complementarias
+	engine/ingesta/: men_mdm_pipeline.py, saber_igpr_pipeline.py, cuipo_pipeline.py y sgr_regalias_pipeline.py. Son adaptadores separados.
+	
+
+IMPLEMENTADO: TerriDataPipeline utiliza una base SQLite local, normalmente data/terridata_cache/terridata.db. La fábrica de fichas consulta PostgreSQL mediante get_pg_connection y también consulta fuentes_externas_indicadores. Que ambas rutas nombren una tabla terridata_indicadores no implica que compartan sus registros.
+PROPUESTO PARA EL TRASLADO: elige un almacén canónico o implementa un adaptador de sincronización explícito, con conteos, versión y prueba de lectura posterior. Antes de generar una ficha, verifica que la versión recién importada sea la que consulta el generador. Evita una integración en la que la descarga funciona pero la ficha sigue leyendo otra base vacía o antigua.
+3. Paso 1 — Construir un catálogo territorial verificable
+Obtén y versiona un catálogo DIVIPOLA desde el DANE. Conserva fecha de consulta, archivo original, huella SHA-256 y tipo de entidad. Mantén códigos como texto para conservar ceros iniciales: un municipio se identifica mediante su código de cinco dígitos; el departamento tiene su propia identificación de dos dígitos. Valida la relación municipio–departamento con el catálogo, no únicamente con el nombre.
+No conviertas automáticamente todo identificador a cinco posiciones con ceros. El departamento “11” y el distrito “11001” no son intercambiables. El generador actual admite una convención interna XX000 para consultar departamentos: ese identificador interno debe mapearse de forma explícita y no presentarse como si fuera el código oficial de un municipio.
+Decide el alcance territorial antes de ejecutar el lote: departamentos, municipios y distritos, y cualquier otra categoría que tu plataforma soporte mediante fuentes y reglas propias. No asumas cobertura de áreas no municipalizadas o territorios indígenas porque se haya recorrido una lista municipal. Guarda el estado por tipo territorial.
+Los nombres sirven para ayudar al usuario, pero no son la llave de unión. Si existen homónimos, pide o utiliza departamento y DIVIPOLA. Rechaza combinaciones incompatibles de código, municipio y departamento. La prueba mínima incluye un municipio con cero inicial, un homónimo, Bogotá, un departamento y un código inexistente.
+4. Paso 2 — Localizar y comprobar los archivos públicos
+IMPLEMENTADO: el adaptador usa los siguientes patrones observados en el código. Son rutas de archivos del portal, no un contrato de API REST documentado ni una garantía de disponibilidad futura. Antes de programar un lote, verifica un municipio piloto desde el portal de descargas [S1] y conserva el resultado HTTP. Si cambian las rutas, actualiza el adaptador y su prueba, sin alterar el modelo de datos.
+TXT comprimido:
+https://terridata.dnp.gov.co/assets/docs/txt/entidades/TerriData{divipola}.txt.zip
+Excel comprimido:
+https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData{divipola}.xlsx.zip
+PDF publicado en el portal:
+https://terridata.dnp.gov.co/assets/docs/pdf/entidades/Ficha_{divipola}.pdf
+Usa preferentemente el TXT tabular para la ingesta y conserva el XLSX como respaldo de inspección cuando esté disponible. El PDF publicado por el portal puede servir para contraste visual; no debe ser la fuente principal de valores si existe una tabla descargable. Descargar el PDF del DNP y generar un PDF propio son dos operaciones distintas.
+PROPUESTO PARA EL TRASLADO: encapsula las rutas en configuración y registra URL solicitada, URL final, fecha UTC, estado HTTP, tipo de contenido, tamaño, ETag/Last-Modified cuando existan y SHA-256. Un nombre de archivo o una extensión .zip no demuestran que el contenido sea válido. No publiques como dato territorial una página HTML de error descargada con estado 200.
+5. Paso 3 — Descargar con trazabilidad y una caché que no cambie la procedencia
+Implementa tiempos de espera, un límite de tamaño y lectura por bloques. Ante interrupciones, 429 o errores temporales 5xx, aplica reintentos limitados con espera creciente y respeta Retry-After cuando esté presente. No reintentes indefinidamente un 404. Empieza con concurrencia baja, por ejemplo dos trabajadores, y ajústala según el comportamiento real del servicio; esta cifra es una recomendación operativa, no una cuota publicada por el DNP.
+Antes de aceptar el ZIP comprueba que puede abrirse, que incluye el archivo esperado y que la suma de tamaños descomprimidos es razonable. Evita extraer rutas arbitrarias del archivo al sistema. Si aparecen varios TXT, selecciona mediante una regla documentada o rechaza la ambigüedad; no uses siempre el primero sin revisar su identidad.
+Guarda el original de forma inmutable, por ejemplo raw/13001/20261024T120000Z/archivo.zip. El manifiesto enlaza el archivo a su descarga. Un segundo procesamiento reutiliza ese mismo artefacto y registra su huella, en lugar de suponer que el archivo sigue siendo igual por llamarse TerriData13001.txt.zip.
+IMPLEMENTADO: las descargas pueden devolver DNP_TERRIDATA_ONLINE, CACHE_LOCAL_OFICIAL o SINTESIS_CONTINGENCIA. Hay un riesgo concreto: la síntesis puede guardarse con el mismo nombre que un archivo descargado; una llamada posterior que ve ese archivo puede llamarlo caché oficial. La etiqueta de la devolución no basta para acreditar su origen.
+PROPUESTO PARA EL TRASLADO: separa físicamente raw/oficial y demo/sintetico y mantén la procedencia en un manifiesto persistente. La caché hereda la procedencia del artefacto original. Si no hay red pero existe un original verificado, se puede reutilizar indicando su fecha. Si no existe, informa SIN_DATOS o ERROR_DESCARGA. Un modo de demostración sintético debe ser voluntario, quedar marcado y no alimentar las fichas publicadas como oficiales.
+6. Paso 4 — Interpretar el TXT sin inventar valores
+IMPLEMENTADO: el lector abre un TXT dentro del ZIP y usa pandas.read_csv con separador “|”. Intenta UTF-8 y después una alternativa Latin-1. El contrato observado contiene las trece columnas siguientes; guarda los nombres originales y una correspondencia hacia nombres internos estables.
+Columna de origen
+	Uso en el modelo
+	Código Departamento / Departamento
+	Identidad del departamento.
+	Código Entidad / Entidad
+	Identidad del territorio de la observación.
+	Dimensión / Subcategoría / Indicador
+	Clasificación y definición de la serie.
+	Dato Numérico / Dato Cualitativo
+	Valor y su representación; se conservan ambos.
+	Año / Mes
+	Periodo de referencia del dato, distinto de la descarga.
+	Fuente / Unidad de Medida
+	Productor declarado y unidad original.
+	
+
+PROPUESTO PARA EL TRASLADO: exige las columnas mínimas antes de ingerir. Conserva el texto crudo, detecta problemas de codificación y registra la codificación utilizada. Normaliza espacios y etiquetas mediante un diccionario versionado; no fusiones indicadores sólo porque sus nombres se parecen.
+Los números requieren una política por formato de origen. “1.234,56” y “1,234.56” pueden representar la misma cantidad bajo convenciones distintas, mientras “1.234” es ambiguo sin contexto. No elimines puntos indiscriminadamente. Los valores no interpretables se guardan como nulos con motivo y fila de origen; el cero válido permanece cero.
+Un año inválido no debe convertirse en 2020. El lector actual contiene un valor de reemplazo de ese tipo; en la nueva plataforma se rechaza o se envía la fila a cuarentena. Si el mes está ausente, representa una serie anual explícitamente. Valida que la entidad del contenido corresponda a la solicitada y conserva por separado las filas departamentales si el archivo las incluye.
+7. Paso 5 — Definir un modelo canónico y sus reglas de procedencia
+Cada observación necesita más que un número. El identificador de serie debe distinguir territorio y tipo, indicador, dimensión, subcategoría, unidad, fuente y desagregaciones —por ejemplo sexo o zona— cuando existan. El periodo forma parte de la clave de observación. Una clave corta puede sobrescribir dos indicadores homónimos o dos desagregaciones distintas.
+{
+ "entidad_tipo": "MUNICIPIO",
+ "divipola": "13001",
+ "indicador_id": "identificador_interno_versionado",
+ "indicador_nombre_original": "nombre exacto de la fuente",
+ "dimension": "dimension_original",
+ "subcategoria": "subcategoria_original",
+ "periodo": {"anio": 2023, "mes": null},
+ "valor_numerico": null,
+ "valor_cualitativo": "texto original si aplica",
+ "unidad": "unidad declarada",
+ "productor_declarado": "institucion indicada en la fila",
+ "canal_obtencion": "TERRIDATA",
+ "naturaleza": "NO_DETERMINADA",
+ "artefacto_sha256": "huella del archivo descargado",
+ "fila_origen": 12,
+ "descargado_en": "2026-10-24T12:00:00Z"
+}
+Este JSON es una plantilla de contrato, no una observación real. Naturaleza describe OBSERVADO, PROYECCION, ESTIMACION, SINTETICO o NO_DETERMINADA cuando la evidencia no permite clasificarlo. Haber descargado un archivo de un portal oficial no convierte una proyección en un dato observado. Productor declarado y canal de obtención son campos distintos: por ejemplo, DANE puede ser el productor y TerriData el canal.
+Guarda además estado de calidad, explicación de nulos, transformación aplicada y versión del adaptador. El manifiesto debe permitir reconstruir un valor visible en una ficha hasta la fila original. Los indicadores calculados tienen fórmula, entradas, periodos, unidades y versión propios. No se etiquetan como un dato directamente publicado por la fuente.
+8. Paso 6 — Persistir de forma idempotente y publicar por versión
+Implementa como mínimo cuatro conjuntos: entidades territoriales; artefactos descargados y sus manifiestos; observaciones y versiones; ejecuciones del lote con resultado por entidad. Conserva también una cuarentena de filas rechazadas con sus causas. SQLite es suficiente para una prueba o una instalación pequeña; PostgreSQL facilita varios trabajadores y consultas de una plataforma compartida.
+La clave de serie puede calcularse con SHA-256 de una representación JSON estable de sus atributos semánticos. La unicidad de observación se establece con serie, año, mes normalizado y versión de publicación. Utiliza un valor interno inequívoco para mes anual al construir la clave: en varias bases, NULL dentro de una restricción UNIQUE no impide duplicados como suele suponerse.
+Carga primero en staging. Valida identidad, esquema, periodos y conteos; sólo después activa la nueva versión dentro de una transacción. Si falla la descarga o el parseo, conserva la última versión válida y marca la actualización fallida. No borres la historia de una entidad antes de saber que puedes reemplazarla.
+IMPLEMENTADO: el pipeline utiliza DELETE por entidad y después INSERT OR REPLACE, y su restricción de unicidad es más corta que el contrato propuesto. Para el traslado, no copies ese diseño sin revisar preservación histórica, colisiones entre series y el caso del mes nulo. Prueba que procesar dos veces el mismo artefacto no duplique observaciones y que dos fuentes distintas no se sobrescriban.
+9. Paso 7 — Extender el piloto a cobertura nacional medible
+Empieza por un municipio y valida manualmente varios indicadores contra el archivo original. Añade un municipio con ceros iniciales, otro con faltantes y un departamento. Después ejecuta un lote pequeño de distintas regiones y sólo entonces programa el recorrido nacional del catálogo fechado.
+Cada entidad recorre estados PENDIENTE, DESCARGANDO, DESCARGADO, VALIDADO, INGESTADO, FICHA_GENERADA o FALLIDO, con causa y contador de intentos. La reanudación recupera únicamente trabajos pendientes o fallidos según la política; un cierre del proceso no debe obligarte a repetir toda Colombia.
+El informe nacional distingue: entidades objetivo del catálogo; entidades intentadas; archivos válidos; entidades ingeridas; fichas generadas; entidades sin información; fallos; y cobertura por dimensión y periodo. Cuenta por separado territorios con datos observados, con proyecciones y con datos de demostración. Una ficha creada con metadatos y casillas vacías no equivale a una entidad con información completa.
+No afirmes “todos los municipios integrados” porque el banco enumere municipios. Acredita ese resultado con un manifiesto de ejecución, listado de códigos, artefactos y fecha de corte. El catálogo y las descargas pueden cambiar en momentos distintos; reporta ambas versiones.
+10. Paso 8 — Consultar con fecha de corte y unidades compatibles
+Una consulta publicable debe recibir territorio, indicador exacto, desagregaciones, año máximo y política de naturaleza. Primero filtra las observaciones admisibles; después escoge la más reciente. Si necesitas exclusivamente datos observados, filtra OBSERVADO antes de ordenar. Si admites proyecciones, muéstralas como tales. No selecciones cualquier valor reciente y después lo rotules como observado.
+IMPLEMENTADO: consultar_indicador permite coincidencias parciales por nombre y consultar_indicador_con_vintage incorpora información temporal. Sin embargo, esta última consulta parte del resultado más reciente y no garantiza por sí sola un filtro previo por el año máximo. La plataforma nueva debe aplicar el corte dentro de la consulta y probarlo con un registro posterior al corte.
+No sumes porcentajes ni promedies indiscriminadamente indicadores municipales para obtener un departamento. Los conteos sólo se agregan cuando son aditivos, tienen el mismo periodo y cubren el universo necesario. Las tasas requieren numerador y denominador compatibles; una tasa por cien mil no se trata como porcentaje. Si no existe agregado departamental acreditado, se informa SIN_DATO.
+La fábrica actual contempla recurrir a datos de una capital cuando faltan registros departamentales. No reproduzcas ese comportamiento: una capital no representa al departamento. Si usas una referencia municipal comparativa, identifica expresamente qué municipio es y evita sustituir el valor departamental.
+Al incorporar MEN, Saber, MDM, CUIPO, FUT o SGR, mantén adaptadores, periodicidad, unidades y metodología separados. Evita unir automáticamente series presupuestales con denominaciones parecidas pero bases distintas. Una cifra monetaria debe indicar COP, miles o millones, además de si es corriente o constante cuando la fuente lo especifique.
+11. Paso 9 — Construir una ficha propia a partir de un único JSON
+PROPUESTO PARA EL TRASLADO: construye primero FichaTerritorial, un objeto que reúna identidad, fecha de corte, indicadores, series, comparaciones válidas, fuentes, faltantes y advertencias. Los exportadores reciben el mismo objeto. No permitas que el Word, el Excel y el PDF vuelvan a consultar o recalculen independientemente los valores.
+El generador observado organiza su PDF en ocho páginas. Puedes conservar esa organización sin copiar valores predeterminados ni prometer que hay datos para cada apartado:
+Página
+	Contenido observado
+	1
+	Generalidades, estructura demográfica y tipología.
+	2
+	Pobreza, vivienda, agua potable y asistencia social.
+	3
+	Educación, calidad académica y Saber 11.
+	4
+	Salud pública, aseguramiento y conectividad digital.
+	5
+	Uso del suelo, conflicto agrológico y convivencia ciudadana.
+	6
+	Finanzas públicas, desempeño fiscal e inversión SGP.
+	7
+	Regalías SGR, proyectos OCAD y desempeño municipal.
+	8
+	Comparación territorial, análisis DEA y resumen metodológico.
+	
+
+Cada tarjeta o tabla debe mostrar valor, unidad, periodo y fuente. Cuando falte información, muestra N/D con motivo; no uses cero ni una media supuesta. Las conclusiones narrativas deben indicar los datos que las sustentan y evitar atribuir causalidad a una simple diferencia entre territorios.
+La comparación utiliza periodos y unidades compatibles y explica cómo eligió los referentes. DEA es un cálculo derivado: sólo se presenta si existen entradas suficientes y el optimizador finalizó correctamente. Un fallo de cálculo debe producir NO_EVALUABLE, nunca una eficiencia perfecta por defecto.
+Bibliotecas observadas: pandas para tablas; PyMuPDF —importado como pymupdf— para el PDF; openpyxl para Excel; Pydantic para contratos de varios componentes; sqlite3 y el conector PostgreSQL para persistencia. Para gráficos nuevos puedes usar Matplotlib y reutilizar la imagen en los formatos; esto es una opción de implementación, no una afirmación de que el módulo revisado dibuje sus páginas con Matplotlib.
+La fábrica revisada exporta PDF, XLSX, JSON y Markdown. Si tu plataforma necesita DOCX o HTML, agrega exportadores sobre el mismo objeto canónico. En Excel incluye una hoja de datos y otra de procedencia; evita truncar silenciosamente las filas. En PDF o Word agrega la fecha de corte y una nota visible de elaboración propia.
+12. Paso 10 — Implementar el orquestador sin acoplarlo a una plataforma
+Define interfaces sencillas que puedas implementar en Python, otro lenguaje o un servicio. El siguiente flujo es pseudocódigo deliberado: describe responsabilidades y no pretende ser una librería ya instalada.
+def actualizar_y_generar(entidad, fecha_corte, repositorio, fuente, exportadores):
+   validar_entidad_con_catalogo(entidad)
+   artefacto = fuente.descargar_o_reusar_original_verificado(entidad)
+   filas = fuente.parsear_y_validar(artefacto, entidad)
+   version = repositorio.cargar_staging_y_activar(filas, artefacto)
+   indicadores = repositorio.consultar(
+       entidad=entidad,
+       fecha_maxima=fecha_corte,
+       version=version,
+       politica_naturaleza="EXPLICITA"
+   )
+   ficha = construir_ficha_canonica(entidad, indicadores, artefacto)
+   verificar_consistencia_y_procedencia(ficha)
+   archivos = [exportador.generar(ficha) for exportador in exportadores]
+   verificar_archivos_contra_ficha(archivos, ficha)
+   publicar_atomico(archivos, ficha)
+   return ficha
+Los componentes reciben configuración: URL, rutas, conexión, catálogo, corte temporal, reintentos y modo de publicación. El proceso web encola el trabajo y devuelve su identificador; el trabajador actualiza estados y produce archivos. Para un prototipo local puedes ejecutar el mismo flujo desde una CLI sin cambiar las reglas de datos.
+El modo estricto, recomendado para publicación, no produce valores sintéticos ni reemplaza una entidad por otra. Cuando se permite reutilizar información anterior, la ficha conserva su fecha real y muestra que la actualización falló. Los errores incluyen entidad, operación y causa; un fallo no se transforma silenciosamente en una ficha conforme.
+13. Cómo reconocer y utilizar el código existente
+Si reutilizas BdeC_IP, primero confirma los métodos y la configuración en la versión del repositorio. Estas llamadas muestran los puntos de entrada existentes; no constituyen una prueba de ejecución nacional ni eliminan las limitaciones señaladas.
+from engine.territorial.terridata_pipeline import TerriDataPipeline
+
+pipeline = TerriDataPipeline()
+# Este método puede entrar en contingencia sintética en la versión revisada.
+# Antes de publicar, verifica la procedencia persistente del artefacto.
+resultado_ingesta = pipeline.ingestar_entidad("13001")
+
+from engine.territorial.generador_ficha_terridata_oficial import (
+   FabricaFichasTerritorialesOficialesDNP,
+)
+
+fabrica = FabricaFichasTerritorialesOficialesDNP()
+# La fábrica consulta PostgreSQL: comprueba la sincronización con la ingesta.
+resultado_ficha = fabrica.ensamblar_ficha_integral(
+   "13001",
+   directorio_salida="salida/13001",
+   exportar_pdf=True,
+   exportar_xlsx=True,
+   exportar_json=True,
+   exportar_markdown=True,
+)
+Para una plataforma independiente, implementa el contrato de datos y sus pruebas en lugar de copiar importaciones engine.* o rutas /root/BdeC_IP. Sustituye accesos al banco local y a PostgreSQL por interfaces explícitas. Así puedes probar el generador con un JSON pequeño y el descargador con un ZIP de prueba sin necesitar toda la aplicación de inversión pública.
+14. Pruebas de aceptación para el agente implementador
+Prueba
+	Resultado exigido
+	Identidad y catálogo
+	Ceros iniciales conservados; homónimos resueltos; código y departamento incompatibles rechazados.
+	Respuesta falsa
+	HTML con estado 200, ZIP corrupto o TXT ausente no se ingieren.
+	Procedencia de caché
+	Un artefacto sintético nunca pasa a ser oficial por reutilizarlo desde disco.
+	Parseo y periodos
+	Cero válido conservado; nulo diferente de cero; año inválido sin reemplazo inventado; números ambiguos trazados.
+	Idempotencia e historia
+	La misma ingesta no duplica filas; una ingesta fallida no destruye la versión anterior.
+	Series distintas
+	Fuente, unidad o desagregación distintas no se sobrescriben por compartir nombre de indicador.
+	Corte temporal
+	Un dato posterior al corte no aparece; las proyecciones se distinguen de observados.
+	Cobertura departamental
+	La ausencia de un agregado no se reemplaza con el dato de la capital.
+	Faltantes y cálculos
+	Sin dato produce N/D; error del optimizador produce NO_EVALUABLE.
+	Exportaciones reales
+	Abrir PDF/XLSX/JSON y comprobar al menos cinco valores, sus periodos y sus fuentes frente al objeto canónico.
+	Reanudación del lote
+	Interrumpir y reanudar conserva éxitos y sólo reprocesa lo pendiente conforme a política.
+	Cobertura nacional
+	El informe concilia catálogo, intentos, éxitos y fallos; no confunde metadatos con datos disponibles.
+	
+
+La revisión final debe utilizar archivos realmente generados y leerlos de nuevo. Que un diccionario intermedio contenga una clave no demuestra que el usuario vea el dato ni la advertencia en el PDF o el Excel. Prueba también el caso sano para evitar avisos falsos.
+15. Instrucción lista para entregar a otro agente de IA
+Implementa una integración con TerriData para mi plataforma siguiendo esta guía. Inspecciona primero el lenguaje, la base de datos y el mecanismo de tareas disponibles. Entrega un mapa de componentes y un contrato de observaciones antes de conectar exportadores. Usa DIVIPOLA como identidad territorial y un catálogo oficial versionado; no unas por nombre sin resolver homónimos.
+Construye un adaptador de archivos públicos con manifiesto y validación ZIP/TXT, una ingesta idempotente con staging e historia, consultas por periodo y procedencia, y un objeto canónico de ficha. Demuestra el flujo con un municipio, después con un departamento y finalmente con un lote pequeño antes de ejecutar el catálogo nacional.
+No inventes estadísticas ni años de referencia; no conviertas datos sintéticos en oficiales; no sustituyas un departamento por su capital. Los agregados, cálculos y gráficos deben indicar fórmula, unidad, periodo y fuente. No afirmes cobertura completa sin un manifiesto por entidad. Si una ruta del portal deja de servir, informa el fallo y verifica el mecanismo público vigente antes de cambiar el adaptador.
+Entrega código configurable, migraciones de base de datos, contratos de datos, pruebas de aceptación, manifiesto del piloto, fichas de muestra y un reporte de limitaciones. Separa claramente lo observado, lo proyectado, lo calculado y lo no disponible. Comprueba los valores leyendo los archivos finales, no sólo los objetos internos. La publicación debe identificarse como elaboración propia con fuentes citadas.
+16. Plan de ejecución y criterio de terminación
+Etapa
+	Entregable para revisar antes de continuar
+	A. Reconocimiento
+	Catálogo fechado, arquitectura de destino y contrato de observaciones.
+	B. Piloto
+	Original descargado, manifiesto, filas válidas/rechazadas y consulta reproducible de un municipio.
+	C. Persistencia
+	Pruebas de idempotencia, corte temporal, procedencia y recuperación ante fallos.
+	D. Ficha
+	JSON canónico y exportaciones leídas y conciliadas con cinco indicadores verificables.
+	E. Lote representativo
+	Municipios y departamento con casos de faltantes, sin sustitución de identidad.
+	F. Nacional y operación
+	Catálogo conciliado, cola reanudable, reporte de cobertura y programación de actualizaciones.
+	
+
+El trabajo termina cuando otro operador puede ejecutar el piloto con la configuración documentada, reproducir los valores desde los originales y conocer qué territorios o dimensiones faltan. Las limitaciones se entregan como parte del resultado; no se ocultan para declarar una cobertura que la evidencia no acredita.
+17. Fuentes, alcance de la verificación y evidencias locales
+[S1] DNP, portal TerriData: https://terridata.dnp.gov.co/ — consultado el 24 de octubre de 2026. Se verificaron las funciones públicas de fichas, comparaciones, descargas y reportes. Las URL de archivos mostradas en esta guía proceden del código; no se verificó en esta entrega una descarga HTTP de cada archivo territorial ni la estabilidad contractual de esos patrones.
+[S2] DANE, Geovisor de consulta DIVIPOLA: https://geoportal.dane.gov.co/geovisores/territorio/consulta-divipola-division-politico-administrativa-de-colombia/ — referencia oficial para contrastar codificación. Debe obtenerse y archivarse el catálogo que utilice la implementación, con su fecha. La visita al geovisor no equivale por sí sola a descargar y validar todo el catálogo.
+Evidencia local: las conclusiones técnicas proceden de la lectura de los archivos enumerados en el manifiesto adjunto. Éste registra SHA-256 y fecha de captura para identificar la versión observada, que incluye cambios locales y puede evolucionar. La guía no prueba por sí misma la integridad de SQLite o PostgreSQL, ni ejecuta una ingesta nacional.
+Se adjunta también un JSON estructurado con el contenido de este documento, para facilitar su importación a otra herramienta o el procesamiento por un agente. El DOCX puede abrirse en Google Docs: subir a Google Drive, abrir con Documentos de Google y, si se mantiene como archivo de Office, usar Archivo → Guardar como Documentos de Google según la interfaz disponible. La plataforma también dispone de una vía directa: scripts con google-api-python-client, una cuenta de servicio configurada y permisos sobre la carpeta de destino. Esa vía permite crear un Google Doc importando este DOCX cuando el entorno tiene acceso de red a Google; no exige conectar el complemento de Drive de la conversación.
+Guía TerriData · Elaboración propia ·

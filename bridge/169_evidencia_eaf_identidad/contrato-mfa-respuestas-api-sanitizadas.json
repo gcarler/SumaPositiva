@@ -1,0 +1,14 @@
+{
+  "estado": {
+    "activo": false,
+    "codigos_restantes": 0,
+    "activado_en": null,
+    "exigido_por_rol": false
+  },
+  "inicio": {
+    "secreto_b32": "[SECRETO_DE_PRUEBA_RETIRADO]",
+    "otpauth_uri": "[URI_CON_SECRETO_RETIRADA]",
+    "qr_code_base64": "[QR_CON_SECRETO_RETIRADO]"
+  },
+  "nota": "Respuestas HTTP reales; valores de secreto/URI/QR sustituidos por strings, mismas claves y tipos"
+}

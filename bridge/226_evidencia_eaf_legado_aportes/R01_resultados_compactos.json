@@ -1,0 +1,603 @@
+{
+  "six_original_cases": [
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:21.358303+00:00",
+      "proposal": "01a176e3-7784-7a7d-a96b-3560045fb21d",
+      "fixture": {
+        "etnia": true
+      },
+      "detail_status": 200,
+      "list_status": 200,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:21.673541+00:00",
+      "proposal": "01a176e3-78b9-787e-9f8d-f1ceba0a02bb",
+      "fixture": {
+        "es_victima_conflicto": "texto_heredado"
+      },
+      "detail_status": 200,
+      "list_status": 200,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_enfoque",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:22.018013+00:00",
+      "proposal": "01a176e3-7a0d-7dce-b84b-adadd40f98b3",
+      "fixture": {
+        "es_victima_conflicto": null
+      },
+      "detail_status": 200,
+      "list_status": 200,
+      "contact_disclosed": false
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:22.377707+00:00",
+      "proposal": "01a176e3-7b60-7e17-b89d-54f89a100c64",
+      "audit": "dc286ddd-78a2-4e89-bb0a-e3dde842d213",
+      "root_type": "NoneType",
+      "status": 200,
+      "original_preserved": true
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:22.654079+00:00",
+      "proposal": "01a176e3-7c87-732b-bdfa-31a17bdf2bfd",
+      "audit": "7686df7a-3f84-43e1-9d8a-9ea619b7b105",
+      "root_type": "bool",
+      "status": 200,
+      "original_preserved": true
+    },
+    {
+      "scenario": "AP03_legacy_irregular_audit",
+      "run": "03_casos203_sin_cambiar",
+      "utc": "2026-10-26T06:26:22.932952+00:00",
+      "proposal": "01a176e3-7d99-7c9f-8083-cfae8923cbc6",
+      "audit": "251f4946-b1dc-4b95-ae30-3f43f44bdbac",
+      "root_type": "list",
+      "status": 200,
+      "original_preserved": true
+    }
+  ],
+  "new_variants": [
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:26:58.661442+00:00",
+      "root_type": "bool",
+      "proposal": "01a176e4-08da-78b4-850d-deed3dead234",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943780,
+        2943784
+      ],
+      "SQL_before_sha256": "5657bc28d9e3918758c5a36506de3b4edb6b5f3a4c99c45a3849adbfb6df34eb",
+      "SQL_after_sha256": "5657bc28d9e3918758c5a36506de3b4edb6b5f3a4c99c45a3849adbfb6df34eb",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:26:59.470805+00:00",
+      "root_type": "bool",
+      "proposal": "01a176e4-0a56-790a-9f42-1aab358525aa",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943788,
+        2943792
+      ],
+      "SQL_before_sha256": "291919b04c9165070416222e12b9a2dc4a1191bb39ad803ee39b9b33599316c4",
+      "SQL_after_sha256": "291919b04c9165070416222e12b9a2dc4a1191bb39ad803ee39b9b33599316c4",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:26:59.844926+00:00",
+      "root_type": "int",
+      "proposal": "01a176e4-0d70-7b22-af23-60720a7f2f8e",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943796,
+        2943800
+      ],
+      "SQL_before_sha256": "588fcb36a1d6ee5c5db389d2886d2538821a975ced2f071b979aaefbd5013761",
+      "SQL_after_sha256": "588fcb36a1d6ee5c5db389d2886d2538821a975ced2f071b979aaefbd5013761",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:00.379636+00:00",
+      "root_type": "int",
+      "proposal": "01a176e4-0ee3-7ef3-9834-e7a28819747a",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943805,
+        2943810
+      ],
+      "SQL_before_sha256": "41f5b80abcb23be7fb7ddc96c28efa8afd139f2f5cc2fa3ef13b1af0c4ca53c2",
+      "SQL_after_sha256": "41f5b80abcb23be7fb7ddc96c28efa8afd139f2f5cc2fa3ef13b1af0c4ca53c2",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:01.460471+00:00",
+      "root_type": "int",
+      "proposal": "01a176e4-1136-758f-8aac-2d2932108cb1",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943814,
+        2943818
+      ],
+      "SQL_before_sha256": "014405d8660673e0ac32e4e4582ddb8776d3ab83c483c68997b1efd5449bd95c",
+      "SQL_after_sha256": "014405d8660673e0ac32e4e4582ddb8776d3ab83c483c68997b1efd5449bd95c",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:02.527520+00:00",
+      "root_type": "float",
+      "proposal": "01a176e4-15e5-7073-902c-17e795ebc069",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943824,
+        2943828
+      ],
+      "SQL_before_sha256": "3016275a4cb19fbb61719bbcda735fe9fe5819ce341f684d058624253b4b3466",
+      "SQL_after_sha256": "3016275a4cb19fbb61719bbcda735fe9fe5819ce341f684d058624253b4b3466",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:03.776406+00:00",
+      "root_type": "list",
+      "proposal": "01a176e4-19b4-7f66-9ef9-4931652a720e",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943851,
+        2943857
+      ],
+      "SQL_before_sha256": "70472643184e234ef98fde1ea10cc9f1cbae86cd57adb8869f05c8ef29b37cde",
+      "SQL_after_sha256": "70472643184e234ef98fde1ea10cc9f1cbae86cd57adb8869f05c8ef29b37cde",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:04.357667+00:00",
+      "root_type": "dict",
+      "proposal": "01a176e4-1ebc-70db-85c2-932b584ffd59",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943862,
+        2943866
+      ],
+      "SQL_before_sha256": "197f39038730e1c5c7b43f19253eb6dc6a1e2c356a21481180b998b970a804e2",
+      "SQL_after_sha256": "197f39038730e1c5c7b43f19253eb6dc6a1e2c356a21481180b998b970a804e2",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:04.848961+00:00",
+      "root_type": "list",
+      "proposal": "01a176e4-20a4-7154-a11f-c893e04f9b36",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943870,
+        2943874
+      ],
+      "SQL_before_sha256": "2ecacdda1ba046cae59b445ecc4dbb22b53492569d06fbf30c4a7caf6808d10c",
+      "SQL_after_sha256": "2ecacdda1ba046cae59b445ecc4dbb22b53492569d06fbf30c4a7caf6808d10c",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_text_types",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:05.333530+00:00",
+      "root_type": "dict",
+      "proposal": "01a176e4-2295-7cdc-852c-7ec46f03b86c",
+      "detail": 200,
+      "list": 200,
+      "reader_pids": [
+        2943879,
+        2943883
+      ],
+      "SQL_before_sha256": "835223477aaaf941550bc248d24dac30cd216c675ead27b999420f6a476c3259",
+      "SQL_after_sha256": "835223477aaaf941550bc248d24dac30cd216c675ead27b999420f6a476c3259",
+      "skipped_records": 0
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:05.825229+00:00",
+      "value_type": "NoneType",
+      "proposal": "01a176e4-2460-7585-953c-6dea971ddd74",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "927bf7b46b5fa41b580f689c6cbf9d495a085fe2b10ba09f38d14a886f789dba",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:06.274172+00:00",
+      "value_type": "int",
+      "proposal": "01a176e4-2661-78af-bd72-ea1c6daed8ca",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "a1b40e83d94e4b9ec217ee9ad3b4dd896f3e9af52ca84f92725737d60b4b48eb",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:06.733091+00:00",
+      "value_type": "int",
+      "proposal": "01a176e4-2837-7c78-85f0-fd5d84bff919",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "7119f4bc96b4ba067b320d72b951ae6fecbafa075730810ca76c232594c0857a",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:07.157661+00:00",
+      "value_type": "float",
+      "proposal": "01a176e4-29e2-7ce1-8ac2-505881615316",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "e34ef70a5d450ffa6c4497978a543f78ef6810026cac779aa274347fcd1a9e3c",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:07.647890+00:00",
+      "value_type": "float",
+      "proposal": "01a176e4-2bae-7f3a-8e77-a273a8db4b43",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "280c755c3192f52a0d74bd49c746ce695c27dd30bd2fc1abe12fafed9d224be1",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:08.074484+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-2d74-7b9b-b1ef-ede776a6ce88",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "e5d1c3d921e02db2851b706ec78a685ffc0fd9e31377a1075e25acdb1f3c4d73",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:08.597926+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-2f3e-777c-927a-b0176ad47f8d",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "3112ca63b060be53f1341c6cc606106af456fef78a103b0a5fc74324c28ba1de",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:09.000248+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-312e-704b-9be4-8ca1ee830a10",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "169ce3723457d22a7b0b8605100a2d34ba3034b3f766c4211c188548825271f6",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:09.504041+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-32ce-7e7f-ab1a-f586bd9d9530",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "e807e28dd32f5fda29491458c1eeacf6224f2ed9243c3a41e975cfd7182b98a7",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:09.994033+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-34c1-736d-9cb1-4c73e209625b",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "f6bd3ab7b4f4ee14dfd039d37f2943d570778085d4d3880318ed4520d95e45de",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:10.444628+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-36b2-741b-bf26-cadd2cdbe1c0",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "2ea163829f3aa478c93ac51c10321da692a294793def242425800bedeb7f5d34",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:10.793510+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-3847-7fbd-854b-bd2e1f7432df",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "8c527f1a7132e90f904c1fa80c8b0a1efcd756fc78e5f76117e3287bb377a90c",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:11.209422+00:00",
+      "value_type": "str",
+      "proposal": "01a176e4-39af-7c62-ace8-d545d2e360af",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "46309ab09325ccfa37e93b4358d7f1011039edff329bbff0afddea88842a81b0",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:11.728516+00:00",
+      "value_type": "list",
+      "proposal": "01a176e4-3b66-7af0-a67f-a9415e1f2ede",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "97ed3616a63027f1f33fa13ebab7d58f5ad1abf6ff3e79ea0562f2db281577ae",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:12.234107+00:00",
+      "value_type": "dict",
+      "proposal": "01a176e4-3d84-71fe-9fb8-54e0a96483e8",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "f93b677566f02b4c9250b3027a0cb49f0a9ff213924b0c5f8fca95887a18feb2",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_new_flags",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:12.658939+00:00",
+      "value_type": "list",
+      "proposal": "01a176e4-3f5a-770f-a243-d8b5548dff11",
+      "detail": 200,
+      "list": 200,
+      "SQL_same": true,
+      "SQL_sha256": "db5e5194b2ac03cf93cc04846ce8efb110ef1423ed3761ac139c74c988d4c041",
+      "representation": "False es default técnico previo; no hecho demográfico inferido"
+    },
+    {
+      "scenario": "R01_Field_limit",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:13.147406+00:00",
+      "proposal": "01a176e4-4113-7d4f-81f1-5f2db67b3128",
+      "organization_characters": 249,
+      "kept": 249,
+      "status": 200,
+      "SQL_same": true,
+      "no_invented_limit_on_etnia": true
+    },
+    {
+      "scenario": "R01_Field_limit",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:13.693484+00:00",
+      "proposal": "01a176e4-430a-7e8d-b9fa-dcda9feb802d",
+      "organization_characters": 250,
+      "kept": 250,
+      "status": 200,
+      "SQL_same": true,
+      "no_invented_limit_on_etnia": true
+    },
+    {
+      "scenario": "R01_Field_limit",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:14.113019+00:00",
+      "proposal": "01a176e4-450d-7fd4-9ecd-e054d5b02e1a",
+      "organization_characters": 251,
+      "kept": null,
+      "status": 200,
+      "SQL_same": true,
+      "no_invented_limit_on_etnia": true
+    },
+    {
+      "scenario": "R01_Field_limit",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:14.579175+00:00",
+      "proposal": "01a176e4-46ad-7e08-8291-48fcd363a91d",
+      "organization_characters": 4096,
+      "kept": null,
+      "status": 200,
+      "SQL_same": true,
+      "no_invented_limit_on_etnia": true
+    },
+    {
+      "scenario": "R01_nested_contact",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:14.987270+00:00",
+      "proposal": "01a176e4-488b-7269-b0d2-2a6fef30e3b7",
+      "contact_type": "synthetic",
+      "status": 200,
+      "SQL_same": true,
+      "all_closed": true
+    },
+    {
+      "scenario": "R01_nested_contact",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:15.391753+00:00",
+      "proposal": "01a176e4-4a16-7a10-933c-4ef5a9f807cc",
+      "contact_type": "synthetic",
+      "status": 200,
+      "SQL_same": true,
+      "all_closed": true
+    },
+    {
+      "scenario": "R01_nested_contact",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:15.844670+00:00",
+      "proposal": "01a176e4-4b9f-7259-9d52-b00e20b71765",
+      "contact_type": "synthetic",
+      "status": 200,
+      "SQL_same": true,
+      "all_closed": true
+    },
+    {
+      "scenario": "R01_nested_contact",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:16.251331+00:00",
+      "proposal": "01a176e4-4d7b-74eb-8e45-58e2f6eb9d43",
+      "contact_type": "synthetic",
+      "status": 200,
+      "SQL_same": true,
+      "all_closed": true
+    },
+    {
+      "scenario": "R01_decisions_preserved",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:16.756337+00:00",
+      "proposal": "01a176e4-4ef6-7d38-93f3-e20dc31caf1f",
+      "decision_ids": [
+        "52fef4ec-4725-4a8d-985a-0be2392e0c16",
+        "385b5b08-53e9-4c54-b100-65ddf62fa963"
+      ],
+      "status": 200,
+      "decisions_returned": 2,
+      "private_record_excluded": true,
+      "SQL_same": true,
+      "SQL_before_sha256": "19c0c5c7dd855a814b8950cc014bc1a0343d83bbeaf5d42708131ace271b85a8",
+      "SQL_after_sha256": "19c0c5c7dd855a814b8950cc014bc1a0343d83bbeaf5d42708131ace271b85a8"
+    },
+    {
+      "scenario": "R01_decisions_preserved",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:17.278701+00:00",
+      "proposal": "01a176e4-50ee-76c0-82ac-df3ef49ef349",
+      "decision_ids": [
+        "bacdfd75-cb28-40a5-8333-dc2642a192cf",
+        "af004ffe-7791-49b3-bd86-89a2a4221a83"
+      ],
+      "status": 200,
+      "decisions_returned": 2,
+      "private_record_excluded": true,
+      "SQL_same": true,
+      "SQL_before_sha256": "afed92ec76e5c39f477252ea2bc4b89c306a14caac5cdf385a72c774dd127eaa",
+      "SQL_after_sha256": "afed92ec76e5c39f477252ea2bc4b89c306a14caac5cdf385a72c774dd127eaa"
+    },
+    {
+      "scenario": "R01_decisions_preserved",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:17.881465+00:00",
+      "proposal": "01a176e4-530f-7073-b445-f4a0f636609d",
+      "decision_ids": [
+        "c37bc335-198c-42a0-b92b-36611c68d03a",
+        "102c483f-2b47-492c-b29d-0f5bc2cd20a1"
+      ],
+      "status": 200,
+      "decisions_returned": 2,
+      "private_record_excluded": true,
+      "SQL_same": true,
+      "SQL_before_sha256": "75d7ad8153d120eb6a7a19161e44eb0bce2b94a854dcd9531a10d4eae49f893c",
+      "SQL_after_sha256": "75d7ad8153d120eb6a7a19161e44eb0bce2b94a854dcd9531a10d4eae49f893c"
+    },
+    {
+      "scenario": "R01_decisions_preserved",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:18.464497+00:00",
+      "proposal": "01a176e4-555f-7ab1-978b-bac440dd6023",
+      "decision_ids": [
+        "3b07f5c0-4c88-42f6-ad4d-3fb0180480b2",
+        "156eb2df-2e07-4c2d-99f4-f2070c55f441"
+      ],
+      "status": 200,
+      "decisions_returned": 2,
+      "private_record_excluded": true,
+      "SQL_same": true,
+      "SQL_before_sha256": "e67b743277d1d6b450695e70f8fc2fef069b66cd379b02dca70a9ed0fb76bb1f",
+      "SQL_after_sha256": "e67b743277d1d6b450695e70f8fc2fef069b66cd379b02dca70a9ed0fb76bb1f"
+    },
+    {
+      "scenario": "R01_decisions_preserved",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:18.978166+00:00",
+      "proposal": "01a176e4-579f-788b-8c46-6736e9648ced",
+      "decision_ids": [
+        "59dd215c-5706-4f93-9975-1d39e72936c7",
+        "076c8822-feee-433e-9655-08a38f713005"
+      ],
+      "status": 200,
+      "decisions_returned": 2,
+      "private_record_excluded": true,
+      "SQL_same": true,
+      "SQL_before_sha256": "f2578e423dd3d33fbe8c8df9ad6c3ebdfbaa2bdf1bdb10e03cfac468ff99daa3",
+      "SQL_after_sha256": "f2578e423dd3d33fbe8c8df9ad6c3ebdfbaa2bdf1bdb10e03cfac468ff99daa3"
+    },
+    {
+      "scenario": "R01_positive_authorized",
+      "run": "04_variantes_propias",
+      "utc": "2026-10-26T06:27:20.461188+00:00",
+      "proposal": "01a176e4-59a1-7673-9bb0-49b8827a7574",
+      "no_token": 401,
+      "anonymous": 403,
+      "update": 200,
+      "devolution": 201,
+      "history": 200,
+      "new_data": 201,
+      "legacy_JSON_untouched": true
+    }
+  ],
+  "SQL_snapshot_rule": "39 variantes de lectura comparan snapshot SQL completo antes/después con observadores nuevos; una variante de gestión autorizada cambia estado/auditoría conforme al caso de uso y compara los JSON privados originales, que permanecen idénticos. Solo se publican hashes y datos técnicos de fixtures.",
+  "technical_defaults": "False/None son defaults contractuales previos al omitir un valor incompatible; no hechos demográficos inferidos."
+}

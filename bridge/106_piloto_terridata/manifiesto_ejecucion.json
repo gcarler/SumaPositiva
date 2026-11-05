@@ -1,0 +1,75 @@
+{
+  "ejecucion": {
+    "comando": "backend/.venv/bin/python /tmp/ol_ter_piloto_01.py",
+    "in_memory": true,
+    "metodo": "real",
+    "parser_version": "terridata_txt.v1",
+    "script_bytes": 6597,
+    "script_fuera_repo": "/tmp/ol_ter_piloto_01.py",
+    "script_sha256": "c0e4ea3eede5d17cdb187a7743c0a9ad69397eef7b795395f8d3017fcd28a79f",
+    "sin_extraccion_al_filesystem": true
+  },
+  "esquema": "polis.piloto_terridata_manifest_execution.v1",
+  "estado": "piloto_ingesta_local_pendiente_validacion_semantica",
+  "fin_utc": "2026-10-25T13:49:15.540668+00:00",
+  "inicio_utc": "2026-10-25T13:48:44.057255+00:00",
+  "insumo_txt": {
+    "bytes": 2853390,
+    "codificacion": "utf-8-sig",
+    "delimitador": "|",
+    "fecha_captura_declarada": null,
+    "miembro": "TerriData13001.txt",
+    "sha256": "07e2530900c986f48593d329b8dd4814c60a9eefe1449270608dd66bc90942a2"
+  },
+  "insumo_zip": {
+    "bytes": 114090,
+    "crc_verificado": true,
+    "limite_comprimido_bytes": 8388608,
+    "limite_expansion_bytes": 8388608,
+    "miembros_esperados": [
+      "TerriData13001.txt"
+    ],
+    "miembros_reales": [
+      "TerriData13001.txt"
+    ],
+    "ruta": "bridge/75_guia_motor_territorial_terridata/inspeccion_txt_628b8d80-d83f-4f22-8f58-dd2b10a1c230/original.zip",
+    "sha256": "b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15",
+    "sin_cifrado": true,
+    "sin_symlink": true
+  },
+  "no_ejecutado": [
+    "planificador",
+    "adquisicion",
+    "grafo",
+    "motores",
+    "pytest",
+    "suites generales",
+    "servicios",
+    "commit",
+    "push",
+    "despliegue"
+  ],
+  "saludas": [
+    {
+      "ruta": "bridge/106_piloto_terridata/resumen.json",
+      "tipo": "resumen"
+    },
+    {
+      "bytes": 13191372,
+      "ruta": "bridge/106_piloto_terridata/filas.jsonl",
+      "sha256": "77b358fcb06aa675cd4871eaed29acffac065d340236079b12689c3b4459ef4a",
+      "tipo": "filas_jsonl"
+    },
+    {
+      "ruta": "bridge/106_entrega_ollamacodex_piloto_terridata.md",
+      "tipo": "informe"
+    }
+  ],
+  "sin_cambios_a_datos_originales": true,
+  "sin_cambios_a_parser": true,
+  "sin_cambios_a_reglas": true,
+  "sin_promocion_al_banco": true,
+  "sin_red": true,
+  "sin_sql": true,
+  "tarea": "OL-TERR-PILOTO-01"
+}

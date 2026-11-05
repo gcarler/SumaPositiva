@@ -1,0 +1,81 @@
+{
+  "tarea": "OP-DANE-PREFLIGHT-02",
+  "fecha_consulta_utc": "2026-10-26T06:29:19.692945+00:00",
+  "target": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+  "limits": {
+    "max_redirects": 3,
+    "timeout_s": 20,
+    "max_total_bytes": 524288
+  },
+  "results": [
+    {
+      "step": "HEAD",
+      "url": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 06:29:19 GMT",
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Length": "131609579",
+        "Connection": "keep-alive",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "https://dane.gov.co",
+        "Access-Control-Allow-Methods": "GET, HEAD, POST",
+        "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Expose-Headers": "X-Joomla-Token",
+        "Access-Control-Max-Age": "86400",
+        "Content-Security-Policy": "default-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co; connect-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://z.clarity.ms https://s.clarity.ms https://translate-pa.googleapis.com https://translate.googleapis.com https://www.instagram.com https://twitter.com https://stats.g.doubleclick.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://ep1.adtrafficquality.google; font-src 'self' https: data: http:; frame-src 'self' https://ecircular.dane.gov.co https://ep2.adtrafficquality.google https://syndication.twitter.com https://dane-economia-circular.netlify.app http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://platform.twitter.com https://www.youtube.com https://twitter.com http://static.addtoany.com https://www.google-analytics.com about:; img-src 'self' https: data: http:; media-src 'self' https: http:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://www.googletagmanager.com https://platform.twitter.com https://static.doubleclick.net https://www.youtube.com https://googleads.g.doubleclick.net https: http:; style-src 'self' 'unsafe-inline' https: http:; frame-ancestors 'self' https://www.instagram.com http://172.200.5.13 http://www.dane.gov.co http://contenidosadmin.dane.gov.co http://dane.gov.co https://dane.gov.co https://www.dane.gov.co;",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Last-Modified": "Fri, 08 Aug 2025 22:00:38 GMT",
+        "Accept-Ranges": "bytes",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Powered-By": "Luchito Come",
+        "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+        "Vary": "User-Agent",
+        "X-Request-Id": "32fc2cdad8c8dbcd23677ebc0dd9abe8"
+      },
+      "body_len": 0,
+      "body_sha256": null
+    },
+    {
+      "step": "RANGE",
+      "url": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "status": 206,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 06:29:19 GMT",
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Length": "1",
+        "Connection": "keep-alive",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "https://dane.gov.co",
+        "Access-Control-Allow-Methods": "GET, HEAD, POST",
+        "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Expose-Headers": "X-Joomla-Token",
+        "Access-Control-Max-Age": "86400",
+        "Content-Security-Policy": "default-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co; connect-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://z.clarity.ms https://s.clarity.ms https://translate-pa.googleapis.com https://translate.googleapis.com https://www.instagram.com https://twitter.com https://stats.g.doubleclick.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://ep1.adtrafficquality.google; font-src 'self' https: data: http:; frame-src 'self' https://ecircular.dane.gov.co https://ep2.adtrafficquality.google https://syndication.twitter.com https://dane-economia-circular.netlify.app http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://platform.twitter.com https://www.youtube.com https://twitter.com http://static.addtoany.com https://www.google-analytics.com about:; img-src 'self' https: data: http:; media-src 'self' https: http:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://www.googletagmanager.com https://platform.twitter.com https://static.doubleclick.net https://www.youtube.com https://googleads.g.doubleclick.net https: http:; style-src 'self' 'unsafe-inline' https: http:; frame-ancestors 'self' https://www.instagram.com http://172.200.5.13 http://www.dane.gov.co http://contenidosadmin.dane.gov.co http://dane.gov.co https://dane.gov.co https://www.dane.gov.co;",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Last-Modified": "Fri, 08 Aug 2025 22:00:38 GMT",
+        "Accept-Ranges": "bytes",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Powered-By": "Luchito Come",
+        "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+        "Vary": "User-Agent",
+        "Content-Range": "bytes 0-0/131609579",
+        "X-Request-Id": "0c0e9b27b99bdbef72012f438b64f0a3"
+      },
+      "body_len": 1,
+      "body_sha256": "5c62e091b8c0565f1bafad0dad5934276143ae2ccef7a5381e8ada5b1a8d26d2"
+    }
+  ]
+}

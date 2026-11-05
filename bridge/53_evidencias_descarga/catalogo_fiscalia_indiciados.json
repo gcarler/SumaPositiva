@@ -1,0 +1,765 @@
+{
+  "results" :
+    [
+      {
+        "resource" :
+          {
+            "name" : "DA-SIVIGILA 2021 INS",
+            "id" : "fhc4-jjti",
+            "resource_name" : null,
+            "parent_fxf" : [],
+            "description" : "DATOS DEL SISTEMA DE INFORMACIÓN DE SIVIGILA",
+            "attribution" : "Instituto Nacional de Salud INS, Bogotá D:C",
+            "attribution_link" : "https://www.ins.gov.co/Paginas/Inicio.aspx",
+            "contact_email" : null,
+            "type" : "dataset",
+            "updatedAt" : "2026-09-15T18:46:34.000Z",
+            "createdAt" : "2022-10-15T16:16:36.000Z",
+            "metadata_updated_at" : "2026-09-15T18:46:34.000Z",
+            "data_updated_at" : "2022-10-15T16:19:47.000Z",
+            "page_views" :
+              {
+                "page_views_last_week" : 51,
+                "page_views_last_month" : 178,
+                "page_views_total" : 6558,
+                "page_views_last_week_log" : 5.700439718141093,
+                "page_views_last_month_log" : 7.483815777264256,
+                "page_views_total_log" : 12.679260159716792
+              },
+            "columns_name" :
+              [
+                "COD_EVE",
+                "SEMANA",
+                "ANO",
+                "Nombre_evento",
+                "conteo",
+                "Municipio_ocurrencia",
+                "Departamento_ocurrencia"
+              ],
+            "columns_field_name" :
+              [
+                "cod_eve",
+                "semana",
+                "ano",
+                "nombre_evento",
+                "conteo",
+                "municipio_ocurrencia",
+                "departamento_ocurrencia"
+              ],
+            "columns_datatype" :
+              [
+                "Number",
+                "Number",
+                "Number",
+                "Text",
+                "Number",
+                "Text",
+                "Text"
+              ],
+            "columns_description" : [ "", "", "", "", "", "", "" ],
+            "columns_format" : [ {}, {}, {}, {}, {}, {}, {} ],
+            "download_count" : 966,
+            "provenance" : "official",
+            "lens_view_type" : "tabular",
+            "lens_display_type" : "table",
+            "locked" : false,
+            "backend" : "nbe",
+            "blob_mime_type" : null,
+            "hide_from_data_json" : false,
+            "publication_date" : "2022-10-15T16:20:06.000Z"
+          },
+        "classification" :
+          {
+            "categories" : [],
+            "tags" : [],
+            "domain_category" : "Salud y Protección Social",
+            "domain_tags" :
+              [ "instituto nacional de salud", "sistema de información" ],
+            "domain_metadata" :
+              [
+                { "key" : "Información-de-Datos_Idioma", "value" : "Español" },
+                {
+                  "key" : "Información-de-Datos_Cobertura-Geográfica",
+                  "value" : "Municipal"
+                },
+                {
+                  "key" : "Información-de-Datos_Frecuencia-de-Actualización",
+                  "value" : "Anual"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Sector",
+                  "value" : "Planeación"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Área-o-dependencia",
+                  "value" : "Oficina TIC"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Nombre-de-la-Entidad",
+                  "value" : "Instituto Nacional de Salud - INS, Bogotá D.C."
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Orden",
+                  "value" : "Nacional"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Municipio",
+                  "value" : "Bogotá D.C."
+                },
+                {
+                  "key" : "Información-de-la-Entidad_DIVIPOLA-Municipio",
+                  "value" : "11001"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Departamento",
+                  "value" : "Bogotá D.C."
+                }
+              ]
+          },
+        "metadata" :
+          {
+            "domain" : "www.datos.gov.co",
+            "license" : "Creative Commons Attribution | Share Alike 4.0 International"
+          },
+        "permalink" : "https://www.datos.gov.co/d/fhc4-jjti",
+        "link" : "https://www.datos.gov.co/Salud-y-Protección-Social/DA-SIVIGILA-2021-INS/fhc4-jjti",
+        "owner" :
+          {
+            "id" : "issr-5hya",
+            "user_type" : "interactive",
+            "display_name" : "DatosabiertosINS"
+          },
+        "creator" :
+          {
+            "id" : "issr-5hya",
+            "user_type" : "interactive",
+            "display_name" : "DatosabiertosINS"
+          }
+      },
+      {
+        "resource" :
+          {
+            "name" : "Contratos Servicios Primera Infancia ICBF",
+            "id" : "4s78-bzvq",
+            "resource_name" : null,
+            "parent_fxf" : [],
+            "description" : "Información acerca de los contratos de las modalidades de Primera Infancia del Insituto Colombiano de Bienestar Familiar",
+            "attribution" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C.",
+            "attribution_link" : "https://www.icbf.gov.co/",
+            "contact_email" : null,
+            "type" : "dataset",
+            "updatedAt" : "2026-09-25T03:56:26.000Z",
+            "createdAt" : "2022-02-03T22:28:32.000Z",
+            "metadata_updated_at" : "2026-09-25T03:56:12.000Z",
+            "data_updated_at" : "2026-09-25T03:56:26.000Z",
+            "page_views" :
+              {
+                "page_views_last_week" : 52,
+                "page_views_last_month" : 196,
+                "page_views_total" : 7337,
+                "page_views_last_week_log" : 5.7279204545632,
+                "page_views_last_month_log" : 7.622051819456376,
+                "page_views_total_log" : 12.841171189248543
+              },
+            "columns_name" :
+              [
+                "Conteo",
+                "FechaInicioContrato",
+                "VigenciaContrato",
+                "TipoContrato",
+                "AñoAtencion",
+                "CodigoMunicipioEC",
+                "DepartamentoEC",
+                "RegionalContrato",
+                "TipoDocumentoEC",
+                "CodigoDepartamentoEC",
+                "MunicipioEC",
+                "EntidadContratista",
+                "TipoEntidadContratista",
+                "NumeroDocumentoEC",
+                "NumeroCuposContrato",
+                "FechaFinContrato",
+                "FechaCorte",
+                "NumeroContrato",
+                "ObjetoContrato"
+              ],
+            "columns_field_name" :
+              [
+                "conteo",
+                "fechainiciocontrato",
+                "vigenciacontrato",
+                "tipocontrato",
+                "a_oatencion",
+                "codigomunicipioec",
+                "departamentoec",
+                "regionalcontrato",
+                "tipodocumentoec",
+                "codigodepartamentoec",
+                "municipioec",
+                "entidadcontratista",
+                "tipoentidadcontratista",
+                "numerodocumentoec",
+                "numerocuposcontrato",
+                "fechafincontrato",
+                "fechacorte",
+                "numerocontrato",
+                "objetocontrato"
+              ],
+            "columns_datatype" :
+              [
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text",
+                "Text"
+              ],
+            "columns_description" :
+              [
+                "",
+                "fecha inicio del contrato",
+                "vigencia del contrato",
+                "tipo de contrato",
+                "Año de atencion",
+                "",
+                "",
+                "regional del contrato",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "fecha fin del contrato",
+                "",
+                "numero del contrato",
+                "objeto del contrato"
+              ],
+            "columns_format" :
+              [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ],
+            "download_count" : 4684,
+            "provenance" : "official",
+            "lens_view_type" : "tabular",
+            "lens_display_type" : "table",
+            "locked" : false,
+            "backend" : "nbe",
+            "blob_mime_type" : null,
+            "hide_from_data_json" : false,
+            "publication_date" : "2025-09-23T02:35:33.000Z"
+          },
+        "classification" :
+          {
+            "categories" : [],
+            "tags" : [],
+            "domain_category" : "Planeación",
+            "domain_tags" : [ "contratos" ],
+            "domain_metadata" :
+              [
+                { "key" : "Información-de-Datos_Idioma", "value" : "Español" },
+                {
+                  "key" : "Información-de-Datos_Cobertura-Geográfica",
+                  "value" : "Nacional"
+                },
+                {
+                  "key" : "Información-de-Datos_Frecuencia-de-Actualización",
+                  "value" : "Anual"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Sector",
+                  "value" : "Igualdad"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Área-o-dependencia",
+                  "value" : "Dirección de planeación y control de la gestió"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Nombre-de-la-Entidad",
+                  "value" : "Instituto Colombiano de Bienestar Familiar - ICBF, Bogotá D.C."
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Orden",
+                  "value" : "Nacional"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Municipio",
+                  "value" : "Bogotá D.C."
+                },
+                {
+                  "key" : "Información-de-la-Entidad_DIVIPOLA-Municipio",
+                  "value" : "11001"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Departamento",
+                  "value" : "Bogotá D.C."
+                }
+              ]
+          },
+        "metadata" :
+          {
+            "domain" : "www.datos.gov.co",
+            "license" : "Creative Commons Attribution | Share Alike 4.0 International"
+          },
+        "permalink" : "https://www.datos.gov.co/d/4s78-bzvq",
+        "link" : "https://www.datos.gov.co/Planeación/Contratos-Servicios-Primera-Infancia-ICBF/4s78-bzvq",
+        "owner" :
+          {
+            "id" : "gk4s-qz54",
+            "user_type" : "interactive",
+            "display_name" : "Analítica Institucional ICBF"
+          },
+        "creator" :
+          {
+            "id" : "gk4s-qz54",
+            "user_type" : "interactive",
+            "display_name" : "Analítica Institucional ICBF"
+          }
+      },
+      {
+        "resource" :
+          {
+            "name" : "Ingreso y Salida de Personas Nuevo Terminal de Duitama",
+            "id" : "esjr-xkft",
+            "resource_name" : null,
+            "parent_fxf" : [],
+            "description" : "La solución de turismo está compuesta por dos cámaras: una de reconocimiento de placas (Conteo de Autos y Motos) y otra de reconocimiento de rostros, con la cual se busca generar tendencias y métricas de entrada de visitantes al Municipio por puerto terrestre. \n\n•\tNombre del dispositivo en el set de datos: CmCR-01 \n•\tVariables de medición: Conteo de personas entrantes \n•\tTasa de transmisión: cada evento \n•\tLugar de instalación:  \nCl. 5 #36b-140, Nuevo terminal de transporte de Duitama (entrada 1)",
+            "attribution" : "Alcaldía de Duitama, Boyacá",
+            "attribution_link" : "https://sites.google.com/duitama-boyaca.gov.co/duitamaciudadinteligente/inicio",
+            "contact_email" : null,
+            "type" : "dataset",
+            "updatedAt" : "2026-05-18T17:26:31.000Z",
+            "createdAt" : "2023-12-11T21:12:09.000Z",
+            "metadata_updated_at" : "2026-05-18T17:26:31.000Z",
+            "data_updated_at" : "2023-12-11T21:45:05.000Z",
+            "page_views" :
+              {
+                "page_views_last_week" : 5,
+                "page_views_last_month" : 19,
+                "page_views_total" : 1984,
+                "page_views_last_week_log" : 2.584962500721156,
+                "page_views_last_month_log" : 4.321928094887363,
+                "page_views_total_log" : 10.954923292030319
+              },
+            "columns_name" :
+              [
+                "Fecha",
+                "Nombre Sensor",
+                "# personas salen terminal",
+                "# personas ingresan terminal"
+              ],
+            "columns_field_name" :
+              [
+                "fecha",
+                "nombre_sensor",
+                "personas_salen_terminal",
+                "personas_ingresan_terminal"
+              ],
+            "columns_datatype" : [
+                                   "Calendar date",
+                                   "Text",
+                                   "Number",
+                                   "Number"
+                                 ],
+            "columns_description" :
+              [
+                "Fecha de emisión del registro generado por el sensor",
+                "Medición grados de temperatura generado por el sensor",
+                "Conteo personas salientes terminal",
+                "Conteo personas entrantes terminal"
+              ],
+            "columns_format" :
+              [
+                {},
+                {},
+                { "decimalSeparator" : ".", "groupSeparator" : "," },
+                { "decimalSeparator" : ".", "groupSeparator" : "," }
+              ],
+            "download_count" : 273,
+            "provenance" : "official",
+            "lens_view_type" : "tabular",
+            "lens_display_type" : "table",
+            "locked" : false,
+            "backend" : "nbe",
+            "blob_mime_type" : null,
+            "hide_from_data_json" : false,
+            "publication_date" : "2023-12-11T21:45:11.000Z"
+          },
+        "classification" :
+          {
+            "categories" : [],
+            "tags" : [],
+            "domain_category" : "Comercio, Industria y Turismo",
+            "domain_tags" :
+              [
+                "turismo duitama",
+                "duitama inteligente",
+                "municipio de duitama",
+                "alcaldía de duitama",
+                "duitama",
+                "nuevo terminal duitama",
+                "conteo de personas"
+              ],
+            "domain_metadata" :
+              [
+                { "key" : "Información-de-Datos_Idioma", "value" : "Español" },
+                {
+                  "key" : "Información-de-Datos_Cobertura-Geográfica",
+                  "value" : "Municipal"
+                },
+                {
+                  "key" : "Información-de-Datos_Frecuencia-de-Actualización",
+                  "value" : "Mensual"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Sector",
+                  "value" : "Planeación"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Nombre-de-la-Entidad",
+                  "value" : "Alcaldía de Duitama, Boyacá"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Orden",
+                  "value" : "Territorial"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Municipio",
+                  "value" : "Duitama"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_DIVIPOLA-Municipio",
+                  "value" : "15238"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Departamento",
+                  "value" : "Boyacá"
+                }
+              ]
+          },
+        "metadata" :
+          {
+            "domain" : "www.datos.gov.co",
+            "license" : "Creative Commons Attribution | Share Alike 4.0 International"
+          },
+        "permalink" : "https://www.datos.gov.co/d/esjr-xkft",
+        "link" : "https://www.datos.gov.co/Comercio-Industria-y-Turismo/Ingreso-y-Salida-de-Personas-Nuevo-Terminal-de-Dui/esjr-xkft",
+        "owner" :
+          {
+            "id" : "t4dn-umqt",
+            "user_type" : "interactive",
+            "display_name" : "Webmaster Duitama"
+          },
+        "creator" :
+          {
+            "id" : "t4dn-umqt",
+            "user_type" : "interactive",
+            "display_name" : "Webmaster Duitama"
+          }
+      },
+      {
+        "resource" :
+          {
+            "name" : "Conteo de Autos y Motos",
+            "id" : "s53k-ztax",
+            "resource_name" : null,
+            "parent_fxf" : [],
+            "description" : "La solución de movilidad y seguridad está compuesta por una cámara de reconocimiento de placas, con la cual se busca generar tendencias y métricas principalmente para toma de decisiones de gestión del tráfico. \n\n•\tNombre del dispositivo en el set de datos: Cam_Placas_01 \n•\tVariables de medición: conteo de autos y motos \n•\tTasa de transmisión: cada evento \n•\tLugar de instalación:  \nCarrera 35 # 3-213, Duitama, Boyacá, Vía paralela al nuevo terminal de transporte de Duitama.",
+            "attribution" : "Alcaldía de Duitama, Boyacá",
+            "attribution_link" : "https://sites.google.com/duitama-boyaca.gov.co/duitamaciudadinteligente/inicio",
+            "contact_email" : null,
+            "type" : "dataset",
+            "updatedAt" : "2026-05-18T18:07:45.000Z",
+            "createdAt" : "2023-10-06T21:36:44.000Z",
+            "metadata_updated_at" : "2026-05-18T18:07:45.000Z",
+            "data_updated_at" : "2023-12-11T21:50:21.000Z",
+            "page_views" :
+              {
+                "page_views_last_week" : 37,
+                "page_views_last_month" : 194,
+                "page_views_total" : 5534,
+                "page_views_last_week_log" : 5.247927513443585,
+                "page_views_last_month_log" : 7.607330313749611,
+                "page_views_total_log" : 12.434367601668916
+              },
+            "columns_name" :
+              [ "Cantidad", "Tipo Vehiculo", "Fecha", "Nombre Sensor" ],
+            "columns_field_name" :
+              [ "cantidad", "tipo_vehiculo", "fecha", "nombre_sensor" ],
+            "columns_datatype" : [ "Number", "Text", "Calendar date", "Text" ],
+            "columns_description" :
+              [
+                "Cantidad de vehículos durante el evento mencionado",
+                "Dato del vehículo si es moto o auto",
+                "Fecha en la que se registró el dato por el sensor",
+                "Nombre del sensor que realiza la medición"
+              ],
+            "columns_format" :
+              [
+                { "decimalSeparator" : ".", "groupSeparator" : "," },
+                {},
+                {},
+                {}
+              ],
+            "download_count" : 674,
+            "provenance" : "official",
+            "lens_view_type" : "tabular",
+            "lens_display_type" : "table",
+            "locked" : false,
+            "backend" : "nbe",
+            "blob_mime_type" : null,
+            "hide_from_data_json" : false,
+            "publication_date" : "2023-12-11T21:50:33.000Z"
+          },
+        "classification" :
+          {
+            "categories" : [],
+            "tags" : [],
+            "domain_category" : "Ciencia, Tecnología e Innovación",
+            "domain_tags" :
+              [
+                "movilidad",
+                "municipio de duitama",
+                "duitama inteligente",
+                "duitama",
+                "ciudades inteligentes",
+                "ciudad inteligente",
+                "camaras",
+                "sensores",
+                "tecnologia",
+                "terminal de transporte",
+                "turismo",
+                "motos",
+                "autos",
+                "transporte"
+              ],
+            "domain_metadata" :
+              [
+                { "key" : "Información-de-Datos_Idioma", "value" : "Español" },
+                {
+                  "key" : "Información-de-Datos_Cobertura-Geográfica",
+                  "value" : "Municipal"
+                },
+                {
+                  "key" : "Información-de-Datos_Frecuencia-de-Actualización",
+                  "value" : "Mensual"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Sector",
+                  "value" : "Planeación"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Nombre-de-la-Entidad",
+                  "value" : "Alcaldía de Duitama, Boyacá"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Orden",
+                  "value" : "Territorial"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Municipio",
+                  "value" : "Duitama"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_DIVIPOLA-Municipio",
+                  "value" : "15238"
+                },
+                {
+                  "key" : "Información-de-la-Entidad_Departamento",
+                  "value" : "Boyacá"
+                }
+              ]
+          },
+        "metadata" :
+          {
+            "domain" : "www.datos.gov.co",
+            "license" : "Creative Commons Attribution | Share Alike 4.0 International"
+          },
+        "permalink" : "https://www.datos.gov.co/d/s53k-ztax",
+        "link" : "https://www.datos.gov.co/Ciencia-Tecnología-e-Innovación/Conteo-de-Autos-y-Motos/s53k-ztax",
+        "owner" :
+          {
+            "id" : "t4dn-umqt",
+            "user_type" : "interactive",
+            "display_name" : "Webmaster Duitama"
+          },
+        "creator" :
+          {
+            "id" : "t4dn-umqt",
+            "user_type" : "interactive",
+            "display_name" : "Webmaster Duitama"
+          }
+      },
+      {
+        "resource" :
+          {
+            "name" : "Conteo Vehicular (Simmtrafficdata)",
+            "id" : "6ymu-tzvs",
+            "resource_name" : null,
+            "parent_fxf" : [],
+            "description" : "Informacion correspondiente a conteo vehicular de las camaras ARS, CCTV, y fotodeteccion del Simm",
+            "attribution" : null,
+            "attribution_link" : null,
+            "contact_email" : "medata@medellin.gov.co",
+            "type" : "federated_href",
+            "updatedAt" : "2026-10-20T19:13:41.000Z",
+            "createdAt" : "2025-08-05T15:52:53.000Z",
+            "metadata_updated_at" : "2026-10-20T19:13:41.000Z",
+            "data_updated_at" : "2025-08-05T15:52:53.000Z",
+            "page_views" :
+              {
+                "page_views_last_week" : 34,
+                "page_views_last_month" : 83,
+                "page_views_total" : 1216,
+                "page_views_last_week_log" : 5.129283016944966,
+                "page_views_last_month_log" : 6.39231742277876,
+                "page_views_total_log" : 10.249113452713727
+              },
+            "columns_name" : [],
+            "columns_field_name" : [],
+            "columns_datatype" : [],
+            "columns_description" : [],
+            "columns_format" : [],
+            "download_count" : 0,
+            "provenance" : "official",
+            "lens_view_type" : "href",
+            "lens_display_type" : "federated",
+            "locked" : false,
+            "backend" : "not_a_dataset",
+            "blob_mime_type" : null,
+            "hide_from_data_json" : false,
+            "publication_date" : "2025-08-05T15:52:53.000Z"
+          },
+        "classification" :
+          {
+            "categories" : [],
+            "tags" : [],
+            "domain_tags" :
+              [
+                "cctv",
+                "velocidad",
+                "camara",
+                "ars",
+                "fotodeteccion",
+                "datos",
+                "conteo"
+              ],
+            "domain_metadata" :
+              [
+                {
+                  "key" : "Common-Core_Contact-Email",
+                  "value" : "medata@medellin.gov.co"
+                },
+                { "key" : "Common-Core_Last-Update", "value" : "22-09-2021" },
+                {
+                  "key" : "Common-Core_License",
+                  "value" : "https://creativecommons.org/licenses/by-sa/4.0/legalcode"
+                },
+                {
+                  "key" : "Common-Core_Public-Access-Level",
+                  "value" : "public"
+                },
+                {
+                  "key" : "Common-Core_Temporal-Applicability",
+                  "value" : "2021-01-01T00:00:00Z"
+                },
+                {
+                  "key" : "Common-Core_Unique-Identifier",
+                  "value" : "1-023-25-000300"
+                },
+                {
+                  "key" : "Common-Core_Publisher",
+                  "value" : "Alcaldía de Medellín"
+                },
+                { "key" : "Common-Core_Update-Frequency", "value" : "R/P1Y" },
+                { "key" : "Common-Core_Theme", "value" : "Transporte" },
+                { "key" : "Common-Core_Issued", "value" : "23-12-2020" },
+                {
+                  "key" : "Common-Core_Data-Standard",
+                  "value" : "http://www.mintic.gov.co"
+                },
+                {
+                  "key" : "Common-Core_Contact-Name",
+                  "value" : "CIOS - Unidad de Circulacón-Subsecretaría Técnica"
+                }
+              ]
+          },
+        "metadata" :
+          {
+            "domain" : "www.datos.gov.co",
+            "additional_access_points" :
+              [
+                {
+                  "urls" :
+                    {
+                      "text/csv" : "http://medata.app.medellin.gov.co/sites/default/files/distribution/1-023-25-000300/simmtrafficdata.csv"
+                    },
+                  "title" : "Conteo Vehicular (Simmtrafficdata)",
+                  "described_by" : "http://10.1.222.231:9870/webhdfs/v1/MEData/Comma/Movilidad/simmtraffic.json?op=OPEN"
+                },
+                {
+                  "urls" :
+                    {
+                      "text/json" : "http://medata.app.medellin.gov.co/sites/default/files/distribution/1-023-25-000300/simmtraffic.json"
+                    },
+                  "title" : "Diccionario de datos",
+                  "described_by" : "http://10.1.222.231:9870/webhdfs/v1/MEData/Comma/Movilidad/simmtraffic.json?op=OPEN"
+                }
+              ],
+            "access_points" :
+              {
+                "text/csv" : "http://medata.app.medellin.gov.co/sites/default/files/distribution/1-023-25-000300/simmtrafficdata.csv"
+              }
+          },
+        "permalink" : "https://www.datos.gov.co/d/6ymu-tzvs",
+        "link" : "https://www.datos.gov.co/dataset/Conteo-Vehicular-Simmtrafficdata-/6ymu-tzvs",
+        "owner" :
+          {
+            "id" : "r4qn-dwdd",
+            "user_type" : "interactive",
+            "display_name" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+          },
+        "creator" :
+          {
+            "id" : "r4qn-dwdd",
+            "user_type" : "interactive",
+            "display_name" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+          }
+      }
+    ],
+  "resultSetSize" : 250,
+  "timings" : { "serviceMillis" : 24, "searchMillis" : [ 9, 8 ] },
+  "warnings" : []
+}

@@ -1,0 +1,15 @@
+{
+  "fecha": "2026-10-27T11:43:15.540597+00:00",
+  "estado": "tests EDD243 congelados",
+  "sha256": {
+    "backend/tests/test_aportes_legado_publico.py": "d95635793a8acbcac78c122810b4e1a70559ce8b7c437dc4b5ea5b8f29fdaa65",
+    "backend/tests/test_presupuesto_e_indicadores.py": "ad41d65144c303abac43fa3951565758204368992b5de2a5c309ba6bb2fe5c52",
+    "backend/tests/test_ingesta_indicadores.py": "71aab3928b14608100c1293c21074dd401cd4d467771fff61be96019fafd3fcb"
+  },
+  "modificados": [
+    "backend/tests/test_aportes_legado_publico.py",
+    "backend/tests/test_presupuesto_e_indicadores.py"
+  ],
+  "ingesta_inalterada": true,
+  "producto_conftest_no_editados_por_EDD243": true
+}

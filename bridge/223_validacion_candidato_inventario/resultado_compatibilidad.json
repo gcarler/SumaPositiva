@@ -1,0 +1,17 @@
+{
+  "entrada_219": "bridge/219_candidato_ollamacodex_inventario_r1/candidato_inventario_r1_2026-10-26.sha-59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce.json",
+  "sha256_219": "59e45cbe2dbd595297e5b31d1ac97e9a18eec86ed3e1cc5a5631ff2b6df896ce",
+  "candidato_corregido_sha256": "369e55b7643352ff37909c0b6cd8be45b6781ab7d4db0c953738a7f4629f18d1",
+  "resultado_219_con_ruta_materializada_en_staging": {
+    "aprobado": false,
+    "tipo": "KeyError",
+    "mensaje": "'catalogo_ruta'"
+  },
+  "resultado_corregido_misma_ruta_y_bytes": {
+    "aprobado": true
+  },
+  "alcance": "Verificador real con las43 fuentes/ocho paquetes; lista de artefactos reducida solo a la nueva entrada. No es validación completa del inventario ni carga SQL.",
+  "inventario_activo_antes_despues_sha256": "5fa69c6d2ad4163aed3a37de52ee1ffc3c279c9f58fa5c84a0c7404a68b7054c",
+  "sin_escritura_datos_activos": true,
+  "sin_sql": true
+}

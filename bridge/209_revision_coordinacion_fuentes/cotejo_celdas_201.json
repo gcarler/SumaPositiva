@@ -1,0 +1,20 @@
+{
+  "codigo_sha256": "fdad6e8ca284814e210730164eb21738729c2bc30c1e3e24353fdc8554e9e758",
+  "origen_sha256": "f065baf1838f4b4a928baa7b7436870571ebab12c4d38f0bba91e7eedbc86c06",
+  "filas": 1116,
+  "celdas_cotejadas_con_tipo_y_valor": 7812,
+  "por_producto_hoja": {
+    "pped_municipal_actualizacion_julio2025/PobMunicipalxÁrea": 300,
+    "municipal_area_1985_2020_edicion_interna_desconocida/Mpios": 432,
+    "municipal_area_1985_2020_edicion_interna_desconocida/Municipios": 192,
+    "municipal_area_1985_2020_edicion_interna_desconocida/Municipios (2)": 192
+  },
+  "errores": [],
+  "totales_2026_proyeccion_publicada_no_censo": {
+    "11001": 7945996,
+    "13001": 1010995,
+    "13673": 15427,
+    "23660": 121174
+  },
+  "limite": "No acredita linaje TerriData; coteja celdas originales, no reejecuta el scanner BIFF de fórmulas."
+}

@@ -1,0 +1,8 @@
+{
+  "verificado_antes": false,
+  "verificado_despues": true,
+  "consumos": [
+    200,
+    400
+  ]
+}

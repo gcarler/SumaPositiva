@@ -1,0 +1,873 @@
+ M .github/workflows/check.yml
+ M backend/.env.example
+ M backend/alembic/env.py
+ M backend/alembic/versions/0005_control_acceso_y_roles.py
+ M backend/alembic/versions/0015_poligonos_territorios_y_capas_geovisor.py
+ M backend/alembic/versions/0016_presupuesto_e_indicadores.py
+ M backend/alembic/versions/0021_identidad_completa.py
+ M backend/alembic/versions/0025_control_fases_y_oauth.py
+ M backend/alembic/versions/0026_fotos_mes_vigilancia.py
+ M backend/alembic/versions/0027_permisos_fotos_mesa.py
+ M backend/alembic/versions/0031_reporte_inseguridad.py
+ M backend/alembic/versions/0032_integridad_formularios.py
+ M backend/alembic/versions/0034_modulo_compromisos_pas.py
+ M backend/alembic/versions/0035_semillero_mediciones_indicadores_dnp.py
+ M backend/alembic/versions/0036_restituir_mediciones_sin_datos_fabricados.py
+ M backend/alembic/versions/0037_noticias_institucionales.py
+ M backend/alembic/versions/0037_restituir_compromisos_pas_sin_datos_fabricados.py
+ M backend/alembic/versions/0038_merge_heads.py
+ M backend/alembic/versions/0039_corregir_fuente_metas_propuestas_compromisos.py
+ M backend/alembic/versions/0040_modulo_actores_estrategicos.py
+ M backend/alembic/versions/0041_modulo_agendas_mesas.py
+ M backend/alembic/versions/0042_modulo_fuentes_informacion.py
+ M backend/alembic/versions/0043_modulo_banco_alternativas.py
+ M backend/alembic/versions/0044_lineas_estrategicas.py
+ M backend/alembic/versions/0045_agendas_mesa_id.py
+ M backend/alembic/versions/0046_depurar_columnas_mesas.py
+ M backend/alembic/versions/0047_sembrar_actores_institucionales_cartagena.py
+ M backend/alembic/versions/0048_indicadores_impacto_2036.py
+ M backend/alembic/versions/0049_fuentes_distritales_destinacion_especifica.py
+ M backend/alembic/versions/0050_sembrar_lineas_alimentaria_salud_politica.py
+ M backend/alembic/versions/0051_modulo_tareas_comunicacion.py
+ M backend/alembic/versions/0052_alinear_esquema_mesas.py
+ M backend/alembic/versions/0053_permiso_testimonios_admin.py
+ M backend/alembic/versions/0054_permisos_plenos_admin.py
+ M backend/alembic/versions/0055_ingesta_indicadores_reales_cartagena.py
+ M backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py
+ M backend/alembic/versions/0057_comentario_pas.py
+ M backend/alembic/versions/0058_mfa_totp.py
+ M backend/alembic/versions/0059_mfa_antirreplay.py
+ M backend/alembic/versions/0060_ambito_territorial.py
+ M backend/alembic/versions/0061_analitica_hurtos.py
+ M backend/alembic/versions/0062_motor_plan_accion_dnp.py
+ M backend/alembic/versions/0063_motor_ingesta_masiva_triada.py
+ M backend/alembic/versions/0064_drive_seguridad_humana.py
+ M backend/alembic/versions/0065_catalogo_planes_desarrollo.py
+ M backend/alembic/versions/0066_quince_mesas_corregimientos.py
+ M backend/app/api/router.py
+ M backend/app/core/config.py
+ M backend/app/core/sentry.py
+ M backend/app/core/telemetry.py
+ M backend/app/main.py
+ M backend/app/modules/actores/models.py
+ M backend/app/modules/actores/repository.py
+ M backend/app/modules/actores/service.py
+ M backend/app/modules/alternativas/models.py
+ M backend/app/modules/alternativas/repository.py
+ M backend/app/modules/alternativas/router.py
+ M backend/app/modules/alternativas/service.py
+ M backend/app/modules/aportes/models.py
+ M backend/app/modules/aportes/repository.py
+ M backend/app/modules/aportes/router.py
+ M backend/app/modules/aportes/schemas.py
+ M backend/app/modules/aportes/service.py
+ M backend/app/modules/auditoria/models.py
+ M backend/app/modules/auditoria/router.py
+ M backend/app/modules/canales/router.py
+ M backend/app/modules/canales/schemas.py
+ M backend/app/modules/canales/service.py
+ M backend/app/modules/compromisos/agentes_inteligentes_pdd.py
+ M backend/app/modules/compromisos/dea_econometria_service.py
+ M backend/app/modules/compromisos/detector_multiformato.py
+ M backend/app/modules/compromisos/google_workspace_sync_service.py
+ M backend/app/modules/compromisos/ingesta_masiva_excel.py
+ M backend/app/modules/compromisos/ingesta_masiva_service.py
+ M backend/app/modules/compromisos/inteligencia_triada_service.py
+ M backend/app/modules/compromisos/models.py
+ M backend/app/modules/compromisos/motor_multiagente_pdd.py
+ M backend/app/modules/compromisos/pdd_dea_service.py
+ M backend/app/modules/compromisos/pdt_ai_evaluator_graph.py
+ M backend/app/modules/compromisos/pdt_analisis_planes_documento.py
+ M backend/app/modules/compromisos/pdt_analisis_planes_tendencias.py
+ M backend/app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py
+ M backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py
+ M backend/app/modules/compromisos/pdt_diagnostico_seguridad_humana_8planes.py
+ M backend/app/modules/compromisos/pdt_dictamen_ejecutivo.py
+ M backend/app/modules/compromisos/pdt_generador_google_doc_pshc.py
+ M backend/app/modules/compromisos/pdt_hoshin_kanri.py
+ M backend/app/modules/compromisos/pdt_informe_integral_spd.py
+ M backend/app/modules/compromisos/pdt_normalizador_canonico_metas.py
+ M backend/app/modules/compromisos/pdt_persistencia_pg.py
+ M backend/app/modules/compromisos/pdt_revision_por_meta.py
+ M backend/app/modules/compromisos/pdt_sispt_dnp_evaluador.py
+ M backend/app/modules/compromisos/repository.py
+ M backend/app/modules/compromisos/router.py
+ M backend/app/modules/compromisos/schemas.py
+ M backend/app/modules/compromisos/service.py
+ M backend/app/modules/compromisos/taxonomia_seguridad.py
+ M backend/app/modules/compromisos/triada_motores.py
+ M backend/app/modules/comunicaciones/models.py
+ M backend/app/modules/comunicaciones/repository.py
+ M backend/app/modules/comunicaciones/router.py
+ M backend/app/modules/comunicaciones/service.py
+ M backend/app/modules/evidencia/models.py
+ M backend/app/modules/evidencia/repository.py
+ M backend/app/modules/evidencia/schemas.py
+ M backend/app/modules/evidencia/service.py
+ M backend/app/modules/formularios/analitica.py
+ M backend/app/modules/formularios/constructor_schemas.py
+ M backend/app/modules/formularios/constructor_service.py
+ M backend/app/modules/formularios/constructor_validation.py
+ M backend/app/modules/formularios/models.py
+ M backend/app/modules/formularios/repository.py
+ M backend/app/modules/formularios/router.py
+ M backend/app/modules/formularios/schemas.py
+ M backend/app/modules/formularios/service.py
+ M backend/app/modules/fuentes/models.py
+ M backend/app/modules/fuentes/repository.py
+ M backend/app/modules/fuentes/schemas.py
+ M backend/app/modules/fuentes/service.py
+ M backend/app/modules/geodatos/models.py
+ M backend/app/modules/geodatos/repository.py
+ M backend/app/modules/geodatos/router.py
+ M backend/app/modules/geodatos/schemas.py
+ M backend/app/modules/geodatos/service.py
+ M backend/app/modules/health/repository.py
+ M backend/app/modules/health/router.py
+ M backend/app/modules/health/schemas.py
+ M backend/app/modules/health/service.py
+ M backend/app/modules/ia/agentes/agente_devolucion.py
+ M backend/app/modules/ia/agentes/agente_diagnostico.py
+ M backend/app/modules/ia/agentes/agente_fiscal.py
+ M backend/app/modules/ia/agentes/agente_juridico.py
+ M backend/app/modules/ia/grafo/estado.py
+ M backend/app/modules/ia/grafo/nodos.py
+ M backend/app/modules/ia/grafo/orquestador.py
+ M backend/app/modules/ia/router.py
+ M backend/app/modules/ia/schemas.py
+ M backend/app/modules/ia/service.py
+ M backend/app/modules/identidad/ambito_territorial.py
+ M backend/app/modules/identidad/bootstrap.py
+ M backend/app/modules/identidad/correo.py
+ M backend/app/modules/identidad/deps.py
+ M backend/app/modules/identidad/mfa.py
+ M backend/app/modules/identidad/models.py
+ M backend/app/modules/identidad/repository.py
+ M backend/app/modules/identidad/router.py
+ M backend/app/modules/identidad/schemas.py
+ M backend/app/modules/identidad/security.py
+ M backend/app/modules/identidad/service.py
+ M backend/app/modules/indicadores/models.py
+ M backend/app/modules/indicadores/repository.py
+ M backend/app/modules/indicadores/router.py
+ M backend/app/modules/indicadores/service.py
+ M backend/app/modules/instrumentos/repository.py
+ M backend/app/modules/instrumentos/router.py
+ M backend/app/modules/instrumentos/service.py
+ M backend/app/modules/mesas/acta_pdf.py
+ M backend/app/modules/mesas/models.py
+ M backend/app/modules/mesas/repository.py
+ M backend/app/modules/mesas/router.py
+ M backend/app/modules/mesas/schemas.py
+ M backend/app/modules/mesas/service.py
+ M backend/app/modules/noticias/models.py
+ M backend/app/modules/noticias/repository.py
+ M backend/app/modules/noticias/router.py
+ M backend/app/modules/noticias/schemas.py
+ M backend/app/modules/noticias/service.py
+ M backend/app/modules/notificaciones/correo.py
+ M backend/app/modules/notificaciones/models.py
+ M backend/app/modules/notificaciones/router.py
+ M backend/app/modules/notificaciones/schemas.py
+ M backend/app/modules/notificaciones/service.py
+ M backend/app/modules/participacion/models.py
+ M backend/app/modules/participacion/repository.py
+ M backend/app/modules/participacion/service.py
+ M backend/app/modules/politicas/gating.py
+ M backend/app/modules/politicas/models.py
+ M backend/app/modules/politicas/repository.py
+ M backend/app/modules/politicas/router.py
+ M backend/app/modules/politicas/schemas.py
+ M backend/app/modules/politicas/service.py
+ M backend/app/modules/presupuesto/models.py
+ M backend/app/modules/presupuesto/repository.py
+ M backend/app/modules/presupuesto/service.py
+ M backend/app/modules/seguridad/router.py
+ M backend/app/modules/sesion/router.py
+ M backend/app/modules/testimonios/models.py
+ M backend/app/modules/testimonios/router.py
+ M backend/app/modules/testimonios/service.py
+ M backend/pyproject.toml
+ M backend/scripts/auditar_cuentas_institucionales.py
+ M backend/scripts/bootstrap_identidad_admin.py
+ M backend/scripts/cerrar_cobertura_pdd_workspace_13.py
+ M backend/scripts/ejecutar_sistema_multiagente_pdd_17.py
+ M backend/scripts/generar_muestras_triada.py
+ M backend/scripts/ingestar_hurtos.py
+ M backend/scripts/ingestar_pdfs_planes_accion_drive.py
+ M backend/scripts/ocr_pdd_2016_completo.py
+ M backend/scripts/ocr_pdf_plan_por_paginas.py
+ M backend/scripts/poblar_motor_plan_accion_real.py
+ M backend/scripts/poblar_padron_dmu_nivel3_y_fuentes_cartagena.py
+ M backend/scripts/reconstruir_catalogo_pdd_seguridad_humana_16.py
+ M backend/scripts/sanear_calidad_triada.py
+ M backend/scripts/sincronizar_catalogo_pdd.py
+ M backend/scripts/sincronizar_drive_planes_accion.py
+ M backend/scripts/verificar_configuracion_smtp.py
+ M backend/tests/conftest.py
+ M backend/tests/test_access_policy.py
+ M backend/tests/test_acta_pdf.py
+ M backend/tests/test_actas_y_participantes.py
+ M backend/tests/test_actores_estrategicos.py
+ M backend/tests/test_agentes_inteligentes_pdd.py
+ M backend/tests/test_alternativas_mga.py
+ M backend/tests/test_aportes.py
+ M backend/tests/test_apoyos_unicos.py
+ M backend/tests/test_apoyos_voto.py
+ M backend/tests/test_aud05_gating_fases.py
+ M backend/tests/test_aud06_perfil_produccion.py
+ M backend/tests/test_aud11_scripts_seguridad.py
+ M backend/tests/test_calidad_formularios.py
+ M backend/tests/test_canal_whatsapp.py
+ M backend/tests/test_cierre01_migracion_asistencia.py
+ M backend/tests/test_cierre02_herramientas_identidad.py
+ M backend/tests/test_cierre04_seguridad.py
+ M backend/tests/test_cierre05_csp_report.py
+ M backend/tests/test_cierre06_mfa_totp.py
+ M backend/tests/test_cierre07_ambito_territorial.py
+ M backend/tests/test_compromisos_pas.py
+ M backend/tests/test_comunicaciones.py
+ M backend/tests/test_concurrencia_y_conflictos.py
+ M backend/tests/test_config.py
+ M backend/tests/test_control_acceso.py
+ M backend/tests/test_control_fases_y_oauth.py
+ M backend/tests/test_database_integration.py
+ M backend/tests/test_database_telemetry.py
+ M backend/tests/test_dea_econometria_triada.py
+ M backend/tests/test_devolucion_razones.py
+ M backend/tests/test_enfoque_etnico.py
+ M backend/tests/test_evidencia_segura.py
+ M backend/tests/test_exception_handlers.py
+ M backend/tests/test_formularios_admin.py
+ M backend/tests/test_formularios_consultas.py
+ M backend/tests/test_fotos_mesas.py
+ M backend/tests/test_fuentes_informacion.py
+ M backend/tests/test_geodatos_analitica_hurtos.py
+ M backend/tests/test_geodatos_estandarizacion.py
+ M backend/tests/test_geovisor_postgis.py
+ M backend/tests/test_geovisor_ubicacion_mesa.py
+ M backend/tests/test_google_token_verificado.py
+ M backend/tests/test_google_workspace_sync.py
+ M backend/tests/test_identidad_completa.py
+ M backend/tests/test_identidad_migracion.py
+ M backend/tests/test_identidad_y_permisos.py
+ M backend/tests/test_indicadores_metadatos.py
+ M backend/tests/test_ingesta_indicadores.py
+ M backend/tests/test_ingesta_masiva_triada.py
+ M backend/tests/test_integridad_compromisos.py
+ M backend/tests/test_integridad_mediciones.py
+ M backend/tests/test_integridad_pii_catalogos.py
+ M backend/tests/test_inteligencia_triada.py
+ M backend/tests/test_lineas_constructor.py
+ M backend/tests/test_magic_link.py
+ M backend/tests/test_mesas_agenda.py
+ M backend/tests/test_mesas_ltree.py
+ M backend/tests/test_mesas_seguridad_auditoria.py
+ M backend/tests/test_mesas_submesas_put.py
+ M backend/tests/test_motor_mga.py
+ M backend/tests/test_motor_multiagente_pdd.py
+ M backend/tests/test_motor_plan_accion_dnp.py
+ M backend/tests/test_noticias.py
+ M backend/tests/test_notificaciones_y_radicacion.py
+ M backend/tests/test_pdd_dea_triada.py
+ M backend/tests/test_pdd_seguridad_humana_16.py
+ M backend/tests/test_pdt_ai_evaluator.py
+ M backend/tests/test_pdt_dea_4niveles_cartagena.py
+ M backend/tests/test_pdt_diagnostico_seguridad_humana_8planes.py
+ M backend/tests/test_pdt_dictamen_ejecutivo.py
+ M backend/tests/test_pdt_hoshin_kanri.py
+ M backend/tests/test_pdt_normalizador_y_vinculos_8planes.py
+ M backend/tests/test_pdt_persistencia_pg.py
+ M backend/tests/test_pdt_revision_por_meta.py
+ M backend/tests/test_pdt_sispt_dnp_evaluador.py
+ M backend/tests/test_politicas_catalogo.py
+ M backend/tests/test_presupuesto_e_indicadores.py
+ M backend/tests/test_red_multiagente_ia.py
+ M backend/tests/test_reporte_geoespacial.py
+ M backend/tests/test_testimonios_comunitarios.py
+ M backend/tests/test_transactions_integration.py
+ M backend/tests/test_triada_motores.py
+ M backend/tests/test_urls_formularios.py
+ M backend/uv.lock
+ M bridge/01_tarea_activa.md
+ M bridge/01_tarea_codex.md
+ M bridge/02_entrega_freebuff.md
+ M bridge/02_resultado_agy2.md
+ M bridge/02_resultado_codex.md
+ M bridge/03_dictamen_codex.md
+ M bridge/03_dictamen_revision.md
+ M data/planes_desarrollo/cache_inteligencia_triada_6m.json
+ M data/planes_desarrollo/cache_pdt_ai_evaluator.json
+ M data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json
+ M docs/identidad.md
+ M docs/permisos-api.md
+ M docs/plan-trabajo.md
+ M next.config.ts
+ M public/sw.js
+ M src/app/_components/sidebar-institucional.tsx
+ M src/app/_components/topbar.tsx
+ M src/app/_stories/identidad.stories.tsx
+ M src/app/page.tsx
+ M src/features/aportes/services/aportes-api.ts
+ M src/features/mesas/panels/mesa-acta-panel.tsx
+ M src/features/mesas/panels/mesa-panel.tsx
+ M src/features/mesas/panels/papelografo-panel.tsx
+ M src/features/noticias/views/noticias-view.tsx
+ M src/features/plataforma/components/plataforma-shell.tsx
+ M src/features/politicas/components/enrutador-ciudadano-inteligente.tsx
+ M src/features/politicas/panels/fase-panel.tsx
+ M src/features/politicas/views/explorar-view.tsx
+ M src/features/politicas/views/inicio-view.tsx
+ M src/features/sesion/components/cuenta-usuario.tsx
+ M src/features/sesion/panels/sesion-panel.tsx
+ M src/features/sesion/services/identidad-api.ts
+ M src/features/sesion/services/sincronizar-sesion.test.ts
+ M src/features/sesion/services/sincronizar-sesion.ts
+ M src/features/sesion/state/session-store.ts
+ M src/features/usuarios/panels/usuario-detalle-panel.tsx
+ M src/features/usuarios/services/usuarios-integracion.test.ts
+ M src/shared/design-system/tokens.css
+ M src/shared/layout/footer.tsx
+ M src/shared/ui/chart.tsx
+ M src/shared/ui/side-panel.tsx
+ M tsconfig.json
+?? .next-validacion187/
+?? backend/alembic/versions/0068_tablas_pdt_ai_evaluator.py
+?? backend/alembic/versions/0069_idx_indicadores_terr_cod.py
+?? backend/alembic/versions/0070_seguimiento_corridas.py
+?? backend/alembic/versions/0071_corridas_pipeline_grafo.py
+?? backend/alembic/versions/0072_integridad_pasos_pipeline.py
+?? backend/alembic/versions/0073_checkpoint_durable_pipeline.py
+?? backend/alembic/versions/0074_idempotencia_thread.py
+?? backend/alembic/versions/0075_catalogo_fuentes.py
+?? backend/alembic/versions/0076_lotes_idempotentes.py
+?? backend/alembic/versions/0077_paquetes_artefactos.py
+?? backend/alembic/versions/0078_evidencia_drive_artefactos.py
+?? backend/alembic/versions/0079_correspondencias_meta_pa_1n.py
+?? backend/alembic/versions/0080_guardas_revision_correspondencias.py
+?? backend/alembic/versions/0081_proteger_correspondencias.py
+?? backend/alembic/versions/0082_tablas_dea_dmu_nivel3.py
+?? backend/alembic/versions/0083_conciliador_gold_set.py
+?? backend/alembic/versions/0084_aportes_colas_y_apoyos.py
+?? backend/app/modules/canales/models.py
+?? backend/app/modules/canales/repository.py
+?? backend/app/modules/compromisos/adaptador_catalogo_fuentes_polis.py
+?? backend/app/modules/compromisos/adquisicion_fuentes_polis.py
+?? backend/app/modules/compromisos/articulacion_supervisor_corte_polis.py
+?? backend/app/modules/compromisos/auditoria_indicadores_planeacion_polis.py
+?? backend/app/modules/compromisos/cadena_analitica_corte_polis.py
+?? backend/app/modules/compromisos/candidatos_programa_meta_polis.py
+?? backend/app/modules/compromisos/captura_fiscalia_supervisada_polis.py
+?? backend/app/modules/compromisos/catalogo_planeacion_corte_polis.py
+?? backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py
+?? backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py
+?? backend/app/modules/compromisos/contexto_corte_polis.py
+?? backend/app/modules/compromisos/contratos_observacion_polis.py
+?? backend/app/modules/compromisos/corpus_vinculos_polis.py
+?? backend/app/modules/compromisos/correspondencias_meta_pa_polis.py
+?? backend/app/modules/compromisos/corte_datos_polis.py
+?? backend/app/modules/compromisos/descarga_anexos_oficiales_polis.py
+?? backend/app/modules/compromisos/expedientes_serie_7d_polis.py
+?? backend/app/modules/compromisos/ficha_territorial_polis.py
+?? backend/app/modules/compromisos/fuentes_catalogo_models.py
+?? backend/app/modules/compromisos/gold_set_conciliacion.py
+?? backend/app/modules/compromisos/grafo_validacion_fuentes_polis.py
+?? backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py
+?? backend/app/modules/compromisos/indicadores_canonicos_polis.py
+?? backend/app/modules/compromisos/ipc_deflactor_polis.py
+?? backend/app/modules/compromisos/lector_serie_corte_polis.py
+?? backend/app/modules/compromisos/matriz_correspondencias_corte_polis.py
+?? backend/app/modules/compromisos/metadatos_socrata_polis.py
+?? backend/app/modules/compromisos/orquestador_grafo.py
+?? backend/app/modules/compromisos/paneles_series_7d_polis.py
+?? backend/app/modules/compromisos/parser_terridata_polis.py
+?? backend/app/modules/compromisos/planificador_fuentes_politica.py
+?? backend/app/modules/compromisos/ppi_planeacion_corte_polis.py
+?? backend/app/modules/compromisos/registro_descargas_polis.py
+?? backend/app/modules/compromisos/resolutor_bd.py
+?? backend/app/modules/compromisos/revision_taxonomia_7d_polis.py
+?? backend/app/modules/compromisos/series_7d_polis.py
+?? backend/app/modules/compromisos/tablero_operacion_fuentes_polis.py
+?? backend/app/modules/compromisos/taxonomia_7d_polis.py
+?? backend/app/modules/notificaciones/worker.py
+?? backend/scripts/adquirir_fuentes_politica.py
+?? backend/scripts/auditar_indicadores_planeacion_polis.py
+?? backend/scripts/capturar_fiscalia_supervisada.mjs
+?? backend/scripts/capturar_metadatos_socrata_polis.py
+?? backend/scripts/cargar_catalogo_fuentes.py
+?? backend/scripts/catalogar_ocho_planes_polis.py
+?? backend/scripts/comparar_ppi_catalogo_polis.py
+?? backend/scripts/conciliador_gold_set.py
+?? backend/scripts/congelar_catalogo_planeacion_polis.py
+?? backend/scripts/congelar_matriz_correspondencias_polis.py
+?? backend/scripts/congelar_ppi_planeacion_polis.py
+?? backend/scripts/construir_ficha_territorial_polis.py
+?? backend/scripts/contrastar_fuentes_polis.py
+?? backend/scripts/contrastar_fuentes_por_periodo.py
+?? backend/scripts/generar_candidatos_programa_meta_polis.py
+?? backend/scripts/generar_corpus_vinculos_polis.py
+?? backend/scripts/materializar_expedientes_serie_7d_polis.py
+?? backend/scripts/materializar_ipc_deflactor_polis.py
+?? backend/scripts/materializar_paneles_series_polis.py
+?? backend/scripts/materializar_series_7d_polis.py
+?? backend/scripts/materializar_tablero_operacion_polis.py
+?? backend/scripts/normalizar_observaciones_polis.py
+?? backend/scripts/planificar_fuentes_politica.py
+?? backend/scripts/preparar_base_test_fresca.py
+?? backend/scripts/procesar_colas_aportes.py
+?? backend/scripts/provisionar_corpus_test_sueltos_local.py
+?? backend/scripts/provisionar_corpus_test_zip_local.py
+?? backend/scripts/sincronizar_correspondencias_meta_pa_polis.py
+?? backend/scripts/validar_banco_staging_polis.py
+?? backend/scripts/validar_revision_taxonomia_7d.py
+?? backend/scripts/validar_revision_vinculos_polis.py
+?? backend/scripts/verificar_cadena_analitica_polis.py
+?? backend/scripts/verificar_planeacion_corte_polis.py
+?? backend/tests/database_isolation.py
+?? backend/tests/test_adaptador_catalogo_fuentes_polis.py
+?? backend/tests/test_aportes_remediacion.py
+?? backend/tests/test_auditoria_indicadores_planeacion_polis.py
+?? backend/tests/test_cadena_analitica_corte_polis.py
+?? backend/tests/test_candidatos_programa_meta_polis.py
+?? backend/tests/test_catalogo_cartografia_polis.py
+?? backend/tests/test_catalogo_fuentes_versionado.py
+?? backend/tests/test_catalogo_ocho_planes_polis.py
+?? backend/tests/test_catalogo_planeacion_corte_polis.py
+?? backend/tests/test_cli_ficha_territorial_polis.py
+?? backend/tests/test_comparacion_ppi_catalogo_polis.py
+?? backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py
+?? backend/tests/test_conciliador_gold_set.py
+?? backend/tests/test_conciliador_vinculos_calidad_polis.py
+?? backend/tests/test_consolidar_datos_integral_p1.py
+?? backend/tests/test_contexto_corte_polis.py
+?? backend/tests/test_contrastar_fuentes_polis.py
+?? backend/tests/test_contratos_observacion_polis.py
+?? backend/tests/test_corpus_vinculos_polis.py
+?? backend/tests/test_correspondencias_meta_pa_polis.py
+?? backend/tests/test_corridas_pipeline.py
+?? backend/tests/test_corte_datos_polis.py
+?? backend/tests/test_curacion_cartografia_polis.py
+?? backend/tests/test_ficha_territorial_polis.py
+?? backend/tests/test_geodatos_test_isolation_policy.py
+?? backend/tests/test_grafo_validacion_fuentes_polis.py
+?? backend/tests/test_identidad_remediacion_eaf.py
+?? backend/tests/test_identidad_territorial_catalogo_polis.py
+?? backend/tests/test_indicadores_canonicos_polis.py
+?? backend/tests/test_inventario_fuentes_polis.py
+?? backend/tests/test_ipc_deflactor_polis.py
+?? backend/tests/test_lector_serie_corte_polis.py
+?? backend/tests/test_matriz_correspondencias_corte_polis.py
+?? backend/tests/test_metadatos_socrata_polis.py
+?? backend/tests/test_migration_database_isolation.py
+?? backend/tests/test_normalizar_observaciones_polis.py
+?? backend/tests/test_orquestador_grafo.py
+?? backend/tests/test_paneles_series_7d_polis.py
+?? backend/tests/test_parser_terridata_polis.py
+?? backend/tests/test_pipeline_p0_unit.py
+?? backend/tests/test_plan_actualizacion_fuentes_polis.py
+?? backend/tests/test_ppi_agentes_corte_polis.py
+?? backend/tests/test_ppi_planeacion_corte_polis.py
+?? backend/tests/test_registro_territorial_polis.py
+?? backend/tests/test_revision_taxonomia_7d_polis.py
+?? backend/tests/test_series_7d_polis.py
+?? backend/tests/test_sincronizar_fuentes_publicas.py
+?? backend/tests/test_sincronizar_fuentes_versionado.py
+?? backend/tests/test_supervisor_planeacion_corte_polis.py
+?? backend/tests/test_tablas_dea_dmu_lineage.py
+?? backend/tests/test_tablero_operacion_fuentes_polis.py
+?? backend/tests/test_taxonomia_7d_polis.py
+?? backend/tests/test_validar_banco_staging_polis.py
+?? backend/tests/test_whatsapp_remediacion.py
+?? bridge/00_plan_diagnostico_pshc_google_doc_34.md
+?? bridge/00_plan_diagnostico_pshc_v2_100paginas_35.md
+?? bridge/04_tarea_freebuff_ciclo3.md
+?? bridge/05_tarea_freebuff_qa_interfaz.md
+?? bridge/06_entrega_freebuff_qa_interfaz.md
+?? bridge/07_tarea_freebuff_cierre_qa_pendientes.md
+?? bridge/08_entrega_freebuff_qa_pendientes.md
+?? bridge/09_entrega_orquestacion_pipeline_datos.md
+?? bridge/100_evidencia_freebuff_validacion_parser_territorial.json
+?? bridge/100_revision_freebuff_validacion_parser_territorial.md
+?? bridge/101_pytest_freebuff_parser_territorial.xml
+?? bridge/102_pytest_freebuff_conciliador_parser.xml
+?? bridge/103_cotejo_validaciones_independientes.json
+?? bridge/104_fe_erratas_freebuff_validacion.json
+?? bridge/105_tarea_ollamacodex_piloto_terridata_real.md
+?? bridge/106_entrega_ollamacodex_piloto_terridata.md
+?? bridge/106_piloto_terridata/
+?? bridge/107_tarea_freebuff_revision_integracion_92.md
+?? bridge/108_evidencia_freebuff_integracion_92.json
+?? bridge/108_revision_freebuff_integracion_92.md
+?? bridge/109_tarea_ollamacodex_adaptador_catalogo.md
+?? bridge/10_plan_orquestacion_inteligente_seguridad_humana_2026.md
+?? bridge/110_entrega_ollamacodex_adaptador_catalogo.md
+?? bridge/110_validacion_adaptador_catalogo/
+?? bridge/111_tarea_freebuff_formato_numerico_terridata.md
+?? bridge/112_evidencia_freebuff_formato_numerico_terridata.json
+?? bridge/112_revision_freebuff_formato_numerico_terridata.md
+?? bridge/113_pytest_adaptador_antes_revision.xml
+?? bridge/113_revision_coordinacion_adaptador_y_formato.json
+?? bridge/115_tarea_ollamacodex_adaptador_r1.md
+?? bridge/116_entrega_ollamacodex_adaptador_r1.md
+?? bridge/117_tarea_freebuff_regla_numerica_parser.md
+?? bridge/118_entrega_freebuff_parser_numerico.md
+?? bridge/118_validacion_parser_numerico/
+?? bridge/119_cotejo_piloto_numerico.json
+?? bridge/119_pytest_adaptador_corrida2.xml
+?? bridge/119_pytest_adaptador_r1_corrida1.xml
+?? bridge/119_pytest_tres_componentes.xml
+?? bridge/11_ejecucion_plan_orquestacion_2026.md
+?? bridge/120_evidencia_revision_adaptador_parser.json
+?? bridge/120_revision_adaptador_y_parser_numerico.md
+?? bridge/121_tarea_freebuff_revision_adaptador_r1.md
+?? bridge/122_revision_freebuff_adaptador.md
+?? bridge/122_validacion_freebuff_adaptador/
+?? bridge/123_tarea_ollamacodex_revision_parser_v2.md
+?? bridge/124_revision_ollamacodex_parser_v2.md
+?? bridge/124_validacion_parser_v2/
+?? bridge/125_tarea_ollamacodex_ficha_territorial.md
+?? bridge/126_entrega_ollamacodex_ficha_territorial.md
+?? bridge/126_validacion_ficha_territorial/
+?? bridge/127_tarea_freebuff_catalogo_divipola.md
+?? bridge/128_catalogo_identidad_territorial/
+?? bridge/128_entrega_freebuff_identidad_territorial.md
+?? bridge/129_estado_orquestacion_territorial.json
+?? bridge/12_corpus_revision_taxonomia_7d_2026.csv
+?? bridge/12_guia_revision_taxonomia_7d_2026.md
+?? bridge/130_cotejo_catalogo_identidad.json
+?? bridge/131_evidencia_revision_ficha.json
+?? bridge/131_pytest_ficha_antes_revision.xml
+?? bridge/131_revision_ficha_territorial_r1.md
+?? bridge/132_entrega_ollamacodex_ficha_r1.md
+?? bridge/132_validacion_ficha_r1/
+?? bridge/133_tarea_freebuff_resolver_identidad.md
+?? bridge/134_entrega_freebuff_resolver_identidad.md
+?? bridge/134_validacion_resolver_identidad/
+?? bridge/135_tarea_opencode_auditoria_catalogo_identidad.md
+?? bridge/136_evidencia_opencode_catalogo_identidad.json
+?? bridge/136_revision_opencode_catalogo_identidad.md
+?? bridge/137_pytest_ficha_r1.xml
+?? bridge/137_revision_coordinacion_ficha_y_catalogo.json
+?? bridge/138_tarea_ollamacodex_ficha_r2.md
+?? bridge/139_entrega_ollamacodex_ficha_r2.md
+?? bridge/139_validacion_ficha_r2/
+?? bridge/13_guia_revision_vinculos_2026.md
+?? bridge/140_tarea_freebuff_perfil_semantico_poblacion.md
+?? bridge/141_evidencia_demografica.json
+?? bridge/141_perfil_freebuff_evidencia_demografica.md
+?? bridge/142_tarea_opencode_revision_resolver.md
+?? bridge/143_revision_opencode_resolver.md
+?? bridge/143_validacion_opencode_resolver/
+?? bridge/144_pytest_resolver_identidad.xml
+?? bridge/144_validacion_coordinacion_resolver.json
+?? bridge/145_tarea_opencode_precision_auditoria_resolver.md
+?? bridge/146_evidencia_opencode_resolver.json
+?? bridge/146_fe_erratas_opencode_resolver.md
+?? bridge/147_tarea_freebuff_precision_perfil_demografico.md
+?? bridge/148_evidencia_freebuff_perfil_demografico.json
+?? bridge/148_fe_erratas_freebuff_perfil_demografico.md
+?? bridge/148_reproducir_perfil_demografico.py
+?? bridge/149_casos_coordinacion_ficha_r2.json
+?? bridge/149_casos_coordinacion_ficha_r3_adicionales.json
+?? bridge/149_cli_ficha_r2.py
+?? bridge/149_ficha_territorial_r3.py
+?? bridge/149_pytest_coordinacion_modulos_territoriales.xml
+?? bridge/149_reproduccion_coordinacion_perfil_demografico.json
+?? bridge/149_test_ficha_territorial_r3.py
+?? bridge/14_revision_edd_correspondencias_1n_2026.md
+?? bridge/150_tarea_ollamacodex_ficha_r3.md
+?? bridge/151_entrega_ollamacodex_ficha_r3.md
+?? bridge/151_validacion_ficha_r3/
+?? bridge/152_tarea_opencode_revision_cli_ficha.md
+?? bridge/153_evidencia_opencode_cli_ficha.json
+?? bridge/153_precision_hash_seleccion.md
+?? bridge/153_revision_opencode_cli_ficha.md
+?? bridge/154_correccion_coordinacion_cli_ficha.md
+?? bridge/155_tarea_freebuff_pruebas_cli_ficha.md
+?? bridge/156_entrega_freebuff_pruebas_cli_ficha.md
+?? bridge/156_validacion_cli_ficha/
+?? bridge/157_casos_coordinacion_ficha_final.json
+?? bridge/157_cotejo_coordinacion_capturas161.json
+?? bridge/157_evidencia_coordinacion_cierre.json
+?? bridge/157_pytest_coordinacion_ficha_final.xml
+?? bridge/157_pytest_coordinacion_final_1.xml
+?? bridge/157_pytest_coordinacion_final_2.xml
+?? bridge/157_pytest_coordinacion_integral_corrida1.xml
+?? bridge/157_revision_coordinacion_motor_territorial.md
+?? bridge/157_validacion_coordinacion_ficha_final/
+?? bridge/158_tarea_freebuff_precision_pruebas_cli.md
+?? bridge/159_entrega_freebuff_precision_pruebas_cli.md
+?? bridge/159_validacion_pruebas_cli_r1/
+?? bridge/160_tarea_ollamacodex_pilotos_adquisicion_territorial.md
+?? bridge/161_entrega_ollamacodex_pilotos_adquisicion.md
+?? bridge/161_pilotos_adquisicion_territorial/
+?? bridge/162_tarea_opencode_validacion_ficha_final.md
+?? bridge/163_revision_opencode_ficha_final.md
+?? bridge/163_validacion_opencode_ficha_final/
+?? bridge/164_tarea_freebuff_linaje_demografico_dane.md
+?? bridge/165_evidencia_linaje_demografico/
+?? bridge/165_revision_freebuff_linaje_demografico.md
+?? bridge/166_tarea_ollamacodex_cotejo_identidad_capturas.md
+?? bridge/167_cotejo_identidad_capturas/
+?? bridge/167_cotejo_ollamacodex_identidad_capturas.md
+?? bridge/168_encargo_eaf_identidad_go_live.md
+?? bridge/169_dictamen_eaf_identidad.md
+?? bridge/169_evidencia_eaf_identidad/
+?? bridge/16_metas_pdd2012_identidad_pendiente.csv
+?? bridge/170_encargo_eaf_persistencia_aportes_go_live.md
+?? bridge/171_dictamen_eaf_persistencia_aportes.md
+?? bridge/171_evidencia_eaf_persistencia_aportes/
+?? bridge/172_tarea_opencode_precision_linaje_dane.md
+?? bridge/173_evidencia_opencode_linaje_dane.json
+?? bridge/173_precision_opencode_linaje_dane.md
+?? bridge/174_cotejo_coordinacion_identidades167.json
+?? bridge/175_estado_coordinacion_fuentes_y_eaf.md
+?? bridge/176_tarea_ollamacodex_fichas_cuatro_territorios.md
+?? bridge/177_entrega_ollamacodex_fichas_cuatro_territorios.md
+?? bridge/177_fichas_cuatro_territorios/
+?? bridge/178_evidencia_precision_fechas_dane.json
+?? bridge/178_precision_coordinacion_linaje_dane.md
+?? bridge/178_verificar_fechas_dane.py
+?? bridge/179_cotejo_coordinacion_fichas_cuatro_territorios.json
+?? bridge/17_jerarquia_metas_pdd_pendiente.csv
+?? bridge/180_encargo_edd_remediacion_identidad.md
+?? bridge/181_entrega_edd_identidad.md
+?? bridge/181_evidencia_edd_identidad/
+?? bridge/181_preparacion_edd_identidad.md
+?? bridge/182_encargo_edd_remediacion_aportes.md
+?? bridge/183_entrega_edd_aportes.md
+?? bridge/183_evidencia_edd_aportes/
+?? bridge/183_preparacion_edd_aportes.md
+?? bridge/184_encargo_ollamacodex_reproduccion_fichas.md
+?? bridge/185_entrega_ollamacodex_reproduccion_fichas.md
+?? bridge/185_reproduccion_fichas/
+?? bridge/186_encargo_freebuff_contratos_identidad.md
+?? bridge/187_entrega_freebuff_contratos_identidad.md
+?? bridge/187_evidencia_freebuff_contratos_identidad/
+?? bridge/188_encargo_opencode_anexos_dane.md
+?? bridge/189_anexos_dane/
+?? bridge/189_anexos_dane_descarga.py
+?? bridge/189_entrega_opencode_anexos_dane.md
+?? bridge/18_metas_indicador_pendiente.csv
+?? bridge/190_evidencia_coordinacion_aislamiento/
+?? bridge/190_revision_coordinacion_aislamiento.md
+?? bridge/192_encargo_ollamacodex_reproduccion_fichas_r2.md
+?? bridge/193_entrega_ollamacodex_reproduccion_fichas_r2.md
+?? bridge/193_reproduccion_fichas/
+?? bridge/194_encargo_opencode_anexos_dane_r1.md
+?? bridge/195_precision_opencode_anexos_dane.md
+?? bridge/195_reproduccion_anexos_dane/
+?? bridge/197_revision_metodologica_dane/
+?? bridge/198_encargo_eaf_reinspeccion_identidad.md
+?? bridge/199_evidencia_eaf_identidad/
+?? bridge/199_reinspeccion_eaf_identidad.md
+?? bridge/19_tarea_ollamacodex_indicadores_pdd.md
+?? bridge/200_encargo_cierre_pilotos_fuentes.md
+?? bridge/201_cierre_pilotos_fuentes/
+?? bridge/202_encargo_eaf_reinspeccion_aportes.md
+?? bridge/206_encargo_ollamacodex_cotejo_hash_inventario.md
+?? bridge/20_entrega_ollamacodex_indicadores.md
+?? bridge/20_evidencia_ollamacodex_indicadores.jsonl
+?? bridge/20_resumen_ollamacodex_indicadores.json
+?? bridge/21_revision_codex_ollamacodex_indicadores.md
+?? bridge/22_entrega_ollamacodex_indicadores_v2.md
+?? bridge/22_evidencia_ollamacodex_indicadores_v2.jsonl
+?? bridge/22_resumen_ollamacodex_indicadores_v2.json
+?? bridge/23_evidencia_codex_indicadores_v3.jsonl
+?? bridge/23_evidencia_codex_indicadores_v4.jsonl
+?? bridge/23_resumen_codex_indicadores_v3.json
+?? bridge/23_resumen_codex_indicadores_v4.json
+?? bridge/23_revision_integracion_codex_indicadores.md
+?? bridge/23_validacion_integracion_indicadores_20261022.json
+?? bridge/24_tarea_ollamacodex_ppi_por_corte.md
+?? bridge/25_entrega_ollamacodex_ppi.md
+?? bridge/25_evidencia_ollamacodex_ppi.json
+?? bridge/26_revision_tarea_ollamacodex_ppi_r1.md
+?? bridge/27_entrega_ollamacodex_ppi_r1.md
+?? bridge/27_evidencia_ollamacodex_ppi_r1.json
+?? bridge/28_tarea_ollamacodex_comparacion_ppi.md
+?? bridge/29_entrega_ollamacodex_comparacion_ppi.md
+?? bridge/29_evidencia_ollamacodex_comparacion_ppi.json
+?? bridge/30_integracion_ppi_corte_20261023.json
+?? bridge/30_revision_integracion_ppi_20261023.md
+?? bridge/30_validacion_integracion_ppi_20261023.json
+?? bridge/30_validacion_integracion_ppi_primera_pasada.json
+?? bridge/32_revision_ollamacodex_comparacion_ppi_r1.md
+?? bridge/33_entrega_ollamacodex_comparacion_ppi_r1.md
+?? bridge/33_evidencia_ollamacodex_comparacion_ppi_r1.json
+?? bridge/34_propuesta_ollamacodex_consumidor_ppi_corte.md
+?? bridge/35_autorrevision_cobertura_ollamacodex_comparacion.md
+?? bridge/36_perfil_ppi_crudo_por_plan.json
+?? bridge/36_perfil_ppi_crudo_por_plan.md
+?? bridge/37_revision_perfil_ppi_y_limitaciones.md
+?? bridge/38_tarea_ollamacodex_comparacion_ppi_r2.md
+?? bridge/39_entrega_ollamacodex_comparacion_ppi_r2.md
+?? bridge/39_evidencia_ollamacodex_comparacion_ppi_r2.json
+?? bridge/40_plan_cierre_ppi_por_corte.md
+?? bridge/41_matriz_aceptacion_ollamacodex_ppi.md
+?? bridge/42_evidencia_integracion_ppi_corte.json
+?? bridge/42_evidencias_ppi_corte/
+?? bridge/42_resultado_cierre_ppi_por_corte.md
+?? bridge/42_validacion_cierre_ppi_por_corte_20261023.json
+?? bridge/43_revision_preventiva_ollamacodex_ppi_corte.md
+?? bridge/44_guia_metodologica_piscc_2024.pdf
+?? bridge/44_remision_eaf_hallazgos_gold_set.md
+?? bridge/45_plan_capacidades_y_fuentes_multipolitica.md
+?? bridge/46_tarea_ollamacodex_inventario_motores_multipolitica.md
+?? bridge/47_inventario_motores_multipolitica.json
+?? bridge/47_inventario_motores_multipolitica.md
+?? bridge/48_inventario_fuentes_multipolitica.json
+?? bridge/48_inventario_fuentes_multipolitica.md
+?? bridge/49_lista_chequeo_fuentes_guia_piscc_2024.csv
+?? bridge/49_lista_chequeo_fuentes_guia_piscc_2024.json
+?? bridge/49_lista_chequeo_fuentes_guia_piscc_2024.md
+?? bridge/50_plan_fuentes_por_politica.md
+?? bridge/51_catalogo_productos_candidatos.json
+?? bridge/51_perfil_fuentes_sh_borrador.json
+?? bridge/51_plan_fuentes_sh_borrador.json
+?? bridge/52_entrega_planificador_fuentes_politica.md
+?? bridge/52_evidencia_planificador_fuentes_politica.json
+?? bridge/53_evidencias_descarga/
+?? bridge/53_revision_mecanismos_descarga_fuentes.md
+?? bridge/54_matriz_metodos_descarga_fuentes.csv
+?? bridge/54_matriz_metodos_descarga_fuentes.json
+?? bridge/55_plan_implementacion_descargas.md
+?? bridge/56_tarea_ollamacodex_descarga_anexos.md
+?? bridge/57_entrega_ollamacodex_anexos.md
+?? bridge/58_adquisiciones_fuentes/
+?? bridge/58_estado_banco_antes_descargas.json
+?? bridge/58_evidencia_adquisicion_fuentes.json
+?? bridge/58_inspeccion_fiscalia/
+?? bridge/58_resultados_descargas.csv
+?? bridge/59_entrega_adaptadores_descarga_fuentes.md
+?? bridge/60_flujo_sistema_politicas_publicas.html
+?? bridge/60_flujo_sistema_politicas_publicas.zip
+?? bridge/60_manifiesto_provision_corpus_fresco.md
+?? bridge/60_panorama_politicas_publicas.png
+?? bridge/61_entrega_diagrama_politicas_publicas.md
+?? bridge/61_remision_eaf_tests_corpus_masivo.md
+?? bridge/61_validacion_diagrama_politicas_publicas.json
+?? bridge/62_entrega_tablero_fuentes.md
+?? bridge/62_plan_cierre_gaps_corpus_masivo.md
+?? bridge/62_validacion_tablero_fuentes.json
+?? bridge/63_dossier_eaf_bloqueo_fuente_compartida.md
+?? bridge/64_tarea_ollamacodex_clasificacion_fuentes.md
+?? bridge/65_catalogo_clasificado_fuentes_ollamacodex.json
+?? bridge/65_contrato_ciclo_fuentes_ollamacodex.md
+?? bridge/65_entrega_ollamacodex_clasificacion_fuentes.md
+?? bridge/65_schema_clasificacion_fuentes_ollamacodex.json
+?? bridge/66_evidencia_revision_clasificacion_fuentes.json
+?? bridge/66_revision_ollamacodex_clasificacion_fuentes_r1.md
+?? bridge/67_ampliacion_conciliacion_retrospectiva_fuentes.md
+?? bridge/68_misionalidad_temporalidad_e_inferencia_fuentes.md
+?? bridge/69_evidencia_revision_semantica_fuentes_r1.json
+?? bridge/69_revision_semantica_ollamacodex_fuentes_r2.md
+?? bridge/70_revision_final_clasificacion_fuentes.json
+?? bridge/70_revision_final_clasificacion_fuentes.md
+?? bridge/71_tarea_opencode_integracion_catalogo_fuentes.md
+?? bridge/72_evidencia_revision_fuentes_opencode.json
+?? bridge/72_matriz_correspondencia_catalogo_planificador.json
+?? bridge/72_revision_preventiva_integracion_fuentes_opencode.md
+?? bridge/73_tarea_ollamacodex_conciliacion_retrospectiva.md
+?? bridge/74_contrato_ollamacodex_conciliacion_retrospectiva.json
+?? bridge/74_entrega_ollamacodex_conciliacion_retrospectiva.md
+?? bridge/75_guia_motor_territorial_terridata/
+?? bridge/76_plan_motor_ficha_territorial_terridata.md
+?? bridge/77_restauracion_planificador_fuentes.json
+?? bridge/77_revision_preventiva_fuentes_opencode.json
+?? bridge/78_revision_opencode_integracion_fuentes_r1.md
+?? bridge/79_revision_conciliacion_retrospectiva.json
+?? bridge/79_revision_ollamacodex_conciliacion_r1.md
+?? bridge/80_evidencia_revision_conciliacion_r1.json
+?? bridge/80_revision_ollamacodex_conciliacion_r2.md
+?? bridge/81_evidencia_revision_conciliacion_r2.json
+?? bridge/81_revision_ollamacodex_conciliacion_r3.md
+?? bridge/82_evidencia_revision_conciliacion_r3.json
+?? bridge/82_revision_ollamacodex_conciliacion_r4.md
+?? bridge/83_tarea_ollamacodex_parser_territorial.md
+?? bridge/84_contrato_parser_territorial.json
+?? bridge/84_entrega_ollamacodex_parser_territorial.md
+?? bridge/85_tarea_freebuff_revision_conciliador.md
+?? bridge/86_evidencia_freebuff_conciliacion_retrospectiva.json
+?? bridge/86_revision_freebuff_conciliacion_retrospectiva.md
+?? bridge/87_evidencia_revision_parser_territorial.json
+?? bridge/87_revision_ollamacodex_parser_territorial_r1.md
+?? bridge/88_evidencia_parser_territorial_r1.json
+?? bridge/88_revision_parser_territorial_r1.md
+?? bridge/89_cotejo_revision_freebuff.json
+?? bridge/89_tarea_ollamacodex_conciliacion_r5_freebuff.md
+?? bridge/90_evidencia_freebuff_conciliacion_r5.json
+?? bridge/90_revalidacion_freebuff_r5_conciliacion.json
+?? bridge/90_revision_freebuff_conciliacion_r5.md
+?? bridge/91_tarea_ollamacodex_relevo_integracion_fuentes.md
+?? bridge/92_especificacion_ollamacodex_integracion_catalogo_planificador.md
+?? bridge/92_evidencia_ollamacodex_integracion_fuentes.json
+?? bridge/92_matriz_ollamacodex_catalogo_planificador.json
+?? bridge/93_piloto_sintetico_conciliacion/
+?? bridge/93_pytest_conciliacion_antes_correccion.xml
+?? bridge/93_pytest_conciliacion_retrospectiva.xml
+?? bridge/94_evidencia_validacion_conciliador.json
+?? bridge/94_validacion_funcional_conciliador.md
+?? bridge/95_tarea_freebuff_validacion_funcional_conciliador.md
+?? bridge/96_evidencia_freebuff_validacion_funcional.json
+?? bridge/96_pytest_freebuff_conciliador.xml
+?? bridge/96_revision_freebuff_validacion_funcional.md
+?? bridge/97_pytest_parser_territorial.xml
+?? bridge/98_evidencia_validacion_parser_territorial.json
+?? bridge/98_validacion_funcional_parser_territorial.md
+?? bridge/99_pytest_conciliador_parser.xml
+?? bridge/catalogo_fuentes_tablero_completo.json
+?? bridge/entrega_20_fuentes_aportadas_diagrama.md
+?? bridge/entrega_catalogo_fuentes_tablero_completo.md
+?? bridge/fuentes_nacionales_aportadas_20.json
+?? bridge/modelo_fuentes_nacionales_y_alias_territoriales.md
+?? bridge/modelo_roles_fuentes_territoriales.json
+?? bridge/qa_evidencia_tca05_chips_limpios.png
+?? bridge/qa_evidencia_tca05_fase01_filtro.png
+?? bridge/qa_evidencia_tca05_fase02_vacio.png
+?? bridge/qa_evidencia_tca05_panel_linea.png
+?? bridge/qa_evidencia_tca06_entrada_directa.png
+?? bridge/qa_evidencia_tca06_id_inexistente.png
+?? bridge/qa_evidencia_tca06_recarga.png
+?? bridge/qa_evidencia_tca06_reingreso.png
+?? bridge/qa_informe.md
+?? bridge/qa_informe.pdf
+?? bridge/qa_inventario_37_mesas_publico.csv
+?? bridge/revision_fuentes_r2_coordinador_20261024T153919Z/
+?? bridge/revision_fuentes_r2_coordinador_20261024T153933Z/
+?? bridge/revisiones_taxonomia_7d_2026/
+?? bridge/revisiones_vinculos_2026/
+?? bridge/validacion_20_fuentes_diagrama.json
+?? bridge/validacion_bootstrap_0083_20261022.json
+?? bridge/validacion_catalogo_planeacion_corte_20261022.json
+?? bridge/validacion_fuentes_nacionales_territoriales.json
+?? bridge/validacion_planeacion_corte_20261022.json
+?? bridge/validacion_supervisor_planeacion_corte_20261022.json
+?? data/analisis_planes/
+?? data/banco_fuentes_oficiales/
+?? data/capas_analiticas/
+?? data/cartografia_fuentes/
+?? data/conciliador_gold_set/
+?? data/fuentes_versiones/
+?? data/gold_set_conciliacion/
+?? data/planes_desarrollo/cache_pdd_dea_v12.json
+?? data/planes_desarrollo/catalogo_8_planes_2026.json
+?? docs/gold-set-anotacion.md
+?? docs/plan_orquestacion_inteligente_seguridad_humana_2026.md
+?? hallazgos21102026.md
+?? plan_remediacion_20102026.md
+?? resutados20102026.md
+?? scripts/auditar_topologia_polis.py
+?? scripts/catalogar_cartografia_polis.py
+?? scripts/construir_ficha_territorial_polis.py
+?? scripts/curar_cartografia_polis.py
+?? scripts/inventariar_fuentes_polis.py
+?? scripts/pipeline_datos_polis.py
+?? scripts/planificar_actualizaciones_fuentes_polis.py
+?? scripts/registrar_territorios_polis.py
+?? scripts/sincronizar_fuentes_versionado.py
+?? scripts/tca05_verificacion_fases.mjs
+?? scripts/tca06_verificacion.mjs
+?? src/app/_composition/deeplink-paneles-publicos.tsx
+?? src/app/_stories/participacion.stories.tsx
+?? src/app/_stories/plataforma-restringida.stories.tsx

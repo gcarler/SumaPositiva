@@ -1,0 +1,30 @@
+{
+  "fecha": "2026-10-26T06:06:15.069979+00:00",
+  "estado": "solo preparacion; producto sin cambios",
+  "hallazgo": "EAF-AP-GOLIVE-02-R01",
+  "encargo": "214",
+  "enfoque": "validacion estricta individual de campos declarados con sus restricciones; excluir extras/datos_adicionales/contactos; valores no utilizables se omiten, defaults existentes texto None y bool False",
+  "devolucion": "copiar columnas institucionales exactas en objeto de lectura y proyectar metadatos antes de validar; conservar filtro y limite transaccional",
+  "matriz": [
+    "seis regresiones203",
+    "raices null/bool/numero/string/lista/objeto",
+    "cada campo enfoque con tipos discordantes, sin coercion",
+    "organizacion_social 250 aceptado/251 descartado sin truncar",
+    "texto con @ y telefonos excluido",
+    "detalle/listado filtrado/edicion autorizada/devolucion/historial",
+    "SQL original antes/despues en otra conexion fisica",
+    "permisos401/403 y positivos",
+    "rollback postflush/validacion/cancelacion/commit real183"
+  ],
+  "producto_permitido": [
+    "backend/app/modules/aportes/schemas.py",
+    "backend/app/modules/aportes/service.py",
+    "backend/tests/test_aportes_legado_publico.py"
+  ],
+  "global": "no repetir por instruccion214; evidencia205 no es ejecucion215",
+  "fuentes_leidas": {
+    "bridge/203_reinspeccion_eaf_aportes.md": "34e841385f91493364271f08e5f20ecbb78f44ffe04f6fdec64b30173b33f2bc",
+    "bridge/214_encargo_edd_proyeccion_legado_aportes.md": "a778f13d276588c0787dc65db63fd57622b142e12f1bde1bd4ebd248730c6789",
+    ".agents/skills/polis-edd-transactions/SKILL.md": "ba3e44f53c51608f4fc30479b6e9f5217177fb69ad2cfe62d6de3af702c03cfc"
+  }
+}

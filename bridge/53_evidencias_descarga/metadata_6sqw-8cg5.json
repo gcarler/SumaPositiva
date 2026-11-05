@@ -1,0 +1,590 @@
+{
+  "id" : "6sqw-8cg5",
+  "name" : "Reporte Hurto por Modalidades Policía Nacional",
+  "assetType" : "dataset",
+  "attribution" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+  "attributionLink" : "https://www.datos.gov.co/d/6sqw-8cg5",
+  "averageRating" : 0,
+  "category" : "Seguridad y Defensa",
+  "createdAt" : 1612976245,
+  "description" : "En este conjunto de datos la ciudadanía puede encontrará información del delito de hurto en Colombia a través de las modalidades de residencias y entidades comerciales,  01 de enero del año 2010 al  31 de julio del año 2026.\n\nFuente: DIJIN - Policía Nacional. Datos extraídos el día 31 de agosto del 2026 a las 17:17 horas. Cifras sujetas a variación, en proceso de integración y consolidación con información de fiscalía general de la nación.  \n\nSeñor usuario si encuentra alguna inconsistencia en la información publicada, no la puede hacer saber atraves del correo electrónico Dijin.aicri-jef@policia.gov.co.\n\nNota: se ha realizado actualización en las cifras de todos los delitos, de acuerdo a la nueva metodología de validación de denuncias con la Fiscalía General de la Nación, la cual puede ser encontrada en el link https://www.policia.gov.co/grupo-informacion-criminalidad.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 1733,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "CC_40_BY_SA",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 36413599,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1612976745,
+  "publicationGroup" : 18017316,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1788295226,
+  "rowsUpdatedBy" : "bn7v-9rpg",
+  "tableId" : 18017316,
+  "totalTimesRated" : 0,
+  "viewCount" : 7601,
+  "viewLastModified" : 1788295037,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1612977971,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 3216882,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1612976746,
+    "targetAudience" : "public",
+    "workflowId" : 2188,
+    "reviewer" : {
+      "id" : "r4qn-dwdd",
+      "displayName" : "Ministerio de Tecnologías de la Información y las Comunicaciones - Datos Abiertos"
+    },
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1612977971,
+      "failureCount" : 0,
+      "startedAt" : 1612977971,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "bn7v-9rpg",
+      "displayName" : "DIJIN"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 523919915,
+    "name" : "DEPARTAMENTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "departamento",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120099,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "VICHADA",
+      "null" : "0",
+      "top" : [ {
+        "item" : "BOGOTA",
+        "count" : "176776"
+      }, {
+        "item" : "ANTIOQUIA",
+        "count" : "86290"
+      }, {
+        "item" : "VALLE",
+        "count" : "58466"
+      }, {
+        "item" : "CUNDINAMARCA",
+        "count" : "34703"
+      }, {
+        "item" : "SANTANDER",
+        "count" : "30653"
+      }, {
+        "item" : "ATLÁNTICO",
+        "count" : "26768"
+      }, {
+        "item" : "META",
+        "count" : "21984"
+      }, {
+        "item" : "TOLIMA",
+        "count" : "20270"
+      }, {
+        "item" : "BOLÍVAR",
+        "count" : "19182"
+      }, {
+        "item" : "RISARALDA",
+        "count" : "18440"
+      }, {
+        "item" : "CESAR",
+        "count" : "16186"
+      }, {
+        "item" : "HUILA",
+        "count" : "15747"
+      }, {
+        "item" : "NORTE DE SANTANDER",
+        "count" : "14599"
+      }, {
+        "item" : "BOYACÁ",
+        "count" : "13569"
+      }, {
+        "item" : "MAGDALENA",
+        "count" : "13071"
+      }, {
+        "item" : "CAUCA",
+        "count" : "11666"
+      }, {
+        "item" : "QUINDÍO",
+        "count" : "10585"
+      }, {
+        "item" : "NARIÑO",
+        "count" : "10555"
+      }, {
+        "item" : "CÓRDOBA",
+        "count" : "10488"
+      }, {
+        "item" : "CALDAS",
+        "count" : "7625"
+      } ],
+      "smallest" : "AMAZONAS",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919916,
+    "name" : "MUNICIPIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "municipio",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120100,
+    "cachedContents" : {
+      "non_null" : "653383",
+      "largest" : "Zona Bananera",
+      "null" : "1",
+      "top" : [ {
+        "item" : "Bogotá D.C. (CT)",
+        "count" : "176776"
+      }, {
+        "item" : "Medellín (CT)",
+        "count" : "45908"
+      }, {
+        "item" : "Cali (CT)",
+        "count" : "37152"
+      }, {
+        "item" : "Barranquilla (CT)",
+        "count" : "18243"
+      }, {
+        "item" : "Villavicencio (CT)",
+        "count" : "14629"
+      }, {
+        "item" : "Bucaramanga (CT)",
+        "count" : "13203"
+      }, {
+        "item" : "Pereira (CT)",
+        "count" : "12938"
+      }, {
+        "item" : "Cartagena (CT)",
+        "count" : "12859"
+      }, {
+        "item" : "Ibagué (CT)",
+        "count" : "10816"
+      }, {
+        "item" : "Cúcuta (CT)",
+        "count" : "9295"
+      }, {
+        "item" : "Valledupar (CT)",
+        "count" : "8782"
+      }, {
+        "item" : "Neiva (CT)",
+        "count" : "8678"
+      }, {
+        "item" : "Santa Marta (CT)",
+        "count" : "8339"
+      }, {
+        "item" : "Popayán (CT)",
+        "count" : "6911"
+      }, {
+        "item" : "Armenia (CT)",
+        "count" : "6810"
+      }, {
+        "item" : "Pasto (CT)",
+        "count" : "6327"
+      }, {
+        "item" : "Soacha",
+        "count" : "6103"
+      }, {
+        "item" : "Bello",
+        "count" : "5635"
+      }, {
+        "item" : "Montería (CT)",
+        "count" : "5610"
+      }, {
+        "item" : "Barrancabermeja",
+        "count" : "5077"
+      } ],
+      "smallest" : "Abejorral",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919913,
+    "name" : "CODIGO DANE",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "codigo_dane",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120097,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "99773017",
+      "null" : "0",
+      "top" : [ {
+        "item" : "11001000",
+        "count" : "176776"
+      }, {
+        "item" : "05001000",
+        "count" : "45621"
+      }, {
+        "item" : "76001000",
+        "count" : "37142"
+      }, {
+        "item" : "08001000",
+        "count" : "18208"
+      }, {
+        "item" : "50001000",
+        "count" : "14608"
+      }, {
+        "item" : "68001000",
+        "count" : "13203"
+      }, {
+        "item" : "66001000",
+        "count" : "12923"
+      }, {
+        "item" : "13001000",
+        "count" : "12683"
+      }, {
+        "item" : "73001000",
+        "count" : "10707"
+      }, {
+        "item" : "54001000",
+        "count" : "9278"
+      }, {
+        "item" : "20001000",
+        "count" : "8616"
+      }, {
+        "item" : "41001000",
+        "count" : "8598"
+      }, {
+        "item" : "47001000",
+        "count" : "8275"
+      }, {
+        "item" : "19001000",
+        "count" : "6906"
+      }, {
+        "item" : "63001000",
+        "count" : "6696"
+      }, {
+        "item" : "52001000",
+        "count" : "6311"
+      }, {
+        "item" : "25754000",
+        "count" : "6086"
+      }, {
+        "item" : "05088000",
+        "count" : "5627"
+      }, {
+        "item" : "23001000",
+        "count" : "5596"
+      }, {
+        "item" : "68081000",
+        "count" : "4907"
+      } ],
+      "smallest" : "00000000",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919917,
+    "name" : "ARMAS MEDIOS",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "armas_medios",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120101,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "SIN EMPLEO DE ARMAS",
+      "null" : "0",
+      "top" : [ {
+        "item" : "SIN EMPLEO DE ARMAS",
+        "count" : "435972"
+      }, {
+        "item" : "ARMA DE FUEGO",
+        "count" : "77547"
+      }, {
+        "item" : "CONTUNDENTES",
+        "count" : "71389"
+      }, {
+        "item" : "PALANCAS",
+        "count" : "40687"
+      }, {
+        "item" : "ARMA BLANCA / CORTOPUNZANTE",
+        "count" : "12383"
+      }, {
+        "item" : "LLAVE MAESTRA",
+        "count" : "6251"
+      }, {
+        "item" : "NO REPORTADO",
+        "count" : "5437"
+      }, {
+        "item" : "CORTANTES",
+        "count" : "2450"
+      }, {
+        "item" : "ESCOPOLAMINA",
+        "count" : "974"
+      }, {
+        "item" : "PUNZANTES",
+        "count" : "287"
+      }, {
+        "item" : "JERINGA",
+        "count" : "7"
+      } ],
+      "smallest" : "ARMA BLANCA / CORTOPUNZANTE",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919914,
+    "name" : "FECHA HECHO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "fecha_hecho",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120098,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "31/12/2025",
+      "null" : "0",
+      "top" : [ {
+        "item" : "28/04/2021",
+        "count" : "348"
+      }, {
+        "item" : "30/08/2024",
+        "count" : "308"
+      }, {
+        "item" : "02/02/2024",
+        "count" : "274"
+      }, {
+        "item" : "05/05/2021",
+        "count" : "273"
+      }, {
+        "item" : "30/08/2018",
+        "count" : "270"
+      }, {
+        "item" : "01/03/2024",
+        "count" : "266"
+      }, {
+        "item" : "15/02/2024",
+        "count" : "263"
+      }, {
+        "item" : "12/01/2024",
+        "count" : "259"
+      }, {
+        "item" : "01/04/2024",
+        "count" : "257"
+      }, {
+        "item" : "15/01/2024",
+        "count" : "256"
+      }, {
+        "item" : "10/04/2024",
+        "count" : "255"
+      }, {
+        "item" : "23/01/2024",
+        "count" : "253"
+      }, {
+        "item" : "11/03/2019",
+        "count" : "253"
+      }, {
+        "item" : "01/03/2018",
+        "count" : "252"
+      }, {
+        "item" : "11/01/2024",
+        "count" : "250"
+      }, {
+        "item" : "20/06/2017",
+        "count" : "249"
+      }, {
+        "item" : "01/08/2024",
+        "count" : "249"
+      }, {
+        "item" : "16/05/2018",
+        "count" : "249"
+      }, {
+        "item" : "15/01/2018",
+        "count" : "248"
+      }, {
+        "item" : "02/04/2018",
+        "count" : "246"
+      } ],
+      "smallest" : "01/01/2010",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919918,
+    "name" : "GENERO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "genero",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120102,
+    "cachedContents" : {
+      "non_null" : "70413",
+      "largest" : "NO REPORTA",
+      "null" : "582971",
+      "top" : [ {
+        "item" : "MASCULINO",
+        "count" : "39231"
+      }, {
+        "item" : "FEMENINO",
+        "count" : "31167"
+      }, {
+        "item" : "NO REPORTA",
+        "count" : "15"
+      } ],
+      "smallest" : "FEMENINO",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919919,
+    "name" : "GRUPO ETARIO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "grupo_etario",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120103,
+    "cachedContents" : {
+      "non_null" : "595927",
+      "largest" : "MENORES",
+      "null" : "57457",
+      "top" : [ {
+        "item" : "ADULTOS",
+        "count" : "590129"
+      }, {
+        "item" : "ADOLESCENTES",
+        "count" : "5238"
+      }, {
+        "item" : "MENORES",
+        "count" : "560"
+      } ],
+      "smallest" : "ADOLESCENTES",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919920,
+    "name" : "TIPO DE HURTO",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "tipo_de_hurto",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 130120104,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "ARTÍCULO 239. HURTO RESIDENCIAS",
+      "null" : "0",
+      "top" : [ {
+        "item" : "ARTÍCULO 239. HURTO ENTIDADES COMERCIALES",
+        "count" : "583312"
+      }, {
+        "item" : "ARTÍCULO 239. HURTO RESIDENCIAS",
+        "count" : "70072"
+      } ],
+      "smallest" : "ARTÍCULO 239. HURTO ENTIDADES COMERCIALES",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  }, {
+    "id" : 523919921,
+    "name" : "CANTIDAD",
+    "dataTypeName" : "number",
+    "description" : "",
+    "fieldName" : "cantidad",
+    "position" : 9,
+    "renderTypeName" : "number",
+    "tableColumnId" : 130120105,
+    "cachedContents" : {
+      "non_null" : "653384",
+      "largest" : "1",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1",
+        "count" : "653384"
+      } ],
+      "smallest" : "1",
+      "count" : "653384",
+      "cardinality" : "653384"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Creative Commons Attribution | Share Alike 4.0 International",
+    "logoUrl" : "images/licenses/cc30bysa.png",
+    "termsLink" : "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Información de la Entidad" : {
+        "Municipio" : "Bogotá D.C.",
+        "Nombre de la Entidad" : "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+        "DIVIPOLA Municipio" : "11001",
+        "Orden" : "Nacional",
+        "Sector" : "Defensa",
+        "Área o dependencia" : "Sec",
+        "Departamento" : "Bogotá D.C."
+      },
+      "Información de Datos" : {
+        "Cobertura Geográfica" : "Nacional",
+        "Idioma" : "Español",
+        "Frecuencia de Actualización" : "Trimestral"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "bn7v-9rpg",
+    "displayName" : "DIJIN",
+    "profileImageUrlLarge" : "/api/users/bn7v-9rpg/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/bn7v-9rpg/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/bn7v-9rpg/profile_images/TINY",
+    "screenName" : "DIJIN",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "hurto" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

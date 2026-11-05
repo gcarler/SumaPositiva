@@ -1,0 +1,93 @@
+{
+  "utc": "2026-11-02T04:05:41.031587+00:00",
+  "estado": "RECHAZADO",
+  "independiente": true,
+  "base": "4b45b104acc9d2a16a51bc80bd1ab7d328c56d58",
+  "snapshot_efectivo": "snapshot_v2.json",
+  "hallazgos": [
+    {
+      "id": "H275-01",
+      "severidad": "Alta",
+      "bloqueante": true,
+      "titulo": "Cooldown suprime primeras alertas y falsea salud global"
+    },
+    {
+      "id": "H275-02",
+      "severidad": "Media",
+      "bloqueante": true,
+      "titulo": "Antiguedad calcula la menor edad de pendientes"
+    },
+    {
+      "id": "H275-03",
+      "severidad": "Media",
+      "bloqueante": true,
+      "titulo": "Resumen diario deja huecos entre cortes"
+    },
+    {
+      "id": "H275-04",
+      "severidad": "Media",
+      "bloqueante": true,
+      "titulo": "JSON del watchdog falla ante cuerpo vacio"
+    },
+    {
+      "id": "H275-05",
+      "severidad": "Baja",
+      "bloqueante": false,
+      "titulo": "Credencial anterior declarada rotada persiste en documentos e historial"
+    }
+  ],
+  "resultados": {
+    "backend_check_r2": {
+      "returncode": 1,
+      "passed": 1735,
+      "failed": 8,
+      "skipped": 16,
+      "nota": "2 fallos de preparacion de fixtures del auditor, corregidos y revalidados aparte; 5 de plantillas paralelas y 1 agenda preexistente. Sin total global recompuesto."
+    },
+    "inventario_tras_copiar_fixture": {
+      "passed": 39,
+      "failed": 0
+    },
+    "access_policy": {
+      "passed": 123,
+      "failed": 0
+    },
+    "suite_275_global": {
+      "passed": 33,
+      "failed": 0
+    },
+    "sondas_independientes_cada_corrida": {
+      "corridas": 2,
+      "passed": 9,
+      "failed": 3
+    },
+    "sondas_adicionales": {
+      "passed": 3,
+      "failed": 0
+    },
+    "monitor_escenarios": 11,
+    "migracion_conserva_datos": true,
+    "idempotencia_10_concurrentes_filas": 1,
+    "alembic_check_cli_rc": 255
+  },
+  "produccion": {
+    "bd_csh": "sin acceso",
+    "postfix": "sin uso",
+    "servicios": "solo lectura",
+    "primer_timer_automatico": "pendiente a las 12:00 UTC / 07:00 Colombia"
+  },
+  "limpieza": {
+    "utc": "2026-11-02T04:01:36.548939+00:00",
+    "bases_eliminadas": [
+      "polis_test_eaf_275_codex",
+      "polis_test_eaf_275_codex_mig",
+      "polis_test_eaf_275_codex_probes"
+    ],
+    "rol_eliminado": "polis_eaf_275_codex",
+    "residuos": "",
+    "credencial_privada_eliminada": true,
+    "bd_csh": "sin conexiones ni cambios"
+  },
+  "commit": false,
+  "push": false
+}

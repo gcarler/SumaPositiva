@@ -1,0 +1,18 @@
+{
+  "http": [
+    429,
+    401,
+    429,
+    429,
+    429,
+    429,
+    401,
+    429
+  ],
+  "max_intentos": 3,
+  "fallos": 2,
+  "bloqueos": 1,
+  "bloqueo_vigente_desde_conexion_nueva": true,
+  "pid_observador": 2888554,
+  "estado_sha256": "d11bcc870a98f8dba9b06ead84811c8bc2668af4bb1656b52c7dbb4fcff5e33b"
+}

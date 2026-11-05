@@ -1,0 +1,64 @@
+[
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/data/banco_fuentes_oficiales.stage.20261105T032206Z-e9c449c9/consolidar_datos_integral.py"
+    ],
+    "cwd": "/root/polis",
+    "inicio_utc": "2026-11-05T03:22:06.864288+00:00",
+    "segundos": 0.121,
+    "returncode": 0,
+    "log": "promocion_01_consolidar_datos_integral.log",
+    "base_postgresql": "no utilizada"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/inventariar_fuentes_polis.py"
+    ],
+    "cwd": "/root/polis",
+    "inicio_utc": "2026-11-05T03:22:06.985815+00:00",
+    "segundos": 45.627,
+    "returncode": 0,
+    "log": "promocion_02_inventariar_fuentes_polis.log",
+    "base_postgresql": "no utilizada"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "-m",
+      "scripts.validar_banco_staging_polis",
+      "/root/polis/data/banco_fuentes_oficiales.stage.20261105T032206Z-e9c449c9"
+    ],
+    "cwd": "/root/polis/backend",
+    "inicio_utc": "2026-11-05T03:22:52.613515+00:00",
+    "segundos": 1.986,
+    "returncode": 0,
+    "log": "promocion_03_-m.log",
+    "base_postgresql": "no utilizada"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/inventariar_fuentes_polis.py"
+    ],
+    "cwd": "/root/polis",
+    "inicio_utc": "2026-11-05T03:22:54.599944+00:00",
+    "segundos": 2.318,
+    "returncode": 0,
+    "log": "promocion_04_inventariar_fuentes_polis.log",
+    "base_postgresql": "no utilizada"
+  },
+  {
+    "argv": [
+      "/root/polis/backend/.venv/bin/python",
+      "/root/polis/scripts/planificar_actualizaciones_fuentes_polis.py"
+    ],
+    "cwd": "/root/polis",
+    "inicio_utc": "2026-11-05T03:22:56.918512+00:00",
+    "segundos": 0.05,
+    "returncode": 0,
+    "log": "promocion_05_planificar_actualizaciones_fuentes_polis.log",
+    "base_postgresql": "no utilizada"
+  }
+]

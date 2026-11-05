@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-BcKkbAw3.js";import{v as t,y as n}from"./button-CsCxrpBO.js";var r,i;function a(){return(a=e((()=>{n(),r=[[`path`,{d:`M20 6 9 17l-5-5`,key:`1gmf2c`}]],i=t(`check`,r)})))()}export{a as n,i as t};

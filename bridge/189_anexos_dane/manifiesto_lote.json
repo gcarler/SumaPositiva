@@ -1,0 +1,162 @@
+{
+  "tarea": "OP-DANE-ADQ-01",
+  "fecha_captura_utc": "2026-10-26T04:38:24.539080+00:00",
+  "host_permitido": [
+    "www.dane.gov.co",
+    "dane.gov.co"
+  ],
+  "limites": {
+    "max_por_archivo": 67108864,
+    "max_lote": 134217728
+  },
+  "objetivos": [
+    {
+      "key": "PPED-AreaMun-2018-2042_VP.xlsx",
+      "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx"
+    },
+    {
+      "key": "PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "href": "/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx"
+    },
+    {
+      "key": "NotaTecnica-PPED-jul2025.pdf",
+      "href": "/files/censo2018/proyecciones-de-poblacion/Nacional/NotaTecnica-PPED-jul2025.pdf"
+    },
+    {
+      "key": "Municipal_area_1985-2020.xls",
+      "href": "/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls"
+    }
+  ],
+  "resultados": [
+    {
+      "key": "PPED-AreaMun-2018-2042_VP.xlsx",
+      "url_publicada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx",
+      "url_solicitada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx",
+      "url_final": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaMun-2018-2042_VP.xlsx",
+      "estado": "descargado",
+      "status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 04:38:18 GMT",
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Length": "3948350",
+        "Connection": "keep-alive",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "https://dane.gov.co",
+        "Access-Control-Allow-Methods": "GET, HEAD, POST",
+        "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Expose-Headers": "X-Joomla-Token",
+        "Access-Control-Max-Age": "86400",
+        "Content-Security-Policy": "default-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co; connect-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://z.clarity.ms https://s.clarity.ms https://translate-pa.googleapis.com https://translate.googleapis.com https://www.instagram.com https://twitter.com https://stats.g.doubleclick.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://ep1.adtrafficquality.google; font-src 'self' https: data: http:; frame-src 'self' https://ecircular.dane.gov.co https://ep2.adtrafficquality.google https://syndication.twitter.com https://dane-economia-circular.netlify.app http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://platform.twitter.com https://www.youtube.com https://twitter.com http://static.addtoany.com https://www.google-analytics.com about:; img-src 'self' https: data: http:; media-src 'self' https: http:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://www.googletagmanager.com https://platform.twitter.com https://static.doubleclick.net https://www.youtube.com https://googleads.g.doubleclick.net https: http:; style-src 'self' 'unsafe-inline' https: http:; frame-ancestors 'self' https://www.instagram.com http://172.200.5.13 http://www.dane.gov.co http://contenidosadmin.dane.gov.co http://dane.gov.co https://dane.gov.co https://www.dane.gov.co;",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Last-Modified": "Fri, 08 Aug 2025 22:00:37 GMT",
+        "Accept-Ranges": "bytes",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Powered-By": "Luchito Come",
+        "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+        "Vary": "User-Agent",
+        "X-Request-Id": "3cc6a8f69ac2a62e3ea3342b08297589"
+      },
+      "bytes": 3948350,
+      "sha256": "1ea83594ad308becff39934a3977c102919c25740f60439be95d797396d11283",
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "etag": null,
+      "last_modified": "Fri, 08 Aug 2025 22:00:37 GMT",
+      "content_length": "3948350"
+    },
+    {
+      "key": "PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "url_publicada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "url_solicitada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/PPED-AreaSexoEdadMun-2018-2042_VP.xlsx",
+      "estado": "error",
+      "error": "File exceeds limit 67108864"
+    },
+    {
+      "key": "NotaTecnica-PPED-jul2025.pdf",
+      "url_publicada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Nacional/NotaTecnica-PPED-jul2025.pdf",
+      "url_solicitada": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Nacional/NotaTecnica-PPED-jul2025.pdf",
+      "url_final": "https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Nacional/NotaTecnica-PPED-jul2025.pdf",
+      "estado": "descargado",
+      "status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 04:38:22 GMT",
+        "Content-Type": "application/pdf",
+        "Content-Length": "855854",
+        "Connection": "keep-alive",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "https://dane.gov.co",
+        "Access-Control-Allow-Methods": "GET, HEAD, POST",
+        "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Expose-Headers": "X-Joomla-Token",
+        "Access-Control-Max-Age": "86400",
+        "Content-Security-Policy": "default-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co; connect-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://z.clarity.ms https://s.clarity.ms https://translate-pa.googleapis.com https://translate.googleapis.com https://www.instagram.com https://twitter.com https://stats.g.doubleclick.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://ep1.adtrafficquality.google; font-src 'self' https: data: http:; frame-src 'self' https://ecircular.dane.gov.co https://ep2.adtrafficquality.google https://syndication.twitter.com https://dane-economia-circular.netlify.app http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://platform.twitter.com https://www.youtube.com https://twitter.com http://static.addtoany.com https://www.google-analytics.com about:; img-src 'self' https: data: http:; media-src 'self' https: http:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://www.googletagmanager.com https://platform.twitter.com https://static.doubleclick.net https://www.youtube.com https://googleads.g.doubleclick.net https: http:; style-src 'self' 'unsafe-inline' https: http:; frame-ancestors 'self' https://www.instagram.com http://172.200.5.13 http://www.dane.gov.co http://contenidosadmin.dane.gov.co http://dane.gov.co https://dane.gov.co https://www.dane.gov.co;",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Last-Modified": "Fri, 18 Jul 2025 22:32:48 GMT",
+        "Accept-Ranges": "bytes",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Powered-By": "Luchito Come",
+        "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+        "Vary": "User-Agent",
+        "X-Request-Id": "fa49999de41327a364c2e0c373d5c1d5"
+      },
+      "bytes": 855854,
+      "sha256": "ab71bcb2a5ee0f0fce85cd0c8740cd2dac332984c2dc2ac419a8bdc7b3c65b72",
+      "content_type": "application/pdf",
+      "etag": null,
+      "last_modified": "Fri, 18 Jul 2025 22:32:48 GMT",
+      "content_length": "855854"
+    },
+    {
+      "key": "Municipal_area_1985-2020.xls",
+      "url_publicada": "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+      "url_solicitada": "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+      "url_final": "https://www.dane.gov.co/files/investigaciones/poblacion/proyepobla06_20/Municipal_area_1985-2020.xls",
+      "estado": "descargado",
+      "status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 04:38:23 GMT",
+        "Content-Type": "application/vnd.ms-excel",
+        "Content-Length": "1910272",
+        "Connection": "keep-alive",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "https://dane.gov.co",
+        "Access-Control-Allow-Methods": "GET, HEAD, POST",
+        "Access-Control-Allow-Headers": "origin, x-requested-with, Content-Type, accept, Token, Authentication",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Expose-Headers": "X-Joomla-Token",
+        "Access-Control-Max-Age": "86400",
+        "Content-Security-Policy": "default-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co; connect-src 'self' http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://z.clarity.ms https://s.clarity.ms https://translate-pa.googleapis.com https://translate.googleapis.com https://www.instagram.com https://twitter.com https://stats.g.doubleclick.net https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://ep1.adtrafficquality.google; font-src 'self' https: data: http:; frame-src 'self' https://ecircular.dane.gov.co https://ep2.adtrafficquality.google https://syndication.twitter.com https://dane-economia-circular.netlify.app http://172.200.5.13 http://contenidosadmin.dane.gov.co http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://platform.twitter.com https://www.youtube.com https://twitter.com http://static.addtoany.com https://www.google-analytics.com about:; img-src 'self' https: data: http:; media-src 'self' https: http:; object-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://dane.gov.co http://www.dane.gov.co https://dane.gov.co https://www.dane.gov.co https://www.googletagmanager.com https://platform.twitter.com https://static.doubleclick.net https://www.youtube.com https://googleads.g.doubleclick.net https: http:; style-src 'self' 'unsafe-inline' https: http:; frame-ancestors 'self' https://www.instagram.com http://172.200.5.13 http://www.dane.gov.co http://contenidosadmin.dane.gov.co http://dane.gov.co https://dane.gov.co https://www.dane.gov.co;",
+        "Referrer-Policy": "no-referrer",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Last-Modified": "Fri, 12 Nov 2021 03:22:10 GMT",
+        "Accept-Ranges": "bytes",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Powered-By": "Luchito Come",
+        "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "Wed, 11 Jan 1984 05:00:00 GMT",
+        "Vary": "User-Agent",
+        "X-Request-Id": "b63b9dd0f37028da51cb98f8b07d1e79"
+      },
+      "bytes": 1910272,
+      "sha256": "5d6ae35f5bbde7c0163cee10ebda344a21993ece0f9b9f66f2ff186010335e84",
+      "content_type": "application/vnd.ms-excel",
+      "etag": null,
+      "last_modified": "Fri, 12 Nov 2021 03:22:10 GMT",
+      "content_length": "1910272"
+    }
+  ]
+}

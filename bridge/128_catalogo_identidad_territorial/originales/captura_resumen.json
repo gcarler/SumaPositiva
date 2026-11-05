@@ -1,0 +1,22 @@
+{
+  "inicio_utc": "2026-10-26T00:49:59.291405+00:00",
+  "fin_utc": "2026-10-26T00:50:00.600630+00:00",
+  "capa317": {
+    "esperado_conteo": 1122,
+    "recibidos": 1122,
+    "conteo_coincide": true,
+    "exceededTransferLimit": false,
+    "objectids_unicos": true,
+    "sin_geometria": true,
+    "mensaje_truncamiento": null
+  },
+  "capa319": {
+    "esperado_conteo": 33,
+    "recibidos": 33,
+    "conteo_coincide": true,
+    "exceededTransferLimit": false,
+    "objectids_unicos": true,
+    "sin_geometria": true,
+    "mensaje_truncamiento": null
+  }
+}

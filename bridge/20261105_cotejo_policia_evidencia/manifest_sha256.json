@@ -1,0 +1,539 @@
+{
+  "utc": "2026-11-05T03:46:15.588706+00:00",
+  "estado": "completado_cotejo_e_integracion_local",
+  "ambito": "Cartagena 13001; publicaciones oficiales 2020 a septiembre 2026",
+  "head_observado": "552a0f9f851c2f4ab846070f271facf1273b06da",
+  "algoritmo": "sha256",
+  "inventario_global_verificado": {
+    "ruta": "data/banco_fuentes_oficiales/inventario_pipeline_2026.json",
+    "artefactos": 1928,
+    "sha256": "2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e"
+  },
+  "limites": [
+    "Sin despliegue, commit, push ni conexión a bd_csh",
+    "Sin ejecución de pytest; validación de datos reales y Ruff",
+    "Se conservan 8 discordancias locales del publicador y la observación del agregado nacional"
+  ],
+  "archivos": [
+    {
+      "ruta": "backend/app/modules/compromisos/taxonomia_7d_polis.py",
+      "bytes": 14183,
+      "sha256": "b44d6c0b403e4adf58b7c35df112149231cce466d7db754c0d39d78000f3235f"
+    },
+    {
+      "ruta": "backend/tests/test_taxonomia_7d_polis.py",
+      "bytes": 4869,
+      "sha256": "0a4028d27b948a61d45ba892e15b4b4ce104e54019315487d5fba9e73de32946"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_fuente_oficial_policia.md",
+      "bytes": 12484,
+      "sha256": "bced6ed35a894df4cdcebede57bb8724aff5cf6b01e02d634fc18a5cc5b1de09"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/cerrar_integracion_v6.py",
+      "bytes": 5773,
+      "sha256": "0a094d51053b09e0e120435284c1f51100cb8d8d7ffafbf95a083ca421cf517f"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/checks_codigo.json",
+      "bytes": 1166,
+      "sha256": "9083c3aee001f20e61534f9234d95bec8adacd772d45243e00fb4b2b51c2b2c9"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/checks_finales_codigo.json",
+      "bytes": 1775,
+      "sha256": "ff7a107a2827809b7a0699939e4ae367d6c3335367662af94c7f11bfe482dbcf"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/checks_verificadores.json",
+      "bytes": 746,
+      "sha256": "1b374628cf9459485b74d17d1cd065bd5f1f88722f39ba44e7b2cda869b1c6ce"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/comandos_promocion.json",
+      "bytes": 1912,
+      "sha256": "ebfc59edd5a808b02b99133fa0d531d9025e9e97fe3536c0f418526d645640ca"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/comandos_v6.json",
+      "bytes": 1037,
+      "sha256": "4733a90170c748df11711ff8a04b95b51eddcbcf00f0e04c669a1b7b026f2512"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/consolidar_datos_integral_antes.py",
+      "bytes": 19780,
+      "sha256": "5430514e2ca948f709c5e91f39b4f41227c7b4840230498c24aed58b1a220109"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/control_nacional_cuadro1.csv",
+      "bytes": 760,
+      "sha256": "b4e86792c0cdd99478c40a6fd2cd3a7f22e78fc54724f33ab60a0d9306d70a4e"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/diccionario_iccs.csv",
+      "bytes": 1825,
+      "sha256": "bfaf7ba322a98c5da1f67866e97d809c01c09220c5c4d69c21098802043e5618"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/diccionario_iccs.manifest.json",
+      "bytes": 402,
+      "sha256": "bea2363f3096f8b6f14250728b45cb962329ce75a696c6d79cb65ab289b99269"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/formato.log",
+      "bytes": 44,
+      "sha256": "b1d6f78c9224b9883374a6a0c44483c647a44864497ae71408d46f93f768df82"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/formato_final.log",
+      "bytes": 26,
+      "sha256": "8e93d18ae56550d4eef2feac77e6630617c7e169246e56e39c75d58b46167985"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/formato_verificadores.log",
+      "bytes": 26,
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/inicio.json",
+      "bytes": 336,
+      "sha256": "c4182db294a8686f69eb81a6905c4fbd18bc6b28798db2c7b7e999263fbdacaf"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/integracion_final.json",
+      "bytes": 1210,
+      "sha256": "c9a1285195261f791610179e8e419abecf08b16769c5329b44da62975a7e1488"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion.json",
+      "bytes": 564,
+      "sha256": "02bc2a5bf25137a354b1a4ce766adb3abb7cd43db3eb05daaf00f0d770759d8e"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion_01_consolidar_datos_integral.log",
+      "bytes": 266,
+      "sha256": "5ad5fb064308cf5190c66a04ed1e2b6acdd4247daac652234925ffee31e3c622"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion_02_inventariar_fuentes_polis.log",
+      "bytes": 126,
+      "sha256": "1fdd2e995867827ab8f83f5d452ed3f76d8ba0a28e88a93a2123a50a96dd6c59"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion_03_-m.log",
+      "bytes": 5283,
+      "sha256": "b195d8437b24ec65fdabdae4779b2d03b4d0e3bbca250f081aa467870e34be0b"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion_04_inventariar_fuentes_polis.log",
+      "bytes": 126,
+      "sha256": "adb48b1cac49b044a5cabb3a13fbd75ee9062431424327d6bde96d3f9dae908c"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promocion_05_planificar_actualizaciones_fuentes_polis.log",
+      "bytes": 140,
+      "sha256": "8dbcfa9d7f066a8bcfc49d13ad08b6a5b3219f21b99ac9807a18f27cd1704e4d"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promover_banco.py",
+      "bytes": 7023,
+      "sha256": "c41eea8e80211cc95675f5f8362f0b87cfe345468470b26eee1040e7eac6a0fc"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/promover_banco_ejecutado.py",
+      "bytes": 6552,
+      "sha256": "18b587e564c111b50db1bf56e08af2c602e4afcf84f089341cb01d7bf81a1387"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/ruff.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/ruff_final.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/ruff_verificadores.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/taxonomia_7d_antes.py",
+      "bytes": 13032,
+      "sha256": "e1a5949d696d5826c3be3b0b0f90d78a98f9e76783aaf952d3f457c1b5d5dbe2"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/v6_01.log",
+      "bytes": 266,
+      "sha256": "5ad5fb064308cf5190c66a04ed1e2b6acdd4247daac652234925ffee31e3c622"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/v6_02.log",
+      "bytes": 126,
+      "sha256": "b1da5780cfa1a691f085fbb165d023db6b2be99bbc9829d3df302ad010ba90d8"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/v6_03.log",
+      "bytes": 5283,
+      "sha256": "d9e24f078d5a8cb8ff2b70a444bf4b7044e15e460c947acaf838c05d588d09fd"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/v6_04.log",
+      "bytes": 126,
+      "sha256": "06cfe99825f2e527ce7808bc9ce296512668cb9a9b048097a81424e7e9ca702a"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/v6_05.log",
+      "bytes": 140,
+      "sha256": "8dbcfa9d7f066a8bcfc49d13ad08b6a5b3219f21b99ac9807a18f27cd1704e4d"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/verificacion_final.json",
+      "bytes": 2217,
+      "sha256": "5cd18569225dbc9f22e00c6cd683e1410addcf1abe45ee336f886e28418302e6"
+    },
+    {
+      "ruta": "bridge/20261105_cotejo_policia_evidencia/verificar_cierre_datos.py",
+      "bytes": 7023,
+      "sha256": "f2f2ea3c579e416a808b4eacf9e7e7f3248efd3595d1e4d2a14df747390d91d3"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/README.md",
+      "bytes": 17947,
+      "sha256": "d95e22d01fe0b606b1e9fec80591f617471ba4642aebaea62270b3892bc6e2de"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/adquirir_policia_portal.py",
+      "bytes": 10434,
+      "sha256": "5a7bd4fe0f191074d4dad20df304a39b0fe65571af7bf7c068cd548a7151cd00"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/consolidar_datos_integral.py",
+      "bytes": 23558,
+      "sha256": "23b17844c47524407c7eca07d9d125483e5baafcd4afd41b364c34dc930e0a59"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/cotejar_portal_policia.py",
+      "bytes": 19509,
+      "sha256": "977fa1c8152b879d602263ba7d54ee7b37d187584b121bafab3e1969ed8f8487"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/evaluacion_estructural_2026.json",
+      "bytes": 7349,
+      "sha256": "a917326dbed096a6058a77e07409a7323aed504425d1f25f3894b03ab0e207f2"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.csv",
+      "bytes": 1198998,
+      "sha256": "a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/indicadores_consolidados_cartagena_2026.manifest.json",
+      "bytes": 6788,
+      "sha256": "d57a360536f55a1d11bda2cda5affe0070a114e6306142898f3fd274da4b6f1f"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/inventario_pipeline_2026.json",
+      "bytes": 1686081,
+      "sha256": "2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/activo.json",
+      "bytes": 1525,
+      "sha256": "9ff42741b185325c159bfc700dd9c43c416c1ad095f70e423976bf5a04a87748"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/cuadros_mensuales_2020_2026.zip",
+      "bytes": 29518700,
+      "sha256": "42b367067d0f905f76192c23bfdd522cdf464960a77844beb535ac59795b9eca"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/cuadros_ultimo_mes.xlsx",
+      "bytes": 897085,
+      "sha256": "03b708e29f25e2ccf7ec548b63dee970528e8f3c6a73f0e60063ecab319e33aa"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/entradas_previas.json",
+      "bytes": 3194,
+      "sha256": "5e4da3e0261c8826f4cad90d22e3bad7944c8bd2e0303f5123e1e45af1e8f903"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/manifest.json",
+      "bytes": 27554,
+      "sha256": "0472a5d0a77b97e99c4c46feec9a6a585f7657a91be7557a5351fe55b885aab5"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/portal.html",
+      "bytes": 172316,
+      "sha256": "31fc80965c0f32a6add9db6373ca3c5f27cf8ebf73b77728c2393cf88453e9b0"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2020.xlsx",
+      "bytes": 33190915,
+      "sha256": "f6a91917394d173f16383c67ae3306c4edd94a6fa7ec61830a0b92b10d2cf982"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2021.xlsx",
+      "bytes": 39945525,
+      "sha256": "e04e27c1f11c1215c6a9291813da4aa7a48c91d88399dc9783bd30014a58ec60"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2022.zip",
+      "bytes": 40742004,
+      "sha256": "654e55a1e9233644cc0f209f690293a0268fb5e2acd195f3a772700f09d070be"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2023.zip",
+      "bytes": 39323967,
+      "sha256": "67e910092e773447106c41cfdd54b02bb9800c073a97b135befa866b927585dc"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2024.xlsx",
+      "bytes": 40514443,
+      "sha256": "e472b63bc021d08b442affcde589262e8377d196e9764a41bfa0f99b0cc179ba"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2025.xlsx",
+      "bytes": 37561586,
+      "sha256": "be262d7bff7ae7236dad729379e584d8febbbae1c4127ff4d0382bddbcb71252"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/capturas/20261105/registros_2026.xlsx",
+      "bytes": 34673531,
+      "sha256": "98c64fa3215fcd57712667fa636d280d5173218431d482191b5b07fe69fb8f66"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/candidato_activo.json",
+      "bytes": 1525,
+      "sha256": "9ff42741b185325c159bfc700dd9c43c416c1ad095f70e423976bf5a04a87748"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/controles_internos.csv",
+      "bytes": 81368,
+      "sha256": "30ed64f071d621c13f66d5f2d1e37dae171e07abaae1c09fbfdab479526954d3"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejador_ejecutado.py",
+      "bytes": 19431,
+      "sha256": "eb17f871593a8abeab3ff4f5cc1f4998110220dccac1dc04f43d53ed9c226d44"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejo_excel_compartido.csv",
+      "bytes": 8714,
+      "sha256": "d6eafa5f472a9550683088469abf439ebe5d55c109bda69aa35c24baed4143c9"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejo_registros_vs_cuadros.csv",
+      "bytes": 141875,
+      "sha256": "584380683b0d79a4b027878a68d1a40f3477c4817831dce857cc8c6fa7669b7e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejo_resumen.json",
+      "bytes": 4787,
+      "sha256": "3060bafa744e527c90f89fe1f05866e6f1d19da31c1b417a70c675b15f655e84"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejo_socrata_previo_vs_portal.csv",
+      "bytes": 23016,
+      "sha256": "82ef52be20cf947adfe7e937ea75d37c69f44134935f70c956b0d32f82b6b770"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cotejo_ultimo_mes_vs_historico.csv",
+      "bytes": 683,
+      "sha256": "be4eb799296bcecd25b052eeb7e91c0b5057465c0b2a4f8fc641f5a683b6d680"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadro1_nacional_anual.csv",
+      "bytes": 24442,
+      "sha256": "68af66091365f1619a9a05e21b0863c2ef4c5670a437c952b96ba49a1a44924a"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadro1_nacional_mensual_2026.csv",
+      "bytes": 49858,
+      "sha256": "e385eea2fa3a16c31baa4227a05b5992be5a1156625faca7244cd9f15d118bff"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadros_cartagena_anuales.csv",
+      "bytes": 50009,
+      "sha256": "50f71d7c711f8e86129ac38eac86976733228720d4bca1ab50cef7ede0cbebca"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadros_cartagena_armas_mensuales.csv",
+      "bytes": 2452299,
+      "sha256": "103518efea8002cfc4bf6282df24822b67fd38e18478c55f4512c0f8d4573e3e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadros_cartagena_mensuales.csv",
+      "bytes": 500214,
+      "sha256": "5ea4d62ce7b1600ad82a78f42622160bf5f3b90542ac34f8260ea50b08207b4c"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadros_cartagena_ultimo_mes.csv",
+      "bytes": 5798,
+      "sha256": "2e9af67e1b1ea7ec3f91e99141c69a722081c147d569f780eadc5de714400068"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/cuadros_perfil.json",
+      "bytes": 5147,
+      "sha256": "e5efc35a39a7bf20610d4b6cc03242668d370ab78445f769127bd164dae8774c"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/integracion_consolidado_anual.csv",
+      "bytes": 166550,
+      "sha256": "bed7896a9e03e0f2110ef0ea928e520bc7a00ba497a62dab5155433fd088e85d"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/procesador_ejecutado.py",
+      "bytes": 35060,
+      "sha256": "a310fd277bbab560e797153c25e1ac485b11d356fb1ed66353cfb0c146deef6a"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/procesamiento.json",
+      "bytes": 15588,
+      "sha256": "0f18a84d3a29c925dac3ecccc99c6b9dc37206ad9242a18f195d13dd0c16435e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2020.json",
+      "bytes": 47794,
+      "sha256": "0e0b7b111c58dcc66fe427e5b48b59fa81291aab8831ce0f98c6c7a53660366d"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2021.json",
+      "bytes": 12508,
+      "sha256": "ce1ebfafb37eee43c129190fb4fa55690d64b7a1c86ad1f735da1ceb0824586e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2022.json",
+      "bytes": 44902,
+      "sha256": "d4118af213c531cc44be0b6ac2454d4175eaef6f0ee0c6318edf98f4beb7d0ee"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2023.json",
+      "bytes": 40017,
+      "sha256": "2cbca2c612d6edf0a16c7732050f5bc81895a0a4dfb6d42bbb0eda4c0079fff2"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2024.json",
+      "bytes": 43509,
+      "sha256": "3f43d7834a2a7eb523f5d4de35677f5b54859c771794495d2704608cea990a68"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2025.json",
+      "bytes": 41018,
+      "sha256": "735b823e39ffb198728a8ea9d0fe9f2875099a3fa92a0700a2af576ea6f74336"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_armas_agregadas_2026.json",
+      "bytes": 30551,
+      "sha256": "df7228fbdceabc696a6447a97790cbee7aacca87fabde755ba83daf284d27c86"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2020.csv",
+      "bytes": 61979,
+      "sha256": "cb97b84ec4efbace3ce5d0d715a6a4b1c12ee67d611821ebf2a97d5ff91d6927"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2021.csv",
+      "bytes": 61227,
+      "sha256": "79f4f8fcd37b9dc8e23d0359476a15c46ef00f6be48169aaa0ac9a0260d3ad02"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2022.csv",
+      "bytes": 67509,
+      "sha256": "0c38a9abd73c4b6b0d564d5b0fc0f289e44b5466515beddfe815d41103e18c27"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2023.csv",
+      "bytes": 65463,
+      "sha256": "e2295d16072d98fbe0f519c26657d11364e6af890201865ac36437b588f76cc6"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2024.csv",
+      "bytes": 59035,
+      "sha256": "66c7cc50d99883d385239b885e528ec4d6e923103d9b1842c911180ecc4d4be5"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2025.csv",
+      "bytes": 59407,
+      "sha256": "c4f6dec54800731b281e36924e36d3e69b58234640a5ed815b3c7afb6c832990"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_cartagena_mensuales_2026.csv",
+      "bytes": 44300,
+      "sha256": "6cb4399e50e34a7d30ca49c306976dfea258a070d3b102951d68c30281dc70d1"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2020.json",
+      "bytes": 1416,
+      "sha256": "60b4a40c3575be012c3cc67d3ed6a9e0bcf56a126a146724d3b211e3e238dd97"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2021.json",
+      "bytes": 1416,
+      "sha256": "d42648f7311a5f01d459c645fc386954346128bee5f055fba769fe0adcbae55a"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2022.json",
+      "bytes": 1455,
+      "sha256": "e9c6776fa13b66d323fa77e4112af795f0dbb45d39db41bd62f0c1f9c6f4b4ae"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2023.json",
+      "bytes": 1455,
+      "sha256": "0021d3c101eb658d6277268046567df8e83d4f828f072f87e49fdd38faf6b8ac"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2024.json",
+      "bytes": 1416,
+      "sha256": "41a59b88afd8cdcbf0b915b77fb4940865a678ba33d27022163a4e6ea84a921e"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2025.json",
+      "bytes": 1416,
+      "sha256": "27b8b4c8bc5bfa31a343dc0d03425323709a729fbe645c92180db920fd8425a7"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/policia_portal/procesados/20261105_v2/registros_perfil_2026.json",
+      "bytes": 1417,
+      "sha256": "ef463fdb06378ce38d1c320a48c0dac8ec87569f50008611d4cc8f841d159051"
+    },
+    {
+      "ruta": "data/banco_fuentes_oficiales/procesar_portal_policia.py",
+      "bytes": 35123,
+      "sha256": "a09c4463f8c14511f857ff85cbeb9a05a764c362223fe4190ec78df11d53cb57"
+    },
+    {
+      "ruta": "data/capas_analiticas/contrastes/ea705f0b298e883896f2e57f40ee7af64911b6817feb650f1810b53bff6b2622.json",
+      "bytes": 57796,
+      "sha256": "ea705f0b298e883896f2e57f40ee7af64911b6817feb650f1810b53bff6b2622"
+    },
+    {
+      "ruta": "data/capas_analiticas/derivaciones/a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa-2c5972b2c74880507af0fc92178239b97d07b47e630cc182d46951dffb8f952e-v2.json",
+      "bytes": 2244,
+      "sha256": "d1dd97b93efdd613b67fc48b9495d9bfe8f76fd604559cc5f89053ce62fcb898"
+    },
+    {
+      "ruta": "data/capas_analiticas/indicadores_7d/4925e9a45599487c92cba1b7913fcb9e25e80ec09a1abd900f847c464d8fc8e7.jsonl",
+      "bytes": 2743305,
+      "sha256": "4925e9a45599487c92cba1b7913fcb9e25e80ec09a1abd900f847c464d8fc8e7"
+    },
+    {
+      "ruta": "data/capas_analiticas/observaciones/ed5dbdafaa57c8fbddd908b46087758109c6f1bb17b708282fb780ec9f385b56.jsonl",
+      "bytes": 2737683,
+      "sha256": "ed5dbdafaa57c8fbddd908b46087758109c6f1bb17b708282fb780ec9f385b56"
+    },
+    {
+      "ruta": "data/capas_analiticas/paneles_series_7d/207e6c05da3a2ea5c12cd8a7ec56eff57219d1e2639bc931eddbe3ed70c0dc75.json",
+      "bytes": 2364864,
+      "sha256": "207e6c05da3a2ea5c12cd8a7ec56eff57219d1e2639bc931eddbe3ed70c0dc75"
+    },
+    {
+      "ruta": "data/capas_analiticas/tablero_operacion_fuentes/4b5f515144ffef92b1d02e4c9f05fd30a7d9730d9f641bc8fb264c58f68ad7a9.json",
+      "bytes": 56210,
+      "sha256": "4b5f515144ffef92b1d02e4c9f05fd30a7d9730d9f641bc8fb264c58f68ad7a9"
+    }
+  ]
+}

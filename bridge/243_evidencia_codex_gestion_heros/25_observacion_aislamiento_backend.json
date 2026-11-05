@@ -1,0 +1,7 @@
+{
+  "fecha": "2026-10-27T11:57:19.408279+00:00",
+  "archivo_activo": "/root/polis/data/heros_config.json",
+  "existe": false,
+  "ruta_fixture_actual": "/root/polis/data/heros_config.json",
+  "root_codex_no_ejecuto_pytest_heros": true
+}

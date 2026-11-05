@@ -1,0 +1,12 @@
+{
+  "comando": [
+    "/root/polis/backend/.venv/bin/python",
+    "/root/polis/bridge/233_evidencia_eaf_consumidor_identidad_r1/probar_guardas.py"
+  ],
+  "cwd": "/root/polis",
+  "codigo_salida": 0,
+  "duracion_segundos": 0.637,
+  "fecha_utc": "2026-10-26T06:44:24.416890+00:00",
+  "database": "polis_test_eaf_consumidor_r1_20261026_c91eeabd",
+  "guarda_sha256": "123f93347866b2368e6933573274cc4c9f8fa7d6e9cb2e6043b9cbcebed85621"
+}

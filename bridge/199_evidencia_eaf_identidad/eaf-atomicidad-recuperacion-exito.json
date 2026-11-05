@@ -1,0 +1,31 @@
+{
+  "usuario_id": "01a176a2-7fa6-72e5-8216-c87b6b92d2fa",
+  "modo": "exito",
+  "excepcion": null,
+  "post_flush_confirmado": true,
+  "pid_observador_antes": 2892723,
+  "pid_observador_despues": 2892765,
+  "estado_antes_sha256": "7a02bd65909b8b054be3bdf7b40a1a6d3aba3ba579286358936e8df2baa46f43",
+  "estado_despues_sha256": "6d33eac9acfd4a469bb5d5f2822c9614198aabdb9f458b4193eb018f1e926b9b",
+  "igualdad_completa": false,
+  "filas_commit_invalido": null,
+  "sesion_utilizable_despues": true,
+  "conteos_antes": {
+    "usuario": 1,
+    "sesiones": 1,
+    "civicas": 1,
+    "tokens": 2,
+    "eventos": 4,
+    "mfa": 0
+  },
+  "conteos_despues": {
+    "usuario": 1,
+    "sesiones": 1,
+    "civicas": 1,
+    "tokens": 2,
+    "eventos": 5,
+    "mfa": 0
+  },
+  "cumple": true,
+  "campos_comparados": "hash/activo/verificacion/actualizado, sesiones y cívicas, tokens/cola, eventos"
+}

@@ -1,0 +1,38 @@
+{
+  "aislamiento": "REPEATABLE READ READ ONLY",
+  "alcance": "PPI_FORMULADO_CRUDO_SIN_ACREDITAR_EJECUCION_NI_COMPARABILIDAD",
+  "base_origen": "polis_test_edd_aportes_20261026_166c0437",
+  "conteos_sql": {
+    "OL-CODEX-02-R1-P": {
+      "metas": 1,
+      "nodos": 1
+    }
+  },
+  "esquema": "polis.ppi_planeacion.v2",
+  "estado_publicacion": "no_publicable",
+  "nodos": [
+    {
+      "codigo_plan": "OL-CODEX-02-R1-P",
+      "fuente": "prueba",
+      "id": "2083260d-19d7-5c99-942a-402538364661",
+      "metadatos": "{}",
+      "nivel": "PLAN",
+      "parent_id": null,
+      "ppi_anual_cop": "{\"lista\": [1, true], \"valor\": 9007199254740993.01, \"sql_null\": null, \"vigencia\": 2026}"
+    }
+  ],
+  "planes": [
+    {
+      "codigo_plan": "OL-CODEX-02-R1-P",
+      "fuentes": "[]",
+      "metadatos": "{}",
+      "nombre_oficial": "Plan PPI R1",
+      "periodo": "2026-2027",
+      "ppi_anual_cop": "{\"lista\": [1, true], \"valor\": 9007199254740993.01, \"sql_null\": null, \"vigencia\": 2026}",
+      "ppi_total_constante_2025_cop": "9007199254740993.01",
+      "ppi_total_corriente_cop": "4000000000000000.01"
+    }
+  ],
+  "representacion_jsonb": "TEXTO_JSONB_SIN_CONVERSION_A_FLOAT",
+  "versionamiento": "01"
+}

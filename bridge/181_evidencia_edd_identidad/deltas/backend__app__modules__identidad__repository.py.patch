@@ -1,0 +1,65 @@
+--- antes/backend/app/modules/identidad/repository.py
++++ despues/backend/app/modules/identidad/repository.py
+@@ -60,7 +60,7 @@
+         await self.session.flush()
+         return await self.obtener_usuario_por_id(usuario.id)
+ 
+-    async def crear_usuario_oauth(
++    async def crear_usuario_externo(
+         self,
+         correo: str,
+         nombres: str,
+@@ -68,6 +68,7 @@
+         rol_id: uuid.UUID,
+         nivel_identidad: str,
+         hash_contrasena: str,
++        correo_verificado: bool,
+         metadatos: dict | None = None,
+     ) -> Usuario:
+         usuario = Usuario(
+@@ -77,7 +78,7 @@
+             nombres=nombres,
+             apellidos=apellidos,
+             nivel_identidad=nivel_identidad,
+-            correo_verificado_en=datetime.now(UTC),
++            correo_verificado_en=datetime.now(UTC) if correo_verificado else None,
+             metadatos=metadatos or {},
+         )
+         self.session.add(usuario)
+@@ -110,6 +111,27 @@
+ 
+     async def obtener_sesion(self, sesion_id) -> SesionUsuario | None:
+         return await self.session.get(SesionUsuario, sesion_id)
++
++    async def obtener_sesion_civica(self, sesion_id) -> SesionAnonima | None:
++        return await self.session.get(SesionAnonima, sesion_id)
++
++    async def acreditar_mfa_sesion(self, usuario_id, sesion_id, acreditacion: str) -> bool:
++        registro = await self.obtener_sesion(sesion_id)
++        civica = await self.obtener_sesion_civica(sesion_id)
++        ahora = datetime.now(UTC)
++        if (
++            not registro
++            or registro.usuario_id != usuario_id
++            or registro.revocada_en
++            or registro.expira_en <= ahora
++            or not civica
++            or not civica.activa
++            or civica.expira_en <= ahora
++        ):
++            return False
++        civica.metadatos = {**civica.metadatos, "mfa_acreditacion": acreditacion}
++        await self.session.flush()
++        return True
+ 
+     async def revocar_sesiones(self, usuario_id, sesion_id=None) -> None:
+         consulta = update(SesionUsuario).where(
+@@ -235,7 +257,7 @@
+     async def obtener_mfa_usuario(self, usuario_id: uuid.UUID, *, bloquear=False) -> UsuarioMfa | None:
+         consulta = select(UsuarioMfa).where(UsuarioMfa.usuario_id == usuario_id)
+         if bloquear:
+-            consulta = consulta.with_for_update(of=UsuarioMfa)
++            consulta = consulta.with_for_update(of=UsuarioMfa).execution_options(populate_existing=True)
+         return await self.session.scalar(consulta)
+ 
+     async def guardar_mfa_usuario(

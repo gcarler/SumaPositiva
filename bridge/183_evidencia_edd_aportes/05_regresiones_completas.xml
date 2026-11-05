@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="70" time="38.977" timestamp="2026-10-26T04:48:28.182684+00:00" hostname="srv2006133"><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[crear]" time="0.406" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[actualizar]" time="0.285" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[desactivar]" time="0.261" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[apoyar]" time="0.274" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[alternar]" time="0.255" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[retirar]" time="0.278" /><testcase classname="tests.test_aportes_remediacion" name="test_success_from_another_connection[devolver]" time="0.215" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[crear-post_flush]" time="0.278" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[crear-commit]" time="0.316" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[crear-cancel]" time="0.286" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[crear-validation]" time="0.264" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[actualizar-post_flush]" time="0.759" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[actualizar-commit]" time="0.320" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[actualizar-cancel]" time="0.327" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[actualizar-validation]" time="0.383" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[desactivar-post_flush]" time="0.380" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[desactivar-commit]" time="0.331" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[desactivar-cancel]" time="0.272" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[apoyar-post_flush]" time="0.307" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[apoyar-commit]" time="0.347" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[apoyar-cancel]" time="0.364" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[apoyar-validation]" time="0.344" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[alternar-post_flush]" time="0.350" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[alternar-commit]" time="0.289" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[alternar-cancel]" time="0.332" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[alternar-validation]" time="0.339" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[retirar-post_flush]" time="0.421" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[retirar-commit]" time="0.421" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[retirar-cancel]" time="0.333" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[retirar-validation]" time="0.388" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[devolver-post_flush]" time="0.393" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[devolver-commit]" time="0.413" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[devolver-cancel]" time="0.357" /><testcase classname="tests.test_aportes_remediacion" name="test_complete_rollback_real_database[devolver-validation]" time="0.347" /><testcase classname="tests.test_aportes_remediacion" name="test_repository_flush_is_not_commit" time="0.259" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[post_flush-crear]" time="0.240" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[post_flush-actualizar]" time="0.351" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[commit-crear]" time="0.278" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[commit-actualizar]" time="0.319" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[cancel-crear]" time="0.235" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[cancel-actualizar]" time="0.308" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[validation-crear]" time="0.223" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_rollback_nunca_invoca_smtp[validation-actualizar]" time="0.327" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_solo_confirmado_y_retry_identificable" time="0.686" /><testcase classname="tests.test_aportes_remediacion" name="test_outbox_dos_workers_una_reclamacion_y_lease_recuperable" time="0.487" /><testcase classname="tests.test_aportes_remediacion" name="test_alta_ciudadana_no_admite_decisiones_institucionales[en_revision]" time="0.239" /><testcase classname="tests.test_aportes_remediacion" name="test_alta_ciudadana_no_admite_decisiones_institucionales[rechazado]" time="0.220" /><testcase classname="tests.test_aportes_remediacion" name="test_alta_ciudadana_no_admite_decisiones_institucionales[incorporado]" time="0.227" /><testcase classname="tests.test_aportes_remediacion" name="test_privacidad_publica_incluye_json_heredado_y_devolucion" time="1.109" /><testcase classname="tests.test_aportes_remediacion" name="test_dos_logins_una_cuenta_consulta_toggle_retiro_y_revocacion" time="1.497" /><testcase classname="tests.test_aportes_remediacion" name="test_concurrencia_http_toggle_y_devolucion" time="2.125" /><testcase classname="tests.test_whatsapp_remediacion" name="test_lote_valido_corto_valido_reentrega_y_resultados_individuales[asyncio]" time="0.726" /><testcase classname="tests.test_whatsapp_remediacion" name="test_recepcion_y_procesamiento_concurrentes_mismo_id[asyncio]" time="0.320" /><testcase classname="tests.test_whatsapp_remediacion" name="test_colision_de_contenido_no_sobrescribe_ni_confirma_prefijo[asyncio]" time="0.217" /><testcase classname="tests.test_whatsapp_remediacion" name="test_inbox_recepcion_rollback_completo[asyncio-flush]" time="0.166" /><testcase classname="tests.test_whatsapp_remediacion" name="test_inbox_recepcion_rollback_completo[asyncio-validation]" time="0.166" /><testcase classname="tests.test_whatsapp_remediacion" name="test_inbox_recepcion_rollback_completo[asyncio-cancel]" time="0.216" /><testcase classname="tests.test_whatsapp_remediacion" name="test_inbox_recepcion_rollback_completo[asyncio-commit]" time="0.222" /><testcase classname="tests.test_whatsapp_remediacion" name="test_inbox_fallo_post_flush_y_recuperacion_posterior[asyncio]" time="0.723" /><testcase classname="tests.test_whatsapp_remediacion" name="test_webhook_firma_configuracion_acuse_y_simulacion" time="1.959"><failure message="AssertionError: assert 201 == 403&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code&#10; +    where &lt;Response [201 Created]&gt; = post('/api/v1/canales/whatsapp/simular', json={'telefono_remitente': '573005554433', 'texto_mensaje': 'Simulación local deshabilitada'})&#10; +      where post = &lt;starlette.testclient.TestClient object at 0x75f48daf1130&gt;.post">database_url = '[DSN_LOCAL_AISLADO]'
+
+    def test_webhook_firma_configuracion_acuse_y_simulacion(database_url):
+        settings = Settings(
+            _env_file=None,
+            database_url=database_url,
+            environment="test",
+            whatsapp_habilitado=True,
+            whatsapp_app_secret="clave-local-aislada",
+            whatsapp_verify_token="token-local-aislado",
+        )
+        payload = lote("Acuse HTTP de recepción sin prometer radicación")
+        cuerpo = payload.model_dump_json(by_alias=True).encode()
+        firma = "sha256=" + hmac.new(settings.whatsapp_app_secret.encode(), cuerpo, hashlib.sha256).hexdigest()
+        with TestClient(create_app(settings)) as cliente:
+            assert (
+                cliente.post(
+                    "/api/v1/canales/whatsapp/webhook", content=cuerpo, headers={"Content-Type": "application/json"}
+                ).status_code
+                == 401
+            )
+            assert (
+                cliente.post(
+                    "/api/v1/canales/whatsapp/webhook",
+                    content=cuerpo,
+                    headers={"Content-Type": "application/json", "X-Hub-Signature-256": "sha256=falsa"},
+                ).status_code
+                == 401
+            )
+            respuesta = cliente.post(
+                "/api/v1/canales/whatsapp/webhook",
+                content=cuerpo,
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Hub-Signature-256": firma,
+                },
+            )
+            assert respuesta.status_code == 200
+            assert respuesta.json()["mensajes_nuevos"] == 1 and "radicados" not in respuesta.json()
+            assert (
+                cliente.get(
+                    "/api/v1/canales/whatsapp/webhook",
+                    params={
+                        "hub.mode": "subscribe",
+                        "hub.verify_token": settings.whatsapp_verify_token,
+                        "hub.challenge": "123",
+                    },
+                ).text
+                == "123"
+            )
+        deshabilitado = settings.model_copy(update={"whatsapp_habilitado": False})
+        with TestClient(create_app(deshabilitado)) as cliente:
+            assert (
+                cliente.post("/api/v1/canales/whatsapp/webhook", json=payload.model_dump(by_alias=True)).status_code == 503
+            )
+            assert cliente.get("/api/v1/canales/whatsapp/webhook").status_code == 503
+        # El contrato del endpoint impide la ruta de simulación en el entorno productivo.
+        app = create_app(settings)
+        app.state.settings = settings.model_copy(update={"environment": "production"})
+        with TestClient(app) as cliente:
+&gt;           assert (
+                cliente.post(
+                    "/api/v1/canales/whatsapp/simular",
+                    json={"telefono_remitente": "573005554433", "texto_mensaje": "Simulación local deshabilitada"},
+                ).status_code
+                == 403
+            )
+E           AssertionError: assert 201 == 403
+E            +  where 201 = &lt;Response [201 Created]&gt;.status_code
+E            +    where &lt;Response [201 Created]&gt; = post('/api/v1/canales/whatsapp/simular', json={'telefono_remitente': '573005554433', 'texto_mensaje': 'Simulación local deshabilitada'})
+E            +      where post = &lt;starlette.testclient.TestClient object at 0x75f48daf1130&gt;.post
+
+backend/tests/test_whatsapp_remediacion.py:281: AssertionError</failure></testcase><testcase classname="tests.test_canal_whatsapp" name="test_handshake_verificacion_webhook_meta_exitoso" time="0.522" /><testcase classname="tests.test_canal_whatsapp" name="test_handshake_verificacion_webhook_meta_token_invalido" time="0.375" /><testcase classname="tests.test_canal_whatsapp" name="test_simular_ingesta_whatsapp_con_extraccion_barrio_y_radicacion[asyncio]" time="0.575" /><testcase classname="tests.test_canal_whatsapp" name="test_webhook_meta_cloud_api_payload_completo[asyncio]" time="0.680" /><testcase classname="tests.test_canal_whatsapp" name="test_inferencia_tematica_linea_estrategica_ambiental[asyncio]" time="0.518" /><testcase classname="tests.test_notificaciones_y_radicacion" name="test_radicacion_atomica_formato_oficial[asyncio]" time="0.219" /><testcase classname="tests.test_notificaciones_y_radicacion" name="test_despacho_resiliente_notificacion_radicacion[asyncio]" time="0.978" /><testcase classname="tests.test_notificaciones_y_radicacion" name="test_notificacion_cambio_estado[asyncio]" time="0.229" /><testcase classname="tests.test_notificaciones_y_radicacion" name="test_endpoint_publico_consulta_radicado[asyncio]" time="0.485" /><testcase classname="tests.test_notificaciones_y_radicacion" name="test_historial_notificaciones_con_permiso[asyncio]" time="0.500" /></testsuite></testsuites>

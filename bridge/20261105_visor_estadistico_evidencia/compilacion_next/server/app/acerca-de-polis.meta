@@ -1,0 +1,36 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/acerca",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/acerca-de-polis/layout,_N_T_/acerca-de-polis/page,_N_T_/acerca-de-polis"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/acerca-de-polis/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 64,
+    "slots": {
+      "children": {
+        "hints": 96,
+        "slots": {
+          "children": {
+            "hints": 160,
+            "slots": null
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/c3efcfe454ebe92fa6fc27ac37cfb68186c55461a1d81e2c81d8c7f7872a9393/$/acerca-de-polis",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/acerca-de-polis/page"
+    },
+    "isFallback": false
+  }
+}

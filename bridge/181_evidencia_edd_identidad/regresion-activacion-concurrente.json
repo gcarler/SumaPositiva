@@ -1,0 +1,10 @@
+{
+  "http": [
+    200,
+    409
+  ],
+  "sesiones_acreditadas": [
+    true,
+    false
+  ]
+}

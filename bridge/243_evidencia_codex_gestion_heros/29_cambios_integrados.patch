@@ -1,0 +1,2315 @@
+--- antes/src/features/politicas/state/hero-store.ts
++++ despues/src/features/politicas/state/hero-store.ts
+@@ -2,6 +2,11 @@
+ 
+ import { create } from "zustand";
+ import { persist, createJSONStorage } from "zustand/middleware";
++import { apiFetch } from "@/core/http/api-client";
++import {
++  HERO_HOME_SLIDES,
++  type HeroPageConfig,
++} from "@/features/politicas/data/hero-pages.data";
+ 
+ export interface HeroImageOption {
+   id: string;
+@@ -12,7 +17,16 @@
+   enfoque: string;
+ }
+ 
+-export const HERO_IMAGE_OPTIONS: HeroImageOption[] = [
++export interface HeroImageItem extends HeroImageOption {
++  habilitada: boolean;
++}
++
++export type NuevaImagenHero = Omit<HeroImageOption, "id"> & {
++  id?: string;
++  habilitada?: boolean;
++};
++
++export const HERO_IMAGE_OPTIONS: HeroImageItem[] = [
+   {
+     id: "asamblea-claustro",
+     titulo: "Cabildo Abierto y Foro Ciudadano",
+@@ -21,6 +35,7 @@
+     archivo: "/images/hero/hero-asamblea-claustro.webp",
+     thumbnail: "/images/hero/hero-asamblea-claustro-thumb.webp",
+     enfoque: "Cabildo Masivo Territorial",
++    habilitada: true,
+   },
+   {
+     id: "dialogo-comunitario",
+@@ -30,6 +45,7 @@
+     archivo: "/images/hero/hero-dialogo-comunitario.webp",
+     thumbnail: "/images/hero/hero-dialogo-comunitario-thumb.webp",
+     enfoque: "Transparencia y Diálogo Directo",
++    habilitada: true,
+   },
+   {
+     id: "enfoque-diferencial",
+@@ -39,6 +55,7 @@
+     archivo: "/images/hero/hero-enfoque-diferencial.webp",
+     thumbnail: "/images/hero/hero-enfoque-diferencial-thumb.webp",
+     enfoque: "Inclusión y Género",
++    habilitada: true,
+   },
+   {
+     id: "marco-logico",
+@@ -48,6 +65,7 @@
+     archivo: "/images/hero/hero-marco-logico.webp",
+     thumbnail: "/images/hero/hero-marco-logico-thumb.webp",
+     enfoque: "Metodología Participativa & Comunitaria",
++    habilitada: true,
+   },
+   {
+     id: "mesa-deliberativa",
+@@ -57,6 +75,7 @@
+     archivo: "/images/hero/hero-mesa-deliberativa.webp",
+     thumbnail: "/images/hero/hero-mesa-deliberativa-thumb.webp",
+     enfoque: "Mesas Temáticas POLIS",
++    habilitada: true,
+   },
+   {
+     id: "ninguna",
+@@ -66,6 +85,7 @@
+     archivo: "",
+     thumbnail: "",
+     enfoque: "Fondo Minimalista Oficial",
++    habilitada: true,
+   },
+ ];
+ 
+@@ -75,7 +95,10 @@
+ export const HERO_MAX_OPACIDAD = 95;
+ export const HERO_DEFAULT_INTERVALO_SEGUNDOS = 7;
+ 
+-export interface HeroConfigState {
++
++interface HeroDatos {
++  imagenesCatalogo: HeroImageItem[];
++  slides: HeroPageConfig[];
+   heroImageId: string;
+   opacidad: number;
+   modoCarrusel: boolean;
+@@ -83,6 +106,13 @@
+   pausado: boolean;
+   indiceActivo: number;
+   pageImages: Record<string, string>;
++  cargandoServidor: boolean;
++  guardandoServidor: boolean;
++  sincronizadoServidor: boolean;
++  cambiosPendientes: boolean;
++}
++
++export interface HeroConfigState extends HeroDatos {
+   setHeroImageId: (id: string) => void;
+   setOpacidad: (opacidad: number) => void;
+   setModoCarrusel: (activo: boolean) => void;
+@@ -96,182 +126,352 @@
+   resetPageImage: (pageKey: string) => void;
+   resetAllPageImages: () => void;
+   resetearHeroConfig: () => void;
+-}
+-
+-const storageFallback = {
+-  getItem: () => null,
+-  setItem: () => {},
+-  removeItem: () => {},
+-};
+-
+-export function obtenerOpcionesCarrusel(): HeroImageOption[] {
+-  return HERO_IMAGE_OPTIONS.filter((opt) => opt.id !== "ninguna");
+-}
+-
+-export function obtenerOpcionHero(id: string): HeroImageOption {
+-  return (
+-    HERO_IMAGE_OPTIONS.find((opt) => opt.id === id) ??
+-    HERO_IMAGE_OPTIONS.find((opt) => opt.id === HERO_DEFAULT_IMAGE_ID) ??
+-    HERO_IMAGE_OPTIONS[0]
+-  );
+-}
++  toggleHabilitarImagen: (id: string) => void;
++  agregarImagen: (imagen: NuevaImagenHero) => HeroImageItem;
++  eliminarImagen: (id: string) => void;
++  restaurarCatalogoOficial: () => void;
++  agregarSlide: (slide: HeroPageConfig) => void;
++  eliminarSlide: (slideId: string) => void;
++  actualizarSlide: (slideId: string, datos: Partial<HeroPageConfig>) => void;
++  reordenarSlides: (slides: HeroPageConfig[]) => void;
++  sincronizarConServidor: () => Promise<void>;
++  guardarEnServidor: () => Promise<boolean>;
++  restablecerHerosOficiales: () => Promise<boolean>;
++}
++
++const catalogoOficial = () => HERO_IMAGE_OPTIONS.map((imagen) => ({ ...imagen }));
++const SIN_FOTOGRAFIA = HERO_IMAGE_OPTIONS[HERO_IMAGE_OPTIONS.length - 1];
++const storageFallback = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
++
++function esDataUrlImagenValida(valor: string): boolean {
++  // Compatibilidad con cargas locales anteriores; las nuevas se suben a la API.
++  if (valor.length > 12 * 1024 * 1024) return false;
++  const coincidencia = /^data:image\/(png|jpe?g|gif|webp|avif);base64,([A-Za-z0-9+/]+={0,2})$/.exec(valor);
++  if (!coincidencia) return false;
++  let bytes: string;
++  try { bytes = atob(coincidencia[2]); } catch { return false; }
++  const firma = (octetos: number[]) => octetos.every((octeto, indice) => bytes.charCodeAt(indice) === octeto);
++  switch (coincidencia[1]) {
++    case "png": return firma([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
++    case "jpg": case "jpeg": return firma([0xff, 0xd8, 0xff]);
++    case "gif": return bytes.startsWith("GIF87a") || bytes.startsWith("GIF89a");
++    case "webp": return bytes.startsWith("RIFF") && bytes.slice(8, 12) === "WEBP";
++    case "avif": return bytes.slice(4, 8) === "ftyp" && bytes.slice(8, 12) === "avif";
++    default: return false;
++  }
++}
++
++/** Validación compartida por formulario, acciones y entradas persistidas/remotas. */
++export function esRutaImagenHero(valor: string): boolean {
++  if (!valor || /[\\\u0000-\u0020]/.test(valor)) return false;
++  if (valor.startsWith("data:image/")) return esDataUrlImagenValida(valor);
++  if (valor.startsWith("/images/")) {
++    try {
++      const ruta = decodeURIComponent(valor.split(/[?#]/)[0]);
++      return !ruta.split("/").some((parte) => parte === "." || parte === "..") &&
++        !/[\\\u0000-\u0020]/.test(ruta) &&
++        /\.(avif|gif|jpe?g|png|svg|webp)$/i.test(ruta);
++    } catch { return false; }
++  }
++  try {
++    const url = new URL(valor);
++    return url.protocol === "https:" && Boolean(url.hostname) && !url.username && !url.password;
++  } catch { return false; }
++}
++
++function respaldo(catalogo: HeroImageItem[]): HeroImageItem {
++  return catalogo.find((imagen) => imagen.id === HERO_DEFAULT_IMAGE_ID && imagen.habilitada) ??
++    catalogo.find((imagen) => imagen.habilitada && imagen.archivo) ?? SIN_FOTOGRAFIA;
++}
++
++function esSeleccionable(valor: string, catalogo: HeroImageItem[]): boolean {
++  if (valor === "ninguna") return !catalogo.some((imagen) => imagen.habilitada && imagen.archivo) ||
++    catalogo.some((imagen) => imagen.id === "ninguna" && imagen.habilitada);
++  const imagen = catalogo.find((opcion) => opcion.id === valor || (opcion.archivo && opcion.archivo === valor));
++  if (imagen) return imagen.habilitada;
++  if (HERO_IMAGE_OPTIONS.some((opcion) => opcion.id === valor || (opcion.archivo && opcion.archivo === valor))) return false;
++  return esRutaImagenHero(valor);
++}
++
++function clavePagina(clave: string): string {
++  return clave.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
++}
++
++function indiceImagen(id: string, catalogo: HeroImageItem[]): number {
++  return Math.max(0, catalogo.filter((imagen) => imagen.habilitada && imagen.archivo).findIndex((imagen) => imagen.id === id || imagen.archivo === id));
++}
++
++function esObjeto(valor: unknown): valor is Record<string, unknown> {
++  return typeof valor === "object" && valor !== null && !Array.isArray(valor);
++}
++
++function leerSlides(valor: unknown): HeroPageConfig[] {
++  if (!Array.isArray(valor)) return HERO_HOME_SLIDES.map((slide) => ({ ...slide }));
++  const slides: HeroPageConfig[] = [];
++  for (const fila of valor) {
++    if (!esObjeto(fila) || typeof fila.id !== "string" ||
++      !/^[a-zA-Z0-9_-]+$/.test(fila.id) || typeof fila.titulo !== "string" ||
++      typeof fila.subtitulo !== "string" || typeof fila.imagenFondo !== "string" ||
++      !esRutaImagenHero(fila.imagenFondo) || slides.some((slide) => slide.id === fila.id)) continue;
++    slides.push({ id: fila.id, titulo: fila.titulo, subtitulo: fila.subtitulo,
++      imagenFondo: fila.imagenFondo, enfoque: typeof fila.enfoque === "string" ? fila.enfoque : "",
++      ubicacionReal: typeof fila.ubicacionReal === "string" ? fila.ubicacionReal : "",
++      badgeTexto: typeof fila.badgeTexto === "string" ? fila.badgeTexto : fila.titulo,
++      altura: fila.altura === "compact" || fila.altura === "ultracompact" ? fila.altura : "fullscreen",
++      activa: fila.activa !== false });
++  }
++  return slides;
++}
++
++/** El catálogo decide disponibilidad y orden; slides sólo aporta la narrativa. */
++function diapositivasCatalogo(catalogo: HeroImageItem[], narrativa: HeroPageConfig[]): HeroPageConfig[] {
++  return catalogo.filter((imagen) => imagen.archivo).map((imagen) => {
++    const anterior = narrativa.find((slide) => slide.id === imagen.id && slide.imagenFondo === imagen.archivo);
++    const oficial = HERO_HOME_SLIDES.find((slide) => slide.id === imagen.id && slide.imagenFondo === imagen.archivo);
++    return { ...(anterior ?? oficial ?? {
++      id: imagen.id, titulo: imagen.titulo, subtitulo: imagen.descripcion, enfoque: imagen.enfoque,
++      imagenFondo: imagen.archivo, ubicacionReal: imagen.enfoque, altura: "fullscreen", badgeTexto: imagen.titulo,
++    }), activa: imagen.habilitada };
++  });
++}
++
++export function obtenerDiapositivasHero(catalogo: HeroImageItem[], narrativa: HeroPageConfig[]): Array<HeroPageConfig & { oficial: boolean }> {
++  return diapositivasCatalogo(catalogo, narrativa).filter((slide) => slide.activa).map((slide) => ({
++    ...slide,
++    oficial: HERO_HOME_SLIDES.some((oficial) => oficial.id === slide.id && oficial.imagenFondo === slide.imagenFondo),
++  }));
++}
++
++function reconciliarCatalogo(estado: HeroDatos, catalogo: HeroImageItem[]): Partial<HeroDatos> {
++  const retiradas = estado.imagenesCatalogo.filter((imagen) => !catalogo.some((actual) => actual.id === imagen.id && actual.habilitada));
++  const resolver = (valor: string) => retiradas.some((imagen) => imagen.id === valor || (imagen.archivo && imagen.archivo === valor)) ||
++    !esSeleccionable(valor, catalogo) ? respaldo(catalogo).id : valor;
++  const heroImageId = resolver(estado.heroImageId);
++  return { imagenesCatalogo: catalogo, slides: diapositivasCatalogo(catalogo, estado.slides), heroImageId,
++    indiceActivo: indiceImagen(heroImageId, catalogo), cambiosPendientes: true,
++    pageImages: Object.fromEntries(Object.entries(estado.pageImages).map(([clave, valor]) => [clave, resolver(valor)])) };
++}
++
++function validarImagen(imagen: NuevaImagenHero, id: string): HeroImageItem {
++  const titulo = imagen.titulo.trim();
++  const descripcion = imagen.descripcion.trim();
++  const enfoque = imagen.enfoque.trim();
++  const archivo = imagen.archivo.trim();
++  const thumbnail = imagen.thumbnail.trim() || archivo;
++  if (!titulo || titulo.length > 160) throw new Error("Escribe un título de hasta 160 caracteres.");
++  if (!descripcion || descripcion.length > 1200) throw new Error("Escribe una descripción de hasta 1200 caracteres.");
++  if (!enfoque || enfoque.length > 200) throw new Error("Escribe un enfoque de hasta 200 caracteres.");
++  if (!/^[a-zA-Z0-9_-]+$/.test(id)) throw new Error("El identificador de la imagen no es válido.");
++  if (!esRutaImagenHero(archivo)) throw new Error("La imagen debe tener una URL HTTPS o una ruta de imagen /images/ válida.");
++  if (!esRutaImagenHero(thumbnail)) throw new Error("La miniatura debe tener una URL HTTPS o una ruta de imagen /images/ válida.");
++  return { id, titulo, descripcion, enfoque, archivo, thumbnail, habilitada: imagen.habilitada ?? true };
++}
++
++function leerCatalogo(valor: unknown): HeroImageItem[] {
++  if (!Array.isArray(valor)) return catalogoOficial();
++  const catalogo: HeroImageItem[] = [];
++  for (const fila of valor) {
++    if (!esObjeto(fila) || typeof fila.id !== "string" || typeof fila.titulo !== "string" ||
++      typeof fila.descripcion !== "string" || typeof fila.enfoque !== "string" || typeof fila.archivo !== "string" ||
++      typeof fila.thumbnail !== "string" || (fila.habilitada !== undefined && typeof fila.habilitada !== "boolean") ||
++      catalogo.some((imagen) => imagen.id === fila.id)) continue;
++    try {
++      if (fila.id === "ninguna" && fila.archivo === "" && fila.thumbnail === "") {
++        catalogo.push({ ...SIN_FOTOGRAFIA, habilitada: fila.habilitada !== false });
++      } else {
++        catalogo.push(validarImagen({ titulo: fila.titulo, descripcion: fila.descripcion, enfoque: fila.enfoque,
++          archivo: fila.archivo, thumbnail: fila.thumbnail, habilitada: fila.habilitada !== false }, fila.id));
++      }
++    } catch { /* Una entrada inválida no se convierte en una URL renderizable. */ }
++  }
++  return catalogo;
++}
++
++export function normalizarConfiguracionHero(valor: unknown): HeroDatos {
++  const previo = esObjeto(valor) ? valor : {};
++  const imagenesCatalogo = leerCatalogo(previo.imagenesCatalogo);
++  const heroImageId = typeof previo.heroImageId === "string" && esSeleccionable(previo.heroImageId, imagenesCatalogo)
++    ? previo.heroImageId : respaldo(imagenesCatalogo).id;
++  const pageImages = esObjeto(previo.pageImages) ? Object.fromEntries(Object.entries(previo.pageImages)
++    .filter((entrada): entrada is [string, string] => typeof entrada[1] === "string")
++    .map(([clave, imagen]) => [clavePagina(clave), esSeleccionable(imagen, imagenesCatalogo) ? imagen : respaldo(imagenesCatalogo).id])) : {};
++  if ("home" in pageImages) pageImages.home = heroImageId;
++  return { imagenesCatalogo, slides: diapositivasCatalogo(imagenesCatalogo, leerSlides(previo.slides)), heroImageId, pageImages,
++    cargandoServidor: false, guardandoServidor: false, sincronizadoServidor: false, cambiosPendientes: previo.cambiosPendientes === true,
++    opacidad: typeof previo.opacidad === "number" && Number.isFinite(previo.opacidad)
++      ? Math.max(HERO_MIN_OPACIDAD, Math.min(HERO_MAX_OPACIDAD, Math.round(previo.opacidad))) : HERO_DEFAULT_OPACIDAD,
++    modoCarrusel: typeof previo.modoCarrusel === "boolean" ? previo.modoCarrusel : true,
++    intervaloSegundos: typeof previo.intervaloSegundos === "number" && Number.isFinite(previo.intervaloSegundos)
++      ? Math.max(1, Math.min(60, Math.round(previo.intervaloSegundos))) : HERO_DEFAULT_INTERVALO_SEGUNDOS,
++    pausado: typeof previo.pausado === "boolean" ? previo.pausado : false,
++    indiceActivo: indiceImagen(heroImageId, imagenesCatalogo) };
++}
++
++function configuracionServidor(estado: HeroDatos) {
++  return { slides: diapositivasCatalogo(estado.imagenesCatalogo, estado.slides),
++    catalogoImagenes: estado.imagenesCatalogo, heroImageId: estado.heroImageId, opacidad: estado.opacidad,
++    modoCarrusel: estado.modoCarrusel, intervaloSegundos: estado.intervaloSegundos, pageImages: estado.pageImages };
++}
++
++export function obtenerOpcionesCarrusel(catalogo = useHeroConfigStore.getState().imagenesCatalogo): HeroImageItem[] {
++  return catalogo.filter((imagen) => imagen.habilitada && imagen.archivo);
++}
++
++export function obtenerOpcionHero(id: string, catalogo = useHeroConfigStore.getState().imagenesCatalogo): HeroImageItem {
++  return catalogo.find((imagen) => imagen.id === id && imagen.habilitada) ?? respaldo(catalogo);
++}
++
++// Serializa los PUT: una respuesta lenta nunca deja una versión anterior como última escritura.
++let guardadoEnCurso: Promise<boolean> | null = null;
+ 
+ export const useHeroConfigStore = create<HeroConfigState>()(
+   persist(
+     (set, get) => ({
+-      heroImageId: HERO_DEFAULT_IMAGE_ID,
+-      opacidad: HERO_DEFAULT_OPACIDAD,
+-      modoCarrusel: true,
+-      intervaloSegundos: HERO_DEFAULT_INTERVALO_SEGUNDOS,
+-      pausado: false,
+-      indiceActivo: 0,
+-      pageImages: {},
+-
+-      setHeroImageId: (heroImageId: string) => {
+-        const validas = obtenerOpcionesCarrusel();
+-        const idx = validas.findIndex((opt) => opt.id === heroImageId);
+-        set({
+-          heroImageId,
+-          ...(idx >= 0 ? { indiceActivo: idx } : {}),
++      ...normalizarConfiguracionHero(null),
++      setHeroImageId: (heroImageId) => {
++        const estado = get();
++        if (!esSeleccionable(heroImageId, estado.imagenesCatalogo)) return;
++        set({ heroImageId, indiceActivo: indiceImagen(heroImageId, estado.imagenesCatalogo),
++          ...(estado.pageImages.home ? { pageImages: { ...estado.pageImages, home: heroImageId } } : {}) });
++      },
++      setOpacidad: (opacidad) => {
++        if (Number.isFinite(opacidad)) set({ opacidad: Math.max(HERO_MIN_OPACIDAD, Math.min(HERO_MAX_OPACIDAD, Math.round(opacidad))), cambiosPendientes: true });
++      },
++      setModoCarrusel: (modoCarrusel) => set({ modoCarrusel, cambiosPendientes: true }),
++      setIntervaloSegundos: (intervaloSegundos) => {
++        if (Number.isFinite(intervaloSegundos)) set({ intervaloSegundos: Math.max(1, Math.min(60, Math.round(intervaloSegundos))), cambiosPendientes: true });
++      },
++      setPausado: (pausado) => set({ pausado }),
++      siguienteImagen: () => {
++        const estado = get();
++        const opciones = obtenerOpcionesCarrusel(estado.imagenesCatalogo);
++        if (!opciones.length) return;
++        const indice = opciones.findIndex((imagen) => imagen.id === estado.heroImageId || imagen.archivo === estado.heroImageId);
++        get().setHeroImageId(opciones[(indice + 1) % opciones.length].id);
++      },
++      anteriorImagen: () => {
++        const estado = get();
++        const opciones = obtenerOpcionesCarrusel(estado.imagenesCatalogo);
++        if (!opciones.length) return;
++        const indice = opciones.findIndex((imagen) => imagen.id === estado.heroImageId || imagen.archivo === estado.heroImageId);
++        get().setHeroImageId(opciones[(indice < 0 ? opciones.length - 1 : (indice - 1 + opciones.length) % opciones.length)].id);
++      },
++      irAImagen: (id) => get().setHeroImageId(id),
++      togglePausa: () => set((estado) => ({ pausado: !estado.pausado })),
++      setPageImage: (pageKey, imageSrcOrId) => {
++        const estado = get();
++        if (!esSeleccionable(imageSrcOrId, estado.imagenesCatalogo)) return;
++        const key = clavePagina(pageKey);
++        set({ pageImages: { ...estado.pageImages, [key]: imageSrcOrId }, cambiosPendientes: true,
++          ...(key === "home" ? { heroImageId: imageSrcOrId, indiceActivo: indiceImagen(imageSrcOrId, estado.imagenesCatalogo) } : {}) });
++      },
++      resetPageImage: (pageKey) => {
++        const key = clavePagina(pageKey);
++        const pageImages = { ...get().pageImages };
++        delete pageImages[key];
++        set({ pageImages, cambiosPendientes: true, ...(key === "home" ? { heroImageId: respaldo(get().imagenesCatalogo).id, indiceActivo: 0 } : {}) });
++      },
++      resetAllPageImages: () => set({ pageImages: {}, heroImageId: respaldo(get().imagenesCatalogo).id, indiceActivo: 0, cambiosPendientes: true }),
++      resetearHeroConfig: () => set(normalizarConfiguracionHero(null)),
++      toggleHabilitarImagen: (id) => {
++        if (get().imagenesCatalogo.some((imagen) => imagen.id === id)) set((estado) => reconciliarCatalogo(estado,
++          estado.imagenesCatalogo.map((imagen) => imagen.id === id ? { ...imagen, habilitada: !imagen.habilitada } : imagen)));
++      },
++      agregarImagen: (nueva) => {
++        const id = nueva.id?.trim() || `hero-${crypto.randomUUID()}`;
++        if (get().imagenesCatalogo.some((imagen) => imagen.id === id) || HERO_IMAGE_OPTIONS.some((imagen) => imagen.id === id))
++          throw new Error("Ya existe una imagen con ese identificador o está reservado para el catálogo oficial.");
++        const imagen = validarImagen(nueva, id);
++        set((estado) => reconciliarCatalogo(estado, [...estado.imagenesCatalogo, imagen]));
++        return imagen;
++      },
++      eliminarImagen: (id) => {
++        if (get().imagenesCatalogo.some((imagen) => imagen.id === id))
++          set((estado) => reconciliarCatalogo(estado, estado.imagenesCatalogo.filter((imagen) => imagen.id !== id)));
++      },
++      restaurarCatalogoOficial: () => set((estado) => ({ ...reconciliarCatalogo(estado, catalogoOficial()),
++        slides: diapositivasCatalogo(catalogoOficial(), HERO_HOME_SLIDES) })),
++      agregarSlide: (slide) => {
++        const [validada] = leerSlides([slide]);
++        if (!validada) throw new Error("La diapositiva no contiene una imagen válida.");
++        const imagen = validarImagen({ titulo: validada.titulo, descripcion: validada.subtitulo,
++          enfoque: validada.enfoque, archivo: validada.imagenFondo, thumbnail: validada.imagenFondo, habilitada: validada.activa }, validada.id);
++        set((estado) => {
++          const catalogo = [...estado.imagenesCatalogo.filter((fila) => fila.id !== imagen.id), imagen];
++          return { ...reconciliarCatalogo(estado, catalogo), slides: diapositivasCatalogo(catalogo, [...estado.slides.filter((fila) => fila.id !== validada.id), validada]) };
+         });
+       },
+-
+-      setOpacidad: (opacidad: number) =>
+-        set({
+-          opacidad: Math.max(
+-            HERO_MIN_OPACIDAD,
+-            Math.min(HERO_MAX_OPACIDAD, Math.round(opacidad))
+-          ),
+-        }),
+-
+-      setModoCarrusel: (modoCarrusel: boolean) => set({ modoCarrusel }),
+-
+-      setIntervaloSegundos: (intervaloSegundos: number) =>
+-        set({ intervaloSegundos: Math.max(1, Math.round(intervaloSegundos)) }),
+-
+-      setPausado: (pausado: boolean) => set({ pausado }),
+-
+-      siguienteImagen: () => {
+-        const validas = obtenerOpcionesCarrusel();
+-        if (validas.length === 0) return;
+-        const state = get();
+-        const actualIdx = validas.findIndex((opt) => opt.id === state.heroImageId);
+-        const nextIdx =
+-          actualIdx >= 0
+-            ? (actualIdx + 1) % validas.length
+-            : (state.indiceActivo + 1) % validas.length;
+-        const nextOpt = validas[nextIdx];
+-        set({
+-          heroImageId: nextOpt.id,
+-          indiceActivo: nextIdx,
++      eliminarSlide: (id) => {
++        if (get().imagenesCatalogo.some((imagen) => imagen.id === id && imagen.habilitada)) get().toggleHabilitarImagen(id);
++      },
++      actualizarSlide: (id, datos) => {
++        const anterior = get().slides.find((slide) => slide.id === id);
++        if (anterior) get().agregarSlide({ ...anterior, ...datos, id });
++      },
++      reordenarSlides: (slides) => set((estado) => {
++        const orden = new Map(leerSlides(slides).map((slide, indice) => [slide.id, indice]));
++        const catalogo = [...estado.imagenesCatalogo].sort((a, b) => (orden.get(a.id) ?? orden.size) - (orden.get(b.id) ?? orden.size));
++        return reconciliarCatalogo(estado, catalogo);
++      }),
++      sincronizarConServidor: async () => {
++        const inicial = get();
++        if (inicial.cargandoServidor || inicial.sincronizadoServidor || inicial.cambiosPendientes) return;
++        const firma = JSON.stringify(configuracionServidor(inicial));
++        set({ cargandoServidor: true });
++        try {
++          const datos = await apiFetch<unknown>("/politicas/heros", { retry: { retries: 0 } });
++          if (!esObjeto(datos) || !Array.isArray(datos.slides) || !Array.isArray(datos.catalogoImagenes)) return;
++          // No pisar ediciones locales realizadas mientras llegaba la respuesta.
++          if (get().cambiosPendientes || firma !== JSON.stringify(configuracionServidor(get()))) return;
++          const remoto = normalizarConfiguracionHero({ ...datos, imagenesCatalogo: datos.catalogoImagenes });
++          set({ ...remoto, sincronizadoServidor: true, guardandoServidor: get().guardandoServidor });
++        } catch { /* La biblioteca local sigue disponible si la API no responde. */ }
++        finally { set({ cargandoServidor: false }); }
++      },
++      guardarEnServidor: () => {
++        set({ guardandoServidor: true });
++        const operacion: Promise<boolean> = (guardadoEnCurso ?? Promise.resolve(true)).then(async () => {
++          const payload = configuracionServidor(get());
++          try {
++            await apiFetch<unknown>("/politicas/heros", { method: "PUT", body: payload, retry: { retries: 0 } });
++            if (JSON.stringify(payload) === JSON.stringify(configuracionServidor(get()))) set({ cambiosPendientes: false, sincronizadoServidor: true });
++            return true;
++          } catch { return false; }
++          finally {
++            if (guardadoEnCurso === operacion) { guardadoEnCurso = null; set({ guardandoServidor: false }); }
++          }
+         });
+-      },
+-
+-      anteriorImagen: () => {
+-        const validas = obtenerOpcionesCarrusel();
+-        if (validas.length === 0) return;
+-        const state = get();
+-        const actualIdx = validas.findIndex((opt) => opt.id === state.heroImageId);
+-        const prevIdx =
+-          actualIdx >= 0
+-            ? (actualIdx - 1 + validas.length) % validas.length
+-            : (state.indiceActivo - 1 + validas.length) % validas.length;
+-        const prevOpt = validas[prevIdx];
+-        set({
+-          heroImageId: prevOpt.id,
+-          indiceActivo: prevIdx,
+-        });
+-      },
+-
+-      irAImagen: (id: string) => {
+-        const validas = obtenerOpcionesCarrusel();
+-        const idx = validas.findIndex((opt) => opt.id === id);
+-        if (idx >= 0) {
+-          set({
+-            heroImageId: id,
+-            indiceActivo: idx,
+-          });
+-        } else {
+-          const generalOpt = HERO_IMAGE_OPTIONS.find((opt) => opt.id === id);
+-          if (generalOpt) {
+-            set({ heroImageId: id });
+-          }
+-        }
+-      },
+-
+-      togglePausa: () => set((state) => ({ pausado: !state.pausado })),
+-
+-      setPageImage: (pageKey: string, imageSrcOrId: string) => {
+-        const key = pageKey.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
+-        set((state) => {
+-          const nuevas = { ...state.pageImages, [key]: imageSrcOrId };
+-          if (key === "home") {
+-            const validOpt = HERO_IMAGE_OPTIONS.find((opt) => opt.id === imageSrcOrId);
+-            return {
+-              pageImages: nuevas,
+-              heroImageId: validOpt ? validOpt.id : imageSrcOrId,
+-            };
+-          }
+-          return { pageImages: nuevas };
+-        });
+-      },
+-
+-      resetPageImage: (pageKey: string) => {
+-        const key = pageKey.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
+-        set((state) => {
+-          const copia = { ...state.pageImages };
+-          delete copia[key];
+-          if (key === "home") {
+-            return {
+-              pageImages: copia,
+-              heroImageId: HERO_DEFAULT_IMAGE_ID,
+-            };
+-          }
+-          return { pageImages: copia };
+-        });
+-      },
+-
+-      resetAllPageImages: () =>
+-        set({
+-          pageImages: {},
+-          heroImageId: HERO_DEFAULT_IMAGE_ID,
+-        }),
+-
+-      resetearHeroConfig: () =>
+-        set({
+-          heroImageId: HERO_DEFAULT_IMAGE_ID,
+-          opacidad: HERO_DEFAULT_OPACIDAD,
+-          modoCarrusel: true,
+-          intervaloSegundos: HERO_DEFAULT_INTERVALO_SEGUNDOS,
+-          pausado: false,
+-          indiceActivo: 0,
+-          pageImages: {},
+-        }),
++        guardadoEnCurso = operacion;
++        return operacion;
++      },
++      restablecerHerosOficiales: () => {
++        get().restaurarCatalogoOficial();
++        return get().guardarEnServidor();
++      },
+     }),
+     {
+-      name: "polis_hero_config",
++      name: "polis_hero_config", version: 1,
+       storage: createJSONStorage(() => {
+-        if (typeof window !== "undefined" && window.localStorage) {
+-          return window.localStorage;
+-        }
+-        if (typeof globalThis !== "undefined" && "localStorage" in globalThis) {
+-          return globalThis.localStorage as Storage;
+-        }
++        try {
++          if (typeof window !== "undefined") return window.localStorage;
++          if (typeof globalThis.localStorage !== "undefined") return globalThis.localStorage;
++        } catch { /* Disponible también cuando el navegador bloquea almacenamiento. */ }
+         return storageFallback;
+       }),
++      partialize: (estado) => ({ imagenesCatalogo: estado.imagenesCatalogo, slides: estado.slides, heroImageId: estado.heroImageId,
++        opacidad: estado.opacidad, modoCarrusel: estado.modoCarrusel, intervaloSegundos: estado.intervaloSegundos,
++        pageImages: estado.pageImages, pausado: estado.pausado, indiceActivo: estado.indiceActivo, cambiosPendientes: estado.cambiosPendientes }),
++      migrate: (persistido) => normalizarConfiguracionHero(persistido),
++      merge: (persistido, actual) => ({ ...actual, ...normalizarConfiguracionHero(persistido) }),
+     }
+   )
+ );
+ 
+-/**
+- * Resuelve una clave de imagen o URL externa.
+- * Si coincide con una opción del catálogo oficial, devuelve su ruta de archivo WebP.
+- * En caso contrario, devuelve la URL o ruta provista.
+- */
+-export function resolverImagenHero(idOrSrc: string): string {
+-  if (!idOrSrc) return "";
+-  const opt = HERO_IMAGE_OPTIONS.find((o) => o.id === idOrSrc);
+-  if (opt) return opt.archivo;
+-  return idOrSrc;
+-}
+-
++/** Una imagen retirada o deshabilitada no se renderiza. */
++export function resolverImagenHero(idOrSrc: string, catalogo = useHeroConfigStore.getState().imagenesCatalogo): string {
++  if (!idOrSrc || idOrSrc === "ninguna") return "";
++  const imagen = catalogo.find((opcion) => opcion.id === idOrSrc || (opcion.archivo && opcion.archivo === idOrSrc));
++  if (imagen) return imagen.habilitada ? imagen.archivo : respaldo(catalogo).archivo;
++  if (HERO_IMAGE_OPTIONS.some((opcion) => opcion.id === idOrSrc || (opcion.archivo && opcion.archivo === idOrSrc))) return respaldo(catalogo).archivo;
++  return esRutaImagenHero(idOrSrc) ? idOrSrc : respaldo(catalogo).archivo;
++}
+--- antes/src/features/politicas/state/hero-store.test.ts
++++ despues/src/features/politicas/state/hero-store.test.ts
+@@ -1,4 +1,4 @@
+-import { describe, test, expect, beforeEach } from "vitest";
++import { describe, test, expect, beforeEach, afterEach } from "vitest";
+ import {
+   useHeroConfigStore,
+   HERO_IMAGE_OPTIONS,
+@@ -10,7 +10,10 @@
+   obtenerOpcionHero,
+   obtenerOpcionesCarrusel,
+   resolverImagenHero,
++  esRutaImagenHero,
++  normalizarConfiguracionHero,
+ } from "./hero-store";
++import { createJSONStorage } from "zustand/middleware";
+ import {
+   HERO_HOME_SLIDES,
+   HERO_PAGES_CONFIG,
+@@ -304,3 +307,348 @@
+     });
+   });
+ });
++
++
++describe("Catálogo hero editable y persistido (243)", () => {
++  const memoria = new Map<string, string>();
++  let almacenamientoAnterior = useHeroConfigStore.persist.getOptions().storage;
++  const nueva = {
++    titulo: "Encuentro comunitario", descripcion: "Diálogo territorial de la comunidad.",
++    enfoque: "Participación barrial", archivo: "/images/hero/nueva.webp", thumbnail: "",
++  };
++  beforeEach(() => {
++    almacenamientoAnterior = useHeroConfigStore.persist.getOptions().storage;
++    memoria.clear();
++    useHeroConfigStore.persist.setOptions({ storage: createJSONStorage(() => ({
++      getItem: (clave) => memoria.get(clave) ?? null,
++      setItem: (clave, valor) => { memoria.set(clave, valor); },
++      removeItem: (clave) => { memoria.delete(clave); },
++    })) });
++    useHeroConfigStore.getState().resetearHeroConfig();
++  });
++  afterEach(() => {
++    useHeroConfigStore.getState().resetearHeroConfig();
++    useHeroConfigStore.persist.setOptions({ storage: almacenamientoAnterior });
++  });
++
++  test("agrega metadatos, miniatura opcional y un identificador único", () => {
++    const primera = useHeroConfigStore.getState().agregarImagen(nueva);
++    const segunda = useHeroConfigStore.getState().agregarImagen({ ...nueva, thumbnail: "/images/hero/miniatura.png", habilitada: false });
++    expect(primera.id).not.toBe(segunda.id);
++    expect(primera.habilitada).toBe(true);
++    expect(primera.thumbnail).toBe(nueva.archivo);
++    expect(segunda.habilitada).toBe(false);
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(8);
++    expect(obtenerOpcionesCarrusel().some((imagen) => imagen.id === primera.id)).toBe(true);
++    expect(obtenerOpcionesCarrusel().some((imagen) => imagen.id === segunda.id)).toBe(false);
++  });
++
++  test("deshabilita y rehabilita sin borrar metadatos y rechaza su selección mientras está deshabilitada", () => {
++    const id = "dialogo-comunitario";
++    useHeroConfigStore.getState().setPageImage("barrio", id);
++    useHeroConfigStore.getState().setPageImage("home", id);
++    useHeroConfigStore.getState().toggleHabilitarImagen(id);
++    let estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo.find((imagen) => imagen.id === id)?.habilitada).toBe(false);
++    expect(estado.heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    expect(estado.pageImages.barrio).toBe(HERO_DEFAULT_IMAGE_ID);
++    expect(estado.pageImages.home).toBe(HERO_DEFAULT_IMAGE_ID);
++    estado.setHeroImageId(id);
++    estado.setPageImage("mesas", id);
++    estado.setPageImage("noticias", HERO_IMAGE_OPTIONS[1].archivo);
++    expect(useHeroConfigStore.getState().heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    expect(useHeroConfigStore.getState().pageImages.mesas).toBeUndefined();
++    expect(useHeroConfigStore.getState().pageImages.noticias).toBeUndefined();
++    expect(obtenerOpcionesCarrusel().map((imagen) => imagen.id)).not.toContain(id);
++    useHeroConfigStore.getState().toggleHabilitarImagen(id);
++    estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo.find((imagen) => imagen.id === id)?.titulo).toBe(HERO_IMAGE_OPTIONS[1].titulo);
++    expect(obtenerOpcionesCarrusel().map((imagen) => imagen.id)).toContain(id);
++  });
++
++  test("elimina una personalizada y reasigna todas sus referencias por id o ruta", () => {
++    const imagen = useHeroConfigStore.getState().agregarImagen(nueva);
++    useHeroConfigStore.getState().setPageImage("home", imagen.id);
++    useHeroConfigStore.getState().setPageImage("barrio", imagen.id);
++    useHeroConfigStore.getState().setPageImage("mesas", imagen.archivo);
++    useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo.some((fila) => fila.id === imagen.id)).toBe(false);
++    expect(estado.heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    expect(estado.pageImages).toEqual({ home: HERO_DEFAULT_IMAGE_ID, barrio: HERO_DEFAULT_IMAGE_ID, mesas: HERO_DEFAULT_IMAGE_ID });
++    expect(estado.indiceActivo).toBe(0);
++  });
++
++  test("permite retirar las seis opciones oficiales y navegar sin dividir entre cero ni resucitarlas", () => {
++    for (const imagen of HERO_IMAGE_OPTIONS) useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo).toEqual([]);
++    expect(estado.heroImageId).toBe("ninguna");
++    estado.siguienteImagen(); estado.anteriorImagen();
++    expect(Number.isFinite(useHeroConfigStore.getState().indiceActivo)).toBe(true);
++    expect(obtenerOpcionesCarrusel()).toEqual([]);
++    expect(resolverImagenHero(HERO_IMAGE_OPTIONS[0].archivo)).toBe("");
++  });
++
++  test("rota solamente entre habilitadas y recalcula el índice al retirar una anterior", () => {
++    useHeroConfigStore.getState().irAImagen("marco-logico");
++    useHeroConfigStore.getState().eliminarImagen("dialogo-comunitario");
++    expect(useHeroConfigStore.getState().indiceActivo).toBe(2);
++    useHeroConfigStore.getState().siguienteImagen();
++    expect(useHeroConfigStore.getState().heroImageId).toBe("mesa-deliberativa");
++    useHeroConfigStore.getState().toggleHabilitarImagen("asamblea-claustro");
++    useHeroConfigStore.getState().siguienteImagen();
++    expect(useHeroConfigStore.getState().heroImageId).toBe("enfoque-diferencial");
++  });
++
++  test("restaura seis opciones, conserva la calibración y sanea asignaciones personalizadas", () => {
++    const imagen = useHeroConfigStore.getState().agregarImagen(nueva);
++    useHeroConfigStore.getState().setPageImage("home", imagen.id);
++    useHeroConfigStore.getState().toggleHabilitarImagen(HERO_DEFAULT_IMAGE_ID);
++    useHeroConfigStore.getState().setOpacidad(45);
++    useHeroConfigStore.getState().restaurarCatalogoOficial();
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toEqual(HERO_IMAGE_OPTIONS);
++    expect(useHeroConfigStore.getState().heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    expect(useHeroConfigStore.getState().opacidad).toBe(45);
++    expect(HERO_IMAGE_OPTIONS.every((fila) => fila.habilitada)).toBe(true);
++  });
++
++  test("persiste altas, bajas, habilitación y asignaciones y rehidrata sin perder acciones", async () => {
++    const imagen = useHeroConfigStore.getState().agregarImagen(nueva);
++    useHeroConfigStore.getState().setPageImage("barrio", imagen.id);
++    useHeroConfigStore.getState().toggleHabilitarImagen("dialogo-comunitario");
++    useHeroConfigStore.getState().eliminarImagen("mesa-deliberativa");
++    const guardado = memoria.get("polis_hero_config");
++    expect(guardado).toBeTruthy();
++    useHeroConfigStore.getState().resetearHeroConfig();
++    memoria.set("polis_hero_config", guardado ?? "");
++    await useHeroConfigStore.persist.rehydrate();
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo.some((fila) => fila.id === imagen.id)).toBe(true);
++    expect(estado.imagenesCatalogo.find((fila) => fila.id === "dialogo-comunitario")?.habilitada).toBe(false);
++    expect(estado.imagenesCatalogo.some((fila) => fila.id === "mesa-deliberativa")).toBe(false);
++    expect(estado.pageImages.barrio).toBe(imagen.id);
++    expect(typeof estado.eliminarImagen).toBe("function");
++  });
++
++  test("migra el almacenamiento anterior sin catálogo y conserva opciones visuales y URL heredada", async () => {
++    memoria.set("polis_hero_config", JSON.stringify({ version: 0, state: {
++      heroImageId: "marco-logico", opacidad: 45, modoCarrusel: false,
++      pageImages: { barrio: "https://ejemplo.gov.co/barrio.webp" },
++    } }));
++    await useHeroConfigStore.persist.rehydrate();
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo).toEqual(HERO_IMAGE_OPTIONS);
++    expect(estado.heroImageId).toBe("marco-logico");
++    expect(estado.opacidad).toBe(45);
++    expect(estado.modoCarrusel).toBe(false);
++    expect(estado.pageImages.barrio).toBe("https://ejemplo.gov.co/barrio.webp");
++  });
++
++  test("un catálogo vacío persistido permanece vacío al rehidratar", async () => {
++    memoria.set("polis_hero_config", JSON.stringify({ version: 1, state: { imagenesCatalogo: [] } }));
++    await useHeroConfigStore.persist.rehydrate();
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toEqual([]);
++    expect(useHeroConfigStore.getState().heroImageId).toBe("ninguna");
++  });
++
++  test("normaliza el almacenamiento sin aceptar acciones, URLs peligrosas ni selecciones deshabilitadas", () => {
++    const catalogo = HERO_IMAGE_OPTIONS.map((fila) => ({ ...fila, habilitada: false }));
++    const saneado = normalizarConfiguracionHero({ imagenesCatalogo: catalogo,
++      heroImageId: HERO_DEFAULT_IMAGE_ID, pageImages: { barrio: "javascript:alert(1)" }, opacidad: NaN,
++      eliminarImagen: "no es una acción" });
++    expect(saneado.heroImageId).toBe("ninguna");
++    expect(saneado.pageImages.barrio).toBe("ninguna");
++    expect(saneado.opacidad).toBe(HERO_DEFAULT_OPACIDAD);
++    expect("eliminarImagen" in saneado).toBe(false);
++  });
++
++  for (const ruta of ["javascript:alert(1)", "data:image/png;base64,AA", "//otro.test/foto.png", "/images/../archivo.svg", "/images/%2e%2e/archivo.svg", "/images/documento.pdf", "http://ejemplo.test/foto.webp"]) {
++    test(`rechaza una ruta inválida sin modificar catálogo: ${ruta}`, () => {
++      expect(esRutaImagenHero(ruta)).toBe(false);
++      expect(() => useHeroConfigStore.getState().agregarImagen({ ...nueva, archivo: ruta })).toThrow();
++      expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(6);
++    });
++  }
++  test("rechaza id repetido y miniatura inválida sin altas parciales", () => {
++    useHeroConfigStore.getState().agregarImagen({ ...nueva, id: "nueva-unica" });
++    expect(() => useHeroConfigStore.getState().agregarImagen({ ...nueva, id: "nueva-unica" })).toThrow();
++    expect(() => useHeroConfigStore.getState().agregarImagen({ ...nueva, thumbnail: "javascript:alert(1)" })).toThrow();
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(7);
++  });
++});
++
++describe("Sincronización del catálogo con el servidor (243)", () => {
++  const fetchOriginal = globalThis.fetch;
++  const storageOriginal = useHeroConfigStore.persist.getOptions().storage;
++  const peticiones: Array<{ ruta: string; metodo: string; cuerpo: unknown }> = [];
++  const remoto = () => ({ slides: HERO_HOME_SLIDES, catalogoImagenes: HERO_IMAGE_OPTIONS,
++    heroImageId: "asamblea-claustro", opacidad: 80, modoCarrusel: true, intervaloSegundos: 7, pageImages: {} });
++  beforeEach(() => {
++    const memoria = new Map<string, string>();
++    useHeroConfigStore.persist.setOptions({ storage: createJSONStorage(() => ({
++      getItem: (clave) => memoria.get(clave) ?? null,
++      setItem: (clave, valor) => { memoria.set(clave, valor); }, removeItem: (clave) => { memoria.delete(clave); },
++    })) });
++    useHeroConfigStore.getState().resetearHeroConfig();
++    peticiones.length = 0;
++    globalThis.fetch = async (entrada, opciones) => {
++      const ruta = typeof entrada === "string" ? entrada : entrada instanceof URL ? entrada.href : entrada.url;
++      peticiones.push({ ruta, metodo: opciones?.method ?? "GET", cuerpo: typeof opciones?.body === "string" ? JSON.parse(opciones.body) : null });
++      return Response.json(remoto());
++    };
++  });
++  afterEach(() => {
++    globalThis.fetch = fetchOriginal;
++    useHeroConfigStore.getState().resetearHeroConfig();
++    useHeroConfigStore.persist.setOptions({ storage: storageOriginal });
++  });
++
++  test("GET conserva deshabilitadas, selección y reemplaza las asignaciones; no vuelve a consultar una carga ya aplicada", async () => {
++    const datos = { ...remoto(), heroImageId: "marco-logico", pageImages: { barrio: "mesa-deliberativa" },
++      catalogoImagenes: HERO_IMAGE_OPTIONS.map((imagen) => ({ ...imagen, habilitada: imagen.id !== "dialogo-comunitario" })) };
++    globalThis.fetch = async () => Response.json(datos);
++    await useHeroConfigStore.getState().sincronizarConServidor();
++    const estado = useHeroConfigStore.getState();
++    expect(estado.heroImageId).toBe("marco-logico");
++    expect(estado.imagenesCatalogo.find((imagen) => imagen.id === "dialogo-comunitario")?.habilitada).toBe(false);
++    expect(estado.slides.find((slide) => slide.id === "dialogo-comunitario")?.activa).toBe(false);
++    expect(estado.pageImages).toEqual({ barrio: "mesa-deliberativa" });
++    expect(estado.sincronizadoServidor).toBe(true);
++    globalThis.fetch = async () => { throw new Error("No debe haber una segunda consulta"); };
++    await estado.sincronizarConServidor();
++    expect(useHeroConfigStore.getState().heroImageId).toBe("marco-logico");
++  });
++
++  test("GET vacío explícito conserva la biblioteca vacía y no resucita las cinco fotos oficiales", async () => {
++    globalThis.fetch = async () => Response.json({ ...remoto(), slides: [], catalogoImagenes: [], pageImages: {} });
++    await useHeroConfigStore.getState().sincronizarConServidor();
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo).toEqual([]);
++    expect(estado.slides).toEqual([]);
++    expect(estado.pageImages).toEqual({});
++    expect(estado.heroImageId).toBe("ninguna");
++    expect(estado.indiceActivo).toBe(0);
++  });
++
++  test("GET fallido o mal formado no altera el catálogo ni deja la carga bloqueada", async () => {
++    for (const respuesta of [new Response("{}", { status: 503 }), Response.json({ slides: "inválido", catalogoImagenes: {} })]) {
++      globalThis.fetch = async () => respuesta;
++      await useHeroConfigStore.getState().sincronizarConServidor();
++      expect(useHeroConfigStore.getState().imagenesCatalogo).toEqual(HERO_IMAGE_OPTIONS);
++      expect(useHeroConfigStore.getState().cargandoServidor).toBe(false);
++      expect(useHeroConfigStore.getState().sincronizadoServidor).toBe(false);
++    }
++  });
++
++  test("valida entradas remotas antes de convertirlas en imágenes o narrativa renderizables", async () => {
++    globalThis.fetch = async () => Response.json({ ...remoto(),
++      catalogoImagenes: [{ ...HERO_IMAGE_OPTIONS[0], archivo: "javascript:alert(1)" }, HERO_IMAGE_OPTIONS[3]],
++      slides: [{ ...HERO_HOME_SLIDES[3], imagenFondo: "javascript:alert(1)" }, null],
++      heroImageId: "javascript:alert(1)", opacidad: 1000, intervaloSegundos: -2,
++      pageImages: { barrio: "javascript:alert(1)", mesas: { html: "inválido" } } });
++    await useHeroConfigStore.getState().sincronizarConServidor();
++    const estado = useHeroConfigStore.getState();
++    expect(estado.imagenesCatalogo.map((imagen) => imagen.id)).toEqual(["marco-logico"]);
++    expect(estado.heroImageId).toBe("marco-logico");
++    expect(estado.pageImages).toEqual({ barrio: "marco-logico" });
++    expect(estado.slides[0].imagenFondo).toBe(HERO_IMAGE_OPTIONS[3].archivo);
++    expect(estado.opacidad).toBe(95);
++    expect(estado.intervaloSegundos).toBe(1);
++  });
++
++  test("una respuesta GET tardía no pisa una edición local ni lanza cargas duplicadas", async () => {
++    let completar: (respuesta: Response) => void = () => { throw new Error("La carga no se inició"); };
++    globalThis.fetch = () => new Promise<Response>((resolve) => { completar = resolve; });
++    const primera = useHeroConfigStore.getState().sincronizarConServidor();
++    await useHeroConfigStore.getState().sincronizarConServidor();
++    useHeroConfigStore.getState().eliminarImagen("dialogo-comunitario");
++    completar(Response.json(remoto()));
++    await primera;
++    expect(useHeroConfigStore.getState().imagenesCatalogo.some((imagen) => imagen.id === "dialogo-comunitario")).toBe(false);
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(true);
++    expect(useHeroConfigStore.getState().cargandoServidor).toBe(false);
++  });
++
++  test("el borrador local pendiente se conserva también al rehidratar antes de consultar el servidor", async () => {
++    useHeroConfigStore.getState().eliminarImagen("asamblea-claustro");
++    await useHeroConfigStore.persist.rehydrate();
++    await useHeroConfigStore.getState().sincronizarConServidor();
++    expect(peticiones).toHaveLength(0);
++    expect(useHeroConfigStore.getState().imagenesCatalogo.some((imagen) => imagen.id === "asamblea-claustro")).toBe(false);
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(true);
++  });
++
++  test("PUT incluye habilitada, selección activa, miniaturas y catálogo completo sin las imágenes retiradas", async () => {
++    const estado = useHeroConfigStore.getState();
++    estado.toggleHabilitarImagen("dialogo-comunitario");
++    estado.eliminarImagen("enfoque-diferencial");
++    const nueva = estado.agregarImagen({ titulo: "Nueva imagen", descripcion: "Descripción territorial", enfoque: "Comunidad",
++      archivo: "/images/hero/nueva243.webp", thumbnail: "/images/hero/nueva243-thumb.png" });
++    estado.setPageImage("home", nueva.id);
++    expect(await estado.guardarEnServidor()).toBe(true);
++    expect(peticiones).toHaveLength(1);
++    expect(peticiones[0]).toMatchObject({ metodo: "PUT", cuerpo: {
++      heroImageId: nueva.id, pageImages: { home: nueva.id },
++      catalogoImagenes: expect.arrayContaining([{ ...HERO_IMAGE_OPTIONS[1], habilitada: false }, nueva]),
++      slides: expect.arrayContaining([expect.objectContaining({ id: "dialogo-comunitario", activa: false })]),
++    } });
++    expect(JSON.stringify(peticiones[0].cuerpo)).not.toContain("enfoque-diferencial");
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(false);
++    expect(useHeroConfigStore.getState().guardandoServidor).toBe(false);
++  });
++
++  test("PUT permite retirar todas las imágenes sin recuperar un carrusel fijo", async () => {
++    for (const imagen of HERO_IMAGE_OPTIONS) useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    expect(await useHeroConfigStore.getState().guardarEnServidor()).toBe(true);
++    expect(peticiones[0].cuerpo).toMatchObject({ slides: [], catalogoImagenes: [], heroImageId: "ninguna", pageImages: {} });
++  });
++
++  test("error de guardado devuelve false, conserva el borrador y restaurar no acredita un éxito remoto inexistente", async () => {
++    globalThis.fetch = async () => new Response("{}", { status: 403 });
++    useHeroConfigStore.getState().eliminarImagen("asamblea-claustro");
++    expect(await useHeroConfigStore.getState().guardarEnServidor()).toBe(false);
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(5);
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(true);
++    expect(useHeroConfigStore.getState().guardandoServidor).toBe(false);
++    expect(await useHeroConfigStore.getState().restablecerHerosOficiales()).toBe(false);
++    expect(useHeroConfigStore.getState().imagenesCatalogo).toEqual(HERO_IMAGE_OPTIONS);
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(true);
++  });
++
++  test("serializa guardados solapados y guarda la edición más reciente al final", async () => {
++    let completar: (respuesta: Response) => void = () => { throw new Error("El primer PUT no llegó"); };
++    const cuerpos: unknown[] = [];
++    globalThis.fetch = async (_entrada, opciones) => {
++      cuerpos.push(typeof opciones?.body === "string" ? JSON.parse(opciones.body) : null);
++      if (cuerpos.length === 1) return new Promise<Response>((resolve) => { completar = resolve; });
++      return Response.json({});
++    };
++    useHeroConfigStore.getState().setOpacidad(45);
++    const primero = useHeroConfigStore.getState().guardarEnServidor();
++    await Promise.resolve();
++    useHeroConfigStore.getState().eliminarImagen("asamblea-claustro");
++    const segundo = useHeroConfigStore.getState().guardarEnServidor();
++    expect(cuerpos).toHaveLength(1);
++    completar(Response.json({}));
++    expect(await primero).toBe(true);
++    expect(await segundo).toBe(true);
++    expect(cuerpos).toHaveLength(2);
++    expect(JSON.stringify(cuerpos[0])).toContain("asamblea-claustro");
++    expect(JSON.stringify(cuerpos[1])).not.toContain("asamblea-claustro");
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(false);
++    expect(useHeroConfigStore.getState().guardandoServidor).toBe(false);
++  });
++
++  test("un PUT en curso no borra el indicador de otra edición que aún no se guardó", async () => {
++    let completar: (respuesta: Response) => void = () => { throw new Error("No se inició el PUT"); };
++    globalThis.fetch = () => new Promise<Response>((resolve) => { completar = resolve; });
++    useHeroConfigStore.getState().setOpacidad(45);
++    const guardado = useHeroConfigStore.getState().guardarEnServidor();
++    await Promise.resolve();
++    useHeroConfigStore.getState().eliminarImagen("asamblea-claustro");
++    completar(Response.json({}));
++    expect(await guardado).toBe(true);
++    expect(useHeroConfigStore.getState().cambiosPendientes).toBe(true);
++  });
++});
+--- antes/src/features/politicas/components/hero-home-showcase.tsx
++++ despues/src/features/politicas/components/hero-home-showcase.tsx
+@@ -17,10 +17,9 @@
+ import { Button } from "@/shared/ui/button";
+ import { Badge } from "@/shared/ui/badge";
+ import { cn } from "@/shared/lib/utils";
+-import { useHeroConfigStore } from "@/features/politicas/state/hero-store";
++import { useHeroConfigStore, obtenerDiapositivasHero, esRutaImagenHero } from "@/features/politicas/state/hero-store";
+ import {
+   HERO_HOME_SLIDES,
+-  type HeroPageConfig,
+ } from "@/features/politicas/data/hero-pages.data";
+ 
+ export interface HeroHomeShowcaseProps {
+@@ -65,30 +64,37 @@
+ 
+   const {
+     heroImageId,
++    imagenesCatalogo,
+     opacidad,
+     modoCarrusel,
+     intervaloSegundos,
+     pausado,
+-    indiceActivo,
+     siguienteImagen,
+     anteriorImagen,
+     irAImagen,
+     togglePausa,
++    sincronizarConServidor,
+   } = store;
+ 
+-  /* Resolución de la diapositiva activa */
+-  const slideIndex = HERO_HOME_SLIDES.findIndex((s) => s.id === heroImageId);
+-  const currentIdx =
+-    slideIndex >= 0 ? slideIndex : indiceActivo % HERO_HOME_SLIDES.length;
+-  const slideActivo: HeroPageConfig =
+-    HERO_HOME_SLIDES[currentIdx] ?? HERO_HOME_SLIDES[0];
+-
+-  const totalSlides = HERO_HOME_SLIDES.length;
+-  const contadorTexto = `${String(currentIdx + 1).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
++  /* Sincronización en segundo plano con el servidor de la plataforma */
++  useEffect(() => {
++    void sincronizarConServidor?.();
++  }, [sincronizarConServidor]);
++
++  const slides = obtenerDiapositivasHero(imagenesCatalogo, store.slides);
++  // Conservar overrides URL anteriores a la biblioteca dinámica.
++  if (esRutaImagenHero(heroImageId) && !imagenesCatalogo.some((imagen) => imagen.id === heroImageId || imagen.archivo === heroImageId)) {
++    slides.push({ ...HERO_HOME_SLIDES[0], id: heroImageId, imagenFondo: heroImageId,
++      enfoque: "Imagen personalizada", ubicacionReal: "Imagen personalizada", badgeTexto: "Imagen personalizada", oficial: false });
++  }
++  const currentIdx = Math.max(0, slides.findIndex((slide) => slide.id === heroImageId));
++  const slideActivo = slides[currentIdx] ?? { ...HERO_HOME_SLIDES[0], ubicacionReal: "Cartagena de Indias", enfoque: "Fondo institucional", oficial: false };
++  const totalSlides = slides.length;
++  const contadorTexto = `${String(totalSlides ? currentIdx + 1 : 0).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
+ 
+   /* Temporizador del carrusel automático (7s) con suspensión por interacción */
+   useEffect(() => {
+-    if (!modoCarrusel || pausado || isInteracting) return;
++    if (!modoCarrusel || pausado || isInteracting || heroImageId === "ninguna" || totalSlides < 2) return;
+ 
+     const intervaloMs = Math.max(2, intervaloSegundos || 7) * 1000;
+     const timer = setInterval(() => {
+@@ -96,7 +102,7 @@
+     }, intervaloMs);
+ 
+     return () => clearInterval(timer);
+-  }, [modoCarrusel, pausado, isInteracting, intervaloSegundos, siguienteImagen]);
++  }, [modoCarrusel, pausado, isInteracting, intervaloSegundos, siguienteImagen, heroImageId, totalSlides]);
+ 
+   return (
+     <section
+@@ -112,7 +118,7 @@
+       aria-label="Carrusel de frentes territoriales de Cartagena"
+     >
+       {/* ================= 1. CAPAS FOTOGRÁFICAS CON CROSSFADE Y KEN BURNS ================= */}
+-      {HERO_HOME_SLIDES.map((slide, idx) => {
++      {slides.map((slide, idx) => {
+         const esActivo = idx === currentIdx;
+         return (
+           <div
+@@ -172,7 +178,7 @@
+             </div>
+             <div>
+               <span className="label-micro block text-[var(--text-tertiary)] uppercase tracking-wider">
+-                Procedencia Territorial Real
++                {slideActivo.oficial ? "Procedencia Territorial Real" : "Enfoque territorial"}
+               </span>
+               <span className="font-medium text-[var(--text-primary)]">
+                 {slideActivo.ubicacionReal}
+@@ -199,6 +205,7 @@
+               variant="outline"
+               size="icon-sm"
+               onClick={anteriorImagen}
++              disabled={totalSlides < 2}
+               aria-label="Diapositiva anterior"
+               className="size-8 rounded-full"
+             >
+@@ -211,6 +218,7 @@
+               variant="outline"
+               size="icon-sm"
+               onClick={togglePausa}
++              disabled={totalSlides < 2 || heroImageId === "ninguna"}
+               aria-label={pausado ? "Reanudar carrusel" : "Pausar carrusel"}
+               className="size-8 rounded-full"
+             >
+@@ -227,6 +235,7 @@
+               variant="outline"
+               size="icon-sm"
+               onClick={siguienteImagen}
++              disabled={totalSlides < 2}
+               aria-label="Diapositiva siguiente"
+               className="size-8 rounded-full"
+             >
+@@ -235,13 +244,13 @@
+           </div>
+         </div>
+ 
+-        {/* Barra de 5 Pills Temáticas para Selección Directa */}
++        {/* Barra de Pills Temáticas para Selección Directa */}
+         <div
+           className="mt-3 flex flex-wrap items-center gap-2"
+           role="tablist"
+           aria-label="Líneas temáticas de la portada"
+         >
+-          {HERO_HOME_SLIDES.map((slide, idx) => {
++          {slides.map((slide, idx) => {
+             const esActivo = idx === currentIdx;
+             return (
+               <Button
+--- antes/src/features/politicas/components/hero-home-showcase.test.tsx
++++ despues/src/features/politicas/components/hero-home-showcase.test.tsx
+@@ -136,3 +136,40 @@
+     expect(html).toContain("Política Pública de Seguridad Humana Integral");
+   });
+ });
++
++
++describe("Portada con catálogo editable (243)", () => {
++  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
++  test("no renderiza ni ofrece una imagen deshabilitada aunque la lista temática original la contenga", () => {
++    useHeroConfigStore.getState().toggleHabilitarImagen("enfoque-diferencial");
++    const html = renderToString(<HeroHomeShowcase />);
++    expect(html).not.toContain("hero-enfoque-diferencial.webp");
++    expect(html).not.toContain("Ver diapositiva 3: Enfoque Diferencial e Inclusivo");
++    expect(html).toContain("01 / 04");
++  });
++  test("renderiza imágenes agregadas con sus metadatos sin inventar procedencia oficial", () => {
++    const imagen = useHeroConfigStore.getState().agregarImagen({
++      titulo: "Encuentro barrial", descripcion: "Encuentro y concertación vecinal.",
++      enfoque: "Participación de la comunidad", archivo: "/images/nueva-243.webp", thumbnail: "",
++    });
++    useHeroConfigStore.getState().setHeroImageId(imagen.id);
++    const html = renderToString(<HeroHomeShowcase />);
++    expect(html).toContain(imagen.archivo);
++    expect(html).toContain(imagen.descripcion);
++    expect(html).toContain("Enfoque territorial");
++    expect(html).not.toContain("Procedencia Territorial Real");
++    expect(html).toContain("06 / 06");
++  });
++  test("retirar todo el catálogo deja una portada institucional sin imágenes ni errores de índice", () => {
++    for (const imagen of [...useHeroConfigStore.getState().imagenesCatalogo]) useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    const html = renderToString(<HeroHomeShowcase />);
++    expect(html).not.toContain("<img");
++    expect(html).toContain("00 / 00");
++    expect(html).toContain("Política Pública de Seguridad Humana Integral");
++    expect(html).not.toContain("NaN");
++  });
++  test("conserva las URLs de portada previas al catálogo editable", () => {
++    useHeroConfigStore.getState().setPageImage("home", "https://ejemplo.gov.co/portada.webp");
++    expect(renderToString(<HeroHomeShowcase />)).toContain("https://ejemplo.gov.co/portada.webp");
++  });
++});
+--- antes/src/features/politicas/components/hero-page-banner.tsx
++++ despues/src/features/politicas/components/hero-page-banner.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import React from "react";
++import React, { useEffect } from "react";
+ import { MapPin } from "lucide-react";
+ import { cn } from "@/shared/lib/utils";
+ import {
+@@ -54,13 +54,14 @@
+   const clientStore = useHeroConfigStore();
+   const isServer = typeof window === "undefined";
+   const store = isServer ? useHeroConfigStore.getState() : clientStore;
+-  const { opacidad, heroImageId, pageImages } = store;
++  const { opacidad, heroImageId, pageImages, imagenesCatalogo, sincronizarConServidor } = store;
++  useEffect(() => { void sincronizarConServidor(); }, [sincronizarConServidor]);
+ 
+   /* Resolución de imagen considerando personalización desde /plataforma */
+   const customImageKey = pageImages?.[pageKey] || pageImages?.[config.id];
+   const imagenFondo = customImageKey
+-    ? resolverImagenHero(customImageKey)
+-    : config.imagenFondo;
++    ? resolverImagenHero(customImageKey, imagenesCatalogo)
++    : resolverImagenHero(config.imagenFondo, imagenesCatalogo);
+   const esModoMinimalista =
+     customImageKey === "ninguna" || (heroImageId === "ninguna" && !customImageKey);
+ 
+--- antes/src/features/politicas/components/hero-page-banner.test.tsx
++++ despues/src/features/politicas/components/hero-page-banner.test.tsx
+@@ -152,3 +152,27 @@
+     expect(html).toContain('src="/images/hero/hero-dialogo-comunitario.webp"');
+   });
+ });
++
++
++describe("Banners y disponibilidad del catálogo (243)", () => {
++  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
++  test("deshabilitar la imagen temática por defecto también retira su fotografía de páginas sin override", () => {
++    const estado = useHeroConfigStore.getState();
++    const imagen = estado.imagenesCatalogo.find((fila) => fila.archivo === HERO_PAGES_CONFIG.barrio.imagenFondo);
++    expect(imagen).toBeDefined();
++    if (!imagen) throw new Error("Falta la imagen temática de prueba");
++    estado.toggleHabilitarImagen(imagen.id);
++    const html = renderToString(<HeroPageBanner pageKey="barrio" />);
++    expect(html).not.toContain(imagen.archivo);
++  });
++  test("una imagen personalizada retirada deja de mostrarse en la página que la utilizaba", () => {
++    const imagen = useHeroConfigStore.getState().agregarImagen({
++      titulo: "Foto local", descripcion: "Encuentro comunitario.", enfoque: "Barrio",
++      archivo: "/images/nueva-banner-243.webp", thumbnail: "",
++    });
++    useHeroConfigStore.getState().setPageImage("barrio", imagen.id);
++    expect(renderToString(<HeroPageBanner pageKey="barrio" />)).toContain(imagen.archivo);
++    useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    expect(renderToString(<HeroPageBanner pageKey="barrio" />)).not.toContain(imagen.archivo);
++  });
++});
+--- antes/src/features/plataforma/components/gestor-heros-plataforma.tsx
++++ despues/src/features/plataforma/components/gestor-heros-plataforma.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { useState } from "react";
++import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from "react";
+ import {
+   Check,
+   RotateCcw,
+@@ -9,17 +9,26 @@
+   MapPin,
+   Play,
+   Pause,
+-  Link as LinkIcon,
++  Plus,
++  Trash2,
+   ShieldCheck,
++  Upload,
++  Save,
++  Loader2,
++  ImageIcon,
+ } from "lucide-react";
+ import { toast } from "sonner";
++import { apiFetch } from "@/core/http/api-client";
+ import { Button } from "@/shared/ui/button";
+ import { Badge } from "@/shared/ui/badge";
+ import { Input } from "@/shared/ui/input";
++import { Textarea } from "@/shared/ui/textarea";
++import { FormField } from "@/shared/ui/form-field";
+ import { Switch } from "@/shared/ui/switch";
+ import {
+   useHeroConfigStore,
+-  HERO_IMAGE_OPTIONS,
++  esRutaImagenHero,
++  obtenerDiapositivasHero,
+   HERO_DEFAULT_IMAGE_ID,
+   resolverImagenHero,
+   type HeroImageOption,
+@@ -47,7 +56,7 @@
+     key: "home",
+     nombre: "Portada Principal",
+     ruta: "/",
+-    descripcion: "Carrusel cinematográfico inmersivo de los 5 frentes cívicos de Cartagena.",
++    descripcion: "Carrusel territorial de las imágenes habilitadas en la biblioteca.",
+     configDefecto: HERO_PAGES_CONFIG.home,
+   },
+   {
+@@ -106,15 +115,38 @@
+   className,
+ }: GestorHerosPlataformaProps) {
+   const [espacioActivoKey, setEspacioActivoKey] = useState<string>("home");
+-  const [urlPersonalizada, setUrlPersonalizada] = useState<string>("");
+-
++  const [formularioAbierto, setFormularioAbierto] = useState(false);
++  const [nuevaImagen, setNuevaImagen] = useState({
++    titulo: "",
++    descripcion: "",
++    enfoque: "",
++    archivo: "",
++    thumbnail: "",
++  });
++  const [errores, setErrores] = useState<Partial<Record<keyof typeof nuevaImagen, string>>>({});
++  const [errorFormulario, setErrorFormulario] = useState("");
++  const [subiendoArchivo, setSubiendoArchivo] = useState(false);
++  const [confirmacion, setConfirmacion] = useState<
++    | { tipo: "eliminar"; id: string; titulo: string }
++    | { tipo: "restaurar" }
++    | null
++  >(null);
++
++  const fileInputRef = useRef<HTMLInputElement>(null);
++
++  const clientStore = useHeroConfigStore();
++  const store = typeof window === "undefined" ? useHeroConfigStore.getState() : clientStore;
+   const {
++    imagenesCatalogo,
++    slides,
+     heroImageId,
+     opacidad,
+     modoCarrusel,
+     intervaloSegundos,
+     pausado,
+     pageImages,
++    guardandoServidor,
++    cambiosPendientes,
+     setHeroImageId,
+     setOpacidad,
+     setModoCarrusel,
+@@ -122,12 +154,26 @@
+     togglePausa,
+     setPageImage,
+     resetPageImage,
+-    resetAllPageImages,
+-  } = useHeroConfigStore();
++    toggleHabilitarImagen,
++    agregarImagen,
++    eliminarImagen,
++    eliminarSlide,
++    sincronizarConServidor,
++    guardarEnServidor,
++    restaurarCatalogoOficial,
++  } = store;
++
++  /* Sincronización inicial con la configuración persistida en el servidor */
++  useEffect(() => {
++    void sincronizarConServidor?.();
++  }, [sincronizarConServidor]);
+ 
+   const espacioActivo =
+     ESPACIOS_PUBLICOS.find((e) => e.key === espacioActivoKey) ??
+     ESPACIOS_PUBLICOS[0];
++
++  /* Diapositivas activas para la portada */
++  const slidesPortada = obtenerDiapositivasHero(imagenesCatalogo, slides);
+ 
+   /* Imagen actualmente asignada al espacio seleccionado */
+   const customKey =
+@@ -136,8 +182,8 @@
+       : pageImages[espacioActivo.key];
+ 
+   const imagenActivaSrc = customKey
+-    ? resolverImagenHero(customKey)
+-    : espacioActivo.configDefecto.imagenFondo;
++    ? resolverImagenHero(customKey, imagenesCatalogo)
++    : resolverImagenHero(espacioActivo.configDefecto.imagenFondo, imagenesCatalogo);
+ 
+   const esPersonalizada =
+     espacioActivo.key === "home"
+@@ -147,9 +193,43 @@
+   const esMinimalista =
+     customKey === "ninguna" || (heroImageId === "ninguna" && espacioActivo.key === "home");
+ 
++  /* El archivo se aloja en la plataforma; el catálogo conserva su ruta. */
++  const handleSeleccionarArchivo = async (event: ChangeEvent<HTMLInputElement>) => {
++    if (!editar) return;
++    const archivo = event.target.files?.[0];
++    if (!archivo) return;
++    event.target.value = "";
++    if (!["image/png", "image/jpeg", "image/webp"].includes(archivo.type) || !/\.(png|jpe?g|webp)$/i.test(archivo.name)) {
++      toast.error("Selecciona una imagen JPG, PNG o WebP.");
++      return;
++    }
++    if (archivo.size > 8 * 1024 * 1024) {
++      toast.error("La fotografía supera los 8 MB permitidos.");
++      return;
++    }
++    setSubiendoArchivo(true);
++    const datos = new FormData();
++    datos.append("archivo", archivo);
++    try {
++      const respuesta = await apiFetch<unknown>("/politicas/heros/subir-imagen", {
++        method: "POST", body: datos, retry: { retries: 0 },
++      });
++      if (!respuesta || typeof respuesta !== "object" || !("url" in respuesta) ||
++        typeof respuesta.url !== "string" || !esRutaImagenHero(respuesta.url)) {
++        throw new Error("El servidor no devolvió una ruta de imagen válida.");
++      }
++      const ruta = respuesta.url;
++      setNuevaImagen((previa) => ({ ...previa, archivo: ruta, thumbnail: ruta,
++        titulo: previa.titulo || archivo.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") }));
++      toast.success("Fotografía cargada. Completa sus datos y guárdala en la biblioteca.");
++    } catch (error) {
++      toast.error(error instanceof Error ? error.message : "No se pudo cargar la fotografía.");
++    } finally { setSubiendoArchivo(false); }
++  };
++
+   /* Manejadores de acción */
+   const handleSeleccionarImagen = (opcion: HeroImageOption) => {
+-    if (!editar) return;
++    if (!editar || !imagenesCatalogo.some((imagen) => imagen.id === opcion.id && imagen.habilitada)) return;
+ 
+     if (espacioActivo.key === "home") {
+       setHeroImageId(opcion.id);
+@@ -165,19 +245,55 @@
+     );
+   };
+ 
+-  const handleAplicarUrlPersonalizada = () => {
+-    if (!editar || !urlPersonalizada.trim()) return;
+-    const url = urlPersonalizada.trim();
+-
+-    if (espacioActivo.key === "home") {
+-      setHeroImageId(url);
+-      setPageImage("home", url);
++  const handleGuardarImagen = (event: FormEvent<HTMLFormElement>) => {
++    event.preventDefault();
++    if (!editar) return;
++    const problemas: typeof errores = {};
++    if (!nuevaImagen.titulo.trim()) problemas.titulo = "Escribe el título de la imagen.";
++    if (!nuevaImagen.descripcion.trim()) problemas.descripcion = "Escribe una descripción.";
++    if (!nuevaImagen.enfoque.trim()) problemas.enfoque = "Escribe el enfoque o ubicación territorial.";
++    if (!nuevaImagen.archivo.trim()) {
++      problemas.archivo = "Carga un archivo de imagen o escribe una URL / ruta.";
++    } else if (!esRutaImagenHero(nuevaImagen.archivo.trim())) {
++      problemas.archivo = "Introduce una imagen válida (URL HTTPS, ruta /images/... o sube un archivo).";
++    }
++    if (nuevaImagen.thumbnail.trim() && !esRutaImagenHero(nuevaImagen.thumbnail.trim())) {
++      problemas.thumbnail = "Introduce una miniatura válida o deja el campo vacío.";
++    }
++    setErrores(problemas);
++    setErrorFormulario("");
++    if (Object.keys(problemas).length) return;
++
++    try {
++      const imagen = agregarImagen(nuevaImagen);
++      setNuevaImagen({ titulo: "", descripcion: "", enfoque: "", archivo: "", thumbnail: "" });
++      setFormularioAbierto(false);
++      toast.success(`Fotografía "${imagen.titulo}" agregada a la biblioteca`);
++    } catch (error) {
++      setErrorFormulario(error instanceof Error ? error.message : "No se pudo agregar la imagen.");
++    }
++  };
++
++  const handleQuitarSlide = (slideId: string, titulo: string) => {
++    if (!editar) return;
++    try {
++      eliminarSlide(slideId);
++      toast.success(`Diapositiva "${titulo}" deshabilitada en el carrusel de portada`);
++    } catch (err) {
++      toast.error(err instanceof Error ? err.message : "No se pudo quitar la diapositiva.");
++    }
++  };
++
++  const handleConfirmar = () => {
++    if (!editar || !confirmacion) return;
++    if (confirmacion.tipo === "restaurar") {
++      restaurarCatalogoOficial();
++      toast.success("Las seis imágenes del catálogo oficial se han restaurado.");
+     } else {
+-      setPageImage(espacioActivo.key, url);
++      eliminarImagen(confirmacion.id);
++      toast.success(`Fotografía "${confirmacion.titulo}" retirada de la biblioteca.`);
+     }
+-
+-    setUrlPersonalizada("");
+-    toast.success(`Imagen personalizada aplicada a ${espacioActivo.nombre}`);
++    setConfirmacion(null);
+   };
+ 
+   const handleRestaurarEspacio = () => {
+@@ -193,17 +309,63 @@
+ 
+   const handleRestablecerTodo = () => {
+     if (!editar) return;
+-    if (confirm("¿Restablecer la configuración de todas las imágenes a sus valores iniciales?")) {
+-      resetAllPageImages();
+-      setOpacidad(60);
+-      setModoCarrusel(true);
+-      setIntervaloSegundos(7);
+-      toast.success("Todos los Heros territoriales han sido restablecidos a sus valores de fábrica");
++    setConfirmacion({ tipo: "restaurar" });
++  };
++
++  const handleGuardarServidor = async () => {
++    if (!editar) return;
++    const ok = await guardarEnServidor();
++    if (ok) {
++      if (useHeroConfigStore.getState().cambiosPendientes) {
++        toast.success("Se guardó la versión enviada. Quedan cambios locales por guardar.");
++      } else {
++        toast.success("Configuración de imágenes guardada en la plataforma.");
++      }
++    } else {
++      toast.error("No se pudo conectar con el servidor. Los cambios se conservan en tu navegador.");
+     }
+   };
+ 
+   return (
+     <div className={`space-y-6 ${className ?? ""}`} data-testid="gestor-heros-plataforma">
++      {/* ================= BARRA SUPERIOR CON BOTÓN GUARDAR ================= */}
++      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-0)] p-3">
++        <div className="flex items-center gap-2">
++          <ImageIcon className="size-4 text-[var(--ember)]" />
++          <span className="text-xs font-bold text-[var(--text-primary)]">
++            Gestor de Identidad Visual y Heros Públicos
++          </span>
++        </div>
++        <div className="flex items-center gap-2">
++          <Button
++            type="button"
++            variant="default"
++            size="sm"
++            disabled={!editar || guardandoServidor}
++            onClick={handleGuardarServidor}
++            className="h-auto min-h-8 max-w-full gap-1.5 whitespace-normal text-xs font-semibold"
++          >
++            {guardandoServidor ? (
++              <>
++                <Loader2 className="size-3.5 animate-spin" />
++                Guardando en Servidor...
++              </>
++            ) : (
++              <>
++                <Save className="size-3.5" />
++                Guardar Cambios en la Plataforma
++              </>
++            )}
++          </Button>
++        </div>
++      </div>
++
++      <p role="status" className="text-xs text-text-secondary">
++        {cambiosPendientes
++          ? "Tienes cambios locales. Guarda los cambios en la plataforma para compartirlos con los visitantes."
++          : "Las imágenes de la biblioteca se utilizan en la portada y en los espacios públicos."}
++      </p>
++
+       {/* ================= 1. NAVEGACIÓN ENTRE ESPACIOS PÚBLICOS ================= */}
+       <div className="flex flex-col gap-3">
+         <div className="flex flex-wrap items-center justify-between gap-2">
+@@ -274,7 +436,7 @@
+       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] p-4 sm:p-5 space-y-4">
+         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)] pb-4">
+           <div>
+-            <div className="flex items-center gap-2">
++            <div className="flex flex-wrap items-center gap-2">
+               <h3 className="text-base font-bold text-[var(--text-primary)]">
+                 {espacioActivo.nombre}
+               </h3>
+@@ -296,7 +458,7 @@
+             </p>
+           </div>
+ 
+-          <div className="flex items-center gap-2">
++          <div className="flex flex-wrap items-center gap-2">
+             {esPersonalizada && (
+               <Button
+                 type="button"
+@@ -381,16 +543,16 @@
+           </div>
+         </div>
+ 
+-        {/* ================= 4. CONTROLES DEL CARRUSEL (SOLO HOME) ================= */}
++        {/* ================= 4. CONTROLES DEL CARRUSEL Y GESTIÓN DE DIAPOSITIVAS (SOLO HOME) ================= */}
+         {espacioActivo.key === "home" && (
+-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-3">
++          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-4">
+             <div className="flex items-center justify-between gap-3">
+               <div>
+                 <span className="text-xs font-bold text-[var(--text-primary)]">
+                   Rotación Automática del Carrusel (Portada)
+                 </span>
+                 <p className="text-[11px] text-[var(--text-secondary)]">
+-                  Alterna automáticamente las 5 fotografías territoriales de Cartagena en la portada.
++                  Alterna automáticamente las fotografías territoriales activas de Cartagena en la portada.
+                 </p>
+               </div>
+               <Switch
+@@ -411,9 +573,9 @@
+ 
+             {modoCarrusel && (
+               <div className="pt-2 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-2">
+-                <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
++                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)]">
+                   <span>Velocidad de cambio:</span>
+-                  <div className="flex items-center gap-1">
++                  <div className="flex flex-wrap items-center gap-1">
+                     {[
+                       { seg: 3, label: "3s" },
+                       { seg: 5, label: "5s" },
+@@ -429,7 +591,7 @@
+                         disabled={!editar}
+                         onClick={() => {
+                           setIntervaloSegundos(item.seg);
+-                          toast.success(`Intervalo de rotación fijado en ${item.seg} segundos`);
++                          toast.success(`Intervalo fijado en ${item.seg} segundos`);
+                         }}
+                         className="h-6 px-2 text-[11px]"
+                       >
+@@ -461,135 +623,413 @@
+                 </Button>
+               </div>
+             )}
++
++            {/* LISTADO DE DIAPOSITIVAS ACTIVAS DEL CARRUSEL (QUITAR / GESTIONAR) */}
++            <div className="pt-3 border-t border-[var(--border)] space-y-2.5">
++              <div className="flex items-center justify-between">
++                <div>
++                  <h4 className="text-xs font-bold text-[var(--text-primary)]">
++                    Diapositivas Activas en el Carrusel Público ({slidesPortada.length})
++                  </h4>
++                  <p className="text-[11px] text-[var(--text-secondary)]">
++                    Las fotografías habilitadas se incluyen en la rotación. Puedes deshabilitarlas o agregar nuevas desde la biblioteca.
++                  </p>
++                </div>
++              </div>
++
++              <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
++                {slidesPortada.map((slide, idx) => (
++                  <div
++                    key={slide.id}
++                    className="flex min-w-0 items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5"
++                  >
++                    <div className="flex min-w-0 flex-1 items-center gap-2.5">
++                      <span className="font-mono text-[10px] font-bold text-[var(--ember)] bg-[var(--surface-2)] px-1.5 py-0.5 rounded">
++                        {String(idx + 1).padStart(2, "0")}
++                      </span>
++                      <div className="size-10 shrink-0 overflow-hidden rounded border border-[var(--border)] bg-[var(--surface-2)]">
++                        <img
++                          src={slide.imagenFondo}
++                          alt=""
++                          className="h-full w-full object-cover"
++                        />
++                      </div>
++                      <div className="min-w-0">
++                        <p className="text-xs font-bold text-[var(--text-primary)] truncate">
++                          {slide.titulo}
++                        </p>
++                        <p className="text-[10px] text-[var(--text-secondary)] truncate">
++                          {slide.ubicacionReal || slide.enfoque}
++                        </p>
++                      </div>
++                    </div>
++
++                    <Button
++                      type="button"
++                      variant="ghost"
++                      size="sm"
++                      disabled={!editar}
++                      onClick={() => handleQuitarSlide(slide.id, slide.titulo)}
++                      aria-label={`Deshabilitar ${slide.titulo} en el carrusel`}
++                      title="Deshabilitar esta imagen en el carrusel"
++                      className="h-7 px-2 text-[11px] text-[var(--danger)] hover:bg-[var(--danger)]/10 shrink-0 gap-1"
++                    >
++                      <Trash2 className="size-3" />
++                      <span className="hidden sm:inline">Deshabilitar</span>
++                    </Button>
++                  </div>
++                ))}
++              </div>
++            </div>
+           </div>
+         )}
+ 
+-        {/* ================= 5. CATÁLOGO DE FOTOGRAFÍAS TERRITORIALES ================= */}
+-        <div className="space-y-3">
+-          <div className="flex items-center justify-between">
+-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+-              Biblioteca de Fotografías Territoriales Oficiales
+-            </span>
+-            <span className="text-[11px] text-[var(--text-secondary)]">
+-              Haz clic sobre una imagen para asignarla a {espacioActivo.nombre}
+-            </span>
++        {/* ================= 5. BIBLIOTECA DE FOTOGRAFÍAS TERRITORIALES ================= */}
++        <section className="space-y-3" aria-label="Biblioteca de imágenes hero">
++          <div className="flex flex-wrap items-center justify-between gap-3">
++            <div className="min-w-0">
++              <h3 className="text-sm font-semibold text-text-primary">
++                Biblioteca de imágenes hero
++              </h3>
++              <p className="mt-1 text-xs text-text-secondary">
++                Asigna una imagen habilitada a {espacioActivo.nombre} o agrega nuevas fotos desde tu equipo.
++              </p>
++            </div>
++            <div className="flex flex-wrap gap-2">
++              <Button
++                type="button"
++                variant="outline"
++                size="sm"
++                disabled={!editar}
++                onClick={() => setConfirmacion({ tipo: "restaurar" })}
++              >
++                <RotateCcw className="size-3.5" aria-hidden="true" />
++                Restaurar catálogo oficial
++              </Button>
++              <Button
++                type="button"
++                size="sm"
++                disabled={!editar}
++                aria-expanded={formularioAbierto}
++                onClick={() => setFormularioAbierto((abierto) => !abierto)}
++              >
++                <Plus className="size-3.5" aria-hidden="true" />
++                Nueva imagen hero
++              </Button>
++            </div>
+           </div>
+ 
+-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+-            {HERO_IMAGE_OPTIONS.map((opcion) => {
+-              const esActiva = customKey === opcion.id;
+-              const esNinguna = opcion.id === "ninguna";
+-
+-              return (
+-                <div
+-                  key={opcion.id}
+-                  onClick={() => handleSeleccionarImagen(opcion)}
+-                  className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border p-3 transition-all cursor-pointer ${
+-                    esActiva
+-                      ? "border-[var(--ember)] bg-[var(--surface-2)] ring-1 ring-[var(--ember)] shadow-xs"
+-                      : "border-[var(--border)] bg-[var(--surface-1)] hover:border-[var(--ember)]/50 hover:bg-[var(--surface-2)]/50"
+-                  } ${!editar ? "cursor-not-allowed opacity-75" : ""}`}
++          {confirmacion && (
++            <div
++              role="group"
++              aria-label="Confirmación de cambios del catálogo"
++              className="space-y-3 rounded-xl border border-border bg-surface-2 p-4"
++            >
++              <p className="break-words text-sm text-text-primary">
++                {confirmacion.tipo === "eliminar"
++                  ? `¿Retirar "${confirmacion.titulo}" de la biblioteca? Los espacios que la utilizan pasarán a una imagen de respaldo.`
++                  : "¿Restaurar las seis imágenes oficiales? Las imágenes agregadas se retirarán del catálogo."}
++              </p>
++              <div className="flex flex-wrap gap-2">
++                <Button
++                  type="button"
++                  variant="destructive"
++                  size="sm"
++                  disabled={!editar}
++                  onClick={handleConfirmar}
+                 >
+-                  <div className="space-y-2.5">
+-                    {/* Thumbnail */}
+-                    <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-2)]">
+-                      {esNinguna ? (
+-                        <div className="flex h-full w-full items-center justify-center bg-dotgrid p-3 text-center">
+-                          <span className="text-xs font-medium text-[var(--text-tertiary)]">
+-                            Solo retícula institucional
+-                          </span>
+-                        </div>
+-                      ) : (
+-                        <img
+-                          src={opcion.thumbnail || opcion.archivo}
+-                          alt={opcion.titulo}
+-                          className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+-                        />
+-                      )}
+-
+-                      {esActiva && (
+-                        <div className="absolute right-2 top-2">
+-                          <Badge variant="success" className="shadow-xs font-medium text-[10px]">
+-                            <Check className="mr-1 size-3" />
+-                            Activa en {espacioActivo.nombre}
+-                          </Badge>
+-                        </div>
+-                      )}
+-                    </div>
+-
+-                    {/* Metadatos */}
+-                    <div>
+-                      <h4 className="text-xs font-bold text-[var(--text-primary)] truncate">
+-                        {opcion.titulo}
+-                      </h4>
+-                      <Badge variant="outline" className="mt-1 text-[9px] uppercase tracking-wider">
+-                        {opcion.enfoque}
+-                      </Badge>
+-                      <p className="mt-1 text-[11px] text-[var(--text-secondary)] line-clamp-2">
+-                        {opcion.descripcion}
+-                      </p>
++                  {confirmacion.tipo === "eliminar" ? "Confirmar retiro" : "Confirmar restauración"}
++                </Button>
++                <Button type="button" variant="outline" size="sm" onClick={() => setConfirmacion(null)}>
++                  Cancelar
++                </Button>
++              </div>
++            </div>
++          )}
++
++          {/* FORMULARIO PARA AGREGAR NUEVA IMAGEN / FOTOGRAFÍA */}
++          {formularioAbierto && (
++            <form
++              onSubmit={handleGuardarImagen}
++              noValidate
++              aria-label="Nueva imagen hero"
++              className="space-y-4 rounded-xl border border-border bg-surface-1 p-4"
++            >
++              <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
++                <h4 className="text-sm font-semibold text-text-primary">
++                  Agregar Nueva Fotografía al Hero
++                </h4>
++                <Badge variant="outline" className="text-[10px]">
++                  Soporta Subida de Archivo o URL
++                </Badge>
++              </div>
++
++              {/* Botón para subir archivo desde el equipo */}
++              <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-0)] p-4 text-center space-y-2">
++                <Input
++                  ref={fileInputRef}
++                  type="file"
++                  accept="image/png,image/jpeg,image/webp"
++                  aria-label="Archivo de fotografía hero"
++                  disabled={!editar || subiendoArchivo}
++                  className="hidden"
++                  onChange={handleSeleccionarArchivo}
++                />
++                <div className="flex flex-col items-center justify-center gap-1.5">
++                  <div className="p-2 rounded-full bg-[var(--surface-2)]">
++                    <Upload className="size-5 text-[var(--ember)]" />
++                  </div>
++                  <Button
++                    type="button"
++                    variant="outline"
++                    size="sm"
++                    disabled={!editar || subiendoArchivo}
++                    onClick={() => fileInputRef.current?.click()}
++                    className="h-auto min-h-9 max-w-full gap-1.5 whitespace-normal text-xs"
++                  >
++                    {subiendoArchivo ? (
++                      <>
++                        <Loader2 className="size-3.5 animate-spin" />
++                        Cargando...
++                      </>
++                    ) : (
++                      <>
++                        <Upload className="size-3.5" />
++                        Seleccionar Foto desde tu Equipo (JPG, PNG, WebP)
++                      </>
++                    )}
++                  </Button>
++                  <p className="text-[11px] text-[var(--text-tertiary)]">
++                    Hasta 8MB. O si prefieres, escribe la URL o ruta abajo.
++                  </p>
++                </div>
++
++                {esRutaImagenHero(nuevaImagen.archivo.trim()) && (
++                  <div className="mt-2 flex min-w-0 items-center justify-center gap-2 rounded-lg bg-[var(--surface-2)] p-2">
++                    <img
++                      src={esRutaImagenHero(nuevaImagen.thumbnail.trim()) ? nuevaImagen.thumbnail : nuevaImagen.archivo}
++                      alt="Vista previa"
++                      className="size-12 object-cover rounded border border-[var(--border)]"
++                    />
++                    <div className="min-w-0 text-left text-xs">
++                      <span className="font-semibold text-[var(--success)] flex items-center gap-1">
++                        <Check className="size-3" /> Imagen lista para guardar
++                      </span>
++                      <span className="text-[10px] text-[var(--text-tertiary)] block break-all">
++                        {nuevaImagen.archivo.startsWith("data:") ? "Archivo local listo" : nuevaImagen.archivo}
++                      </span>
+                     </div>
+                   </div>
+-
+-                  {/* Botón de selección al pie */}
+-                  <div className="mt-3 pt-2.5 border-t border-[var(--border)] flex items-center justify-between">
+-                    <span className="text-[10px] text-[var(--text-tertiary)]">
+-                      {esActiva ? "Asignada actualmente" : "Clic para asignar"}
+-                    </span>
++                )}
++              </div>
++
++              <FormField label="Título de la imagen" required error={errores.titulo}>
++                {(campo) => (
++                  <Input
++                    {...campo}
++                    value={nuevaImagen.titulo}
++                    maxLength={160}
++                    disabled={!editar}
++                    placeholder="Ej: Diálogo Territorial en Olaya Herrera"
++                    onChange={(event) =>
++                      setNuevaImagen({ ...nuevaImagen, titulo: event.target.value })
++                    }
++                  />
++                )}
++              </FormField>
++
++              <FormField label="Descripción de la imagen" required error={errores.descripcion}>
++                {(campo) => (
++                  <Textarea
++                    {...campo}
++                    value={nuevaImagen.descripcion}
++                    maxLength={1200}
++                    disabled={!editar}
++                    placeholder="Describe el encuentro ciudadano, los participantes o el propósito cívico..."
++                    onChange={(event) =>
++                      setNuevaImagen({ ...nuevaImagen, descripcion: event.target.value })
++                    }
++                  />
++                )}
++              </FormField>
++
++              <FormField label="Enfoque o tema territorial" required error={errores.enfoque}>
++                {(campo) => (
++                  <Input
++                    {...campo}
++                    value={nuevaImagen.enfoque}
++                    maxLength={200}
++                    disabled={!editar}
++                    placeholder="Ej: Sector Rafael Núñez — Localidad 2"
++                    onChange={(event) =>
++                      setNuevaImagen({ ...nuevaImagen, enfoque: event.target.value })
++                    }
++                  />
++                )}
++              </FormField>
++
++              <FormField
++                label="URL o ruta de la imagen"
++                required
++                error={errores.archivo}
++                description="Dirección HTTPS, ruta local /images/... o archivo cargado."
++              >
++                {(campo) => (
++                  <Input
++                    {...campo}
++                    value={nuevaImagen.archivo}
++                    disabled={!editar}
++                    placeholder="https://ejemplo.gov.co/foto.webp o /images/foto.webp"
++                    onChange={(event) =>
++                      setNuevaImagen({ ...nuevaImagen, archivo: event.target.value })
++                    }
++                  />
++                )}
++              </FormField>
++
++              <FormField
++                label="URL o ruta de la miniatura (opcional)"
++                error={errores.thumbnail}
++                description="Si dejas este campo vacío se utilizará la misma imagen."
++              >
++                {(campo) => (
++                  <Input
++                    {...campo}
++                    value={nuevaImagen.thumbnail}
++                    disabled={!editar}
++                    onChange={(event) =>
++                      setNuevaImagen({ ...nuevaImagen, thumbnail: event.target.value })
++                    }
++                  />
++                )}
++              </FormField>
++
++              {errorFormulario && (
++                <p role="alert" className="text-sm text-danger">
++                  {errorFormulario}
++                </p>
++              )}
++
++              <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--border)]">
++                <Button type="submit" size="sm" disabled={!editar || subiendoArchivo} className="gap-1.5">
++                  <Plus className="size-3.5" />
++                  Guardar imagen
++                </Button>
++                <Button
++                  type="button"
++                  variant="outline"
++                  size="sm"
++                  onClick={() => setFormularioAbierto(false)}
++                >
++                  Cancelar
++                </Button>
++              </div>
++            </form>
++          )}
++
++          {!imagenesCatalogo.length && (
++            <p role="status" className="rounded-xl border border-border p-4 text-sm text-text-secondary">
++              No hay imágenes en la biblioteca. Agrega una nueva o restaura el catálogo oficial.
++            </p>
++          )}
++
++          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
++            {imagenesCatalogo.map((opcion) => {
++              const esActiva = customKey === opcion.id && opcion.habilitada;
++              return (
++                <article
++                  key={opcion.id}
++                  aria-label={opcion.titulo}
++                  data-testid={`imagen-hero-${opcion.id}`}
++                  className={`min-w-0 space-y-3 rounded-xl border p-3 ${
++                    esActiva ? "border-primary bg-surface-2" : "border-border bg-surface-1"
++                  }`}
++                >
++                  <div
++                    className={`relative aspect-video overflow-hidden rounded-lg border border-border bg-surface-2 ${
++                      !opcion.habilitada ? "opacity-50" : ""
++                    }`}
++                  >
++                    {opcion.archivo ? (
++                      <img
++                        src={opcion.thumbnail || opcion.archivo}
++                        alt={opcion.titulo}
++                        loading="lazy"
++                        className="h-full w-full object-cover"
++                      />
++                    ) : (
++                      <div className="bg-dotgrid flex h-full items-center justify-center p-3 text-center text-xs text-text-secondary">
++                        Solo retícula institucional
++                      </div>
++                    )}
++                  </div>
++
++                  <div className="flex flex-wrap items-center justify-between gap-2">
++                    <Badge variant={opcion.habilitada ? "success" : "outline"}>
++                      {opcion.habilitada ? "Habilitada" : "Deshabilitada"}
++                    </Badge>
++                    <Switch
++                      checked={opcion.habilitada}
++                      disabled={!editar}
++                      aria-label={`Habilitar ${opcion.titulo}`}
++                      onCheckedChange={() => {
++                        if (!editar) return;
++                        toggleHabilitarImagen(opcion.id);
++                        toast.success(
++                          `Imagen ${opcion.habilitada ? "deshabilitada" : "habilitada"}: ${opcion.titulo}`
++                        );
++                                        }}
++                    />
++                  </div>
++
++                  <div className="space-y-1">
++                    <h4 className="break-words text-sm font-semibold text-text-primary">
++                      {opcion.titulo}
++                    </h4>
++                    <p className="break-words text-xs font-medium text-text-secondary">
++                      {opcion.enfoque}
++                    </p>
++                    <p className="break-words text-xs text-text-secondary line-clamp-2">
++                      {opcion.descripcion}
++                    </p>
++                  </div>
++
++                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
+                     <Button
+                       type="button"
+                       variant={esActiva ? "default" : "outline"}
+                       size="sm"
+-                      disabled={!editar}
+-                      onClick={(e) => {
+-                        e.stopPropagation();
+-                        handleSeleccionarImagen(opcion);
+-                      }}
+-                      className="h-6 text-[10px] px-2 font-medium"
++                      disabled={!editar || !opcion.habilitada}
++                      aria-label={`Asignar ${opcion.titulo}`}
++                      onClick={() => handleSeleccionarImagen(opcion)}
+                     >
+                       {esActiva ? "Asignada" : "Asignar"}
+                     </Button>
++                    <Button
++                      type="button"
++                      variant="ghost"
++                      size="sm"
++                      disabled={!editar}
++                      aria-label={`Eliminar ${opcion.titulo}`}
++                      onClick={() =>
++                        setConfirmacion({
++                          tipo: "eliminar",
++                          id: opcion.id,
++                          titulo: opcion.titulo,
++                        })
++                      }
++                      className="text-xs text-[var(--text-tertiary)] hover:text-[var(--danger)]"
++                    >
++                      <Trash2 className="size-3.5" aria-hidden="true" />
++                      Eliminar
++                    </Button>
+                   </div>
+-                </div>
++                </article>
+               );
+             })}
+           </div>
+-        </div>
+-
+-        {/* ================= 6. ASIGNACIÓN DE IMAGEN EXTERNA / URL ================= */}
+-        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 space-y-2.5">
+-          <div className="flex items-center gap-2">
+-            <LinkIcon className="size-4 text-[var(--ember)]" />
+-            <span className="text-xs font-bold text-[var(--text-primary)]">
+-              Asignar Imagen Personalizada vía URL o Ruta Local
+-            </span>
+-          </div>
+-          <p className="text-[11px] text-[var(--text-secondary)]">
+-            Puedes vincular una fotografía externa o alojada en la plataforma (ej. `/images/...` o `https://...`) para {espacioActivo.nombre}.
+-          </p>
+-
+-          <div className="flex flex-col sm:flex-row gap-2">
+-            <Input
+-              type="text"
+-              value={urlPersonalizada}
+-              onChange={(e) => setUrlPersonalizada(e.target.value)}
+-              placeholder="https://ejemplo.gov.co/foto-comunitaria.webp o /images/..."
+-              disabled={!editar}
+-              className="text-xs flex-1"
+-            />
+-            <Button
+-              type="button"
+-              variant="default"
+-              size="sm"
+-              disabled={!editar || !urlPersonalizada.trim()}
+-              onClick={handleAplicarUrlPersonalizada}
+-              className="text-xs h-9 shrink-0 gap-1.5"
+-            >
+-              <Check className="size-3.5" />
+-              Aplicar a {espacioActivo.nombre}
+-            </Button>
+-          </div>
+-        </div>
++        </section>
++
+       </div>
+ 
+       {/* ================= 7. CALIBRACIÓN GLOBAL DE INTENSIDAD (OPACIDAD) ================= */}
+@@ -630,7 +1070,7 @@
+               onClick={() => {
+                 setOpacidad(preset.valor);
+                 toast.success(`Intensidad ambiental calibrada al ${preset.valor}%`);
+-              }}
++                        }}
+               className="h-8 text-xs font-medium"
+             >
+               {preset.etiqueta}
+--- antes/src/features/plataforma/components/gestor-heros-plataforma.test.tsx
++++ despues/src/features/plataforma/components/gestor-heros-plataforma.test.tsx
+@@ -52,7 +52,8 @@
+   test("renderiza la biblioteca completa de fotografías territoriales para asignación", () => {
+     const html = renderToString(<GestorHerosPlataforma />);
+ 
+-    expect(html).toContain("Biblioteca de Fotografías Territoriales Oficiales");
++    expect(html).toContain("Biblioteca de imágenes hero");
++    expect(html).toContain('aria-label="Biblioteca de imágenes hero"');
+     expect(html).toContain("Cabildo Abierto y Foro Ciudadano");
+     expect(html).toContain("Diálogo Social y Rendición de Cuentas");
+     expect(html).toContain("Taller Diferencial de Género y Juventud");
+@@ -64,7 +65,7 @@
+   test("renderiza la sección de asignación de URL personalizada y calibración de opacidad", () => {
+     const html = renderToString(<GestorHerosPlataforma />);
+ 
+-    expect(html).toContain("Asignar Imagen Personalizada vía URL o Ruta Local");
++    expect(html).toContain("Nueva imagen hero");
+     expect(html).toContain("Calibración Global de Intensidad Ambiental");
+     expect(html).toContain("Certificado WCAG 2.1 AA");
+     expect(html).toContain("80% (Recomendado)");
+@@ -95,3 +96,34 @@
+     expect(html).toContain("disabled");
+   });
+ });
++
++
++describe("Gestor de catálogo editable (243)", () => {
++  beforeEach(() => useHeroConfigStore.getState().resetearHeroConfig());
++  test("muestra disponibilidad y acciones con nombres accesibles por imagen", () => {
++    const html = renderToString(<GestorHerosPlataforma />);
++    expect(html).toContain("Habilitada");
++    expect(html).toContain('role="switch"');
++    expect(html).toContain('aria-label="Habilitar Cabildo Abierto y Foro Ciudadano"');
++    expect(html).toContain('aria-label="Eliminar Cabildo Abierto y Foro Ciudadano"');
++    expect(html).toContain("Restaurar catálogo oficial");
++    expect(html).toContain("Nueva imagen hero");
++  });
++  test("conserva en biblioteca las deshabilitadas pero desactiva su botón Asignar", () => {
++    useHeroConfigStore.getState().toggleHabilitarImagen("dialogo-comunitario");
++    const html = renderToString(<GestorHerosPlataforma />);
++    const boton = html.match(/<button\b[^>]*>/g)?.find((tag) => tag.includes('aria-label="Asignar Diálogo Social y Rendición de Cuentas"'));
++    expect(boton).toContain('disabled=""');
++    expect(html).toContain("Deshabilitada");
++    expect(html).toContain('data-testid="imagen-hero-dialogo-comunitario"');
++  });
++  test("muestra una biblioteca vacía recuperable y las fotografías agregadas con miniatura", () => {
++    for (const imagen of [...useHeroConfigStore.getState().imagenesCatalogo]) useHeroConfigStore.getState().eliminarImagen(imagen.id);
++    expect(renderToString(<GestorHerosPlataforma />)).toContain("No hay imágenes en la biblioteca");
++    const imagen = useHeroConfigStore.getState().agregarImagen({ titulo: "Nueva fotografía",
++      descripcion: "Registro de participación.", enfoque: "Cabildo", archivo: "/images/nueva-243.webp", thumbnail: "/images/miniatura-243.png" });
++    const html = renderToString(<GestorHerosPlataforma />);
++    expect(html).toContain(imagen.titulo);
++    expect(html).toContain(imagen.thumbnail);
++  });
++});
+--- antes/src/app/_stories/gestor-heros.stories.tsx
++++ despues/src/app/_stories/gestor-heros.stories.tsx
+@@ -0,0 +1,132 @@
++import type { Meta, StoryObj } from "@storybook/nextjs-vite";
++import { expect, userEvent, waitFor, within } from "storybook/test";
++import { createJSONStorage } from "zustand/middleware";
++import { GestorHerosPlataforma } from "@/features/plataforma/components/gestor-heros-plataforma";
++import { HERO_DEFAULT_IMAGE_ID, HERO_IMAGE_OPTIONS, useHeroConfigStore } from "@/features/politicas/state/hero-store";
++
++const meta = {
++  title: "Plataforma/Gestor de heros",
++  component: GestorHerosPlataforma,
++  args: { editar: true },
++  beforeEach() {
++    const fetchAnterior = globalThis.fetch;
++    globalThis.fetch = async (entrada, opciones) => {
++      const ruta = typeof entrada === "string" ? entrada : entrada instanceof URL ? entrada.href : entrada.url;
++      if (ruta.endsWith("/politicas/heros")) {
++        if (opciones?.method === "PUT") return new Response(opciones.body?.toString() ?? "{}", { status: 200, headers: { "Content-Type": "application/json" } });
++        const estado = useHeroConfigStore.getState();
++        return Response.json({ slides: estado.slides, catalogoImagenes: estado.imagenesCatalogo,
++          heroImageId: estado.heroImageId, opacidad: estado.opacidad, modoCarrusel: estado.modoCarrusel,
++          intervaloSegundos: estado.intervaloSegundos, pageImages: estado.pageImages });
++      }
++      if (ruta.endsWith("/politicas/heros/subir-imagen")) return Response.json({ url: "/images/hero/hero-marco-logico.webp?subida=243" });
++      throw new Error(`La historia no permite solicitudes externas: ${ruta}`);
++    };
++    const anterior = useHeroConfigStore.persist.getOptions().storage;
++    const memoria = new Map<string, string>();
++    useHeroConfigStore.persist.setOptions({ storage: createJSONStorage(() => ({
++      getItem: (clave) => memoria.get(clave) ?? null,
++      setItem: (clave, valor) => { memoria.set(clave, valor); },
++      removeItem: (clave) => { memoria.delete(clave); },
++    })) });
++    useHeroConfigStore.getState().resetearHeroConfig();
++    return () => {
++      globalThis.fetch = fetchAnterior;
++      useHeroConfigStore.getState().resetearHeroConfig();
++      useHeroConfigStore.persist.setOptions({ storage: anterior });
++    };
++  },
++  render: (args) => (
++    <div className="mx-auto w-full max-w-5xl space-y-4">
++      <h1 className="text-xl font-semibold text-text-primary">Gestión de imágenes hero</h1>
++      <h2 className="text-base font-semibold text-text-primary">Apariencia de los espacios públicos</h2>
++      <GestorHerosPlataforma {...args} />
++    </div>
++  ),
++} satisfies Meta<typeof GestorHerosPlataforma>;
++export default meta;
++type Story = StoryObj<typeof meta>;
++
++export const GestionCompleta: Story = {
++  play: async ({ canvasElement }) => {
++    const vista = within(canvasElement);
++    await userEvent.click(vista.getByRole("button", { name: "Nueva imagen hero" }));
++    await userEvent.type(vista.getByLabelText(/Título de la imagen/), "Encuentro vecinal 243");
++    await userEvent.type(vista.getByLabelText(/Descripción de la imagen/), "Diálogo y acuerdos de la comunidad.");
++    await userEvent.type(vista.getByLabelText(/Enfoque o tema territorial/), "Participación comunitaria");
++    await userEvent.type(vista.getByLabelText(/URL o ruta de la imagen/), "/images/hero/hero-marco-logico.webp?catalogo=243");
++    await userEvent.click(vista.getByRole("button", { name: "Guardar imagen" }));
++    const tarjeta = await vista.findByRole("article", { name: "Encuentro vecinal 243" });
++    const imagen = useHeroConfigStore.getState().imagenesCatalogo.find((fila) => fila.titulo === "Encuentro vecinal 243");
++    if (!imagen) throw new Error("El alta no quedó en el catálogo");
++    await expect(imagen.thumbnail).toBe(imagen.archivo);
++    await expect(vista.getAllByRole("article")).toHaveLength(7);
++    await userEvent.click(within(tarjeta).getByRole("button", { name: "Asignar Encuentro vecinal 243" }));
++    await expect(useHeroConfigStore.getState().heroImageId).toBe(imagen.id);
++    await userEvent.click(within(tarjeta).getByRole("switch"));
++    await expect(within(tarjeta).getByText("Deshabilitada")).toBeVisible();
++    await expect(within(tarjeta).getByRole("button", { name: "Asignar Encuentro vecinal 243" })).toBeDisabled();
++    await expect(useHeroConfigStore.getState().heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    await userEvent.click(within(tarjeta).getByRole("switch"));
++    await expect(within(tarjeta).getByRole("switch")).toBeChecked();
++    await userEvent.click(within(tarjeta).getByRole("button", { name: "Asignar Encuentro vecinal 243" }));
++    await userEvent.click(within(tarjeta).getByRole("button", { name: "Eliminar Encuentro vecinal 243" }));
++    await expect(vista.getByRole("button", { name: "Confirmar retiro" })).toBeVisible();
++    await expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(7);
++    await userEvent.click(vista.getByRole("button", { name: "Cancelar" }));
++    await expect(tarjeta).toBeVisible();
++    await userEvent.click(within(tarjeta).getByRole("button", { name: "Eliminar Encuentro vecinal 243" }));
++    await userEvent.click(vista.getByRole("button", { name: "Confirmar retiro" }));
++    await waitFor(() => expect(vista.queryByRole("article", { name: "Encuentro vecinal 243" })).not.toBeInTheDocument());
++    await expect(useHeroConfigStore.getState().heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
++    await expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(6);
++    await userEvent.click(vista.getByRole("button", { name: "Guardar Cambios en la Plataforma" }));
++    await waitFor(() => expect(useHeroConfigStore.getState().cambiosPendientes).toBe(false));
++  },
++};
++
++export const GestionCompletaOscura: Story = { ...GestionCompleta, globals: { theme: "dark" } };
++
++export const ValidacionYTeclado: Story = {
++  play: async ({ canvasElement }) => {
++    const vista = within(canvasElement);
++    const abrir = vista.getByRole("button", { name: "Nueva imagen hero" });
++    abrir.focus();
++    await userEvent.keyboard("{Enter}");
++    await expect(vista.getByRole("form", { name: "Nueva imagen hero" })).toBeVisible();
++    await userEvent.type(vista.getByLabelText(/Título de la imagen/), "Título conservado");
++    await userEvent.type(vista.getByLabelText(/URL o ruta de la imagen/), "javascript:alert(1)");
++    await userEvent.click(vista.getByRole("button", { name: "Guardar imagen" }));
++    await expect(vista.getByLabelText(/URL o ruta de la imagen/)).toHaveAttribute("aria-invalid", "true");
++    await expect(vista.getByLabelText(/Título de la imagen/)).toHaveValue("Título conservado");
++    await expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(6);
++    await expect(vista.getByRole("form", { name: "Nueva imagen hero" })).toBeVisible();
++  },
++};
++
++export const BibliotecaVacia: Story = {
++  beforeEach() {
++    for (const imagen of HERO_IMAGE_OPTIONS) useHeroConfigStore.getState().eliminarImagen(imagen.id);
++  },
++  play: async ({ canvasElement }) => {
++    const vista = within(canvasElement);
++    await expect(vista.getByText(/No hay imágenes en la biblioteca/)).toBeVisible();
++    await userEvent.click(vista.getByRole("button", { name: "Restaurar catálogo oficial" }));
++    await expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(0);
++    await userEvent.click(vista.getByRole("button", { name: "Confirmar restauración" }));
++    await waitFor(() => expect(vista.getAllByRole("article")).toHaveLength(6));
++    await expect(useHeroConfigStore.getState().imagenesCatalogo.every((imagen) => imagen.habilitada)).toBe(true);
++  },
++};
++
++export const SoloLectura: Story = {
++  args: { editar: false },
++  play: async ({ canvasElement }) => {
++    const vista = within(canvasElement);
++    await expect(vista.getByRole("button", { name: "Nueva imagen hero" })).toBeDisabled();
++    await expect(vista.getByRole("button", { name: "Restaurar catálogo oficial" })).toBeDisabled();
++    for (const control of vista.getAllByRole("switch")) await expect(control).toBeDisabled();
++    for (const boton of vista.getAllByRole("button", { name: /^Eliminar / })) await expect(boton).toBeDisabled();
++    await expect(useHeroConfigStore.getState().imagenesCatalogo).toHaveLength(6);
++  },
++};
