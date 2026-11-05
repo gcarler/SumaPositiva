@@ -159,6 +159,10 @@ describe("Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-29
       "500 propuestas",
       "polis.cartagena.gov.co",
       "@cartagena.gov.co",
+      "ALCALDÍA MAYOR DE CARTAGENA DE INDIAS",
+      "Edición Oficial",
+      "Documento Oficial",
+      "Comité Distrital de Seguridad Humana",
     ];
     for (const nombre of docs) {
       const filePath = path.resolve(process.cwd(), "public/docs", nombre);

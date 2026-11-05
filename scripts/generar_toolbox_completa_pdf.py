@@ -3,7 +3,7 @@
 Generador Maestro de la Caja de Herramientas de Seguridad Humana Integral
 Distrito Turístico y Cultural de Cartagena de Indias - POLIS Plataforma
 
-Genera 4 documentos oficiales multi-página, de alta calidad institucional y pedagógica:
+Genera 4 documentos de POLIS multi-página, de alta calidad institucional y pedagógica:
 1. ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf (Cartilla pedagógica de 8 páginas)
 2. PRESENTACION_DIAGNOSTICO_SEGURIDAD_HUMANA_CARTAGENA.pdf (Deck de diapositivas horizontales de 9 láminas)
 3. MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf (Matriz técnica horizontal de 5 páginas con tablas)
@@ -77,9 +77,10 @@ class NumberedCanvas(canvas.Canvas):
         self.setFillColor(C_TEXT_MUTED)
 
         # Encabezado
-        self.drawString(36, height - 28, "ALCALDÍA MAYOR DE CARTAGENA DE INDIAS")
+        marca = "POLIS • PLATAFORMA PARA LA CONSTRUCCIÓN DE POLÍTICAS PÚBLICAS"
+        self.drawString(36, height - 28, marca)
         self.setFont("Helvetica", 7.5)
-        self.drawString(240, height - 28, "•   POLIS: Plataforma Distrital de Seguridad Humana")
+        self.drawString(36 + self.stringWidth(marca, "Helvetica-Bold", 7.5) + 10, height - 28, "•   Seguridad Humana Integral • Cartagena de Indias")
         self.setStrokeColor(C_BORDER)
         self.setLineWidth(0.6)
         self.line(36, height - 32, width - 36, height - 32)
@@ -87,7 +88,7 @@ class NumberedCanvas(canvas.Canvas):
         # Pie de página
         self.line(36, 32, width - 36, 32)
         self.setFont("Helvetica", 7.5)
-        self.drawString(36, 22, "Documento Oficial de Consulta Pública • Ley 1757/2015 • Sentencia C-150/2015 • Decreto 1070/2021")
+        self.drawString(36, 22, "Documento de POLIS • Versión de trabajo para consulta • Ley 1757/2015 • Sentencia C-150/2015 • Decreto 1070/2021")
         page_str = f"Página {self._pageNumber} de {page_count}"
         self.drawRightString(width - 36, 22, page_str)
         self.restoreState()
@@ -142,7 +143,7 @@ class SlideCanvas(canvas.Canvas):
         self.line(24, 22, width - 24, 22)
         self.setFont("Helvetica", 7.5)
         self.setFillColor(C_TEXT_MUTED)
-        self.drawString(24, 12, "Secretaría del Interior y Convivencia Ciudadana • Secretaría de Planeación Distrital")
+        self.drawString(24, 12, "Documento de POLIS • Plataforma para la construcción de políticas públicas")
         self.drawRightString(width - 24, 12, f"Diapositiva {self._pageNumber} de {page_count}")
         self.restoreState()
 
@@ -329,9 +330,9 @@ def generar_doc_abc():
 
     # ------------------ PÁGINA 1: PORTADA OFICIAL ------------------
     badge_data = [[
-        Paragraph("<b>ALCALDÍA MAYOR DE CARTAGENA DE INDIAS</b><br/>"
-                  "<font color='#0284C7'>Secretaría del Interior y Convivencia Ciudadana • Secretaría de Planeación Distrital</font>", st["BodyBold"]),
-        Paragraph("<b>POLIS CARTAGENA</b><br/><font color='#64748B'>Edición Oficial 2026–2036</font>", st["BodyBold"])
+        Paragraph("<b>POLIS • PLATAFORMA PARA LA CONSTRUCCIÓN DE POLÍTICAS PÚBLICAS</b><br/>"
+                  "<font color='#0284C7'>Documento de POLIS • Seguridad Humana Integral en Cartagena de Indias</font>", st["BodyBold"]),
+        Paragraph("<b>POLIS CARTAGENA</b><br/><font color='#64748B'>Versión de trabajo 2026–2036</font>", st["BodyBold"])
     ]]
     t_head = Table(badge_data, colWidths=[380, 160])
     t_head.setStyle(TableStyle([
@@ -386,7 +387,7 @@ def generar_doc_abc():
     story.append(PageBreak())
 
     # ------------------ PÁGINA 2: PRESENTACIÓN INSTITUCIONAL Y TABLA DE CONTENIDO ------------------
-    story.append(Paragraph("Presentación Institucional del Distrito", st["H1"]))
+    story.append(Paragraph("Presentación", st["H1"]))
     story.append(Paragraph(
         "Cartagena de Indias inicia una transformación histórica en su manera de concebir el orden y la convivencia. "
         "Durante décadas, la política de seguridad distrital estuvo reducida casi con exclusividad a la reacción policial, "
@@ -425,9 +426,9 @@ def generar_doc_abc():
     story.append(Spacer(1, 14))
 
     # Cuadro de autoridades distritales
-    story.append(Paragraph("Gobernanza Distrital de la Política Pública", st["H2"]))
+    story.append(Paragraph("Actores distritales con los que se propone articular la política (por confirmar con cada dependencia)", st["H2"]))
     gov_data = [
-        [Paragraph("<b>Alcalde Mayor de Cartagena:</b>", st["TableCellBold"]), Paragraph("Dirección General y Presidencia del Comité Distrital de Seguridad Humana", st["TableCell"])],
+        [Paragraph("<b>Alcalde Mayor de Cartagena:</b>", st["TableCellBold"]), Paragraph("Dirección general de la administración distrital", st["TableCell"])],
         [Paragraph("<b>Secretaría del Interior y Convivencia:</b>", st["TableCellBold"]), Paragraph("Coordinación operativa, concertación de mesas y convivencia comunitaria", st["TableCell"])],
         [Paragraph("<b>Secretaría de Planeación Distrital:</b>", st["TableCellBold"]), Paragraph("Alineación con el Decreto 1070/2021, PDD y Banco de Proyectos Distrital", st["TableCell"])],
         [Paragraph("<b>Secretaría de Hacienda Distrital:</b>", st["TableCellBold"]), Paragraph("Garantía de viabilidad fiscal, recursos FONSET y cofinanciación SGP", st["TableCell"])],
@@ -793,7 +794,7 @@ def generar_doc_abc():
     story.append(Spacer(1, 14))
 
     final_box = [
-        [Paragraph("<b>COMPROMISO CON LA TRANSPARENCIA:</b> Este documento fue producido como parte de la estrategia de democratización del conocimiento de la Alcaldía Mayor de Cartagena de Indias y POLIS. Si un funcionario se niega a recibir o tramitar tu propuesta con fe pública, puedes reportarlo inmediatamente ante la Personería Distrital.", st["Callout"])]
+        [Paragraph("<b>COMPROMISO CON LA TRANSPARENCIA:</b> Este documento fue producido por POLIS como parte de su estrategia de democratización del conocimiento sobre seguridad humana. Si un funcionario se niega a recibir o tramitar tu propuesta con fe pública, puedes reportarlo inmediatamente ante la Personería Distrital.", st["Callout"])]
     ]
     t_fin = Table(final_box, colWidths=[540])
     t_fin.setStyle(TableStyle([
@@ -849,7 +850,7 @@ def generar_doc_presentacion():
     ]))
 
     d1_card = [
-        [Paragraph("<font color='#F59E0B'><b>ALCALDÍA MAYOR DE CARTAGENA DE INDIAS</b></font> &nbsp;•&nbsp; <font color='#38BDF8'>POLIS: PLATAFORMA DE POLÍTICAS PÚBLICAS Y SEGURIDAD HUMANA</font>", st["CoverPill"])],
+        [Paragraph("<font color='#F59E0B'><b>POLIS</b></font> &nbsp;•&nbsp; <font color='#38BDF8'>PLATAFORMA PARA LA CONSTRUCCIÓN DE POLÍTICAS PÚBLICAS</font>", st["CoverPill"])],
         [Spacer(1, 10)],
         [Paragraph("DIAGNÓSTICO MULTIDIMENSIONAL DE SEGURIDAD HUMANA INTEGRAL", st["CoverTitle"])],
         [Paragraph("Guía Ejecutiva en Diapositivas para Facilitadores, Asambleas Barriales y Juntas de Acción Comunal (2026–2036)", st["CoverSub"])],
@@ -1500,7 +1501,7 @@ def generar_doc_presentacion():
         [Spacer(1, 10)],
         [t_ch],
         [Spacer(1, 16)],
-        [Paragraph("<font color='#64748B'>Alcaldía Mayor de Cartagena de Indias • Secretaría del Interior • Secretaría de Planeación Distrital</font><br/><font color='#F59E0B'><b>POLIS: Plataforma Integral de Participación, Inteligencia Territorial y Seguridad Humana</b></font>", st["CoverMetaCardText"])],
+        [Paragraph("<font color='#64748B'>Documento de POLIS • Cartagena de Indias</font><br/><font color='#F59E0B'><b>POLIS: Plataforma Integral de Participación, Inteligencia Territorial y Seguridad Humana</b></font>", st["CoverMetaCardText"])],
     ]
     t_d10 = Table(d10_card, colWidths=[720])
     t_d10.setStyle(TableStyle([
@@ -2019,4 +2020,4 @@ if __name__ == "__main__":
     generar_doc_presentacion()
     generar_doc_matriz()
     generar_doc_facilitadores()
-    print("¡Todos los 4 documentos oficiales multi-página fueron generados con éxito!")
+    print("¡Los 4 documentos de POLIS fueron generados con éxito!")

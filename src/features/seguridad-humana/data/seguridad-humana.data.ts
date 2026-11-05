@@ -285,7 +285,7 @@ export const DOCUMENTOS_DESCARGABLES: DocumentoDescargable[] = [
     titulo: "El ABC de la Seguridad Humana Integral",
     subtitulo: "Cartilla Pedagógica Ciudadana",
     descripcion:
-      "Guía oficial explicativa con conceptos clave, los 3 pilares ONU, las 7 dimensiones distritales y cómo incidir en el Plan Decenal de Cartagena 2026–2036.",
+      "Guía explicativa con conceptos clave, los 3 pilares ONU, las 7 dimensiones distritales y cómo incidir en el Plan Decenal de Cartagena 2026–2036.",
     badge: "Documento Maestro",
     archivoUrl: "/docs/ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf",
     nombreDescarga: "ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf",

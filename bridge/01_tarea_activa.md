@@ -33,7 +33,8 @@
 | 296 | `agy` | Auditoría del catálogo, endpoint `/catalogo` y página `/indicadores` | `bridge/296_entrega_agy_auditoria_catalogo_indicadores.md` (APROBADO catálogo+backend para commit; página NO aprobada para despliegue, ver B-1..B-4) |
 | 297 | `codex` | QA independiente sobre 295 y 296 (solo lectura). Reasignado desde opencode (cupo agotado hasta 2026-11-06) | `bridge/297_entrega_codex_qa_independiente_indicadores.md` (ASIGNADO) |
 | 298 | `agy2` | Corrección de la página `/indicadores` según los hallazgos B-2, B-3, B-4 y N-1..N-9 del dictamen 296 (sin tocar menú, backend ni despliegue) | `bridge/298_entrega_agy2_correccion_pagina_indicadores.md` (ASIGNADO) |
-Especificaciones: `bridge/275_tarea_*` a `298_tarea_*`. QA independiente posterior: `opencode`.
+| 299 | `ollamacodex` | Cierre de pendientes del catálogo (M-1..M-3, N-5, N-8): registro y validador de cifras publicadas, ampliación de cobertura, pruebas del backend `/catalogo` | `bridge/299_entrega_ollamacodex_cierre_catalogo.md` (ASIGNADO) |
+Especificaciones: `bridge/275_tarea_*` a `299_tarea_*`. QA independiente posterior: `opencode`.
 
 ---
 
