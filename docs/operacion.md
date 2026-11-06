@@ -178,11 +178,12 @@ Los controles de tasa por IP implementados en memoria de proceso (como `verifica
    - Para garantizar un tope global sincronizado en despliegues con alta concurrencia o múltiples réplicas, debe activarse la persistencia de control de tasa en base de datos PostgreSQL (`LimiteAcceso` gestionado por SQLAlchemy) o integrarse un almacén compartido de baja latencia como Redis (`redis-py` con algoritmos de token bucket o sliding log).
    - Los encabezados estándar `Retry-After` informan al cliente la ventana de espera requerida ante respuestas `429 Too Many Requests`.
 
-## Release web y fuente policial — 2026-11-05
+## Release web y fuente policial — actualización 2026-11-06
 
 El frontend de este servidor usa el artefacto independiente
-`/root/polis-releases/policia_20261105_r4/standalone` (BUILD_ID
-`OAxfyeL6zYlliit_tjpTq`, compilado desde el commit `db13df2`), seleccionado mediante
+`/root/polis-releases/cierre_integral_20261106_303_r3/standalone` (BUILD_ID
+`21UffGGJqZgPoKtAmRQTy`, código del commit `fcdd163`, preparación operativa
+`c279152d`), seleccionado mediante
 `/etc/systemd/system/polis-frontend.service.d/20261105-policia.conf`.
 El drop-in sustituye `WorkingDirectory` y vacía `ExecStartPre`: el artefacto ya
 incluye `public` y los estáticos correspondientes a su `distDir`. Reconstruir
@@ -194,13 +195,15 @@ ejecutar `daemon-reload` y reiniciar; conservar la release anterior para recuper
 
 | Release | BUILD_ID | Estado |
 | --- | --- | --- |
-| `policia_20261105_r4` | `OAxfyeL6zYlliit_tjpTq` | **Activa.** Compilación desde `db13df2`; incluye catálogo/correcciones de indicadores y PDFs vigentes. |
+| `cierre_integral_20261106_303_r3` | `21UffGGJqZgPoKtAmRQTy` | **Activa.** Encargo 303; 20 comprobaciones públicas aprobadas el 2026-11-06 12:48 UTC. Código `fcdd163`, con igual huella de ejecución tras preparación `c279152d`. |
+| `policia_20261105_r4` | `OAxfyeL6zYlliit_tjpTq` | Recuperación inmediata. Compilación desde `db13df2`; conservada con sus archivos. |
 | `policia_20261105_r3` | `t_hB5NUNhAETptselQ5rf` | Anterior funcional. Para volver, cambiar `WorkingDirectory` del drop-in a su directorio, `systemctl daemon-reload`, reiniciar y comprobar `/`, `/indicadores` y la API. |
 | `policia_20261105_r2` | `4jHdMKefPyBO4zRFx1Qy0` | Anterior funcional. Al volver, `/indicadores` deja de existir. |
 | `policia_20261105` | — | Primera release de la integración policial. |
 
-**Archivos de `public/docs` en la release activa.** En `r4`, los cuatro PDF provienen
-directamente de la compilación desde `db13df2`; no requieren reemplazo manual posterior.
+**Archivos de `public/docs` en la release activa.** Los cuatro PDF provienen de la
+compilación de 303; se regeneró su hash de linaje sin cambiar las cifras. Los SHA
+servidos se cotejaron con el repositorio. En el histórico `r4` provenían de `db13df2`.
 El histórico `r3` se construyó con `5e39828` y luego tuvo copia manual; sus originales
 previos están en `/root/polis-releases/policia_20261105_r3/_respaldo_docs_20261105_previo_rotulo_polis/`.
 Los PDF se regeneran con `backend/.venv/bin/python scripts/generar_toolbox_completa_pdf.py`;
@@ -217,3 +220,29 @@ La migración `0096_riesgo_sin_evaluar` admite conteos sin calificación de ries
 Su downgrade exige restaurar antes esos registros; no convierte la ausencia de
 evaluación en riesgo bajo o medio. Evidencia y recuperación específica de esta
 entrega: `bridge/20261105_integracion_policia_produccion.md`.
+
+### Comprobación y recuperación del cierre 303
+
+La versión pública se identifica con `/release-polis.json` (commit de código,
+BUILD_ID y huella de recursos). La evidencia se registra en
+`bridge/303_evidencia_cierre/activacion_produccion.json` y
+`verificacion_produccion.json`; el informe completo es
+`bridge/303_entrega_codex_cierre_integral.md`. La cabeza de `main` puede incluir
+después el cierre documental sin cambiar el código compilado.
+
+Antes del smoke se espera una respuesta HTTP con el commit y BUILD_ID esperados;
+`systemctl is-active` por sí solo no acredita disponibilidad de Next. Se conservan
+los dos intentos iniciales restaurados y el diagnóstico de arranque.
+
+Nginx oculta las CSP de upstream y publica su propia política desde
+`/etc/nginx/snippets/polis-csp.conf`. La referencia versionada es
+`docs/nginx-csp-polis.conf`. **El modo efectivo sigue siendo Report-Only**; el
+encargo 303 alineó `https://accounts.google.com/gsi/style`, validó `nginx -t` y
+recargó Nginx conservando ese modo. Enforce exige la decisión EAF prevista; las
+pruebas no acreditan bloqueo CSP en el dominio público.
+
+Los respaldos `recuperacion_dropin_r4.conf` y `recuperacion_nginx_csp.conf` están en
+`/root/polis-releases/cierre_integral_20261106_303_r3/`. Para recuperar el frontend,
+restaurar el drop-in anterior, ejecutar `systemctl daemon-reload`, reiniciar
+`polis-frontend.service` y comprobar páginas, API y estáticos. El backend no se
+reinició y no se aplicaron migraciones productivas en este cierre.

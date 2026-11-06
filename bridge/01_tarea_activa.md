@@ -37,7 +37,7 @@
 | 300 | `ollamacodex` | Correcciones del catálogo y validador según QA 297 (H297-01, 02, 07, 09), después del 299 | `bridge/300_entrega_ollamacodex_correcciones_qa297.md` (EN COLA) |
 | 301 | `agy2` | Accesibilidad y estados de `/indicadores` según QA 297 (H297-05, 06, O297-01, 02) | `bridge/301_entrega_agy2_accesibilidad_indicadores.md` (COMPLETADO Y ENTREGADO: 28/28 tests, axe 0 violaciones, gates limpios) |
 | 302 | `agy2` | Diferenciación estructural del Marco de la Política Pública de Seguridad Humana vs. Marco Legal de la Plataforma POLIS en `/marco-legal` | `bridge/302_entrega_agy2_diferenciacion_marcos_legales.md` (COMPLETADO Y ENTREGADO: 9/9 tests, gates limpios) |
-| 303 | `codex` | Cierre integral verificable de POLIS: pruebas E2E aisladas (polis_test_303*, HTTP 18303-18305), marco-legal, indicadores y release | `bridge/303_entrega_codex_cierre_integral.md` (EN EJECUCIÓN) |
+| 303 | `codex` | Cierre integral verificable de POLIS: pruebas E2E aisladas (polis_test_303*, HTTP 18303-18305), marco-legal, indicadores y release | `bridge/303_entrega_codex_cierre_integral.md` (CIERRE TÉCNICO PUBLICADO: 910 Bun, 258 historias, 1838 backend distintos / 1 omisión, 20 comprobaciones públicas; datos y EAF pendientes documentados) |
 Especificaciones: `bridge/275_tarea_*` a `303_tarea_*`. QA independiente posterior: `opencode`.
 
 ---

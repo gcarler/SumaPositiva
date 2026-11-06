@@ -1,7 +1,7 @@
 {
   "encargo": 303,
-  "estado": "validado_para_activar",
-  "fecha_utc": "2026-11-06T12:47:12.774509+00:00",
+  "estado": "cierre_tecnico_publicado_con_pendientes_externos",
+  "fecha_utc": "2026-11-06T12:50:16.851144+00:00",
   "base_commit": "afccb469de3dc66fe9e4c10d19a81911253b997e",
   "huella_codigo_recursos_sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
   "C1": {
@@ -586,12 +586,23 @@
     "criterios_pendientes": "bridge/303_evidencia_cierre/fichas_pendientes_publicacion.md"
   },
   "C4": {
-    "estado": "candidata_preparada_sin_activar",
+    "estado": "activado_y_verificado",
     "release": "/root/polis-releases/cierre_integral_20261106_303_r3/standalone",
     "build_id": "21UffGGJqZgPoKtAmRQTy",
     "recuperacion": "/root/polis-releases/policia_20261105_r4/standalone",
     "migraciones_productivas_ejecutadas": false,
-    "commit_codigo": "fcdd16306fe982926257c19f1d3df90bcf7b191c"
+    "commit_codigo": "fcdd16306fe982926257c19f1d3df90bcf7b191c",
+    "commit_preparacion_operativa": "c279152d8827f8002d2d0e161081511bd8196ece",
+    "activacion_utc": "2026-11-06T12:48:16.713409+00:00",
+    "verificacion": "bridge/303_evidencia_cierre/verificacion_produccion.json",
+    "comprobaciones_http_aprobadas": 20,
+    "errores": 0,
+    "frontend_pid": "534352",
+    "backend_pid_conservado": "13477",
+    "backend_reiniciado": false,
+    "nginx_recargado": true,
+    "csp_modo": "report_only",
+    "recuperaciones_previas": 2
   },
   "pendientes": [
     "guion oficial Google Workspace",

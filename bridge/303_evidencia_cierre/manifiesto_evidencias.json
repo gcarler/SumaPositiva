@@ -151,6 +151,19 @@
     {
       "archivo": "bridge/303_evidencia_cierre/nginx_csp_efectiva.json",
       "sha256": "8ae83df66846620c43a3931376f5fcea813b701955af903de3db8b310a86b9d7"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/activacion_produccion.json",
+      "sha256": "ee803dc4dfb0b56908086facfff193b783a402dc91945305fc6c1185f8fd9f2c"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/verificacion_produccion.json",
+      "sha256": "c72005f0439c9712a7df81b7a7205c13086905d0e232f998f3f60ee7519c9f88"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/laboratorio_finalizado.json",
+      "sha256": "04b821ee3fd47b5d206b1c0f87ddb42bc2b7036e931173b955666805cbecc3b3"
     }
-  ]
+  ],
+  "cierre_operativo_utc": "2026-11-06T12:51:36.890317+00:00"
 }

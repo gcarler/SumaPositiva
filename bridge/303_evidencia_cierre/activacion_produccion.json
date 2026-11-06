@@ -1,0 +1,61 @@
+{
+  "commit_preparacion_operativa": "c279152d8827f8002d2d0e161081511bd8196ece",
+  "nginx_csp_sha256": "6ab51c29fdeb4a58e4474df76577131fce0bb7d866d8c6f7fc306239dfa1c530",
+  "inicio_utc": "2026-11-06T12:48:13.203892+00:00",
+  "commit_codigo": "fcdd16306fe982926257c19f1d3df90bcf7b191c",
+  "build_id": "21UffGGJqZgPoKtAmRQTy",
+  "huella_codigo_recursos_sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
+  "antes": {
+    "frontend": {
+      "ActiveState": "active",
+      "MainPID": "531063",
+      "WorkingDirectory": "/root/polis-releases/policia_20261105_r4/standalone"
+    },
+    "backend": {
+      "ActiveState": "active",
+      "MainPID": "13477",
+      "WorkingDirectory": "/root/polis/backend"
+    }
+  },
+  "release": "/root/polis-releases/cierre_integral_20261106_303_r3/standalone",
+  "recuperacion": "/root/polis-releases/policia_20261105_r4/standalone",
+  "migraciones_productivas_ejecutadas": false,
+  "backend_reiniciado": false,
+  "espera_http": [
+    {
+      "intento": 0,
+      "estado": "no_disponible",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "intento": 1,
+      "estado": "no_disponible",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "intento": 2,
+      "estado": "no_disponible",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "intento": 3,
+      "http": 200,
+      "version_correcta": true
+    }
+  ],
+  "estado": "activado_y_verificado",
+  "despues": {
+    "frontend": {
+      "ActiveState": "active",
+      "MainPID": "534352",
+      "WorkingDirectory": "/root/polis-releases/cierre_integral_20261106_303_r3/standalone"
+    },
+    "backend": {
+      "ActiveState": "active",
+      "MainPID": "13477",
+      "WorkingDirectory": "/root/polis/backend"
+    }
+  },
+  "fin_utc": "2026-11-06T12:48:16.713409+00:00",
+  "recuperacion_ejecutada": false
+}

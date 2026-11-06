@@ -1,7 +1,9 @@
 # Encargo 303 — Cierre integral verificable de POLIS
 
 Fecha de trabajo: 2026-11-06 (UTC). Base: `afccb469de3dc66fe9e4c10d19a81911253b997e`.
-Estado de esta revisión: **validación técnica completada**; candidata preparada, **sin activar todavía**.
+Estado de esta revisión: **cierre técnico publicado y verificado en producción**.
+Activación comprobada: **2026-11-06 12:48:16 UTC**. Los pendientes de datos y EAF
+descritos abajo conservan su estado.
 
 ## Alcance y resultado
 
@@ -14,6 +16,9 @@ Las pruebas se hicieron en `polis_test_303*`: PostgreSQL 16 en `127.0.0.1:5433`,
 PostgreSQL 18 propio en `127.0.0.1:15433` y puertos HTTP 18303–18305/18404–18405.
 No se utilizó `bd_csh` para pruebas, no se enviaron correos reales y no se modificó
 Postfix. Los datos y credenciales del laboratorio se conservaron fuera de Git.
+Al terminar se detuvieron el backend HTTP 18303 y el PostgreSQL propio 15433;
+se conservaron sus datos y evidencias para reproducción. El Docker compartido
+de pruebas y los servicios productivos no se detuvieron con esa limpieza.
 
 ## Correcciones
 
@@ -120,14 +125,38 @@ de fuentes de POLIS.
 
 ## Producción y recuperación
 
-Candidata preparada: `/root/polis-releases/cierre_integral_20261106_303_r3/standalone`,
+Release activa: `/root/polis-releases/cierre_integral_20261106_303_r3/standalone`,
 BUILD_ID **`21UffGGJqZgPoKtAmRQTy`**. El artefacto incluye `public` y estáticos;
 no contiene enlaces a dependencias externas a su directorio.
 
-La selección de producción continúa en `policia_20261105_r4` hasta completar los
-controles finales y registrar commit/push. Se conserva esa release y una copia
-del drop-in para recuperación. La activación y comprobación posterior se anotarán
-en la matriz 303 y en operación. No se requiere cambiar el esquema productivo.
+- Código de ejecución: **`fcdd16306fe982926257c19f1d3df90bcf7b191c`**.
+- Preparación operativa y pruebas del proxy: **`c279152d8827f8002d2d0e161081511bd8196ece`**.
+  Ambos commits están publicados en `origin/main`.
+- Huella de 892 archivos de código y recursos:
+  `1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63`.
+  Los cambios posteriores de pruebas y documentación no alteraron esa huella.
+- **20/20 comprobaciones HTTP públicas**, sin errores: páginas, API, versión,
+  tres estáticos, cuatro PDF con SHA coincidente y rechazo de acceso a `.env`.
+  Evidencia: [verificacion_produccion.json](303_evidencia_cierre/verificacion_produccion.json).
+- Frontend PID **534352**. Backend PID **13477**, conservado. No se aplicaron
+  migraciones ni se reinició el backend durante esta publicación.
+- El proxy conserva **CSP Report-Only**, X-Frame-Options DENY y las cabeceras
+  complementarias. Se sincronizó únicamente la excepción de estilos `gsi/style`;
+  `nginx -t` y la recarga resultaron correctos. La decisión de Enforce sigue
+  pendiente de EAF; no se acredita bloqueo CSP de recursos en el dominio público.
+
+Se conservaron `policia_20261105_r4`, `recuperacion_dropin_r4.conf` y
+`recuperacion_nginx_csp.conf` dentro del directorio de la nueva release.
+La recuperación consiste en restaurar el directorio de trabajo anterior,
+recargar systemd, reiniciar solo el frontend y repetir las comprobaciones públicas.
+El cambio acotado de Nginx también tiene respaldo y hash en su evidencia.
+
+Hubo dos intentos previos restaurados a r4: una carrera entre el estado activo
+del proceso y su disponibilidad HTTP, y la política propia de Nginx que sustituía
+la de Next. Se añadió espera por commit/Build ID y se comprobó el modo efectivo
+Report-Only. Los intentos fallidos y el diagnóstico se conservaron; la activación
+final completó las mismas comprobaciones de contenido, versión, archivos y
+directivas, con el modo del proxy identificado explícitamente.
 
 Los transportes externos de Google/SMTP y todas las combinaciones de estado de
 cada módulo no quedan certificados por estos recorridos. Las credenciales reales

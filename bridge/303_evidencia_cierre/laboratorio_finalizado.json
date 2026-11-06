@@ -1,0 +1,9 @@
+{
+  "fecha_utc": "2026-11-06T12:51:09.707820+00:00",
+  "credenciales_incluidas": false,
+  "datos_laboratorio_conservados": true,
+  "base_productiva_modificada": false,
+  "docker_compartido_reiniciado": false,
+  "backend_http_18303": "detenido",
+  "postgres_15433": "detenido; datos conservados"
+}
