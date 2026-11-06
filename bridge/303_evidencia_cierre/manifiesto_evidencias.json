@@ -1,5 +1,5 @@
 {
-  "sellado_utc": "2026-11-06T12:37:13.172099+00:00",
+  "sellado_utc": "2026-11-06T12:47:12.765973+00:00",
   "evidencias": [
     {
       "archivo": "bridge/303_evidencia_cierre/backend_pg16_final.txt",
@@ -30,9 +30,9 @@
       "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
     },
     {
-      "archivo": "bridge/303_evidencia_cierre/bun_909.txt",
-      "sha256": "221f437a9a30cc96758eed77daf641da7bf423f18340ff9c717b9ec32f9aadd0",
-      "origen_sha256": "221f437a9a30cc96758eed77daf641da7bf423f18340ff9c717b9ec32f9aadd0",
+      "archivo": "bridge/303_evidencia_cierre/bun_910.txt",
+      "sha256": "e13f094385fc6216288397ea0e6e15e568faf052d570b97fee5dc4c1aa4cbb7d",
+      "origen_sha256": "6c376cf240bdc515860c8a2945d80032316b87a21865efe37fbb707a3871474d",
       "credenciales_redactadas": true,
       "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
     },
@@ -133,6 +133,24 @@
       "origen_sha256": "acb23ca8a42faafb711667185a93e7526a63858d29291cf1c08b0ff8ab3ead1f",
       "credenciales_redactadas": true,
       "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    }
+  ],
+  "evidencias_operativas": [
+    {
+      "archivo": "bridge/303_evidencia_cierre/activacion_intento_inicial.json",
+      "sha256": "d95c1465a79560321b87d368abdf94a86b522a50b4a8c38956cd514d9354b123"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/activacion_intento_segundo.json",
+      "sha256": "c9f2ec10f7b264451e1956dd3abe104c533170b12702b7b4ea929dc3130bd7a8"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/diagnostico_arranque_http.json",
+      "sha256": "eb4415ed9d373aaf19e5eb6a8cf4eb4d44e6f82ae93e66a1a0a2bec1ea800d46"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/nginx_csp_efectiva.json",
+      "sha256": "8ae83df66846620c43a3931376f5fcea813b701955af903de3db8b310a86b9d7"
     }
   ]
 }

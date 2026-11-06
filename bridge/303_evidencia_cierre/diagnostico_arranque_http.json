@@ -1,0 +1,28 @@
+{
+  "encargo": 303,
+  "causa": "El estado active de systemd precedió a la disponibilidad HTTP de Next; tres respuestas 502 durante arranque.",
+  "origen": "/var/log/nginx/access.log; selección por User-Agent POLIS-cierre-303 y segundo exacto; sin IP ni query",
+  "registros": [
+    {
+      "fecha": "06/Nov/2026:12:38:52 +0000",
+      "metodo": "GET",
+      "ruta": "/",
+      "http": 502
+    },
+    {
+      "fecha": "06/Nov/2026:12:38:52 +0000",
+      "metodo": "GET",
+      "ruta": "/indicadores",
+      "http": 502
+    },
+    {
+      "fecha": "06/Nov/2026:12:38:52 +0000",
+      "metodo": "GET",
+      "ruta": "/marco-legal",
+      "http": 502
+    }
+  ],
+  "correccion": "Esperar GET de release-polis.json con commit y Build ID correctos antes de ejecutar las mismas comprobaciones completas.",
+  "se_redujeron_comprobaciones": false,
+  "recuperacion_inicial_ejecutada": true
+}

@@ -25,7 +25,7 @@ Postfix. Los datos y credenciales del laboratorio se conservaron fuera de Git.
 | H303-04. Runner E2E peligroso | Eliminados respaldo de credenciales desde `.env` y `fuser -k`. Bases/plantilla y puertos explícitos, nombres `polis_test*`, rechazo de 5432 y puertos operativos. Un puerto ocupado se conserva. 28 pruebas de guardas. |
 | H303-05. Pruebas desactualizadas | Once páginas de presentación —diez láminas y anexo— y acceso «Gráficas y Comparación». Se mantuvieron las comprobaciones de cifras y contenido. |
 | H303-06. Edición PAS durante carga | Lista inicial vacía y estado de carga; botones de edición de contingencia protegidos. Un ID obsoleto informa indisponibilidad y no abre una creación. Verificación real con respuesta API retardada y persistencia tras recarga. |
-| H303-07. Google Identity y CSP | Permitida únicamente su hoja oficial `gsi/style` en `style-src`; permanecen el bloqueo de `unsafe-eval`, `frame-ancestors` y las restricciones de origen. |
+| H303-07. Google Identity y CSP | Permitida únicamente su hoja oficial `gsi/style` en `style-src`; se conservan las directivas sin `unsafe-eval`, `frame-ancestors` y las restricciones de origen. El proxy productivo conserva Report-Only y X-Frame-Options DENY. |
 | H303-08. Filtro abría ficha inexistente | Filtrar desde Datos/Gráficas/Banco ya no abre automáticamente un panel de territorio. Se conserva la apertura explícita desde el mapa. Regresión con código territorial fuera del catálogo de fichas. |
 | H303-09. Controles en paneles ocultos | Los paneles colapsados son `inert`; los contenedores etiquetados tienen rol de región. No se desactivó axe. |
 | H303-10. Botones dentro de tablist | Cierre de vista activa fuera de la lista de pestañas; cierre con Suprimir y devolución del foco a otra pestaña o al control del panel. Se conserva arrastre y menú para mover vistas. |
@@ -33,6 +33,7 @@ Postfix. Los datos y credenciales del laboratorio se conservaron fuera de Git.
 | H303-12. Catálogo de indicadores | Diez fichas documentan licencia declarada CC BY-SA 4.0; PAE pasa de `PERS_006` a `SALUD_005`, con alias documentado. Las 29 fichas conservan `no_publicable`. |
 | H303-13. Barra de accesibilidad móvil | Arranque compacto en pantallas pequeñas, expansión de los mismos controles y devolución del foco. La captura real detectó una superposición de texto que no señalaban overflow/axe. |
 | H303-14. Referencias residuales en Trazabilidad | Retiradas la atribución distrital de 0037/2026 y las asociaciones erróneas de leyes 1417/1414/2175. Se identifican Ley 2166/2021, Ley 80/1993 y Ley 2294/2023. Las cinco fases y los códigos se presentan como propuesta y ejemplos, sin certificar adopción ni vínculos inexistentes. El vector de seguimiento identifica el perfil como POLIS. Dos regresiones adicionales aprobadas. |
+| H303-15. CSP del proxy | Nginx sustituye las cabeceras de Next. Se alinea la excepción `gsi/style`, se conserva el modo Report-Only y se comprueba el modo efectivo; Enforce queda sujeto a EAF. La primera activación expuso una carrera de arranque HTTP; la segunda detectó esta divergencia. Ambos intentos restauraron r4 y se conservaron. |
 
 ### Soporte documental
 
@@ -68,7 +69,7 @@ para forzar una prueba verde. La revisión EAF de esta corrección debe ser inde
   estática por dos decoradores de pruebas nuevas. Se corrigió la marca explícita
   `migration`; revalidación dirigida de 13 pruebas aprobada. No se acredita una
   segunda suite completa verde en 18 a partir de esa corrida inicial.
-- Frontend: **909 pruebas Bun aprobadas y 258 historias Storybook aprobadas**.
+- Frontend: **910 pruebas Bun aprobadas y 258 historias Storybook aprobadas**.
   Check del kit UI, TypeScript y ESLint: exit 0; builds Next y Storybook: exit 0.
 - Navegador E2E: nueve flujos críticos y cuatro ampliados; autoridad, auditor,
   administrador de identidades y participante público. Persistencia comprobada
@@ -110,7 +111,8 @@ su SHA `e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d`.
 
 Siguen pendientes la metodología/insumos de PAE y densidad institucional,
 condiciones específicas de reutilización aún no acreditadas, aprobaciones por
-producto y vigencias territoriales. Ver [fichas pendientes](303_evidencia_cierre/fichas_pendientes_publicacion.md)
+producto y vigencias territoriales. También queda pendiente la decisión EAF sobre
+CSP Enforce; el proxy usa Report-Only y las cabeceras complementarias. Ver [fichas pendientes](303_evidencia_cierre/fichas_pendientes_publicacion.md)
 y [matriz por indicador](303_evidencia_cierre/matriz_indicadores_fuentes.json).
 Una licencia declarada no acredita por sí sola calidad, vigencia ni aprobación
 institucional. Los 28 productos del SQLite tampoco equivalen a todo el inventario

@@ -84,12 +84,21 @@ def verificar(raiz: Path, build_id: str, commit: str, salida: Path):
             assert all(f["estado"] == "no_publicable" for f in fichas)
             assert any(f["codigo"] == "SALUD_005" for f in fichas)
         if ruta == "/marco-legal":
-            csp = headers.get("Content-Security-Policy") or headers.get(
-                "content-security-policy", ""
+            normalizadas = {clave.lower(): valor for clave, valor in headers.items()}
+            csp = normalizadas.get("content-security-policy") or normalizadas.get(
+                "content-security-policy-report-only", ""
+            )
+            prueba["csp_modo"] = (
+                "enforce"
+                if "content-security-policy" in normalizadas
+                else "report_only"
             )
             prueba["csp"] = csp
             assert "https://accounts.google.com/gsi/style" in csp
             assert "'unsafe-eval'" not in csp
+            assert "object-src 'none'" in csp
+            assert "frame-ancestors 'none'" in csp
+            assert normalizadas.get("x-frame-options") == "DENY"
             assert "Decreto Nacional 0037 de 2026" in paginas[ruta]
             assert "Decreto Distrital 037 de 2026" not in paginas[ruta]
         if ruta == "/trazabilidad":

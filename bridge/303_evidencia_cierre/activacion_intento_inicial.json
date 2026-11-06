@@ -1,0 +1,31 @@
+{
+  "inicio_utc": "2026-11-06T12:38:50.794808+00:00",
+  "commit_codigo": "fcdd16306fe982926257c19f1d3df90bcf7b191c",
+  "build_id": "21UffGGJqZgPoKtAmRQTy",
+  "huella_codigo_recursos_sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
+  "antes": {
+    "frontend": {
+      "ActiveState": "active",
+      "MainPID": "13478",
+      "WorkingDirectory": "/root/polis-releases/policia_20261105_r4/standalone"
+    },
+    "backend": {
+      "ActiveState": "active",
+      "MainPID": "13477",
+      "WorkingDirectory": "/root/polis/backend"
+    }
+  },
+  "release": "/root/polis-releases/cierre_integral_20261106_303_r3/standalone",
+  "recuperacion": "/root/polis-releases/policia_20261105_r4/standalone",
+  "migraciones_productivas_ejecutadas": false,
+  "backend_reiniciado": false,
+  "estado": "fallo_activacion",
+  "error": "Command '('/usr/bin/python3', '/root/polis/bridge/303_evidencia_cierre/verificar_produccion.py', '--raiz', '/root/polis', '--build-id', '21UffGGJqZgPoKtAmRQTy', '--commit', 'fcdd16306fe982926257c19f1d3df90bcf7b191c', '--salida', '/root/polis/bridge/303_evidencia_cierre/verificacion_produccion.json')' returned non-zero exit status 1.",
+  "fin_utc": "2026-11-06T12:38:52.066448+00:00",
+  "recuperacion_ejecutada": true,
+  "despues_recuperacion": {
+    "ActiveState": "active",
+    "MainPID": "529840",
+    "WorkingDirectory": "/root/polis-releases/policia_20261105_r4/standalone"
+  }
+}

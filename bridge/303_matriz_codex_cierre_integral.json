@@ -1,7 +1,7 @@
 {
   "encargo": 303,
   "estado": "validado_para_activar",
-  "fecha_utc": "2026-11-06T12:37:13.176405+00:00",
+  "fecha_utc": "2026-11-06T12:47:12.774509+00:00",
   "base_commit": "afccb469de3dc66fe9e4c10d19a81911253b997e",
   "huella_codigo_recursos_sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
   "C1": {
@@ -531,7 +531,7 @@
       }
     },
     "frontend_bun": {
-      "passed": 909,
+      "passed": 910,
       "failed": 0
     },
     "storybook": {
@@ -591,14 +591,14 @@
     "build_id": "21UffGGJqZgPoKtAmRQTy",
     "recuperacion": "/root/polis-releases/policia_20261105_r4/standalone",
     "migraciones_productivas_ejecutadas": false,
-    "commit_codigo": null
+    "commit_codigo": "fcdd16306fe982926257c19f1d3df90bcf7b191c"
   },
   "pendientes": [
     "guion oficial Google Workspace",
     "14 archivos rechazados por lector de estilos XLSX",
     "insumos/metodología PAE y densidad institucional",
     "condiciones/aprobación de publicación y vigencias territoriales",
-    "EAF independiente de las correcciones propias"
+    "EAF independiente de las correcciones propias y decisión CSP Enforce"
   ],
   "dictamen_independiente_emitido": false,
   "plataforma_100_por_ciento_acreditada": false
