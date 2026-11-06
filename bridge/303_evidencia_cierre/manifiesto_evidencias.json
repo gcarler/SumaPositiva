@@ -1,0 +1,138 @@
+{
+  "sellado_utc": "2026-11-06T12:37:13.172099+00:00",
+  "evidencias": [
+    {
+      "archivo": "bridge/303_evidencia_cierre/backend_pg16_final.txt",
+      "sha256": "68fad98164051baac7c973441e52bba75e4b7aeb318e05dcb189279e715bf868",
+      "origen_sha256": "68fad98164051baac7c973441e52bba75e4b7aeb318e05dcb189279e715bf868",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/backend_pg18_revalidacion.txt",
+      "sha256": "0f01b6c1c258749dbd5c1e7ff0844b4a4cdb17161f90dad335fb071abce125d7",
+      "origen_sha256": "0f01b6c1c258749dbd5c1e7ff0844b4a4cdb17161f90dad335fb071abce125d7",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/corpus_real_43.txt",
+      "sha256": "d4ba5d0561727fb09f77075297b2a72f485646132c06a21d57b726de9c18c91e",
+      "origen_sha256": "d4ba5d0561727fb09f77075297b2a72f485646132c06a21d57b726de9c18c91e",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/frontend_check.txt",
+      "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
+      "origen_sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/bun_909.txt",
+      "sha256": "221f437a9a30cc96758eed77daf641da7bf423f18340ff9c717b9ec32f9aadd0",
+      "origen_sha256": "221f437a9a30cc96758eed77daf641da7bf423f18340ff9c717b9ec32f9aadd0",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/storybook_258.txt",
+      "sha256": "2162f100cff0ceed586c44ce7f3d3b44706f78cffc60bb7c771a04d4e6723f6e",
+      "origen_sha256": "4717f1335d3fa5c464f850dabe3a40b247c9e49243c59598db10d58be29670c5",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/build_next.txt",
+      "sha256": "95c78c842d736602cf4859d7e5d99de69b6fae0f48756f208725e2527668fa90",
+      "origen_sha256": "906acef758154556c769362ed08bece67b205353e8fa2bdfa54bac9b0e97a419",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/e2e_criticos_9.txt",
+      "sha256": "6ce69571c596cd9d2235df66f37184feac25160390396ab715d21e8c0374c9d2",
+      "origen_sha256": "badf2e8e8316cf7f4aa60ced137322a5f138160e0f9648443bc75990ba10d053",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/e2e_ampliados_4.txt",
+      "sha256": "24c1038f11ca1df4dcdf3dcdf5cec18eff74d367ee52871321a7b293dec0bad9",
+      "origen_sha256": "e67b23f1c9a7fd2374e4f5d4d0851e03d4d17827cce20a65a7da6f7a50d886a3",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/marco_legal_artefacto.txt",
+      "sha256": "773cb92e1bed3143640d1c5bd0cf9d1b7a86db96383bf70353699558ba72a42c",
+      "origen_sha256": "773cb92e1bed3143640d1c5bd0cf9d1b7a86db96383bf70353699558ba72a42c",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/catalogo_29.txt",
+      "sha256": "906b71ade90899b81f2ea4d2861dec810a09ed49b6271be57f1643466f4c764b",
+      "origen_sha256": "906b71ade90899b81f2ea4d2861dec810a09ed49b6271be57f1643466f4c764b",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/cifras_61.txt",
+      "sha256": "5d5ea901a7a5539c112a6a5538755249b96d0664a68a207341b598144d23b451",
+      "origen_sha256": "5d5ea901a7a5539c112a6a5538755249b96d0664a68a207341b598144d23b451",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/guardas_js_16.txt",
+      "sha256": "c3254839244e3ebbdee3a824f0878161f956a256463cbf20222d1e7a1817671c",
+      "origen_sha256": "c3254839244e3ebbdee3a824f0878161f956a256463cbf20222d1e7a1817671c",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/guardas_py_12.txt",
+      "sha256": "7d5ea6cef570886176d391b11ba225b7fa4ff850bf726879edf9a16c683d6e3d",
+      "origen_sha256": "7d5ea6cef570886176d391b11ba225b7fa4ff850bf726879edf9a16c683d6e3d",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/regresiones_migracion.txt",
+      "sha256": "c6b0dcf274ecfb8b3d9acba81e8abe8f71e25ecc002931adde52c9a46c9e3ebc",
+      "origen_sha256": "c6b0dcf274ecfb8b3d9acba81e8abe8f71e25ecc002931adde52c9a46c9e3ebc",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/build_storybook.txt",
+      "sha256": "e50fc9747f0a964a9e014cf7fbb0626a72259c88b9234e58df9255769d1eb59c",
+      "origen_sha256": "d4a141e316609c78094a82e1c14ed9e818ca080680200410b1a2551ee6e30e91",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/backend_pg16_final.xml",
+      "sha256": "5843bdedf1e80137c45253293488b7f69dfa032a51c3f16607e31d5ad152ccec",
+      "origen_sha256": "f96b4b051e24792fb80a58795f0ae63666ad928ed508effec67b98b01a13d1f4",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/corpus_tests_final.xml",
+      "sha256": "daa7ac6c7b35a81639100e339771d67f28d2f94440f8a4ddc4749be6dfffe4dd",
+      "origen_sha256": "daa7ac6c7b35a81639100e339771d67f28d2f94440f8a4ddc4749be6dfffe4dd",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    },
+    {
+      "archivo": "bridge/303_evidencia_cierre/pg18_revalidacion.xml",
+      "sha256": "8dea77b24947988d9bd853dc4ac5b117b19060633c234f67c70f2bdc960e6689",
+      "origen_sha256": "acb23ca8a42faafb711667185a93e7526a63858d29291cf1c08b0ff8ab3ead1f",
+      "credenciales_redactadas": true,
+      "normalizacion": "ANSI retirado; tabs y espacios finales de logs normalizados"
+    }
+  ]
+}

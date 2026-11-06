@@ -22,9 +22,11 @@ describe("GeovisorDockHost", () => {
     expect(html).not.toContain('data-testid="contenido-capas"');
   });
 
-  test("cada pestaña es arrastrable y tiene botón de cierre accesible", () => {
+  test("las pestañas son arrastrables, admiten Suprimir y ofrecen cierre externo de la activa", () => {
     const html = renderToString(<GeovisorDockHost dock="bottom" renderView={render} />);
     expect(html).toContain('draggable="true"');
+    expect(html).toContain('aria-keyshortcuts="Delete"');
+    expect(html.match(/aria-label="Cerrar vista /g)).toHaveLength(1);
     expect(html).toContain('aria-label="Cerrar vista Analítica de Hurtos (2018–2026)"');
     expect(html).toContain('data-testid="dock-expand-bottom"');
     expect(html).toContain('data-testid="dock-menu-bottom"');

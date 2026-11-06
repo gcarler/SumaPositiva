@@ -13,8 +13,9 @@ describe("Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-30
     expect(metadata.title).toContain("Marcos Jurídicos, Doctrinales y Normativos");
     expect(metadata.description).toContain("Política Pública de Seguridad Humana de Cartagena");
     expect(metadata.description).toContain("Acuerdo 139/2024");
-    expect(metadata.description).toContain("Decreto 037/2026");
-    expect(metadata.description).toContain("Decreto 1070/2021");
+    expect(metadata.description).toContain("Decreto Nacional 0037/2026");
+    expect(metadata.description).toContain("Decreto Distrital 0730/2023");
+    expect(metadata.description).toContain("Decreto 1070/2021 como antecedente");
     expect(metadata.description).toContain("Ples SAS");
     expect(metadata.description).toContain("Ley 527/1999");
     expect(metadata.description).toContain("Ley 1581/2012");
@@ -41,15 +42,15 @@ describe("Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-30
     // Pilar A: Política Pública (Cartagena)
     expect(html).toContain(PILARES_INFO.politica.nombre);
     expect(html).toContain(PILARES_INFO.politica.entidad);
-    expect(html).toContain("35 Mesas Censo");
-    expect(html).toContain("7 Dimensiones ONU");
+    expect(html).toContain("35 mesas programadas");
+    expect(html).toContain("7 ejes POLIS");
 
     // Pilar B: Plataforma Digital (Ples SAS)
     expect(html).toContain(PILARES_INFO.plataforma.nombre);
     expect(html).toContain(PILARES_INFO.plataforma.entidad);
     expect(html).toContain("Ley 527 de 1999");
     expect(html).toContain("Ley 1581 (Habeas Data)");
-    expect(html).toContain("SHA-256 Criptográfico");
+    expect(html).toContain("Registro SHA-256");
   });
 
   test("4. Conmutador interactivo accesible (role='tablist', 'tab', 'tabpanel')", () => {
@@ -89,14 +90,14 @@ describe("Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-30
 
     // Normas de Cartagena
     expect(html).toContain("Acuerdo Distrital 139 de 2024");
-    expect(html).toContain("Decreto Distrital 037 de 2026");
+    expect(html).toContain("Decreto Nacional 0037 de 2026");
     expect(html).toContain("Decreto Distrital 1070 de 2021");
     expect(html).toContain("Secretaría de Planeación Distrital de Cartagena");
 
     // Constitución
     expect(html).toContain("Artículo 1 — Dignidad Humana y Democracia Participativa");
     expect(html).toContain("Artículo 2 — Fines Esenciales del Estado");
-    expect(html).toContain("Artículo 11 — Derecho Fundamental a la Vida y Seguridad Personal");
+    expect(html).toContain("Artículo 11 — Derecho Fundamental a la Vida");
     expect(html).toContain("Artículo 22 — Derecho y Deber de la Paz");
 
     // Nacional e Internacional
@@ -106,21 +107,21 @@ describe("Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-30
     expect(html).toContain("Libertad frente al Miedo, Necesidad y Vivir con Dignidad");
   });
 
-  test("7. Presencia íntegra de normas de la plataforma cívica POLIS y fe pública", () => {
+  test("7. Presencia de referencias de la plataforma y límites de valoración documental", () => {
     const html = renderToString(<MarcoLegalView />);
 
     // Fe Pública y Mensajes de Datos
     expect(html).toContain("Ley 527 de 1999 — Mensajes de Datos y Firma Digital");
-    expect(html).toContain("Sellado Criptográfico SHA-256 e Inmutabilidad de Actas Ciudadanas");
+    expect(html).toContain("Un hash permite contrastar contenido");
 
     // Habeas Data y Privacidad
     expect(html).toContain("Ley Estatutaria 1581 de 2012 y Decreto 1377 de 2013");
-    expect(html).toContain("Protocolo Pericial de Despojo de Metadatos EXIF / GPS");
+    expect(html).toContain("Minimización de metadatos EXIF / GPS");
 
     // Gobernanza Tecnológica y Veeduría
     expect(html).toContain("Ley 1712 de 2014 — Transparencia y Acceso a la Información");
     expect(html).toContain("Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015");
-    expect(html).toContain("Artículo 209 — Principios de la Función Administrativa Digital");
+    expect(html).toContain("Artículo 209 — Principios de la Función Administrativa");
 
     // Territorio y Finanzas
     expect(html).toContain("Ley 388 de 1997 y Ley 1454 de 2011 (LOOT)");
@@ -141,4 +142,23 @@ describe("Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-30
     const matchHttpInseguro = html.match(/href="http:\/\/[^"]+"/g);
     expect(matchHttpInseguro).toBeNull();
   });
+  test("10. Jurisdicción, sustitución y fuentes de las referencias corregidas", () => {
+    const distrital = SECCIONES_MARCO_LEGAL.find((s) => s.id === "distrital")!;
+    const nacional = SECCIONES_MARCO_LEGAL.find((s) => s.id === "nacional")!;
+    expect(distrital.normas.some((n) => n.id === "decreto-037-2026")).toBe(false);
+    expect(nacional.normas.find((n) => n.id === "decreto-037-2026")?.nivel).toBe("Decreto Nacional");
+    expect(distrital.normas.find((n) => n.id === "decreto-1070-2021")?.nivel).toBe("Antecedente distrital");
+    expect(distrital.normas.some((n) => n.id === "decreto-0730-2023")).toBe(true);
+    for (const seccion of SECCIONES_MARCO_LEGAL) {
+      expect(seccion.conteo).toBe(`${seccion.normas.length} referencias`);
+      for (const norma of seccion.normas) {
+        if (norma.fuenteUrl) expect(new URL(norma.fuenteUrl).protocol).toBe("https:");
+      }
+    }
+    const html = renderToString(<MarcoLegalView />);
+    expect(html).toContain("Consultar fuente oficial");
+    expect(html).not.toContain("Decreto Distrital 037");
+    expect(html).toContain("no constituye por sí solo certificación");
+  });
+
 });

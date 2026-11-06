@@ -82,6 +82,7 @@ export function SeguimientoView() {
   const esPreparatoria = fase3?.estado === "preparatoria";
 
   const compromisos = useCompromisosStore((s) => s.compromisos);
+  const cargandoCompromisos = useCompromisosStore((s) => s.cargando);
   const filtros = useCompromisosStore((s) => s.filtros);
   const setFiltros = useCompromisosStore((s) => s.setFiltros);
   const limpiarFiltros = useCompromisosStore((s) => s.limpiarFiltros);
@@ -457,11 +458,15 @@ export function SeguimientoView() {
 
           {/* DataGrid interactivo de Compromisos */}
           <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de los compromisos PAS" />
-          <CompromisosTabla
-            vista={vista}
-            compromisos={compromisosFiltrados}
-            puedeEditar={puedeEditarEfectivo}
-          />
+          {cargandoCompromisos ? (
+            <p role="status" className="p-6 text-sm text-text-secondary">Cargando compromisos institucionales…</p>
+          ) : (
+            <CompromisosTabla
+              vista={vista}
+              compromisos={compromisosFiltrados}
+              puedeEditar={puedeEditarEfectivo && !esContingencia}
+            />
+          )}
         </TabsContent>
 
         {/* Tab 2: Cadena de Valor y Seguimiento */}

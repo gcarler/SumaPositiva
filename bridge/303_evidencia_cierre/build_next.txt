@@ -1,0 +1,121 @@
+$ node scripts/build-polis.mjs
+▲ Next.js 16.3.8 (Turbopack)
+- Environments: .env.local, .env
+✓ Running next.config.ts took 145ms
+- Experiments (use with caution):
+  · proxyClientMaxBodySize: "40mb"
+
+  Creating an optimized production build ...
+Found 6 warnings while optimizing generated CSS:
+
+Issue #1:
+│   }
+│   .\[\&_\.recharts-cartesian-grid_line\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border\/50 {
+│     & .recharts-cartesian-grid line[stroke=\"#ccc\"] {
+┆                                              ^-- Unexpected token IDHash("ccc\"")
+┆
+│       stroke: var(--border);
+│       @supports (color: color-mix(in lab, red, red)) {
+
+Issue #2:
+│   }
+│   .\[\&_\.recharts-dot\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {
+│     & .recharts-dot[stroke=\"#fff\"] {
+┆                              ^-- Unexpected token IDHash("fff\"")
+┆
+│       stroke: transparent;
+│     }
+
+Issue #3:
+│   }
+│   .\[\&_\.recharts-polar-grid_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {
+│     & .recharts-polar-grid [stroke=\"#ccc\"] {
+┆                                      ^-- Unexpected token IDHash("ccc\"")
+┆
+│       stroke: var(--border);
+│     }
+
+Issue #4:
+│   }
+│   .\[\&_\.recharts-reference-line_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border {
+│     & .recharts-reference-line [stroke=\"#ccc\"] {
+┆                                          ^-- Unexpected token IDHash("ccc\"")
+┆
+│       stroke: var(--border);
+│     }
+
+Issue #5:
+│   }
+│   .\[\&_\.recharts-sector\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent {
+│     & .recharts-sector[stroke=\"#fff\"] {
+┆                                 ^-- Unexpected token IDHash("fff\"")
+┆
+│       stroke: transparent;
+│     }
+
+Issue #6:
+│   }
+│   .\[\&_\[stroke\=\\\'\#fff\\\'\]\]\:stroke-transparent {
+│     & [stroke=\'#fff\'] {
+┆                 ^-- Unexpected token IDHash("fff'")
+┆
+│       stroke: transparent;
+│     }
+
+✓ Compiled successfully in 10.8s
+  Running TypeScript ...
+  Finished TypeScript in 9.8s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/210) ...
+  Generating static pages using 7 workers (52/210)
+  Generating static pages using 7 workers (104/210)
+  Generating static pages using 7 workers (157/210)
+✓ Generating static pages using 7 workers (210/210) in 3.8s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /acerca
+├ ○ /acerca-de-polis
+├ ƒ /api/formularios/revalidar
+├ ƒ /aportes/[codigo]
+├   /asistencia/[mesaId]
+│ ├ ● /asistencia/mt-001
+│ ├ ● /asistencia/mt-002
+│ ├ ● /asistencia/mt-003
+│ └ ● [+173 more paths]
+├ ○ /barrio
+├ ○ /contacto
+├   /f/[slug]
+│ ├ ● /f/reporte-inseguridad
+│ ├ ● /f/consulta-01a0f817b3f07922a373fb1fa2dfa839
+│ └ ● /f/consulta-01a0f817b3ed746bb813742a734177f7
+├ ○ /geovisor
+├ ○ /icon.svg
+├ ○ /indicadores
+├ ○ /marco-legal
+├ ○ /plataforma
+├ ○ /plataforma/actores
+├ ○ /plataforma/alternativas
+├ ○ /plataforma/comunicaciones
+├ ○ /plataforma/configuracion
+├ ○ /plataforma/contenido
+├ ○ /plataforma/diagnostico
+├ ○ /plataforma/formularios
+├ ○ /plataforma/fuentes
+├ ○ /plataforma/geovisor
+├ ○ /plataforma/mesas
+├ ○ /plataforma/noticias
+├ ○ /plataforma/proyectos
+├ ○ /plataforma/seguimiento
+├ ○ /plataforma/testimonios
+├ ○ /plataforma/usuarios
+├ ○ /seguridad-humana
+├ ○ /trazabilidad
+└ ƒ /verificar/[codigo]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand

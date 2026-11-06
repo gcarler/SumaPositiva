@@ -1,0 +1,5421 @@
+$ storybook build --disable-telemetry --output-dir "/tmp/polis303_20261106/storybook_final_g"
+
+┌  Building storybook v10.6.1
+│
+◇  Cleaning outputDir: ../../tmp/polis303_20261106/storybook_final_g
+│
+◇  Loading presets
+│
+◇  Building manager..
+│
+●  Building open services..
+│
+●  Building preview..
+│
+●  Copying static files: public at
+│  ../../tmp/polis303_20261106/storybook_final_g
+│  Vite vite v8.3.1 building client environment for production...
+transforming...
+Found 6 warnings while optimizing generated CSS:
+
+Issue #1:
+│     fill: var(--muted-foreground);
+│   }
+│   .\[\&_\.recharts-cartesian-grid_line\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border\/50 .recharts-cartesian-grid line[stroke=\"#ccc\"] {
+┆                                                                                                                             ^-- Unexpected token IDHash("ccc\"")
+┆
+│     stroke: var(--border);
+│     @supports (color: color-mix(in lab, red, red)) {
+
+Issue #2:
+│     stroke: var(--border);
+│   }
+│   .\[\&_\.recharts-dot\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent .recharts-dot[stroke=\"#fff\"] {
+┆                                                                                              ^-- Unexpected token IDHash("fff\"")
+┆
+│     stroke: transparent;
+│   }
+
+Issue #3:
+│     }
+│   }
+│   .\[\&_\.recharts-polar-grid_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border .recharts-polar-grid [stroke=\"#ccc\"] {
+┆                                                                                                         ^-- Unexpected token IDHash("ccc\"")
+┆
+│     stroke: var(--border);
+│   }
+
+Issue #4:
+│     fill: var(--muted);
+│   }
+│   .\[\&_\.recharts-reference-line_\[stroke\=\\\"\#ccc\\\"\]\]\:stroke-border .recharts-reference-line [stroke=\"#ccc\"] {
+┆                                                                                                                 ^-- Unexpected token IDHash("ccc\"")
+┆
+│     stroke: var(--border);
+│   }
+
+Issue #5:
+│     }
+│   }
+│   .\[\&_\.recharts-sector\[stroke\=\\\"\#fff\\\"\]\]\:stroke-transparent .recharts-sector[stroke=\"#fff\"] {
+┆                                                                                                    ^-- Unexpected token IDHash("fff\"")
+┆
+│     stroke: transparent;
+│   }
+
+Issue #6:
+│     min-width: 0px;
+│   }
+│   .\[\&_\[stroke\=\\\'\#fff\\\'\]\]\:stroke-transparent [stroke=\'#fff\'] {
+┆                                                                   ^-- Unexpected token IDHash("fff'")
+┆
+│     stroke: transparent;
+│   }
+
+✓ 4814 modules transformed.
+rendering chunks...
+computing gzip size...
+│  Vite
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-symbols2-wght-normal-CO5SzqOn.woff2
+│  5.81 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-cyrillic-ext-wght-normal-X_5orZeX.woff2
+│  6.17 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2
+│  7.42 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-vietnamese-wght-normal-DadHysG0.woff2
+│  7.69 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2
+│  8.00 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-cyrillic-wght-normal-DiZS0aHC.woff2
+│  12.94 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-latin-ext-wght-normal-Bwz-egvJ.woff2
+│  14.69 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2
+│  15.08 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2
+│  16.51 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/iframe.html
+│  19.68 kB │ gzip:   5.49 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-mono-latin-wght-normal-XN7g48iV.woff2
+│  23.12 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geist-latin-wght-normal-BgDaEnEv.woff2
+│  29.40 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/Vector-c_1sG1-7.css
+│  5.26 kB │ gzip:   1.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/iframe-r9bwOXPo.css
+│  209.01 kB │ gzip:  30.44 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/iframe-By8vYBYZ.js
+│  0.04 kB │ gzip:   0.06 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/_interop_require_default-D7kajm71.js
+│  0.13 kB │ gzip:   0.14 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/minus-B4ocSqFO.js
+│  0.22 kB │ gzip:   0.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/check-BLHaSnuA.js
+│  0.23 kB │ gzip:   0.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chevron-left-M-LsIigL.js
+│  0.23 kB │ gzip:   0.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chevron-right-CLU2IFfJ.js
+│  0.23 kB │ gzip:   0.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-242VQQM5-BTsbXOWr.js
+│  0.24 kB │ gzip:   0.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/play-Ccw_qIRc.js
+│  0.24 kB │ gzip:   0.21 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/csv-BNrPthnG.js
+│  0.25 kB │ gzip:   0.21 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/navigation-BVqW1AJC.js
+│  0.25 kB │ gzip:   0.21 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/plus-BlRQrd2m.js
+│  0.26 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/x-Bx82yi5R.js
+│  0.26 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arrow-up-lzVKwAD0.js
+│  0.27 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arrow-down-CkrP-msH.js
+│  0.27 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arrow-left-CSRf7fyp.js
+│  0.27 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arrow-right-C233uQmI.js
+│  0.27 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arrow-up-right-GLGSLvR-.js
+│  0.27 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/clock-6SZsCV3T.js
+│  0.27 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/search-D3U0cRrN.js
+│  0.28 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/trending-up-DOVXKjYz.js
+│  0.28 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/circle-check-DNVE4tzf.js
+│  0.28 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/message-square-DgLlpuZk.js
+│  0.28 kB │ gzip:   0.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/user-round-BuuPVEDe.js
+│  0.29 kB │ gzip:   0.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formatter-L2YTDE3Q-DonUaC8d.js
+│  0.30 kB │ gzip:   0.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/navigation-store-B6G2YYeF.js
+│  0.30 kB │ gzip:   0.21 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/user-Bn_W0IaJ.js
+│  0.30 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/rotate-ccw-CAIx6l-F.js
+│  0.30 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/info-Bft0AYWR.js
+│  0.31 kB │ gzip:   0.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/lock-C40X2mZb.js
+│  0.31 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/circle-x-CnBqVMSa.js
+│  0.31 kB │ gzip:   0.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-QQBDHPVZ-B_oiS1ei.js
+│  0.32 kB │ gzip:   0.19 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dollar-sign-DRAlMNSW.js
+│  0.32 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/target-yVhPLDAH.js
+│  0.33 kB │ gzip:   0.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/square-check-big-CYAMy-Ig.js
+│  0.33 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/log-out-BJSeAxBD.js
+│  0.33 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/download-DUeFHN8y.js
+│  0.34 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/paperclip-DWPm8ZZR.js
+│  0.34 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/activity-DcSbOfcc.js
+│  0.34 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/copy-BfJKllxG.js
+│  0.34 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/globe-nNEi6tvL.js
+│  0.35 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/database-BSI_eQZE.js
+│  0.35 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/camera-CKvtFCM7.js
+│  0.35 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/circle-question-mark-B2sE94tT.js
+│  0.35 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/circle-alert-BsgMyX7B.js
+│  0.35 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chart-column-B3EW1DJb.js
+│  0.35 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/cloud-upload-tRHAH7Br.js
+│  0.35 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compass-DwVO5bgm.js
+│  0.35 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/external-link-CnsWih_2.js
+│  0.35 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/eye-DFb42BtC.js
+│  0.36 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/funnel-BfWGhBx3.js
+│  0.36 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/table-CM9iQODj.js
+│  0.36 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/calendar-dvlHOKH6.js
+│  0.36 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chevron-up-vHkNJr07.js
+│  0.36 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/file-check-2-Dq_0A2Em.js
+│  0.36 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/map-pin-MP1f2kL4.js
+│  0.36 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chart-no-axes-column-jnmhw2gc.js
+│  0.36 kB │ gzip:   0.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/triangle-alert-BuQR8d3F.js
+│  0.37 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/image-B6TktB9L.js
+│  0.37 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/shield-Bd83U2BW.js
+│  0.38 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/pencil-BAiP-Rwa.js
+│  0.38 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/flame-DIB6wTOP.js
+│  0.38 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/pen-line-BgV2gc3I.js
+│  0.38 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/book-open-vnqHKe6z.js
+│  0.38 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/coins-BxEOcvwH.js
+│  0.38 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/lightbulb-Dhr90_MN.js
+│  0.39 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/send-B8sZGORv.js
+│  0.39 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/file-down-nb4_Orru.js
+│  0.41 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/users-r5v6aYdx.js
+│  0.41 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/skeleton-DHSPSVsm.js
+│  0.41 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/user-plus-BKP81LyX.js
+│  0.41 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/textarea-DDsEju2M.js
+│  0.42 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/printer-DxIs62Uj.js
+│  0.42 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/heart-pulse-DQ3J6-ck.js
+│  0.42 kB │ gzip:   0.31 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/shield-check-D-X44-GU.js
+│  0.42 kB │ gzip:   0.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-store-CQFZqnIT.js
+│  0.42 kB │ gzip:   0.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/refresh-cw-BuOhe3Df.js
+│  0.42 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/tag-C6SsUwbh.js
+│  0.43 kB │ gzip:   0.31 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/save-DVnE1hzq.js
+│  0.43 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/file-text-BDo758IZ.js
+│  0.44 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/venetian-mask-98dGBEs5.js
+│  0.45 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/layout-grid-Czv7lMte.js
+│  0.45 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/shield-alert-U7jG10PO.js
+│  0.46 kB │ gzip:   0.33 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/endOfMonth-BfIMIbHh.js
+│  0.46 kB │ gzip:   0.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/key-round-B64ZDIRb.js
+│  0.46 kB │ gzip:   0.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/share-2-CH7IHYVo.js
+│  0.46 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/trash-2-Bx6l5QQV.js
+│  0.46 kB │ gzip:   0.31 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/scale-5y775Z61.js
+│  0.47 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/radio-Dz87OAM2.js
+│  0.48 kB │ gzip:   0.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/file-spreadsheet-Blty8N82.js
+│  0.48 kB │ gzip:   0.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/input-B1yyuGl3.js
+│  0.49 kB │ gzip:   0.34 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/quote-C_AsVyAu.js
+│  0.49 kB │ gzip:   0.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/map-pinned-Bx9z5ndd.js
+│  0.50 kB │ gzip:   0.36 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/landmark-CfvAoxPm.js
+│  0.50 kB │ gzip:   0.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/clipboard-list-B7fIM4Ci.js
+│  0.51 kB │ gzip:   0.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/file-json-Dz19plQ8.js
+│  0.52 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/layers-B70cCWyu.js
+│  0.52 kB │ gzip:   0.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/folder-sync-DK1NpPB9.js
+│  0.53 kB │ gzip:   0.33 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/eye-off-BF8OHhE0.js
+│  0.53 kB │ gzip:   0.34 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/building-2-ByyUsCXl.js
+│  0.54 kB │ gzip:   0.31 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/filter-chip-DdVsUSio.js
+│  0.55 kB │ gzip:   0.38 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/heart-handshake-BDDlyU_1.js
+│  0.57 kB │ gzip:   0.38 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/react-Da5dQK34.js
+│  0.58 kB │ gzip:   0.34 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-reduced-motion-CPZwrYM3.js
+│  0.59 kB │ gzip:   0.36 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/calendar-days-faxk6SPk.js
+│  0.60 kB │ gzip:   0.33 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sparkles-DQKjqAJM.js
+│  0.61 kB │ gzip:   0.36 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/wand-sparkles--C1hFKjB.js
+│  0.62 kB │ gzip:   0.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/calculator-_mHuJxfO.js
+│  0.63 kB │ gzip:   0.34 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/evidencias-api-CAYwSnsV.js
+│  0.64 kB │ gzip:   0.38 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/building-Bigc1xEz.js
+│  0.65 kB │ gzip:   0.33 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sonner-Dx6zhb1b.js
+│  0.68 kB │ gzip:   0.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sliders-vertical-DoO4y1xR.js
+│  0.69 kB │ gzip:   0.33 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sun-YqbbjlgV.js
+│  0.72 kB │ gzip:   0.38 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/newspaper-CZ0G6uS5.js
+│  0.74 kB │ gzip:   0.43 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/cpu-Ce6z0msj.js
+│  0.75 kB │ gzip:   0.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-geovisor-queries-CNHnNmhB.js
+│  0.76 kB │ gzip:   0.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/react-CMSMJo6i.js
+│  0.79 kB │ gzip:   0.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/panel-store-Ce9azu2v.js
+│  0.80 kB │ gzip:   0.41 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/query-provider-DIDyiH5R.js
+│  0.85 kB │ gzip:   0.54 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/shim-ygJ4_nxw.js
+│  0.85 kB │ gzip:   0.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-mock-api-B9VuVKwf.js
+│  0.86 kB │ gzip:   0.45 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-CJ2NBTXj.js
+│  0.87 kB │ gzip:   0.54 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-CgmKdmXW.js
+│  0.89 kB │ gzip:   0.49 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sliders-horizontal-BQUjI4R6.js
+│  0.94 kB │ gzip:   0.45 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/status-badge-DdAborwG.js
+│  0.96 kB │ gzip:   0.52 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/collection-view-store-UC68Z92U.js
+│  1.05 kB │ gzip:   0.59 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/page-header-CL8i8FVQ.js
+│  1.18 kB │ gzip:   0.55 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/wheat-M0C_qLg0.js
+│  1.25 kB │ gzip:   0.54 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/empty-state-CSdOMBX3.js
+│  1.27 kB │ gzip:   0.60 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sesion-avatar-COc9A_WY.js
+│  1.33 kB │ gzip:   0.67 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/preload-helper-CraHRcKL.js
+│  1.33 kB │ gzip:   0.75 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/rolldown-runtime-BcKkbAw3.js
+│  1.34 kB │ gzip:   0.72 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/label-MMdyzISt.js
+│  1.36 kB │ gzip:   0.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/DocsRenderer-JROSPFPF-Bh6zmSBv.js
+│  1.37 kB │ gzip:   0.73 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/comunicaciones-api-ClsG83Ay.js
+│  1.39 kB │ gzip:   0.69 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/link-DG3r3EFK.js
+│  1.41 kB │ gzip:   0.81 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-aportes-queries-DxCfusED.js
+│  1.42 kB │ gzip:   0.67 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/politicas-store-BqH62jf6.js
+│  1.43 kB │ gzip:   0.62 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sincronizar-sesion-BVJLZm6V.js
+│  1.43 kB │ gzip:   0.59 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-preview-panel-JpNlpp0a.js
+│  1.44 kB │ gzip:   0.75 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/search-field-DjwETf10.js
+│  1.48 kB │ gzip:   0.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/password-input-CDy8NnXl.js
+│  1.49 kB │ gzip:   0.80 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/collection-view.stories-f4kPRps-.js
+│  1.56 kB │ gzip:   0.78 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/notice-XIIHSQT3.js
+│  1.62 kB │ gzip:   0.76 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/card-Q_nUxgJS.js
+│  1.64 kB │ gzip:   0.59 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/ubicacion-geografica-eYyW7yrN.js
+│  1.66 kB │ gzip:   0.89 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-IMSF75WX-Bj7yKzVT.js
+│  1.67 kB │ gzip:   0.90 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/badge-CRkG-KkR.js
+│  1.67 kB │ gzip:   0.79 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/form-field-gtat0t9C.js
+│  1.79 kB │ gzip:   0.81 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-api-CNUtypwy.js
+│  1.84 kB │ gzip:   0.66 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/choice-group-XZcdbNcp.js
+│  1.84 kB │ gzip:   0.89 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-analitica-store-BoHnxgkN.js
+│  1.89 kB │ gzip:   0.85 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/campo-identidad-C4twEaLk.js
+│  1.94 kB │ gzip:   0.75 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/participation-ui-BvAGKyZa.js
+│  1.97 kB │ gzip:   0.87 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/table-B0X6DdjQ.js
+│  1.98 kB │ gzip:   0.66 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-url-C--phEIk.js
+│  1.98 kB │ gzip:   1.01 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/middleware-CKfXLUf0.js
+│  2.00 kB │ gzip:   1.01 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/noticia-video-player-Ccq87fei.js
+│  2.01 kB │ gzip:   1.08 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-noticias-queries-DMOyDdd9.js
+│  2.09 kB │ gzip:   0.78 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-testimonios-queries-B7cv9Nzl.js
+│  2.12 kB │ gzip:   0.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/collection-view-Dh0MHoVu.js
+│  2.12 kB │ gzip:   0.87 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/indicadores-api-Dkl-OwKg.js
+│  2.13 kB │ gzip:   0.85 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/api-client-Da9ZfOik.js
+│  2.19 kB │ gzip:   1.14 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-BA8Zr7_3.js
+│  2.21 kB │ gzip:   0.99 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/session-store-ViHZcbbb.js
+│  2.23 kB │ gzip:   1.00 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/aportes-api-DwD-a5B8.js
+│  2.24 kB │ gzip:   1.00 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/proyectos-api-DAe1gz7R.js
+│  2.38 kB │ gzip:   1.02 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/herald-helpers-CF6E0r6j.js
+│  2.38 kB │ gzip:   1.18 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/index.esm-Bj7Whm7P.js
+│  2.41 kB │ gzip:   1.08 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/politica-ui-Cqhb4zR2.js
+│  2.46 kB │ gzip:   0.95 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/useMutation-BI2Ite21.js
+│  2.49 kB │ gzip:   1.05 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-mesas-queries-D4nTWtcC.js
+│  2.56 kB │ gzip:   1.03 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-charts.stories-MHCnydxS.js
+│  2.57 kB │ gzip:   1.18 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-remotos-fxAE8nwF.js
+│  2.69 kB │ gzip:   1.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/agenda-store-BrHyhsj7.js
+│  2.70 kB │ gzip:   1.05 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-respuesta-panel-BvY-YTOR.js
+│  2.75 kB │ gzip:   1.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/fotos-respuesta-Chq-uJE0.js
+│  2.78 kB │ gzip:   1.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/territorios.data-D3qtPe63.js
+│  2.79 kB │ gzip:   1.04 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/logo-polis-CG8WA9l-.js
+│  2.90 kB │ gzip:   1.10 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compartir-formulario-BEeFRSJW.js
+│  2.99 kB │ gzip:   1.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/zod-NbeVB7lz.js
+│  2.99 kB │ gzip:   1.12 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dimensiones-meta-CDv3MjVD.js
+│  3.00 kB │ gzip:   1.39 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/switch-BA9P54nI.js
+│  3.01 kB │ gzip:   1.48 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compromisos-store-BDKNMPUT.js
+│  3.14 kB │ gzip:   1.09 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compromisos.stories-CJNeVfQY.js
+│  3.31 kB │ gzip:   1.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-DRQKCCAG-g0GKBje5.js
+│  3.38 kB │ gzip:   1.41 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-DI4if0NO.js
+│  3.38 kB │ gzip:   1.48 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/coordenadas-parser-B4C6qGjc.js
+│  3.49 kB │ gzip:   1.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mutation-DwVWeJcZ.js
+│  3.49 kB │ gzip:   1.21 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mapa-territorios-api-DwKb57xs.js
+│  3.66 kB │ gzip:   1.83 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/form-field.stories-B6HoezUS.js
+│  3.79 kB │ gzip:   1.47 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-B2WvFUsX.js
+│  3.79 kB │ gzip:   1.71 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/progress-DtU-7w9P.js
+│  3.81 kB │ gzip:   1.78 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-DLLF9o-n.js
+│  3.82 kB │ gzip:   1.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dynamic-Bgf3P70S.js
+│  3.82 kB │ gzip:   1.55 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/hurtos-api-kPmWMgM2.js
+│  3.89 kB │ gzip:   1.42 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/identidad-api-AOAYnm88.js
+│  3.89 kB │ gzip:   1.39 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios.fixture-CBhjt4Te.js
+│  4.04 kB │ gzip:   1.61 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/AnimatePresence-3nokeoi0.js
+│  4.13 kB │ gzip:   1.93 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor.stories-BkLUp255.js
+│  4.13 kB │ gzip:   1.52 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/tabs-N0bBJheb.js
+│  4.20 kB │ gzip:   1.76 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/side-panel-BW7tgHKY.js
+│  4.41 kB │ gzip:   1.63 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-layout-store-BslI8VzO.js
+│  4.56 kB │ gzip:   1.71 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/checkbox--kf_zNkS.js
+│  4.59 kB │ gzip:   2.00 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-BckNbVtj.js
+│  4.72 kB │ gzip:   2.04 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-analitica-panel-Bt2-xN3x.js
+│  4.87 kB │ gzip:   1.81 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/analitica.fixture-DHIesVo2.js
+│  5.10 kB │ gzip:   0.94 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-7PIQR4A3-CxeHe7fY.js
+│  5.14 kB │ gzip:   1.93 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/medicion-editor-panel-CJenU9pF.js
+│  5.15 kB │ gzip:   2.29 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/usage-DhjKrIe7.js
+│  5.19 kB │ gzip:   1.98 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/side-panel.stories-DwdVNAtO.js
+│  5.28 kB │ gzip:   2.01 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/toggle-group-DX9kAGTr.js
+│  5.47 kB │ gzip:   2.16 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-participacion-queries-8-GjVssK.js
+│  5.52 kB │ gzip:   1.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-politicas-queries-CTUkwgqx.js
+│  5.53 kB │ gzip:   2.37 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/usuario-editor-panel-22gsKsSh.js
+│  5.88 kB │ gzip:   2.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-panel-ySHJCzKi.js
+│  6.15 kB │ gzip:   2.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/selector-ubicacion-mesa-haopmSrG.js
+│  6.27 kB │ gzip:   2.42 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/es-C8yjB9vZ.js
+│  6.34 kB │ gzip:   2.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/button.stories-D3jY4qIR.js
+│  6.34 kB │ gzip:   2.06 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/reporte-geoespacial.stories-CHHkJOQe.js
+│  6.57 kB │ gzip:   2.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/agenda-editor-panel-CufyZFap.js
+│  6.62 kB │ gzip:   2.67 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/escenario-editor-panel-D0GFmh4U.js
+│  6.64 kB │ gzip:   2.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/use-formularios-queries-CtAMDmy7.js
+│  6.73 kB │ gzip:   2.69 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/fase-panel-CMaJT_-m.js
+│  6.92 kB │ gzip:   2.63 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/tarea-comunicacion-panel-B2dk1CiW.js
+│  7.42 kB │ gzip:   2.60 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/politica-panel-BWRVShu7.js
+│  7.51 kB │ gzip:   2.53 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/testimonios-galeria-panel-BTAgUr7E.js
+│  7.56 kB │ gzip:   2.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/auditoria-consola-panel-FeHkHmi8.js
+│  7.58 kB │ gzip:   2.57 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/GeoJSON-BZ2STjpp.js
+│  7.70 kB │ gzip:   2.40 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/accordion-IPXv38ZA.js
+│  7.78 kB │ gzip:   2.89 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/react-BSYpA16D.js
+│  7.90 kB │ gzip:   3.03 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/participacion.stories-Dy82GrqV.js
+│  8.04 kB │ gzip:   2.66 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/pregunta-ubicacion-fotos-Br-BKVip.js
+│  8.06 kB │ gzip:   3.18 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/queryClient-79E4jJs7.js
+│  8.16 kB │ gzip:   2.73 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/testimonio-nuevo-panel-Da5gcOFz.js
+│  8.23 kB │ gzip:   3.04 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/acceso-DHrZylec.js
+│  8.37 kB │ gzip:   2.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/en-US-D2mw-Sgt.js
+│  8.55 kB │ gzip:   3.09 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-engine-9f1BJDYM.js
+│  8.73 kB │ gzip:   3.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/linea-editor-panel-Q6-jpWF0.js
+│  8.77 kB │ gzip:   3.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/arquitectura-politica-DwHbotwl.js
+│  8.97 kB │ gzip:   3.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/useQuery-DkFHFRAA.js
+│  9.28 kB │ gzip:   3.45 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/territorio-panel-CGO_fxuJ.js
+│  9.66 kB │ gzip:   3.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mesas-geovisor.data-BOD48Ldb.js
+│  9.86 kB │ gzip:   2.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/validacion-causal-panel-DWSB2pMm.js
+│  10.28 kB │ gzip:   2.94 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-publicos.stories-ByLBmCQG.js
+│  10.50 kB │ gzip:   3.82 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compromisos-pas.data-B6F9PMFO.js
+│  10.55 kB │ gzip:   2.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/plataforma-shell-DfoccfrX.js
+│  11.19 kB │ gzip:   4.16 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/patterns.stories-B5cJJuc4.js
+│  11.38 kB │ gzip:   3.28 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/lineas-estrategicas.stories-BynBDPXQ.js
+│  11.72 kB │ gzip:   3.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/plataforma-restringida.stories-424HU3UN.js
+│  11.84 kB │ gzip:   3.43 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/gestor-heros.stories-AzcsCjYS.js
+│  12.05 kB │ gzip:   2.78 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/usuarios-panel-ComeUIyI.js
+│  12.10 kB │ gzip:   3.94 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dimension-detalle-panel-Dw6cQesG.js
+│  12.40 kB │ gzip:   3.13 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/GeometryCollection-C3ksGdwn.js
+│  12.56 kB │ gzip:   2.93 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/format-DskylAI_.js
+│  13.10 kB │ gzip:   3.63 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios-geograficos.stories-Bxq5Nlix.js
+│  13.43 kB │ gzip:   3.53 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/QueryClientProvider-D9KjdVqN.js
+│  14.20 kB │ gzip:   4.96 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/usuario-detalle-panel-CGu_j-4e.js
+│  14.35 kB │ gzip:   4.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/testimonio-editor-panel-BSBq71hE.js
+│  14.66 kB │ gzip:   4.87 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/fases-control-panel-COQ_raXI.js
+│  14.79 kB │ gzip:   4.37 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/noticia-editor-panel-CfAizDZh.js
+│  15.02 kB │ gzip:   4.72 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/papelografo-panel-BTgmMlX9.js
+│  15.42 kB │ gzip:   4.91 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/ficha-editor-panel-Cj3QXH4x.js
+│  15.59 kB │ gzip:   4.19 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/alternativas-store-ssOJJFAl.js
+│  15.77 kB │ gzip:   5.19 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/alternativa-editor-panel-RjD7aMoc.js
+│  16.00 kB │ gzip:   5.13 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/asignacion-presupuestal-panel-szNzGAWT.js
+│  16.07 kB │ gzip:   4.89 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formularios.stories-Dca0qoXu.js
+│  16.41 kB │ gzip:   3.55 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/compromiso-editor-panel-D2-YOxUS.js
+│  16.64 kB │ gzip:   5.26 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/testimonios-moderacion-panel-7mr9IJyp.js
+│  16.75 kB │ gzip:   4.97 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/linea-panel-BKEwE0M-.js
+│  16.84 kB │ gzip:   5.85 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/ficha-actividad-panel-BPjDb5OB.js
+│  17.67 kB │ gzip:   5.58 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/aporte-editor-panel-DoONLMdK.js
+│  18.38 kB │ gzip:   6.74 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/foundations.stories-CzXzgkw9.js
+│  18.49 kB │ gzip:   4.62 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/actor-editor-panel-BFiCCmIF.js
+│  19.22 kB │ gzip:   5.92 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/fuente-editor-panel-Qb_7hXo-.js
+│  19.61 kB │ gzip:   5.77 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/hero-store-DPzctpQs.js
+│  19.72 kB │ gzip:   6.36 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/proyectos.stories-B9sd-5d_.js
+│  20.27 kB │ gzip:   5.15 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/barrios.data-SB0qDFUg.js
+│  20.63 kB │ gzip:   2.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-editor-panel-B87IvBoY.js
+│  20.78 kB │ gzip:   5.83 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/participacion-multicanal-panel-Cc-BCD3o.js
+│  22.01 kB │ gzip:   3.98 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chunk-W22LQPXL-X26d1-3M.js
+│  22.70 kB │ gzip:   7.59 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/evaluacion-viabilidad-panel-DAV3AYXt.js
+│  23.50 kB │ gzip:   7.11 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mesas-api-Dur7qIPr.js
+│  25.19 kB │ gzip:   6.80 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/gestor-heros-plataforma-j-Lve2e6.js
+│  26.41 kB │ gzip:   7.56 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mesa-editor-panel-CL5dUpPY.js
+│  27.11 kB │ gzip:   7.80 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/vite-inject-mocker-entry.js
+│  27.84 kB │ gzip:   9.66 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/accesibilidad-widget.stories-Bv3d1X8b.js
+│  28.19 kB │ gzip:   5.86 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/matchers-JIUQ3HVY-iF-9BYJ7.js
+│  28.79 kB │ gzip:   9.68 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/proyectos-view-Bul3iPof.js
+│  29.60 kB │ gzip:   7.95 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/indicador-detalle-panel-D5kxGQ_X.js
+│  30.31 kB │ gzip:   8.30 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/Color-6AOWCN3U-DMnAlmlV.js
+│  30.41 kB │ gzip:  11.49 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/index.esm-OJbgdhJr.js
+│  31.24 kB │ gzip:  11.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/formulario-runtime-DL-PNrSa.js
+│  31.45 kB │ gzip:  10.00 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/button-BlfH0k8P.js
+│  32.37 kB │ gzip:  11.13 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dist-Dswx1w1Z.js
+│  32.72 kB │ gzip:   9.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/WithTooltip-CDUNV5IS-XLeWZ9Rr.js
+│  32.74 kB │ gzip:  11.48 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/panel-host-JlH3xUmi.js
+│  33.49 kB │ gzip:   9.39 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/devolucion-detalle-panel-B_yJhz2_.js
+│  34.66 kB │ gzip:  10.20 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/ficha-territorial-panel-D26hD9Fc.js
+│  35.83 kB │ gzip:   9.85 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/identidad.stories-Cx_z21_c.js
+│  38.07 kB │ gzip:   7.70 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sesion-panel-B0oqKQIO.js
+│  39.04 kB │ gzip:  10.46 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/entidades-cartagena.data-Cv6QsBzX.js
+│  39.69 kB │ gzip:  11.24 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/OSM-BD0w1GIw.js
+│  42.19 kB │ gzip:  13.53 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/dimensiones-detalle.data-A_iwrJ3Y.js
+│  42.68 kB │ gzip:  14.22 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/ubicacion-pregunta-Bf0LfKxg.js
+│  44.31 kB │ gzip:  14.17 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mapa-cartagena-BRFuFwfG.js
+│  47.75 kB │ gzip:  12.52 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mesa-acta-panel-jn1s05-d.js
+│  47.75 kB │ gzip:   9.23 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/matriz-arbol-relatoria-CasolHMF.js
+│  48.12 kB │ gzip:   9.16 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-hurtos-panel-Bzx3RHQV.js
+│  48.46 kB │ gzip:   9.68 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/mesa-panel-CadqBq4O.js
+│  50.51 kB │ gzip:  12.14 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/theming-ZwKP6u1J.js
+│  55.40 kB │ gzip:  21.34 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/platform.stories-DTXkw7yf.js
+│  60.13 kB │ gzip:  17.12 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/zod-init-ee1nJdHx.js
+│  69.50 kB │ gzip:  19.16 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/select-CM7b3tQA.js
+│  73.02 kB │ gzip:  25.56 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/syntaxhighlighter-4REYKNEV-h2ePGRly.js
+│  75.88 kB │ gzip:  27.25 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/geovisor-charts-gL3Fm-EX.js
+│  86.52 kB │ gzip:  20.79 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/asistencia-store-DQD8tpft.js
+│  96.28 kB │ gzip:  28.64 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sidebar-DxXUI7VP.js
+│  96.41 kB │ gzip:  28.49 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/panel-shell-CfWFvwQm.js
+│  128.44 kB │ gzip:  42.11 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/noticia-panel-DNAsj1hI.js
+│  129.99 kB │ gzip:  39.32 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/react-18-BI4NiJtJ.js
+│  205.37 kB │ gzip:  64.54 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/plataforma-interna.stories-XbXWQSex.js
+│  271.51 kB │ gzip:  60.80 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/Vector-DzY-YjVU.js
+│  281.00 kB │ gzip:  82.35 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/catalog.stories-0eNh0ro1.js
+│  281.60 kB │ gzip:  80.12 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/blocks-Cs2QG8ry.js
+│  285.18 kB │ gzip:  92.27 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/rendicion-cuentas-panel-BXLUwLeP.js
+│  295.35 kB │ gzip:  52.87 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/page-DHlYIZww.js
+│  309.63 kB │ gzip:  72.96 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/chart-DAEVva5H.js
+│  390.13 kB │ gzip: 105.98 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/sistema-multiagente-pdd-panel-BTJeQk1z.js
+│  444.65 kB │ gzip: 106.14 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/components-Cn5wEwYp.js
+│  466.50 kB │ gzip: 147.11 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/axe-0Oz5HKos.js
+│  567.04 kB │ gzip: 154.65 kB
+│  ../../tmp/polis303_20261106/storybook_final_g/assets/iframe-B8yB5YiM.js
+│  1,339.45 kB │ gzip: 375.96 kB
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/sonner/dist/index.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/sonner/dist/index.mjs:1:1 ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [plugin builtin:vite-reporter]
+│  (!) Some chunks are larger than 500 kB after minification. Consider:
+│  - Using dynamic import() to code-split the application
+│  - Use build.rolldownOptions.output.codeSplitting to improve chunking:
+│  https://rolldown.rs/reference/OutputOptions.codeSplitting
+│  - Adjust chunk size limit for this warning via
+│  build.chunkSizeWarningLimit.
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/gestor-heros-plataforma.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/plataforma/components/gestor-heros-plataforma.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/state/compromisos-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/seguimiento/state/compromisos-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/fotos-pregunta.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/formularios/components/fotos-pregunta.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/_composition/sesion-sync.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/app/_composition/sesion-sync.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/next-themes/dist/index.mjs"
+│  may not be preserved when bundling.
+│  - module level directive may not be preserved in
+│  node_modules/next-themes/dist/index.mjs at 0..13
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/di...
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/collection-view.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/shared/ui/collection-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/drawer.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/drawer.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/plataforma-shell.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/components/plataforma-shell.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/sonner.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/sonner.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/state/geovisor-analitica-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/state/geovisor-analitica-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/arquitectura-politica.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/politicas/components/arquitectura-politica.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/menubar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/menubar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/formulario-runtime.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/components/formulario-runtime.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/popover.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/popover.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/tabs.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/tabs.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/chart.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/chart.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/dropdown-menu.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/dropdown-menu.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/calendar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/calendar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/progress.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/progress.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/slider.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/slider.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/page.tsx" may not be preserved when
+│  bundling.
+│  ╭─[ src/app/page.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mapa-cartagena.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/mapa-cartagena.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/core/panels/panel-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/core/panels/panel-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/form-field.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/form-field.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/hover-card.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/hover-card.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/separator.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/separator.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/tooltip.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/tooltip.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/collapsible.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/collapsible.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/input-otp.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/input-otp.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/toggle.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/toggle.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/linea-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/linea-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/compartir-formulario.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/components/compartir-formulario.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/sheet.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/sheet.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/_composition/query-provider.tsx"
+│  may not be preserved when bundling.
+│  ╭─[ src/app/_composition/query-provider.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/switch.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/switch.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/avatar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/avatar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/__fixtures__/formularios-demo-store.ts" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/formularios/__fixtures__/formularios-demo-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/resizable.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/resizable.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/scroll-area.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/scroll-area.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/accordion.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/accordion.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/pregunta-ubicacion-fotos.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/formularios/components/pregunta-ubicacion-fotos.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/state/formularios-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/formularios/state/formularios-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/search-field.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/search-field.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/alert-dialog.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/alert-dialog.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/views/formulario-publico-view.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/views/formulario-publico-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/toast.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/toast.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/sidebar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/sidebar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/context-menu.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/context-menu.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/label.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/label.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/select.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/select.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/command.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/command.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/toggle-group.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/toggle-group.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/sesion/panels/usuarios-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/sesion/panels/usuarios-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/choice-group.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/choice-group.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/table.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/table.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/radio-group.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/radio-group.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/password-input.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/shared/ui/password-input.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/dialog.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/dialog.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/checkbox.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/checkbox.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/aspect-ratio.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/aspect-ratio.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/side-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/side-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/form.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/form.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/_components/panel-host.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/app/_components/panel-host.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/sesion/state/session-store.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/sesion/state/session-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/carousel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/ui/carousel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/ubicacion-pregunta.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/components/ubicacion-pregunta.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/politicas/state/hero-store.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/politicas/state/hero-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/sesion/panels/sesion-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/sesion/panels/sesion-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/ui/accesibilidad-widget.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/shared/ui/accesibilidad-widget.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-charts.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-charts.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/shared/lib/app-router-context.shared-runtime.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/next/dist/shared/lib/app-router-context.shared-runtime.js:1:1
+│  ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/client/components/redirect-boundary.js" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/next/dist/client/components/redirect-boundary.js:1:1
+│  ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/shared/lib/hooks-client-context.shared-runtime.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/next/dist/shared/lib/hooks-client-context.shared-runtime.js:1:1
+│  ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/mesas/state/agenda-store.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/mesas/state/agenda-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/proyectos/views/proyectos-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/proyectos/views/proyectos-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useSuspenseQueries.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useSuspenseQueries.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useIsFetching.js" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useIsFetching.js:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useSuspenseQuery.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useSuspenseQuery.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useInfiniteQuery.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useInfiniteQuery.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useSuspenseInfiniteQuery.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useSuspenseInfiniteQuery.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-force-update.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-force-update.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/IsRestoringProvider.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/IsRestoringProvider.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/LazyMotion/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/LazyMotion/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/use-isomorphic-effect.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/use-unmount-effect.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-time.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-time.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useMutationState.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useMutationState.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useMutation.js" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/@tanstack/react-query/build/modern/useMutation.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-spring.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-spring.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion-config.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion-config.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/dom/features-min.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/render/dom/features-min.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-velocity.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-velocity.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/animation/hooks/use-animate.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/animation/hooks/use-animate.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence-data.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence-data.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-motion-value.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-motion-value.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/animation/hooks/use-animation.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/events/use-dom-event.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/events/use-dom-event.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimatePresence/use-presence.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/LayoutGroupContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/PresenceContext.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/context/PresenceContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-cycle.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-cycle.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/motion/utils/use-visual-state.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/motion/utils/use-visual-state.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-animation-frame.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/use-animation-frame.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/HydrationBoundary.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/HydrationBoundary.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/animation/hooks/use-animated-state.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-page-in-view.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-page-in-view.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimateSharedLayout.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-progress/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-progress/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/SwitchLayoutGroupContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useQuery.js" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/@tanstack/react-query/build/modern/useQuery.js:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useQueries.js" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/@tanstack/react-query/build/modern/useQueries.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/LayoutGroup/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimatePresence/PopChild.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/dom/features-max.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/render/dom/features-max.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/DeprecatedLayoutGroupContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-will-change/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/value/use-will-change/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-motion-value-event.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/use-motion-value-event.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimatePresence/PresenceChild.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-transform.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-transform.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-menubar/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-menubar/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-motion-template.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/value/use-motion-template.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-scroll.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-scroll.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/MotionContext/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/MotionContext/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/MotionConfigContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-instant-transition.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/use-instant-transition.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/MotionConfig/index.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/MotionConfig/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/value/use-inverted-scale.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/QueryErrorResetBoundary.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/QueryErrorResetBoundary.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/animation/hooks/use-animate-style.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/animation/hooks/use-animate-style.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/utils/reduced-motion/use-reduced-motion.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-in-view.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-in-view.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-slider/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-slider/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-tabs/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-tabs/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-popover/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-popover/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-dropdown-menu/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-dropdown-menu/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/dashboard-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/views/dashboard-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/plataforma-sidebar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/components/plataforma-sidebar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/core/navigation/navigation-store.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/core/navigation/navigation-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/state/politicas-store.ts" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/politicas/state/politicas-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/formularios-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/views/formularios-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/state/geovisor-layout-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/state/geovisor-layout-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/usuarios-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/plataforma/views/usuarios-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/plataforma-header.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/components/plataforma-header.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mapa-territorios-api.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/mapa-territorios-api.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/app/_composition/deeplink-paneles-publicos.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/app/_composition/deeplink-paneles-publicos.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/geovisor-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/plataforma/views/geovisor-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/views/explorar-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/politicas/views/explorar-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/components/timbrado-competencia-legal.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/formularios/components/timbrado-competencia-legal.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/mesas/state/mesas-store.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/mesas/state/mesas-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/configuracion-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/views/configuracion-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/mesas-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/plataforma/views/mesas-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/comunicaciones/views/comunicaciones-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/comunicaciones/views/comunicaciones-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/motor-plan-accion-tab.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/seguimiento/components/motor-plan-accion-tab.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/testimonios-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/views/testimonios-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/_components/topbar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/app/_components/topbar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-hover-card/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-hover-card/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-label/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-label/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/vaul/dist/index.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/vaul/dist/index.mjs:1:1 ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-toggle-group/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-toggle-group/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/noticias-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/plataforma/views/noticias-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/cmdk/dist/index.mjs" may not
+│  be preserved when bundling.
+│  - module level directive may not be preserved in
+│  node_modules/cmdk/dist/index.mjs at 0..13
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/di...
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-radio-group/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-radio-group/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-collapsible/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-collapsible/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-avatar/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-avatar/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-context-menu/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-context-menu/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@react-oauth/google/dist/index.esm.js" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@react-oauth/google/dist/index.esm.js:1:1 ]
+│  │
+│  1 │ 'use client'
+│  │ ──────┬─────
+│  │       ╰─────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-dialog/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-dialog/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/dom/features-animation.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/render/dom/features-animation.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-scroll-area/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-scroll-area/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-navigation-menu/dist/index.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-navigation-menu/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-accordion/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-accordion/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-toggle/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-toggle/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-toast/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-toast/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-alert-dialog/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-alert-dialog/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/views/contenido-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/views/contenido-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-switch/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-switch/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-checkbox/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-checkbox/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-tooltip/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-tooltip/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/layout/footer.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/shared/layout/footer.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/core/panels/panel-shell.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/core/panels/panel-shell.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/views/inicio-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/politicas/views/inicio-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/geovisor/hooks/use-mapa.ts"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/geovisor/hooks/use-mapa.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/testimonios/views/testimonios-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/testimonios/views/testimonios-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/views/geovisor-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/geovisor/views/geovisor-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/views/dimensiones-view.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/views/dimensiones-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/noticias/views/noticias-view.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/noticias/views/noticias-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/app/_composition/panel-registry.tsx"
+│  may not be preserved when bundling.
+│  ╭─[ src/app/_composition/panel-registry.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-select/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-select/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/mesas/views/mesas-view.tsx"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/mesas/views/mesas-view.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/multifuente-filtros.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/multifuente-filtros.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/sesion/components/cuenta-usuario.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/sesion/components/cuenta-usuario.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/core/preferences/collection-view-store.ts" may not be preserved
+│  when bundling.
+│  ╭─[ src/core/preferences/collection-view-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/proyectos/components/kanban-proyectos.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/proyectos/components/kanban-proyectos.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/proyectos/components/calendario-proyectos.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/proyectos/components/calendario-proyectos.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-computed.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/value/use-computed.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-is-mounted.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-is-mounted.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/utils/use-constant.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/utils/use-constant.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/value/use-combine-values.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/value/use-combine-values.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/proyectos/components/gantt-proyectos.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/proyectos/components/gantt-proyectos.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/LazyContext.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/context/LazyContext.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-collection/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-collection/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/Reorder/Group.mjs" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/components/Reorder/Group.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/components/Reorder/Item.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/components/Reorder/Item.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/errorBoundaryUtils.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/errorBoundaryUtils.js:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/shared/lib/server-inserted-html.shared-runtime.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/next/dist/shared/lib/server-inserted-html.shared-runtime.js:1:1
+│  ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-presence/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-presence/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-roving-focus/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-roving-focus/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-menu/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-menu/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-portal/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-portal/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-focus-guards/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-focus-guards/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-focus-scope/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-focus-scope/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@radix-ui/react-popper/dist/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/@radix-ui/react-popper/dist/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/@tanstack/react-query/build/modern/useBaseQuery.js" may
+│  not be preserved when bundling.
+│  ╭─[
+│  node_modules/@tanstack/react-query/build/modern/useBaseQuery.js:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/state/configuracion-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/plataforma/state/configuracion-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/notificaciones/components/panel-salud-herald.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/notificaciones/components/panel-salud-herald.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/flujo-inversion-gobernanza.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/politicas/components/flujo-inversion-gobernanza.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/comunicaciones/views/gantt-cronograma.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/comunicaciones/views/gantt-cronograma.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/hero-page-banner.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/components/hero-page-banner.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/salud-sistema-section.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/plataforma/components/salud-sistema-section.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-hurtos-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-hurtos-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/testimonios/panels/testimonios-moderacion-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/testimonios/panels/testimonios-moderacion-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/sesion/components/sesion-avatar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/sesion/components/sesion-avatar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/panels/formularios-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/formularios/panels/formularios-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-ficha-mesa.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-ficha-mesa.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/dimensiones-grid.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/components/dimensiones-grid.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-controles.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-controles.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mesas-datagrid/mesas-datagrid.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/geovisor/components/mesas-datagrid/mesas-datagrid.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/hero-home-showcase.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/components/hero-home-showcase.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-multifuente-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/geovisor/components/geovisor-multifuente-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/politica-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/politica-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/enrutador-ciudadano-inteligente.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/politicas/components/enrutador-ciudadano-inteligente.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/usuarios/panels/usuario-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/usuarios/panels/usuario-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/panels/formulario-preview-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/panels/formulario-preview-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-dock-host.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-dock-host.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/comunicaciones/panels/tarea-comunicacion-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/comunicaciones/panels/tarea-comunicacion-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/proyectos/panels/ficha-actividad-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/proyectos/panels/ficha-actividad-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/panels/formulario-editor-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/formularios/panels/formulario-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/panels/formulario-respuesta-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/formularios/panels/formulario-respuesta-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/panels/territorio-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/panels/territorio-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-bi-sidebar.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-bi-sidebar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/testimonios/panels/testimonio-editor-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/testimonios/panels/testimonio-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/panels/papelografo-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/mesas/panels/papelografo-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/auditoria/panels/auditoria-consola-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/auditoria/panels/auditoria-consola-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/formularios/panels/formulario-analitica-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/formularios/panels/formulario-analitica-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/fase-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/politicas/panels/fase-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/panels/agenda-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/mesas/panels/agenda-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/participacion/panels/escenario-editor-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/participacion/panels/escenario-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/actores/panels/actor-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/actores/panels/actor-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/alternativas/panels/alternativa-editor-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/alternativas/panels/alternativa-editor-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/diagnostico/panels/medicion-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/diagnostico/panels/medicion-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/testimonios/panels/testimonios-galeria-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/testimonios/panels/testimonios-galeria-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/linea-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/politicas/panels/linea-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/testimonios/panels/testimonio-nuevo-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/testimonios/panels/testimonio-nuevo-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/usuarios/panels/usuario-detalle-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/usuarios/panels/usuario-detalle-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/diagnostico/panels/ficha-territorial-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/diagnostico/panels/ficha-territorial-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/fuentes/panels/fuente-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/fuentes/panels/fuente-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/panels/mesa-acta-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/mesas/panels/mesa-acta-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/panels/compromiso-editor-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/seguimiento/panels/compromiso-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/diagnostico/panels/ficha-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/diagnostico/panels/ficha-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/noticias/panels/noticia-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/noticias/panels/noticia-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/notificaciones/components/visor-notificaciones-herald.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/notificaciones/components/visor-notificaciones-herald.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/fases-control-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/fases-control-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/dimension-detalle-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/dimension-detalle-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/features/mesas/panels/mesa-panel.tsx"
+│  may not be preserved when bundling.
+│  ╭─[ src/features/mesas/panels/mesa-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/noticias/panels/noticia-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/noticias/panels/noticia-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-workspace-layout.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-workspace-layout.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/alternativas/panels/asignacion-presupuestal-panel.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/alternativas/panels/asignacion-presupuestal-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/diagnostico/panels/validacion-causal-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/diagnostico/panels/validacion-causal-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/panels/devolucion-detalle-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/seguimiento/panels/devolucion-detalle-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/participacion/panels/participacion-multicanal-panel.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/participacion/panels/participacion-multicanal-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/aportes/panels/aporte-editor-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/aportes/panels/aporte-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/rendicion-cuentas-panel.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/rendicion-cuentas-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/panels/mesa-editor-panel.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/mesas/panels/mesa-editor-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-mesas-directorio.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-mesas-directorio.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/motion/features/layout/MeasureLayout.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/motion/features/layout/MeasureLayout.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/panels/indicador-detalle-panel.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/seguimiento/panels/indicador-detalle-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/motion/index.mjs" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/motion/index.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/ReorderContext.mjs" may
+│  not be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/context/ReorderContext.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/shared/offline/offline-status-badge.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/shared/offline/offline-status-badge.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "src/shared/components/participation-ui.tsx"
+│  may not be preserved when bundling.
+│  ╭─[ src/shared/components/participation-ui.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/evidencias/components/fotos-mesas-moderacion.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/evidencias/components/fotos-mesas-moderacion.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/plataforma/components/telemetria-sql-card.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/plataforma/components/telemetria-sql-card.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/next/dist/client/script.js"
+│  may not be preserved when bundling.
+│  ╭─[ node_modules/next/dist/client/script.js:1:1 ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/context/MotionContext/create.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/context/MotionContext/create.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/dom/use-render.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/render/dom/use-render.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/render/html/use-html-visual-state.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/motion/utils/use-motion-ref.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/svg/use-svg-visual-state.mjs"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/framer-motion/dist/es/render/svg/use-svg-visual-state.mjs:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/fuentes/state/fuentes-store.ts" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/fuentes/state/fuentes-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mesas-datagrid/datagrid-columns.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/geovisor/components/mesas-datagrid/datagrid-columns.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-workbench-bar.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-workbench-bar.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/components/adjuntos-zona.tsx" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/mesas/components/adjuntos-zona.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/noticias/components/noticia-video-player.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/noticias/components/noticia-video-player.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/panels/use-fases-control.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/panels/use-fases-control.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/state/cadena-valor-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/seguimiento/state/cadena-valor-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/components/selector-ubicacion-mesa.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/mesas/components/selector-ubicacion-mesa.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/state/asistencia-store.ts" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/mesas/state/asistencia-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/politicas/components/politica-ui.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/politicas/components/politica-ui.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mesas-datagrid/datagrid-toolbar.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/geovisor/components/mesas-datagrid/datagrid-toolbar.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/state/devolucion-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/seguimiento/state/devolucion-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/actores/state/actores-store.ts" may not be preserved
+│  when bundling.
+│  ╭─[ src/features/actores/state/actores-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/alternativas/services/viabilidad-api.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/alternativas/services/viabilidad-api.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/triada-motores-tab.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/seguimiento/components/triada-motores-tab.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/mesas-datagrid/datagrid-pagination.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/geovisor/components/mesas-datagrid/datagrid-pagination.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/mesas/components/matriz-arbol-relatoria.tsx" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/mesas/components/matriz-arbol-relatoria.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/alternativas/state/alternativas-store.ts" may not be
+│  preserved when bundling.
+│  ╭─[ src/features/alternativas/state/alternativas-store.ts:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/shared/lib/loadable-context.shared-runtime.js"
+│  may not be preserved when bundling.
+│  ╭─[
+│  node_modules/next/dist/shared/lib/loadable-context.shared-runtime.js:1:1
+│  ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/svg/use-props.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/render/svg/use-props.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/framer-motion/dist/es/render/html/use-props.mjs" may not
+│  be preserved when bundling.
+│  ╭─[ node_modules/framer-motion/dist/es/render/html/use-props.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/geovisor/components/geovisor-dock-controls.tsx" may not
+│  be preserved when bundling.
+│  ╭─[ src/features/geovisor/components/geovisor-dock-controls.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/dea-econometria-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[ src/features/seguimiento/components/dea-econometria-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx" may
+│  not be preserved when bundling.
+│  ╭─[
+│  src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "node_modules/next/dist/client/image-component.js" may not be
+│  preserved when bundling.
+│  ╭─[ node_modules/next/dist/client/image-component.js:1:1 ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in
+│  "src/features/seguimiento/components/google-workspace-sync-card.tsx"
+│  may not be preserved when bundling.
+│  ╭─[
+│  src/features/seguimiento/components/google-workspace-sync-card.tsx:1:1
+│  ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│
+▲  Vite [MODULE_LEVEL_DIRECTIVE] The semantics of the module level
+│  directive "use client" in "node_modules/next/dist/shared/lib/head.js"
+│  may not be preserved when bundling.
+│  ╭─[ node_modules/next/dist/shared/lib/head.js:1:1 ]
+│  │
+│  1 │ 'use client';
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see https://rolldown.rs/in-depth/d...
+│  ───╯
+
+│  Vite ✓ built in 45.75s
+│
+▲  Vite [PLUGIN_TIMINGS] JavaScript callbacks ran for 41.6s of this 44.8s
+│  build (93%).
+│  The slowest callbacks, timed inside each callback (the wait before a
+│  callback starts is excluded, the time it awaits is included):
+│  - plugin storybook:react-docgen-plugin transform (63%, 28.3s, 4814
+│  calls)
+│  - plugin @tailwindcss/vite:generate:build transform (23%, 10.4s, 3
+│  calls)
+│  - plugin vite-plugin-storybook-nextjs-image load (21%, 9.5s, 4808
+│  calls)
+│  - plugin vite:css transform (10%, 4.5s, 3 calls)
+│  These rows add up to more than the total. Callbacks can overlap, so
+│  the same time counts for more than one row.
+│  2 callbacks are listed without a time. Their calls overlapped, so the
+│  time inside one call includes work from other calls. To find their
+│  cost, profile the build with `node --cpu-prof`:
+│  - plugin vite-plugin-storybook-nextjs-swc transform (4814 calls)
+│  - plugin plugin-csf transform (4814 calls)
+│  See https://rolldown.rs/reference/InputOptions.checks#bundlertimings
+│  for more details.
+
+│
+◇  Output directory: /tmp/polis303_20261106/storybook_final_g
+│
+└  Storybook build completed successfully

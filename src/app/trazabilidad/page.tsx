@@ -5,16 +5,15 @@ import { DiagramaTrazabilidad } from "./diagrama-trazabilidad";
 export const metadata: Metadata = {
   title: "Trazabilidad — POLIS Cartagena de Indias",
   description:
-    "Diagrama UML del ciclo de vida completo de una política pública en Cartagena de Indias: carriles de actores, 5 fases metodológicas del DNP y línea de vida del dato ciudadano, del aporte en mesa al proyecto BPIM y su supervisión.",
+    "Diagrama del flujo propuesto por POLIS para una política pública en Cartagena de Indias: actores, cinco fases y recorrido ilustrativo del aporte ciudadano hasta el proyecto y su seguimiento.",
 };
 
 /**
  * POLIS — Trazabilidad del ciclo de vida de la política pública.
  *
  * Diagrama UML interactivo (carriles de actores y fases) articulado con el
- * andamiaje metodológico del DNP y el caso de Cartagena de Indias
- * (Decreto Distrital 037 de 2026, Acuerdo Distrital 139 de 2024 y las 7
- * Dimensiones de Seguridad Humana).
+ * caso de Cartagena de Indias, su PDD (Acuerdo Distrital 139 de 2024)
+ * y el perfil de siete dimensiones de Seguridad Humana de POLIS.
  */
 export default function TrazabilidadPage() {
   return (
@@ -31,9 +30,9 @@ export default function TrazabilidadPage() {
             <p className="text-base leading-relaxed text-[var(--text-secondary)]">
               Cómo una propuesta que nace en una mesa de trabajo de Cartagena se convierte
               en diagnóstico, decisión, proyecto y verificación: el ciclo completo de la
-              Política Pública de Seguridad Humana y Convivencia Ciudadana (PSHC),
-              modelado en lenguaje UML con los carriles de los actores y las 5 fases
-              metodológicas.
+              Política Pública de Seguridad Humana y Convivencia Ciudadana (PSHC).
+              El diagrama propone cinco fases de trabajo; la adopción y los vínculos
+              de cada política deben acreditarse con sus documentos y registros.
             </p>
           </header>
           <DiagramaTrazabilidad />

@@ -1,6 +1,6 @@
 {
   "esquema": "polis.linaje_territorial_documentos.v1",
-  "verificado_utc": "2026-11-05T11:20:20.353570+00:00",
+  "verificado_utc": "2026-11-06T10:34:54.900207+00:00",
   "capas": [
     {
       "id": "localidades",
@@ -36,7 +36,7 @@
   },
   "programacion_mesas": {
     "archivo": "backend/alembic/versions/0095_sembrar_censo_35_mesas.py",
-    "sha256": "6c50a4559c15030b92997bb19f4dd4a414b94a0b6d2b0d8ba695edaf35bd966b",
+    "sha256": "19b11d1be64586c9b2df2e14ea993edfd322846ac28d46e29c14bb5a9c16696e",
     "cantidad_codigos": 35,
     "codigos": [
       "MP-ETN-08",

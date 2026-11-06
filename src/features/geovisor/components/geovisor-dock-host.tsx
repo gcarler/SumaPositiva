@@ -122,6 +122,7 @@ export function GeovisorDockHost({ dock, renderView, className }: GeovisorDockHo
               return (
                 <div
                   key={id}
+                  role="presentation"
                   draggable
                   onDragStart={(e) => {
                     e.dataTransfer.setData(DRAG_MIME, id);
@@ -141,26 +142,37 @@ export function GeovisorDockHost({ dock, renderView, className }: GeovisorDockHo
                     value={id}
                     title={meta.description}
                     aria-label={meta.title}
+                    aria-keyshortcuts="Delete"
+                    onKeyDown={(event) => {
+                      if (event.key !== "Delete") return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                      const documento = event.currentTarget.ownerDocument;
+                      closeView(id);
+                      requestAnimationFrame(() => requestAnimationFrame(() => {
+                        const siguiente = documento.querySelector<HTMLButtonElement>(`[data-testid="geovisor-dock-host-${dock}"] [role="tab"][data-state="active"]`);
+                        const control = documento.querySelector<HTMLButtonElement>(`[data-testid="dock-toggle-${dock}"]`);
+                        (siguiente ?? control)?.focus();
+                      }));
+                    }}
                     className="h-full flex-none gap-1.5 rounded-none border-0 bg-transparent px-2 text-xs font-medium shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
                     <Icon className={cn("size-3.5", meta.tone)} aria-hidden="true" />
                     <span>{meta.short}</span>
                   </TabsTrigger>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => closeView(id)}
-                    aria-label={`Cerrar vista ${meta.title}`}
-                    title={`Cerrar ${meta.title}`}
-                    className="mr-0.5 size-5 rounded text-[var(--text-tertiary)] opacity-60 hover:opacity-100 group-hover/tab:opacity-100"
-                  >
-                    <X className="size-3" aria-hidden="true" />
-                  </Button>
                 </div>
               );
             })}
           </TabsList>
+
+          {active && (
+            <Button type="button" variant="ghost" size="icon-sm" onClick={() => closeView(active)}
+              aria-label={`Cerrar vista ${GEOVISOR_VIEW_META[active].title}`}
+              title={`Cerrar ${GEOVISOR_VIEW_META[active].title} (Suprimir en la pestaña)`}
+              className="size-6 shrink-0 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
+              <X className="size-3" aria-hidden="true" />
+            </Button>
+          )}
 
           {/* ACCIONES DEL PANEL */}
           <Button

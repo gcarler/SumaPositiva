@@ -144,9 +144,9 @@ export interface CompromisosStoreState {
 }
 
 export const useCompromisosStore = create<CompromisosStoreState>((set, get) => ({
-  compromisos: COMPROMISOS_PAS_CANONICOS,
+  compromisos: [],
   filtros: FILTROS_INICIALES_COMPROMISOS,
-  cargando: false,
+  cargando: true,
   guardando: false,
   error: null,
   esContingencia: false,

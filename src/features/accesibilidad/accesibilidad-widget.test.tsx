@@ -148,4 +148,12 @@ describe("AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función P
     expect(html).toContain('aria-label="Abrir menú de accesibilidad"');
     expect(html).not.toContain('aria-label="Menú de accesibilidad"');
   });
+
+  test("las páginas públicas también admiten la pestaña compacta inferior en móvil", () => {
+    const html = renderToString(<AccesibilidadWidgetUI {...defaultProps} isCollapsed={true} isGeovisor={false} />);
+    expect(html).toContain('data-testid="accesibilidad-tab-container"');
+    expect(html).toContain('aria-label="Abrir menú de accesibilidad"');
+    expect(html).toContain("bottom-4");
+    expect(html).not.toContain('aria-label="Menú de accesibilidad"');
+  });
 });

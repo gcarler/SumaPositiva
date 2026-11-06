@@ -1,6 +1,6 @@
 """Sembrar por sí sola el censo canónico de 35 mesas de trabajo (H-05).
 
-Las migraciones anteriores solo corrigen sobre el censo históric o que ya
+Las migraciones anteriores solo corrigen sobre el censo histórico que ya
 venía en la base de operación: 0013/0050 sembran catálogos complementarios,
 0066 agrega corregimientos y 0088 sincroniza. En una base recién migrada la
 cadena dejaba 36 agendas con solo 2 mesas (las nuevas de 0088) y sin
@@ -18,6 +18,10 @@ Revises: 0094_herald_salud_resumen
 Create Date: 2026-11-04
 """
 
+from collections import Counter
+
+from sqlalchemy import bindparam, text
+
 from alembic import op
 
 revision = "0095_sembrar_censo_35_mesas"
@@ -25,12 +29,25 @@ down_revision = "0094_herald_salud_resumen"
 branch_labels = None
 depends_on = None
 
+CODIGOS_CENSO = (
+    tuple(f"MP-POB-{n:02d}" if n != 8 else "MP-ETN-08" for n in range(1, 10))
+    + tuple(f"MR-RUR-{n:02d}" if n < 7 else f"MR-ISL-{n:02d}" for n in range(1, 12))
+    + tuple(f"MS-SEC-{n:02d}" for n in range(1, 13))
+    + tuple(f"MT-L{n:02d}-01" for n in range(1, 4))
+)
+
+AGENDAS_CENSO = ("pc-001",) + tuple(
+    f"{prefijo}-{numero:03d}"
+    for prefijo, total in (("mp", 9), ("mr", 11), ("ms", 12), ("mt", 3))
+    for numero in range(1, total + 1)
+)
+
 
 def upgrade() -> None:
     bind = op.get_bind()
 
     # 1. Siembra del censo canónico por clave de negocio codigo_oficial.
-    bind.exec_driver_sql("""
+    sembradas = bind.exec_driver_sql("""
         INSERT INTO mesas_trabajo.mesas (
             id, codigo_oficial, shortcode_ciudadano, ruta_jerarquica, slug,
             nombre, tipo_mesa, territorio_id, lugar_nombre, modalidad,
@@ -82,7 +99,6 @@ def upgrade() -> None:
         LEFT JOIN geodatos.territorios t ON t.codigo = c.territorio_codigo
         LEFT JOIN motor_politicas.dimensiones_seguridad_humana d ON d.codigo = c.dimension_codigo
         ON CONFLICT (codigo_oficial) DO UPDATE SET
-            id = EXCLUDED.id,
             shortcode_ciudadano = EXCLUDED.shortcode_ciudadano,
             ruta_jerarquica = EXCLUDED.ruta_jerarquica,
             slug = EXCLUDED.slug,
@@ -96,8 +112,9 @@ def upgrade() -> None:
             aforo_maximo = EXCLUDED.aforo_maximo,
             dimension_id = EXCLUDED.dimension_id,
             metadatos = EXCLUDED.metadatos,
-            actualizado_en = clock_timestamp();
-    """)
+            actualizado_en = clock_timestamp()
+        RETURNING codigo_oficial;
+    """).all()
 
     # 2. Vinculación 1:1 de cada agenda con su mesa canónica por código oficial.
     bind.exec_driver_sql("""
@@ -144,41 +161,86 @@ def upgrade() -> None:
         WHERE a.id = v.agenda;
     """)
 
-    # 3. Guardia censal: 35 mesas (3/11/9/12), 36 agendas, 35 vinculadas 1:1 y
-    #    pc-001 (plenaria) sin mesa. El censo incompleto no puede pasar por verde.
-    bind.exec_driver_sql("""
-        DO $$
-        DECLARE
-            mesas_total integer;
-            agendas_total integer;
-            vinculadas_total integer;
-            distintas_total integer;
-        BEGIN
-            SELECT count(*) INTO mesas_total FROM mesas_trabajo.mesas;
-            SELECT count(*) INTO agendas_total FROM mesas_trabajo.agendas;
-            SELECT count(mesa_id), count(DISTINCT mesa_id)
-                INTO vinculadas_total, distintas_total FROM mesas_trabajo.agendas;
-            IF mesas_total <> 35 OR agendas_total <> 36
-                OR vinculadas_total <> 35 OR distintas_total <> 35
-                OR (SELECT count(*) FROM mesas_trabajo.agendas WHERE id = 'pc-001' AND mesa_id IS NULL) <> 1 THEN
-                RAISE EXCEPTION 'Censo H-05 inválido: mesas %, agendas %, vinculadas %, distintas %',
-                    mesas_total, agendas_total, vinculadas_total, distintas_total;
-            END IF;
-            IF (SELECT count(*) FROM mesas_trabajo.mesas WHERE tipo_mesa = 'TERRITORIAL') <> 3
-                OR (SELECT count(*) FROM mesas_trabajo.mesas WHERE tipo_mesa = 'RURAL_INSULAR') <> 11
-                OR (SELECT count(*) FROM mesas_trabajo.mesas WHERE tipo_mesa = 'POBLACIONAL') <> 9
-                OR (SELECT count(*) FROM mesas_trabajo.mesas WHERE tipo_mesa = 'SECTORIAL') <> 12 THEN
-                RAISE EXCEPTION 'Distribución de tipos no coincide con el censo 3/11/9/12';
-            END IF;
-        END $$;
-    """)
+    # 3. Validar el corte sembrado, sin exigir que no existan otras mesas o agendas.
+    # El UUID previo se conserva al actualizar por codigo_oficial: participantes,
+    # actas y demás registros existentes mantienen sus referencias.
+    codigos = tuple(fila[0] for fila in sembradas)
+    if len(codigos) != 35 or set(codigos) != set(CODIGOS_CENSO):
+        raise RuntimeError("Censo H-05 incompleto: se requieren 35 códigos canónicos")
+    mesas = (
+        bind.execute(
+            text("SELECT id, tipo_mesa FROM mesas_trabajo.mesas WHERE codigo_oficial IN :codigos").bindparams(
+                bindparam("codigos", expanding=True)
+            ),
+            {"codigos": codigos},
+        )
+        .mappings()
+        .all()
+    )
+    agendas = (
+        bind.execute(
+            text("SELECT id, mesa_id FROM mesas_trabajo.agendas WHERE id IN :agendas").bindparams(
+                bindparam("agendas", expanding=True)
+            ),
+            {"agendas": AGENDAS_CENSO},
+        )
+        .mappings()
+        .all()
+    )
+    vinculadas = [fila["mesa_id"] for fila in agendas if fila["id"] != "pc-001"]
+    plenaria = [fila for fila in agendas if fila["id"] == "pc-001"]
+    if (
+        len(agendas) != 36
+        or len(vinculadas) != 35
+        or len(set(vinculadas)) != 35
+        or set(vinculadas) != {fila["id"] for fila in mesas}
+        or len(plenaria) != 1
+        or plenaria[0]["mesa_id"] is not None
+    ):
+        raise RuntimeError("Censo H-05 inválido: se requieren 36 agendas y 35 vínculos canónicos únicos")
+    if Counter(fila["tipo_mesa"] for fila in mesas) != {
+        "TERRITORIAL": 3,
+        "RURAL_INSULAR": 11,
+        "POBLACIONAL": 9,
+        "SECTORIAL": 12,
+    }:
+        raise RuntimeError("Distribución de tipos no coincide con el censo 3/11/9/12")
 
 
 def downgrade() -> None:
     bind = op.get_bind()
-    # Solo desvincula y retira las mesas del censo; los registros dependientes
-    # (actas, participantes, agendas propias) detienen el DELETE por las claves
-    # foráneas y conservan los datos persistidos.
+    bind.execute(text("SET LOCAL lock_timeout='5s'"))
+    bind.execute(text("LOCK TABLE mesas_trabajo.mesas IN ACCESS EXCLUSIVE MODE"))
+    # Algunas FK usan CASCADE o SET NULL. No se confía en que el DELETE falle:
+    # cualquier dato dependiente ajeno a las agendas sembradas impide el retiro.
+    referencias = bind.execute(
+        text("""
+            SELECT n.nspname AS esquema, t.relname AS tabla, a.attname AS columna
+            FROM pg_constraint c
+            JOIN pg_class t ON t.oid=c.conrelid
+            JOIN pg_namespace n ON n.oid=t.relnamespace
+            JOIN pg_attribute a ON a.attrelid=c.conrelid AND a.attnum=ANY(c.conkey)
+            WHERE c.contype='f' AND c.confrelid='mesas_trabajo.mesas'::regclass
+        """)
+    ).mappings()
+    citar = bind.dialect.identifier_preparer.quote
+    for referencia in referencias:
+        tabla = f"{citar(referencia['esquema'])}.{citar(referencia['tabla'])}"
+        columna = citar(referencia["columna"])
+        es_agenda = referencia["esquema"] == "mesas_trabajo" and referencia["tabla"] == "agendas"
+        filtro_agenda = " AND d.id NOT IN :agendas" if es_agenda else ""
+        consulta = text(f"""
+            SELECT EXISTS (
+                SELECT 1 FROM {tabla} d JOIN mesas_trabajo.mesas m ON d.{columna}=m.id
+                WHERE m.codigo_oficial IN :codigos {filtro_agenda}
+            )
+        """).bindparams(bindparam("codigos", expanding=True))
+        parametros = {"codigos": CODIGOS_CENSO}
+        if es_agenda:
+            consulta = consulta.bindparams(bindparam("agendas", expanding=True))
+            parametros["agendas"] = AGENDAS_CENSO
+        if bind.execute(consulta, parametros).scalar_one():
+            raise RuntimeError(f"Censo H-05 con datos dependientes en {tabla}: el downgrade no elimina datos")
     bind.exec_driver_sql("""
         UPDATE mesas_trabajo.agendas
         SET mesa_id = NULL

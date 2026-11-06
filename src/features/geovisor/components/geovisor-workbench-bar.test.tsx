@@ -39,15 +39,19 @@ describe("GeovisorWorkbenchBar Component (GEO-FULL-01)", () => {
     expect(html).toContain('data-testid="dock-toggle-top"');
   });
 
-  test("renderiza boton Datos Estadisticos y boton de Mostrar/Ocultar Panel Superior", () => {
+  test("renderiza el acceso a gráficos y el control del panel superior sin cifras fijas", () => {
     const htmlInicial = renderToString(<GeovisorWorkbenchBar />);
 
-    // Botón Datos Estadísticos presente en lenguaje ciudadano
+    // El acceso abre análisis con datos reales y evita un total desactualizado.
     expect(htmlInicial).toContain('data-testid="workbench-btn-gestor-geojson"');
-    expect(htmlInicial).toContain("Datos Estadísticos");
-    expect(htmlInicial).toContain(
-      'title="Ver y explorar datos estadísticos (12.280 registros)"',
+    const accesoGraficas = htmlInicial.match(
+      /<button[^>]*data-testid="workbench-btn-gestor-geojson"[\s\S]*?<\/button>/,
+    )?.[0];
+    expect(accesoGraficas).toContain("Gráficas y Comparación");
+    expect(accesoGraficas).toContain(
+      'title="Abrir gráficas y comparación de fuentes"',
     );
+    expect(htmlInicial).not.toContain("12.280 registros");
 
     // Botón Mostrar Panel Superior cuando topOpen es false por defecto
     expect(htmlInicial).toContain(

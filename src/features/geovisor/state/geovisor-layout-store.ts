@@ -302,6 +302,7 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
       resetLayout: () => {
         set({
           ...DEFAULT_DOCK_VISIBILITY,
+          centerOpen: true,
           sizes: { ...DEFAULT_DOCK_SIZES },
           isMaximized: false,
           previousOpenState: null,

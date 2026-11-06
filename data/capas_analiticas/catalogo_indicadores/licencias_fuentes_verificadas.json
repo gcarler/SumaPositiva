@@ -1,0 +1,313 @@
+{
+  "encargo": 303,
+  "verificado_utc": "2026-11-06T10:50:17.765952+00:00",
+  "alcance": "Licencia declarada por publicador de cada producto; no certificación de su método, procedencia original o aprobación institucional.",
+  "fuentes": {
+    "ideam_calidad_aire": {
+      "url": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "consultado_utc": "2026-11-06T10:50:13.654452+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "bytes": 61397,
+      "sha256": "805e4babec0aaf805a5b1cf9e1614ef00f1204caf6dc60ab66b99fb5e4431961",
+      "nombre": "Calidad del Aire en Colombia (Promedio Anual)",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, Bogotá D.C.",
+      "attributionLink": "http://sisaire.ideam.gov.co/ideam-sisaire-web/publicaciones.xhtml?clase=DOCUMENTOS",
+      "rowsUpdatedAt": 1792422278
+    },
+    "ins_calidad_agua": {
+      "url": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "consultado_utc": "2026-11-06T10:50:13.655741+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "bytes": 22643,
+      "sha256": "df9a0bc3224405be968dbf96a4d7bcd89bad367f505b578a2c96c94e1fd27c99",
+      "nombre": "Calidad del Agua para Consumo Humano en Colombia",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Salud INS, Bogotá D.C",
+      "attributionLink": "https://www.ins.gov.co/sivicap/Paginas/sivicap.aspx",
+      "rowsUpdatedAt": 1793753353
+    },
+    "medicina_examenes_sexuales": {
+      "url": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "consultado_utc": "2026-11-06T10:50:13.659289+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "bytes": 64696,
+      "sha256": "06486972fa69e1d5ed1cdb5ad9ecf4c7f6f00847d41500479c09a9057793c063",
+      "nombre": "Exámenes médico legales por presunto delito sexual. Colombia, años 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758301767
+    },
+    "medicina_homicidios": {
+      "url": "https://www.datos.gov.co/api/views/vtub-3de2.json",
+      "consultado_utc": "2026-11-06T10:50:13.663466+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/vtub-3de2.json",
+      "bytes": 68859,
+      "sha256": "f12358137bf74a1e1f4b582a80bc95d55b7d2c9d0f9b71a29877f341d0841e45",
+      "nombre": "Presuntos Homicidios. Colombia, 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758297367
+    },
+    "medicina_lesiones_accidentales": {
+      "url": "https://www.datos.gov.co/api/views/6cjn-eevd.json",
+      "consultado_utc": "2026-11-06T10:50:14.179050+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/6cjn-eevd.json",
+      "bytes": 65077,
+      "sha256": "40a48a80431491a12cb8579317e76fb03c6bbaabe140a52461230ac5ca45192e",
+      "nombre": "Lesiones accidentales. Colombia. Años 2015 - 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758303194
+    },
+    "medicina_lesiones_transporte": {
+      "url": "https://www.datos.gov.co/api/views/ezhf-hscf.json",
+      "consultado_utc": "2026-11-06T10:50:14.196971+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/ezhf-hscf.json",
+      "bytes": 75455,
+      "sha256": "909abbc004c943c4501222b27f0caa6e1e6ddb8927adf23fd6ae023003feea10",
+      "nombre": "Lesiones por eventos de transporte. Colombia, años 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Alcaldía de Apía, Risaralda",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758549825
+    },
+    "medicina_suicidios": {
+      "url": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "consultado_utc": "2026-11-06T10:50:14.418016+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "bytes": 60292,
+      "sha256": "9a9597803b12fd50c1adff6d8f9ec2b32626567deddc365311e70e63023c6a87",
+      "nombre": "Presuntos Suicidios. Colombia, 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758298846
+    },
+    "medicina_violencia_interpersonal": {
+      "url": "https://www.datos.gov.co/api/views/e3xi-4zq5.json",
+      "consultado_utc": "2026-11-06T10:50:14.610481+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/e3xi-4zq5.json",
+      "bytes": 69817,
+      "sha256": "fba5577ef4900ef3e0d054d7981f3a30f26281e9cebc4e32379bb8cc8bf72353",
+      "nombre": "Violencia interpersonal. Colombia, años 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Alcaldía de Sogamoso, Boyacá",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758555070
+    },
+    "medicina_violencia_intrafamiliar": {
+      "url": "https://www.datos.gov.co/api/views/ers2-kerr.json",
+      "consultado_utc": "2026-11-06T10:50:15.899831+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/ers2-kerr.json",
+      "bytes": 71863,
+      "sha256": "1f5e0e3cf176b46c89f35de4f821785dc8ed961881c980663d6be127bad4bdda",
+      "nombre": "Violencia intrafamiliar. Colombia, años 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758558548
+    },
+    "policia_amenazas": {
+      "url": "https://www.datos.gov.co/api/views/meew-mguv.json",
+      "consultado_utc": "2026-11-06T10:50:15.936924+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/meew-mguv.json",
+      "bytes": 14773,
+      "sha256": "5bee9f4f726eda2b69650c43728c159f33a21697b2c543bb6fec188260d98365",
+      "nombre": "Amenazas Policía Nacional de Colombia",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "attributionLink": "https://www.datos.gov.co/d/meew-mguv",
+      "rowsUpdatedAt": 1788282306
+    },
+    "policia_delitos_sexuales": {
+      "url": "https://www.datos.gov.co/api/views/fpe5-yrmw.json",
+      "consultado_utc": "2026-11-06T10:50:16.061480+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/fpe5-yrmw.json",
+      "bytes": 18091,
+      "sha256": "fb7b7f40945cc80c5f09e51dae9107d50a73f2bab1ec81025a2db5d6365f2b2d",
+      "nombre": "Reporte  Delitos sexuales Policía Nacional",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección de Investigación Criminal e Interpol DIJIN",
+      "attributionLink": "https://www.policia.gov.co/jefatura-nacional-del-servicio-de-policia/dijin",
+      "rowsUpdatedAt": 1788291878
+    },
+    "policia_homicidios": {
+      "url": "https://www.datos.gov.co/api/views/m8fd-ahd9.json",
+      "consultado_utc": "2026-11-06T10:50:16.138661+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/m8fd-ahd9.json",
+      "bytes": 19509,
+      "sha256": "032ef6e04f69ad68c83586a3571b4b8111b8daf25a458aef46300df75ad37201",
+      "nombre": "HOMICIDIO",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Ministerio de Defensa Nacional - MinDefensa, Bogotá D.C.",
+      "attributionLink": "https://www.mindefensa.gov.co",
+      "rowsUpdatedAt": 1792593057
+    },
+    "policia_hurto_vehiculos": {
+      "url": "https://www.datos.gov.co/api/views/9vha-vh9n.json",
+      "consultado_utc": "2026-11-06T10:50:16.202603+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/9vha-vh9n.json",
+      "bytes": 15930,
+      "sha256": "f2dc50a4de7c73904f09eebb9eaebf19c47b5cd2529bad12661febaf1c911200",
+      "nombre": "Reporte Hurto por Modalidades Policía Nacional",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección de Investigación Criminal e Interpol DIJIN",
+      "attributionLink": "https://www.policia.gov.co/jefatura-nacional-del-servicio-de-policia/dijin",
+      "rowsUpdatedAt": 1788293993
+    },
+    "policia_hurto_vivienda_comercio": {
+      "url": "https://www.datos.gov.co/api/views/6sqw-8cg5.json",
+      "consultado_utc": "2026-11-06T10:50:16.322520+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/6sqw-8cg5.json",
+      "bytes": 15801,
+      "sha256": "d08a4cea93f465def953bbc1c1af94045ff006828db4ca670bb3bac25fc3262a",
+      "nombre": "Reporte Hurto por Modalidades Policía Nacional",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "attributionLink": "https://www.datos.gov.co/d/6sqw-8cg5",
+      "rowsUpdatedAt": 1788295226
+    },
+    "policia_lesiones": {
+      "url": "https://www.datos.gov.co/api/views/72sg-cybi.json",
+      "consultado_utc": "2026-11-06T10:50:16.398439+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/72sg-cybi.json",
+      "bytes": 18556,
+      "sha256": "fbdb174f250ad3464931247068cf7685591bdaeef08169d286b6267e262e746c",
+      "nombre": "Reporte Lesiones Personales y en Accidente de Tránsito Policía Nacional",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "attributionLink": null,
+      "rowsUpdatedAt": 1788290710
+    },
+    "policia_violencia_intrafamiliar": {
+      "url": "https://www.datos.gov.co/api/views/vuyt-mqpw.json",
+      "consultado_utc": "2026-11-06T10:50:16.505527+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/vuyt-mqpw.json",
+      "bytes": 15759,
+      "sha256": "4be31c87173760a11bd6139128f61bea51d32004d6456dbaafeb1008a57e1942",
+      "nombre": "Reporte Delito Violencia Intrafamiliar Policía Nacional",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Dirección General de la Policía Nacional - DIPON, Bogotá D.C.",
+      "attributionLink": "https://www.datos.gov.co/d/vuyt-mqpw",
+      "rowsUpdatedAt": 1788283189
+    },
+    "procuraduria_pqrsdf_cartagena": {
+      "url": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "consultado_utc": "2026-11-06T10:50:16.532327+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "bytes": 17828,
+      "sha256": "86a52378b4ca5baacc0fa255f37739ab919c60497e5fbd3ab8e3521b697448c6",
+      "nombre": "Datos abiertos de las PQRSDF de la Sede Electrónica de la Procuraduría General de la Nación",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+      "attributionLink": "https://www.datos.gov.co/d/s226-fj9i",
+      "rowsUpdatedAt": 1735660401
+    }
+  }
+}

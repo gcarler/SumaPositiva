@@ -1,0 +1,102 @@
+================================================================================
+   POLIS - SUITE SMOKE E2E AISLADA DE FLUJOS CRÍTICOS Y ACCESIBILIDAD (AUD-09)
+================================================================================
+
+[E2E-ENV] 1. Inicializando base de datos aislada y sembrando usuarios dinámicos...
+[E2E-ENV] Base polis_test_303_e2e clonada desde polis_test_303_seed.
+[E2E-ENV] Usuario Autoridad: test_e2e_autoridad@cartagena.gov.co
+[E2E-ENV] Usuario Auditor:   test_e2e_auditor@cartagena.gov.co
+[E2E-ENV] 2. Levantando backend uvicorn en puerto aislado 18303...
+[E2E-ENV] 3. Levantando frontend standalone en puerto aislado 18304...
+[E2E-ENV] 4. Creando proxy inverso E2E en puerto 18305...
+[E2E-ENV] Backend, frontend standalone y proxy inverso listos y saludables.
+
+Iniciando sesión en UI para test_e2e_autoridad@cartagena.gov.co (autoridad_distrital)...
+[BROWSER-CONSOLE-ERROR] Failed to load resource: the server responded with a status of 403 ()
+[BROWSER-CONSOLE-ERROR] [GSI_LOGGER]: The given origin is not allowed for the given client ID.
+
+========================================
+[PASS] 1. Login por rol: autoridad_distrital - Sesión confirmada y redirección a /plataforma exitosa
+========================================
+
+Ejecutando Flujo 2: Conmutar Fase...
+Recargando página para verificar persistencia de fase en PostgreSQL...
+
+========================================
+[PASS] 2. Conmutar fase - Persistencia verificada tras recarga y restaurada
+========================================
+
+Ejecutando Flujo 3: Editar Mesa (Acuerdos de Plenaria)...
+[BROWSER-CONSOLE-ERROR] Failed to load resource: the server responded with a status of 404 (Not Found)
+[API-ERROR] 404 http://127.0.0.1:18305/api/v1/mesas/01a0f5fe-86e2-7209-9001-000000000009/acta: {"detail":"Acta no encontrada para esta mesa"}
+Recargando página para verificar persistencia de acuerdos de mesa en PostgreSQL...
+
+========================================
+[PASS] 3. Editar mesa - Acuerdos concertados persistieron en PostgreSQL: "Acuerdos prioritarios concertados e..."
+========================================
+
+Ejecutando Flujo 4: Editar Línea Estratégica...
+Recargando página para verificar persistencia de línea en PostgreSQL...
+
+========================================
+[PASS] 4. Editar línea - Descripción persistió en PostgreSQL y se renderizó tras recarga
+========================================
+
+Ejecutando Flujo 5: Editar Compromiso PAS...
+Recargando página para verificar persistencia de compromiso en PostgreSQL...
+
+========================================
+[PASS] 5. Editar compromiso - Avance persistió en 35 y observación registrada
+========================================
+
+Ejecutando Flujo 6: Registrar Medición de Indicador...
+Recargando página para verificar persistencia de medición en PostgreSQL...
+
+========================================
+[PASS] 6. Registrar medición - Medición de indicador (5200) persistió en PostgreSQL
+========================================
+
+Ejecutando Flujo 7: Devolución Motivada de Aporte (C-150/15)...
+Recargando página para verificar persistencia de devolución en PostgreSQL...
+
+========================================
+[PASS] 7. Devolución de un aporte - Devolución motivada radicada y persistida en auditoría forense
+========================================
+
+Ejecutando Flujo 8: Modo Solo Lectura del Auditor Forense...
+Iniciando sesión en UI para test_e2e_auditor@cartagena.gov.co (auditor_forense)...
+
+========================================
+[PASS] 1. Login por rol: auditor_forense - Sesión confirmada y redirección a /plataforma exitosa
+========================================
+
+========================================
+[PASS] 8. Modo solo lectura del auditor - Validado en Seguimiento (3 paneles), Mesas y Configuración
+========================================
+
+Ejecutando Flujo 9: Auditoría Axe-core Ampliada en Vistas y Paneles de Plataforma...
+Iniciando sesión en UI para test_e2e_autoridad@cartagena.gov.co (autoridad_distrital)...
+
+========================================
+[PASS] 1. Login por rol: autoridad_distrital - Sesión confirmada y redirección a /plataforma exitosa
+========================================
+[A11Y] Auditoría Axe: Vista Dashboard (/plataforma) -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Vista Mesas (/plataforma/mesas) -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Vista Contenido (/plataforma/contenido) -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Seguimiento - Tab 1 · Compromisos PAS -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Seguimiento - Tab 2 · Cadena de Valor y Seguimiento -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Seguimiento - Tab 3 · Rendición de Cuentas C-150 -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Vista Configuración (/plataforma/configuracion) -> Violaciones Serias/Críticas: 0
+[A11Y] Auditoría Axe: Vista Actores Estratégicos (/plataforma/actores) -> Violaciones Serias/Críticas: 0
+
+========================================
+[PASS] 9. Auditoría de accesibilidad axe-core ampliada - 0 violaciones críticas/serias en Dashboard, Mesas, Contenido, Seguimiento (3 pestañas), Configuración y Actores
+========================================
+
+================================================================================
+🎉 SUITE SMOKE E2E COMPLETADA CON ÉXITO: 9/9 FLUJOS APROBADOS
+================================================================================
+
+
+[E2E-ENV] Desmontando servicios de prueba aislados...
+[E2E-ENV] Entorno desmontado limpiamente.

@@ -141,3 +141,8 @@ export const GeovisorColapsado: Story = {
     await expect(args.onToggleCollapse).toHaveBeenCalled();
   },
 };
+
+export const PaginaColapsada: Story = {
+  ...GeovisorColapsado,
+  args: { isGeovisor: false, isCollapsed: true },
+};

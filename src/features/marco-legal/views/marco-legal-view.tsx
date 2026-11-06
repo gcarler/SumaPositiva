@@ -17,6 +17,7 @@ import {
   ChevronRight,
   FileText,
   Cpu,
+  ExternalLink,
 } from "lucide-react";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -48,15 +49,37 @@ export function MarcoLegalView() {
 
   // Gestión de anclas históricas y retrocompatibilidad de URL (#distrital, #plataforma, etc.)
   useEffect(() => {
+    let primerFrame = 0;
+    let segundoFrame = 0;
+    const cancelarDesplazamiento = () => {
+      cancelAnimationFrame(primerFrame);
+      cancelAnimationFrame(segundoFrame);
+    };
+    const desplazar = (id: string) => {
+      cancelarDesplazamiento();
+      primerFrame = requestAnimationFrame(() => {
+        segundoFrame = requestAnimationFrame(() => {
+          const destino = document.getElementById(id);
+          const reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          destino?.scrollIntoView({ behavior: reducirMovimiento ? "auto" : "smooth", block: "start" });
+        });
+      });
+    };
     function sincronizarConHash() {
+      cancelarDesplazamiento();
       const hash = window.location.hash.replace("#", "").toLowerCase();
       if (!hash) return;
+      if (hash === "plataforma") {
+        setTabActiva("plataforma");
+        desplazar("plataforma");
+        return;
+      }
 
       // Buscar si el hash pertenece a una sección específica
       const seccionEncontrada = SECCIONES_MARCO_LEGAL.find(
         (sec) =>
           sec.id.toLowerCase() === hash ||
-          sec.normas.some((n) => n.anclaId?.toLowerCase() === hash),
+          sec.normas.some((n) => n.anclaId?.toLowerCase() === hash || n.id.toLowerCase() === hash),
       );
 
       if (seccionEncontrada) {
@@ -68,27 +91,16 @@ export function MarcoLegalView() {
           return actual;
         });
 
-        // Scroll suave al elemento destino
-        setTimeout(() => {
-          const el = document.getElementById(hash);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }, 100);
-      } else if (hash === "plataforma") {
-        setTabActiva("plataforma");
-        setTimeout(() => {
-          const el = document.getElementById("plataforma");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }, 100);
+        desplazar(hash);
       }
     }
 
     sincronizarConHash();
     window.addEventListener("hashchange", sincronizarConHash);
-    return () => window.removeEventListener("hashchange", sincronizarConHash);
+    return () => {
+      cancelarDesplazamiento();
+      window.removeEventListener("hashchange", sincronizarConHash);
+    };
   }, []);
 
   // Filtrado de secciones según la pestaña activa
@@ -172,8 +184,8 @@ export function MarcoLegalView() {
             La plataforma <strong>POLIS</strong> y el proceso territorial de Cartagena de Indias se fundamentan
             en <strong>dos esferas jurídicas e institucionales diferenciadas pero complementarias</strong>: el marco
             sustantivo de la <em>Política Pública de Seguridad Humana</em> (mandato distrital de derechos y convivencia)
-            y el marco normativo de la <em>Plataforma Cívica Digital</em> (fe pública, validez probatoria de mensajes
-            de datos y protección estricta de datos personales operada por Ples SAS).
+            y el marco normativo de la <em>Plataforma Cívica Digital</em> (mensajes de datos, trazabilidad
+            documental y protección de datos personales en los procesos operados por Ples SAS).
           </p>
         </div>
 
@@ -224,11 +236,11 @@ export function MarcoLegalView() {
           >
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--color-primary-base, #0ea5e9)]">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--info)]">
                   Pilar Tecnológico 2
                 </span>
                 <Badge variant="outline" className="text-[10px]">
-                  Ples SAS · Fe Pública
+                  Ples SAS · Trazabilidad
                 </Badge>
               </div>
               <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">
@@ -279,7 +291,7 @@ export function MarcoLegalView() {
                 role="tab"
                 id={`${baseId}-tab-${t.id}`}
                 aria-selected={esActiva}
-                aria-controls={`${baseId}-panel-${t.id}`}
+                aria-controls={`${baseId}-panel`}
                 tabIndex={esActiva ? 0 : -1}
                 onClick={() => setTabActiva(t.id)}
                 onKeyDown={(e) => manejarTecladoTabs(e, idx)}
@@ -387,7 +399,7 @@ export function MarcoLegalView() {
 
                 {(tabActiva === "todos" || tabActiva === "plataforma") && (
                   <div>
-                    <div className="flex items-center justify-between text-[11px] font-bold text-[var(--color-primary-base, #0ea5e9)] uppercase tracking-wider pb-1.5 mb-1 border-b border-[var(--border)]">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-[var(--info)] uppercase tracking-wider pb-1.5 mb-1 border-b border-[var(--border)]">
                       <span>Pilar 2: Plataforma POLIS</span>
                       <span className="text-[10px] font-mono text-[var(--text-tertiary)]">Ples SAS</span>
                     </div>
@@ -401,7 +413,7 @@ export function MarcoLegalView() {
                               className="group flex items-center justify-between rounded-lg p-2 text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] border border-transparent hover:border-[var(--border)]"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className="flex size-5 shrink-0 items-center justify-center rounded bg-[var(--surface-2)] text-[var(--text-tertiary)] group-hover:bg-[var(--color-primary-base, #0ea5e9)]/10 group-hover:text-[var(--color-primary-base, #0ea5e9)] transition-colors">
+                                <span className="flex size-5 shrink-0 items-center justify-center rounded bg-[var(--surface-2)] text-[var(--text-tertiary)] group-hover:bg-[var(--info)]/10 group-hover:text-[var(--info)] transition-colors">
                                   <Icono className="size-3" aria-hidden="true" />
                                 </span>
                                 <span className="truncate font-medium group-hover:underline">
@@ -430,8 +442,9 @@ export function MarcoLegalView() {
                 </h3>
               </div>
               <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-                El <strong>Acuerdo 139 de 2024</strong> y el <strong>Decreto Distrital 037 de 2026</strong> ordenan
-                la formulación participativa y el seguimiento vinculante de la Seguridad Humana en las 35 mesas de trabajo.
+                El <strong>Acuerdo 139 de 2024</strong> adopta el Plan de Desarrollo Distrital.
+                El <strong>Decreto Nacional 0037 de 2026</strong> aporta el marco nacional de convivencia y seguridad humana.
+                Las 35 mesas corresponden a la programación local registrada en POLIS.
               </p>
               <div className="pt-2 border-t border-[var(--border)] flex flex-col gap-1.5">
                 <Link
@@ -445,7 +458,7 @@ export function MarcoLegalView() {
                   href="/geovisor"
                   className="inline-flex items-center justify-between text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:underline"
                 >
-                  <span>Explorar Geovisor Territorial</span>
+                  <span>Explorar Datos</span>
                   <ChevronRight className="size-3.5" aria-hidden="true" />
                 </Link>
               </div>
@@ -454,14 +467,15 @@ export function MarcoLegalView() {
             {/* Tarjeta de Titularidad y Fe Pública Ples SAS */}
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-xs space-y-2.5">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="size-4 text-[var(--color-primary-base, #0ea5e9)]" aria-hidden="true" />
+                <ShieldCheck className="size-4 text-[var(--info)]" aria-hidden="true" />
                 <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-                  Fe Pública y Software Cívico
+                  Trazabilidad y Software Cívico
                 </h3>
               </div>
               <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-                La plataforma POLIS es propiedad intelectual y desarrollada por <strong>Ples SAS</strong> bajo
-                estrictos estándares de la <strong>Ley 527 de 1999</strong> (equivalencia legal) y la <strong>Ley 1581 de 2012</strong> (Habeas Data).
+                <strong>Ples SAS</strong> desarrolla y opera POLIS. Los mensajes de datos y su tratamiento
+                se examinan bajo la <strong>Ley 527 de 1999</strong> y la <strong>Ley 1581 de 2012</strong>.
+                Un registro informático no constituye por sí solo certificación de una autoridad pública.
               </p>
               <div className="pt-2 border-t border-[var(--border)] flex flex-col gap-1.5">
                 <Link
@@ -486,13 +500,10 @@ export function MarcoLegalView() {
         {/* Columna Principal de Secciones Normativas (lg:col-span-8) */}
         <div
           role="tabpanel"
-          id={`${baseId}-panel-${tabActiva}`}
+          id={`${baseId}-panel`}
           aria-labelledby={`${baseId}-tab-${tabActiva}`}
           className="lg:col-span-8 space-y-12"
         >
-          {/* Ancla oculta para compatibilidad retroactiva con #plataforma */}
-          <div id="plataforma" className="scroll-mt-24" aria-hidden="true" />
-
           {/* Renderizado de Secciones Normativas */}
           {seccionesVisibles.map((seccion, indexSeccion) => {
             const Icono = ICON_MAP[seccion.icono] ?? Landmark;
@@ -506,16 +517,16 @@ export function MarcoLegalView() {
                 {/* Separador de Ámbito en la Vista Integrada */}
                 {esPrimerPilarB && (
                   <div className="my-10 pt-8 border-t-2 border-dashed border-[var(--border)]">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--color-primary-base, #0ea5e9)] mb-1">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--info)] mb-1">
                       <Cpu className="size-4" aria-hidden="true" />
                       <span>Transición de Ámbito Normativo</span>
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
-                      Pilar 2: Plataforma Cívica Digital, Ecosistema de Datos y Fe Pública (Ples SAS)
+                      Pilar 2: Plataforma Cívica Digital, datos y trazabilidad (Ples SAS)
                     </h2>
                     <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl leading-relaxed">
                       Leyes y decretos que gobiernan la validez probatoria de los mensajes de datos (Ley 527),
-                      el sellado inmutable SHA-256 de actas, la privacidad de datos (Ley 1581) y la gobernanza tecnológica.
+                      la comprobación de integridad documental, la privacidad de datos (Ley 1581) y la gobernanza tecnológica.
                     </p>
                   </div>
                 )}
@@ -525,6 +536,9 @@ export function MarcoLegalView() {
                   className="scroll-mt-24 space-y-5"
                   aria-labelledby={`titulo-${seccion.id}`}
                 >
+                  {seccion.id === "fe-publica" && (
+                    <div id="plataforma" className="scroll-mt-24" aria-hidden="true" />
+                  )}
                   {/* Encabezado de Sección */}
                   <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--border)] pb-3">
                     <div>
@@ -561,7 +575,9 @@ export function MarcoLegalView() {
                       return (
                         <article
                           key={norma.id}
-                          id={norma.anclaId}
+                          id={norma.anclaId && norma.anclaId !== seccion.id && norma.anclaId !== "plataforma"
+                            ? norma.anclaId
+                            : norma.id}
                           className={`rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 sm:p-5 shadow-xs transition-all hover:border-[var(--border-strong)] hover:shadow-md flex flex-col justify-between ${
                             esExtensa ? "md:col-span-2" : ""
                           }`}
@@ -600,9 +616,16 @@ export function MarcoLegalView() {
                           </div>
 
                           {norma.citaOficial && (
-                            <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center gap-1.5 text-[11px] font-mono text-[var(--text-tertiary)]">
+                            <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap items-start gap-1.5 text-[11px] text-[var(--text-secondary)]">
                               <FileText className="size-3 text-[var(--text-tertiary)] shrink-0" aria-hidden="true" />
-                              <span className="truncate">{norma.citaOficial}</span>
+                              <span className="min-w-0 break-words">{norma.citaOficial}</span>
+                              {norma.fuenteUrl && (
+                                <Link href={norma.fuenteUrl} target="_blank" rel="noopener noreferrer"
+                                  aria-label={`Consultar fuente de ${norma.nombre}`}
+                                  className="inline-flex items-center gap-1 text-[var(--text-primary)] underline underline-offset-4">
+                                  Consultar fuente oficial <ExternalLink className="size-3" aria-hidden="true" />
+                                </Link>
+                              )}
                             </div>
                           )}
                         </article>

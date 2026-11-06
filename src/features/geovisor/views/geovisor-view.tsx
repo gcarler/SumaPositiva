@@ -131,18 +131,23 @@ export function GeovisorView() {
     }
   }, []);
 
-  const handleSelectTerritorio = useCallback(
+  const handleFiltrarTerritorio = useCallback(
     (id: string) => {
       setTerritorioId(/^LOC-/i.test(id) ? id.toLowerCase() : id);
       const codigo = normalizarCodigoTerritorio(id);
       const actual = useGeovisorAnaliticaStore.getState();
       if (actual.filtros.codigo_territorio !== codigo) actual.setFiltros({ codigo_territorio: codigo });
       setBarrioSeleccionado(null);
-      if (id !== "todas") {
-        openPanel("territorio", { territorioId: id });
-      }
     },
-    [openPanel]
+    []
+  );
+
+  const handleSelectTerritorio = useCallback(
+    (id: string) => {
+      handleFiltrarTerritorio(id);
+      if (id !== "todas") openPanel("territorio", { territorioId: id });
+    },
+    [handleFiltrarTerritorio, openPanel]
   );
 
   const handleSelectBarrio = useCallback((barrioNombre: string) => {
@@ -206,7 +211,7 @@ export function GeovisorView() {
       case "filtros":
         return (
           <div className="space-y-2 p-3">
-            <MultifuenteFiltros datos={analitica.data} onTerritorioChange={handleSelectTerritorio} />
+            <MultifuenteFiltros datos={analitica.data} onTerritorioChange={handleFiltrarTerritorio} />
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-secondary)]">
               <span>{analitica.data ? `${analitica.data.total_observaciones.toLocaleString("es-CO")} observaciones · ${analitica.data.series.length} series con esta selección` : "Consultando banco estadístico"}</span>
               <Button variant="outline" size="sm" onClick={handleExportarPng}>Exportar mapa PNG</Button>
@@ -249,7 +254,7 @@ export function GeovisorView() {
           <div className="p-3">
             <GeovisorBiSidebar
               territorioId={territorioId}
-              onSelectTerritorio={handleSelectTerritorio}
+              onSelectTerritorio={handleFiltrarTerritorio}
               variableMapa={variableMapa}
               onOpenDetalleDrawer={handleOpenDetalleDrawer}
             />
@@ -275,7 +280,7 @@ export function GeovisorView() {
             <GeovisorCharts
               territorioId={territorioId}
               variableMapa={variableMapa}
-              onTerritorioChange={handleSelectTerritorio}
+              onTerritorioChange={handleFiltrarTerritorio}
               onVariableChange={setVariableMapa}
             />
           </div>
@@ -317,7 +322,7 @@ export function GeovisorView() {
         return (
           <GeovisorMultifuentePanel
             territorioId={territorioId}
-            onSelectTerritorio={handleSelectTerritorio}
+            onSelectTerritorio={handleFiltrarTerritorio}
           />
         );
     }

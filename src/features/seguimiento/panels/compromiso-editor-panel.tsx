@@ -52,7 +52,7 @@ export function CompromisoEditorPanel({
   const actualizarAvance = useCompromisosStore((s) => s.actualizarAvance);
   const agregarCompromiso = useCompromisosStore((s) => s.agregarCompromiso);
 
-  const esModoCrear = props.modo === "crear" || !compromiso;
+  const esModoCrear = props.modo === "crear" || !compromisoId;
 
   // Estados de Formulario de Actualización de Avance
   const [avanceValor, setAvanceValor] = useState<number>(
@@ -192,6 +192,23 @@ export function CompromisoEditorPanel({
     URL.revokeObjectURL(url);
     toast.success("Expediente pericial del compromiso exportado.");
   };
+
+  if (compromisoId && !compromiso) {
+    return (
+      <PanelShell
+        entryKey={entryKey}
+        crumbs={[{ label: "Seguimiento PAS" }]}
+        kicker="Plan de Acción y Seguimiento Distrital"
+        title="Compromiso no disponible"
+        onClose={closeTop}
+        onCloseToKey={closeTop}
+      >
+        <p role="alert" className="p-6 text-sm text-text-secondary">
+          El compromiso seleccionado no está en la lista actual. Cierra el panel y vuelve a seleccionarlo tras cargar los datos.
+        </p>
+      </PanelShell>
+    );
+  }
 
   return (
     <PanelShell

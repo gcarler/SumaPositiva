@@ -208,6 +208,7 @@ export function GeovisorWorkspaceLayout({
           onCollapse={() => setPanelOpen("top", false)}
           onExpand={() => setPanelOpen("top", true)}
           aria-label="Panel superior de filtros y KPIs ejecutivos"
+          role="region"
           className={cn(
             "bg-[var(--surface-1)] transition-colors",
             !isTopActive && "pointer-events-none",
@@ -216,6 +217,7 @@ export function GeovisorWorkspaceLayout({
           <div
             className="h-full w-full overflow-auto"
             aria-hidden={!isTopActive}
+            inert={!isTopActive}
             data-dock-panel="top"
           >
             {topSlot}
@@ -260,6 +262,7 @@ export function GeovisorWorkspaceLayout({
               onCollapse={() => setPanelOpen("left", false)}
               onExpand={() => setPanelOpen("left", true)}
               aria-label="Panel izquierdo de capas y mesas territoriales"
+              role="region"
               className={cn(
                 "bg-[var(--surface-1)] transition-colors",
                 !isLeftActive && "pointer-events-none",
@@ -268,6 +271,7 @@ export function GeovisorWorkspaceLayout({
               <div
                 className="h-full w-full overflow-auto"
                 aria-hidden={!isLeftActive}
+                inert={!isLeftActive}
                 data-dock-panel="left"
               >
                 {leftSlot}
@@ -321,6 +325,7 @@ export function GeovisorWorkspaceLayout({
               onCollapse={() => setPanelOpen("right", false)}
               onExpand={() => setPanelOpen("right", true)}
               aria-label="Panel derecho de inspector SIG y ficha técnica"
+              role="region"
               className={cn(
                 "bg-[var(--surface-1)] transition-colors",
                 !isRightActive && "pointer-events-none",
@@ -329,6 +334,7 @@ export function GeovisorWorkspaceLayout({
               <div
                 className="h-full w-full overflow-auto"
                 aria-hidden={!isRightActive}
+                inert={!isRightActive}
                 data-dock-panel="right"
               >
                 {rightSlot}
@@ -359,6 +365,7 @@ export function GeovisorWorkspaceLayout({
           onCollapse={() => setPanelOpen("bottom", false)}
           onExpand={() => setPanelOpen("bottom", true)}
           aria-label="Panel inferior de tabla de datos y gráficos analíticos"
+          role="region"
           className={cn(
             "bg-[var(--surface-1)] transition-colors",
             !isBottomActive && "pointer-events-none",
@@ -367,6 +374,7 @@ export function GeovisorWorkspaceLayout({
           <div
             className="h-full w-full overflow-auto"
             aria-hidden={!isBottomActive}
+            inert={!isBottomActive}
             data-dock-panel="bottom"
           >
             {bottomSlot}

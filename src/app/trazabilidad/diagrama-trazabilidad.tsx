@@ -113,7 +113,7 @@ const CARRILES: Carril[] = [
     actividades: [
       {
         titulo: "Encarga el proceso",
-        detalle: "Acto administrativo de formulación participativa (Decreto Distrital 037/2026).",
+        detalle: "Encargo de formulación participativa; el acto distrital aplicable debe verificarse para cada política.",
       },
       {
         titulo: "Delibera portafolio",
@@ -125,7 +125,7 @@ const CARRILES: Carril[] = [
       },
       {
         titulo: "Adopta la política",
-        detalle: "Decreto Distrital 037/2026 y armonización con el Acuerdo 139/2024.",
+        detalle: "Adopción mediante el acto de la autoridad competente, una vez verificado; articulación con el PDD adoptado por el Acuerdo 139/2024.",
       },
       {
         titulo: "Responde y recalibra",
@@ -161,11 +161,11 @@ const CARRILES: Carril[] = [
   },
   {
     id: "control",
-    actor: "Órganos de control y monitoreo (Personería, Contraloría, POLIS)",
+    actor: "Órganos de control (Personería, Contraloría) y soporte de monitoreo POLIS",
     actividades: [
       {
         titulo: "Verifica transparencia de datos",
-        detalle: "Salvaguardas Habeas Data y despojo de metadatos EXIF/GPS del diagnóstico.",
+        detalle: "Revisión de datos personales y metadatos EXIF/GPS antes de publicar el diagnóstico.",
       },
       {
         titulo: "Audita la deliberación",
@@ -202,12 +202,12 @@ const FICHA_FASES: Fase[] = [
     ],
     procesos: [
       "Identificación de la causa raíz",
-      "Despojo de metadatos EXIF/GPS (Habeas Data)",
+      "Revisión de metadatos EXIF/GPS y salvaguardas de datos personales",
       "Geocodificación y árbol de problemas",
     ],
     salidas: ["Diagnóstico situacional validado", "Árbol de problemas oficial"],
     marcoLegal:
-      "Decreto Distrital 037/2026 (formulación participativa); Ley 1712/2014; Ley 1581/2012",
+      "Ley 1757/2015 (participación); Ley 1712/2014 (transparencia); Ley 1581/2012 (datos personales). El acto distrital aplicable debe verificarse.",
     moduloPolis: "Diagnóstico y árbol de problemas (módulos de la Fase 1 en la plataforma)",
   },
   {
@@ -227,7 +227,7 @@ const FICHA_FASES: Fase[] = [
       "Indicadores trazadores y metas por dimensión",
     ],
     marcoLegal:
-      "Acuerdo Distrital 139/2024 (Línea Estratégica 1: Seguridad Humana); Ley 2294/2022",
+      "Acuerdo Distrital 139/2024 (adopción del Plan de Desarrollo Distrital); Ley 2294/2023 (Plan Nacional de Desarrollo)",
     moduloPolis: "Banco de alternativas, ranking de presupuesto y árbol de objetivos",
   },
   {
@@ -246,12 +246,12 @@ const FICHA_FASES: Fase[] = [
       "Concertación normativa con el Concejo",
     ],
     salidas: [
-      "Decreto Distrital 037/2026",
+      "Acto de adopción de la autoridad competente, por verificar",
       "Matriz plurianual de inversión",
       "Banco de proyectos BPIM",
     ],
     marcoLegal:
-      "Decreto Distrital 037/2026; Acuerdo Distrital 139/2024; Ley 1417/2010 (Juntas de Acción Comunal) y Ley 1414/2010 (contraloría social)",
+      "Acuerdo Distrital 139/2024 (PDD); Ley 2166/2021 (acción comunal); Ley 1757/2015 (participación y control social). La adopción requiere verificar el acto específico.",
     moduloPolis: "Matriz de inversión (módulos de seguimiento de la Fase 3)",
   },
   {
@@ -272,7 +272,7 @@ const FICHA_FASES: Fase[] = [
     ],
     salidas: ["Actividades concluidas", "Bienes y servicios públicos entregados"],
     marcoLegal:
-      "Ley 1474/2011 (Anticorrupción); Ley 2175/2021 (ordenamiento de la contratación pública)",
+      "Ley 1474/2011 (anticorrupción); Ley 80/1993 (Estatuto General de Contratación de la Administración Pública), según el régimen aplicable",
     moduloPolis: "Proyectos y seguimiento (módulo de proyectos de la Fase 4)",
   },
   {
@@ -547,10 +547,10 @@ export function DiagramaTrazabilidad() {
           <p className="mt-6 flex max-w-3xl items-start gap-2 rounded-lg border border-[var(--info)]/40 bg-[var(--surface-2)] p-4 text-xs leading-relaxed text-[var(--text-secondary)]">
             <ScrollText className="mt-0.5 size-4 shrink-0 text-[var(--info)]" strokeWidth={1.5} aria-hidden="true" />
             <span>
-              Cada radicado es único y permite auditar de punta a punta la trayectoria de la
-              propuesta ciudadana. Los prefijos son institucionales de trazabilidad; en
-              ejercicio se correlacionan con los registros del inbox durable, los actos
-              administrativos y el banco de proyectos.
+              Los códigos de esta secuencia son ejemplos ilustrativos. Para acreditar la
+              trayectoria de una propuesta deben cotejarse sus registros, actos
+              administrativos y vínculos con los proyectos; el diagrama no certifica
+              por sí solo esa correspondencia.
             </span>
           </p>
         </TabsContent>

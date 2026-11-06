@@ -13,9 +13,13 @@ export function AccesibilidadWidget() {
   const isGeovisor = Boolean(pathname?.startsWith("/geovisor"));
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isGeovisor);
 
-  // Sincronizar el colapso inicial si cambia la ruta entre geovisor y páginas públicas normales
+  // En pantallas pequeñas la barra empieza compacta para dejar libre el contenido.
   useEffect(() => {
-    setIsCollapsed(isGeovisor);
+    const pantallaPequena = window.matchMedia("(max-width: 639px)");
+    const sincronizar = () => setIsCollapsed(isGeovisor || pantallaPequena.matches);
+    sincronizar();
+    pantallaPequena.addEventListener("change", sincronizar);
+    return () => pantallaPequena.removeEventListener("change", sincronizar);
   }, [isGeovisor]);
 
   const {

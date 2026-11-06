@@ -1,0 +1,10 @@
+Archivo validado: /root/polis/data/capas_analiticas/catalogo_indicadores/catalogo.csv
+Filas: 29; códigos únicos: 29
+  AMB: A=4, B=0, C=0
+  COM: A=3, B=0, C=0
+  ECON: A=4, B=0, C=0
+  PERS: A=8, B=0, C=0
+  POL: A=2, B=0, C=1
+  SALUD: A=4, B=0, C=1
+  SAT: A=2, B=0, C=0
+VALIDACION_OK

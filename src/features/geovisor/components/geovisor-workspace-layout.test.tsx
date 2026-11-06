@@ -3,10 +3,24 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { GeovisorWorkspaceLayout } from "./geovisor-workspace-layout";
 import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+import { Button } from "@/shared/ui/button";
 
 describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
   beforeEach(() => {
     useGeovisorLayoutStore.getState().resetLayout();
+  });
+
+  test.each(["top", "left", "right", "bottom"] as const)("el panel %s oculto no expone controles al teclado", dock => {
+    useGeovisorLayoutStore.getState().setPanelOpen(dock, false);
+    const slots = { topSlot: <Button>Superior</Button>, leftSlot: <Button>Izquierdo</Button>, rightSlot: <Button>Derecho</Button>, bottomSlot: <Button>Inferior</Button> };
+    const cerrado = renderToString(<GeovisorWorkspaceLayout {...slots} centerSlot={<div>Mapa</div>} />);
+    const etiqueta = new RegExp(`<div[^>]*data-dock-panel="${dock}"[^>]*>`);
+    expect(cerrado.match(etiqueta)?.[0]).toContain('inert=""');
+    expect(cerrado.match(etiqueta)?.[0]).toContain('aria-hidden="true"');
+    useGeovisorLayoutStore.getState().setPanelOpen(dock, true);
+    const abierto = renderToString(<GeovisorWorkspaceLayout {...slots} centerSlot={<div>Mapa</div>} />);
+    expect(abierto.match(etiqueta)?.[0]).not.toContain("inert");
+    expect(abierto.match(etiqueta)?.[0]).toContain('aria-hidden="false"');
   });
 
   test("renderiza el contenedor principal con semántica accesible y test ID", () => {

@@ -1,0 +1,605 @@
+{
+  "encargo": 303,
+  "estado": "validado_para_activar",
+  "fecha_utc": "2026-11-06T12:37:13.176405+00:00",
+  "base_commit": "afccb469de3dc66fe9e4c10d19a81911253b997e",
+  "huella_codigo_recursos_sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
+  "C1": {
+    "backend_pg16": {
+      "passed": 1823,
+      "skipped": 16,
+      "failed": 0
+    },
+    "corpus_real": {
+      "passed": 43,
+      "skipped": 0,
+      "failed": 0
+    },
+    "union_pruebas_backend": {
+      "aprobado": 1838,
+      "omitido": 1,
+      "fallido": 0
+    },
+    "modulos_prueba_backend": {
+      "tests.test_access_policy": {
+        "aprobado": 123
+      },
+      "tests.test_acta_pdf": {
+        "aprobado": 4
+      },
+      "tests.test_actas_y_participantes": {
+        "aprobado": 4
+      },
+      "tests.test_actores_estrategicos": {
+        "aprobado": 2
+      },
+      "tests.test_adaptador_catalogo_fuentes_polis": {
+        "aprobado": 16
+      },
+      "tests.test_agentes_inteligentes_pdd": {
+        "aprobado": 8
+      },
+      "tests.test_alternativas_mga": {
+        "aprobado": 4
+      },
+      "tests.test_aportes": {
+        "aprobado": 4
+      },
+      "tests.test_aportes_legado_publico": {
+        "aprobado": 151
+      },
+      "tests.test_aportes_remediacion": {
+        "aprobado": 53
+      },
+      "tests.test_apoyos_unicos": {
+        "aprobado": 1
+      },
+      "tests.test_apoyos_voto": {
+        "aprobado": 1
+      },
+      "tests.test_aud05_gating_fases": {
+        "aprobado": 5
+      },
+      "tests.test_aud06_perfil_produccion": {
+        "aprobado": 9
+      },
+      "tests.test_aud11_scripts_seguridad.TestGuardasBaseDatosDemo": {
+        "aprobado": 16
+      },
+      "tests.test_auditoria_indicadores_planeacion_polis": {
+        "aprobado": 48
+      },
+      "tests.test_cadena_analitica_corte_polis": {
+        "aprobado": 4
+      },
+      "tests.test_calidad_correo_herald": {
+        "aprobado": 15
+      },
+      "tests.test_calidad_formularios": {
+        "aprobado": 57
+      },
+      "tests.test_canal_whatsapp": {
+        "aprobado": 5
+      },
+      "tests.test_candidatos_programa_meta_polis": {
+        "aprobado": 2
+      },
+      "tests.test_catalogo_cartografia_polis": {
+        "aprobado": 2
+      },
+      "tests.test_catalogo_fuentes_versionado": {
+        "aprobado": 2
+      },
+      "tests.test_catalogo_indicadores_integridad": {
+        "aprobado": 25
+      },
+      "tests.test_catalogo_indicadores_polis": {
+        "aprobado": 7
+      },
+      "tests.test_catalogo_ocho_planes_polis": {
+        "aprobado": 2
+      },
+      "tests.test_catalogo_planeacion_corte_polis": {
+        "aprobado": 15
+      },
+      "tests.test_censo_mesas_migracion": {
+        "aprobado": 2
+      },
+      "tests.test_cierre01_migracion_asistencia": {
+        "aprobado": 4
+      },
+      "tests.test_cierre02_herramientas_identidad": {
+        "aprobado": 6
+      },
+      "tests.test_cierre04_seguridad": {
+        "aprobado": 4
+      },
+      "tests.test_cierre05_csp_report": {
+        "aprobado": 6
+      },
+      "tests.test_cierre06_mfa_totp": {
+        "aprobado": 5
+      },
+      "tests.test_cierre07_ambito_territorial": {
+        "aprobado": 7
+      },
+      "tests.test_cli_ficha_territorial_polis": {
+        "aprobado": 12
+      },
+      "tests.test_cli_workspace": {
+        "aprobado": 4
+      },
+      "tests.test_comparacion_ppi_catalogo_polis": {
+        "aprobado": 32
+      },
+      "tests.test_compromisos_pas": {
+        "aprobado": 3
+      },
+      "tests.test_comunicaciones": {
+        "aprobado": 5
+      },
+      "tests.test_conciliacion_retrospectiva_fuentes_polis": {
+        "aprobado": 72
+      },
+      "tests.test_conciliador_gold_set": {
+        "aprobado": 21
+      },
+      "tests.test_conciliador_vinculos_calidad_polis": {
+        "aprobado": 7
+      },
+      "tests.test_concurrencia_y_conflictos": {
+        "aprobado": 2
+      },
+      "tests.test_config": {
+        "aprobado": 3
+      },
+      "tests.test_consolidar_datos_integral_p1": {
+        "aprobado": 4
+      },
+      "tests.test_contexto_corte_polis": {
+        "aprobado": 6
+      },
+      "tests.test_contrastar_fuentes_polis": {
+        "aprobado": 4
+      },
+      "tests.test_contratos_observacion_polis": {
+        "aprobado": 8
+      },
+      "tests.test_control_acceso": {
+        "aprobado": 8
+      },
+      "tests.test_control_fases_y_oauth": {
+        "aprobado": 6
+      },
+      "tests.test_corpus_vinculos_polis": {
+        "aprobado": 3
+      },
+      "tests.test_correspondencias_meta_pa_polis": {
+        "aprobado": 1
+      },
+      "tests.test_corridas_pipeline": {
+        "aprobado": 2
+      },
+      "tests.test_corte_datos_polis": {
+        "aprobado": 7
+      },
+      "tests.test_curacion_cartografia_polis": {
+        "aprobado": 2
+      },
+      "tests.test_database_integration": {
+        "aprobado": 1
+      },
+      "tests.test_database_telemetry": {
+        "aprobado": 6
+      },
+      "tests.test_dea_econometria_triada": {
+        "aprobado": 11
+      },
+      "tests.test_devolucion_razones": {
+        "aprobado": 1
+      },
+      "tests.test_e2e_destinos_seguridad": {
+        "aprobado": 12
+      },
+      "tests.test_e2e_persistencia": {
+        "aprobado": 1
+      },
+      "tests.test_enfoque_etnico": {
+        "aprobado": 1
+      },
+      "tests.test_evidencia_segura": {
+        "aprobado": 5
+      },
+      "tests.test_evidencias": {
+        "aprobado": 5
+      },
+      "tests.test_exception_handlers": {
+        "aprobado": 6
+      },
+      "tests.test_ficha_territorial_polis": {
+        "aprobado": 42
+      },
+      "tests.test_formularios_admin": {
+        "aprobado": 3
+      },
+      "tests.test_formularios_consultas": {
+        "aprobado": 5
+      },
+      "tests.test_fotos_mesas": {
+        "aprobado": 2
+      },
+      "tests.test_fuentes_informacion": {
+        "aprobado": 5
+      },
+      "tests.test_geodatos_analitica_hurtos": {
+        "aprobado": 5
+      },
+      "tests.test_geodatos_estandarizacion": {
+        "aprobado": 6
+      },
+      "tests.test_geodatos_fuentes": {
+        "aprobado": 8
+      },
+      "tests.test_geodatos_isocronas": {
+        "aprobado": 7
+      },
+      "tests.test_geodatos_test_isolation_policy": {
+        "aprobado": 2
+      },
+      "tests.test_geovisor_postgis": {
+        "aprobado": 4
+      },
+      "tests.test_geovisor_ubicacion_mesa": {
+        "aprobado": 1
+      },
+      "tests.test_google_token_verificado": {
+        "aprobado": 8
+      },
+      "tests.test_google_workspace_sync": {
+        "aprobado": 4,
+        "omitido": 1
+      },
+      "tests.test_grafo_validacion_fuentes_polis": {
+        "aprobado": 1
+      },
+      "tests.test_health": {
+        "aprobado": 8
+      },
+      "tests.test_herald_fase2": {
+        "aprobado": 11
+      },
+      "tests.test_herald_salud_resumen": {
+        "aprobado": 33
+      },
+      "tests.test_identidad_completa": {
+        "aprobado": 24
+      },
+      "tests.test_identidad_migracion": {
+        "aprobado": 1
+      },
+      "tests.test_identidad_remediacion_eaf": {
+        "aprobado": 33
+      },
+      "tests.test_identidad_territorial_catalogo_polis": {
+        "aprobado": 31
+      },
+      "tests.test_identidad_y_permisos": {
+        "aprobado": 1
+      },
+      "tests.test_indicadores_canonicos_polis": {
+        "aprobado": 5
+      },
+      "tests.test_indicadores_metadatos": {
+        "aprobado": 3
+      },
+      "tests.test_ingesta_indicadores": {
+        "aprobado": 2
+      },
+      "tests.test_ingesta_masiva_triada": {
+        "aprobado": 20
+      },
+      "tests.test_integridad_compromisos": {
+        "aprobado": 4
+      },
+      "tests.test_integridad_mediciones": {
+        "aprobado": 2
+      },
+      "tests.test_integridad_pii_catalogos": {
+        "aprobado": 1
+      },
+      "tests.test_inteligencia_triada": {
+        "aprobado": 2
+      },
+      "tests.test_inventario_fuentes_polis": {
+        "aprobado": 39
+      },
+      "tests.test_ipc_deflactor_polis": {
+        "aprobado": 4
+      },
+      "tests.test_lector_serie_corte_polis": {
+        "aprobado": 1
+      },
+      "tests.test_licencias_catalogo_indicadores": {
+        "aprobado": 3
+      },
+      "tests.test_lineas_constructor": {
+        "aprobado": 28
+      },
+      "tests.test_magic_link": {
+        "aprobado": 3
+      },
+      "tests.test_matriz_correspondencias_corte_polis": {
+        "aprobado": 7
+      },
+      "tests.test_mesas_agenda": {
+        "aprobado": 1
+      },
+      "tests.test_mesas_ltree": {
+        "aprobado": 2
+      },
+      "tests.test_mesas_seguridad_auditoria": {
+        "aprobado": 9
+      },
+      "tests.test_mesas_submesas_put": {
+        "aprobado": 1
+      },
+      "tests.test_metadatos_socrata_polis": {
+        "aprobado": 4
+      },
+      "tests.test_migration_database_isolation": {
+        "aprobado": 7
+      },
+      "tests.test_motor_mga": {
+        "aprobado": 3
+      },
+      "tests.test_motor_multiagente_pdd": {
+        "aprobado": 10
+      },
+      "tests.test_motor_plan_accion_dnp": {
+        "aprobado": 8
+      },
+      "tests.test_normalizar_observaciones_polis": {
+        "aprobado": 2
+      },
+      "tests.test_noticias": {
+        "aprobado": 3
+      },
+      "tests.test_notificaciones_y_radicacion": {
+        "aprobado": 5
+      },
+      "tests.test_observability": {
+        "aprobado": 3
+      },
+      "tests.test_orquestador_grafo": {
+        "aprobado": 7
+      },
+      "tests.test_paneles_series_7d_polis": {
+        "aprobado": 7
+      },
+      "tests.test_parser_terridata_polis": {
+        "aprobado": 61
+      },
+      "tests.test_participacion_multicanal": {
+        "aprobado": 5
+      },
+      "tests.test_pdd_dea_triada": {
+        "aprobado": 30
+      },
+      "tests.test_pdd_seguridad_humana_16": {
+        "aprobado": 6
+      },
+      "tests.test_pdt_ai_evaluator": {
+        "aprobado": 17
+      },
+      "tests.test_pdt_analisis_planes_tendencias": {
+        "aprobado": 7
+      },
+      "tests.test_pdt_dea_4niveles_cartagena": {
+        "aprobado": 8
+      },
+      "tests.test_pdt_diagnostico_seguridad_humana_8planes": {
+        "aprobado": 4
+      },
+      "tests.test_pdt_dictamen_ejecutivo": {
+        "aprobado": 6
+      },
+      "tests.test_pdt_hoshin_kanri": {
+        "aprobado": 7
+      },
+      "tests.test_pdt_nodos_espacial_predictivo": {
+        "aprobado": 9
+      },
+      "tests.test_pdt_normalizador_y_vinculos_8planes": {
+        "aprobado": 5
+      },
+      "tests.test_pdt_persistencia_pg": {
+        "aprobado": 7
+      },
+      "tests.test_pdt_revision_por_meta": {
+        "aprobado": 12
+      },
+      "tests.test_pdt_sispt_dnp_evaluador": {
+        "aprobado": 6
+      },
+      "tests.test_pipeline_p0_unit": {
+        "aprobado": 25
+      },
+      "tests.test_plan_actualizacion_fuentes_polis": {
+        "aprobado": 2
+      },
+      "tests.test_plantillas_stack": {
+        "aprobado": 9
+      },
+      "tests.test_politicas_catalogo": {
+        "aprobado": 2
+      },
+      "tests.test_politicas_heros": {
+        "aprobado": 4
+      },
+      "tests.test_politicas_y_geodatos": {
+        "aprobado": 5
+      },
+      "tests.test_ppi_agentes_corte_polis": {
+        "aprobado": 17
+      },
+      "tests.test_ppi_planeacion_corte_polis": {
+        "aprobado": 48
+      },
+      "tests.test_presupuesto_e_indicadores": {
+        "aprobado": 3
+      },
+      "tests.test_proyectos_agregacion": {
+        "aprobado": 7
+      },
+      "tests.test_proyectos_anexos": {
+        "aprobado": 3
+      },
+      "tests.test_red_multiagente_ia": {
+        "aprobado": 10
+      },
+      "tests.test_registro_territorial_polis": {
+        "aprobado": 2
+      },
+      "tests.test_reporte_geoespacial": {
+        "aprobado": 6
+      },
+      "tests.test_revision_taxonomia_7d_polis": {
+        "aprobado": 3
+      },
+      "tests.test_series_7d_polis": {
+        "aprobado": 5
+      },
+      "tests.test_servicio_correo_transaccional": {
+        "aprobado": 12
+      },
+      "tests.test_sesion_anonima": {
+        "aprobado": 5
+      },
+      "tests.test_sincronizar_fuentes_publicas": {
+        "aprobado": 8
+      },
+      "tests.test_sincronizar_fuentes_versionado": {
+        "aprobado": 5
+      },
+      "tests.test_supervisor_planeacion_corte_polis": {
+        "aprobado": 7
+      },
+      "tests.test_tablas_dea_dmu_lineage": {
+        "aprobado": 2
+      },
+      "tests.test_tablero_operacion_fuentes_polis": {
+        "aprobado": 3
+      },
+      "tests.test_taxonomia_7d_polis": {
+        "aprobado": 7
+      },
+      "tests.test_testimonios_comunitarios": {
+        "aprobado": 7
+      },
+      "tests.test_toolbox_linaje_territorial": {
+        "aprobado": 6
+      },
+      "tests.test_transaction_policy": {
+        "aprobado": 1
+      },
+      "tests.test_transactions": {
+        "aprobado": 5
+      },
+      "tests.test_transactions_integration": {
+        "aprobado": 21
+      },
+      "tests.test_transmision_y_purga_anexos": {
+        "aprobado": 8
+      },
+      "tests.test_triada_motores": {
+        "aprobado": 20
+      },
+      "tests.test_urls_formularios": {
+        "aprobado": 19
+      },
+      "tests.test_validar_banco_staging_polis": {
+        "aprobado": 2
+      },
+      "tests.test_validar_catalogo_indicadores": {
+        "aprobado": 3
+      },
+      "tests.test_validar_cifras_publicadas": {
+        "aprobado": 22
+      },
+      "tests.test_whatsapp_remediacion": {
+        "aprobado": 13
+      }
+    },
+    "frontend_bun": {
+      "passed": 909,
+      "failed": 0
+    },
+    "storybook": {
+      "passed": 258,
+      "failed": 0
+    },
+    "e2e": {
+      "criticos": 9,
+      "ampliados": 4,
+      "fallidos": 0,
+      "roles": [
+        "autoridad_distrital",
+        "auditor_forense",
+        "administrador_identidades",
+        "participante_publico"
+      ]
+    },
+    "controles_destino": {
+      "javascript": 16,
+      "python": 12
+    },
+    "limite": "Recorridos representativos; no equivalen a todas las combinaciones de estados y roles."
+  },
+  "C2": {
+    "artefacto_final": "bridge/303_evidencia_cierre/artefacto_final/marco_legal_navegador.json",
+    "viewports": [
+      320,
+      768,
+      1440
+    ],
+    "temas": [
+      "light",
+      "dark"
+    ],
+    "aprobados": 6,
+    "fallidos": 0,
+    "axe_escaneos": 18,
+    "violaciones_graves": 0,
+    "revision_visual": "móvil claro y escritorio oscuro; se corrigió superposición del widget en móvil"
+  },
+  "C3": {
+    "fuentes_banco_sqlite": 28,
+    "metadatos_licencias_socrata": 17,
+    "consultas_http_200": 18,
+    "indicadores": 29,
+    "tier_A": 27,
+    "tier_C": 2,
+    "licencia_documentada_en_fichas": 10,
+    "publicables_aprobados": 0,
+    "original_banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "fuentes_pa_no_ingeridas_por_error_lector": 14,
+    "criterios_pendientes": "bridge/303_evidencia_cierre/fichas_pendientes_publicacion.md"
+  },
+  "C4": {
+    "estado": "candidata_preparada_sin_activar",
+    "release": "/root/polis-releases/cierre_integral_20261106_303_r3/standalone",
+    "build_id": "21UffGGJqZgPoKtAmRQTy",
+    "recuperacion": "/root/polis-releases/policia_20261105_r4/standalone",
+    "migraciones_productivas_ejecutadas": false,
+    "commit_codigo": null
+  },
+  "pendientes": [
+    "guion oficial Google Workspace",
+    "14 archivos rechazados por lector de estilos XLSX",
+    "insumos/metodología PAE y densidad institucional",
+    "condiciones/aprobación de publicación y vigencias territoriales",
+    "EAF independiente de las correcciones propias"
+  ],
+  "dictamen_independiente_emitido": false,
+  "plataforma_100_por_ciento_acreditada": false
+}

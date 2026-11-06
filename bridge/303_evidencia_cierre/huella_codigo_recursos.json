@@ -1,0 +1,3574 @@
+{
+  "algoritmo": "sha256 de JSON compacto, filas ordenadas archivo/sha256; pruebas y documentos de auditoría excluidos",
+  "sha256": "1beb09ab3b94e9659aa2c97573a818b9359e517ab54c3fc4f85783b937dd3d63",
+  "archivos": [
+    {
+      "archivo": "backend/alembic/data/0031_reporte_inseguridad.json",
+      "sha256": "bc0d71e2c175e91dd9eca25112ab107aac9c849699c441b145510ca478161b1e"
+    },
+    {
+      "archivo": "backend/alembic/env.py",
+      "sha256": "bdec9b0ed07fad82f8efeec35d93361a65bbf4d5b78d5c8bf1a6b6023e7e15d7"
+    },
+    {
+      "archivo": "backend/alembic/script.py.mako",
+      "sha256": "65a930e5ca474ae0e6b82135d590cd71e4b6affb606dbd666abaa91dbc17c2c6"
+    },
+    {
+      "archivo": "backend/alembic/versions/0001_extensions.py",
+      "sha256": "c9e43464c6902d06900a9be630c290fc59b1072cb66fcd2f464fb17b311982d8"
+    },
+    {
+      "archivo": "backend/alembic/versions/0002_motor_politicas_y_geodatos.py",
+      "sha256": "f450f53cd9bda17f8099fbb49b3e1b09f46e28b018256af52401599ad2f82817"
+    },
+    {
+      "archivo": "backend/alembic/versions/0003_participacion_ciudadana.py",
+      "sha256": "8b8f2b4327a18e30e7fb13db961695e3d6e076f4b45314b7f415fe166c47b8d4"
+    },
+    {
+      "archivo": "backend/alembic/versions/0004_sesion_anonima.py",
+      "sha256": "50e5641d542eaf4c1818b9084da7b30aac3fd3c7fa6f423431594bcbbe9fc25f"
+    },
+    {
+      "archivo": "backend/alembic/versions/0005_control_acceso_y_roles.py",
+      "sha256": "6d11022acbc4eb3a18603419f2ff11bacf28ee37feafb7d2fb56b30169d7ddb8"
+    },
+    {
+      "archivo": "backend/alembic/versions/0006_evidencias_multimedia.py",
+      "sha256": "5f9108455bf5290c65c0eb562783c0ed3b8fe72b8eb8d4b347222c68b2dca8a2"
+    },
+    {
+      "archivo": "backend/alembic/versions/0007_devolucion_razones_y_auditoria.py",
+      "sha256": "45ff9be9b9f9d83bb35e5e1f7b7dab80a2e28b64bd17507992f2511d53243162"
+    },
+    {
+      "archivo": "backend/alembic/versions/0008_apoyos_unicos.py",
+      "sha256": "07cbc14a281e2929b4e92578a06d302389c1c9abdb87c5d5b5200b23c9b1fd06"
+    },
+    {
+      "archivo": "backend/alembic/versions/0009_salvaguardas_enfoque_etnico.py",
+      "sha256": "e49dfd71205240a6e192541e2cfd656982e428d80e79018fc9a268d122a29b7a"
+    },
+    {
+      "archivo": "backend/alembic/versions/0010_mesas_trabajo_ltree.py",
+      "sha256": "c03caae681c8f93f00c2acd3c2bd7e504b4cc87945f2dde3cea509878b4ae4a8"
+    },
+    {
+      "archivo": "backend/alembic/versions/0011_participantes_y_actas.py",
+      "sha256": "1aaef4b69a62919e02c99ca65a4ee27a393218512f3f3adbcb5ea533cc35b951"
+    },
+    {
+      "archivo": "backend/alembic/versions/0012_motor_instrumentos.py",
+      "sha256": "a1a0715e0fd13a9cb2ca025a8ddb02d5e7d298e0b7a23e4eecb27e5f3ff5550a"
+    },
+    {
+      "archivo": "backend/alembic/versions/0013_semillas_sectoriales_cartagena.py",
+      "sha256": "bebd737bf4b7a81524db046e0d830cfab3f022b3922a6b3f1d3ac05a41088f69"
+    },
+    {
+      "archivo": "backend/alembic/versions/0014_concurrencia_optimista.py",
+      "sha256": "b53cf705ec7b4959a0200567353b30da39d22eeefc2562ca560472ab1bc14a87"
+    },
+    {
+      "archivo": "backend/alembic/versions/0015_poligonos_territorios_y_capas_geovisor.py",
+      "sha256": "3e5aab0ebb784e8e4d3312678ccfcdf3207627c721d903172c1981ab465845c2"
+    },
+    {
+      "archivo": "backend/alembic/versions/0016_integridad_mesas.py",
+      "sha256": "255bcc3abe7a3c48dad648ebfa385b422b6ee761db8a0c04c45db85721390bc9"
+    },
+    {
+      "archivo": "backend/alembic/versions/0016_presupuesto_e_indicadores.py",
+      "sha256": "01c7d37a83c4c4805a1efc4015ebde412a7fce69c5146c0ed30074227b5979f9"
+    },
+    {
+      "archivo": "backend/alembic/versions/0018_merge_integridad_y_presupuesto.py",
+      "sha256": "35d716a14d8d48dbe580ba521b5768af551c190e818ad2aa764756d333057566"
+    },
+    {
+      "archivo": "backend/alembic/versions/0019_permisos_gestion.py",
+      "sha256": "2509e24f84bd800a45fc404375b8a0518333ca41b966be5fd8597a4bd750c391"
+    },
+    {
+      "archivo": "backend/alembic/versions/0020_formularios_y_consultas.py",
+      "sha256": "62fa8e1afec79dcb25ffa00d8c2b4b2be30e2b359dc00e471499ab50acf411c7"
+    },
+    {
+      "archivo": "backend/alembic/versions/0021_identidad_completa.py",
+      "sha256": "c284bac2b006d3a55a6668330eb9bd24b420187bd2b77e2d67a61bd673fe06c5"
+    },
+    {
+      "archivo": "backend/alembic/versions/0021_integridad_pericial_acta.py",
+      "sha256": "5c35f8bc38948156a14fb8d941ebac04db1f261f3e91949ecacab4615c30973c"
+    },
+    {
+      "archivo": "backend/alembic/versions/0022_merge_identidad_actas.py",
+      "sha256": "181477dc334825037571003ca4e854f046cbc021ecd95df25318c4d204cf1be3"
+    },
+    {
+      "archivo": "backend/alembic/versions/0023_asistencia_multicanal.py",
+      "sha256": "9157418fc267141f19a186e30bb04123aa1bdbba26bab5cc14bdef86bd96e806"
+    },
+    {
+      "archivo": "backend/alembic/versions/0024_testimonios_memoria.py",
+      "sha256": "21c6f7ed6fe04014cd12f701fac9af46a37c6150c7a33baf7cdf28d4f734a851"
+    },
+    {
+      "archivo": "backend/alembic/versions/0025_control_fases_y_oauth.py",
+      "sha256": "afcc58f061ece894c334e01a5b98de192e7275c32106fb528c8f6f22cbd8baae"
+    },
+    {
+      "archivo": "backend/alembic/versions/0026_fotos_mes_vigilancia.py",
+      "sha256": "1843dc5d629e4ec57ac749a9a7cb4f90371c9c18358ec4fa8afc489b9a68a23d"
+    },
+    {
+      "archivo": "backend/alembic/versions/0027_permisos_fotos_mesa.py",
+      "sha256": "88ae2f98e3b3db804d167ba95c75d8608111ffdba94cad3fff4ec1262ceebd08"
+    },
+    {
+      "archivo": "backend/alembic/versions/0028_formularios_admin.py",
+      "sha256": "fde3e46c6aad67459c3aaaccab706897b3d3832396cd228404910ffaa9eb92e8"
+    },
+    {
+      "archivo": "backend/alembic/versions/0029_merge_formularios_fotos.py",
+      "sha256": "3f8df4af5812a6bbab0b781cfca827e8e65fdd3e2add1f576befd8e248483ddd"
+    },
+    {
+      "archivo": "backend/alembic/versions/0030_url_formularios.py",
+      "sha256": "52497657ba2dd55ca1d40eb544f43e4832626b5f33e8f75bf996fce52fa8dcc5"
+    },
+    {
+      "archivo": "backend/alembic/versions/0031_reporte_inseguridad.py",
+      "sha256": "79c006325263208050b72e72d8c0a22ed05dbb81c5fad70e56d98815e641f47b"
+    },
+    {
+      "archivo": "backend/alembic/versions/0032_integridad_formularios.py",
+      "sha256": "306d640df17450b6229980e27abebc694f27d8e6892c108a76a0ecd9a6ba5ef0"
+    },
+    {
+      "archivo": "backend/alembic/versions/0033_conservar_respuestas_formulario.py",
+      "sha256": "074f1b48c203c670e528273515fb086e6c116521e8034a16968e5295172a4730"
+    },
+    {
+      "archivo": "backend/alembic/versions/0034_modulo_compromisos_pas.py",
+      "sha256": "edc95ba8a26b17f4995efbbe715c918cfa5f62a1a52388c3fd83fa0fd20b0ecd"
+    },
+    {
+      "archivo": "backend/alembic/versions/0035_semillero_mediciones_indicadores_dnp.py",
+      "sha256": "06f99f8060a22c8e158abfd1c3e5fdb4c69d053b7c3221368453c05730ecde1a"
+    },
+    {
+      "archivo": "backend/alembic/versions/0036_restituir_mediciones_sin_datos_fabricados.py",
+      "sha256": "b528a87247039042d0347b4b17d1f5471991677046eaebf064cc1c486a43319f"
+    },
+    {
+      "archivo": "backend/alembic/versions/0037_noticias_institucionales.py",
+      "sha256": "77ca59c7c03e4840bcd5d7598103f82690349a1df1cc750a83138815709aef46"
+    },
+    {
+      "archivo": "backend/alembic/versions/0037_restituir_compromisos_pas_sin_datos_fabricados.py",
+      "sha256": "736070b03cbb6bf6a257e67d446136d6727042662ed4ab6acb3260491242f3d3"
+    },
+    {
+      "archivo": "backend/alembic/versions/0038_merge_heads.py",
+      "sha256": "c23950fa252089d5acc8a1eab21b43fc30a3eea075c7004c75c74ce7bffe7097"
+    },
+    {
+      "archivo": "backend/alembic/versions/0039_corregir_fuente_metas_propuestas_compromisos.py",
+      "sha256": "50a8fee0e23425f40020588eccca668f185d89a74588928f830a427c1ab41ac0"
+    },
+    {
+      "archivo": "backend/alembic/versions/0040_modulo_actores_estrategicos.py",
+      "sha256": "3ba3648db44f47540fc6382d5bcf6e627c03228563d55ba21f6495cea4d91a65"
+    },
+    {
+      "archivo": "backend/alembic/versions/0041_modulo_agendas_mesas.py",
+      "sha256": "5ff00edaa6e8e2a64bd5a301f3eaf849507cfc230a1051f0c920333c8d35ce4f"
+    },
+    {
+      "archivo": "backend/alembic/versions/0042_modulo_fuentes_informacion.py",
+      "sha256": "8c4cedc5480aa6952b2ea45b6ff255b004686e0d08ff5b9f809bc4f7771ec35a"
+    },
+    {
+      "archivo": "backend/alembic/versions/0043_modulo_banco_alternativas.py",
+      "sha256": "a3f71e6cda94f33ea2a5b0d7721e73b76b5ef3512c82ab0a61e109cfd54474fa"
+    },
+    {
+      "archivo": "backend/alembic/versions/0044_lineas_estrategicas.py",
+      "sha256": "cb6eeb3f2ca34a88060e3c1ea96cf7da8647fa29db8ace292e1ed70f6280c090"
+    },
+    {
+      "archivo": "backend/alembic/versions/0045_agendas_mesa_id.py",
+      "sha256": "b4e973e55aef5e86ab88f184c11b62bce5f12ad7d5e22ed2a5c92fcbdf4131a2"
+    },
+    {
+      "archivo": "backend/alembic/versions/0046_depurar_columnas_mesas.py",
+      "sha256": "59392651854e1504530a68ad45eaaa1eed156acfbcfe345f41f130cbb3f6f277"
+    },
+    {
+      "archivo": "backend/alembic/versions/0047_sembrar_actores_institucionales_cartagena.py",
+      "sha256": "bbddb2f62b25c28e7a23a68a4a60a6daddd2f5a6a116d7b95bc390101897cc6e"
+    },
+    {
+      "archivo": "backend/alembic/versions/0048_indicadores_impacto_2036.py",
+      "sha256": "d7c9fe1126fc9682e42b1b299d32d36a7722f84f9cc4038920ecd09b953b1a69"
+    },
+    {
+      "archivo": "backend/alembic/versions/0049_fuentes_distritales_destinacion_especifica.py",
+      "sha256": "c9d4c3e61621a5ceb8c0578b63fc495ba976d5d9306be03d7d06af769a4f085e"
+    },
+    {
+      "archivo": "backend/alembic/versions/0050_sembrar_lineas_alimentaria_salud_politica.py",
+      "sha256": "ddd795eeed890903494d5c33a7acbf5b8ab1733e373f931ef5cc1eeb37070764"
+    },
+    {
+      "archivo": "backend/alembic/versions/0051_modulo_tareas_comunicacion.py",
+      "sha256": "872e58941599169a40bc6ccdf7f868fb63ab10ffa698eb57822cacb3f1063a18"
+    },
+    {
+      "archivo": "backend/alembic/versions/0052_alinear_esquema_mesas.py",
+      "sha256": "f82da099c674c2c08a592c5d4603fc39ad5a5af2efeb66d3956452cf2afd0cde"
+    },
+    {
+      "archivo": "backend/alembic/versions/0053_permiso_testimonios_admin.py",
+      "sha256": "0e19332fa0c42b5a427f270655e71443ab45f8049bf0b106a8ffe19af29f4ca6"
+    },
+    {
+      "archivo": "backend/alembic/versions/0054_permisos_plenos_admin.py",
+      "sha256": "1c3bbb73c9b97982d7c903f853012d7a2f3b0d45ef56e9ef2aa6bbe3e7b01766"
+    },
+    {
+      "archivo": "backend/alembic/versions/0055_ingesta_indicadores_reales_cartagena.py",
+      "sha256": "92dad24f95fd6d970a628692854d17a64ead53d8ad11343725fcdeda4697ae03"
+    },
+    {
+      "archivo": "backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py",
+      "sha256": "1d12a25fb7f41d41d046e1c90a15da72715aea91d92703a774efde754254a21b"
+    },
+    {
+      "archivo": "backend/alembic/versions/0057_comentario_pas.py",
+      "sha256": "85d56bfc1dcaab498879bc7478235109deb4d1208ff28133e5d5c07c40a98935"
+    },
+    {
+      "archivo": "backend/alembic/versions/0058_mfa_totp.py",
+      "sha256": "0d2b57da7d9e84f0522f15b40c0ac4030f926a140c8e162abfbeb91d448e15b0"
+    },
+    {
+      "archivo": "backend/alembic/versions/0059_mfa_antirreplay.py",
+      "sha256": "91877d941ca21bec1b42059eb18a3692840bdadb290891b1846d460e65789a66"
+    },
+    {
+      "archivo": "backend/alembic/versions/0060_ambito_territorial.py",
+      "sha256": "310fa419c4ea0bb7fd11188b620efe59614ba729f2b2b0274628343d375b48a7"
+    },
+    {
+      "archivo": "backend/alembic/versions/0061_analitica_hurtos.py",
+      "sha256": "39ef5f5ca5379a817f3468d0665a83380a560cec37e24df46ddf673cc244672d"
+    },
+    {
+      "archivo": "backend/alembic/versions/0062_motor_plan_accion_dnp.py",
+      "sha256": "d29f8fab7c617a9ab08779910d2efad00e814b4e43e403d495a28676336a80ea"
+    },
+    {
+      "archivo": "backend/alembic/versions/0063_motor_ingesta_masiva_triada.py",
+      "sha256": "71efe7b379769aba0c3f1d382d870e1a0b7087460bb338e264be27b9111189f3"
+    },
+    {
+      "archivo": "backend/alembic/versions/0064_drive_seguridad_humana.py",
+      "sha256": "1d1b62c5f7dc3a1d2452040cda3adbaee2cc02c413f3a640a65cee82a1899ea3"
+    },
+    {
+      "archivo": "backend/alembic/versions/0065_catalogo_planes_desarrollo.py",
+      "sha256": "dcf8b1bddd36438a9f39f3584d25bc761718616e2c4b473df37051f3c4accb5c"
+    },
+    {
+      "archivo": "backend/alembic/versions/0066_quince_mesas_corregimientos.py",
+      "sha256": "4bfa3f6f3a592981455f72e72e2a7ebb086539b41037c245b95c3a715d44f9fc"
+    },
+    {
+      "archivo": "backend/alembic/versions/0067_evidencia_paginas_pdd.py",
+      "sha256": "30bd96c4553dbae9d2082080743632ec93a7886974c8b43469f537635ab6e84a"
+    },
+    {
+      "archivo": "backend/alembic/versions/0068_tablas_pdt_ai_evaluator.py",
+      "sha256": "1814ddea8eb0932da6e3a9d6426769a2ef59b2a759ed1ad0cd6426fe5ee06299"
+    },
+    {
+      "archivo": "backend/alembic/versions/0069_idx_indicadores_terr_cod.py",
+      "sha256": "1b09dbd45eb29e7f55696697cc3a6d0002dd035dafdef90e4ff55ae1cb81ae1c"
+    },
+    {
+      "archivo": "backend/alembic/versions/0070_seguimiento_corridas.py",
+      "sha256": "3ab9341d3d9f1f68032d5ecb800af846b6be5c8160ea98dd9d474955ffc5fe14"
+    },
+    {
+      "archivo": "backend/alembic/versions/0071_corridas_pipeline_grafo.py",
+      "sha256": "6c7581d5f3dc8c366e1441210dd0efd23fa4caaa0739b2ce22035e6e52307582"
+    },
+    {
+      "archivo": "backend/alembic/versions/0072_integridad_pasos_pipeline.py",
+      "sha256": "e10470c44bea8ca85a73a53297b0f89b4ec04da751fcf5ef1f208d28c0783d97"
+    },
+    {
+      "archivo": "backend/alembic/versions/0073_checkpoint_durable_pipeline.py",
+      "sha256": "a8fa23f0920627afb7bbca93e4b000bb0590ef62c7307999c927612288d42eba"
+    },
+    {
+      "archivo": "backend/alembic/versions/0074_idempotencia_thread.py",
+      "sha256": "7d59972a8cca1aa1dcb0f08a755bcd2f46ef06e42114ce0f3b27039b8e611adb"
+    },
+    {
+      "archivo": "backend/alembic/versions/0075_catalogo_fuentes.py",
+      "sha256": "20f5788651d2b1472b1fb31da06905a3d2bd7d7b056a253ac0c99b16a8537337"
+    },
+    {
+      "archivo": "backend/alembic/versions/0076_lotes_idempotentes.py",
+      "sha256": "11b727172bdba8e949c1b6d1b8def3fd89e84a61d7564312c5a05c4189a47ba8"
+    },
+    {
+      "archivo": "backend/alembic/versions/0077_paquetes_artefactos.py",
+      "sha256": "943fa368f222a7fc42a9ef163e0486947f1a916ee58247d1c850b01c3b693f97"
+    },
+    {
+      "archivo": "backend/alembic/versions/0078_evidencia_drive_artefactos.py",
+      "sha256": "58a7b296740811816b9ee8066ec31f45c2d04a7634b7c99612ec2499ed1fe7b2"
+    },
+    {
+      "archivo": "backend/alembic/versions/0079_correspondencias_meta_pa_1n.py",
+      "sha256": "ba7437e59b9d604239761de5a9c160096a31c0779fa96bd6d6390a761f30d934"
+    },
+    {
+      "archivo": "backend/alembic/versions/0080_guardas_revision_correspondencias.py",
+      "sha256": "39bd6b35ab06a88c0743808e788479f61871b2a6ed0b570dd8c6946f24b87fee"
+    },
+    {
+      "archivo": "backend/alembic/versions/0081_proteger_correspondencias.py",
+      "sha256": "51fb33e46a8dcecc93198cccf4f2ba306ab25d2b499449216354d64e03a8ed35"
+    },
+    {
+      "archivo": "backend/alembic/versions/0082_tablas_dea_dmu_nivel3.py",
+      "sha256": "cc1a76b9bce85f75e279d1679a8eb92c87a19f448be4a50aad33f442c55b9c2b"
+    },
+    {
+      "archivo": "backend/alembic/versions/0083_conciliador_gold_set.py",
+      "sha256": "f9f2e6135cd36992926ba613fc8aff96b3f12561a06f4e1ecf4a5c26076ddd16"
+    },
+    {
+      "archivo": "backend/alembic/versions/0084_aportes_colas_y_apoyos.py",
+      "sha256": "f00e45ef9641f0efbb2cfd906f3becacfa7e7211cd3da1d8f0f1aee684e20df5"
+    },
+    {
+      "archivo": "backend/alembic/versions/0085_borrador_testimonios.py",
+      "sha256": "c6d5f50bd357029247437507abef161282c891a147a476634888c41775756ab6"
+    },
+    {
+      "archivo": "backend/alembic/versions/0086_permiso_vista_proyectos.py",
+      "sha256": "226aa19ccf839ee6b43ec14616dfa059ad68cf0e8e68fa0a2679a4c9acdb1047"
+    },
+    {
+      "archivo": "backend/alembic/versions/0087_cronograma_diagnostico.py",
+      "sha256": "6842fe0d6430829ab68e6b4c258562258666a5ab36cf15a98fc4b3684cde5923"
+    },
+    {
+      "archivo": "backend/alembic/versions/0088_sincronizar_35_mesas.py",
+      "sha256": "fc2faaaf12f6db96437cde1769f3c10573408a3c2279701bc394f2c2da6499c5"
+    },
+    {
+      "archivo": "backend/alembic/versions/0089_fechas_mesas_por_definir.py",
+      "sha256": "a57d800f8f78aa8892cc869b87709993e16a6120b67b1931c75dea91a3e49be1"
+    },
+    {
+      "archivo": "backend/alembic/versions/0090_anexos_actividades.py",
+      "sha256": "ef0f2c5cf98682896804df2fa07344c2b428c98adf892c4685e1e3ed0905d6ef"
+    },
+    {
+      "archivo": "backend/alembic/versions/0091_lineas_cartagena_7d.py",
+      "sha256": "5dffb2f31a412112ecb30ae4237ee15974a6c2f0df03840508aa49bd5784c841"
+    },
+    {
+      "archivo": "backend/alembic/versions/0092_notif_eventos.py",
+      "sha256": "0a1e051869fbbae48a8ba4e606e6c5571b9849232764d0b67f8afb53ba910b5f"
+    },
+    {
+      "archivo": "backend/alembic/versions/0093_herald_gestion.py",
+      "sha256": "b07b2d36bd5b7e0ae1b61517864a1e6b41dbf95b01ef5f531da7442cd7aae5b2"
+    },
+    {
+      "archivo": "backend/alembic/versions/0094_herald_salud_resumen.py",
+      "sha256": "2c6ea0c835d7750a1dee8eba1a1b06d7e90f8bda4f414ca3f36fc33eea19f74b"
+    },
+    {
+      "archivo": "backend/alembic/versions/0095_sembrar_censo_35_mesas.py",
+      "sha256": "19b11d1be64586c9b2df2e14ea993edfd322846ac28d46e29c14bb5a9c16696e"
+    },
+    {
+      "archivo": "backend/alembic/versions/0096_riesgo_sin_evaluar.py",
+      "sha256": "833379762b27eebdce875338b108654be137ecd335718cce5b7afa136e30b805"
+    },
+    {
+      "archivo": "backend/app/__init__.py",
+      "sha256": "0b6f5c353f1131127f9d516ed3f058fa7577fb996912ab3128fd817fdcf96dee"
+    },
+    {
+      "archivo": "backend/app/api/__init__.py",
+      "sha256": "05ce5c1472d32a416eaf724f1d3fd1e19455541de02fd1250eb6e36228fecbcf"
+    },
+    {
+      "archivo": "backend/app/api/router.py",
+      "sha256": "148ea05b71698e8fcb9d08ff1b17d8845bcb59e9011700617b711d8787ddb3e5"
+    },
+    {
+      "archivo": "backend/app/core/__init__.py",
+      "sha256": "5c065a39c196571f5b3b24413c50038998bcb489c6d867784da8540a976b90ba"
+    },
+    {
+      "archivo": "backend/app/core/config.py",
+      "sha256": "61f8a180bc1ae6c2026355dfdcd324f44e990ed5ac9a166a8535dabf73e57a5a"
+    },
+    {
+      "archivo": "backend/app/core/database.py",
+      "sha256": "6fe2cf6ad3bbe31c2ace1e9813a0e8eaad1b2ad01bdca33131e9d69a0276a901"
+    },
+    {
+      "archivo": "backend/app/core/migrations.py",
+      "sha256": "1a33b61fa67f8937e356ed102943ecd8c25f6d897717ad7d6fd236ab7b099b46"
+    },
+    {
+      "archivo": "backend/app/core/security/__init__.py",
+      "sha256": "081b9cf4d830f5f588d560deb932cc8419d6ce918106b80989d32a20b6df8865"
+    },
+    {
+      "archivo": "backend/app/core/security/access_policy.py",
+      "sha256": "53f67f2c4595a039f06ce042b4f8b53fdd43a9b364398866e485393ff352456e"
+    },
+    {
+      "archivo": "backend/app/core/sentry.py",
+      "sha256": "5e7737fb92e0d40430b4a1ccafc9b856296ad2f871f1832a6e38e0f2558041d9"
+    },
+    {
+      "archivo": "backend/app/core/telemetry.py",
+      "sha256": "f2b92b05fcc610301ca67952755a6c85e5e61b73bfa3a5154d6ee57eae5d9dd1"
+    },
+    {
+      "archivo": "backend/app/core/transactions.py",
+      "sha256": "ffe9708fbdcdd87e521e69ea152badc8e87a8f3d6fdd47b5be9f7f9751f33c10"
+    },
+    {
+      "archivo": "backend/app/main.py",
+      "sha256": "7933e19c943fb318c5ec412e10ecfedd7ac0be0b017c21f63b2c648f495e7e49"
+    },
+    {
+      "archivo": "backend/app/modules/__init__.py",
+      "sha256": "94b09eb7dac0811163ca704ec9694a2ae912c3ea8fd5a9d811528b8d08de4216"
+    },
+    {
+      "archivo": "backend/app/modules/actores/__init__.py",
+      "sha256": "6d9b0fe2c6eac89c7f8570cbb288a20891f470c7a961f370e8b09bb0b517a2c1"
+    },
+    {
+      "archivo": "backend/app/modules/actores/models.py",
+      "sha256": "e4d9f2bef5108d32b50faccde5ef33f8b459369932f84b24c5d7c38961e61361"
+    },
+    {
+      "archivo": "backend/app/modules/actores/repository.py",
+      "sha256": "04c18eaea6a61ee0f899e3a23220982a183cca2c1d42bc0f7c337c434d36d146"
+    },
+    {
+      "archivo": "backend/app/modules/actores/router.py",
+      "sha256": "799e8ed87a8432e1e48fb901863258d26cb76954ab73571dfd963aed548f3290"
+    },
+    {
+      "archivo": "backend/app/modules/actores/schemas.py",
+      "sha256": "adf4ec192a834bca2d0576d126523f30345247079cf5ef45fea1ced951b4ee93"
+    },
+    {
+      "archivo": "backend/app/modules/actores/service.py",
+      "sha256": "6ea7b6912f7b401b9b28bb81757b06f7bef5fd7f45eca51f62abc29910ceb102"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/__init__.py",
+      "sha256": "ed4f7a2349644467d755f57591ce98a605a0872944142b162914846685797e17"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/models.py",
+      "sha256": "5943ddae8f94f7aecef706cc8ee99e1848a9ba9e5d34f8c6b0ca6a8e642774c4"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/repository.py",
+      "sha256": "1e1edc725681078bbc1835efac0ad623926a57ff006d4d1c4f7b7c125398a96d"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/router.py",
+      "sha256": "a770b25ac32262b403e28082933a2651ef332ae97904b7e4d074ec5ca3e8fc9f"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/schemas.py",
+      "sha256": "21a0110fbd5596339ce79f86c8e8e393fa0a09797647fa81955a7e400a73a5d6"
+    },
+    {
+      "archivo": "backend/app/modules/alternativas/service.py",
+      "sha256": "23e8804005afb3e4921808cf6cb9432e5099f9fcbaeff6e7a21974fbe91076db"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/__init__.py",
+      "sha256": "2f2fed5e555c16a10f8884de9972015acae7b3e5bad6239bba67a7ad62550d22"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/models.py",
+      "sha256": "db935837c586c3a790db55a9cbbe4c25846b2ee35540c9b48d52e8524d17ace9"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/repository.py",
+      "sha256": "db0b89eabdf953d953ed778b3e502ea79dde0f42c972df3b7bd0751832baba8b"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/router.py",
+      "sha256": "164ce6c841c84ab1f2b1dce115451b1b61aec4573449c3df1aa0c724919282ce"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/schemas.py",
+      "sha256": "df558b2951f4f194c8028d291c62de922f11c042decbb2d6a1e0f8e21a4120e1"
+    },
+    {
+      "archivo": "backend/app/modules/aportes/service.py",
+      "sha256": "0da44d0a55a8a2bd0c1cdbc794c00cd2ae8363569f7a0261b46c2a6d8ce546aa"
+    },
+    {
+      "archivo": "backend/app/modules/auditoria/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archivo": "backend/app/modules/auditoria/models.py",
+      "sha256": "e236eba398dc2d69291e45681445c8b40c71cfb88a3a65957202afe919f4ec26"
+    },
+    {
+      "archivo": "backend/app/modules/auditoria/router.py",
+      "sha256": "207d13d1f40cfc8af0f776c748dbcb29299c4d6df1c7624f3866500af2b4af52"
+    },
+    {
+      "archivo": "backend/app/modules/auditoria/schemas.py",
+      "sha256": "a472a6560f029ae562d6a80cd578cdeb2a13dc76cb52c44ed01da9b2dad52dea"
+    },
+    {
+      "archivo": "backend/app/modules/canales/__init__.py",
+      "sha256": "8c6e6fd96a43558763084ca383901284227423ede302991ec782f9f6406e62a7"
+    },
+    {
+      "archivo": "backend/app/modules/canales/models.py",
+      "sha256": "09cd40cf5e3471d9f1a85cf4358cd8b713414b9afab5f35414f3e8e11e5d7ac2"
+    },
+    {
+      "archivo": "backend/app/modules/canales/repository.py",
+      "sha256": "0ba7e96795669bd8d4e3ef9a93ebec671f7b4ee0a5b905190ff27db2f30d28b8"
+    },
+    {
+      "archivo": "backend/app/modules/canales/router.py",
+      "sha256": "c4336bd638dc43c4604ea558d47fb8db5a9cc116850ca41d026d1857a14a0740"
+    },
+    {
+      "archivo": "backend/app/modules/canales/schemas.py",
+      "sha256": "67aae96d7d1efd946cf885c32c30842281b1bce3a45fc1bca21a65bda0fa1111"
+    },
+    {
+      "archivo": "backend/app/modules/canales/service.py",
+      "sha256": "6f7d38b339c1ee61018b7dd2e334b6b77b59d53ed8e459bea55c33d75db9108a"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/__init__.py",
+      "sha256": "61077fb5a4100545d25198219f04dc284b8cc1149f89327bdff1d9a0858ac28a"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/adaptador_catalogo_fuentes_polis.py",
+      "sha256": "98e19295ddb337c21892adc4161f42a6b757392776e5066ba43d0bdd77bf7a09"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/adquisicion_fuentes_polis.py",
+      "sha256": "d69ccea6267866768e7ce1e6bd42a3209f0ca08ec10199269140de0d02bef5c3"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/agentes_inteligentes_pdd.py",
+      "sha256": "d15919dd556217086177857268ef97befa6355b1ae8ee832378a3add5315fe0e"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/articulacion_supervisor_corte_polis.py",
+      "sha256": "6767e3f4cf080de3d260b74070baa6b8ab095958adecd0c57e99eb7e31b3adc3"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/auditoria_indicadores_planeacion_polis.py",
+      "sha256": "74aa1eacc989756816615b69bbde729636aff99588749768e3b415e493bf7907"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/cadena_analitica_corte_polis.py",
+      "sha256": "ab50a89593e4d974315b2235925932af6146ad7805ad030ad98d41b707139c90"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/candidatos_programa_meta_polis.py",
+      "sha256": "eb9038f5b1db5f6b22ae11a22f887d4113fdbbce3f48c2faed976d08c4daeaca"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/captura_fiscalia_supervisada_polis.py",
+      "sha256": "5f9b35f3d983c9258fe4c176d33671aef60f7d79b9b1f8a1513f12350870a9b9"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/catalogo_planeacion_corte_polis.py",
+      "sha256": "44245ec0e53c0d873a8453c1657e33931e522cad046d1318c899a70bcacc2876"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/comparacion_ppi_catalogo_polis.py",
+      "sha256": "86bf9add8253122b1b7f9fcb1fa2ea488e2e4fe50a8fb9f592b299359d7b1c26"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/conciliacion_retrospectiva_fuentes_polis.py",
+      "sha256": "1ee5bb76eb2913c8318b5802040e64232ac451ab72bc8f0ab4357a8cadde8acd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/contexto_corte_polis.py",
+      "sha256": "3daa460376e0b0fa3bb005445513c557e388dbdeb8209a0648e2fc1c94261a58"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/contratos_observacion_polis.py",
+      "sha256": "b037f44f3d5778db6fe38c7e4c8ea7c78165a06229a864b30b29533b25d079b7"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/corpus_vinculos_polis.py",
+      "sha256": "95996404ca26b1598657991b2ca031031a0a81ca7b3f8ae7618a4b0a3b1fe7f0"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/correspondencias_meta_pa_polis.py",
+      "sha256": "109945730546258b55375efa045fe34bbf03b6ffe8bc0653de53c2f9cef09615"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/corte_datos_polis.py",
+      "sha256": "16cc4fd6b3aecf423f24e4bcea236728aa56f21f16ce6e14ad44012bb8be5f0f"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/dea_econometria_service.py",
+      "sha256": "48bca716ce24a12d181e4f617ad2aeb0718d9c8d92105600dea85a6d5ec1a448"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/descarga_anexos_oficiales_polis.py",
+      "sha256": "f252d0855d571b90a7953bf961b093a069ccd188cfebbbbb9e9f28ea2b731f17"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/detector_multiformato.py",
+      "sha256": "18609d908dce145a06ee99490b08a6c6bdfc6a3b8f907d18ae8fc794f07562cb"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/expedientes_serie_7d_polis.py",
+      "sha256": "98513648dd6dfc3b15d69471fc486e66e1dbb902ef0c64e6f0ff3166467c768f"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ficha_territorial_polis.py",
+      "sha256": "7c3dd7207755dfcf78ba51e8c982b00912079effa9276742148ea68dadf3c874"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/fuentes_catalogo_models.py",
+      "sha256": "4efaaadceec3cf9fee2965c8e6fc8e09cde4be4777c0ec26790326ed0994f98d"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/gold_set_conciliacion.py",
+      "sha256": "584a9a5268382b541600c7e96041a276ecd0721751eac325ad6eebc747671824"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/google_workspace_sync_service.py",
+      "sha256": "c5a8aacb09fedad7de7ef5afcc99baa4440716a687aebffd5a19d2e67e598c77"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/grafo_validacion_fuentes_polis.py",
+      "sha256": "f102d004820b00ca29701ec4e216aa4acae92045c2145e4e6bbdb806eafd2bcd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/identidad_territorial_catalogo_polis.py",
+      "sha256": "9c0c25de1307f2d0d7f2e596b41ba8743067cd3fc11f49e88aba9037e2eabfab"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/indicadores_canonicos_polis.py",
+      "sha256": "1afac32a97bcf955da49fb862ca8883319ef6c2d87679327a9ea82f458f12e21"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ingesta_masiva_excel.py",
+      "sha256": "7684c64c0d00b179a2c600c380591753042d41bcdd3aafd14513243685d9f6ed"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ingesta_masiva_service.py",
+      "sha256": "3c2339d48d1ca66b1d87e6f705db30ba98404639d5742ee53b7a2e0e2cdcd847"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/inteligencia_triada_service.py",
+      "sha256": "a1cf67244336790c6850e3768adbd9ec5c369ea967c77dcc3f9acc9c742e136a"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ipc_deflactor_polis.py",
+      "sha256": "82621536f7ead4e40355eb925839d59ff474408f9bfb78fbdff36701f3f4b8b0"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/lector_serie_corte_polis.py",
+      "sha256": "e7a8df1219897780e1e4e3f52e8f22081ce3f454c753b28a0b9f8fd054fbd801"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/matriz_correspondencias_corte_polis.py",
+      "sha256": "5683727d61a18ad59835018d26a8317dbc19df567d2e52668d6d92190073e445"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/metadatos_socrata_polis.py",
+      "sha256": "a37f37999da5b360e64112a7d2f977123433d6bb7c4940dce52e1677d51d8efd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/models.py",
+      "sha256": "c4622a4fdacd90677335621456bb9c3cf955fc0cc8c14f7e0d50ac83faf19aac"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/motor_multiagente_pdd.py",
+      "sha256": "6e8931c3c36c26def910490dad4ee1be2419f9d42a7d80ffaab91393c65346bd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/orquestador_grafo.py",
+      "sha256": "58a2e6daecc382825fa51e7ef0315b5a675aef3042dcedac737550e9bc3855f5"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/paneles_series_7d_polis.py",
+      "sha256": "069a2f8d5d59879e5f2cdefc2a1d6c3495a3e53bad8e1a65d0295fb070b0ab38"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/parser_terridata_polis.py",
+      "sha256": "731ce8db38257ddb897e2f82cda0ffd7b33512015185e3e7230797040262c100"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdd_dea_service.py",
+      "sha256": "6aeb66e544f33689804f37378579efab5c93f6329accfd8b2c9f61957a546b1f"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_ai_evaluator_graph.py",
+      "sha256": "bbdbaa2529def6f2fd714223d6f7066a502e2bd94a3d689ac1f48e34e6043b89"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_analisis_planes_documento.py",
+      "sha256": "765d88fbd07236d8a3aa9f7a7793a514f34f202e7f99cd8ca266faa654d46167"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_analisis_planes_tendencias.py",
+      "sha256": "c29bd4db5abe027601c6c628e6acea4ca5908e7b9665ef7904ffd055743dc5c0"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py",
+      "sha256": "3d4eca98f3b868730426a28a7bcf5f6f5a75435e54e4f2236ceed0db947c280c"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py",
+      "sha256": "c988d2926ba84d594f9e6c407f8057cde3d792f0b1a0514c88f2e3d82fe27ae9"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_diagnostico_seguridad_humana_8planes.py",
+      "sha256": "e805bc755badda699afc63e8a5080b8c5113b6d312edf989c7a89394936adc7d"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_dictamen_ejecutivo.py",
+      "sha256": "f95c8d6736adbb47f1f365295339355eb7f8bc37dd4cc810effaae4db02b6b65"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_generador_google_doc_pshc.py",
+      "sha256": "891b03ca57bef67b4ca1378f83c26e8a46f0278fc0249e0c91c378494a1a51fd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_hoshin_kanri.py",
+      "sha256": "3aa1a10b78611c040a2e27fd41ef58c89f5faa43fcd6f9a1f7562e42a4415cf9"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_informe_integral_spd.py",
+      "sha256": "cbe0c6c6705bc7fab35b9f94262f13b38692cd34c9271b125262b50e81f481b3"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_nodos_espacial_predictivo.py",
+      "sha256": "1466834bd14567f98f1b9c6f015500a162afbfa27a78288003e234316f4e8bf1"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_normalizador_canonico_metas.py",
+      "sha256": "a84a401dc875ada9e2783dbdc64dcd6ae92c80338e1d0bc3ea32b778d103698b"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_persistencia_pg.py",
+      "sha256": "3df8f6ce02bfa684f4d284e47eb23bbb7b9ac2073d05a095baf0f31892691bcc"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_publicar_docx.py",
+      "sha256": "2aa9cb63f9285c7c151525fc5bb1668a940df616dbb2bf9828c73ca9fd5abd90"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_revision_por_meta.py",
+      "sha256": "108141fe7bf1f62a34a2e6811f7e3dc8191007628e70677129d17c822e32dd55"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/pdt_sispt_dnp_evaluador.py",
+      "sha256": "60b0eb5302c5a1e04088fdcbaf84cc72a52006b43ed6e1928aa06e8a85d08835"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/planificador_fuentes_politica.py",
+      "sha256": "eb2dfd11012062b07f35b06181f4de9e5a9ef49143f9b41c4f656c019a057d54"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ppi_planeacion_corte_polis.py",
+      "sha256": "f7b0d90316f69a3dd1af83c5480a9909e0afe9f13cd7137b1413326b9f75fac7"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/registro_descargas_polis.py",
+      "sha256": "9735876370d1197607c4e8ff4e555154c3274da77ef055f0f0d90c618a916fdd"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/repository.py",
+      "sha256": "7d35c196898d35c8d083e63c16a9b105cf09429e05384f6c03563473be7784ba"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/resolutor_bd.py",
+      "sha256": "68897a28ab0c281dcc72db840219b97c7ce491745d8bdd14d35291dd096801a4"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/revision_taxonomia_7d_polis.py",
+      "sha256": "337fb0523998b75c90698aacc79bd708c3fcb6228e38514125e6314634c937b4"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/router.py",
+      "sha256": "efae6e572be8644157b507177c6cdcc01606cee6c50de056de24ddad6b816cd3"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/schemas.py",
+      "sha256": "3ff39d24753b0cde5d240ae0395745ad6ff9e64cab118b9a8a23e7ed5f2c4a8b"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/series_7d_polis.py",
+      "sha256": "9b8e00a887517b01bf4fbde45ccf13ca294323f39b2215c796091dea85448dd9"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/service.py",
+      "sha256": "922219f0d8fe4988defcd0b14af9b8949ede8880b94c405d5cd37aa8cb9f2189"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/tablero_operacion_fuentes_polis.py",
+      "sha256": "e2465ebea317e44355ba2e1b5e735128e6f121a7ad894171fa32d4e5eb814761"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/taxonomia_7d_polis.py",
+      "sha256": "b44d6c0b403e4adf58b7c35df112149231cce466d7db754c0d39d78000f3235f"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/taxonomia_seguridad.py",
+      "sha256": "ab3c592f5bc19ab79bcbc6be70ad80d118a5adf5bf6e57f21fd4209641293e52"
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/triada_motores.py",
+      "sha256": "10bdb5b0f6f2365cab7e85fec1ee61a90d4f4a6c9cfb05f12586caf045d598e4"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/__init__.py",
+      "sha256": "d0df4e72c8a268344043e53911ae38b95a7eb38d406a24e67e04cd19c88f72d1"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/models.py",
+      "sha256": "aca0e0789dfcd383b54b4f410a7c38ddb2c77af82e7677d50af86001f6724aae"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/repository.py",
+      "sha256": "671b359ae14acf0774a8fc45b8f3249b5f1ccee8bc3e7ce1d351ecbf87400fd8"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/router.py",
+      "sha256": "3e3522e6097491395329e8a997c8b00162f031ea54e3d2528a7bc5cb902083f3"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/schemas.py",
+      "sha256": "1b43ab9f278b9b5efb7ba84250afb0f45e359329f766d1886cf66f52a3d3eeec"
+    },
+    {
+      "archivo": "backend/app/modules/comunicaciones/service.py",
+      "sha256": "2208a8203859314ca9fa64c6dfd1c0eba974d8183cd6e2f4cd2bfbd897a2deab"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/models.py",
+      "sha256": "a2655ba79efc559f404d9fe4b93168ff413a3c1c1843e678722822797f7e4552"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/repository.py",
+      "sha256": "fb39efeaa6592c858d1c82ac924b036f49808452476190d685d59e7be7533c3c"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/router.py",
+      "sha256": "596ac76ef7fc581cfb420f7d7557bd7aebe2b2bb5e9e0e4d09e063977157bece"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/sanitizer.py",
+      "sha256": "59433e24060e5c71267b5ae20f0f1809ee9bf41117d6e5d140e8e5525aced44d"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/schemas.py",
+      "sha256": "b6126ce8bdd9959fbfe10079cfd20323b60ebe72fa630abd13546c3ab93650a5"
+    },
+    {
+      "archivo": "backend/app/modules/evidencia/service.py",
+      "sha256": "4b9722a2f07977638b71ca1dd91de6c3f076b6f8c5ffbcf6e7e7b0201bbfb685"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/__init__.py",
+      "sha256": "c729548a7567fb2ed5383e0b2d4d399d95e3a41fb0d69b6ebdcda2321943e666"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/analitica.py",
+      "sha256": "0e6e6b4ffb73f9c5adaea1ddf021cab2d4faf671c28cf0b6355143b5ad534117"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/constructor_schemas.py",
+      "sha256": "46010660e370cbf6b4e925df3f7c144b8e64b2b4dda8d3c6638ca8bf11eacd9c"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/constructor_service.py",
+      "sha256": "1a767e435c2bf0c1b7f51dc088e50adc5112b66f4c99954e4fbcf60f4fe90033"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/constructor_validation.py",
+      "sha256": "78b1ef6a3b9f3f3abf9722a8b79c9550cb27cbe26a1cc4deff8a6bf0c1626123"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/errors.py",
+      "sha256": "f4c767fd8e8d4aa28a53a85835813440c5691390769a70d0308b77f728bf388d"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/geo_respuesta.py",
+      "sha256": "6616a5838377e27f4e1d20de0061a158a60f57f63a0047340298ce7981458b4e"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/models.py",
+      "sha256": "c4e5fe59c8e0309c23c7d6bb74ead8b16a9ae8976b354538fc8ea4f655596e4f"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/repository.py",
+      "sha256": "d75b972f659f60e0f709eb91194d437c72643f627833f8ce5492af221a67528e"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/router.py",
+      "sha256": "0adf7f6e92ccb1fa13d13395b46cac45aa7e463c40b176aca68a07afca013989"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/schemas.py",
+      "sha256": "a98d096d6ea2757a7afe46d93d0acd3ee90237a7d9a7c7ef9f04bdba90750fff"
+    },
+    {
+      "archivo": "backend/app/modules/formularios/service.py",
+      "sha256": "f38fa29d187a564a2d69b2cbd1e2203fd41cc98000dbbe5cfad8b50e589b071c"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/__init__.py",
+      "sha256": "986d9166212b226f84944961cba9c940e03b055d4aabc54accc75108c9eb781b"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/models.py",
+      "sha256": "af91ce176be2cdf767c8476f6c1ac40f86ef087f335272b9347513a3bd6169cc"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/repository.py",
+      "sha256": "7b8bff61a6a91348fd0931ce2265fa81bb15e1cef487c00b67ce9f26fdc9685f"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/router.py",
+      "sha256": "c89610954ca16333b6a36791d97ce6e10c2dc4ae37fc50db83c28c12f3b0581c"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/schemas.py",
+      "sha256": "2cee2f7a46affcbac85443de8f1945369480def129eefc4dc3c893667022e754"
+    },
+    {
+      "archivo": "backend/app/modules/fuentes/service.py",
+      "sha256": "20f0314109fdde5b4e9f2d5b89fdd70f33632ce3861ccd55d7ac789d52d3b9c8"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/__init__.py",
+      "sha256": "121044323e8c8f8977bf0aebce5519a1a702fe71af50fb76dd2b7fb83f547922"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/analitica_multifuente.py",
+      "sha256": "69e30ad9431aff40ade64be1a06276f0b365e12f364e2262a4806137a88a51f9"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/models.py",
+      "sha256": "151eb3bf28376f8947f4b209ca1211b357bae3e1eb9e83952ae748361befcfc9"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/repository.py",
+      "sha256": "1e526babf5c5e1a4c65e5c3fef9dabc0770e2a8b03c0672d8da58d56a9069ed2"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/router.py",
+      "sha256": "49b3cd4802f9dc7792e4f7052a6f667add922736b6669cc9e3898cc766a294ac"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/schemas.py",
+      "sha256": "c5e510f6d339a8147bc583dfa9323ce72fd91188716af0f9dea1b68cb56847e6"
+    },
+    {
+      "archivo": "backend/app/modules/geodatos/service.py",
+      "sha256": "792b2e98cc95a49fe3bfe32f431a5f41edda82a131b371a60e71dc7f3eff81df"
+    },
+    {
+      "archivo": "backend/app/modules/health/__init__.py",
+      "sha256": "f1f6f5c8a1f83c022c88300c04218f0839fb652039d666f1f20865750def2701"
+    },
+    {
+      "archivo": "backend/app/modules/health/repository.py",
+      "sha256": "6f7d1c1a14e6f09c2f2be5b1a06e3b365f2621c52151eb5da1ad51c3f20dbe7e"
+    },
+    {
+      "archivo": "backend/app/modules/health/router.py",
+      "sha256": "b5a005c16ee2459c0d07061e436b95f5822301e431c8796156b36354f4ef5937"
+    },
+    {
+      "archivo": "backend/app/modules/health/schemas.py",
+      "sha256": "5e13423d51c85b090326aa51c2cd2f14c74dedb0f5c8685de0b049ac200e62e3"
+    },
+    {
+      "archivo": "backend/app/modules/health/service.py",
+      "sha256": "cca54190827fac1ddde8d60cad8ab66e9959e3178d71ff2d4ee017aea0e2af42"
+    },
+    {
+      "archivo": "backend/app/modules/ia/__init__.py",
+      "sha256": "27e39e96bdd8219adec9e9963cd5746f2d0ce21d33070c8f8721a6a239747f80"
+    },
+    {
+      "archivo": "backend/app/modules/ia/agentes/__init__.py",
+      "sha256": "6bb3ce8bdfa1b5837f0a0fa4a1837f7bc3869cd0d030c4b1dd06b5a6941728ab"
+    },
+    {
+      "archivo": "backend/app/modules/ia/agentes/agente_devolucion.py",
+      "sha256": "cd55b2d6556e7ef021a086d410ba2d0e27ce366ddd34cd6e277310ec1f3c9577"
+    },
+    {
+      "archivo": "backend/app/modules/ia/agentes/agente_diagnostico.py",
+      "sha256": "90105d432236ec4d8fdbf538d7d2840d352db34b1f9529a1235127cef4192620"
+    },
+    {
+      "archivo": "backend/app/modules/ia/agentes/agente_fiscal.py",
+      "sha256": "b0d6b1cf23ce688d6dfa8c7025aa61ed88937e18a1b0c82a11877c48868469cc"
+    },
+    {
+      "archivo": "backend/app/modules/ia/agentes/agente_juridico.py",
+      "sha256": "73b3cdb69a22cd32e94360a13af06854290e4e74c018ed04c75f0d99f932f3e0"
+    },
+    {
+      "archivo": "backend/app/modules/ia/grafo/__init__.py",
+      "sha256": "4aef28a918aa6429bee716bba60e0867549300bd658723c36c8c728b9f89bbca"
+    },
+    {
+      "archivo": "backend/app/modules/ia/grafo/estado.py",
+      "sha256": "8adedf0c9e817dca0244386f162a92cdd623b3d9cc926017ed8c7af281eec1fa"
+    },
+    {
+      "archivo": "backend/app/modules/ia/grafo/nodos.py",
+      "sha256": "5f76551385bba74b70f9fa55d575d76058238ed12847ea3c491c528ca294ccce"
+    },
+    {
+      "archivo": "backend/app/modules/ia/grafo/orquestador.py",
+      "sha256": "5661e4315a64a4091ba52b955d364d79104ae71405193e460e7df10f98caffc0"
+    },
+    {
+      "archivo": "backend/app/modules/ia/grafo/transiciones.py",
+      "sha256": "86575a4d9a8ecc8b2d7621b3a3e07e719906b250a18ac96dc412c342cb8574d1"
+    },
+    {
+      "archivo": "backend/app/modules/ia/prompts.py",
+      "sha256": "c4f4d50d8d91a132aee729962eb0a9d35b27c9c10282b1990a1ea6b7b9bc706f"
+    },
+    {
+      "archivo": "backend/app/modules/ia/router.py",
+      "sha256": "47952915b9b6d3b9f0bca1458fd74490dfde0f681a685a760478f6abff324eca"
+    },
+    {
+      "archivo": "backend/app/modules/ia/schemas.py",
+      "sha256": "331537d9813a14e0d9c70c4d9cc9ccddee0ba8a6ba89d0e1701c3bebf85fb0d0"
+    },
+    {
+      "archivo": "backend/app/modules/ia/service.py",
+      "sha256": "4ddaf6d9403580ce66311d1c8b2f28d70ca6085ffd9d36e51eaa67d600a9e064"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/ambito_territorial.py",
+      "sha256": "b7735d6692fc555404a89f8a390876548cc92becd7ad2930d4b2bc2a9b5641b4"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/bootstrap.py",
+      "sha256": "afdae8ed1791a43c2d84bca0062737911bf2dbfdea812bbb11daea447183dbaf"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/catalogo.py",
+      "sha256": "27d067845ab87d54b0b741f486ba813f0cc5f160a25e5ce9e86d46db75740ff4"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/correo.py",
+      "sha256": "7b853c00a7436894c37da604b2543a2a6fd1667a4ed62b48ae9b79c59b7af488"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/deps.py",
+      "sha256": "7e0353f7c000c0b5a3741d7413e72371624d318cfb4a5e45781dd4a136566b89"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/mfa.py",
+      "sha256": "b7c2fe3e322d662da0606f91e5b1b80e011adabf51ad7eeee728c13ede8666e2"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/models.py",
+      "sha256": "30f4a8972f6967f044bd5168beb2b4df6529065333cc07b280a1177461da94cd"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/repository.py",
+      "sha256": "95c4bdd989614d9bbd8077592cab572627820433cf64e9fbfa792bf106c9c013"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/router.py",
+      "sha256": "7cd3ef435470e43a08c7bed3f3ce90fb94d43122aa9ea9287c08d0328e598d7d"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/schemas.py",
+      "sha256": "bd3deecd9201dd75ebcb85a169acee5c13ab34ff20147e54b8723e8eb495bbd8"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/security.py",
+      "sha256": "2128dee0a81def445e26cefb7518d7e2efd23ab71367594fcb6859ceec51be58"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/service.py",
+      "sha256": "a1e6e76e2327b6a6f0b548206fa49f688a3756a4d60d79a270ea36e7767475f8"
+    },
+    {
+      "archivo": "backend/app/modules/identidad/worker_correo.py",
+      "sha256": "33a85a43d99d7ac18c12bdffc794addb46c94ab3ab33a160680db6797e337ebb"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/catalogo_polis.py",
+      "sha256": "efea9b4ee761e55f1ced0d938d0ac672830bc5cef072f6adcc32a4625a23c4b3"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/models.py",
+      "sha256": "7f0ac26364c636110a3e98453f0c971058106adc2656e58183df380e37bdba94"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/repository.py",
+      "sha256": "426c8c626053375e4dbf190e21850b8177c33fae2681b38862246212f9be3676"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/router.py",
+      "sha256": "234b1a494ae0aa64f41b9ea81d2c5bb60942dedbf4ece2d86a464cefcbc86ae9"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/schemas.py",
+      "sha256": "b34014b78bb97eca022c54f8b74d2287d465c209290e3ce932b1314075daf211"
+    },
+    {
+      "archivo": "backend/app/modules/indicadores/service.py",
+      "sha256": "4040cb748e0d34feb502042d0cc533fdb20b0cd7c15333a960da95d57d6f9b91"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/__init__.py",
+      "sha256": "c02673b19406ae0b39a2e504d1e5980b2bfd1b3c02f44a117de62e86d716d61d"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/models.py",
+      "sha256": "c939f9fb4e92bfaba10a4a2ed62003c1162f723dacd25bf07af9bffe72380f4d"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/repository.py",
+      "sha256": "c80cd2577495157c6b076d04ca46ffe461773bc637d679dbd8ec4b5ed3923c0c"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/router.py",
+      "sha256": "18d3b1635c0c84b27213100b7fdff7afb2a77ddc1bb12b4bde92c0138a2d564a"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/schemas.py",
+      "sha256": "53e67062c8083e97c542bf11a9868c2101e3431e6c11906373e4f1b19675a3d1"
+    },
+    {
+      "archivo": "backend/app/modules/instrumentos/service.py",
+      "sha256": "eff4fb12eb115ef9a74cdce028df9c64494b2fb7c032b4b04e6e029781f090f7"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/acta_pdf.py",
+      "sha256": "67f87ad2425f7b06642c1ced698a12c4342fe809304ccfe1af0719fa3b11787b"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/models.py",
+      "sha256": "95defb5f373c945edc076dab8839e039183ca2b7066ecee542c68eb367271301"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/repository.py",
+      "sha256": "0d010ee1c6620b8e2949fa0abe376086855de1d132a80a7e7f85f060b0f22759"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/router.py",
+      "sha256": "2c0f992b17ffbff148f7d3de9a522c7bb7cd00c8f0c94b4e5cbc86034c36c10e"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/schemas.py",
+      "sha256": "384b22ec11d9291265c5f24a0004c3c42184257c369ffdd7547ce266eb276b6f"
+    },
+    {
+      "archivo": "backend/app/modules/mesas/service.py",
+      "sha256": "3573228f1aed431d1eaaefba069e409a7b0742cdcc85dd41f2f2ebabd8568516"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/models.py",
+      "sha256": "b8f15a0f642d0f01a394fa93a2ac34f7d82b0e24f6ebaf6c6a3422b91157b348"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/repository.py",
+      "sha256": "09e8005d977b5a1150d8583fbbc72463562a3fa2c35c9788e82e466d07f5806a"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/router.py",
+      "sha256": "8a99b4dff90ab02fbc5550af223e3261c8d9bbde27bfbc78bfc8eafbfb4f8993"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/schemas.py",
+      "sha256": "c5e47daf258e2b390dcd324248d6b750dd8fbf198899d26aabbe8202ef180bfb"
+    },
+    {
+      "archivo": "backend/app/modules/noticias/service.py",
+      "sha256": "05f7b229c681aabaa4f437ae2f72b2ee4860eb0376d48a6e24d8cb2171526be3"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/__init__.py",
+      "sha256": "aa45fb9cbe1035cd1fe684eb90cbf208a04db4e7e635c850db856cbff0da3f74"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/assets/logo-polis.svg",
+      "sha256": "2b9e893a9722781c71e7b2b7789987d3f0b48961c0e61e15478a682fb6c73f60"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/correo.py",
+      "sha256": "55f16797a3feb08652f587a28108cd941d0709657dbfc718ff3da8c65b975986"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/models.py",
+      "sha256": "d7880ffc09b39ed286549e08acaee3241a095b5edb47003ef30840aa67597aad"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/plantillas_eventos.py",
+      "sha256": "390882f27a253a98bc8f3be686209e20dab6e30c35ae680e5a1f60a7e7861a31"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/plantillas_stack.py",
+      "sha256": "0ea2b5f6b2dec1298cc3b2fcfe97221a6c9c1072d5a6801b5ce9506dc38784bb"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/resumen_cli.py",
+      "sha256": "2803e7e94b46b2b9a844c4f367b4b4f84439eef77c68caadcc357cf8c6015bdf"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/router.py",
+      "sha256": "046e3f6d8853f23df16e4ea3aeb2efff87f37fe0b16cca19f25f43677e5ac02c"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/salud.py",
+      "sha256": "afcd6b3325532e2470b5b3d9de5b8824300b5695c05701b0bba675a367ce6b9b"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/schemas.py",
+      "sha256": "c54ec08e8bf6ccabc00c60e8dd82827472cddb0bef6d3c7d2783985b89482dbf"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/service.py",
+      "sha256": "cc0e7d5de1f7b0d9ec1a4953cb0950a1f7f6fa971bdb080ac4c920ca778e0948"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/worker.py",
+      "sha256": "850a85f3fafd2f60ede63057a3d1768c3d9de5911d2bef30fcbe7247265d399f"
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/worker_cli.py",
+      "sha256": "8dad266670dcb74a2205ea812509cd6e3cd6c78ab9d3ae5bdf78081d28858233"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/__init__.py",
+      "sha256": "77169d6295bdeb34b2aaef6da6eb4943fb43f7734c2ea6aeee5f953492b7dd5d"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/models.py",
+      "sha256": "95deb9ad84ba7f33fb9e8b51aa5814ab9c603451185f92fe176c4358ff00337d"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/repository.py",
+      "sha256": "1f7a4a89e89e1f1fb1ed4d4e15712f5fcd71d8cb7c89e4f9e25abae31aa126f9"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/router.py",
+      "sha256": "11f3148dac71ffa0e229f377e6182064637a66380bf5111bde4cd4d1e9803960"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/schemas.py",
+      "sha256": "8206a03b95e853420bf3ecfea98ad829262c7d5e2605150a374aea5bdade5b68"
+    },
+    {
+      "archivo": "backend/app/modules/participacion/service.py",
+      "sha256": "7e9be742c00a3928ac7bd75f706a9d4c46731fe66e3a09c638c64a6732dc2b67"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/__init__.py",
+      "sha256": "e279147576e43012c416c0dc8d8fd12323bc997eed5bb24f893b3e46e2293276"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/gating.py",
+      "sha256": "a2bc524db941feb07f5b3681a91d1675a31b36e0697352b050454132d745d8f6"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/models.py",
+      "sha256": "8464ac3966fc66fbddef97f9d412d4d158b80c3de4f3acb9b3400a1b5de53d60"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/repository.py",
+      "sha256": "ee45b93cba503952db5a38c3c34307a8db35c38a37dd998e06496ade4f3f9cd2"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/router.py",
+      "sha256": "b6fc5305281eeec78815523b934a63d511db645f3d71be9f25aaf584a052baa3"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/schemas.py",
+      "sha256": "31bf8741253ac22f0fd5c1df638678ac4b40175e5e6e4c606ed1bdbc5d4635b2"
+    },
+    {
+      "archivo": "backend/app/modules/politicas/service.py",
+      "sha256": "670369570b9067b43762f0a6acc8da92f7650cdeaf48c1ae4cfc5905a9759f60"
+    },
+    {
+      "archivo": "backend/app/modules/presupuesto/models.py",
+      "sha256": "4134b04fef71ac3ceeab7053388644d51f2db9e0349033374da46f3c91ecb506"
+    },
+    {
+      "archivo": "backend/app/modules/presupuesto/repository.py",
+      "sha256": "5e69308cd1058b3bba3dd5f3485ae3665107a40dd49b38854465b6ef8b8b1c34"
+    },
+    {
+      "archivo": "backend/app/modules/presupuesto/router.py",
+      "sha256": "61b20ebe0c6306b94663623ef75808299cd72dd4b2db5c38d2ac9bc30d0b4001"
+    },
+    {
+      "archivo": "backend/app/modules/presupuesto/schemas.py",
+      "sha256": "f2a8e0560ad4495a9b15cce87275cb71cf80d707ec9667f225aecca1e7dac288"
+    },
+    {
+      "archivo": "backend/app/modules/presupuesto/service.py",
+      "sha256": "9e38455b8a519980bc80f3f70f936136466725733d5d09e7e927900cafec0f42"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/__init__.py",
+      "sha256": "3ac0330c17ba254763a83c3ee6926d647ab035e39020c2c3d9670af6ba48f59e"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/models.py",
+      "sha256": "073b96fd605a8458d3852b2b0212feab097dfaa72100c9136622bfb3c701ad31"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/repository.py",
+      "sha256": "f252d0f8d1554cc807876ece1c2da52581320893b0f007a6ee56ba88b097fb1d"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/router.py",
+      "sha256": "5dadbb5f04b682f9dd4ca53a392b6f15e9ba58c87c46f8d5efb507d385718e3a"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/schemas.py",
+      "sha256": "a7f3570f18f0375b5523a1e704d7be93dcd99c4be5b071229cd6a1b9e33add1a"
+    },
+    {
+      "archivo": "backend/app/modules/proyectos/service.py",
+      "sha256": "27becd0983764a7fe0ce034de9ba7b69e9d74f0a2e370db164f4585da99dba31"
+    },
+    {
+      "archivo": "backend/app/modules/seguridad/__init__.py",
+      "sha256": "b32ad656bfc31cdd5d2d626a87e43d0667f57a612861cb2a463fb8d565b39c11"
+    },
+    {
+      "archivo": "backend/app/modules/seguridad/router.py",
+      "sha256": "9627c3ced8b2f25a8746932de48fb3aebd147b3c6b05f1df4e56686b3b7dc740"
+    },
+    {
+      "archivo": "backend/app/modules/seguridad/schemas.py",
+      "sha256": "21a00686423c1e121193351cfd99dece146ba7f0d3bb59184db24d8cd8e4d497"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/__init__.py",
+      "sha256": "475d576466c8ddb5f78f0de1efc21f4a2a4985c6884f8541e6994d2b6b635f28"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/deps.py",
+      "sha256": "fb404d1b7769700459e936b3b788d9e9bb7a230b747ee16b3be6e333a54e398c"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/models.py",
+      "sha256": "0273ffe60eb04ace42c5d6aaad2a078e4f1024d9e317ebd18d2e2200c862c76d"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/repository.py",
+      "sha256": "7ced9a6fb0407fdf5fab1301df79c3a9e91f3093a969456096000db15fdbec8b"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/router.py",
+      "sha256": "0da81bf9575033aacfe5d0e6e7fcac2e9c7ad9f2920e009f2ecea3562702eeb9"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/schemas.py",
+      "sha256": "69d7afbfe16bb5ab05c154db5c04b25a6eb83b46181004b68c115a54716e7d56"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/security.py",
+      "sha256": "2993a56480e6b4c0d0c6d38fdceb4f8047da9c4064005c81c60aa7fc20c1b49f"
+    },
+    {
+      "archivo": "backend/app/modules/sesion/service.py",
+      "sha256": "5df24377502f46336156392f0bc334371e0c5f794361fa8c255737ec727cc747"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/__init__.py",
+      "sha256": "d8ed9a65c03ac013e193d5d852444ddff7b102785565d3e520c0d758081e5a3f"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/models.py",
+      "sha256": "eb04e0a8f70dac8cf8064f06dbc30b155c582a7748dc15c2cbcf3f277c3251ed"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/repository.py",
+      "sha256": "cc93fd06850a1c56eb05f5c76f2efefa55aea0a93f5a9a66edbb55e127746eec"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/router.py",
+      "sha256": "1c047066b955441ebf8e519e4156e56efef713cf402f57da947893dc59e6c930"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/schemas.py",
+      "sha256": "5772e4b63b5e900891f4fda75f789fc75c0d1314fbcb5e0e9d277f7f8aa6cfab"
+    },
+    {
+      "archivo": "backend/app/modules/testimonios/service.py",
+      "sha256": "5e774ae18fe1fb17c6395e6e87b21df4863e45c01a41fc6f34d88eac9d3e81f6"
+    },
+    {
+      "archivo": "bun.lock",
+      "sha256": "e3302fcc687f75472ba84601f79940a07eb40ec3dee263df78f50102446f2c6b"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/00_cobertura_fuentes.csv",
+      "sha256": "70ea44310d465ed4a1046f9b073dcc564f4577ade8f780ea55ff611adad50000"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/00_linea_base.md",
+      "sha256": "6bebdd3060dd63b690bf58130700a29ca40b00ab897334cacf3477fb5e05e66e"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/README.md",
+      "sha256": "7ca24e0f7508ab0f32a9fe7bb3711dae4825de5f31c48f835390dee8fe6eb560"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/catalogo.csv",
+      "sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/cifras_publicadas.csv",
+      "sha256": "72e2655faf321f441018fcd2d5e346806bcba95facfcf138d6aff9898e3a36e8"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/correcciones_catalogo_303.json",
+      "sha256": "c026800efd8dd664e002b2c397864835c71ba36e5dcecdf95648c84fc5c44521"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/licencias_fuentes_verificadas.json",
+      "sha256": "04b01dcd33f6fe4337eae144e3e37e35547cd1a63e1f4790ae74c56596563364"
+    },
+    {
+      "archivo": "data/capas_analiticas/catalogo_indicadores/linaje_territorial_documentos.json",
+      "sha256": "bff3a888d944089afe8399b60a97fc10261ad30d2ff5ddc7e82e42b2267a0dfe"
+    },
+    {
+      "archivo": "next.config.ts",
+      "sha256": "e582a0739b465a6dd2bd6f6b22c7bc6c906702c35c6928031c9380e32945551e"
+    },
+    {
+      "archivo": "package.json",
+      "sha256": "81ebcf3f3a402470fbc223eae179074e0819cc87794da18164cc90d5af90d111"
+    },
+    {
+      "archivo": "postcss.config.mjs",
+      "sha256": "f8ed6853d2d91797f125edbb2af4052bd0adc52ba638d0de65d696a62d1ad3f7"
+    },
+    {
+      "archivo": "public/apple-touch-icon.png",
+      "sha256": "81a910fd5f06547327e6ae144a7ad7a27c64f7fa7eab089b8ba9d28971d725f7"
+    },
+    {
+      "archivo": "public/diagnostico27102026.docx",
+      "sha256": "1c459db2ab33fa338eaac27f784cc7fb6275e6837d06e2425bf509431f83649a"
+    },
+    {
+      "archivo": "public/diagnostico27102026.md",
+      "sha256": "ef37446c34bec695123929145b90e4d84c6cb5011da334d754d55e66a424c1fe"
+    },
+    {
+      "archivo": "public/diagnostico27102026.pdf",
+      "sha256": "56a50c5a81b186661c03f562ca4d9dde2c60900625da96b90b7a315f19a7ba0b"
+    },
+    {
+      "archivo": "public/diagnostico27102026.pptx",
+      "sha256": "a1b9fadaaf3048b54c19df436f078a25b443b31fb8969dc74ae679d0b31df522"
+    },
+    {
+      "archivo": "public/docs/ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf",
+      "sha256": "f6bd064aa25bf04afc919532289998c392048fbd25c2a30062df85767d530550"
+    },
+    {
+      "archivo": "public/docs/GUIA_FACILITADORES_MESAS_COMUNITARIAS.pdf",
+      "sha256": "d20c01bf5f4b6becfd9c9a4a1cfe3bcd9ff1be071eaa2e8b80ce0476743fb170"
+    },
+    {
+      "archivo": "public/docs/MATRIZ_METAS_E_INDICADORES_SEGURIDAD_HUMANA_2026.pdf",
+      "sha256": "02a2f62d3a4737bb6ebcb5a82fe264c28fe0dd202e34bec3e4eeca7902efb047"
+    },
+    {
+      "archivo": "public/docs/PRESENTACION_DIAGNOSTICO_SEGURIDAD_HUMANA_CARTAGENA.pdf",
+      "sha256": "486e11ec45c71e8c08bac12b7227040e59c8e1e4309cd808d075390fe728a7be"
+    },
+    {
+      "archivo": "public/favicon.ico",
+      "sha256": "3ffbfcc62c9e5dec8967e99699fbc5c155095a682975257bedc6048f59a8ef55"
+    },
+    {
+      "archivo": "public/favicon.svg",
+      "sha256": "76a9d75a87f86ce6808c0c76ac955300cff8206558900955b42bfe25ef3185b2"
+    },
+    {
+      "archivo": "public/fotos/testimonios/ana_rosa_el_pozon.webp",
+      "sha256": "e38af2e91db3da28349c89dcab3a64fb5d0923a5420584053e2bbf42c951c199"
+    },
+    {
+      "archivo": "public/fotos/testimonios/carlos_getsemani.webp",
+      "sha256": "8c00ef5fa685e0389756287d2c30469981fda6c2cdf25a4d268234e3b647068c"
+    },
+    {
+      "archivo": "public/fotos/testimonios/dionisio_la_boquilla.webp",
+      "sha256": "86ab7aafad1503ce6856c31b96bc6aaa2b00dc052dbee2f0ecf9c1c54b7ceadb"
+    },
+    {
+      "archivo": "public/fotos/testimonios/yorledis_mandela.webp",
+      "sha256": "984989479e8d3af9b05ce69d5c5468af9554d37332980989e11b1be9c54ee58a"
+    },
+    {
+      "archivo": "public/geodatos/cartagena_barrios.geojson",
+      "sha256": "882553a8138b0ee786eea14929897ec99ad8956d8259cfe4acc8ce17a98dc64c"
+    },
+    {
+      "archivo": "public/geodatos/cartagena_corregimientos.geojson",
+      "sha256": "35468b355683e0f0c183aa9a1e6dabb09c2fbf3a0b6c09c53d98fd14c8368291"
+    },
+    {
+      "archivo": "public/geodatos/cartagena_limite_distrital.geojson",
+      "sha256": "2c9b7129cb134b8447607b08283d72fc02144677d69a4337caff2f05db0f4a55"
+    },
+    {
+      "archivo": "public/geodatos/cartagena_localidades.geojson",
+      "sha256": "cb138b32278cfd1340737e72488f5b2a3c9b80e9e478a986f6392d38ee413953"
+    },
+    {
+      "archivo": "public/geodatos/cartagena_perimetro_urbano.geojson",
+      "sha256": "8c3dcca8b6ea91a91bffbe2fe03e4785096cc0b10c25335856e655ed913a1f20"
+    },
+    {
+      "archivo": "public/icon-192.png",
+      "sha256": "376befdccf5aae7e8debb08a6aa39dac9ebfb0a52c826865ffead741145e408a"
+    },
+    {
+      "archivo": "public/icon-512.png",
+      "sha256": "5705a266271c765cdb3e2640c0bad0992e7b2655806fb25994689aac8a2d6a04"
+    },
+    {
+      "archivo": "public/images/hero/hero-asamblea-claustro-thumb.webp",
+      "sha256": "86ab7aafad1503ce6856c31b96bc6aaa2b00dc052dbee2f0ecf9c1c54b7ceadb"
+    },
+    {
+      "archivo": "public/images/hero/hero-asamblea-claustro.webp",
+      "sha256": "06785ed5d659e6a8a43388e0ecdb2b69844edf0621d8c721017b388c1947e8d5"
+    },
+    {
+      "archivo": "public/images/hero/hero-dialogo-comunitario-thumb.webp",
+      "sha256": "e38af2e91db3da28349c89dcab3a64fb5d0923a5420584053e2bbf42c951c199"
+    },
+    {
+      "archivo": "public/images/hero/hero-dialogo-comunitario.webp",
+      "sha256": "242e5bc3ffe3cc589553786045f7e148b057b163da5f8a63831478c262aef892"
+    },
+    {
+      "archivo": "public/images/hero/hero-enfoque-diferencial-thumb.webp",
+      "sha256": "984989479e8d3af9b05ce69d5c5468af9554d37332980989e11b1be9c54ee58a"
+    },
+    {
+      "archivo": "public/images/hero/hero-enfoque-diferencial.webp",
+      "sha256": "757d2ad4432442de66beeac5be1d284a4b147576dcd6ff869f487a3ced0e8f0f"
+    },
+    {
+      "archivo": "public/images/hero/hero-marco-logico-thumb.webp",
+      "sha256": "63e150402a63ad5b597e02ad6ef08ce79286282c367ccff8c17db017e1d3e7b2"
+    },
+    {
+      "archivo": "public/images/hero/hero-marco-logico.webp",
+      "sha256": "35d46fac687d6ef166545ff103ceafaac250a558ab6df220c354420d48feb2ab"
+    },
+    {
+      "archivo": "public/images/hero/hero-mesa-deliberativa-thumb.webp",
+      "sha256": "8c00ef5fa685e0389756287d2c30469981fda6c2cdf25a4d268234e3b647068c"
+    },
+    {
+      "archivo": "public/images/hero/hero-mesa-deliberativa.webp",
+      "sha256": "3289ce359050d3b13eebe05be1879fc46ac7f5778b457a1c4596e84bfda1ddbf"
+    },
+    {
+      "archivo": "public/logo-polis.svg",
+      "sha256": "89a52537aee95c477c845ca6e0ad47583d5455cf09431dc7fcc17f4950d54007"
+    },
+    {
+      "archivo": "public/logo.svg",
+      "sha256": "8506450e8ef647695d218c4b3245ef573f9c6473783f372eef87fdba9bd47eac"
+    },
+    {
+      "archivo": "public/manifest.json",
+      "sha256": "008b587a4f66f22469c96a6104da98128ff1ff839ab6a17b54f16d6d9d73e3ec"
+    },
+    {
+      "archivo": "public/og-image.png",
+      "sha256": "befa23834547151d74c7cc479d46e832859075fcaa8a323e356f565cdb124dc1"
+    },
+    {
+      "archivo": "public/robots.txt",
+      "sha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b"
+    },
+    {
+      "archivo": "public/sw.js",
+      "sha256": "0d75b5ef9411303cebd3e586b7697e48f51523137d5247109bd8dffff0d30819"
+    },
+    {
+      "archivo": "src/app/_components/panel-host.tsx",
+      "sha256": "7c9e8a022ea7ad945a93588197d24aa34096b41f67dcf7a5acf93c85a7998a0b"
+    },
+    {
+      "archivo": "src/app/_components/sidebar-institucional.tsx",
+      "sha256": "5b3972e8148491478e4a0155d39994ddd804f395698d39549dc6563a9cec3c40"
+    },
+    {
+      "archivo": "src/app/_components/topbar.tsx",
+      "sha256": "f98b94e4d6bb0c809b78a5589320e13d083420941eb9e630d90de867a95188cf"
+    },
+    {
+      "archivo": "src/app/_composition/deeplink-paneles-publicos.tsx",
+      "sha256": "924819344e8e6e08bc08afde161dd7ed92608961e227bd0dba9417ae746ef047"
+    },
+    {
+      "archivo": "src/app/_composition/panel-contracts.d.ts",
+      "sha256": "ae3949ab2a9d4d93cc3d9f0254c160179fa7e3a2f4e7a0740d4ecbfa66e307d8"
+    },
+    {
+      "archivo": "src/app/_composition/panel-registry.tsx",
+      "sha256": "4a59cdc9ae1ae4717eb0b74791675f9446401e28c81a15eb3b6d59f5d882dd4c"
+    },
+    {
+      "archivo": "src/app/_composition/query-provider.tsx",
+      "sha256": "8402335114ca39b4574d8db963d3631db4b786e88fc6c01e2f88e0fea4903bc0"
+    },
+    {
+      "archivo": "src/app/_composition/sesion-sync.tsx",
+      "sha256": "4b7fef191bf41dd1feb6a9de8560beb5fe94b591f6904552ae412434467e9685"
+    },
+    {
+      "archivo": "src/app/acerca-de-polis/page.tsx",
+      "sha256": "64cca1787b9eec19ee1224206fbb43ab13b1644ac713f20c63d1e73cac604234"
+    },
+    {
+      "archivo": "src/app/acerca/page.tsx",
+      "sha256": "318399a24b676ec647dac98b75ea88f34ad253ec5713b7d6ad14cfc53351ee74"
+    },
+    {
+      "archivo": "src/app/api/formularios/revalidar/route.ts",
+      "sha256": "76dc2bb9d47af403277aed3da5aadb3bbbe3636b87a36e5b6d7e32028c338fc1"
+    },
+    {
+      "archivo": "src/app/aportes/[codigo]/page.tsx",
+      "sha256": "bc2f4bc9c286011b45553aa6a4429be6e6c160dfa35afc6abbe854b7375b1dd3"
+    },
+    {
+      "archivo": "src/app/aportes/[codigo]/validacion-cliente.tsx",
+      "sha256": "13a7c005126bab9427dd23a03ccc26dd4ca25816045b5c4a8bbb00a9383b00c0"
+    },
+    {
+      "archivo": "src/app/asistencia/[mesaId]/asistencia-cliente.tsx",
+      "sha256": "0f1056d7bebcc64b9b1b6ab58a95639d34bb1deab8d2e6039d376ec2296ced94"
+    },
+    {
+      "archivo": "src/app/asistencia/[mesaId]/page.tsx",
+      "sha256": "b1cae3cdf0930a56fe0d7a48226964cd80c3411f40336f0bf287dbe0af5432b4"
+    },
+    {
+      "archivo": "src/app/barrio/layout.tsx",
+      "sha256": "117f45d4c38ee44990c948fd95d45e7337abd9bdc67b0d32d50b63630e0404ad"
+    },
+    {
+      "archivo": "src/app/barrio/page.tsx",
+      "sha256": "f8cbf75384a2719f80e9f75336403ca30aff2452686bf1335680181e22943d0c"
+    },
+    {
+      "archivo": "src/app/contacto/buzon-contacto.tsx",
+      "sha256": "f7fe2cc34370ec0cef5291d70e0826ce006bd58702080ed6c6d7f3d01351b29e"
+    },
+    {
+      "archivo": "src/app/contacto/page.tsx",
+      "sha256": "5b6b9cfba7e03bd622c2c4dcc9a7443ea30396569b8d6c0b8ec09ba2f6168868"
+    },
+    {
+      "archivo": "src/app/f/[slug]/page.tsx",
+      "sha256": "de0b45ec248d44747408934980bc62b25832ccd94aa30899d049adfa1a9d37b4"
+    },
+    {
+      "archivo": "src/app/favicon.ico",
+      "sha256": "3ffbfcc62c9e5dec8967e99699fbc5c155095a682975257bedc6048f59a8ef55"
+    },
+    {
+      "archivo": "src/app/geovisor/layout.tsx",
+      "sha256": "fde4f61cba92637d4d1e52e4931e7e8599fee30eb285659085321824983746ad"
+    },
+    {
+      "archivo": "src/app/geovisor/page.tsx",
+      "sha256": "6e9126b386d0035ee7c164eb31984a45ad76407f02d05d10078cbcdba035307c"
+    },
+    {
+      "archivo": "src/app/globals.css",
+      "sha256": "d3f983adb801d873f92f7469a28a522d6ad5bff2534bb9c3b07384dadf704623"
+    },
+    {
+      "archivo": "src/app/icon.svg",
+      "sha256": "76a9d75a87f86ce6808c0c76ac955300cff8206558900955b42bfe25ef3185b2"
+    },
+    {
+      "archivo": "src/app/indicadores/page.tsx",
+      "sha256": "d8410de61ba1a92e641420f0046e28879e5325061503a31759aff7d7d0109176"
+    },
+    {
+      "archivo": "src/app/layout.tsx",
+      "sha256": "665db6af9d3896665063afbd176ef2ae000ab56bc7ee4aa4f9ae9dc5ae884ead"
+    },
+    {
+      "archivo": "src/app/marco-legal/page.tsx",
+      "sha256": "2f83047fd7df6bd1778146153f64b9c5796e3b84a67809af0ba9bbdc47d0d93f"
+    },
+    {
+      "archivo": "src/app/page.tsx",
+      "sha256": "e243003f3ef64585f173f5e75c4514420e6aec0bd29e79f817bdbd5b454c5220"
+    },
+    {
+      "archivo": "src/app/plataforma/actores/page.tsx",
+      "sha256": "5e1c888e2ab831e9a5f0e0ec1253201437c8906e862fca620c4a97197fa77fcb"
+    },
+    {
+      "archivo": "src/app/plataforma/alternativas/page.tsx",
+      "sha256": "b721f98da9338c9c50e61e22992b3b47516300621d1c42d23f0175f4c7601f60"
+    },
+    {
+      "archivo": "src/app/plataforma/comunicaciones/page.tsx",
+      "sha256": "ee8d9cddbcd71f2e6aa9d93be577b05728024e62a3a4b2a63e770c96a96b7d2b"
+    },
+    {
+      "archivo": "src/app/plataforma/configuracion/page.tsx",
+      "sha256": "773e322d00a29c5d18f15201980662fed6ca3dbc3c9be116cd79b60c22cc8df3"
+    },
+    {
+      "archivo": "src/app/plataforma/contenido/page.tsx",
+      "sha256": "5bf8b08d6d7560d09f2e806687129b12cbef8ff490c004b80b0a91c637d2beae"
+    },
+    {
+      "archivo": "src/app/plataforma/diagnostico/page.tsx",
+      "sha256": "34ca4a709e24b63e015810764b0b4a7e93d665a377c0ad02fc44be24917305a0"
+    },
+    {
+      "archivo": "src/app/plataforma/formularios/page.tsx",
+      "sha256": "b3f8458f6e7d6a458b65b9d7d239019e2798d5cfb67ada80669d4029010e0e39"
+    },
+    {
+      "archivo": "src/app/plataforma/fuentes/page.tsx",
+      "sha256": "44f86e0fa5a3c402eda1e0e184a506a0958b958d14711bacefcec9be5097c85c"
+    },
+    {
+      "archivo": "src/app/plataforma/geovisor/page.tsx",
+      "sha256": "542359e41bd3eff413ad2892e593ee5c694754dd1a0f965d784343ec0a70c99a"
+    },
+    {
+      "archivo": "src/app/plataforma/layout.tsx",
+      "sha256": "5ea90e75aa216965831bf460644723efeb4e4f5ab0760d08b7fb7ccb48193c4c"
+    },
+    {
+      "archivo": "src/app/plataforma/mesas/page.tsx",
+      "sha256": "4462892b30596a5092e005abb74397be51c11d4a006717e41bcc1e26e92621b6"
+    },
+    {
+      "archivo": "src/app/plataforma/noticias/page.tsx",
+      "sha256": "202dbad7d2b0daba8d94c59aa5bbb789a887a3a28b5a0a4fdeb6007a7b04ecd2"
+    },
+    {
+      "archivo": "src/app/plataforma/page.tsx",
+      "sha256": "174823f02a7adc112a545e90acc2c0a73120fb10906912610149d1195455fe53"
+    },
+    {
+      "archivo": "src/app/plataforma/proyectos/page.tsx",
+      "sha256": "7378be00000a80bb8922f922db95d6112a70cbb7c801239b5b6940c33bc236fa"
+    },
+    {
+      "archivo": "src/app/plataforma/seguimiento/page.tsx",
+      "sha256": "939b9e907b5618a3a5b0bfc483f77edd692b60555dfc02adb3687b25fc48ad09"
+    },
+    {
+      "archivo": "src/app/plataforma/testimonios/page.tsx",
+      "sha256": "1e10b6f935a9639af116b0e60c43e4fae99fd92abeae6442d75eab1f11cdf738"
+    },
+    {
+      "archivo": "src/app/plataforma/usuarios/page.tsx",
+      "sha256": "9b6c5efe2162651fd6b79f82b6ffcc80248b036e95c8897419e25e013214d58f"
+    },
+    {
+      "archivo": "src/app/seguridad-humana/page.tsx",
+      "sha256": "4410ab6b18a411b5ea4e440343f7fe6016cc405821dd86d759af2dfd6586e13a"
+    },
+    {
+      "archivo": "src/app/trazabilidad/diagrama-trazabilidad.tsx",
+      "sha256": "e6c221056a5945da820a7132b3a3515cd4b85b6d22678d83c339489f59a9ca70"
+    },
+    {
+      "archivo": "src/app/trazabilidad/page.tsx",
+      "sha256": "f8016bdb5372c583b5902b2fd7ed9fd2e7d09b2ac6a5504be7a826d70c08ae60"
+    },
+    {
+      "archivo": "src/app/verificar/[codigo]/page.tsx",
+      "sha256": "492edd1e8dfea0cd2ba760678b4f14e938e3e1d5f902aedba48c62af58605d60"
+    },
+    {
+      "archivo": "src/core/http/api-client.ts",
+      "sha256": "065717b8f05e2a7857ac846fdea17a35128d9b4773a6d673a7e98da178238558"
+    },
+    {
+      "archivo": "src/core/navigation/navigation-store.ts",
+      "sha256": "06e6a54e9887c347009ed4df5891d809531e6d43ab3b7b89b70824bbc25fce5a"
+    },
+    {
+      "archivo": "src/core/panels/panel-shell.tsx",
+      "sha256": "678c823c0e6a14b71a6616ef83aa857f0c38f7e2e1f9e3c12270778c238eead3"
+    },
+    {
+      "archivo": "src/core/panels/panel-store.ts",
+      "sha256": "57c7407961825a1287bc1c231629ff883798014199d39ba2ed8ecfb56cb74b8b"
+    },
+    {
+      "archivo": "src/core/preferences/collection-view-store.ts",
+      "sha256": "33a0fe4495e39bd6913da649706243033f4c933ddb8ef91c1e4b030687ca2c3a"
+    },
+    {
+      "archivo": "src/core/zod-init.ts",
+      "sha256": "3db2b3da189f2b2166da93cd9d8e49e53b6ece2d8c4e91565a1aca19eff71624"
+    },
+    {
+      "archivo": "src/features/accesibilidad/accesibilidad-store.ts",
+      "sha256": "b49a9db48f9a1a424080a557e033ff1b0f205239ed71a960759f2827e98ead95"
+    },
+    {
+      "archivo": "src/features/accesibilidad/accesibilidad-widget.tsx",
+      "sha256": "f2ab1317f7e6403d273182dc7a7b965e6218012dc96b689551bb5809f4a05510"
+    },
+    {
+      "archivo": "src/features/accesibilidad/index.ts",
+      "sha256": "aba9f30c8b0ab8e0e004933d3e4f4bf12c378a4c355a709c9d3aa40a3d4f6f10"
+    },
+    {
+      "archivo": "src/features/actores/components/actores-datagrid.tsx",
+      "sha256": "f2158843d640da9021c6dd195b3579aea16cdb778af16ae5ec10d40501b3d1a9"
+    },
+    {
+      "archivo": "src/features/actores/components/actores-kpis.tsx",
+      "sha256": "5fa063ee20703fed8b5d04ad2dbd033a135cc20fe06e818b5f2988d163d65926"
+    },
+    {
+      "archivo": "src/features/actores/components/actores-matriz.tsx",
+      "sha256": "76f8189ac9c13155a1cfda21439bb5a5bb2a9f259882f8ee86d3602a4495a9b7"
+    },
+    {
+      "archivo": "src/features/actores/data/actores-iniciales.data.ts",
+      "sha256": "d203ef3fda2e8808d680b6668aed5eb7d9c82a111e671b91165e5849b10352d9"
+    },
+    {
+      "archivo": "src/features/actores/models/actor.ts",
+      "sha256": "22e5f9b1de68c0a1422a2afd7d1e8a741a762b29f455cf0b96efa73118533ff9"
+    },
+    {
+      "archivo": "src/features/actores/panels/actor-editor-panel.tsx",
+      "sha256": "6bc752ae2ea329cfe0e4f2162c9bc44057576cdd3968b62b5af8f2b853678237"
+    },
+    {
+      "archivo": "src/features/actores/services/actores-api.ts",
+      "sha256": "3e9b3a703180090fde8c3d5cbea20db86c0ff2c675e11668738bcf36dade2b91"
+    },
+    {
+      "archivo": "src/features/actores/state/actores-store.ts",
+      "sha256": "015c5b8a4d3948f8e46b4c42b7758dbbf91181bf9bff6664ff27a04fe9ee7364"
+    },
+    {
+      "archivo": "src/features/alternativas/components/alternativas-kpis.tsx",
+      "sha256": "a1d6218c5835cf213ee747625a4ef0c2fd0d5a8c635c990efc29852807ddc08a"
+    },
+    {
+      "archivo": "src/features/alternativas/components/alternativas-tabla.tsx",
+      "sha256": "11271de5d266153ff2ac0412245bdec23b33ca62b512937e3002490004fc7ae4"
+    },
+    {
+      "archivo": "src/features/alternativas/components/costeo-presupuestal-view.tsx",
+      "sha256": "a60bf516a701adb5f6b47290126fc8cdf2501ced347665fc2950e626617662f9"
+    },
+    {
+      "archivo": "src/features/alternativas/data/alternativas-canonicas.data.ts",
+      "sha256": "d721102434ddf0e40a444c6746e07f2822fdada6963609cbd138f26bb6b2c48b"
+    },
+    {
+      "archivo": "src/features/alternativas/models/alternativa.ts",
+      "sha256": "b8eccd8b2aca98ff9bc117698815bab74c9c6819542d2bef1dfcc540f4d18982"
+    },
+    {
+      "archivo": "src/features/alternativas/models/presupuesto.ts",
+      "sha256": "8bdafc49d364cbc7abb1887a1b87672e43992c754fadda8e948109ea3484157b"
+    },
+    {
+      "archivo": "src/features/alternativas/models/viabilidad.ts",
+      "sha256": "5a4cb2396107c125a507863f8d270813c5150decda2fbe9018b418b062c0b139"
+    },
+    {
+      "archivo": "src/features/alternativas/panels/alternativa-editor-panel.tsx",
+      "sha256": "abe008f8a50b7d77131308fb47243b9afbb5ad1b3ca233c9699a6fdded1f4f5d"
+    },
+    {
+      "archivo": "src/features/alternativas/panels/asignacion-presupuestal-panel.tsx",
+      "sha256": "5b19856cc2d415702a1127071ab35212176b0cd0dc09e3fe6c1d9242625de16d"
+    },
+    {
+      "archivo": "src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx",
+      "sha256": "bd24383371c163f727156ab8895d4787f894dee668444de9c5ef65857e6d4f95"
+    },
+    {
+      "archivo": "src/features/alternativas/services/alternativas-api.ts",
+      "sha256": "85ae1873425a715ecf9485f00c45602d59f1c9b85175730e950fe474571fa2c6"
+    },
+    {
+      "archivo": "src/features/alternativas/services/presupuesto-api.ts",
+      "sha256": "f8c1c70014d3d4dc3b6e2054c9b0be46cf650f56b7fdc204a79b7f0d407a8095"
+    },
+    {
+      "archivo": "src/features/alternativas/services/viabilidad-api.ts",
+      "sha256": "84fde52c4c460ff1b6622e39bdf4d738639c10b3493c72a6f83903dffe6bf3fe"
+    },
+    {
+      "archivo": "src/features/alternativas/state/alternativas-store.ts",
+      "sha256": "15a6d178ad6918a62702177ffa4cb7e57f824468acfbaeda28b2570d1bf57f46"
+    },
+    {
+      "archivo": "src/features/alternativas/views/alternativas-view.tsx",
+      "sha256": "2f86d16519e9fe85d27fed31f00a61862b6e475640900b84f6579e3dc10b7751"
+    },
+    {
+      "archivo": "src/features/aportes/panels/aporte-editor-panel.tsx",
+      "sha256": "00af1acff4fefffb5d71024e1c59346ceda4a97aab4907702ae61dae62df7e33"
+    },
+    {
+      "archivo": "src/features/aportes/services/aportes-api.ts",
+      "sha256": "ff74efac965bff3d4f8cfc0d93a0c373b7bbbfb1be92fb55521c8e73a21f8788"
+    },
+    {
+      "archivo": "src/features/aportes/services/images.ts",
+      "sha256": "698be878dbdbcbde86c59a361cd14c7c794d528606aef2e1491968c1ad0e2fb2"
+    },
+    {
+      "archivo": "src/features/aportes/services/use-aportes-queries.ts",
+      "sha256": "fffef5da90b764bf9807fb74e10662d2a310f8c80ae0608f0ed38b7942d0dcbe"
+    },
+    {
+      "archivo": "src/features/auditoria/panels/auditoria-consola-panel.tsx",
+      "sha256": "807bd837fd8ea74efdcb6c3cf0ab0e6b2c527f07da9ef3371c08b14ac2fb7c0d"
+    },
+    {
+      "archivo": "src/features/barrio/components/acuerdos-barrio-tab.tsx",
+      "sha256": "35cb50a9ede3534c64fc44d15ab45a9662d840c1717e8d73ba761a9a0879d109"
+    },
+    {
+      "archivo": "src/features/barrio/components/barrio-selector.tsx",
+      "sha256": "9a4589b7f55cb24f38a4d3a2d0d684f26c6e8537c0e64210c1ca277ab45b5d1e"
+    },
+    {
+      "archivo": "src/features/barrio/components/barrio-view.tsx",
+      "sha256": "ef0f075acbba7edf4a816097937132560f1591a7261d8b7de367520b8e314733"
+    },
+    {
+      "archivo": "src/features/barrio/components/propuesta-barrio-tab.tsx",
+      "sha256": "ac9737fc3fe0b5c0a08ea1f2b185d68a443410971ec225fafd3aa6541522b45f"
+    },
+    {
+      "archivo": "src/features/barrio/components/semaforo-barrio-tab.tsx",
+      "sha256": "aef8b756851a5e28d5afc7770ac2545deed90e8faa54f37c7c6d44f27ffca265"
+    },
+    {
+      "archivo": "src/features/barrio/data/barrios-cartagena.ts",
+      "sha256": "e1f48c047af5a52be294b100b20327a560bcf086ddb7d5ef8aa9a95e99dbe533"
+    },
+    {
+      "archivo": "src/features/comunicaciones/models/tarea-comunicacion.ts",
+      "sha256": "2f6d49efa054162c6a6a8c6a817f506daab467a543c741349dd07a9ef6101a0f"
+    },
+    {
+      "archivo": "src/features/comunicaciones/panels/tarea-comunicacion-panel.tsx",
+      "sha256": "c43ef86a07e5634b52125753260b58658556f47e0ce6161ccebb6b806c53f030"
+    },
+    {
+      "archivo": "src/features/comunicaciones/services/comunicaciones-api.ts",
+      "sha256": "79173d18eaac7d7e1baa1b9c088f1facb6d2b619c5048ac465e71169c30bc514"
+    },
+    {
+      "archivo": "src/features/comunicaciones/views/comunicaciones-view.tsx",
+      "sha256": "2cc29c4a84ae04f91c60c2a83bfeae42b8a9c7d6b3f36cb05ffc43ae710f5524"
+    },
+    {
+      "archivo": "src/features/comunicaciones/views/gantt-cronograma.tsx",
+      "sha256": "46881533778b4adae4be277c2005c3c51140f5f6db266c3dca7af86b5cd015a6"
+    },
+    {
+      "archivo": "src/features/diagnostico/components/arbol-problemas-view.tsx",
+      "sha256": "315c62836de89eb812468b2e6cb11c0a679d498853f1cfc219927d382f57304a"
+    },
+    {
+      "archivo": "src/features/diagnostico/components/diagnostico-kpis.tsx",
+      "sha256": "214fccd6ac9b34f06c8e01f95015d16972024b4cdea4981c40667837688d7423"
+    },
+    {
+      "archivo": "src/features/diagnostico/components/geodiagnostico-territorial-view.tsx",
+      "sha256": "a894e7c177838d5f2e746f98495179f463bf179fe67b5d60700de1d632a84f6d"
+    },
+    {
+      "archivo": "src/features/diagnostico/components/linea-base-tabla.tsx",
+      "sha256": "594c90777f675c9fc7ba24b64b7ccf698cd445d039771600edff5eefc6cd6ee9"
+    },
+    {
+      "archivo": "src/features/diagnostico/data/arbol-causal-canonical.data.ts",
+      "sha256": "4db4048f587bf1f04064fd138dc502c26ffc503e9799d4c273f621950d449620"
+    },
+    {
+      "archivo": "src/features/diagnostico/data/indicadores-fallback.data.ts",
+      "sha256": "2f577a53ba518b342989c078c9e659f514cc03aafd22c251367b9967eecfe142"
+    },
+    {
+      "archivo": "src/features/diagnostico/data/mga-canonical.data.ts",
+      "sha256": "2ed47ab08f2476ec0975e92f7a69845b311a131223b243ea70a034529c8d178e"
+    },
+    {
+      "archivo": "src/features/diagnostico/data/territorios-diagnostico.data.ts",
+      "sha256": "7b0761b2f5bce8c6f255add6c419a5d8e2f657da56ff2c40d529ea335fa62ec4"
+    },
+    {
+      "archivo": "src/features/diagnostico/models/arbol-causal.ts",
+      "sha256": "0b7e8230cc623b2198bd17a52e72ae047744621cda0d065930e2097dcf049e38"
+    },
+    {
+      "archivo": "src/features/diagnostico/models/indicador.ts",
+      "sha256": "c69dac46c02ff88962b100987701d5bb6f28183bd2d6b021d4e804db0696f8d2"
+    },
+    {
+      "archivo": "src/features/diagnostico/models/mga.ts",
+      "sha256": "e056568f636cbf2eb216652012a1ef6c5296e641076e9517cef89ef00ce94918"
+    },
+    {
+      "archivo": "src/features/diagnostico/models/territorio-diagnostico.ts",
+      "sha256": "a951a4bce664e6a32ece19595a4809792700dd3ea147350629bb095699097660"
+    },
+    {
+      "archivo": "src/features/diagnostico/panels/ficha-editor-panel.tsx",
+      "sha256": "ed17fbc222cecf9f94b8fa2202faad29e90f50dc2a61cd28e2e567bc009f36aa"
+    },
+    {
+      "archivo": "src/features/diagnostico/panels/ficha-territorial-panel.tsx",
+      "sha256": "cb34916af45a86f36467c9b31fc845a26adb453d58763cf603ecee9a899cfa2d"
+    },
+    {
+      "archivo": "src/features/diagnostico/panels/medicion-editor-panel.tsx",
+      "sha256": "ca9229445aca079a1a171c27456b5342687b055ec290ccf3a7756c23633e0f8c"
+    },
+    {
+      "archivo": "src/features/diagnostico/panels/validacion-causal-panel.tsx",
+      "sha256": "37aaa14a04c63e7163e79f92fdf84c993a40105d48e654e8ad5883ff68d28b40"
+    },
+    {
+      "archivo": "src/features/diagnostico/panels/validacion-mga-panel.tsx",
+      "sha256": "0cd5dc4aa1f8855581b92e675b6a261b3a4822c7945e8828ce83cedc43e21fcf"
+    },
+    {
+      "archivo": "src/features/diagnostico/services/arbol-causal-api.ts",
+      "sha256": "31c4bd9d8870a652447f563aa51481cd852eb7bd18048b533fe5ca557faac1d7"
+    },
+    {
+      "archivo": "src/features/diagnostico/services/indicadores-api.ts",
+      "sha256": "1aca7c8a2637bf5b266760fd9d950ac607e05927e92cceab1277978ea48d5282"
+    },
+    {
+      "archivo": "src/features/diagnostico/services/mga-api.ts",
+      "sha256": "73ed9c304c95e709f5bc8451a5d59ba890e63b7dda0ff168d918ddcce92393f5"
+    },
+    {
+      "archivo": "src/features/diagnostico/services/territorios-api.ts",
+      "sha256": "490d1f1541dd4ae8085afca2467a0e78303038e3c9b73a35bfa606d9dda48e03"
+    },
+    {
+      "archivo": "src/features/diagnostico/views/diagnostico-view.tsx",
+      "sha256": "a1358d00fdae3602e71e6d0aacc77b56935d2f5ff5a49ffe42a487fc0c648123"
+    },
+    {
+      "archivo": "src/features/evidencias/components/fotos-mesas-moderacion.tsx",
+      "sha256": "4cb8bed722f939e75f99284ffaabae372676ccf67704ba585e86d7139f81c88d"
+    },
+    {
+      "archivo": "src/features/evidencias/services/evidencias-api.ts",
+      "sha256": "1a0d5c199a47bb48cbb4954e454d4dbaaf38f336cdc95b9c314bbf70049ef69c"
+    },
+    {
+      "archivo": "src/features/formularios/components/compartir-formulario.tsx",
+      "sha256": "b3159d41eb0c2e2c36c053fc2b557b3160f03e5bfc97e9e11323fa6103ce8425"
+    },
+    {
+      "archivo": "src/features/formularios/components/editor-fields.tsx",
+      "sha256": "f0d08391920c3df9ccbf0704e744612107950800759f681305f01ac2d286d59a"
+    },
+    {
+      "archivo": "src/features/formularios/components/formulario-runtime.tsx",
+      "sha256": "dfb069660f58ec69d358ad710eeb8788ed520a25bc46e9e99ace66f992c221f0"
+    },
+    {
+      "archivo": "src/features/formularios/components/fotos-pregunta.tsx",
+      "sha256": "b9049de1c69eb49862f380603d873c4c490d58966d1d97e72a2ce6100b1a46b6"
+    },
+    {
+      "archivo": "src/features/formularios/components/pregunta-editor.tsx",
+      "sha256": "a52f18f468072dcda991438bcb1d7d7170c43ac335425580c1a538af794c9b72"
+    },
+    {
+      "archivo": "src/features/formularios/components/pregunta-respuesta.tsx",
+      "sha256": "c44117229171db7acafc434bb5e0fb9487d3928c92a8c27f7b46c9ea839dcdb5"
+    },
+    {
+      "archivo": "src/features/formularios/components/pregunta-ubicacion-fotos.tsx",
+      "sha256": "8f5318c80f6a9869ce14a33d2ce520ea8b34cc4db65079b3d777e621945db549"
+    },
+    {
+      "archivo": "src/features/formularios/components/texto-formato.tsx",
+      "sha256": "eee9d25e150768503fc7c9268cfdc57e859c35a17d4f8876222e476078356458"
+    },
+    {
+      "archivo": "src/features/formularios/components/timbrado-competencia-legal.tsx",
+      "sha256": "3039c53f856632b68f70fa0eeb5b3abbb8d80a96f5c82c06c81824db2a33939e"
+    },
+    {
+      "archivo": "src/features/formularios/components/ubicacion-pregunta.tsx",
+      "sha256": "193491f87026979c2421b265beb128d616d5e6304785f6f6656655034908ccb2"
+    },
+    {
+      "archivo": "src/features/formularios/data/reporte-inseguridad.json",
+      "sha256": "bc0d71e2c175e91dd9eca25112ab107aac9c849699c441b145510ca478161b1e"
+    },
+    {
+      "archivo": "src/features/formularios/data/reporte-inseguridad.ts",
+      "sha256": "fba3f06d0d5157a69f7a0181899b3d5aef8e7ee82aa7137fda48733161e02053"
+    },
+    {
+      "archivo": "src/features/formularios/models/formulario.ts",
+      "sha256": "876ca63d2c28218e8efd696cc6f74fc915015fa700a5f1d660250ceae7b50aae"
+    },
+    {
+      "archivo": "src/features/formularios/panels/formulario-analitica-panel.tsx",
+      "sha256": "f4bbe407df57b577bd99888d6699c1a587b08e84f97402baba789f59c22ef1b4"
+    },
+    {
+      "archivo": "src/features/formularios/panels/formulario-editor-panel.tsx",
+      "sha256": "0f9da25ce6911a2a80ac578a11bd83c6f66cbf5cb772b7e347d099df2e32bfcd"
+    },
+    {
+      "archivo": "src/features/formularios/panels/formulario-preview-panel.tsx",
+      "sha256": "22f6c4090e55c1d1e35adeb451e72b0621843997ad52287bfc292ce4452aeeac"
+    },
+    {
+      "archivo": "src/features/formularios/panels/formulario-respuesta-panel.tsx",
+      "sha256": "6e1ac2685fb18b606b256ec488837317be8d29dd6076b12ae6b72767cbda73f8"
+    },
+    {
+      "archivo": "src/features/formularios/panels/formularios-panel.tsx",
+      "sha256": "9ecc2da049e595d09a6a4e311ab15bfa0c69ecc2d349186c8674fde8a33056e9"
+    },
+    {
+      "archivo": "src/features/formularios/services/barrios-punto.ts",
+      "sha256": "b8f77c93f9b08082f4f4c605234e33e4031b5c92e2f024dc527d9f1197b93abf"
+    },
+    {
+      "archivo": "src/features/formularios/services/formulario-analitica.ts",
+      "sha256": "63a7108c93b82c2d1601128e922fe9780d035630f6ac481b158ffff6fd90611c"
+    },
+    {
+      "archivo": "src/features/formularios/services/formulario-engine.ts",
+      "sha256": "e56f36d8e90c4670861d8a39956f9b198da61258e6a348d82359a689f9d0063d"
+    },
+    {
+      "archivo": "src/features/formularios/services/formulario-publico-server.ts",
+      "sha256": "ce61279e1e8d889ebea2e42ef01f05558108d6509d254b2b8a30f49179aaf8fd"
+    },
+    {
+      "archivo": "src/features/formularios/services/formulario-schema.ts",
+      "sha256": "64679cada8528d2981e5e0c390b8a9c4ab2272f0496241cd47525570534cedc1"
+    },
+    {
+      "archivo": "src/features/formularios/services/formulario-url.ts",
+      "sha256": "a11887dff45da18408599fea6022cf8efe286ccc2e55503a0ddf8396740faaef"
+    },
+    {
+      "archivo": "src/features/formularios/services/formularios-api.ts",
+      "sha256": "d047fc391081a51b2e3a801dde7c1c4007d15cbce6984e7a74f7b632afb786f7"
+    },
+    {
+      "archivo": "src/features/formularios/services/formularios-remotos.ts",
+      "sha256": "713088a232a34e6fe835f3ce1d0f2c22dbb7d6bcef78856ee29235c02ce9c197"
+    },
+    {
+      "archivo": "src/features/formularios/services/fotos-respuesta.ts",
+      "sha256": "cf5f0ff780a4657daf8f9605510d60950cef82145d82c6ea3732c9ca00a2604c"
+    },
+    {
+      "archivo": "src/features/formularios/services/ubicacion-geografica.ts",
+      "sha256": "153b3c4000352ac5d0e9256cf30c51e38418560a28491bcc36de6559fc8b59bf"
+    },
+    {
+      "archivo": "src/features/formularios/services/use-formularios-queries.ts",
+      "sha256": "7a0cab0f2b70d0736379099b1667be19a5279f5ed2156f99439b24d8cab8fd87"
+    },
+    {
+      "archivo": "src/features/formularios/state/formularios-store.ts",
+      "sha256": "89d1b36f98460d37a6d284d4b046c5a6ff416147f987b5e1faebf3436ed4efd9"
+    },
+    {
+      "archivo": "src/features/formularios/views/formulario-publico-view.tsx",
+      "sha256": "22d3a12d1d1656466db55238b0d72ef433763d31b166b589f9ce09332e52e33e"
+    },
+    {
+      "archivo": "src/features/fuentes/components/fuentes-datagrid.tsx",
+      "sha256": "747629c15d7d0c261e2f58c52605e12a40510aa9ff04e16c01a921afd1528ff6"
+    },
+    {
+      "archivo": "src/features/fuentes/components/fuentes-kpis.tsx",
+      "sha256": "e794014eed41ad26d54291dc2107543ef331f52080ea2fd0e050b6bbf15ac3c9"
+    },
+    {
+      "archivo": "src/features/fuentes/data/fuentes-iniciales.data.ts",
+      "sha256": "33d0367b4f89de0774a34da5bb124214469489d9879f327b78efaef95d18d5bf"
+    },
+    {
+      "archivo": "src/features/fuentes/models/fuente.ts",
+      "sha256": "5365bac873713ee21da7afa4ff8291f8f6e1ecac952b85bfc3394f0fc988915f"
+    },
+    {
+      "archivo": "src/features/fuentes/panels/fuente-editor-panel.tsx",
+      "sha256": "af2384fed9322d784157de01a9686a632db8f9715ad464274790e2480e367d49"
+    },
+    {
+      "archivo": "src/features/fuentes/services/fuentes-api.ts",
+      "sha256": "bfbc6e4e8fe8ff1c872bacefd7d18fabfdfe959f1d73d8f15e4447fae1ad6fd0"
+    },
+    {
+      "archivo": "src/features/fuentes/state/fuentes-store.ts",
+      "sha256": "07596958eb71071ca6c3312bd45f77e96251d220b7103ce5c567e7d014342f44"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-bi-sidebar.tsx",
+      "sha256": "55886e4b969a6c47827aec37e0c5f0d0834375042541f79dd42acb8cf040bba6"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-charts.tsx",
+      "sha256": "cfa8ec0afd28c3415408ed2a35efd7c833058be9198bd7df0faf063624c02131"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-controles.tsx",
+      "sha256": "e1f12d5c1a9dcb9c9b8050797f4af60ce3d588fbbd79f6276229df6921a171aa"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-dock-controls.tsx",
+      "sha256": "7c734b9f53c8add74e09a3d51ad0ef6125694cf32c20b90157bf866877e310e0"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-dock-host.tsx",
+      "sha256": "274658c9f983f1d193166bfb1f3243daaa27e6b943b5ec9a54b551d43bbcf758"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-ficha-mesa.tsx",
+      "sha256": "545bf2bbf9a45f6ab0d4e7eff97d21fe4a73bae70e447ff2ca50d23cabd23a8d"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-hurtos-panel.tsx",
+      "sha256": "3df207a368f9bda7fa4542ab4cd8687d6193b381fe49c7becec2a11237ca0e3b"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-kpi-bar.tsx",
+      "sha256": "075c4f12317a2bbe141f530db55dc7943a626da21340557a042d0cdc7dd130a7"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-mapa.tsx",
+      "sha256": "66c3795d8f726d782426801cb0720d1b2d3017329248b0e591bcab2f91cf2da0"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-mesas-directorio.tsx",
+      "sha256": "280cb088813f3fc0a5a7dc6f2b74dc1fe150be6359a5bf23bf2548c128376862"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-multifuente-panel.tsx",
+      "sha256": "1f9c3c4dd43272e919d035a97582414a807e5ce3dcfc85a06ad6b1570284b379"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-top-shelf.tsx",
+      "sha256": "f38af64b1ab83e1ddb7f7236f8f48185a1163809a319d7d7fa1b5687ff2c71e3"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-view-registry.ts",
+      "sha256": "3bdf82d2d7c60380429ef2850f881afaf9158d5cd0768f0e0f763c29d2701ea2"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-workbench-bar.tsx",
+      "sha256": "bd7d03a8c07ee1904fc99810214177b084433848d1878eb1304a54a935d51d04"
+    },
+    {
+      "archivo": "src/features/geovisor/components/geovisor-workspace-layout.tsx",
+      "sha256": "2d5e04d4ced468ba893744260d7db75ae6166050b2cdc7c549f2ec9cd454f0ce"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mapa-cartagena.tsx",
+      "sha256": "7655ece868e07c1125d761370967852cf8e1c39229c73d20bb2b78c1e3d1b67d"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mapa-territorios-api.tsx",
+      "sha256": "10e04174c1d3b9bb07e7c14b1fccd7f042a9fed8ef4ecc60fd0b7390295e3608"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-cards-view.tsx",
+      "sha256": "cf3be1f0f9eefd799fe872efcfad47e22a45b02488cec11d3032a76a77b404b0"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-datagrid/datagrid-columns.tsx",
+      "sha256": "6acef0bd53915f2bb3c3d9e4620cfbecb0681145a0adcda0f929789f754a3242"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-datagrid/datagrid-export.ts",
+      "sha256": "f7f435f71dd47863253bb9b4328c324bd60032a72ae1a5ca81e7e48d3aa98571"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-datagrid/datagrid-pagination.tsx",
+      "sha256": "6c0ca63149d647a59f8a1e3f8159df42400064599e01377a8963f74f6d235b70"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-datagrid/datagrid-toolbar.tsx",
+      "sha256": "6977248ba86a1b9ad4c15eb63a5fd95ba2b878ba7a5ff7a56bd391faa29c00f8"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-datagrid/mesas-datagrid.tsx",
+      "sha256": "7933add39dd86c350c14d77d02ddedaef8b0f40b084ae8a1473e0ab2bac32820"
+    },
+    {
+      "archivo": "src/features/geovisor/components/mesas-geovisor.tsx",
+      "sha256": "ec2c3418b334d76bf81f3f16d65475c5056ecd3195d1fd9ca6720cacaae90589"
+    },
+    {
+      "archivo": "src/features/geovisor/components/multifuente-filtros.tsx",
+      "sha256": "4136f28597405bafd17c8b2303821b44881e48828aa22cfcd7d26c1dd48fff63"
+    },
+    {
+      "archivo": "src/features/geovisor/data/barrios.data.ts",
+      "sha256": "8a5a6b2ea44b31f49eec466412b1b0c0fe46c2304659f24615c2184809f4099f"
+    },
+    {
+      "archivo": "src/features/geovisor/data/estadisticas.data.ts",
+      "sha256": "0f5d3383a93325f108d86236d7b95a469b94bcf63886948c8840297a9b243414"
+    },
+    {
+      "archivo": "src/features/geovisor/data/mesas-geovisor.data.ts",
+      "sha256": "9f22c930cd7b71459754974fac99776fae51bdd54664cf8692281ae664631e63"
+    },
+    {
+      "archivo": "src/features/geovisor/data/territorios.data.ts",
+      "sha256": "05f86ae97d578ccc7158fbd09060a73ec5f7c0a40c00ba804d444e8e656bbced"
+    },
+    {
+      "archivo": "src/features/geovisor/data/territorios.geojson.ts",
+      "sha256": "ba5666b8acdbb964f0b62755d80a896e4fec11d1e02c3082b8b4e00b0e57c8e7"
+    },
+    {
+      "archivo": "src/features/geovisor/hooks/use-mapa.ts",
+      "sha256": "e6ec64d570b5a2326c90dc2fab00c58e0d36b72ea5a89d4b155f2d53506753a1"
+    },
+    {
+      "archivo": "src/features/geovisor/models/analitica-multifuente.ts",
+      "sha256": "30a309f1b815ce5a1b3fc8012004d9aa1c378fd3cdc3c94d6e6fc2a12be00551"
+    },
+    {
+      "archivo": "src/features/geovisor/models/geometria-api.ts",
+      "sha256": "c03443d3fb7e8e545210d831ba78cb0f4ca27119834b92927488fdcb9e0f9483"
+    },
+    {
+      "archivo": "src/features/geovisor/models/geovisor.ts",
+      "sha256": "37fe89b0946252e1a1300dc40c1e69611e61a72c051644b1a108073cecfc0a4c"
+    },
+    {
+      "archivo": "src/features/geovisor/panels/territorio-panel.tsx",
+      "sha256": "7c5e5f4acdf5c180661861719f51f5d372d12f8d7c82443629ce574947a888ad"
+    },
+    {
+      "archivo": "src/features/geovisor/services/analitica-multifuente-api.ts",
+      "sha256": "0716d5278415a00afb15d9bfbd560fdc4c6fe2fbf3c8a2d679c897799cc5765e"
+    },
+    {
+      "archivo": "src/features/geovisor/services/geovisor-api.ts",
+      "sha256": "f7b78dc6596996140b57dac4accd93d18078fa041933691a8d288f9d7b25d8cb"
+    },
+    {
+      "archivo": "src/features/geovisor/services/hurtos-api.ts",
+      "sha256": "89621842ce95294f7d1ba92c25c4aae04330969d77d18241e1ae5db4ea9825db"
+    },
+    {
+      "archivo": "src/features/geovisor/services/mesas-geovisor-api.ts",
+      "sha256": "52b3cf287ff5d15db83d30353a4ad2bdd6f612c0dd3fd5494b410dda3259f36e"
+    },
+    {
+      "archivo": "src/features/geovisor/services/use-geovisor-queries.ts",
+      "sha256": "e73364e8c46bea7ae32beeeb2c6679b6f392310b674a07864ee9c94d26dca761"
+    },
+    {
+      "archivo": "src/features/geovisor/state/geovisor-analitica-store.ts",
+      "sha256": "7e51d66155c9ad82026a696614341bc769d285ac62073140fa366318e381ddb0"
+    },
+    {
+      "archivo": "src/features/geovisor/state/geovisor-layout-store.ts",
+      "sha256": "097b3f98f542152e25899340048df94f21c3abc434954380458258ac56087fc3"
+    },
+    {
+      "archivo": "src/features/geovisor/views/geovisor-view.tsx",
+      "sha256": "df455c9cfc6756937a57cd5b66e8fc98689357fa18a28c98c8e9894af894b2b9"
+    },
+    {
+      "archivo": "src/features/indicadores/services/indicadores-catalogo-api.ts",
+      "sha256": "8e534ddd06692f8f3d5dd7f3ee4b9c785edaebfea58d840147c36d1b5b4d5069"
+    },
+    {
+      "archivo": "src/features/indicadores/services/use-indicadores-catalogo.ts",
+      "sha256": "e47b6ffcb27cdd647117d6a9a96824997cc387319b18b9db2a9ec1cafbbc8fb6"
+    },
+    {
+      "archivo": "src/features/indicadores/views/indicadores-catalogo-view.tsx",
+      "sha256": "73eda589450402a32df8a050bb2c20c9b201383cd806c70e4848cb67ed7623f9"
+    },
+    {
+      "archivo": "src/features/marco-legal/data/marcos-legales-data.ts",
+      "sha256": "72c7625fa24e2e4bcddce87f22518aab7402cf5d1766f75ccb2cca820db94fde"
+    },
+    {
+      "archivo": "src/features/marco-legal/views/marco-legal-view.tsx",
+      "sha256": "269b7c76d2b8159093ea100ad8c493b9d0bb9103dd6d9e84dbbd63d19dc655ca"
+    },
+    {
+      "archivo": "src/features/mesas/components/adjuntos-zona.tsx",
+      "sha256": "f198f0883a3f09c1be70a9de5398eead298a4ca444491f77cf99ff0536178bbc"
+    },
+    {
+      "archivo": "src/features/mesas/components/matriz-arbol-relatoria.tsx",
+      "sha256": "c678d65ec65e7a159043ad121538555388a10133ec800cf2dff50ac720f7a27d"
+    },
+    {
+      "archivo": "src/features/mesas/components/selector-ubicacion-mesa.tsx",
+      "sha256": "1115e03ec989ac5d597fde507e1ea09b13f813f8be4efe863b21ff9f0852f814"
+    },
+    {
+      "archivo": "src/features/mesas/data/agenda-contenido.data.ts",
+      "sha256": "10967d5505078178a18a9fe68b6106d48840801e5e94bdb910cdcffd83b8a38b"
+    },
+    {
+      "archivo": "src/features/mesas/data/agenda.data.ts",
+      "sha256": "42cefb125af8924624823cc08b1aa25bfd99329753046f3415fa65469c2a8790"
+    },
+    {
+      "archivo": "src/features/mesas/lib/coordenadas-parser.ts",
+      "sha256": "6a0588498d567885b94089e12dc1e9d4fcf5ca2403e77270d2ca41adefdbc33d"
+    },
+    {
+      "archivo": "src/features/mesas/models/arbol-panel.ts",
+      "sha256": "38c10500442c4e226aa820096c6cfafdaf2827d3950d34a6cd12cd301358d276"
+    },
+    {
+      "archivo": "src/features/mesas/models/asistencia.ts",
+      "sha256": "bcf57db3a18968178b95dd837bf9797f5a33ad9c2c4dc8b7784ded4181c54b13"
+    },
+    {
+      "archivo": "src/features/mesas/models/mesas.ts",
+      "sha256": "6e7b08933e15fc488ca828ec76ff8b3e892ac5136a9447f32f2da651c2e5760f"
+    },
+    {
+      "archivo": "src/features/mesas/panels/agenda-editor-panel.tsx",
+      "sha256": "cc9c9947f8c26da15516c8cd5b8be40cc849af7fc3e61b3a79a064811619e385"
+    },
+    {
+      "archivo": "src/features/mesas/panels/mesa-acta-panel.tsx",
+      "sha256": "1f39c5760d6212914722f9a49df4bac469f48a6b691e9b536cb4cb436a9498a2"
+    },
+    {
+      "archivo": "src/features/mesas/panels/mesa-editor-panel.tsx",
+      "sha256": "761f864c1872dd7db881271fa4376a61409eaca37a7b806428c56ef36439ed16"
+    },
+    {
+      "archivo": "src/features/mesas/panels/mesa-panel.tsx",
+      "sha256": "13c95555b7e80ea3837629e81c80788ae855482114966eee3f65d4169195dd10"
+    },
+    {
+      "archivo": "src/features/mesas/panels/papelografo-panel.tsx",
+      "sha256": "7fecceb7fd40420102f66a62bad0188e8421a077fe6af53f277c2373c81d743d"
+    },
+    {
+      "archivo": "src/features/mesas/services/agenda-api.ts",
+      "sha256": "6376b48545e08a5515b545d6f2f6c16b9a2dab2de1e5187fc69409dccf0a4b59"
+    },
+    {
+      "archivo": "src/features/mesas/services/asistencia-api.ts",
+      "sha256": "86158d09e79e5a6f4a9e8024f09263f974477787adeab65a0479e7d3301f6bfd"
+    },
+    {
+      "archivo": "src/features/mesas/services/mesas-api.ts",
+      "sha256": "9dae3c4ab18f1de58b69d1bc9ae4ebdb7952df14fead5339141e6fadc06c7b4f"
+    },
+    {
+      "archivo": "src/features/mesas/services/use-mesas-queries.ts",
+      "sha256": "c2e81e837fa95d995a8083ba5143d0dd81082064335ac248e690bc64e85afe90"
+    },
+    {
+      "archivo": "src/features/mesas/state/agenda-store.ts",
+      "sha256": "6147c3971373898bd2428f7566994b1affa8c96c9d263cb521a46ae1bd848131"
+    },
+    {
+      "archivo": "src/features/mesas/state/asistencia-store.ts",
+      "sha256": "ee851a6a69e20b101f920c3c7738ee5be60dc9baf34178fb2bf835236a4971f7"
+    },
+    {
+      "archivo": "src/features/mesas/state/mesas-store.ts",
+      "sha256": "ee76a0ec8c46b3ccf70ad3c8349468645aa8f6f4d063bf832c17cb2ad71cbd76"
+    },
+    {
+      "archivo": "src/features/mesas/views/mesas-view.tsx",
+      "sha256": "c154966e6056f1e1e1195673c4ac84dbf089b137c6fb7d592ac63f39cba218ce"
+    },
+    {
+      "archivo": "src/features/noticias/components/noticia-video-player.tsx",
+      "sha256": "3559c3333a7c6d666707867349f2dcfebe5b595d4d2b29422a52a5e58d1df969"
+    },
+    {
+      "archivo": "src/features/noticias/data/noticias.mock.ts",
+      "sha256": "88e8c408581c10d6d8ca974dc69269d8a97b350592c5105ea70dcc6a9394e5ce"
+    },
+    {
+      "archivo": "src/features/noticias/models/noticia.ts",
+      "sha256": "4d4ec63b4e1a6a5b7eba88f429c6521ca814f16dfdcc3db042615483c3535840"
+    },
+    {
+      "archivo": "src/features/noticias/panels/noticia-editor-panel.tsx",
+      "sha256": "da5fdb95fd2910d638a51c04e4b72c6996d517fcc397047ba42e904dbe0ae527"
+    },
+    {
+      "archivo": "src/features/noticias/panels/noticia-panel.tsx",
+      "sha256": "d7c65879e6228eccb068a2cfa803728cbdbe0d89fc442d7ca67da4f58e93f266"
+    },
+    {
+      "archivo": "src/features/noticias/services/noticias-api.ts",
+      "sha256": "3806e94ef5c90904b0b8c9fd5c9c3142c88faf2c27d87f1334d3c94d1b17c3f4"
+    },
+    {
+      "archivo": "src/features/noticias/services/use-noticias-queries.ts",
+      "sha256": "0af2cc5f1318cf28a54d23d550337dc6fbe4cbfd0f02db5ff997002bf98d0b3f"
+    },
+    {
+      "archivo": "src/features/noticias/state/noticias-store.ts",
+      "sha256": "a2275e63c5d39568982d6a4f7a3dfea84e2ee5eae714abb18d07088b5c5ea5ff"
+    },
+    {
+      "archivo": "src/features/noticias/views/noticias-view.tsx",
+      "sha256": "6091572920808923cd0c4d318970274e2054eee1d6b1b55f69794ba03bd4be48"
+    },
+    {
+      "archivo": "src/features/notificaciones/components/panel-salud-herald.tsx",
+      "sha256": "884e41f59c121dca5911af23a6610e7da720adc4f3d035a0870063fa18c903b2"
+    },
+    {
+      "archivo": "src/features/notificaciones/components/visor-notificaciones-herald.tsx",
+      "sha256": "9c5c3631b4ebbd462c1013a2710b7abb881ca28a67197a73ecf1fd8643f39e9f"
+    },
+    {
+      "archivo": "src/features/notificaciones/lib/herald-helpers.ts",
+      "sha256": "d38aff25d09c362b3c0611ffc1c3326fd67cb23904fda961a2718bf90e244650"
+    },
+    {
+      "archivo": "src/features/notificaciones/services/notificaciones-api.ts",
+      "sha256": "1b0b089744acfb45698b1f82776be53cd4f107798fa4d00080519b6eadd5db60"
+    },
+    {
+      "archivo": "src/features/participacion/models/participacion.ts",
+      "sha256": "9176d71df5e7021e654d15854c21eda3b957d55407f7ba16bfaab5e6ec71bd8b"
+    },
+    {
+      "archivo": "src/features/participacion/panels/escenario-editor-panel.tsx",
+      "sha256": "ed73713de90cc6c656eb6ad0eca30bcb159f4c97da00573cf4e0afd997b3f7ac"
+    },
+    {
+      "archivo": "src/features/participacion/panels/participacion-multicanal-panel.tsx",
+      "sha256": "2c85eb113b0fb6471b2fc6d5f38473f86f3548b11abd5b0022c1aceb06ae2bbe"
+    },
+    {
+      "archivo": "src/features/participacion/services/participacion-api.ts",
+      "sha256": "30cbe8dccda2b4ba0b22687b381d57ed58e0074c25b43824dc1218367dc3a184"
+    },
+    {
+      "archivo": "src/features/participacion/services/use-participacion-queries.ts",
+      "sha256": "74a51011c3ff6bd3877a54b2a7333f890ef4402a5471548448f09a5752cd7230"
+    },
+    {
+      "archivo": "src/features/plataforma/components/estado-consulta.tsx",
+      "sha256": "45b1383d48d5308d391f9c75d35d76e4f29bae932296e152364fa9c9cd42348e"
+    },
+    {
+      "archivo": "src/features/plataforma/components/gestor-heros-plataforma.tsx",
+      "sha256": "832c4d43fb164cbfba53cc972a5fa88f5a26f185fb2bff9fa58d4852630bd34d"
+    },
+    {
+      "archivo": "src/features/plataforma/components/plataforma-header.tsx",
+      "sha256": "268e780273243dadea000a5b6ec1be1ee87a8e51fbff4e7dc6e81e6756ca95e8"
+    },
+    {
+      "archivo": "src/features/plataforma/components/plataforma-shell.tsx",
+      "sha256": "49fa1fb68b0c07f2bd7ba52792271d61d616cfc7685e6d23649500ad88ac87fe"
+    },
+    {
+      "archivo": "src/features/plataforma/components/plataforma-sidebar.tsx",
+      "sha256": "f7a8866a548803d9ed56dfa33e11590ee519a084cd16d7795c5a0d9517005807"
+    },
+    {
+      "archivo": "src/features/plataforma/components/salud-sistema-section.tsx",
+      "sha256": "b73bd32035584a85bd2c80057f5348b644f79e870fd16d2ee6ef26a29a72ac35"
+    },
+    {
+      "archivo": "src/features/plataforma/components/telemetria-sql-card.tsx",
+      "sha256": "54e8310f7248ac8aa692dd5b50865630a3b0d204fec0ff7716df223cadf030f0"
+    },
+    {
+      "archivo": "src/features/plataforma/models/acceso.ts",
+      "sha256": "42739d2377ed70f0bc9911ae9158cf1bface1984743e9b54cddc619f40adff24"
+    },
+    {
+      "archivo": "src/features/plataforma/services/plataforma-api.ts",
+      "sha256": "e3de5ae10c878af0f273968106d7623338381464888956f6b199ff9ab43abcd6"
+    },
+    {
+      "archivo": "src/features/plataforma/state/configuracion-store.ts",
+      "sha256": "f33c366c2f9352d364860546f501d84e12b9af243c5a803abf4f4e4286f758aa"
+    },
+    {
+      "archivo": "src/features/plataforma/views/actores-view.tsx",
+      "sha256": "2424d5b94541c0eca503962eceaca95a6f1b0f596849281081f351934e3d895c"
+    },
+    {
+      "archivo": "src/features/plataforma/views/agenda-mesas-view.tsx",
+      "sha256": "eb43f41b5e4db289e287866d5e888da4889809f5ab183a3353ccdbd78feb801b"
+    },
+    {
+      "archivo": "src/features/plataforma/views/configuracion-view.tsx",
+      "sha256": "b749cc42f4418f5eddac8e83ccb0be0a598758933d604edbf82deda4ad9b126b"
+    },
+    {
+      "archivo": "src/features/plataforma/views/contenido-view.tsx",
+      "sha256": "590c03a7b484ade4b8ab20d777cb67a50aa22a215ac3e5f568cf29998c366fe9"
+    },
+    {
+      "archivo": "src/features/plataforma/views/dashboard-view.tsx",
+      "sha256": "b21021007f6e1ebc40c918f9a4be2127df9748973790454c5de10cd252371d37"
+    },
+    {
+      "archivo": "src/features/plataforma/views/formularios-view.tsx",
+      "sha256": "20728aa5dd229ece4e33d1a1e3e6436f27d93f697df04872059ebb4f6da2fd41"
+    },
+    {
+      "archivo": "src/features/plataforma/views/fuentes-view.tsx",
+      "sha256": "b0ed8e840322e035ecc496e391b9f9cd286f2581aa946da5e0bebeef29fff2a8"
+    },
+    {
+      "archivo": "src/features/plataforma/views/geovisor-view.tsx",
+      "sha256": "7dde71b93c01c7fbef5d314545436f43b2c5f92750550043bf9d86cbfd88c8ce"
+    },
+    {
+      "archivo": "src/features/plataforma/views/mesas-view.tsx",
+      "sha256": "1804cafab8d333de57a197623ed1b153cfd484d23248cb5f32db4d57bab13bba"
+    },
+    {
+      "archivo": "src/features/plataforma/views/noticias-view.tsx",
+      "sha256": "236906b3f1a608bf39c15e5774d2ef4748f004c100f72a852859f3f03215e3a0"
+    },
+    {
+      "archivo": "src/features/plataforma/views/testimonios-view.tsx",
+      "sha256": "120898e887229b7002771a3699b94994667554a9457cceec6d7bfce21a07cc52"
+    },
+    {
+      "archivo": "src/features/plataforma/views/usuarios-view.tsx",
+      "sha256": "aea11ac6fbb4f6e228669db95735ca6ca587df05a5d42a2bf4b07343662c3978"
+    },
+    {
+      "archivo": "src/features/politicas/components/arquitectura-politica.tsx",
+      "sha256": "4177cb4c3151b00121b15b7677e5cfb3325649b3b43e62330f505710fcd903f9"
+    },
+    {
+      "archivo": "src/features/politicas/components/dimensiones-grid.tsx",
+      "sha256": "4ffd0b68ab02a781df7219484837cbf5011877d716da27f6c1f77625c6fb9f8e"
+    },
+    {
+      "archivo": "src/features/politicas/components/dimensiones-meta.tsx",
+      "sha256": "e23161196475956aa7063e7694401d853196b65e737b7e71d88a658c506cc52b"
+    },
+    {
+      "archivo": "src/features/politicas/components/enrutador-ciudadano-inteligente.tsx",
+      "sha256": "80df84d3f46a7b8a874432f6458e5a80b48ff3b8fb0ce2dae482af99f8a72e02"
+    },
+    {
+      "archivo": "src/features/politicas/components/flujo-inversion-gobernanza.tsx",
+      "sha256": "31f277ea1d2261a602cd760abf906d0fbe53cb58bf29784a2a0cbac908e789f1"
+    },
+    {
+      "archivo": "src/features/politicas/components/hero-home-showcase.tsx",
+      "sha256": "15edf4a3ccbc3d76f688db945312cd2bb8413b39cc34717502f2c743b8c2a0ae"
+    },
+    {
+      "archivo": "src/features/politicas/components/hero-page-banner.tsx",
+      "sha256": "fe5213b2e26d9982a84f7924bc7d201cb0875b33484758aff076bc6150db3a0a"
+    },
+    {
+      "archivo": "src/features/politicas/components/politica-card.tsx",
+      "sha256": "1f11d28b41b779aebec30df297fa8a9000b2edd058819a69d1d95249dfa1927d"
+    },
+    {
+      "archivo": "src/features/politicas/components/politica-ui.tsx",
+      "sha256": "81fb3d536dad312d705c59b23e1ac97e643f7e30348d8657c21e4258bc7cc84f"
+    },
+    {
+      "archivo": "src/features/politicas/data/dimensiones-detalle.data.ts",
+      "sha256": "4b38fae8a76f10fda12fac24d799660209939580b808cba93ee12f41e4d536dc"
+    },
+    {
+      "archivo": "src/features/politicas/data/entidades-cartagena.data.ts",
+      "sha256": "980cd21b862b7fd1c5de410567ddaf7804777dabe1314b58c5130f235d8d8d7f"
+    },
+    {
+      "archivo": "src/features/politicas/data/hero-pages.data.ts",
+      "sha256": "2239f048bb6b3a0b0b0e0fd75edec2e496dc8e978cd11be12645a86c982c9be3"
+    },
+    {
+      "archivo": "src/features/politicas/models/politicas.ts",
+      "sha256": "714102637b0a8f04308fccdab8ca88255fe55e267bdaa5fbf7d874db26e6bbe7"
+    },
+    {
+      "archivo": "src/features/politicas/panels/dimension-detalle-panel.tsx",
+      "sha256": "630fbfc26dd54ea30a8bdfdc7c78381acc2c3cee39613963a5b5812384f9c5f2"
+    },
+    {
+      "archivo": "src/features/politicas/panels/fase-panel.tsx",
+      "sha256": "18ec74eebfd6bd145034131c0e01b5aa14f8d430770e4ae7f1e619a6c5d6053a"
+    },
+    {
+      "archivo": "src/features/politicas/panels/fases-control-panel.tsx",
+      "sha256": "a4d133a9e53a205b2ab42742619aeb23f8d1d4be3bb58f2029c1e3f4ba750325"
+    },
+    {
+      "archivo": "src/features/politicas/panels/linea-editor-panel.tsx",
+      "sha256": "fdf47be62207eaba8f0c4f221419aeb44325b5d9685ea3d48f0f24037446d48b"
+    },
+    {
+      "archivo": "src/features/politicas/panels/linea-panel.tsx",
+      "sha256": "7e056216d531da80b3e86908a156c0dbcc315c6eb6a3ed183dda600e4ecd2b83"
+    },
+    {
+      "archivo": "src/features/politicas/panels/politica-panel.tsx",
+      "sha256": "2648971b55d0e7e1005c41e18447421e389ffd1649c475ab742e31a1b44e7f25"
+    },
+    {
+      "archivo": "src/features/politicas/panels/rendicion-cuentas-panel.tsx",
+      "sha256": "ad229b8f1aacd09a639aee5501b5c520647b98a0a1a63cd39749057b94aa0a3f"
+    },
+    {
+      "archivo": "src/features/politicas/panels/use-fases-control.ts",
+      "sha256": "675c93ecde860ceb891ae5782f06c297fa3eca9515b49f5f0bdc27b5b8150bb0"
+    },
+    {
+      "archivo": "src/features/politicas/services/lineas-api.ts",
+      "sha256": "25ff26fbfeef7a25d383e27b4b37d0a9b92100b608129f39489c7d861262ca4d"
+    },
+    {
+      "archivo": "src/features/politicas/services/lineas-export.ts",
+      "sha256": "564d0f52bdeba05bc9d04cac2f99c138407a26cbfd2e721391e3ddc920dc4394"
+    },
+    {
+      "archivo": "src/features/politicas/services/politicas-api.ts",
+      "sha256": "cfa9a8665f5b0dd258b462de60a272906416c7de82a376dfc2d4443886e21bf0"
+    },
+    {
+      "archivo": "src/features/politicas/services/use-politicas-queries.ts",
+      "sha256": "3985473dc298b8ea9520551d02a98cc5dba2922bc4cbc5c080478acb9b24168c"
+    },
+    {
+      "archivo": "src/features/politicas/state/hero-store.ts",
+      "sha256": "6927c9042e89afc77c1619ba0074076a590fab08ddca9f1c7e5e7e9ae3081c9c"
+    },
+    {
+      "archivo": "src/features/politicas/state/politicas-store.ts",
+      "sha256": "e59422731c1599fde2a4ec93e5744b38bbc6cc2bfca3db4acce30b5a820c973a"
+    },
+    {
+      "archivo": "src/features/politicas/views/dimensiones-view.tsx",
+      "sha256": "6e1ac262a3ab03945f8743e5669d8959514f01a470b06cce2e0102e6da0d1dfd"
+    },
+    {
+      "archivo": "src/features/politicas/views/explorar-view.tsx",
+      "sha256": "7bc5d564066419139191834bf400780ea567bf99828b91c5556d6977cadf01db"
+    },
+    {
+      "archivo": "src/features/politicas/views/inicio-view.tsx",
+      "sha256": "8b93cfafb34b21ce9f21b2baee84ec7cf12a547f308869019db6a4bf03a6c2f2"
+    },
+    {
+      "archivo": "src/features/proyectos/components/calendario-proyectos.tsx",
+      "sha256": "77a291d93ad00ac0ed3118a9c3eae88944f06010f0876b840921dec89ba08fd9"
+    },
+    {
+      "archivo": "src/features/proyectos/components/gantt-proyectos.tsx",
+      "sha256": "4a1614c739e046adc8397dcf1a3372223a9034690f8df98fae99de04e962a298"
+    },
+    {
+      "archivo": "src/features/proyectos/components/kanban-proyectos.tsx",
+      "sha256": "919fccbadb9e468aed4b551fb05c8cccca0576357c1bd950a30d13e73f7523b6"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/adaptativo-1280.png",
+      "sha256": "c3030bd5f5b92cd6b5dbef5e30e6de2fe7bb04b2df4d16eed6281ff53faee475"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/adaptativo-320.png",
+      "sha256": "6814e5d0b40273c333f6fef9492858c1e8f3efc436c1e3aeee90fe5269ac8be1"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/adaptativo-768.png",
+      "sha256": "71f704d09f0f9ae5b0d46551fbe102f7284d308942fc2573a34be330a0294075"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/capturas-adaptativo.mjs",
+      "sha256": "6fa2a47d8ebe4bd3ee13685e6b0586ace9794fed7e1432d718357ebb25aaa8f7"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/capturas.mjs",
+      "sha256": "b2c46495570152d8a32543f58d1a0afe83f5cbbd3182475adac9ef87b107052b"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/ficha-actividad-desktop.png",
+      "sha256": "79d963e60be0a9411a7e58ab76bdf3245b35568cd7a1f1db90a029f960f0ac2c"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/ficha-actividad-mobile.png",
+      "sha256": "52a4532716eff01665585f1a5f0ba26d690c53162e5ef8bbd3a93d16962d884d"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/ficha-actividad-oscuro.png",
+      "sha256": "799e8a87972250d3b19e90a68379f91b7e758d9250ef2151a5e04353d3680cc7"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/ficha-actividad-portatil.png",
+      "sha256": "369c034d4b3f9bb35aada6162e2b56bf7e1556673ac3ca4b27f131032285a230"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/integradora-gantt.png",
+      "sha256": "a1a8541b0fe58956888c78891c59c9ad33c661139cc09bfeb77203951764257d"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/integradora-kanban.png",
+      "sha256": "555d396a4e8b3476db2ecdaef156e06f5fc737b48c94e4f0d904b9c186ef5601"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/integradora-lista.png",
+      "sha256": "ab2c1d33e10d81b1cc35735da7596d4bc4fd71beaede19885a395c63884e5928"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-carga.png",
+      "sha256": "c2fb2c96d74c179f045a14dc3723e96ae86bc59d50202b319df9733accbf3188"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-error.png",
+      "sha256": "8e6d6ce4346e8d747c6edc05e418521280d372ede0c268306f74f57ea4222635"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-mobile-320.png",
+      "sha256": "8bb91ea0a467c63557c9d10d7254a4381ca6c983b5f0f9f4d3566f459f339a30"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-oscuro.png",
+      "sha256": "cd97c41c4b3905188039431e16602a23b1416d03419d91bfa0ce2532ac7a0480"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-vacio.png",
+      "sha256": "f2e3de61283fca9850d33dd9dee6f3f17dc3760aba1051811ecac9a6b30d68f2"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/proyectos-ventana-larga-mes.png",
+      "sha256": "2abd9885c23c546351e046687f72affd929388d5361a99892544f995cbd3ef1e"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-debug-lista.png",
+      "sha256": "b192e0780ebfcf7fdf8d3b66caea942847763074c86f96c367949d60dc322cf2"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-kanban-sin-ficha.png",
+      "sha256": "2effb36bd70890676508df16b4a0eefa16182542ec025ca98d198f1537ce6b1d"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-lista-sin-ficha.png",
+      "sha256": "2effb36bd70890676508df16b4a0eefa16182542ec025ca98d198f1537ce6b1d"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-proyectos-general.png",
+      "sha256": "4c0d525b291d7abfa5c84cb682564dc86eb9a59d0943336326c0db8dc4b003c3"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-anexo-subido.png",
+      "sha256": "e313dba0d9f74cefa89478677b9722a8c08a4df7a1dea3c60be51b2ca9524fcc"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-anexos-seccion.png",
+      "sha256": "01b3c8736e460bfee1a71a05caf616a3aeb4b6becd64c556487109c8a74eaad7"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-calendario-editor.png",
+      "sha256": "6ff21ab888e5f9fef32258e9cb9ec52ffcc4118a3c08b7f394b66165e07f9e4e"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-calendario-ficha.png",
+      "sha256": "2575b3f90f931a5492bfb7b30c727f874138b4dc22221554946d188c30d77f08"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-gantt-editor.png",
+      "sha256": "0a909745e0ae56f7bf5ee400a3d740041b960b4ef4932d09fa6462acb019d943"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-gantt-ficha.png",
+      "sha256": "b61f3bc8a2966b5c97bb368cec713aa300675d23c09caf5aa5ebc9ea3d66930a"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-kanban-editor.png",
+      "sha256": "87c7c4e9ecee8bed2489aac4abb293b04368fa1868c2f6a508138de662057703"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-kanban-ficha.png",
+      "sha256": "cd921e4f7c653a73ef3391cc6b979e29f408a6578848cb33b9cd955aec8935b3"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-lista-editor.png",
+      "sha256": "4f86e782daf14ae00792bddfa15c3d00183f0bdb5fb8376593250b6def8ffd77"
+    },
+    {
+      "archivo": "src/features/proyectos/evidencia/vivo-sesion-lista-ficha.png",
+      "sha256": "0ae3f216d28d479ed1abdbf921f887fd6c736d6f996c806649bdef18502aff4d"
+    },
+    {
+      "archivo": "src/features/proyectos/models/actividad-proyecto.ts",
+      "sha256": "6aba1a95e6e0698384a078dc2a1452f0963e17c17dd482f6d9aafb06aafc9ce7"
+    },
+    {
+      "archivo": "src/features/proyectos/panels/ficha-actividad-panel.tsx",
+      "sha256": "ab49b8e3409122b21394ee0fe92224a6c0d033a6ac5810ec04d9b327d8a02aa2"
+    },
+    {
+      "archivo": "src/features/proyectos/services/proyectos-api.ts",
+      "sha256": "42f72f82a0a05ff33fd61ace0887de23b634ef2149e6d310cf422e3a367e52d1"
+    },
+    {
+      "archivo": "src/features/proyectos/views/proyectos-view.tsx",
+      "sha256": "c6f126822c966656d79bd1e028c5d28741565dea8c6729fcfda50d4e67f4ed8f"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx",
+      "sha256": "0038bc44833523b41732f1ac232f6554e005cc3fcd8c1e1e0b9206f5cef367ba"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/cadena-valor-tab.tsx",
+      "sha256": "d8879de43091995d07c116a1eb431f13a0cbb05b54353a3982076d5e44ed614b"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/compromisos-tabla.tsx",
+      "sha256": "ba54542d5116d183a0ae484bbabebe90ef8a583efb97addde5985ee7023bf53e"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/dea-econometria-panel.tsx",
+      "sha256": "8738572d800689383b5ad2b01c81664bddef650112295a61021266569cc1376f"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/google-workspace-sync-card.tsx",
+      "sha256": "47e3adb95413f5abce6e4fe8bede00c988f4d29bd5b6cc2086ac3cea984ddb5a"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx",
+      "sha256": "29d29985ccf78992a9a3572f1903faf304c7ad0829ac4b778f7573fd5958465b"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/motor-plan-accion-tab.tsx",
+      "sha256": "54a3ec17d61f442c986aac4be79a20b1c635c28d351654c75f7bac3170c92b46"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx",
+      "sha256": "2984ff816da74a9964fe2a264233f346f8c5e9476d64ba943c4235db2339a0c3"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/rendicion-cuentas-tab.tsx",
+      "sha256": "a19b0e4cfc35f0dd0c8ddf91cfbf8e7fa8f209dac261b4010ce3cac1e9c55ae7"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/seguimiento-kpis.tsx",
+      "sha256": "d00630525cfed630c2eb990b66e73da962969c7be481004291e95cc57607f1cd"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx",
+      "sha256": "02a332212257c6ce394a4789307634fb81f257818c0432d177edba0fe32a5c52"
+    },
+    {
+      "archivo": "src/features/seguimiento/components/triada-motores-tab.tsx",
+      "sha256": "69f319987c1ad485e6e31b2262b69a18340360ddff22e49109904b57ca9a5f0c"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/compromisos-pas.data.ts",
+      "sha256": "57abd748df9d916543ffedb62405b452dc743285a821f449e5ccc2a786590dcb"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/dea-econometria-cartagena.data.ts",
+      "sha256": "b2da3e2516582d66fbe6ec436de479556219d0717a151a991ee8980aa7795aca"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/inteligencia-triada-6m.data.ts",
+      "sha256": "9c97db7cdcc00cffdd3c023126e71fe72c1f8a407dbce62f9f5f8a78519d5c1a"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/pdd-dea-cartagena.data.ts",
+      "sha256": "8c2c6f674eeb13dbc9f6fdaa313e30ede2d2ebdc159c5d59519b8bf6ba4fdd15"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/sistema-multiagente-pdd.data.ts",
+      "sha256": "6e2d7b6113375394fa49168de9beb819a5d678812b74ed2a46697888ad06d0f8"
+    },
+    {
+      "archivo": "src/features/seguimiento/data/triada-motores-cartagena.data.ts",
+      "sha256": "9914d08acf434fa4ffe75df01a21a1272ff43c084ccb3fa63af92b7a38562329"
+    },
+    {
+      "archivo": "src/features/seguimiento/models/compromiso.ts",
+      "sha256": "380b77b06d78cadcae3d3b4439a88ded2f7e9538bf7b9877bf285e9158aa74db"
+    },
+    {
+      "archivo": "src/features/seguimiento/models/devolucion.ts",
+      "sha256": "18f8036a4820d49caf0a4d336d5f96d9533b7083f1a3a5d864332a5cec4cceaf"
+    },
+    {
+      "archivo": "src/features/seguimiento/models/indicador-dnp.ts",
+      "sha256": "f0960a581665867c3ac85eb2ce3099543da45f56bdd7a13c97f4dc345c2281ef"
+    },
+    {
+      "archivo": "src/features/seguimiento/panels/compromiso-editor-panel.tsx",
+      "sha256": "c3443e990f7c0e14075266f5346257daa40a07f68a856c61faa6ed312564a0f4"
+    },
+    {
+      "archivo": "src/features/seguimiento/panels/devolucion-detalle-panel.tsx",
+      "sha256": "bd0f4edb2c8f401ba39a4e4ff4b96712e6e41d7beb6d38133bb44f405ef08574"
+    },
+    {
+      "archivo": "src/features/seguimiento/panels/indicador-detalle-panel.tsx",
+      "sha256": "d6716a38db09577b34d23d9b62281d5acf5317c412c7834f220c2306f2a7fa00"
+    },
+    {
+      "archivo": "src/features/seguimiento/services/cadena-valor-api.ts",
+      "sha256": "055573ca08c039ad51af8677b770e590ac2798fab4f28e5a7c387b43ee7d7bb9"
+    },
+    {
+      "archivo": "src/features/seguimiento/services/compromisos-api.ts",
+      "sha256": "73178e42386a985c5677d3d16b00edbcbb18c1d692321e392aa98c6a0065d139"
+    },
+    {
+      "archivo": "src/features/seguimiento/services/devolucion-api.ts",
+      "sha256": "eba246a65215768c71fa27fc88b2201e0160f01d8b49620405a5999b525e0115"
+    },
+    {
+      "archivo": "src/features/seguimiento/services/google-workspace-api.ts",
+      "sha256": "769efa4dfa956935badbe710bc854a2b25d5a9b4cf57a0331ea241646ffdd56a"
+    },
+    {
+      "archivo": "src/features/seguimiento/services/plan-accion-dnp-api.ts",
+      "sha256": "5662ff060826f077afbded3e0b2096215109c9b40367a725aa32692e37660717"
+    },
+    {
+      "archivo": "src/features/seguimiento/state/cadena-valor-store.ts",
+      "sha256": "fe0c54f390dfe083a99b962bb542785cfaed492bb5bef93ce72ea62e280d95ae"
+    },
+    {
+      "archivo": "src/features/seguimiento/state/compromisos-store.ts",
+      "sha256": "37609ac76f50480581da3da3ce636a847965bf773247a7a9029499cf92892ca1"
+    },
+    {
+      "archivo": "src/features/seguimiento/state/devolucion-store.ts",
+      "sha256": "f97417ced17886b3f5c872d2b3e5b090c5d850f7079489fcbdf84d1d2b05c1ed"
+    },
+    {
+      "archivo": "src/features/seguimiento/views/seguimiento-view.tsx",
+      "sha256": "c63c9cbf625fbc8c07ff0b92cf0d79fc1fae8d69a6af2f65f1804e9610dbdae8"
+    },
+    {
+      "archivo": "src/features/seguridad-humana/data/seguridad-humana.data.ts",
+      "sha256": "7178694d2e8f4e15448cb69b787ac911f1d0262cb69a3ff3cace6da35233481a"
+    },
+    {
+      "archivo": "src/features/seguridad-humana/views/seguridad-humana-view.tsx",
+      "sha256": "0f9fd77eeea5b9c33c2069598bc928cc322940f0689f2b84f40f469af11a99ae"
+    },
+    {
+      "archivo": "src/features/sesion/components/campo-contrasena.tsx",
+      "sha256": "f5bd56074ff3c77af87d3e170c294d04dd931e1c8db8a3eff23a7e157ed22cfe"
+    },
+    {
+      "archivo": "src/features/sesion/components/campo-identidad.tsx",
+      "sha256": "e91541536573a7e5c6b899e583268d0b147996c005afd6d475cd9a9290829cbf"
+    },
+    {
+      "archivo": "src/features/sesion/components/cuenta-usuario.tsx",
+      "sha256": "01a3b9c144e3d909c161694cb4d2c34224afacc7b5b0b56daf3bc6df5f2c0139"
+    },
+    {
+      "archivo": "src/features/sesion/components/sesion-avatar.tsx",
+      "sha256": "2a4e7eee4f173db4285c6b3fea08d2a9cb102bdc6a8f008413064db4b772e37d"
+    },
+    {
+      "archivo": "src/features/sesion/models/sesion.ts",
+      "sha256": "4da0db20a7378203036dfad976cb0c33ef26862af76ce2d714a3107d05e39949"
+    },
+    {
+      "archivo": "src/features/sesion/panels/sesion-panel.tsx",
+      "sha256": "66aa5ef2af6f5b928f222bc4f28ae7e97e66fba2f803b2a9e52184800a43e5c8"
+    },
+    {
+      "archivo": "src/features/sesion/panels/usuarios-panel.tsx",
+      "sha256": "13a82416b1ea1bea6fe580d2ba8f3dad93fec09588ad74a2245daeb508f855f3"
+    },
+    {
+      "archivo": "src/features/sesion/services/identidad-api.ts",
+      "sha256": "87449c6c710b885b49eb6deb141de639f05f9122bcf8656cb618cbf7015443c6"
+    },
+    {
+      "archivo": "src/features/sesion/services/sincronizar-sesion.ts",
+      "sha256": "ef9b6e05375a74c94d72a66f73acf46e8f4ef5ffe9304673db384c1aa23c2f14"
+    },
+    {
+      "archivo": "src/features/sesion/state/session-store.ts",
+      "sha256": "ebdd07a1d890b011e28a9647340c2e3c71adde74568b35ea849f17a7412ed48f"
+    },
+    {
+      "archivo": "src/features/testimonios/data/testimonios.mock.ts",
+      "sha256": "b9bade8412097f372b3eafe1251310ac6768c78bad8e7428c26142320dca4b21"
+    },
+    {
+      "archivo": "src/features/testimonios/models/testimonio.ts",
+      "sha256": "198cc713db46a09311d9c15392c272a0b712e330829d10827ae7954af997d65d"
+    },
+    {
+      "archivo": "src/features/testimonios/panels/testimonio-editor-panel.tsx",
+      "sha256": "bc990c11e9df3f8df4b5a2d9225c7f9b0f80d1537eacdae14c50be8ee03d143f"
+    },
+    {
+      "archivo": "src/features/testimonios/panels/testimonio-nuevo-panel.tsx",
+      "sha256": "c1e92bd7be391c704df4ff53e0920dd7b42ed04b07341370cab5a22ea80aa9b8"
+    },
+    {
+      "archivo": "src/features/testimonios/panels/testimonios-galeria-panel.tsx",
+      "sha256": "1f51e3aa205af66041a0ee49fd3c14985e421afb173a9b6617fa804a3b26f9ed"
+    },
+    {
+      "archivo": "src/features/testimonios/panels/testimonios-moderacion-panel.tsx",
+      "sha256": "206cc1c20d403ec5c0d1d0db4949d7a3c8579d283786666bc49a70a7322d9c84"
+    },
+    {
+      "archivo": "src/features/testimonios/services/testimonios-api.ts",
+      "sha256": "2cad93699eada6dde011ef35172616f07d564b95c93a99f0d967042e52c2e0f5"
+    },
+    {
+      "archivo": "src/features/testimonios/services/use-testimonios-queries.ts",
+      "sha256": "15e707373157318f299ce717b9d05fda12aba0d882114088511fa2aa1dbfcf1f"
+    },
+    {
+      "archivo": "src/features/testimonios/state/testimonios-store.ts",
+      "sha256": "a029979a31b3c2f2c81e9b4b565d23354b147542046495eb96a32ba15df59c65"
+    },
+    {
+      "archivo": "src/features/testimonios/views/testimonios-view.tsx",
+      "sha256": "9f1f324827a69045ba3321d101802e6b72b8eb30c119b039b58a645cb1183cf8"
+    },
+    {
+      "archivo": "src/features/usuarios/panels/usuario-detalle-panel.tsx",
+      "sha256": "7600aefb0bf0ef80d44b71e38224c75445bd64caee1c75d7d0b2d2e9447f6c68"
+    },
+    {
+      "archivo": "src/features/usuarios/panels/usuario-editor-panel.tsx",
+      "sha256": "57107bd3e4606f1442a81e182ac47c866f1cada75f73414e9b6b5ec28e8f8e2e"
+    },
+    {
+      "archivo": "src/features/usuarios/state/usuarios-store.ts",
+      "sha256": "e96cc0288632aae48ba85f8fb0c4a66f51a6477a72b8b53a1b3a1811b6ff76c1"
+    },
+    {
+      "archivo": "src/shared/branding/logo-polis.tsx",
+      "sha256": "4610e0c8981e8b1c2f932e6897eb1f65ad410a71349009643e2ea032c80288bf"
+    },
+    {
+      "archivo": "src/shared/components/participation-ui.tsx",
+      "sha256": "6bfe76f05058955a570bee2c84548774abae739127b3d2820cebb515891bf6b0"
+    },
+    {
+      "archivo": "src/shared/design-system/catalog.ts",
+      "sha256": "f28174f39bcf6a2fff55a8dd394b6dc26934bf63e73647fb35b72f5e92403f2a"
+    },
+    {
+      "archivo": "src/shared/design-system/styles.css",
+      "sha256": "71b23f18a5ce70b4ded102b054f628361c7f94e0dbaa9bb371b4ef6aeb0eadff"
+    },
+    {
+      "archivo": "src/shared/design-system/tokens.css",
+      "sha256": "7c011809aecf12beadc981842735e4a715038e2c837ea94b9a69bd8453419bff"
+    },
+    {
+      "archivo": "src/shared/design-system/usage.mdx",
+      "sha256": "df99c0cc64cff46b3404eec9c45eaf0847459e584687a1d8832545f96a0b8e84"
+    },
+    {
+      "archivo": "src/shared/hooks/use-mobile.ts",
+      "sha256": "ad0936f84f1df79d3697bfbff9c18f8ad58431c1cbaf2359c6a853b0fcc9f28b"
+    },
+    {
+      "archivo": "src/shared/hooks/use-toast.ts",
+      "sha256": "94992e67d7d643b2253649c4c152bae8153a8ba74231a7ffd5680def06aac714"
+    },
+    {
+      "archivo": "src/shared/layout/footer.tsx",
+      "sha256": "d5a935f673987e4830a5c9153c352f6ce06bfea7c72c62074650df8977e4be75"
+    },
+    {
+      "archivo": "src/shared/lib/csv.ts",
+      "sha256": "0e906e1090063ade7cb941ec325bf438f83f26e6dab7acac3890a2e6f916972b"
+    },
+    {
+      "archivo": "src/shared/lib/utils.ts",
+      "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+    },
+    {
+      "archivo": "src/shared/monitoring/error-boundary.tsx",
+      "sha256": "f61c7efef7b3a8bdec2c666c5c96c561c9884e4ff16f1587736f5219d0c64ab1"
+    },
+    {
+      "archivo": "src/shared/monitoring/index.ts",
+      "sha256": "27731ffdc303bb6657f3340d2c3a52f56fc2569e47cadaa687fc53cb7d84d018"
+    },
+    {
+      "archivo": "src/shared/offline/db.ts",
+      "sha256": "647e3c749f829d92047d74523e55beee697a973c8c158ce57769d52b4179fb53"
+    },
+    {
+      "archivo": "src/shared/offline/index.ts",
+      "sha256": "a05bf379643e21f23d93934a7d568cfd044b27c0bddede5ea3dfd0750299bc51"
+    },
+    {
+      "archivo": "src/shared/offline/offline-status-badge.tsx",
+      "sha256": "4027b49e4fc8e57dad1ece99a13e64193e330f1da124150d739ec6384600cdfb"
+    },
+    {
+      "archivo": "src/shared/offline/sync-manager.ts",
+      "sha256": "fcbe4569602fa4578351aab0ecde748c205cb546cf5c4ca32ac466d6a8d13862"
+    },
+    {
+      "archivo": "src/shared/pwa/register-sw.tsx",
+      "sha256": "10bab29c7fc342cf6435e0aa5369d601356bc3f5c85ba94ff741c3be5cbc080d"
+    },
+    {
+      "archivo": "src/shared/ui/AGENTS.md",
+      "sha256": "1524af7a28457a0f8b0d894087d20571c970371cfcf36f41b6cc55dadc0a707b"
+    },
+    {
+      "archivo": "src/shared/ui/accesibilidad-widget.tsx",
+      "sha256": "e396fab1695168366337ae3633c361258d175c166bd0c30ea62bd0eb8f04f7df"
+    },
+    {
+      "archivo": "src/shared/ui/accordion.tsx",
+      "sha256": "1122b16d61447863ed5746255ec62685e042af5a9ff7555336d31b9d3edbb14d"
+    },
+    {
+      "archivo": "src/shared/ui/alert-dialog.tsx",
+      "sha256": "066650dc36691401a1b9d0ea00f7eb345e720124aa7c6fd34ea722ec7e2ee5cd"
+    },
+    {
+      "archivo": "src/shared/ui/alert.tsx",
+      "sha256": "e436edc7623f20dfc521a6ca1eaa80fd71a7d9c0c98dacb9bc54f977b0f75f72"
+    },
+    {
+      "archivo": "src/shared/ui/aspect-ratio.tsx",
+      "sha256": "6a75117416aa89200cf31e8d61643b428e812f479caea857c80004b26d893e79"
+    },
+    {
+      "archivo": "src/shared/ui/avatar.tsx",
+      "sha256": "2d566e6ac33b210d52d8054539417ebb06116eb924d9e67469af261514dbde8a"
+    },
+    {
+      "archivo": "src/shared/ui/badge.tsx",
+      "sha256": "23c7df0ff6a97ec77b0008700c2b4426abe126feeef0622d4341177499a6f1b6"
+    },
+    {
+      "archivo": "src/shared/ui/breadcrumb.tsx",
+      "sha256": "4e73e85c89b151044fe58896716c5558c351bf10a19e8e76d2e79aaf2863f504"
+    },
+    {
+      "archivo": "src/shared/ui/button.tsx",
+      "sha256": "280fdb6852ef66a5ff61ab873048967908c0b09befd52f90b8f0bb46c984e8ac"
+    },
+    {
+      "archivo": "src/shared/ui/calendar.tsx",
+      "sha256": "a1077af77eea6824c90a899262e4ee289cbc531fe1d312d03368d1c44dd39b62"
+    },
+    {
+      "archivo": "src/shared/ui/card.tsx",
+      "sha256": "9323ea3bf4d8c7b1dd68e6318dfa2e72694288489bbb3be067660e02a8126cf6"
+    },
+    {
+      "archivo": "src/shared/ui/carousel.tsx",
+      "sha256": "1676e1059e22fd618df75d3c44dd394c7f75dff572da845e87345dcc40f70550"
+    },
+    {
+      "archivo": "src/shared/ui/chart.tsx",
+      "sha256": "e188a8a188c911a7d99246d97238b141bfb35079d8df76feccd248503b45edd6"
+    },
+    {
+      "archivo": "src/shared/ui/checkbox.tsx",
+      "sha256": "a3674df32db36eb9075324cd0cb6376d7df8c94979a116325d05906ff0f5e499"
+    },
+    {
+      "archivo": "src/shared/ui/choice-group.tsx",
+      "sha256": "5a33c785fbe78f18d0ec37a1f0c1f3b16c6eda5c48a4a0e89d3223827dac05e7"
+    },
+    {
+      "archivo": "src/shared/ui/collapsible.tsx",
+      "sha256": "c2c74dc3e99482d00a57de673b56920860c2ff4b330373d783843f505dc11dae"
+    },
+    {
+      "archivo": "src/shared/ui/collection-view.tsx",
+      "sha256": "4d54292bc33a07b02a8dd97f79274405096c99db09efc06b0cd12c1ca28549fe"
+    },
+    {
+      "archivo": "src/shared/ui/command.tsx",
+      "sha256": "cdcd8899b2ca37410cdd33b189f44d8b53122fa66d63e921216aa9aa15d2fb43"
+    },
+    {
+      "archivo": "src/shared/ui/context-menu.tsx",
+      "sha256": "47f07e7525dcd353e305fbe06bac9d40716def0909fcd9bb0d9d542af7b3d3b4"
+    },
+    {
+      "archivo": "src/shared/ui/dialog.tsx",
+      "sha256": "806f48956e05a626bc3ac1ab25d3abc42f0fd9bb0394c113501b91fc6d8f7c82"
+    },
+    {
+      "archivo": "src/shared/ui/drawer.tsx",
+      "sha256": "38bd6dbbcdc660219bdabf423c47fca2438a6aaeb47cdf029f0ae7a7b4dd5700"
+    },
+    {
+      "archivo": "src/shared/ui/dropdown-menu.tsx",
+      "sha256": "6181952edd77e1ea7104074f160629844f660c9ca16dcb3f4adfa39a667b07ba"
+    },
+    {
+      "archivo": "src/shared/ui/empty-state.tsx",
+      "sha256": "ea4cb8b6100c7cab9cd01910b5755eb032e414d21c2c2fcadf319fd6c142a948"
+    },
+    {
+      "archivo": "src/shared/ui/filter-chip.tsx",
+      "sha256": "92f9912f1b78e29a5227b06e56e9f083cfbf70488bbf04500e046ea0c81a7b84"
+    },
+    {
+      "archivo": "src/shared/ui/form-field.tsx",
+      "sha256": "5106696608a541cfa456f2b2032f5bc351fd386304dbb3b9bbdf9858e2ea55d5"
+    },
+    {
+      "archivo": "src/shared/ui/form.tsx",
+      "sha256": "00dae56a91abf23ee6c67004422b5598c491ba812d0a548e27c760bb86e89745"
+    },
+    {
+      "archivo": "src/shared/ui/hover-card.tsx",
+      "sha256": "e39137c6437e7e4aad07d4c8885ce445e906db335b92863cc65754bda46ecb9b"
+    },
+    {
+      "archivo": "src/shared/ui/input-otp.tsx",
+      "sha256": "bb732475c09769031b6ad55c9e90fe76df25d51c362aefb2d2c9afe3772a14b6"
+    },
+    {
+      "archivo": "src/shared/ui/input.tsx",
+      "sha256": "a3fe528b2ba6811845eb6be6db8af311946bb4f16650605e134b8a26a9e84edd"
+    },
+    {
+      "archivo": "src/shared/ui/label.tsx",
+      "sha256": "a016014b5833978fc95f919513ad480dfeebc937923418f906bc0f1efcf5a207"
+    },
+    {
+      "archivo": "src/shared/ui/menubar.tsx",
+      "sha256": "f1ee8860df5a138f965e7ab78c6562d762856a2a3741fbe48bbb00a99bb836f0"
+    },
+    {
+      "archivo": "src/shared/ui/navigation-menu.tsx",
+      "sha256": "5dc331bc3c4bb59a6cf5481733f59947460178a594436240765f4ade0b6a390f"
+    },
+    {
+      "archivo": "src/shared/ui/notice.tsx",
+      "sha256": "54c546c923dc92f6922c63ab17eb6fcd6962bd70da74b6dff9656d920a563061"
+    },
+    {
+      "archivo": "src/shared/ui/page-header.tsx",
+      "sha256": "00c5a1d9a4da5c21fd3716048a15100233407b0a47bc83a29aa7891f21a31db8"
+    },
+    {
+      "archivo": "src/shared/ui/pagination.tsx",
+      "sha256": "bfbd3481a649fec7fdc179968ed35d492fc7d1ab980793f204b297456e34ad38"
+    },
+    {
+      "archivo": "src/shared/ui/password-input.tsx",
+      "sha256": "bc1425b2025d5824b5e3137bf69deee1eef5036ed863e3ce260a490555f002df"
+    },
+    {
+      "archivo": "src/shared/ui/popover.tsx",
+      "sha256": "90d7871a9114a9eba676b163e221832ba034fc314709f9772366ad14be136716"
+    },
+    {
+      "archivo": "src/shared/ui/progress.tsx",
+      "sha256": "dd71d5fca994ad21aff9763191c69f0c11b977f226aae685ef9973616470b708"
+    },
+    {
+      "archivo": "src/shared/ui/radio-group.tsx",
+      "sha256": "d008784428772bdc8ee9eaacb8347c271a12029df88f27da66dcf8c41b3d94a7"
+    },
+    {
+      "archivo": "src/shared/ui/resizable.tsx",
+      "sha256": "a117a78318f31a549482e07b094745a4876492c534c7d8c16f773ca58db54942"
+    },
+    {
+      "archivo": "src/shared/ui/scroll-area.tsx",
+      "sha256": "9b0948e809510dea6787eb7322d73d660a9c2074a673a4fce27cf2ee6421acb2"
+    },
+    {
+      "archivo": "src/shared/ui/search-field.tsx",
+      "sha256": "2ed0531bc2bcd33d292fa7b172556034742e32e0cc473fecb07bd95ce9ad0b69"
+    },
+    {
+      "archivo": "src/shared/ui/select.tsx",
+      "sha256": "3d0edc4b77d6d59d4d3364c2db1a9f8100287cb9eb1b4bd00075aabd96adb911"
+    },
+    {
+      "archivo": "src/shared/ui/separator.tsx",
+      "sha256": "58b510050590967be52fa6bd185e7703bf77b6348f944f2dd03d13939e686bc4"
+    },
+    {
+      "archivo": "src/shared/ui/sheet.tsx",
+      "sha256": "ba226bcd8be31133dae5b17dcd0765aedc6b2cbdbebcfb39e15fad7893610a2a"
+    },
+    {
+      "archivo": "src/shared/ui/side-panel.tsx",
+      "sha256": "e0cf737634c688ea9d3f7a6c09ca334340105092c223b16e82635989464193a7"
+    },
+    {
+      "archivo": "src/shared/ui/sidebar.tsx",
+      "sha256": "dc5fd3957cb35e2f617b322c036f579bd2a24e7ff485a39c22f66b3bf8e93b8b"
+    },
+    {
+      "archivo": "src/shared/ui/skeleton.tsx",
+      "sha256": "29a1604b8230866a70e9be68b52d3f99be9d83665de45f8ae4eed5458967d93a"
+    },
+    {
+      "archivo": "src/shared/ui/slider.tsx",
+      "sha256": "3573845962da4bea37ed7a6c6c1f6254c3833e9a2a7737815def2b552607fd17"
+    },
+    {
+      "archivo": "src/shared/ui/sonner.tsx",
+      "sha256": "983381ec2d3300d15d2c603c0fc77a05a7eac16b97b535dd258a08318a9adee7"
+    },
+    {
+      "archivo": "src/shared/ui/status-badge.tsx",
+      "sha256": "6ec3275bd7b1b5ca31119cbd3cc62f78c6646c1b115c1e19c379524cd5694fc1"
+    },
+    {
+      "archivo": "src/shared/ui/switch.tsx",
+      "sha256": "4abaa8bcffc3cac96149c3e63ad0be0bc3ff45bbe07312a022005810bcc81bf4"
+    },
+    {
+      "archivo": "src/shared/ui/table.tsx",
+      "sha256": "3ec9fcb9bf81a58ad0258d4241d1f1c11b620196a85da7604728bf1b90fa2cd2"
+    },
+    {
+      "archivo": "src/shared/ui/tabs.tsx",
+      "sha256": "e77c5e0dae5351326b241f80338ed1c68c32ef9007afc36405b8a18cd691d264"
+    },
+    {
+      "archivo": "src/shared/ui/textarea.tsx",
+      "sha256": "5d26301aaa1b8a61822e5bf7386e4139cfe0fe667f647210808dffbabb4e675e"
+    },
+    {
+      "archivo": "src/shared/ui/toast.tsx",
+      "sha256": "4f0670097c1ff6cb0db172ae003809221b13dbf0b2c504a632d4e3d78d273bf0"
+    },
+    {
+      "archivo": "src/shared/ui/toaster.tsx",
+      "sha256": "d70f9407492912d74f118b448c8bad488e5aff5ae28c08ed419ea5eabffdc170"
+    },
+    {
+      "archivo": "src/shared/ui/toggle-group.tsx",
+      "sha256": "66a608c5c285842ec2ff4561f65f8145339bbe8c6b09799a355f4236f2aec820"
+    },
+    {
+      "archivo": "src/shared/ui/toggle.tsx",
+      "sha256": "4da5f06f64ffd2f9a210a920be712412efbb729bf4a4920c05cbcc418fcfc58f"
+    },
+    {
+      "archivo": "src/shared/ui/tooltip.tsx",
+      "sha256": "014f6c1bce9bb90e3a37c3f5812fbcad6320d03c23d64787f0786794226881e1"
+    },
+    {
+      "archivo": "tsconfig.json",
+      "sha256": "cb7b8e50baf712c215d963b66d88434d42b865f85b209aa243bea91fa1c2cfca"
+    }
+  ]
+}

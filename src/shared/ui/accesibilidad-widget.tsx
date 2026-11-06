@@ -84,6 +84,20 @@ export function AccesibilidadWidget({
 }: AccesibilidadWidgetProps) {
   const moreTriggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const compactoRef = useRef<HTMLButtonElement>(null);
+  const devolverFocoRef = useRef(false);
+
+  useEffect(() => {
+    if (!devolverFocoRef.current) return;
+    devolverFocoRef.current = false;
+    (isCollapsed ? compactoRef : moreTriggerRef).current?.focus();
+  }, [isCollapsed]);
+
+  const alternarBarra = () => {
+    devolverFocoRef.current = true;
+    if (isOpen) onClose();
+    onToggleCollapse?.();
+  };
 
   // Manejo de teclado: tecla Esc cierra el subpanel de opciones y devuelve el foco
   useEffect(() => {
@@ -128,12 +142,13 @@ export function AccesibilidadWidget({
     }
   };
 
-  // Si está en /geovisor y en estado colapsado, mostrar pestaña mínima adherida al borde
-  if (isGeovisor && isCollapsed) {
+  // La pestaña compacta conserva el acceso a todos los controles.
+  if (isCollapsed) {
     return (
       <aside
         className={cn(
-          "fixed top-1/2 right-0 -translate-y-1/2 z-40 select-none",
+          "fixed right-0 z-40 select-none",
+          isGeovisor ? "top-1/2 -translate-y-1/2" : "bottom-4 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2",
           className
         )}
         data-testid="accesibilidad-tab-container"
@@ -142,8 +157,9 @@ export function AccesibilidadWidget({
           {ultimoAnuncio}
         </div>
         <button
+          ref={compactoRef}
           type="button"
-          onClick={onToggleCollapse}
+          onClick={alternarBarra}
           aria-label="Abrir menú de accesibilidad"
           aria-expanded={false}
           className="flex h-14 w-7 items-center justify-center rounded-l-lg border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] text-[var(--text-primary)] shadow-md transition-all hover:w-9 focus-visible:outline-2 focus-visible:outline-[var(--ring)]"
@@ -349,11 +365,11 @@ export function AccesibilidadWidget({
         className="relative z-10 flex w-[52px] flex-col rounded-l-xl border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] py-1.5 shadow-raised"
       >
         {/* En geovisor: botón para colapsar barra a pestaña mínima */}
-        {isGeovisor && onToggleCollapse && (
+        {onToggleCollapse && (
           <div className="flex h-6 w-full items-center justify-center border-b border-[var(--border)] pb-1 mb-0.5">
             <button
               type="button"
-              onClick={onToggleCollapse}
+              onClick={alternarBarra}
               aria-label="Ocultar menú de accesibilidad"
               title="Ocultar menú de accesibilidad"
               className="flex size-5 items-center justify-center rounded text-[var(--text-tertiary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--ring)]"

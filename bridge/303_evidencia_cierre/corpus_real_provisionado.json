@@ -1,0 +1,356 @@
+{
+  "planes_accion_ingesta": {
+    "preflight": {
+      "destino": "polis_test_303_corpus",
+      "entradas_verificadas": 1305,
+      "archivos_unicos": 621,
+      "catalogo_sha": "6652ef210837c12680a157f82bf6defaecdbfeef9c538341ce24d14961a0b2b9"
+    },
+    "conteos_reportados_por_ingestor": {
+      "persistidos": 606,
+      "registros_normalizados": 215777,
+      "hojas": 1606,
+      "lotes": 607
+    },
+    "errores_insumo": [
+      {
+        "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+        "nombre_archivo": "PLAN DE ACCIÒN CORVIVIENDA 2022.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA A JUNIO 30 DE 2022.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA IV TRIMESTRE 2023.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION CORVIVIENDAA 30 DE SEPTIEMBRE2023 (2).xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+        "nombre_archivo": "SEGUIMIENTO Y EVALUACIÓN PLAN DE ACCIÓN DIC 2024 - CORVIVIENDA.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+        "nombre_archivo": "12. SEGUIMIENTO Y EVALUACION  PLAN DE ACCIÓN CORVIVIENDA JUNIO 2023.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA 2023 - IV TRIMESTRE.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA 2024 (PARA VALIDACIOìN PD).xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+        "nombre_archivo": "1. SEGUIMIENTO Y EVALUACION PLAN DE ACCION SECRETARIA DE HACIENDA A JUNIO 30 DE 2023.xlsx",
+        "error": "File contains no valid workbook part"
+      },
+      {
+        "id": "1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs",
+        "nombre_archivo": "INFORME PLAN DE ACCION SECRETARÍA DE PARTICIPACIÓN Y DESARROLLO SOCIAL – UMATA. MARZO 2024.docx.xlsx",
+        "error": "File contains no valid workbook part"
+      },
+      {
+        "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+        "nombre_archivo": "PLAN DE ACCION EPA VIGENCIA A MARZO 31 DE 2024 - EPA CARTAGENA.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION A MAYO 31 DE 2024.xlsx",
+        "error": "Unable to read workbook: could not read stylesheet from None.\nThis is most probably because the workbook source files contain some invalid XML.\nPlease see the exception for more details."
+      },
+      {
+        "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+        "nombre_archivo": "SEGUIMIENTO PLAN DE ACCION EPA A MAYO 31 DE 2024-EPA CARTAGENA.xlsx",
+        "error": "El libro .xlsx supera los límites de expansión permitidos."
+      },
+      {
+        "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+        "nombre_archivo": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx",
+        "error": "File contains no valid workbook part"
+      }
+    ],
+    "distincion": "Registros procesados y registros durables no son el mismo contador; no se atribuye toda la diferencia a una causa no auditada por fila."
+  },
+  "catalogo_planes": {
+    "planes": 8,
+    "lineas_programas": 1938,
+    "metas_oficiales": 4637,
+    "lineas_reutilizadas": 0,
+    "lineas_nuevas": 1938,
+    "lineas_historicas_conservadas": 0,
+    "metas_reutilizadas": 0,
+    "metas_nuevas": 4637,
+    "metas_pendientes_identidad": 0,
+    "metas_historicas_conservadas": 0,
+    "vinculos_recalculados": true,
+    "estado_publicacion": "no_publicable",
+    "vinculos_codigo_exacto": 0,
+    "vinculos_indicador_entidad": 0,
+    "vinculos_semantico_programa": 0,
+    "vinculos_sin_vinculo": 4637,
+    "vinculos_cobertura_sin_corpus_historico": 1145,
+    "vinculos_cobertura_sin_reporte_en_corpus_cubierto": 3027,
+    "vinculos_cobertura_sin_codigo_o_entidad": 192,
+    "vinculos_cobertura_duplicada_entre_fuentes_pdd": 273,
+    "vinculos_mga_resultado_impacto": 266,
+    "vinculos_mga_revision_humana": 1675,
+    "vinculos_mga_producto_cuantificable": 2660,
+    "vinculos_mga_gestion_proceso_blando": 36,
+    "cache_payloads": 7
+  },
+  "corpus_motor_pa": {
+    "actividades_reales_upserted": 169,
+    "actividades_motor_total": 181,
+    "semillas_preservadas": 12,
+    "entidades_cubiertas": 29,
+    "por_vigencia": {
+      "2024": 57,
+      "2025": 56,
+      "2026": 56
+    },
+    "entidades_por_vigencia": {
+      "Alcaldía Local Histórica y del Caribe Norte": [
+        2024,
+        2025,
+        2026
+      ],
+      "Alcaldía Local Industrial y de la Bahía": [
+        2024,
+        2025,
+        2026
+      ],
+      "Alcaldía Local de la Virgen y Turística": [
+        2024,
+        2025,
+        2026
+      ],
+      "Alcaldía Mayor de Cartagena": [
+        2024,
+        2025,
+        2026
+      ],
+      "Corvivienda": [
+        2024,
+        2025,
+        2026
+      ],
+      "Departamento Administrativo Distrital de Salud": [
+        2024,
+        2025,
+        2026
+      ],
+      "Departamento Administrativo de Tránsito y Transporte": [
+        2024,
+        2025,
+        2026
+      ],
+      "Departamento Administrativo de Valorización Distrital": [
+        2024,
+        2025,
+        2026
+      ],
+      "Distriseguridad": [
+        2024,
+        2025,
+        2026
+      ],
+      "Escuela Taller Cartagena de Indias": [
+        2024
+      ],
+      "Escuela de Gobierno y Liderazgo": [
+        2024,
+        2025,
+        2026
+      ],
+      "Establecimiento Público Ambiental": [
+        2024,
+        2025,
+        2026
+      ],
+      "Gerencia de Espacio Público y Movilidad": [
+        2024,
+        2025,
+        2026
+      ],
+      "Instituto Distrital de Deporte y Recreación": [
+        2024,
+        2025,
+        2026
+      ],
+      "Instituto de Acción Comunal y Capital Social de Cartagena": [
+        2024,
+        2025,
+        2026
+      ],
+      "Instituto de Patrimonio y Cultura de Cartagena": [
+        2024,
+        2025,
+        2026
+      ],
+      "Oficina Asesora para la Gestión del Riesgo de Desastres": [
+        2024,
+        2025,
+        2026
+      ],
+      "Plan de Emergencia Social Pedro Romero": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría General": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Educación": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Hacienda": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Infraestructura": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Infraestructura y Conectividad de Cartagena": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Participación y Desarrollo Social": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Planeación": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría de Turismo": [
+        2024,
+        2025,
+        2026
+      ],
+      "Secretaría del Interior y Convivencia Ciudadana": [
+        2024,
+        2025,
+        2026
+      ],
+      "Transcaribe": [
+        2024,
+        2025,
+        2026
+      ],
+      "Unidad Municipal de Asistencia Técnica Agropecuaria": [
+        2024,
+        2025,
+        2026
+      ]
+    }
+  },
+  "corpus_normalizacion_vinculos": {
+    "normalizacion_metas_oficiales": {
+      "tabla": "seguimiento.pdd_metas_oficiales",
+      "planes_normalizados": [
+        "PDD_2012_2015",
+        "PDD_2013_2015",
+        "PDD_2016_2019",
+        "PDD_2020_2023",
+        "PDD_2024_2027",
+        "PDL_1_2024_2027",
+        "PDL_2_2024_2027",
+        "PDL_3_2024_2027"
+      ],
+      "total_metas_normalizadas": 4637,
+      "metas_por_plan": {
+        "PDD_2012_2015": 469,
+        "PDD_2013_2015": 676,
+        "PDD_2016_2019": 898,
+        "PDD_2020_2023": 947,
+        "PDD_2024_2027": 1246,
+        "PDL_1_2024_2027": 110,
+        "PDL_2_2024_2027": 89,
+        "PDL_3_2024_2027": 202
+      },
+      "metas_con_valor_numerico_cuatrienio": 3670,
+      "metas_con_linea_base_numerica": 2672,
+      "version_normalizador": "EAF_32B_OCR_8PLANES_V1",
+      "generado_en": "2026-11-06T11:35:21.172728+00:00"
+    },
+    "conciliacion_vinculos_triada": {
+      "tabla": "seguimiento.pdd_vinculos_meta_pa_triada",
+      "planes_procesados": [
+        "PDD_2012_2015",
+        "PDD_2013_2015",
+        "PDD_2016_2019",
+        "PDD_2020_2023",
+        "PDD_2024_2027",
+        "PDL_1_2024_2027",
+        "PDL_2_2024_2027",
+        "PDL_3_2024_2027"
+      ],
+      "metas_conciliadas": 4637,
+      "total_filas_en_bd": 4637,
+      "distribucion_por_plan": {
+        "PDD_2012_2015": 469,
+        "PDD_2013_2015": 676,
+        "PDD_2016_2019": 898,
+        "PDD_2020_2023": 947,
+        "PDD_2024_2027": 1246,
+        "PDL_1_2024_2027": 110,
+        "PDL_2_2024_2027": 89,
+        "PDL_3_2024_2027": 202
+      },
+      "distribucion_por_tipo_vinculo": {
+        "SIN_VINCULO_HUERFANO": 2455,
+        "VINCULO_SECTORIAL_INFERIDO": 1227,
+        "PROGRAMA_Y_DEPENDENCIA_ACREDITADOS": 955
+      },
+      "cruces_hermanos_3_motores_aplicados": 1,
+      "vinculos_con_cifras_bloqueadas_por_fuente_compartida": 1703,
+      "metas_con_apropiacion_cop": 261,
+      "metas_con_avance_fisico_pct": 422,
+      "ceros_observados_preservados_count": 129,
+      "generado_en": "2026-11-06T11:35:29.098756+00:00"
+    }
+  },
+  "destino": "127.0.0.1:15433/polis_test_303_corpus",
+  "SQL_productiva": false,
+  "originales_modificados": false,
+  "resultados_pytest": {
+    "aprobados": 43,
+    "fallidos": 0,
+    "omitidos": 0,
+    "junit_sha256": "daa7ac6c7b35a81639100e339771d67f28d2f94440f8a4ddc4749be6dfffe4dd"
+  },
+  "limite": "Los 14 archivos rechazados por el lector se conservan sin promover; el pase de pruebas no acredita cobertura integral ni corrección estadística de todas las fuentes.",
+  "registros_durables_sql": {
+    "archivos_plan_ingeridos": 607,
+    "registros_triada_normalizados": 215300,
+    "actividades_plan_accion_reales_upserted": 169,
+    "actividades_motor_total": 181,
+    "pdd_metas_oficiales": 4637,
+    "pdd_lineas_y_programas": 1938
+  }
+}

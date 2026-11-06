@@ -1,0 +1,9 @@
+$ vitest run --project storybook "--maxWorkers=2"
+
+ RUN  v5.0.4 /root/polis
+
+
+ Test Files  23 passed (23)
+      Tests  258 passed (258)
+   Start at  12:12:20
+   Duration  152.08s (worker 90%, tests 7%, setup 2%, import 1%)

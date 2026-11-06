@@ -5,18 +5,18 @@ import { Footer } from "@/shared/layout/footer";
 export const metadata: Metadata = {
   title: "Marcos Jurídicos, Doctrinales y Normativos — POLIS Cartagena",
   description:
-    "Doble andamiaje normativo diferenciado: Política Pública de Seguridad Humana de Cartagena de Indias (Acuerdo 139/2024, Decreto 037/2026, Decreto 1070/2021) y marco legal de la plataforma cívica digital POLIS operada por Ples SAS (Ley 527/1999, Ley 1581/2012, Ley 1757/2015).",
+    "Política Pública de Seguridad Humana de Cartagena de Indias: Acuerdo 139/2024, Decreto Distrital 0730/2023 y Decreto Nacional 0037/2026. Marco de mensajes de datos y privacidad de POLIS, operada por Ples SAS: Ley 527/1999 y Ley 1581/2012. Decreto 1070/2021 como antecedente.",
   keywords: [
     "Marco Legal",
     "Seguridad Humana",
     "Cartagena de Indias",
     "Acuerdo 139 de 2024",
-    "Decreto 037 de 2026",
-    "Decreto 1070 de 2021",
+    "Decreto Nacional 0037 de 2026",
+    "Decreto Distrital 0730 de 2023",
     "Ley 527 de 1999",
     "Ley 1581 de 2012",
     "Habeas Data",
-    "Fe Pública Digital",
+    "Trazabilidad documental",
     "Ples SAS",
     "POLIS",
   ],

@@ -1,40 +1,17 @@
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
-import { spawn, execSync } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import http from "node:http";
-import fs from "node:fs";
 
-// Configuración de puertos de entorno aislado (AUD-09 / Encargo 290)
-const BACKEND_PORT = Number(process.env.E2E_BACKEND_PORT) || 8100;
-const FRONTEND_STANDALONE_PORT = Number(process.env.E2E_FRONTEND_STANDALONE_PORT) || 3105;
-const PROXY_PORT = Number(process.env.E2E_PROXY_PORT) || 3100;
+import { comprobarPuertosLibres, leerConfiguracionE2E } from "./e2e-seguridad.mjs";
+
+const configuracion = leerConfiguracionE2E();
+const BACKEND_PORT = configuracion.backendPort;
+const FRONTEND_STANDALONE_PORT = configuracion.frontendPort;
+const PROXY_PORT = configuracion.proxyPort;
 const BASE_URL = `http://127.0.0.1:${PROXY_PORT}`;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
-
-function resolverPasswordBd() {
-  if (process.env.POLIS_DB_PASS) return process.env.POLIS_DB_PASS;
-  if (process.env.PGPASSWORD) return process.env.PGPASSWORD;
-  try {
-    const envContent = fs.readFileSync("backend/.env", "utf8");
-    for (const line of envContent.split("\n")) {
-      if (line.startsWith("POLIS_DATABASE_URL=")) {
-        const val = line.slice(line.indexOf("=") + 1).trim();
-        const m = val.match(/:\/\/([^:]+):([^@]+)@/);
-        if (m && m[2]) return m[2];
-      }
-    }
-  } catch {}
-  return "";
-}
-
-const DB_PASS = resolverPasswordBd();
-const DB_HOST = process.env.POLIS_DB_HOST || "127.0.0.1";
-const DB_PORT = process.env.POLIS_DB_PORT || "5432";
-const DB_USER = process.env.POLIS_DB_USER || "polis";
-const E2E_DB_NAME = process.env.POLIS_E2E_DB_NAME || "polis_test_e2e";
-const E2E_DATABASE_URL = DB_PASS
-  ? `postgresql+asyncpg://${DB_USER}:${encodeURIComponent(DB_PASS)}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`
-  : `postgresql+asyncpg://${DB_USER}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`;
+const E2E_DATABASE_URL = configuracion.databaseUrl;
 
 let backendProcess = null;
 let frontendProcess = null;
@@ -51,13 +28,8 @@ export function registrarPaso(nombre, detalle = "") {
   resultados.push({ nombre, detalle, exito: true });
 }
 
-export function limpiarPuertos() {
-  console.log(`[E2E-ENV] Limpiando procesos en puertos de prueba aislados ${BACKEND_PORT}, ${FRONTEND_STANDALONE_PORT} y ${PROXY_PORT}...`);
-  try {
-    execSync(`fuser -k ${BACKEND_PORT}/tcp 2>/dev/null || true`);
-    execSync(`fuser -k ${FRONTEND_STANDALONE_PORT}/tcp 2>/dev/null || true`);
-    execSync(`fuser -k ${PROXY_PORT}/tcp 2>/dev/null || true`);
-  } catch {}
+export async function verificarPuertosDisponibles() {
+  await comprobarPuertosLibres([BACKEND_PORT, FRONTEND_STANDALONE_PORT, PROXY_PORT]);
 }
 
 async function esperarUrl(url, timeoutMs = 25000) {
@@ -74,16 +46,15 @@ async function esperarUrl(url, timeoutMs = 25000) {
 
 export async function prepararEntornoAislado() {
   console.log("\n[E2E-ENV] 1. Inicializando base de datos aislada y sembrando usuarios dinámicos...");
-  const rawCreds = execSync("backend/.venv/bin/python scripts/preparar_entorno_e2e.py", {
+  await verificarPuertosDisponibles();
+  const rawCreds = execFileSync("backend/.venv/bin/python", ["scripts/preparar_entorno_e2e.py"], {
     encoding: "utf8",
   });
   const creds = JSON.parse(rawCreds.trim());
-  console.log("[E2E-ENV] Base de datos polis_test_e2e clonada desde polis_test.");
+  console.log(`[E2E-ENV] Base ${configuracion.dbName} clonada desde ${configuracion.templateName}.`);
   console.log(`[E2E-ENV] Usuario Autoridad:     ${creds.autoridad.correo}`);
   console.log(`[E2E-ENV] Usuario Auditor:       ${creds.auditor.correo}`);
   console.log(`[E2E-ENV] Usuario Administrador: ${creds.admin?.correo || "No configurado"}`);
-
-  limpiarPuertos();
 
   console.log(`[E2E-ENV] 2. Levantando backend uvicorn en puerto aislado ${BACKEND_PORT}...`);
   backendProcess = spawn(
@@ -117,13 +88,14 @@ export async function prepararEntornoAislado() {
   });
 
   console.log(`[E2E-ENV] 3. Levantando frontend standalone en puerto aislado ${FRONTEND_STANDALONE_PORT}...`);
-  frontendProcess = spawn("node", [".next/standalone/server.js"], {
+  frontendProcess = spawn("node", [configuracion.frontendServer], {
     cwd: process.cwd(),
     env: {
       ...process.env,
       PORT: String(FRONTEND_STANDALONE_PORT),
       HOSTNAME: "127.0.0.1",
       NODE_ENV: "production",
+      POLIS_BACKEND_URL: BACKEND_URL,
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -183,7 +155,6 @@ export function desmontarEntornoAislado() {
       backendProcess.kill("SIGTERM");
     } catch {}
   }
-  limpiarPuertos();
   console.log("[E2E-ENV] Entorno desmontado limpiamente.");
 }
 
@@ -444,10 +415,10 @@ export async function flujoGeovisorTerritorial(page) {
 
   // 3.1 Cargar Geovisor Administrativo
   await page.goto(`${BASE_URL}/plataforma/geovisor`, { waitUntil: "domcontentloaded" });
-  const tituloGeovisorAdmin = page.locator('text=Geovisor administrativo').first();
+  const tituloGeovisorAdmin = page.getByRole("heading", { name: "Datos", exact: true });
   await tituloGeovisorAdmin.waitFor({ state: "visible", timeout: 8000 });
 
-  const panelHurtos = page.locator('text=Geovisor y Gestor de Capas GeoJSON').first();
+  const panelHurtos = page.getByRole("heading", { name: "Sistema de Estadística y Análisis Territorial", exact: true });
   await panelHurtos.waitFor({ state: "visible", timeout: 8000 });
   assert(await panelHurtos.isVisible(), "El gestor de capas GeoJSON debe cargarse sin fallas");
 
@@ -456,24 +427,22 @@ export async function flujoGeovisorTerritorial(page) {
   await page.waitForTimeout(1000);
 
   // 3.3 Interacción con Localidades y Filtros
-  const botonMultifuente = page.locator('button:has-text("Banco Multifuente")').first();
-  if (await botonMultifuente.isVisible()) {
-    await botonMultifuente.click({ force: true });
-    await page.waitForTimeout(600);
-  }
+  const botonMultifuente = page.getByTestId("workbench-btn-banco-multifuente");
+  await botonMultifuente.click();
+  await page.getByRole("region", { name: "Filtros compartidos del banco y las gráficas" }).waitFor();
 
   // Filtrar por Localidad 1 (LOC-1), Localidad 2 (LOC-2) y Localidad 3 (LOC-3)
-  const botonLoc1 = page.locator('button[aria-label*="Localidad 1"], button:has-text("Localidad 1")').first();
-  if (await botonLoc1.isVisible()) {
-    await botonLoc1.click({ force: true });
-    await page.waitForTimeout(400);
-  }
-
-  const botonLoc2 = page.locator('button[aria-label*="Localidad 2"], button:has-text("Localidad 2")').first();
-  if (await botonLoc2.isVisible()) {
-    await botonLoc2.click({ force: true });
-    await page.waitForTimeout(400);
-  }
+  const territorio = page.getByRole("combobox", { name: "Territorio de los datos" });
+  await territorio.click();
+  const opciones = page.getByRole("option");
+  assert(await opciones.count() > 1, "El filtro debe ofrecer el territorio sintético del conjunto de prueba");
+  const primeraOpcion = opciones.nth(1);
+  const nombreTerritorio = await primeraOpcion.innerText();
+  await primeraOpcion.click();
+  assert((await territorio.innerText()).includes(nombreTerritorio));
+  assert.equal(await page.getByRole("dialog").count(), 0, "Filtrar no debe abrir una ficha territorial inexistente");
+  await page.getByRole("button", { name: "Limpiar filtros", exact: true }).click();
+  assert((await territorio.innerText()).includes("Todos"));
 
   // 3.4 Verificar que no haya excepciones graves en consola del navegador
   page.off("console", capturarErrores);

@@ -158,3 +158,9 @@ test("permite el cruce analitico con multiples indicadores activos", () => {
     useGeovisorLayoutStore.getState().indicadoresMultifuenteActivos,
   ).toEqual([]);
 });
+
+test("restablecer disposición recupera el mapa después de Solo analítica", () => {
+  useGeovisorLayoutStore.getState().setCenterOpen(false);
+  useGeovisorLayoutStore.getState().resetLayout();
+  expect(useGeovisorLayoutStore.getState().centerOpen).toBe(true);
+});

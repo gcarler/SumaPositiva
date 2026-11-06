@@ -1,0 +1,81 @@
+{
+  "fecha_revision": "2026-11-06",
+  "alcance": "Correcciones de afirmaciones concretas; no dictamen jurídico integral ni certificación institucional.",
+  "referencias": [
+    {
+      "tema": "Decreto 0037/2026",
+      "correccion": "Ámbito nacional; no se le atribuyen 35 mesas distritales.",
+      "url": "https://dapre.presidencia.gov.co/normativa/decretos-2026/decretos-enero-2026"
+    },
+    {
+      "tema": "CONPES Cartagena",
+      "correccion": "Planeación identifica el Decreto 0730/2023 como sustituto del 1070/2021. Se conserva este último como antecedente.",
+      "url": "https://planeacion.cartagena.gov.co/pp-normativa"
+    },
+    {
+      "tema": "Plan de Desarrollo 2024–2027",
+      "correccion": "Acuerdo 139/2024: adopción del plan; sin atribuirle líneas o números de mesas no cotejados.",
+      "url": "https://planeacion.cartagena.gov.co/sites/default/files/2024-05/ACUERDO-139-DE-2024-PLAN-DE-DESARROLLO-2024-2027-CARTAGENA-CIUDAD-DE-DERECHO.pdf"
+    },
+    {
+      "tema": "Mensajes de datos",
+      "correccion": "Integridad, identificación y confiabilidad se evalúan por documento; un hash no confiere fe pública.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4276"
+    },
+    {
+      "tema": "Firma electrónica",
+      "correccion": "Se explican condiciones de confiabilidad; no se certifica automáticamente cada documento de POLIS.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=50583"
+    },
+    {
+      "tema": "Protección de datos",
+      "correccion": "Se distinguen principios, finalidades y derechos; eliminar EXIF no demuestra anonimato completo.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981"
+    },
+    {
+      "tema": "Transparencia",
+      "correccion": "El acceso está sujeto a excepciones; no se atribuye licencia universal a cualquier información publicada.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=56882"
+    },
+    {
+      "tema": "Participación",
+      "correccion": "C-150/2015 es revisión del proyecto estatutario; no certifica los registros de la plataforma.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=65335"
+    },
+    {
+      "tema": "Siete dimensiones PNUD",
+      "correccion": "Se distingue el marco de 1994 de las agrupaciones del perfil analítico POLIS.",
+      "url": "https://hdr.undp.org/content/human-development-report-1994"
+    },
+    {
+      "tema": "Consulta previa",
+      "correccion": "Se retiran garantías de alertas automáticas y de ausencia de nulidades sin evidencia de implementación.",
+      "url": "https://www1.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=37032"
+    },
+    {
+      "tema": "Revisión fiscal",
+      "correccion": "Se distinguen propuestas de financiación de autorizaciones y viabilidad fiscal acreditadas.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=44949"
+    },
+    {
+      "tema": "CSP Google Identity",
+      "correccion": "Se permite exclusivamente la hoja oficial gsi/style; se mantienen las demás restricciones.",
+      "url": "https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid"
+    },
+    {
+      "tema": "Acción comunal en Trazabilidad",
+      "correccion": "Ley 2166/2021; se retiran atribuciones incorrectas a las leyes 1417 y 1414 de 2010.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=184758"
+    },
+    {
+      "tema": "Contratación pública en Trazabilidad",
+      "correccion": "Ley 80/1993 según el régimen aplicable; se retira atribución a Ley 2175/2021.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=304"
+    },
+    {
+      "tema": "Año del Plan Nacional de Desarrollo",
+      "correccion": "Ley 2294/2023, no 2022; se distinguen adopción, ejemplo de flujo y registros acreditados.",
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=209510"
+    }
+  ]
+}

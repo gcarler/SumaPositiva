@@ -125,14 +125,18 @@ describe("Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-29
     expect(stat.size).toBeGreaterThan(20000);
 
     const info = execSync(`pdfinfo "${filePath}"`).toString();
-    expect(info).toContain("Pages:           10");
+    // Diez láminas ejecutivas y un anexo de referencias territoriales verificables.
+    expect(info).toMatch(/Pages:\s+11\b/);
     expect(info).toContain("792 x 612 pts (letter)");
 
     const text = execSync(`pdftotext "${filePath}" -`).toString();
     expect(text).toContain("POLIS CARTAGENA DE INDIAS");
     expect(text).toContain("DIAGNÓSTICO MULTIDIMENSIONAL DE SEGURIDAD HUMANA");
-    expect(text).toContain("Diapositiva 2 de 10");
-    expect(text).toContain("Diapositiva 9 de 10");
+    expect(text).toContain("Diapositiva 2 de 11");
+    expect(text).toContain("Diapositiva 9 de 11");
+    expect(text).toContain("Diapositiva 10 de 11");
+    expect(text).toContain("Fuentes territoriales y programación: corte verificable");
+    expect(text).toContain("SHA-256:");
     expect(text).toContain("¡Cartagena se Transforma con la Fuerza de sus Barrios!");
     // Cifras verificadas del banco de fuentes oficiales (DANE, Policía Nacional)
     expect(text).toContain("14,1%");

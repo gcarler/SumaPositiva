@@ -640,14 +640,14 @@ export function SistemaMultiagentePddPanel({
           </table>
         </div>
 
-        {/* Participación en las 7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026) */}
+        {/* Participación en el perfil de 7 dimensiones de Seguridad Humana de POLIS. */}
         <div className="space-y-3 pt-2">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h5 className="text-xs font-bold uppercase tracking-wider text-text-primary flex items-center gap-1.5">
                 <Compass className="h-4 w-4 text-info" aria-hidden="true" />
                 <span>
-                  Vector de las 7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026) y Articulación Plan de Acción
+                  Vector del perfil de 7 dimensiones de Seguridad Humana de POLIS y Articulación Plan de Acción
                 </span>
               </h5>
               <p className="text-[11px] text-text-muted">

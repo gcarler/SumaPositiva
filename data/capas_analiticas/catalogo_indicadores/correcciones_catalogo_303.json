@@ -1,0 +1,11 @@
+{
+  "encargo": 303,
+  "cambios": [
+    {
+      "codigo_anterior": "PERS_006",
+      "codigo_actual": "SALUD_005",
+      "motivo": "PAE corresponde a alimentación y salud en el perfil de siete dimensiones; no a seguridad personal. Se conserva Tier C y no_publicable.",
+      "estado": "sin_cambio_de_datos_ni_metodo"
+    }
+  ]
+}

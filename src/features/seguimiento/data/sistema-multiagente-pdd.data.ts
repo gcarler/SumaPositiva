@@ -877,7 +877,7 @@ export const ESTADO_SISTEMA_MULTIAGENTE_PDD_CANONICO: EstadoSistemaMultiagentePd
 export const COMPARATIVO_SEGURIDAD_HUMANA_PDD_CANONICO: ComparativoSeguridadHumanaPddRespuesta = {
   alcance: "PDD-Only; los 5 Planes de Desarrollo Distritales comparados sobre base homogénea y los 3 PDL en Anexo Territorial separado",
   base_constante: "COP constantes de 2025 (deflactados con serie histórica IPC DANE)",
-  rubrica_clasificacion: "POLIS_SH_A_B_C_N_V1 (7 Dimensiones PNUD 1994 / Decreto 037 de 2026)",
+  rubrica_clasificacion: "POLIS_SH_A_B_C_N_V1 (perfil de 7 dimensiones de Seguridad Humana de POLIS)",
   dimensiones: DIMENSIONES_SEGURIDAD_HUMANA_PNUD,
   resumen_global: {
     total_planes_pdd: 5,
@@ -1982,4 +1982,3 @@ export function interpretarFragmentoSemanticoPddLocal(
     },
   };
 }
-

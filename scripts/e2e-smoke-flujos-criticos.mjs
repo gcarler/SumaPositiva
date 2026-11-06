@@ -1,42 +1,18 @@
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
-import { spawn, execSync } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import http from "node:http";
 import fs from "node:fs";
 
-// Configuración de puertos de entorno aislado (OBS-14)
-// Se pueden sobreescribir vía variables de entorno para evitar colisiones con otros servicios.
-const BACKEND_PORT = Number(process.env.E2E_BACKEND_PORT) || 8100;
-const FRONTEND_STANDALONE_PORT = Number(process.env.E2E_FRONTEND_STANDALONE_PORT) || 3105;
-const PROXY_PORT = Number(process.env.E2E_PROXY_PORT) || 3100;
+import { comprobarPuertosLibres, leerConfiguracionE2E } from "./e2e-seguridad.mjs";
+
+const configuracion = leerConfiguracionE2E();
+const BACKEND_PORT = configuracion.backendPort;
+const FRONTEND_STANDALONE_PORT = configuracion.frontendPort;
+const PROXY_PORT = configuracion.proxyPort;
 const BASE_URL = `http://127.0.0.1:${PROXY_PORT}`;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
-
-// Resolución dinámica de credenciales sin contraseñas en código versionado (OBS-13)
-function resolverPasswordBd() {
-  if (process.env.POLIS_DB_PASS) return process.env.POLIS_DB_PASS;
-  if (process.env.PGPASSWORD) return process.env.PGPASSWORD;
-  try {
-    const envContent = fs.readFileSync("backend/.env", "utf8");
-    for (const line of envContent.split("\n")) {
-      if (line.startsWith("POLIS_DATABASE_URL=")) {
-        const val = line.slice(line.indexOf("=") + 1).trim();
-        const m = val.match(/:\/\/([^:]+):([^@]+)@/);
-        if (m && m[2]) return m[2];
-      }
-    }
-  } catch {}
-  return "";
-}
-
-const DB_PASS = resolverPasswordBd();
-const DB_HOST = process.env.POLIS_DB_HOST || "127.0.0.1";
-const DB_PORT = process.env.POLIS_DB_PORT || "5432";
-const DB_USER = process.env.POLIS_DB_USER || "polis";
-const E2E_DB_NAME = process.env.POLIS_E2E_DB_NAME || "polis_test_e2e";
-const E2E_DATABASE_URL = DB_PASS
-  ? `postgresql+asyncpg://${DB_USER}:${encodeURIComponent(DB_PASS)}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`
-  : `postgresql+asyncpg://${DB_USER}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`;
+const E2E_DATABASE_URL = configuracion.databaseUrl;
 
 let backendProcess = null;
 let frontendProcess = null;
@@ -54,20 +30,11 @@ function registrarPaso(nombre, detalle = "") {
 }
 
 /**
- * Limpieza defensiva de puertos aislados de prueba (OBS-14).
- * Se ejecuta únicamente sobre puertos dedicados de test (8100, 3105, 3100) para garantizar
- * que no queden procesos zombies de corridas previas interrumpidas.
- * NUNCA opera sobre los puertos productivos (8000 backend / 3000 frontend).
+ * Comprueba los puertos del laboratorio y aborta si están ocupados.
+ * Los procesos existentes conservan su ejecución; el runner detiene solo sus hijos.
  */
-function limpiarPuertos() {
-  console.log(`[E2E-ENV] Limpiando procesos en puertos de prueba aislados ${BACKEND_PORT}, ${FRONTEND_STANDALONE_PORT} y ${PROXY_PORT}...`);
-  try {
-    execSync(`fuser -k ${BACKEND_PORT}/tcp 2>/dev/null || true`);
-    execSync(`fuser -k ${FRONTEND_STANDALONE_PORT}/tcp 2>/dev/null || true`);
-    execSync(`fuser -k ${PROXY_PORT}/tcp 2>/dev/null || true`);
-  } catch {
-    // Si no había procesos escuchando, ignorar limpiamente
-  }
+async function verificarPuertosDisponibles() {
+  await comprobarPuertosLibres([BACKEND_PORT, FRONTEND_STANDALONE_PORT, PROXY_PORT]);
 }
 
 async function esperarUrl(url, timeoutMs = 25000) {
@@ -86,15 +53,14 @@ async function esperarUrl(url, timeoutMs = 25000) {
 
 async function prepararEntornoAislado() {
   console.log("\n[E2E-ENV] 1. Inicializando base de datos aislada y sembrando usuarios dinámicos...");
-  const rawCreds = execSync("backend/.venv/bin/python scripts/preparar_entorno_e2e.py", {
+  await verificarPuertosDisponibles();
+  const rawCreds = execFileSync("backend/.venv/bin/python", ["scripts/preparar_entorno_e2e.py"], {
     encoding: "utf8",
   });
   const creds = JSON.parse(rawCreds.trim());
-  console.log("[E2E-ENV] Base de datos polis_test_e2e clonada desde polis_test.");
+  console.log(`[E2E-ENV] Base ${configuracion.dbName} clonada desde ${configuracion.templateName}.`);
   console.log(`[E2E-ENV] Usuario Autoridad: ${creds.autoridad.correo}`);
   console.log(`[E2E-ENV] Usuario Auditor:   ${creds.auditor.correo}`);
-
-  limpiarPuertos();
 
   console.log(`[E2E-ENV] 2. Levantando backend uvicorn en puerto aislado ${BACKEND_PORT}...`);
   backendProcess = spawn(
@@ -122,13 +88,14 @@ async function prepararEntornoAislado() {
   });
 
   console.log(`[E2E-ENV] 3. Levantando frontend standalone en puerto aislado ${FRONTEND_STANDALONE_PORT}...`);
-  frontendProcess = spawn("node", [".next/standalone/server.js"], {
+  frontendProcess = spawn("node", [configuracion.frontendServer], {
     cwd: process.cwd(),
     env: {
       ...process.env,
       PORT: String(FRONTEND_STANDALONE_PORT),
       HOSTNAME: "127.0.0.1",
       NODE_ENV: "production",
+      POLIS_BACKEND_URL: BACKEND_URL,
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -188,7 +155,6 @@ function desmontarEntornoAislado() {
       backendProcess.kill("SIGTERM");
     } catch {}
   }
-  limpiarPuertos();
   console.log("[E2E-ENV] Entorno desmontado limpiamente.");
 }
 
@@ -429,12 +395,22 @@ async function main() {
     const textoDescripcionRenderizado = pageAutoridad.locator(`text="${nuevaDescLinea}"`).first();
     await textoDescripcionRenderizado.waitFor({ state: "visible", timeout: 8000 });
     assert(await textoDescripcionRenderizado.isVisible(), "La descripción de la línea debe persistir y renderizarse tras recarga");
+    await pageAutoridad.keyboard.press("Escape");
 
     registrarPaso("4. Editar línea", "Descripción persistió en PostgreSQL y se renderizó tras recarga");
 
     // 5. Editar compromiso PAS y verificar persistencia tras recarga
     console.log("\nEjecutando Flujo 5: Editar Compromiso PAS...");
+    await pageAutoridad.route("**/api/v1/compromisos", async route => {
+      await new Promise(resolve => setTimeout(resolve, 650));
+      await route.continue();
+    });
     await pageAutoridad.goto(`${BASE_URL}/plataforma/seguimiento`, { waitUntil: "domcontentloaded" });
+    await pageAutoridad.getByRole("status").filter({ hasText: "Cargando compromisos institucionales" }).waitFor();
+    assert.equal(await pageAutoridad.getByRole("button", { name: /Gestionar avance de compromiso/ }).count(), 0,
+      "No se permite editar un compromiso provisional mientras carga la API");
+    await pageAutoridad.getByText("Compromiso sintético E2E", { exact: true }).waitFor();
+    await pageAutoridad.unroute("**/api/v1/compromisos");
 
     const botonGestionarCompromiso = pageAutoridad.locator('button:has-text("Gestionar Avance"), button:has-text("Ver Detalle")').first();
     await botonGestionarCompromiso.waitFor({ state: "visible", timeout: 8000 });
@@ -443,18 +419,23 @@ async function main() {
     const panelCompromiso = pageAutoridad.locator('[data-slot="side-panel"]').first();
     await panelCompromiso.waitFor({ state: "visible", timeout: 8000 });
 
-    const inputAvanceValor = panelCompromiso.locator('input[type="number"]').first();
+    const inputAvanceValor = panelCompromiso.getByLabel("Valor Acumulado Medido", { exact: false });
     await inputAvanceValor.waitFor({ state: "visible", timeout: 8000 });
     const nuevoAvanceCompromiso = 35;
     await inputAvanceValor.fill(String(nuevoAvanceCompromiso));
 
-    const obsTextarea = panelCompromiso.locator('textarea').first();
+    const obsTextarea = panelCompromiso.getByLabel("Observación Técnica / Reporte Cualitativo");
     const nuevaObsE2E = `Avance verificado en prueba E2E [${Date.now()}]`;
     await obsTextarea.fill(nuevaObsE2E);
 
     const botonActualizarCompromiso = panelCompromiso.locator('button[type="submit"]:has-text("Actualizar Avance")').first();
-    await botonActualizarCompromiso.click();
-    await pageAutoridad.waitForTimeout(1200);
+    const [respuestaAvance] = await Promise.all([
+      pageAutoridad.waitForResponse(res => res.url().includes("/api/v1/compromisos/") &&
+        res.url().endsWith("/avance") && res.request().method() === "PATCH"),
+      botonActualizarCompromiso.click(),
+    ]);
+    assert.equal(respuestaAvance.status(), 200, "El servidor debe confirmar la actualización del avance");
+    assert.equal((await respuestaAvance.json()).avance_cuatrienal_valor, nuevoAvanceCompromiso);
 
     // Recargar y verificar persistencia
     console.log("Recargando página para verificar persistencia de compromiso en PostgreSQL...");
@@ -462,7 +443,7 @@ async function main() {
     await pageAutoridad.locator('button:has-text("Gestionar Avance"), button:has-text("Ver Detalle")').first().click();
     await pageAutoridad.waitForSelector('[data-slot="side-panel"]', { timeout: 8000 });
 
-    const inputAvanceRecargado = pageAutoridad.locator('[data-slot="side-panel"] input[type="number"]').first();
+    const inputAvanceRecargado = pageAutoridad.locator('[data-slot="side-panel"]').getByLabel("Valor Acumulado Medido", { exact: false });
     assert.equal(await inputAvanceRecargado.inputValue(), String(nuevoAvanceCompromiso), "El avance del compromiso debe persistir tras recargar");
 
     await pageAutoridad.keyboard.press("Escape");
@@ -477,31 +458,36 @@ async function main() {
     await tabCadenaValor.click();
     await pageAutoridad.waitForTimeout(500);
 
-    const botonFichaIndicador = pageAutoridad.locator('button:has-text("Ver Ficha Técnica de Indicador")').first();
+    const botonFichaIndicador = pageAutoridad.getByRole("button", { name: /Ver ficha técnica del indicador IND-E2E-303 / });
     await botonFichaIndicador.waitFor({ state: "visible", timeout: 8000 });
     await botonFichaIndicador.click();
 
     const panelIndicador = pageAutoridad.locator('[data-slot="side-panel"]').first();
     await panelIndicador.waitFor({ state: "visible", timeout: 8000 });
 
-    const inputValorMedido = panelIndicador.locator('input[type="number"]').first();
+    const inputValorMedido = panelIndicador.getByLabel("Valor Medido Actual (unidades)");
     await inputValorMedido.waitFor({ state: "visible", timeout: 8000 });
     const nuevoValorMedido = 5200;
     await inputValorMedido.fill(String(nuevoValorMedido));
 
     const botonGuardarMedicion = panelIndicador.locator('button:has-text("Guardar Medición")').first();
-    await botonGuardarMedicion.click();
-    await pageAutoridad.waitForTimeout(1200);
+    const [respuestaMedicion] = await Promise.all([
+      pageAutoridad.waitForResponse(res => res.url().includes("/api/v1/indicadores/fichas/") &&
+        res.url().endsWith("/mediciones") && res.request().method() === "POST"),
+      botonGuardarMedicion.click(),
+    ]);
+    assert(respuestaMedicion.ok(), "El servidor debe confirmar la nueva medición");
+    assert.equal(Number((await respuestaMedicion.json()).valor_medido), nuevoValorMedido);
 
     // Recargar y verificar persistencia
     console.log("Recargando página para verificar persistencia de medición en PostgreSQL...");
     await pageAutoridad.reload({ waitUntil: "domcontentloaded" });
     await pageAutoridad.locator('[role="tab"]:has-text("Cadena de Valor")').first().click();
     await pageAutoridad.waitForTimeout(500);
-    await pageAutoridad.locator('button:has-text("Ver Ficha Técnica de Indicador")').first().click();
+    await pageAutoridad.getByRole("button", { name: /Ver ficha técnica del indicador IND-E2E-303 / }).click();
     await pageAutoridad.waitForSelector('[data-slot="side-panel"]', { timeout: 8000 });
 
-    const inputMedicionRecargado = pageAutoridad.locator('[data-slot="side-panel"] input[type="number"]').first();
+    const inputMedicionRecargado = pageAutoridad.locator('[data-slot="side-panel"]').getByLabel("Valor Medido Actual (unidades)");
     assert.equal(await inputMedicionRecargado.inputValue(), String(nuevoValorMedido), "El valor medido del indicador debe persistir tras recarga");
 
     await pageAutoridad.keyboard.press("Escape");

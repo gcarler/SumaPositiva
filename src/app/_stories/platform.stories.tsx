@@ -14,6 +14,9 @@ import {useMesasStore} from "@/features/mesas/state/mesas-store";
 import {useSesionStore} from "@/features/sesion/state/session-store";
 import {POLITICAS_MOCK} from "@/features/politicas/__fixtures__/politicas.fixture";
 import {MESAS_MOCK} from "@/features/mesas/__fixtures__/mesas.fixture";
+import {useGeovisorLayoutStore} from "@/features/geovisor/state/geovisor-layout-store";
+import {useGeovisorAnaliticaStore} from "@/features/geovisor/state/geovisor-analitica-store";
+import {ANALITICA_DEMO} from "@/features/geovisor/__fixtures__/analitica.fixture";
 
 const meta = {
   title: "Plataforma/Pantallas",
@@ -82,8 +85,8 @@ const meta = {
       useSesionStore.setState({ sesion: null });
     };
   },
-  render: () => (
-    <QueryProvider>
+  render: (_args, contexto) => (
+    <QueryProvider key={contexto.id}>
       <Home />
       <PanelHost />
       <Toaster />
@@ -401,18 +404,88 @@ export const GaleriaAccesible: Story = {
 export const GaleriaAccesibleOscura: Story = { ...GaleriaAccesible, globals: { theme: "dark" } };
 
 export const TerritoriosConTeclado: Story = {
-  beforeEach: () => useNavigationStore.setState({ vista: "geovisor" }),
+  beforeEach: () => {
+    useGeovisorLayoutStore.getState().resetLayout();
+    useGeovisorAnaliticaStore.getState().limpiar();
+    useNavigationStore.setState({ vista: "geovisor" });
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const territories = await canvas.findAllByRole("button", { name: /^(Explorar territorio:|Abrir ficha territorial:)/ });
+    // El mapa se importa de forma diferida; esperar su montaje también en arranque frío.
+    const territories = await canvas.findAllByRole("button", { name: /^(Explorar territorio:|Abrir ficha territorial:)/ }, { timeout: 10000 });
     territories[0].focus();
     await expect(territories[0]).toHaveFocus();
     await userEvent.keyboard("{Enter}");
     await expect(await canvas.findByRole("dialog")).toBeVisible();
     await userEvent.keyboard("{Escape}");
-    await expect(territories[0]).toHaveFocus();
+    await waitFor(() => expect(territories[0]).toHaveFocus());
     await userEvent.keyboard(" ");
     await expect(await canvas.findByRole("dialog")).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument());
+  },
+};
+
+export const FiltrarTerritorioSinAbrirFicha: Story = {
+  beforeEach: () => {
+    useGeovisorLayoutStore.getState().resetLayout();
+    useGeovisorAnaliticaStore.getState().limpiar();
+    useNavigationStore.setState({ vista: "geovisor" });
+    const anterior = window.fetch;
+    window.fetch = async (entrada, opciones) => {
+      const url = new URL(typeof entrada === "string" ? entrada : entrada instanceof Request ? entrada.url : entrada.href, location.origin);
+      if (url.pathname === "/api/v1/geodatos/analitica/multifuente") return Response.json(ANALITICA_DEMO);
+      return anterior(entrada, opciones);
+    };
+    return () => { window.fetch = anterior; };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const selector = await canvas.findByRole("combobox", { name: "Territorio de los datos" });
+    await userEvent.click(selector);
+    await userEvent.click(await within(canvasElement.ownerDocument.body).findByRole("option", { name: /Territorio ficticio/ }));
+    await waitFor(() => expect(useGeovisorAnaliticaStore.getState().filtros.codigo_territorio).toBe("DEMO"));
+    await expect(usePanelStore.getState().entries).toHaveLength(0);
+    await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+  },
+};
+
+export const CerrarPestanaConTeclado: Story = {
+  beforeEach: () => {
+    useGeovisorLayoutStore.getState().resetLayout();
+    useGeovisorLayoutStore.getState().openView("mesas", "left");
+    useGeovisorAnaliticaStore.getState().limpiar();
+    useNavigationStore.setState({ vista: "geovisor" });
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const lista = await canvas.findByRole("tablist", { name: "Vistas del panel izquierdo" });
+    const cantidad = useGeovisorLayoutStore.getState().tabs.left.length;
+    const activa = within(lista).getByRole("tab", { selected: true });
+    activa.focus();
+    await expect(activa).toHaveFocus();
+    await userEvent.keyboard("{Delete}");
+    await waitFor(() => expect(useGeovisorLayoutStore.getState().tabs.left).toHaveLength(cantidad - 1));
+    await waitFor(() => {
+      const actual = canvas.getByRole("tablist", { name: "Vistas del panel izquierdo" });
+      expect(within(actual).getByRole("tab", { selected: true })).toHaveFocus();
+    });
+  },
+};
+
+export const CerrarUltimaPestanaConTeclado: Story = {
+  beforeEach: () => {
+    useGeovisorLayoutStore.getState().resetLayout();
+    useGeovisorAnaliticaStore.getState().limpiar();
+    useNavigationStore.setState({ vista: "geovisor" });
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const lista = await canvas.findByRole("tablist", { name: "Vistas del panel izquierdo" });
+    within(lista).getByRole("tab").focus();
+    await userEvent.keyboard("{Delete}");
+    await waitFor(() => expect(useGeovisorLayoutStore.getState().tabs.left).toHaveLength(0));
+    await waitFor(() => expect(canvas.getByTestId("dock-toggle-left")).toHaveFocus());
   },
 };
 
