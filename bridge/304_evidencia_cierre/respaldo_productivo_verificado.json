@@ -1,0 +1,50 @@
+{
+  "archivo_privado": "/root/polis/backups/reconciliacion_304/respaldo_previo.json",
+  "sha256_manifiesto": "134310dcffc15a98618b19c4827e2643a9485a161719959e865b628ccf4c427f",
+  "base": "bd_csh",
+  "solo_lectura": true,
+  "archivos": [
+    {
+      "nombre": "cache_inteligencia_triada_6m.json",
+      "sha256": "b40676b9a8a0e4e1fff4f6a780736349105e644c83ef6752287a3c042bfea489",
+      "bytes": 933088
+    },
+    {
+      "nombre": "cache_pdd_dea_v12.json",
+      "sha256": "15f0b5a0b827c3778893c79d358023fbe075f4702531849c892280d56695337c",
+      "bytes": 119244488
+    },
+    {
+      "nombre": "cache_pdt_ai_evaluator.json",
+      "sha256": "042ecb72684b4cdccdaabe3c2c3a7f242fbc26cfe69c80e6fa28b3c089463545",
+      "bytes": 2842978
+    },
+    {
+      "nombre": "checkpoints_pdt_ai_evaluator.json",
+      "sha256": "4856cb28bf07125e76b90d1d07a0881d9b2007576033577000e38e3a75aa06c8",
+      "bytes": 1889531
+    },
+    {
+      "nombre": "conteos.json",
+      "sha256": "cda72fff8a86935e2fd9f2b2731f8cfba4ddd5660cabca7b31c66bb2f21ed81e",
+      "bytes": 111
+    },
+    {
+      "nombre": "pdt_ai_checkpoints_hitl.json",
+      "sha256": "50094d63a44752c4fb40fa459d7a5e58a70d360816381ed9917b13926bd7df51",
+      "bytes": 21122
+    },
+    {
+      "nombre": "pdt_ai_evaluaciones.json",
+      "sha256": "2083069daf6fe31acc64c83afded4e17629aca0a9f3be9e954831357c4ae1cf6",
+      "bytes": 38063
+    },
+    {
+      "nombre": "registros_completos.json",
+      "sha256": "4ad5ea85563810871bf0b5d11c8fe2d3da672547d69ae475c21b6bf06e2b2018",
+      "bytes": 372051
+    }
+  ],
+  "registros_objetivo": 67,
+  "plan_sha256": "050618419d844408a4ffdd6b14caece56894995168aa89cb22af4bab4b2f44d4"
+}

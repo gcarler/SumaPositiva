@@ -1,0 +1,14 @@
+{
+  "base": "bd_csh",
+  "modo": "inspeccion_solo_lectura",
+  "muestrarios": [
+    {
+      "muestrario": "gold-set-2026-10-21",
+      "pares": 240,
+      "anotados_a": 0,
+      "anotados_b": 0,
+      "adjudicados": 0
+    }
+  ],
+  "etiquetas_modificadas": false
+}

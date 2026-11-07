@@ -1,0 +1,275 @@
+{
+  "base": "polis_test_304_corpus",
+  "host": "127.0.0.1",
+  "puerto": 15433,
+  "antes": {
+    "archivos": 607,
+    "registros": 215300,
+    "lotes": 621
+  },
+  "rondas": [
+    {
+      "ronda": 1,
+      "archivos": [
+        {
+          "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+          "codigo_lote": "TRIADA-20261107164638-22B81B19",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 45
+        },
+        {
+          "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+          "codigo_lote": "TRIADA-20261107164638-2172532A",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 60
+        },
+        {
+          "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+          "codigo_lote": "TRIADA-20261107164638-47109E2D",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 63
+        },
+        {
+          "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+          "codigo_lote": "TRIADA-20261107164638-AB7150D5",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 64
+        },
+        {
+          "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+          "codigo_lote": "TRIADA-20261107164639-3B74EF55",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 125
+        },
+        {
+          "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+          "codigo_lote": "TRIADA-20261107164639-FE911E93",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 64
+        },
+        {
+          "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+          "codigo_lote": "TRIADA-20261107164639-7BA0B174",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 474
+        },
+        {
+          "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+          "codigo_lote": "TRIADA-20261107164640-78649F2E",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 218
+        },
+        {
+          "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+          "codigo_lote": "TRIADA-20261107164641-D86FC865",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 292
+        },
+        {
+          "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+          "codigo_lote": "TRIADA-20261107164641-4E194284",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 221
+        },
+        {
+          "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+          "codigo_lote": "TRIADA-20261107164642-1BFB19DD",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 42
+        },
+        {
+          "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+          "codigo_lote": "TRIADA-20261107164642-9AF38EEC",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 221
+        },
+        {
+          "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v:1",
+          "codigo_lote": "TRIADA-20261107164643-C731E629",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 2033
+        },
+        {
+          "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v:2",
+          "codigo_lote": "TRIADA-20261107164646-1FC988AE",
+          "archivos_persistidos": 1,
+          "deduplicados": 0,
+          "hojas": 1,
+          "registros": 2033
+        }
+      ],
+      "conteos_sql": {
+        "archivos": 621,
+        "registros": 221255,
+        "lotes": 635
+      }
+    },
+    {
+      "ronda": 2,
+      "archivos": [
+        {
+          "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+          "codigo_lote": "TRIADA-20261107164648-D06B18FB",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 45
+        },
+        {
+          "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+          "codigo_lote": "TRIADA-20261107164648-F6324C0A",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 60
+        },
+        {
+          "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+          "codigo_lote": "TRIADA-20261107164648-43A2E52C",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 63
+        },
+        {
+          "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+          "codigo_lote": "TRIADA-20261107164649-430D8829",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 64
+        },
+        {
+          "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+          "codigo_lote": "TRIADA-20261107164649-28E9228C",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 125
+        },
+        {
+          "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+          "codigo_lote": "TRIADA-20261107164649-B0010F0C",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 64
+        },
+        {
+          "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+          "codigo_lote": "TRIADA-20261107164649-E79F3097",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 474
+        },
+        {
+          "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+          "codigo_lote": "TRIADA-20261107164650-75F3B72F",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 218
+        },
+        {
+          "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+          "codigo_lote": "TRIADA-20261107164650-A079494E",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 292
+        },
+        {
+          "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+          "codigo_lote": "TRIADA-20261107164650-B21FDD7A",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 221
+        },
+        {
+          "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+          "codigo_lote": "TRIADA-20261107164651-3DBC778E",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 42
+        },
+        {
+          "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+          "codigo_lote": "TRIADA-20261107164651-267D4DF7",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 221
+        },
+        {
+          "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v:1",
+          "codigo_lote": "TRIADA-20261107164652-B735B904",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 2033
+        },
+        {
+          "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v:2",
+          "codigo_lote": "TRIADA-20261107164653-62EC59DE",
+          "archivos_persistidos": 0,
+          "deduplicados": 1,
+          "hojas": 1,
+          "registros": 2033
+        }
+      ],
+      "conteos_sql": {
+        "archivos": 635,
+        "registros": 221255,
+        "lotes": 649
+      }
+    }
+  ],
+  "idempotencia_observaciones": true,
+  "rollback": {
+    "flushes_reales": 2,
+    "antes": {
+      "archivos": 635,
+      "registros": 221255,
+      "lotes": 649
+    },
+    "despues": {
+      "archivos": 635,
+      "registros": 221255,
+      "lotes": 649
+    },
+    "otra_conexion": true
+  },
+  "documentos_word_enrutados": 2,
+  "libros_derivados": 14,
+  "SQL_productiva": false,
+  "originales_modificados": false
+}

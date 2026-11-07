@@ -1,0 +1,120 @@
+{
+  "codigo": "SAT_001",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "SAT_001",
+    "nombre": "Índice de Riesgo de Victimización municipal",
+    "dimension": "SAT",
+    "definicion": "Índice preventivo municipal 0-1 publicado por la Unidad para las Víctimas; no cuenta casos observados.",
+    "formula": "Valor original publicado: unidad_victimas_irv_cartagena.indice_riesgo_victimizacion; no se recalcula.",
+    "numerador": "unidad_victimas_irv_cartagena.indice_riesgo_victimizacion",
+    "denominador": "Modelo oficial del IRV publicado por la fuente; no se recalcula.",
+    "unidad": "indice 0-1",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_medicion",
+    "fuente": "unidad_victimas_irv_cartagena",
+    "url_fuente": "https://datospaz.unidadvictimas.gov.co/indice-de-riesgo-de-victimizacion/",
+    "custodio": "Unidad para las Víctimas / RNI",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2012",
+    "interpretacion": "Lee el riesgo modelado en el año correspondiente.",
+    "riesgo_metodologico": "2016 está ausente y no debe imputarse; no es conteo victimológico ni alerta individual.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "unidad_victimas_irv_cartagena",
+    "dataset_id": "IRV-MapServer-2012-2025",
+    "titulo": "Índice de Riesgo de Victimización municipal Cartagena",
+    "entidad": "Unidad para las Víctimas / RNI",
+    "dimension": "politica",
+    "pagina": "https://datospaz.unidadvictimas.gov.co/indice-de-riesgo-de-victimizacion/",
+    "consulta": "https://vgv.unidadvictimas.gov.co/server/rest/services/IRV/IRV/MapServer",
+    "extraido_utc": "2026-10-23T01:50:58.236748+00:00",
+    "sha256": "f8f5c809cd74b75e8f8a7e4f597c9534bf70807a16b4b8b84d9756693b724cda",
+    "filas_consultadas": 14,
+    "primer_anio": 2012,
+    "ultimo_anio": 2025,
+    "estado": "servicio_municipal_oficial"
+  },
+  "serie_observada": {
+    "fuente_clave": "unidad_victimas_irv_cartagena",
+    "indicador": "indice_riesgo_victimizacion",
+    "selector_literal": null,
+    "observaciones": 13,
+    "valores_no_nulos": 13,
+    "anios": [
+      2012,
+      2013,
+      2014,
+      2015,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "subtipos": [
+      "Bajo",
+      "Medio Bajo"
+    ],
+    "unidades": [
+      "índice 0–1"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "1c228e62351bcf8c0b5d8c69ed9b4641f33516c56ca60c7fa594a9f8d3b8f299",
+      "1dde7bc57481321551ff22a49c567619753eee702effeaa7f14080ea4b73071b",
+      "3ced2f6935ff1235b1385dc3cc9f8b3543825db2203277663ba30b2d16cdcce4",
+      "93547ddea0fd1115dd236578eff9b65a14dd664be1438419306e76223d114bed",
+      "9773cfaf2d285429fe9bcb499daafe473ccc1097841e366d812ad7c97f0e01df",
+      "97a89c3d7102d33354ac940971aaaa3b2dfff226d9983c32c0f3024f3b31ac96",
+      "b1fb635f9ffebd416916f9c22bf7f5d1133f47f1777fd671bf3785343e2f228d",
+      "bbb3650317fdd56921e7764cc2a8f4726ceaf181a4c4b266ab875895e0bcd469",
+      "be2123148db82f930ef7125ce4e75964c14b317cb290e6ce572178ca38839643",
+      "c903877f29a4f86ac552527659eed60fa78091ee3ac267bf35381a31e1066d06",
+      "d2d632c1d8c953ee2e4e80558d7bbd1507c2c0a3d1113682b767e575d604c50f",
+      "d6504cd6b135a25a6a105b47b66b6d21b74f111e52062c19b9fd0af49427467e",
+      "da732789db2222dc8dad83f54b084b2f47f8c74dcefcfd96c992a89c6ab27f88"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "No se ha verificado una licencia específica del producto.",
+    "licencia_producto": null,
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "indice 0-1",
+    "universo": "Modelo oficial del IRV publicado por la fuente; no se recalcula.",
+    "periodo": "anio_medicion",
+    "riesgo_declarado": "2016 está ausente y no debe imputarse; no es conteo victimológico ni alerta individual.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto",
+      "condiciones_reutilizacion_especificas"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

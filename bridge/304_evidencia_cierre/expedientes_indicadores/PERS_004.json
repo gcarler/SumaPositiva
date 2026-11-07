@@ -1,0 +1,120 @@
+{
+  "codigo": "PERS_004",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "PERS_004",
+    "nombre": "Exámenes médico legales por presunto delito sexual",
+    "dimension": "PERS",
+    "definicion": "Exámenes médico legales por presunto delito sexual.",
+    "formula": "Valor original publicado: medicina_examenes_sexuales.casos_registrados; no se recalcula.",
+    "numerador": "medicina_examenes_sexuales.casos_registrados",
+    "denominador": "No aplica: conteo original por año.",
+    "unidad": "casos",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_hecho",
+    "fuente": "medicina_examenes_sexuales",
+    "url_fuente": "https://www.datos.gov.co/d/hyqu-diue",
+    "custodio": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "licencia": "CC-BY-SA-4.0; atribución y compartir igual; declarada en metadatos Socrata",
+    "anio_base": "2015",
+    "interpretacion": "Lectura de exámenes practicados; no equivale a delitos denunciados ante Policía.",
+    "riesgo_metodologico": "No equivale a denuncias policiales ni a victimización encuestada.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "medicina_examenes_sexuales",
+    "dataset_id": "hyqu-diue",
+    "titulo": "Exámenes médico legales por presunto delito sexual. Colombia, años 2015 a 2024. Cifras definitivas",
+    "entidad": "Medicina Legal",
+    "dimension": "personal",
+    "pagina": "https://www.datos.gov.co/d/hyqu-diue",
+    "consulta": "https://www.datos.gov.co/resource/hyqu-diue.json?%24select=a_o_del_hecho&%24where=codigo_dane_municipio%3D%2713001%27",
+    "extraido_utc": "2026-10-23T01:50:07.543176+00:00",
+    "sha256": "1075d34708a4125c43b7bfa647f4df839e66626d0805ad4f32615f4daef31865",
+    "filas_consultadas": 5254,
+    "primer_anio": 2015,
+    "ultimo_anio": 2024,
+    "estado": "disponible"
+  },
+  "serie_observada": {
+    "fuente_clave": "medicina_examenes_sexuales",
+    "indicador": "casos_registrados",
+    "selector_literal": null,
+    "observaciones": 10,
+    "valores_no_nulos": 10,
+    "anios": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "subtipos": [
+      "total"
+    ],
+    "unidades": [
+      "casos"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Licencia declarada por el publicador Socrata; atribución y compartir igual.",
+    "licencia_producto": {
+      "url": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "consultado_utc": "2026-11-06T10:50:13.659289+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/hyqu-diue.json",
+      "bytes": 64696,
+      "sha256": "06486972fa69e1d5ed1cdb5ad9ecf4c7f6f00847d41500479c09a9057793c063",
+      "nombre": "Exámenes médico legales por presunto delito sexual. Colombia, años 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758301767
+    },
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "casos",
+    "universo": "No aplica: conteo original por año.",
+    "periodo": "anio_hecho",
+    "riesgo_declarado": "No equivale a denuncias policiales ni a victimización encuestada.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

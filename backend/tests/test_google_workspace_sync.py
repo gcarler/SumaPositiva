@@ -4,6 +4,8 @@ import asyncio
 import hashlib
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+
 from app.modules.compromisos import google_workspace_sync_service as workspace_module
 from app.modules.compromisos.google_workspace_sync_service import (
     FILES,
@@ -125,6 +127,8 @@ def test_report_has_a_verifiable_sha256_seal() -> None:
             "unique_count": 1805,
             "entities": [],
             "activities": [],
+            "normalized_counts": {"registros": 0, "filas_pa": 0},
+            "drive_catalog": [],
             "mesas": [{}] * 37,
             "laboratory": {
                 "network_dea_bi_etapa": {"entidades_elegibles": 0},
@@ -133,11 +137,75 @@ def test_report_has_a_verifiable_sha256_seal() -> None:
             "theft_total": {"filas": 12280, "casos": 18242},
         }
     )
-    body = report.split("\n\nSello SHA-256 del cuerpo anterior:", maxsplit=1)[0]
+    body = report.rsplit("\n\nSHA-256 del cuerpo del documento: ", maxsplit=1)[0]
     assert hashlib.sha256(body.encode()).hexdigest() == digest
     assert digest in report
-    assert "2.078" not in report
-    assert "1805 únicas" in report
+    assert "Metas PDD: 2,078; registros no marcados como duplicados: 1,805." in report
+
+
+@pytest.mark.parametrize("contenido", [None, "", " \n\t"])
+def test_workspace_valida_guion_antes_de_consultar_o_escribir(monkeypatch, tmp_path, contenido) -> None:
+    ruta = tmp_path / "guion_usuario.txt"
+    if contenido is not None:
+        ruta.write_text(contenido, encoding="utf-8")
+    monkeypatch.setenv("POLIS_USER_OUTLINE_PATH", str(ruta))
+    service = GoogleWorkspaceSyncService(session=MagicMock())
+    llamadas = {}
+    for nombre in ("_collect_data", "_access_token", "_rename_files", "_prepare_spreadsheet", "_write_sheets"):
+        llamadas[nombre] = AsyncMock()
+        monkeypatch.setattr(service, nombre, llamadas[nombre])
+    with pytest.raises(FileNotFoundError if contenido is None else ValueError):
+        asyncio.run(service.sincronizar_workspace())
+    for llamada in llamadas.values():
+        llamada.assert_not_awaited()
+
+
+def test_workspace_prepara_informe_antes_de_cualquier_efecto_remoto(monkeypatch, tmp_path) -> None:
+    ruta = tmp_path / "guion_prueba_sintetico.txt"
+    contenido = "Guion sintético exclusivo de esta prueba"
+    ruta.write_text(contenido, encoding="utf-8")
+    monkeypatch.setenv("POLIS_USER_OUTLINE_PATH", str(ruta))
+    service = GoogleWorkspaceSyncService(session=MagicMock())
+    datos = {"prueba": True}
+    recoger = AsyncMock(return_value=datos)
+    informar = MagicMock(side_effect=RuntimeError("FALLO_LOCAL_DEL_INFORME"))
+    token = AsyncMock()
+    renombrar = AsyncMock()
+    monkeypatch.setattr(service, "_collect_data", recoger)
+    monkeypatch.setattr(service, "_report", informar)
+    monkeypatch.setattr(service, "_access_token", token)
+    monkeypatch.setattr(service, "_rename_files", renombrar)
+    with pytest.raises(RuntimeError, match="FALLO_LOCAL_DEL_INFORME"):
+        asyncio.run(service.sincronizar_workspace())
+    recoger.assert_awaited_once()
+    informar.assert_called_once_with(datos, outline_text=contenido)
+    token.assert_not_awaited()
+    renombrar.assert_not_awaited()
+
+
+def test_sello_unitario_con_guion_sintetico_explicito() -> None:
+    """Cubre el algoritmo; no acredita la validación contra el guion oficial."""
+    datos = {
+        "plans": [],
+        "activities": [],
+        "mesas": [],
+        "meta_count": 2,
+        "unique_count": 1,
+        "normalized_counts": {"registros": 0, "filas_pa": 0},
+        "drive_catalog": [],
+        "theft_total": {"filas": 0, "casos": 0},
+    }
+    guion = "GUION SINTÉTICO UNITARIO\n1. Introducción\n33 mesas, 10 territoriales y 27 Dependencias\n7. Conclusiones"
+    report, digest = GoogleWorkspaceSyncService()._report(datos, outline_text=guion)
+    cuerpo, sello = report.rsplit("\n\nSHA-256 del cuerpo del documento: ", 1)
+    assert hashlib.sha256(cuerpo.encode()).hexdigest() == digest == sello.strip()
+    assert "GUION SINTÉTICO UNITARIO" in cuerpo
+    assert cuerpo.index("1. Introducción") < cuerpo.index("7. Conclusiones")
+    assert "Metas PDD: 2; registros no marcados como duplicados: 1." in cuerpo
+    assert "33 mesas, 10 territoriales y 27 Dependencias" in cuerpo
+    assert "Referencia del guion pendiente de contraste" in cuerpo
+    assert "37 mesas" not in cuerpo and "29 dependencias" not in cuerpo
+    assert hashlib.sha256(guion.encode()).hexdigest() in cuerpo
 
 
 def test_pdd_matrices_count_duplicates_without_double_counting() -> None:

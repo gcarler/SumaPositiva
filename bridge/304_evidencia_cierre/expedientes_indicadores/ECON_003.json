@@ -1,0 +1,111 @@
+{
+  "codigo": "ECON_003",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "ECON_003",
+    "nombre": "Proporción de empleo informal (GEIH)",
+    "dimension": "ECON",
+    "definicion": "Proporción de empleo informal publicada por DANE para la cabecera de Cartagena en el dominio de 23 ciudades y áreas metropolitanas.",
+    "formula": "Valor original publicado: dane_geih_informalidad_cartagena.proporcion_informalidad; no se recalcula. La ventana se selecciona por fila explícita (oct-dic o jun-ago), nunca empalme.",
+    "numerador": "dane_geih_informalidad_cartagena.proporcion_informalidad",
+    "denominador": "Población ocupada publicada por DANE en el mismo trimestre móvil (hoja Prop informalidad / Ciudades; la relación formal es población ocupada informal / población ocupada).",
+    "unidad": "porcentaje",
+    "tipo_territorio_fuente": "cabecera_cartagena_23_ciudades",
+    "periodicidad": "trimestral",
+    "tipo_periodo": "trimestre_movil_publicado",
+    "fuente": "dane_geih_informalidad_cartagena",
+    "url_fuente": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx",
+    "custodio": "DANE",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2021",
+    "interpretacion": "Lee la fila Cartagena y la ventana exacta (oct-dic o jun-ago) sin cruzar ventanas.",
+    "riesgo_metodologico": "Ventanas distintas no son comparables ni promediables; 2026 es parcial. No hay promedio anual.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "dane_geih_informalidad_cartagena",
+    "dataset_id": "anex-GEIHEISS-jun-ago2026.xlsx",
+    "titulo": "GEIH Cartagena: informalidad_cartagena",
+    "entidad": "DANE",
+    "dimension": "economica",
+    "pagina": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx",
+    "consulta": "https://www.dane.gov.co/files/operaciones/GEIH/anex-GEIHEISS-jun-ago2026.xlsx",
+    "extraido_utc": "2026-10-23T01:50:51.990302+00:00",
+    "sha256": "247e060d39d472fc6fa5af84b0bac54e808784a0d43cef65b8de2e8a7f6e9ffa",
+    "filas_consultadas": 6,
+    "primer_anio": 2021,
+    "ultimo_anio": 2026,
+    "estado": "anexo_oficial_extraido"
+  },
+  "serie_observada": {
+    "fuente_clave": "dane_geih_informalidad_cartagena",
+    "indicador": "proporcion_informalidad",
+    "selector_literal": null,
+    "observaciones": 6,
+    "valores_no_nulos": 6,
+    "anios": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "subtipos": [
+      "jun - ago",
+      "oct - dic"
+    ],
+    "unidades": [
+      "%"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "86b3f3f555054c5aa4c2134ee64522d028ffc412a1b5b85070afdf504136b31d"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Política institucional capturada; verificar alcance de cada producto y restricciones.",
+    "licencia_producto": null,
+    "politica_institucional": {
+      "id": "dane_politica_uso",
+      "url": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "fecha_captura_utc": "2026-11-07T17:29:49.552131+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "sha256": "747c08eacae36efeed62a3d5f6f63ea9ee9f79442388d3e85164cf897fe0610e",
+      "bytes": 51463,
+      "archivo": "/root/polis/backups/fuentes_304/dane_politica_uso.bin",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Sat, 07 Nov 2026 17:29:47 GMT"
+    },
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "cabecera_cartagena_23_ciudades",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "porcentaje",
+    "universo": "Población ocupada publicada por DANE en el mismo trimestre móvil (hoja Prop informalidad / Ciudades; la relación formal es población ocupada informal / población ocupada).",
+    "periodo": "trimestre_movil_publicado",
+    "riesgo_declarado": "Ventanas distintas no son comparables ni promediables; 2026 es parcial. No hay promedio anual.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

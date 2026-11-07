@@ -1,0 +1,105 @@
+{
+  "codigo": "POL_002",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "POL_002",
+    "nombre": "Víctimas que denunciaron (ECSC cabecera)",
+    "dimension": "POL",
+    "definicion": "Proporción de víctimas que declararon haber denunciado según la referida edición ECSC.",
+    "formula": "Valor original publicado: dane_ecsc_2024.victimas_que_denunciaron; no se recalcula.",
+    "numerador": "dane_ecsc_2024.victimas_que_denunciaron",
+    "denominador": "Víctimas de referencia de la encuesta ECSC en cabecera.",
+    "unidad": "porcentaje",
+    "tipo_territorio_fuente": "cabecera",
+    "periodicidad": "puntual",
+    "tipo_periodo": "anio_referencia",
+    "fuente": "dane_ecsc_2024",
+    "url_fuente": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+    "custodio": "DANE",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2023",
+    "interpretacion": "Lee la estimación muestral publicada, separada de denuncias administrativas.",
+    "riesgo_metodologico": "Mide la variable declarada en la encuesta, con IC amplio; no extender a barrios.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "dane_ecsc_2024",
+    "dataset_id": "anex-ECSC-2024.xlsx",
+    "titulo": "ECSC Cartagena: victimización, denuncia y percepción",
+    "entidad": "DANE",
+    "dimension": "personal",
+    "pagina": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+    "consulta": "https://www.dane.gov.co/index.php/estadisticas-por-tema/seguridad-y-defensa/encuesta-de-convivencia-y-seguridad-ciudadana-ecsc",
+    "extraido_utc": "2026-10-23T01:50:42.010827+00:00",
+    "sha256": "a0f7805a15f66293809a701b043be0ea1c88b94cb0dfc443804a47fb919fabb1",
+    "filas_consultadas": 7,
+    "primer_anio": 2023,
+    "ultimo_anio": 2024,
+    "estado": "anexo_oficial_extraido"
+  },
+  "serie_observada": {
+    "fuente_clave": "dane_ecsc_2024",
+    "indicador": "victimas_que_denunciaron",
+    "selector_literal": null,
+    "observaciones": 1,
+    "valores_no_nulos": 1,
+    "anios": [
+      2023
+    ],
+    "subtipos": [
+      "cabecera de Cartagena; población 15 años y más"
+    ],
+    "unidades": [
+      "%"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "ff85420913203712b870befdb48b90bda9157835822d3ccc454807ad78daefa1"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Política institucional capturada; verificar alcance de cada producto y restricciones.",
+    "licencia_producto": null,
+    "politica_institucional": {
+      "id": "dane_politica_uso",
+      "url": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "fecha_captura_utc": "2026-11-07T17:29:49.552131+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "sha256": "747c08eacae36efeed62a3d5f6f63ea9ee9f79442388d3e85164cf897fe0610e",
+      "bytes": 51463,
+      "archivo": "/root/polis/backups/fuentes_304/dane_politica_uso.bin",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Sat, 07 Nov 2026 17:29:47 GMT"
+    },
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "cabecera",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "porcentaje",
+    "universo": "Víctimas de referencia de la encuesta ECSC en cabecera.",
+    "periodo": "anio_referencia",
+    "riesgo_declarado": "Mide la variable declarada en la encuesta, con IC amplio; no extender a barrios.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

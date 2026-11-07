@@ -1,0 +1,126 @@
+{
+  "codigo": "AMB_004",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "AMB_004",
+    "nombre": "IRCA municipal (SIVICAP)",
+    "dimension": "AMB",
+    "definicion": "Índice de riesgo de la calidad del agua para consumo humano según SIVICAP/INS.",
+    "formula": "Valor original publicado: ins_calidad_agua.irca; no se recalcula.",
+    "numerador": "ins_calidad_agua.irca",
+    "denominador": "No aplica: índice original según SIVICAP",
+    "unidad": "porcentaje IRCA",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_medicion",
+    "fuente": "ins_calidad_agua",
+    "url_fuente": "https://www.datos.gov.co/d/nxt2-39c3",
+    "custodio": "INS / SIVICAP",
+    "licencia": "CC-BY-SA-4.0; atribución y compartir igual; declarada en metadatos Socrata",
+    "anio_base": "2010",
+    "interpretacion": "Índice de riesgo municipal; mantener separado total/urbano/rural.",
+    "riesgo_metodologico": "No sumar entre territorios ni usar como conteo de personas expuestas; revisar cobertura y revisión del indicador.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "ins_calidad_agua",
+    "dataset_id": "nxt2-39c3",
+    "titulo": "Calidad del Agua para Consumo Humano en Colombia",
+    "entidad": "INS / SIVICAP",
+    "dimension": "ambiental",
+    "pagina": "https://www.datos.gov.co/d/nxt2-39c3",
+    "consulta": "https://www.datos.gov.co/resource/nxt2-39c3.json?%24select=a_o%2Circa%2Circaurbano%2Circarural%2Cnivel_de_riesgo&%24where=municipiocodigo%3D%2713001%27",
+    "extraido_utc": "2026-10-23T01:50:28.676774+00:00",
+    "sha256": "f07d784dc0e8b71f2f2cce89f6d2cf789e10f962c84f70e8d77de6071b106c7a",
+    "filas_consultadas": 17,
+    "primer_anio": 2010,
+    "ultimo_anio": 2024,
+    "estado": "disponible"
+  },
+  "serie_observada": {
+    "fuente_clave": "ins_calidad_agua",
+    "indicador": "irca",
+    "selector_literal": null,
+    "observaciones": 38,
+    "valores_no_nulos": 38,
+    "anios": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "subtipos": [
+      "rural",
+      "total",
+      "urbano"
+    ],
+    "unidades": [
+      "%"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "8fa5af1c862ac2b63aaadd9a306883a1ef30858c362a41ffea6dad2730673912"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Licencia declarada por el publicador Socrata; atribución y compartir igual.",
+    "licencia_producto": {
+      "url": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "consultado_utc": "2026-11-06T10:50:13.655741+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/nxt2-39c3.json",
+      "bytes": 22643,
+      "sha256": "df9a0bc3224405be968dbf96a4d7bcd89bad367f505b578a2c96c94e1fd27c99",
+      "nombre": "Calidad del Agua para Consumo Humano en Colombia",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Salud INS, Bogotá D.C",
+      "attributionLink": "https://www.ins.gov.co/sivicap/Paginas/sivicap.aspx",
+      "rowsUpdatedAt": 1793753353
+    },
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "porcentaje IRCA",
+    "universo": "No aplica: índice original según SIVICAP",
+    "periodo": "anio_medicion",
+    "riesgo_declarado": "No sumar entre territorios ni usar como conteo de personas expuestas; revisar cobertura y revisión del indicador.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

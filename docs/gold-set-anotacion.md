@@ -23,6 +23,7 @@ Acción es un vínculo correcto de esta meta del Plan de Desarrollo?* — leyend
 | --- | --- |
 | `id_par` | Identificador del par (alias `GP-…`); copiar tal cual |
 | `codigo_plan`, `codigo_meta`, `nombre_meta` | Contenido de la meta |
+| `indicador_meta` | Indicador original; prevalece sobre el nombre si divergen. Si falta, no se inventa. |
 | `codigo_actividad`, `meta_producto` | Contenido de la actividad |
 | `etiqueta_enviada` | **Sí**: aquí escribe una etiqueta de la Escala (§2) |
 
@@ -101,6 +102,17 @@ solo importa si corresponde a esa meta).
   procedimiento de evolución, no por la anotación.
 
 ## 6. Integridad y huella de evidencia
+
+La revisión 304 regeneró la plantilla a ciegas con escape CSV correcto y añadió
+`indicador_meta`, necesario para aplicar §3. Se mantienen los 240 pares.
+Dos parejas distintas comparten un ID en el primario histórico: los alias v2
+incluyen la identidad de la pareja para distinguirlas. Importación/adjudicación
+admiten alias anteriores únicamente cuando su correspondencia es unívoca.
+La plantilla anterior, sin anotaciones, se conserva en
+`data/gold_set_conciliacion/historico/anotacion_a_ciegas_pre_304.csv`.
+Los cuatro indicadores ausentes en el JSON primario permanecen vacíos.
+`bridge/304_evidencia_cierre/saneamiento_csv_gold_set.json` identifica ambos
+artefactos. Regenerar la plantilla no acredita doble anotación ni precisión.
 
 - El artefacto JSON y la tabla `conciliador_gold_set` son registro primario:
   nadie edita las columnas `etiqueta_*` a mano en la BD; solo vía `importar`.

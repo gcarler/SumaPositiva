@@ -1,0 +1,28 @@
+{
+  "base": "polis_test_304_corpus_r3",
+  "solo_lectura": true,
+  "SQL_productiva": false,
+  "conteos": {
+    "filas_con_ambas_columnas": 28943,
+    "definitiva_cero": 216,
+    "definitiva_cero_inicial_no_cero": 67,
+    "ceros_sustituidos_en_corpus": 67
+  },
+  "no_finitos_por_campo": {
+    "meta_programada_anual": 0,
+    "meta_ejecutada_anual": 0,
+    "avance_t1": 0,
+    "avance_t2": 0,
+    "avance_t3": 0,
+    "avance_t4": 0,
+    "avance_fisico_pct": 0,
+    "avance_estrategico_pct": 0,
+    "apropiacion_definitiva_cop": 0,
+    "cdp_cop": 0,
+    "compromisos_rp_cop": 0,
+    "obligaciones_cop": 0,
+    "pagos_tesoreria_cop": 0
+  },
+  "detalle_afectados_sha256": "da7eaa07b892e4ff3c5c750912278042688a788e53be5eec4f0cc358fde1dd17",
+  "criterio": "Dato fuente definitiva==0, inicial no nula/0 y valor persistido diferente de 0. Solo columnas identificadas en el mapeo de cada hoja."
+}

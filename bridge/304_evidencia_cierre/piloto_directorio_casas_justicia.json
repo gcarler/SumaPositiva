@@ -1,0 +1,50 @@
+{
+  "fuente": "Ministerio de Justicia y del Derecho",
+  "url": "https://www.minjusticia.gov.co/programas-co/casas-de-justicia/Documents/Directorios/DIRECTORIO-PNCJCC-DATOS-PUBLICOS-DICIEMBRE-2025.xlsx",
+  "original_sha256": "cd414eff36dd03ee4164f585215e50a6f5364dbe9c1f927be81dd225195b4487",
+  "hoja": "DIRECTORIO DATOS PUBLICOS",
+  "fecha_actualizacion_literal": "02/12/2025",
+  "interpretacion_fecha": "2025-12-02",
+  "registros_cartagena": [
+    {
+      "fila_excel": 61,
+      "numero_directorio": 55,
+      "modelo": "Casa de Justicia",
+      "departamento_literal": "Bolivar",
+      "municipio_literal": "Cartagena",
+      "nombre": "Cartagena Canapote",
+      "direccion_institucional": "Torices, Sector San Pedro carrera 17 No. 17-191"
+    },
+    {
+      "fila_excel": 62,
+      "numero_directorio": 56,
+      "modelo": "Casa de Justicia",
+      "departamento_literal": "Bolivar",
+      "municipio_literal": "Cartagena",
+      "nombre": "Cartagena Chiquinquira",
+      "direccion_institucional": "Calle 57 No. 31- C- 30. Carretera principal de Olaya Herrera"
+    },
+    {
+      "fila_excel": 63,
+      "numero_directorio": 57,
+      "modelo": "Casa de Justicia",
+      "departamento_literal": "Bolivar",
+      "municipio_literal": "Cartagena",
+      "nombre": "Cartagena Country",
+      "direccion_institucional": "Barrio El Country Manzana 1 Lote 1 Frente a la Plaza de la Convivencia  "
+    }
+  ],
+  "conteo_sedes_en_directorio": 3,
+  "corte_operatividad_verificado": false,
+  "coordenadas_disponibles": false,
+  "direcciones_no_equivalen_a_barrios_verificados": true,
+  "alcance": "Solo Casas de Justicia y Centros de Convivencia del directorio. No representa el inventario completo de seguridad y justicia.",
+  "campos_personales_excluidos": [
+    "nombres_de_funcionarios",
+    "telefonos",
+    "correos"
+  ],
+  "tasa_por_100000": null,
+  "densidad_por_km2": null,
+  "promovido_a_POL_003": false
+}

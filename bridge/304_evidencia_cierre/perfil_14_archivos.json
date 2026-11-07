@@ -1,0 +1,310 @@
+[
+  {
+    "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+    "nombre": "PLAN DE ACCIÒN CORVIVIENDA 2022.xlsx",
+    "sha256": "534116289829ce582491f1bdbea8c4a479527c08bac690cf1893594c8fd4249e",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9.xlsx",
+    "bytes": 30884,
+    "bytes_expandidos": 179479,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 71879
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 26215
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+    "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA A JUNIO 30 DE 2022.xlsx",
+    "sha256": "a0250502981119782046b447a8611cca6cf3fe24f0f4d3e008dd87a560cd51ec",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq.xlsx",
+    "bytes": 36823,
+    "bytes_expandidos": 211244,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 83664
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 46386
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+    "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA IV TRIMESTRE 2023.xlsx",
+    "sha256": "c95ebe1943446fe27b9b5145d0b19fde0065af2e2fb12acbfee17c1dad789d2e",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f.xlsx",
+    "bytes": 39666,
+    "bytes_expandidos": 236068,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 120424
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 49431
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+    "nombre": "SEGUIMIENTO PLAN DE ACCION CORVIVIENDAA 30 DE SEPTIEMBRE2023 (2).xlsx",
+    "sha256": "93b1054f78c7a768cbc08c3f80d8748096f3541d471d4c308a1c5efc1982ed61",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC.xlsx",
+    "bytes": 39120,
+    "bytes_expandidos": 228310,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 104828
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 49935
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+    "nombre": "SEGUIMIENTO Y EVALUACIÓN PLAN DE ACCIÓN DIC 2024 - CORVIVIENDA.xlsx",
+    "sha256": "ca97e83fa1abfc51c5d37c016597281d87733ebbc6a0ee0fe751c25e2b7f59ec",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq.xlsx",
+    "bytes": 179230,
+    "bytes_expandidos": 532414,
+    "miembros": 44,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 174849
+      },
+      {
+        "nombre": "xl/media/image1.png",
+        "bytes": 79981
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+    "nombre": "12. SEGUIMIENTO Y EVALUACION  PLAN DE ACCIÓN CORVIVIENDA JUNIO 2023.xlsx",
+    "sha256": "3e67aadbe5d540e7593ac16834b67d45681ca828a45d2f6c630a0dbf59ce6fba",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x.xlsx",
+    "bytes": 36374,
+    "bytes_expandidos": 216843,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 107102
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 49536
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+    "nombre": "PLAN DE ACCION EPA VIGENCIA 2023 - IV TRIMESTRE.xlsx",
+    "sha256": "c0686c6eac2e28f69f8cd4c9ecef6f3b38a141875e855dcb6b1ddfb5ef71ff33",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr.xlsx",
+    "bytes": 23286606,
+    "bytes_expandidos": 198516387,
+    "miembros": 530,
+    "mayores": [
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 196379111
+      },
+      {
+        "nombre": "xl/drawings/drawing1.xml",
+        "bytes": 972517
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+    "nombre": "PLAN DE ACCION EPA VIGENCIA 2024 (PARA VALIDACIOìN PD).xlsx",
+    "sha256": "83ed83a45bc8d4543bb0c82b65085fbc75d0ed5a70edca17930c21fb24168fa4",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-.xlsx",
+    "bytes": 23383441,
+    "bytes_expandidos": 198936025,
+    "miembros": 717,
+    "mayores": [
+      {
+        "nombre": "xl/worksheets/sheet2.xml",
+        "bytes": 196163939
+      },
+      {
+        "nombre": "xl/drawings/drawing1.xml",
+        "bytes": 1315139
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+    "nombre": "1. SEGUIMIENTO Y EVALUACION PLAN DE ACCION SECRETARIA DE HACIENDA A JUNIO 30 DE 2023.xlsx",
+    "sha256": "68fc41486422add02f37479a3426e375adb1c5086e70a581ff1d8b6b2c2772ba",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1aI807etadw4nLxpvGvJV0TuDO15EBhUY.xlsx",
+    "bytes": 119101,
+    "bytes_expandidos": 438781,
+    "miembros": 28,
+    "mayores": [
+      {
+        "nombre": "xl/sharedStrings.bin",
+        "bytes": 191816
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.bin",
+        "bytes": 135565
+      }
+    ],
+    "es_word": false,
+    "workbook": false,
+    "vba": false
+  },
+  {
+    "id": "1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs",
+    "nombre": "INFORME PLAN DE ACCION SECRETARÍA DE PARTICIPACIÓN Y DESARROLLO SOCIAL – UMATA. MARZO 2024.docx.xlsx",
+    "sha256": "2a24e37eaa88f32896ccda5f36d12b17c7b6c87523be79fff9294f74ba0e645a",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs.xlsx",
+    "bytes": 31255,
+    "bytes_expandidos": 336896,
+    "miembros": 12,
+    "mayores": [
+      {
+        "nombre": "word/document.xml",
+        "bytes": 276488
+      },
+      {
+        "nombre": "word/styles.xml",
+        "bytes": 29292
+      }
+    ],
+    "es_word": true,
+    "workbook": false,
+    "vba": false
+  },
+  {
+    "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+    "nombre": "PLAN DE ACCION EPA VIGENCIA A MARZO 31 DE 2024 - EPA CARTAGENA.xlsx",
+    "sha256": "84319fcb1979716d4c7745c3b1367265edca2d3dc6ff3d3960376a03866c7991",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1.xlsx",
+    "bytes": 23234683,
+    "bytes_expandidos": 198986021,
+    "miembros": 727,
+    "mayores": [
+      {
+        "nombre": "xl/worksheets/sheet2.xml",
+        "bytes": 196168908
+      },
+      {
+        "nombre": "xl/drawings/drawing1.xml",
+        "bytes": 1323805
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+    "nombre": "SEGUIMIENTO PLAN DE ACCION A MAYO 31 DE 2024.xlsx",
+    "sha256": "1ffeb107e792fd3495e3b3cbccf979a1c11819a65d0dc1ba159a1797f3f7f4ea",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp.xlsx",
+    "bytes": 35257,
+    "bytes_expandidos": 212473,
+    "miembros": 16,
+    "mayores": [
+      {
+        "nombre": "xl/styles.xml",
+        "bytes": 94007
+      },
+      {
+        "nombre": "xl/worksheets/sheet1.xml",
+        "bytes": 42328
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+    "nombre": "SEGUIMIENTO PLAN DE ACCION EPA A MAYO 31 DE 2024-EPA CARTAGENA.xlsx",
+    "sha256": "ec293885e8eddc124f0ae813795408fbc34213eacfd178a5853a26e7d7c86914",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D.xlsx",
+    "bytes": 22943208,
+    "bytes_expandidos": 183393043,
+    "miembros": 727,
+    "mayores": [
+      {
+        "nombre": "xl/worksheets/sheet2.xml",
+        "bytes": 180579535
+      },
+      {
+        "nombre": "xl/drawings/drawing1.xml",
+        "bytes": 1323807
+      }
+    ],
+    "es_word": false,
+    "workbook": true,
+    "vba": false
+  },
+  {
+    "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+    "nombre": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx",
+    "sha256": "0ab79efb20cba3fce8c40ee4932d6c9861890ce512e809b09557669e4e452ebb",
+    "ruta": "data/planes_accion/drive_sector_seguridad/archivos/1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v.xlsx",
+    "bytes": 2133746,
+    "bytes_expandidos": 4052694,
+    "miembros": 111,
+    "mayores": [
+      {
+        "nombre": "word/document.xml",
+        "bytes": 1507294
+      },
+      {
+        "nombre": "word/embeddings/Hoja_de_c_lculo_de_Microsoft_Excel.xlsx",
+        "bytes": 629689
+      }
+    ],
+    "es_word": true,
+    "workbook": false,
+    "vba": false
+  }
+]

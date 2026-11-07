@@ -180,8 +180,10 @@ class GoogleWorkspaceSyncService:
     async def sincronizar_workspace(self) -> dict[str, Any]:
         if self.session is None:
             raise RuntimeError("La sincronización de Workspace requiere sesión de base de datos")
-        token = await self._access_token()
+        outline = self._report_outline()
         data = await self._collect_data()
+        report, digest = self._report(data, outline_text=outline)
+        token = await self._access_token()
         await self._rename_files(token)
         pdm_id, pdm_titles = await self._prepare_spreadsheet(token, FILES["pdm"]["id"], PDM_SHEETS)
         pa_id, pa_titles = await self._prepare_spreadsheet(token, FILES["pa"]["id"], PA_SHEETS)
@@ -191,7 +193,6 @@ class GoogleWorkspaceSyncService:
         await self._write_sheets(token, pa_id, pa_titles, pa_values)
         await self._write_charts(token, pdm_id, pdm_titles, "pdm")
         await self._write_charts(token, pa_id, pa_titles, "pa", dimension_count=len(data["dimension_rows"]))
-        report, digest = self._report(data)
         self._generate_charts(data)
         self._report_tables = [
             (
@@ -2842,17 +2843,10 @@ class GoogleWorkspaceSyncService:
         dashboard.extend([[row[0], row[13], row[6], row[7]] for row in summary[1:]])
         return [dashboard, summary, dimtab, detail, normalized, pdfs, mesas]
 
-    def _report(self, d: dict[str, Any], outline_text: str | None = None) -> tuple[str, str]:
-        """Expand the user's official seven-chapter outline without changing its order.
-
-        El guion oficial del usuario es el insumo del documento nativo; la ruta se
-        resuelve en orden: texto inyectado explícito → variable de entorno
-        POLIS_USER_OUTLINE_PATH (reproducible en CI) → guion colocado por el
-        usuario en /tmp. Si el insumo no existe, el caso de uso falla de forma
-        explícita y no se sustituye el guion de nadie.
-        """
+    @staticmethod
+    def _report_outline(outline_text: str | None = None) -> str:
+        """Leer una sola vez el insumo antes de cualquier efecto en Workspace."""
         import os
-        import re
 
         outline = outline_text
         if outline is None:
@@ -2864,6 +2858,22 @@ class GoogleWorkspaceSyncService:
                     f"{outline_path} (insumo del documento nativo de Google Workspace)"
                 )
             outline = outline_path.read_text(encoding="utf-8")
+        if not outline.strip():
+            raise ValueError("El guion oficial del usuario está vacío")
+        return outline
+
+    def _report(self, d: dict[str, Any], outline_text: str | None = None) -> tuple[str, str]:
+        """Expand the user's official seven-chapter outline without changing its order.
+
+        El guion oficial del usuario es el insumo del documento nativo; la ruta se
+        resuelve en orden: texto inyectado explícito → variable de entorno
+        POLIS_USER_OUTLINE_PATH (reproducible en CI) → guion colocado por el
+        usuario en /tmp. Si el insumo no existe, el caso de uso falla de forma
+        explícita y no se sustituye el guion de nadie.
+        """
+        import re
+
+        outline = self._report_outline(outline_text)
         zone_detail = "; ".join(
             f"{row['zona']}: {row['casos']:,} casos en {row['filas']:,} filas" for row in d.get("theft_by_zone", [])[:8]
         )
@@ -2877,6 +2887,7 @@ class GoogleWorkspaceSyncService:
             "Corte de datos: 30 de junio de 2026 cuando la fuente dispone de ese corte; fecha de generación: "
             + datetime.now(UTC).isoformat(),
             "Ficha técnica institucional · Versión de diagnóstico · Fuentes, definiciones y límites se identifican a lo largo del documento",
+            "SHA-256 del guion fuente (UTF-8): " + hashlib.sha256(outline.encode("utf-8")).hexdigest(),
             "",
             "El documento conserva la secuencia y los títulos del guion oficial colocado por el usuario en el Google Doc. Los valores cuantitativos se toman de bd_csh y de las consultas identificadas; las cifras del guion cuya granularidad no está disponible en esa base se marcan como referencia por validar, no como observación comprobada.",
             "Precisión normativa cotejada con fuentes oficiales: el PDD 2024–2027 ‘Cartagena, Ciudad de Derechos’ fue adoptado por el Acuerdo 139 de 2024. El Acuerdo 138 de 2024 corresponde a una incorporación/autorización presupuestal, no al acto de adopción del PDD; ambos se mantienen diferenciados. El decreto nacional de convivencia y seguridad humana se identifica oficialmente como Decreto 37 de 2026 del Ministerio del Interior.",
@@ -2926,13 +2937,7 @@ class GoogleWorkspaceSyncService:
             line = re.sub(r"\s+", " ", raw).strip().removeprefix("• ").strip()
             if not line or set(line) <= {"─", "-"}:
                 continue
-            line = (
-                line.replace("33 mesas", "37 mesas")
-                .replace("10 territoriales", "18 territoriales y rurales")
-                .replace("14 sectoriales", "11 sectoriales")
-                .replace("27 Dependencias", "29 dependencias")
-                .replace("Acuerdo 138 de 2024 (PDD", "Acuerdo 139 de 2024 (PDD")
-            )
+            line = line.replace("Acuerdo 138 de 2024 (PDD", "Acuerdo 139 de 2024 (PDD")
             # Source bullets remain body text; headings retain the user's chapter/subchapter order.
             if line.startswith("CAPÍTULO ") or line.startswith("ANEXOS OBLIGATORIOS"):
                 style = "HEADING_1"
@@ -2941,6 +2946,11 @@ class GoogleWorkspaceSyncService:
             else:
                 style = None
             out.append(line)
+            if re.search(r"\b\d+\s+(?:mesas|territoriales|sectoriales|dependencias)\b", line, re.IGNORECASE):
+                out.append(
+                    "Referencia del guion pendiente de contraste: esta cifra no se sustituye por un valor fijo. "
+                    "El universo observado se declara por separado con el corte de la consulta."
+                )
             if style:
                 matched = next((v for key, v in contexts.items() if key in line), None)
                 if matched:

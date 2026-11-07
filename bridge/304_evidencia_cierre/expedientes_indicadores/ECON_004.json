@@ -1,0 +1,107 @@
+{
+  "codigo": "ECON_004",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "ECON_004",
+    "nombre": "Necesidades Básicas Insatisfechas personas",
+    "dimension": "ECON",
+    "definicion": "Porcentaje de personas con NBI según el censo 2018, con universos publicados separados.",
+    "formula": "Valor original publicado: dane_nbi_cnpv2018.nbi_personas_nbi; no se recalcula.",
+    "numerador": "dane_nbi_cnpv2018.nbi_personas_nbi",
+    "denominador": "Población censal publicada por DANE; no se recalcula.",
+    "unidad": "porcentaje",
+    "tipo_territorio_fuente": "municipal_y_subtipos",
+    "periodicidad": "censal",
+    "tipo_periodo": "anio_censo",
+    "fuente": "dane_nbi_cnpv2018",
+    "url_fuente": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/necesidades-basicas-insatisfechas-nbi",
+    "custodio": "DANE",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2018",
+    "interpretacion": "Línea base estructural municipal, no comparar como serie anual.",
+    "riesgo_metodologico": "Método NBI y periodo censal no son comparables con pobreza monetaria anual.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "dane_nbi_cnpv2018",
+    "dataset_id": "CNPV-2018-NBI.xlsx",
+    "titulo": "NBI censal 2018 Cartagena",
+    "entidad": "DANE",
+    "dimension": "economica",
+    "pagina": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/necesidades-basicas-insatisfechas-nbi",
+    "consulta": "https://www.dane.gov.co/index.php/estadisticas-por-tema/pobreza-y-condiciones-de-vida/necesidades-basicas-insatisfechas-nbi",
+    "extraido_utc": "2026-10-23T01:50:42.010827+00:00",
+    "sha256": "7c7ae4ed2a25482f240415fc81b19c709e8fa5e3a2476d190826989afdd9471b",
+    "filas_consultadas": 21,
+    "primer_anio": 2018,
+    "ultimo_anio": 2018,
+    "estado": "anexo_oficial_extraido"
+  },
+  "serie_observada": {
+    "fuente_clave": "dane_nbi_cnpv2018",
+    "indicador": "nbi_personas_nbi",
+    "selector_literal": null,
+    "observaciones": 3,
+    "valores_no_nulos": 3,
+    "anios": [
+      2018
+    ],
+    "subtipos": [
+      "Cartagena DIVIPOLA 13001 / cabecera",
+      "Cartagena DIVIPOLA 13001 / centros_poblados_rural",
+      "Cartagena DIVIPOLA 13001 / municipio"
+    ],
+    "unidades": [
+      "%"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "c7967bd96db647d6d093911ea6cf297d4256feb73b2f981cea28e422d27516a2"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Política institucional capturada; verificar alcance de cada producto y restricciones.",
+    "licencia_producto": null,
+    "politica_institucional": {
+      "id": "dane_politica_uso",
+      "url": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "fecha_captura_utc": "2026-11-07T17:29:49.552131+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "sha256": "747c08eacae36efeed62a3d5f6f63ea9ee9f79442388d3e85164cf897fe0610e",
+      "bytes": 51463,
+      "archivo": "/root/polis/backups/fuentes_304/dane_politica_uso.bin",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Sat, 07 Nov 2026 17:29:47 GMT"
+    },
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal_y_subtipos",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "porcentaje",
+    "universo": "Población censal publicada por DANE; no se recalcula.",
+    "periodo": "anio_censo",
+    "riesgo_declarado": "Método NBI y periodo censal no son comparables con pobreza monetaria anual.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

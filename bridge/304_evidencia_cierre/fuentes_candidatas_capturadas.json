@@ -1,0 +1,47 @@
+[
+  {
+    "id": "minjusticia_directorio_2025",
+    "url": "https://www.minjusticia.gov.co/programas-co/casas-de-justicia/Documents/Directorios/DIRECTORIO-PNCJCC-DATOS-PUBLICOS-DICIEMBRE-2025.xlsx",
+    "fecha_captura_utc": "2026-11-07T16:51:02.688746+00:00",
+    "http": 200,
+    "url_final": "https://www.minjusticia.gov.co/programas-co/casas-de-justicia/Documents/Directorios/DIRECTORIO-PNCJCC-DATOS-PUBLICOS-DICIEMBRE-2025.xlsx",
+    "sha256": "cd414eff36dd03ee4164f585215e50a6f5364dbe9c1f927be81dd225195b4487",
+    "bytes": 206716,
+    "archivo": "/root/polis/backups/fuentes_304/minjusticia_directorio_2025.bin",
+    "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "last_modified": "Mon, 08 Dec 2025 21:48:39 GMT"
+  },
+  {
+    "id": "minjusticia_ficha",
+    "url": "https://www.minjusticia.gov.co/transparencia/Documents/SEJ-Minjusticia/FichaT%C3%A9cnicaIndicadores_Ana/CasasJusticia/FichaT%C3%A9nicaIndicador_DirectorioCasasJusticiaCentrosConvivenciaCiudadana.xlsx",
+    "fecha_captura_utc": "2026-11-07T16:51:06.466586+00:00",
+    "error": "HTTPError: HTTP Error 401: Unauthorized",
+    "http": 401
+  },
+  {
+    "id": "cartagena_educacion",
+    "url": "https://planeacion.cartagena.gov.co/educacion-0",
+    "fecha_captura_utc": "2026-11-07T16:51:06.605360+00:00",
+    "error": "HTTPError: HTTP Error 403: Forbidden",
+    "http": 403
+  },
+  {
+    "id": "cartagena_pae_2026",
+    "url": "https://www.cartagena.gov.co/noticias/inversion-infraestructura-educativa-390000-millones-pae-vigilancia-aseo-colegios-publicos-regresan-clases-cartagena",
+    "fecha_captura_utc": "2026-11-07T16:51:06.676269+00:00",
+    "error": "HTTPError: HTTP Error 403: Forbidden",
+    "http": 403
+  },
+  {
+    "id": "socrata_catalogo_pae",
+    "url": "https://api.us.socrata.com/api/catalog/v1?search_context=www.datos.gov.co&q=cartagena%20PAE&limit=20",
+    "fecha_captura_utc": "2026-11-07T16:51:06.728159+00:00",
+    "http": 200,
+    "url_final": "https://api.us.socrata.com/api/catalog/v1?search_context=www.datos.gov.co&q=cartagena%20PAE&limit=20",
+    "sha256": "c5465b481aba4f4aa6f5f61265d8a53c371b9ac17171f1f55cd884bdcc3ed715",
+    "bytes": 130,
+    "archivo": "/root/polis/backups/fuentes_304/socrata_catalogo_pae.bin",
+    "content_type": "application/json;charset=utf-8",
+    "last_modified": null
+  }
+]

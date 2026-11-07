@@ -2,8 +2,10 @@ import { chromium } from "playwright";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import http from "node:http";
+import fs from "node:fs";
 
 import { comprobarPuertosLibres, leerConfiguracionE2E } from "./e2e-seguridad.mjs";
+import { cabecerasCspEnsayo, comprobarBloqueoCsp, leerCspEnsayo, observarCsp } from "./e2e-csp.mjs";
 
 const configuracion = leerConfiguracionE2E();
 const BACKEND_PORT = configuracion.backendPort;
@@ -12,6 +14,14 @@ const PROXY_PORT = configuracion.proxyPort;
 const BASE_URL = `http://127.0.0.1:${PROXY_PORT}`;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 const E2E_DATABASE_URL = configuracion.databaseUrl;
+const politicaCsp = leerCspEnsayo();
+const rutaEvidenciaCsp = process.env.POLIS_E2E_CSP_EVIDENCIA;
+if (politicaCsp && (!rutaEvidenciaCsp || fs.existsSync(rutaEvidenciaCsp))) {
+  throw new Error("El ensayo CSP requiere POLIS_E2E_CSP_EVIDENCIA nuevo, sin sobrescritura");
+}
+const observadoresCsp = [];
+let sondaCsp = null;
+let ensayoCspExitoso = false;
 
 let backendProcess = null;
 let frontendProcess = null;
@@ -112,7 +122,7 @@ export async function prepararEntornoAislado() {
         headers: { ...req.headers, host: `127.0.0.1:${targetPort}` },
       },
       (proxyRes) => {
-        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        res.writeHead(proxyRes.statusCode, cabecerasCspEnsayo(proxyRes.headers, politicaCsp));
         proxyRes.pipe(res);
       }
     );
@@ -617,8 +627,10 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
 
   try {
+    if (politicaCsp) sondaCsp = await comprobarBloqueoCsp(browser, BASE_URL, politicaCsp);
     // CONTEXTO 1: AUTORIDAD DISTRITAL (Alternativas MGA y Geovisor)
     const contextAutoridad = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextAutoridad, "autoridad_distrital"));
     const pageAutoridad = await contextAutoridad.newPage();
     pageAutoridad.on("pageerror", (err) => console.error("[BROWSER-PAGE-ERROR]", err));
     pageAutoridad.on("response", async (res) => {
@@ -637,10 +649,12 @@ async function main() {
     // Flujo 12: Geovisor Territorial
     await flujoGeovisorTerritorial(pageAutoridad);
 
+    if (politicaCsp) await pageAutoridad.waitForTimeout(200);
     await contextAutoridad.close();
 
     // CONTEXTO 2: CIUDADANO PÚBLICO (Radicación y Comprobante de Fe Pública)
     const contextCiudadano = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextCiudadano, "participante_publico"));
     const pageCiudadano = await contextCiudadano.newPage();
     pageCiudadano.on("pageerror", (err) => console.error("[BROWSER-PAGE-ERROR]", err));
     pageCiudadano.on("response", async (res) => {
@@ -654,10 +668,12 @@ async function main() {
     // Flujo 11: Radicación Ciudadana Pública
     await flujoRadicacionCiudadana(pageCiudadano);
 
+    if (politicaCsp) await pageCiudadano.waitForTimeout(200);
     await contextCiudadano.close();
 
     // CONTEXTO 3: ADMINISTRADOR DE IDENTIDADES (Gestión de Usuarios, Roles y Password UX)
     const contextAdmin = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextAdmin, "administrador_identidades"));
     const pageAdmin = await contextAdmin.newPage();
     pageAdmin.on("pageerror", (err) => console.error("[BROWSER-PAGE-ERROR]", err));
     pageAdmin.on("response", async (res) => {
@@ -673,7 +689,15 @@ async function main() {
     // Flujo 13: Gestión de Usuarios y Roles
     await flujoUsuariosYRoles(pageAdmin, creds);
 
+    if (politicaCsp) await pageAdmin.waitForTimeout(200);
     await contextAdmin.close();
+
+    if (politicaCsp) {
+      const violaciones = observadoresCsp.flatMap(o => o.violaciones);
+      assert.equal(violaciones.length, 0, `Violaciones CSP de la aplicación: ${JSON.stringify(violaciones)}`);
+      ensayoCspExitoso = true;
+      console.log(`[CSP] Enforce ${politicaCsp.sha256}: sonda bloqueada y cero violaciones en los flujos`);
+    }
 
     const TOTAL_FLUJOS = 4;
     console.log(`\n================================================================================`);
@@ -682,6 +706,15 @@ async function main() {
   } finally {
     await browser.close();
     desmontarEntornoAislado();
+    if (politicaCsp) {
+      fs.writeFileSync(rutaEvidenciaCsp, JSON.stringify({
+        generado_utc: new Date().toISOString(), modo: politicaCsp.modo,
+        politica: politicaCsp.valor, politica_sha256: politicaCsp.sha256,
+        laboratorio: { base: configuracion.dbName, puerto_pg: configuracion.dbPort, proxy: PROXY_PORT },
+        exito: ensayoCspExitoso, sonda: sondaCsp, contextos: observadoresCsp,
+        flujos: resultados, servicios_productivos_modificados: false,
+      }, null, 2) + "\n", { flag: "wx", mode: 0o600 });
+    }
   }
 }
 

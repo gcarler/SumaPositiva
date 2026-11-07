@@ -1,0 +1,547 @@
+{
+  "version": "recuperacion_office_pa.v3",
+  "originales_modificados": false,
+  "red": false,
+  "SQL": false,
+  "archivos": [
+    {
+      "id": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+      "nombre": "PLAN DE ACCIÒN CORVIVIENDA 2022.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/534116289829ce582491f1bdbea8c4a479527c08bac690cf1893594c8fd4249e.xlsx",
+      "original_sha256": "534116289829ce582491f1bdbea8c4a479527c08bac690cf1893594c8fd4249e",
+      "derivado_sha256": "db1196304436b1d574779da1aa03e320cecd0f6efa5c80d942aa36c67b40ec3b",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 27,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 28,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+      "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA A JUNIO 30 DE 2022.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/a0250502981119782046b447a8611cca6cf3fe24f0f4d3e008dd87a560cd51ec.xlsx",
+      "original_sha256": "a0250502981119782046b447a8611cca6cf3fe24f0f4d3e008dd87a560cd51ec",
+      "derivado_sha256": "de7bac2a96dcfb62639b6aa92bc15cec909410f47ac5e17521e3ae9c750d12bd",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 32,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 33,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+      "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA IV TRIMESTRE 2023.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/c95ebe1943446fe27b9b5145d0b19fde0065af2e2fb12acbfee17c1dad789d2e.xlsx",
+      "original_sha256": "c95ebe1943446fe27b9b5145d0b19fde0065af2e2fb12acbfee17c1dad789d2e",
+      "derivado_sha256": "e438b3d905f6640020b48ae1cf2ab8846d4b742cf328f474d23d1fb58cdd175b",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 32,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 33,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION CORVIVIENDAA 30 DE SEPTIEMBRE2023 (2).xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/93b1054f78c7a768cbc08c3f80d8748096f3541d471d4c308a1c5efc1982ed61.xlsx",
+      "original_sha256": "93b1054f78c7a768cbc08c3f80d8748096f3541d471d4c308a1c5efc1982ed61",
+      "derivado_sha256": "3f02343bc292f52c98e0baab98185612c2d552f6d65fa11dd889edf66b5ce954",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 17,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 18,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+      "nombre": "SEGUIMIENTO Y EVALUACIÓN PLAN DE ACCIÓN DIC 2024 - CORVIVIENDA.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/ca97e83fa1abfc51c5d37c016597281d87733ebbc6a0ee0fe751c25e2b7f59ec.xlsx",
+      "original_sha256": "ca97e83fa1abfc51c5d37c016597281d87733ebbc6a0ee0fe751c25e2b7f59ec",
+      "derivado_sha256": "db9fa4efa754d2d7e8e756f12eab1b1f3fc2678613c53320b733105dfbc3285b",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 56,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 58,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+      "nombre": "12. SEGUIMIENTO Y EVALUACION  PLAN DE ACCIÓN CORVIVIENDA JUNIO 2023.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/3e67aadbe5d540e7593ac16834b67d45681ca828a45d2f6c630a0dbf59ce6fba.xlsx",
+      "original_sha256": "3e67aadbe5d540e7593ac16834b67d45681ca828a45d2f6c630a0dbf59ce6fba",
+      "derivado_sha256": "4b8d8cf2b36aeaba37cd8a4259e81f91598e5233482119f77b99d05736dd885d",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 17,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 18,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA 2023 - IV TRIMESTRE.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/c0686c6eac2e28f69f8cd4c9ecef6f3b38a141875e855dcb6b1ddfb5ef71ff33.xlsx",
+      "original_sha256": "c0686c6eac2e28f69f8cd4c9ecef6f3b38a141875e855dcb6b1ddfb5ef71ff33",
+      "derivado_sha256": "5414e81134de6e598b4870c2ca2c6fd2641b80f5f7cb1c1b3fae9cd0fd412033",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [],
+      "compactacion_vacias": true,
+      "hojas": {
+        "xl/worksheets/sheet1.xml": {
+          "celdas_dato": 3283,
+          "celdas_vacias_omitidas": 6786107,
+          "filas_dato": 166,
+          "ultima_fila": 166,
+          "ultima_columna": 68,
+          "sha256_celdas": "6165dd77f7e62af3cf363a0bfe220d0869aeba09eab583e5431563ba64229bb3"
+        },
+        "xl/worksheets/sheet2.xml": {
+          "celdas_dato": 117,
+          "celdas_vacias_omitidas": 15,
+          "filas_dato": 44,
+          "ultima_fila": 47,
+          "ultima_columna": 6,
+          "sha256_celdas": "f9c360f50dee3e9238d228edc978ad6ba82225732acd9b24bb56184ba0f0cde6"
+        }
+      },
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA 2024 (PARA VALIDACIOìN PD).xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/83ed83a45bc8d4543bb0c82b65085fbc75d0ed5a70edca17930c21fb24168fa4.xlsx",
+      "original_sha256": "83ed83a45bc8d4543bb0c82b65085fbc75d0ed5a70edca17930c21fb24168fa4",
+      "derivado_sha256": "6c33a14c8a2f8c25839db2b758eb1f0eea7107e70dee77a83f5736a45416f118",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [],
+      "compactacion_vacias": true,
+      "hojas": {
+        "xl/worksheets/sheet4.xml": {
+          "celdas_dato": 23,
+          "celdas_vacias_omitidas": 54,
+          "filas_dato": 7,
+          "ultima_fila": 11,
+          "ultima_columna": 7,
+          "sha256_celdas": "a9edc7988be8524b157adc1be114f0d2d1596dc8ad26177ac964fd0c98905201"
+        },
+        "xl/worksheets/sheet1.xml": {
+          "celdas_dato": 108,
+          "celdas_vacias_omitidas": 462,
+          "filas_dato": 58,
+          "ultima_fila": 63,
+          "ultima_columna": 3,
+          "sha256_celdas": "0312646d65a7bfe71d23f48c6ab36e375744de3e030ce4aae762391b091a9f36"
+        },
+        "xl/worksheets/sheet2.xml": {
+          "celdas_dato": 1214,
+          "celdas_vacias_omitidas": 6781152,
+          "filas_dato": 63,
+          "ultima_fila": 63,
+          "ultima_columna": 68,
+          "sha256_celdas": "814aee3b431170589cdc7112fb6c60e56b6e1efdd579afcaa9e466f3af0147a6"
+        },
+        "xl/worksheets/sheet3.xml": {
+          "celdas_dato": 117,
+          "celdas_vacias_omitidas": 15,
+          "filas_dato": 44,
+          "ultima_fila": 47,
+          "ultima_columna": 6,
+          "sha256_celdas": "43e2c84a6248d265a9479d9ca899d604f9a8558981052be57c88d55738767b16"
+        }
+      },
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+      "nombre": "1. SEGUIMIENTO Y EVALUACION PLAN DE ACCION SECRETARIA DE HACIENDA A JUNIO 30 DE 2023.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1aI807etadw4nLxpvGvJV0TuDO15EBhUY.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/68fc41486422add02f37479a3426e375adb1c5086e70a581ff1d8b6b2c2772ba.xlsx",
+      "original_sha256": "68fc41486422add02f37479a3426e375adb1c5086e70a581ff1d8b6b2c2772ba",
+      "derivado_sha256": "8be0e24a8657d039bd4065791ef9fa90e42dfe9755864cbed8517e1b9d359565",
+      "tipo_original": "xlsb",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "motor": "python-calamine",
+      "hojas": [
+        {
+          "nombre": "20230212 PA mod FINANZAS",
+          "filas": 101,
+          "filas_lectura": 101,
+          "columnas": 86
+        },
+        {
+          "nombre": "Hoja1",
+          "filas": 27,
+          "filas_lectura": 26,
+          "columnas": 13
+        },
+        {
+          "nombre": "Hoja2",
+          "filas": 14,
+          "filas_lectura": 10,
+          "columnas": 14
+        }
+      ],
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "sha256_valores_convertidos": "bfbbc6ff9eb7f53dbe74a96c7d94008c996fb939810c0dac125198b09cd74fe4",
+      "valores_releidos_verificados": true,
+      "limite": "Valores cacheados, sin fórmulas ni presentación. Tipo y representación numérica cotejados."
+    },
+    {
+      "id": "1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs",
+      "nombre": "INFORME PLAN DE ACCION SECRETARÍA DE PARTICIPACIÓN Y DESARROLLO SOCIAL – UMATA. MARZO 2024.docx.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1PHipYiwfgyKmM0pf4kHgCPO37l3u-Lbs.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/2a24e37eaa88f32896ccda5f36d12b17c7b6c87523be79fff9294f74ba0e645a.documento.json",
+      "original_sha256": "2a24e37eaa88f32896ccda5f36d12b17c7b6c87523be79fff9294f74ba0e645a",
+      "derivado_sha256": "b39c7424e7beebdb7230ea6f7b760a4c3201998c400e1f1c6c568fcd569b00f8",
+      "tipo_original": "docx",
+      "tipo_derivado": "json_documental",
+      "receta": "recuperacion_office_pa.v3",
+      "bloques": 209,
+      "tablas": 0,
+      "libros_embebidos": [],
+      "original_modificado": false,
+      "limite": "Contenido documental; sus tablas no se declaran registros Excel ni indicadores normalizados."
+    },
+    {
+      "id": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA A MARZO 31 DE 2024 - EPA CARTAGENA.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/84319fcb1979716d4c7745c3b1367265edca2d3dc6ff3d3960376a03866c7991.xlsx",
+      "original_sha256": "84319fcb1979716d4c7745c3b1367265edca2d3dc6ff3d3960376a03866c7991",
+      "derivado_sha256": "ca6588a3702980bdc60065776aca0cebeb09e47308bf22910b14bd3da74a9d21",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [],
+      "compactacion_vacias": true,
+      "hojas": {
+        "xl/worksheets/sheet1.xml": {
+          "celdas_dato": 108,
+          "celdas_vacias_omitidas": 462,
+          "filas_dato": 58,
+          "ultima_fila": 63,
+          "ultima_columna": 3,
+          "sha256_celdas": "0312646d65a7bfe71d23f48c6ab36e375744de3e030ce4aae762391b091a9f36"
+        },
+        "xl/worksheets/sheet2.xml": {
+          "celdas_dato": 1270,
+          "celdas_vacias_omitidas": 6781185,
+          "filas_dato": 64,
+          "ultima_fila": 64,
+          "ultima_columna": 68,
+          "sha256_celdas": "829422145e43548c6dcf452f334c26b6e61f81210e60d718634dfd47ab5663a6"
+        },
+        "xl/worksheets/sheet3.xml": {
+          "celdas_dato": 117,
+          "celdas_vacias_omitidas": 15,
+          "filas_dato": 44,
+          "ultima_fila": 47,
+          "ultima_columna": 6,
+          "sha256_celdas": "5e1a51cf93abb50238b7c7443a5a8698b61fe4b46ad7ce7646dc2514559af096"
+        },
+        "xl/worksheets/sheet4.xml": {
+          "celdas_dato": 23,
+          "celdas_vacias_omitidas": 54,
+          "filas_dato": 7,
+          "ultima_fila": 11,
+          "ultima_columna": 7,
+          "sha256_celdas": "9ef1bc1037af0ea27cfc737274a41b2bcdc7502709251f6c24eba4ce1b828972"
+        }
+      },
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION A MAYO 31 DE 2024.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/1ffeb107e792fd3495e3b3cbccf979a1c11819a65d0dc1ba159a1797f3f7f4ea.xlsx",
+      "original_sha256": "1ffeb107e792fd3495e3b3cbccf979a1c11819a65d0dc1ba159a1797f3f7f4ea",
+      "derivado_sha256": "3cf2285d74814f2c0d788b2da890f930b5fcdfbaf6aeb1124d2397a9ab2dd123",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [
+        {
+          "fuente_font": 5,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 20,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        },
+        {
+          "fuente_font": 21,
+          "atributo": "family",
+          "original": "34",
+          "derivado": "0"
+        }
+      ],
+      "compactacion_vacias": false,
+      "hojas": {},
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION EPA A MAYO 31 DE 2024-EPA CARTAGENA.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/ec293885e8eddc124f0ae813795408fbc34213eacfd178a5853a26e7d7c86914.xlsx",
+      "original_sha256": "ec293885e8eddc124f0ae813795408fbc34213eacfd178a5853a26e7d7c86914",
+      "derivado_sha256": "16d84cca405eaffb321ae4fef3ca913f494eda05db55cea2615f077c1f376532",
+      "tipo_original": "xlsx",
+      "tipo_derivado": "xlsx",
+      "receta": "recuperacion_office_pa.v3",
+      "validacion_estilos_openpyxl": true,
+      "reparaciones_presentacion": [],
+      "compactacion_vacias": true,
+      "hojas": {
+        "xl/worksheets/sheet4.xml": {
+          "celdas_dato": 23,
+          "celdas_vacias_omitidas": 54,
+          "filas_dato": 7,
+          "ultima_fila": 11,
+          "ultima_columna": 7,
+          "sha256_celdas": "8f49c0dde4174525d6bebffd4ac65e815f1f0e9dad613b0d531a2dabb9afe22b"
+        },
+        "xl/worksheets/sheet1.xml": {
+          "celdas_dato": 108,
+          "celdas_vacias_omitidas": 462,
+          "filas_dato": 58,
+          "ultima_fila": 63,
+          "ultima_columna": 3,
+          "sha256_celdas": "e021601c0abdba3965f7c1aa483e5bbb1eacc50428ffa4f1b03cdb0ef8257e06"
+        },
+        "xl/worksheets/sheet2.xml": {
+          "celdas_dato": 1340,
+          "celdas_vacias_omitidas": 6781115,
+          "filas_dato": 64,
+          "ultima_fila": 64,
+          "ultima_columna": 68,
+          "sha256_celdas": "dbfbcedb142bed32fd5b07751b8262ba50975b6b9ecb6babfde8f8dc0a6ba0c3"
+        },
+        "xl/worksheets/sheet3.xml": {
+          "celdas_dato": 117,
+          "celdas_vacias_omitidas": 15,
+          "filas_dato": 44,
+          "ultima_fila": 47,
+          "ultima_columna": 6,
+          "sha256_celdas": "e4ea1739343f20626b7490069cab119c8f0e280c36b8491273d8fe3c98788540"
+        }
+      },
+      "formulas_recalculadas": false,
+      "original_modificado": false,
+      "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+    },
+    {
+      "id": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+      "nombre": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx",
+      "original": "data/planes_accion/drive_sector_seguridad/archivos/1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v.xlsx",
+      "estado": "recuperado",
+      "destino": "/root/polis/backups/recuperacion_304_v3/0ab79efb20cba3fce8c40ee4932d6c9861890ce512e809b09557669e4e452ebb.documento.json",
+      "original_sha256": "0ab79efb20cba3fce8c40ee4932d6c9861890ce512e809b09557669e4e452ebb",
+      "derivado_sha256": "3be9274f7c69406d27798bd7031e5d39202ebbd27623d066a0026c212ce4bfca",
+      "tipo_original": "docx",
+      "tipo_derivado": "json_documental",
+      "receta": "recuperacion_office_pa.v3",
+      "bloques": 219,
+      "tablas": 32,
+      "libros_embebidos": [
+        {
+          "parte": "word/embeddings/Hoja_de_c_lculo_de_Microsoft_Excel1.xlsx",
+          "sha256": "6840d178cdc3e67309a8586a619860b2f45f00e0d3b8c9c7bc55d2021d8b7592"
+        },
+        {
+          "parte": "word/embeddings/Hoja_de_c_lculo_de_Microsoft_Excel.xlsx",
+          "sha256": "c68e4da6ece6cdc8acba2be2e2d54fb2bac74766e120453c5528cff9facda109"
+        }
+      ],
+      "original_modificado": false,
+      "limite": "Contenido documental; sus tablas no se declaran registros Excel ni indicadores normalizados.",
+      "derivados_embebidos": [
+        {
+          "parte": "word/embeddings/Hoja_de_c_lculo_de_Microsoft_Excel1.xlsx",
+          "destino": "/root/polis/backups/recuperacion_304_v3/0ab79efb20cba3fce8c40ee4932d6c9861890ce512e809b09557669e4e452ebb.embebido.6840d178cdc3e67309a8586a619860b2f45f00e0d3b8c9c7bc55d2021d8b7592.xlsx",
+          "original_sha256": "6840d178cdc3e67309a8586a619860b2f45f00e0d3b8c9c7bc55d2021d8b7592",
+          "derivado_sha256": "338eb4c0457b041a813bbda917b9ba02993eb929c586243c2bbfcf9ebfd1d4cd",
+          "tipo_original": "xlsx",
+          "tipo_derivado": "xlsx",
+          "receta": "recuperacion_office_pa.v3",
+          "validacion_estilos_openpyxl": true,
+          "reparaciones_presentacion": [],
+          "compactacion_vacias": false,
+          "hojas": {},
+          "formulas_recalculadas": false,
+          "original_modificado": false,
+          "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+        },
+        {
+          "parte": "word/embeddings/Hoja_de_c_lculo_de_Microsoft_Excel.xlsx",
+          "destino": "/root/polis/backups/recuperacion_304_v3/0ab79efb20cba3fce8c40ee4932d6c9861890ce512e809b09557669e4e452ebb.embebido.c68e4da6ece6cdc8acba2be2e2d54fb2bac74766e120453c5528cff9facda109.xlsx",
+          "original_sha256": "c68e4da6ece6cdc8acba2be2e2d54fb2bac74766e120453c5528cff9facda109",
+          "derivado_sha256": "5a434b7add897bf6808c56c6416183d0ccbcc67d2d18be33456dc923dc5c11ce",
+          "tipo_original": "xlsx",
+          "tipo_derivado": "xlsx",
+          "receta": "recuperacion_office_pa.v3",
+          "validacion_estilos_openpyxl": true,
+          "reparaciones_presentacion": [],
+          "compactacion_vacias": false,
+          "hojas": {},
+          "formulas_recalculadas": false,
+          "original_modificado": false,
+          "limite": "Derivado analítico. La presentación de las hojas compactadas no reproduce el documento oficial."
+        }
+      ]
+    }
+  ],
+  "recuperados": 14,
+  "rechazados": 0
+}

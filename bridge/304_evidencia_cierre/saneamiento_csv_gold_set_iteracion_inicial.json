@@ -1,0 +1,26 @@
+{
+  "pares": 240,
+  "etiquetas_fabricadas": 0,
+  "primario_json_modificado": false,
+  "primario_sha256": "fd57257d614b710ed741c0cf7b9fb29c1b8231d189591afc9bc707ec864a47e2",
+  "csv_anterior": {
+    "ruta": "data/gold_set_conciliacion/historico/anotacion_a_ciegas_pre_304.csv",
+    "sha256": "554fe9c7055926fd53db679909506c6250f6ca1295ce291a25683d78037b7c02",
+    "filas_logicas_obtenidas": 244,
+    "filas_mal_formadas": 8
+  },
+  "csv_saneado": {
+    "ruta": "data/gold_set_conciliacion/anotacion_a_ciegas.csv",
+    "sha256": "4862a1a8d8f85b6608671a9ce6e9486c5f97ee2f2184f8dd5bed54258b23220b",
+    "filas_logicas": 240,
+    "filas_mal_formadas": 0,
+    "columnas": 8,
+    "indicador_meta_visible": true,
+    "indicador_meta_ausente_en_primario": 4,
+    "etiquetas_enviadas_no_vacias": 0
+  },
+  "procedimiento": "exportar_csv_ciego sobre ParGold validado del JSON primario; csv.writer, sin recortes y sin etiquetas del sistema.",
+  "validacion_global": false,
+  "aliases_unicos": 239,
+  "superado_por": "saneamiento_csv_gold_set.json (alias v2)"
+}

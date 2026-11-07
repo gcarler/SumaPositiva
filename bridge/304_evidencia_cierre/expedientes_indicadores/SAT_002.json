@@ -1,0 +1,126 @@
+{
+  "codigo": "SAT_002",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "SAT_002",
+    "nombre": "Víctimas de desplazamiento ubicadas",
+    "dimension": "SAT",
+    "definicion": "Personas ubicadas por desplazamiento forzado según la serie municipal publicada en TerriData.",
+    "formula": "Valor original publicado: dnp_terridata_13001.victimas_desplazamiento_ubicadas; no se recalcula.",
+    "numerador": "dnp_terridata_13001.victimas_desplazamiento_ubicadas",
+    "denominador": "No aplica: personas ubicadas según el reporte oficial; no se recalcula.",
+    "unidad": "personas",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_vigencia",
+    "fuente": "dnp_terridata_13001",
+    "url_fuente": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "custodio": "DNP con UARIV/RNI declarado",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2018",
+    "interpretacion": "Lee la serie municipal publicada sin sumar universos distintos.",
+    "riesgo_metodologico": "No es alerta SAT individual ni equivalente a eventos o declaraciones RUV.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "dnp_terridata_13001",
+    "dataset_id": "TerriData13001.xlsx.zip",
+    "titulo": "Indicadores municipales seleccionados TerriData 13001",
+    "entidad": "DNP / custodios originales",
+    "dimension": "transversal",
+    "pagina": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "consulta": "https://terridata.dnp.gov.co/assets/docs/excel/entidades/TerriData13001.xlsx.zip",
+    "extraido_utc": "2026-10-23T01:50:53.370781+00:00",
+    "sha256": "a2842651f5c89ba9cf3cbdf4ce1baad2e9c70677044edb46d8511a932a323b9c",
+    "filas_consultadas": 82,
+    "primer_anio": 2012,
+    "ultimo_anio": 2025,
+    "estado": "archivo_municipal_oficial_extraido"
+  },
+  "serie_observada": {
+    "fuente_clave": "dnp_terridata_13001",
+    "indicador": "victimas_desplazamiento_ubicadas",
+    "selector_literal": null,
+    "observaciones": 8,
+    "valores_no_nulos": 8,
+    "anios": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "subtipos": [
+      "12"
+    ],
+    "unidades": [
+      "Personas"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "401518c301f9286d8370aa303d833484994e86b7ca6bba7ddcf6b8ecb05f599d"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Política institucional capturada; verificar alcance de cada producto y restricciones.",
+    "licencia_producto": null,
+    "politica_institucional": {
+      "id": "dnp_politica_datos",
+      "url": "https://www.dnp.gov.co/Politica-de-seguridad",
+      "fecha_captura_utc": "2026-11-07T17:29:50.294247+00:00",
+      "http": 200,
+      "url_final": "https://www.dnp.gov.co/Politica-de-seguridad",
+      "sha256": "ba5431185ff5f5266103eb450a1f7b27565e3cf8325d299cdef0903ad2177c66",
+      "bytes": 94024,
+      "archivo": "/root/polis/backups/fuentes_304/dnp_politica_datos.bin",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Sat, 07 Nov 2026 17:29:50 GMT"
+    },
+    "politicas_adicionales": [
+      {
+        "id": "dnp_sistemas_datos",
+        "url": "https://www.dnp.gov.co/LaEntidad_/Direccion-general/oficina-tecnologia-sistemas-informacion/Paginas/sistemas-de-informacion-y-datos-abiertos.aspx",
+        "fecha_captura_utc": "2026-11-07T17:29:50.938934+00:00",
+        "http": 200,
+        "url_final": "https://www.dnp.gov.co/LaEntidad_/Direccion-general/oficina-tecnologia-sistemas-informacion/Paginas/sistemas-de-informacion-y-datos-abiertos.aspx",
+        "sha256": "f05e97d3e81ab3e92ff70fc97a0c60194345503781056517facd57271d7aa6b4",
+        "bytes": 143804,
+        "archivo": "/root/polis/backups/fuentes_304/dnp_sistemas_datos.bin",
+        "content_type": "text/html; charset=utf-8",
+        "last_modified": "Sat, 07 Nov 2026 17:29:51 GMT"
+      }
+    ]
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "personas",
+    "universo": "No aplica: personas ubicadas según el reporte oficial; no se recalcula.",
+    "periodo": "anio_vigencia",
+    "riesgo_declarado": "No es alerta SAT individual ni equivalente a eventos o declaraciones RUV.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto",
+      "resolver_aplicabilidad_CC_BY_4_0_vs_PDDL_y_productor_original"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

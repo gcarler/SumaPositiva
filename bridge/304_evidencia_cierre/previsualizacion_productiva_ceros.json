@@ -1,0 +1,15 @@
+{
+  "base": "bd_csh",
+  "modo": "inspeccion_solo_lectura",
+  "transaction_read_only": true,
+  "conteos": {
+    "archivos": 665,
+    "registros": 225380,
+    "lotes": 624
+  },
+  "ceros_candidatos": 67,
+  "sha256_plan": "050618419d844408a4ffdd6b14caece56894995168aa89cb22af4bab4b2f44d4",
+  "plan_privado": "/root/polis/backups/reconciliacion_304/plan_bd_csh_previsualizacion.json",
+  "aplicado": false,
+  "pruebas_sobre_produccion": false
+}

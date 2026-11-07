@@ -374,12 +374,24 @@ def exportar_csv_ciego(pares: list[ParGold]) -> str:
     y con un alias neutral de ID (identificador_csv) que no revela par_tipo.
     Escrito con csv.writer: una celda con `;` se cita y NO desplaza columnas
     (antes el join manual la rompía en silencio). Texto íntegro de
-    nombre_meta y meta_producto_vigencia: any recort los desabilitaría
+    nombre_meta, indicador_meta y meta_producto_vigencia: recortarlos impediría
     contra los pares del set (verificar_higiene / validación CSV)."""
+    aliases = [identificador_csv(par) for par in pares]
+    if len(aliases) != len(set(aliases)):
+        raise ValueError("La plantilla contiene pares con identidad repetida")
     buffer = io.StringIO(newline="")
     escritor = csv.writer(buffer, delimiter=";", lineterminator="\n")
     escritor.writerow(
-        ["id_par", "codigo_plan", "codigo_meta", "nombre_meta", "codigo_actividad", "meta_producto", "etiqueta_enviada"]
+        [
+            "id_par",
+            "codigo_plan",
+            "codigo_meta",
+            "nombre_meta",
+            "indicador_meta",
+            "codigo_actividad",
+            "meta_producto",
+            "etiqueta_enviada",
+        ]
     )
     for par in pares:
         escritor.writerow(
@@ -388,6 +400,7 @@ def exportar_csv_ciego(pares: list[ParGold]) -> str:
                 par.codigo_plan,
                 par.codigo_meta or "",
                 par.nombre_meta or "",
+                par.indicador_meta or "",
                 par.codigo_actividad or "",
                 par.meta_producto_vigencia or "",
                 "",
@@ -397,13 +410,43 @@ def exportar_csv_ciego(pares: list[ParGold]) -> str:
 
 
 def identificador_csv(par: ParGold) -> str:
-    """Alias estable y neutral del par para el CSV a ciegas.
+    """Alias v2: distingue parejas con el mismo ID histórico, sin revelar tipo.
 
-    Derivado solo del hash del ID interno: no expone `id`, ni `par_tipo`
-    (positivo/negativo → etiqueta del sistema), ni el orden de la muestra.
-    Determinista para que `importar` case nuevamente las etiquetas.
+    El muestrario de 2026-10-21 conserva dos IDs históricos iguales asociados a
+    actividades distintas. Se fija la pareja completa sin reescribir el primario.
     """
-    return "GP-" + hashlib.md5(par.id.encode()).hexdigest()[:12].upper()
+    identidad = json.dumps(
+        [par.id, par.codigo_plan, par.meta_id, par.actividad_pa_id], ensure_ascii=False, separators=(",", ":")
+    )
+    return "GP-" + hashlib.sha256(identidad.encode()).hexdigest()[:20].upper()
+
+
+def normalizar_etiquetas_csv(pares: list[ParGold], etiquetas: dict[str, str]) -> dict[str, str]:
+    """Admitir IDs/alias antiguos solo cuando identifican una única pareja."""
+    indice: dict[str, set[str]] = {}
+    actuales = set()
+    for par in pares:
+        alias = identificador_csv(par)
+        if alias in actuales:
+            raise ValueError("El muestrario contiene una identidad de pareja repetida")
+        actuales.add(alias)
+        alias_v1 = "GP-" + hashlib.md5(par.id.encode()).hexdigest()[:12].upper()
+        for clave in (alias, alias_v1, par.id):
+            indice.setdefault(clave, set()).add(alias)
+    resultado = {}
+    for clave, etiqueta in etiquetas.items():
+        destinos = indice.get(clave)
+        if not destinos:
+            raise ValueError("La anotación contiene un identificador ajeno al muestrario")
+        if len(destinos) != 1:
+            raise ValueError("Identificador histórico ambiguo: use la plantilla a ciegas v2")
+        if etiqueta not in ETIQUETAS:
+            raise ValueError("Etiqueta de anotación no válida")
+        destino = next(iter(destinos))
+        if destino in resultado and resultado[destino] != etiqueta:
+            raise ValueError("Dos identificadores de la misma pareja tienen etiquetas contradictorias")
+        resultado[destino] = etiqueta
+    return resultado
 
 
 def cargar_pares_de_articulo(articulo: dict[str, Any]) -> list[ParGold]:

@@ -49,6 +49,7 @@ from app.modules.compromisos.gold_set_conciliacion import (  # noqa: E402
     guardar_articulo,
     identificador_csv,
     intervalos_bootstrap,
+    normalizar_etiquetas_csv,
 )
 from app.modules.compromisos.resolutor_bd import resolver_url_bd_csh  # noqa: E402
 
@@ -285,6 +286,10 @@ def main() -> int:
         if argumentos.anotador == "anotador-desconocido":
             raise SystemExit("importar exige --anotador explícito e identificable (pista de auditoría del gold set)")
         etiquetas = _leer_etiquetas_csv(Path(argumentos.anotaciones))
+        try:
+            etiquetas = normalizar_etiquetas_csv(pares, etiquetas)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
         campo_juez = f"etiqueta_{argumentos.juez}"
         campo_anotador = f"anotador_{argumentos.juez}"
         actualizados = 0
@@ -292,9 +297,8 @@ def main() -> int:
         datos_nuevos: list[dict[str, Any]] = []
         for par in pares:
             dato = par.model_dump(mode="json")
-            # El CSV a ciegas usa el alias neutral (no el id interno); se acepta
-            # también el id crudo por robustez con CSVs anteriores.
-            etiqueta = etiquetas.get(identificador_csv(par)) or etiquetas.get(dato["id"])
+            # La resolución previa rechaza IDs históricos que designan dos parejas.
+            etiqueta = etiquetas.get(identificador_csv(par))
             if etiqueta:
                 previa = dato[campo_juez]
                 if previa is not None and (previa != etiqueta or dato[campo_anotador] != argumentos.anotador):
@@ -328,12 +332,16 @@ def main() -> int:
         if argumentos.adjudicador in anotadores_del_lote:
             raise SystemExit("El adjudicador no puede coincidir con ninguno de los dos jueces (doble anotación ciega)")
         etiquetas = _leer_etiquetas_csv(Path(argumentos.adjudicaciones))
+        try:
+            etiquetas = normalizar_etiquetas_csv(pares, etiquetas)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
         resueltos = 0
         ignoradas = 0
         datos_nuevos: list[dict[str, Any]] = []
         for par in pares:
             dato = par.model_dump(mode="json")
-            etiqueta = etiquetas.get(identificador_csv(par)) or etiquetas.get(dato["id"])
+            etiqueta = etiquetas.get(identificador_csv(par))
             if etiqueta and par.estado == ESTADO_REQUIERE_ADJUDICACION:
                 dato["etiqueta_adjudicada"] = etiqueta
                 dato["adjudicador"] = argumentos.adjudicador

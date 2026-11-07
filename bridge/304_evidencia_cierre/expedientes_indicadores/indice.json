@@ -1,0 +1,282 @@
+{
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "insumos_antes": {
+    "banco": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d"
+  },
+  "insumos_despues": {
+    "banco": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d"
+  },
+  "expedientes": [
+    {
+      "codigo": "PERS_001",
+      "archivo": "PERS_001.json",
+      "sha256": "2b9b3182215fcb8184852b4fd815b2b28634af68369cdc726655b1f23afbd569",
+      "tier": "A",
+      "observaciones": 14,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_002",
+      "archivo": "PERS_002.json",
+      "sha256": "f3edbeaf33404d84aaea9089cd1d18f95c0763edf5b19933da72a7ed0190022e",
+      "tier": "A",
+      "observaciones": 10,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_003",
+      "archivo": "PERS_003.json",
+      "sha256": "b7fad5763292683a2914c899793d231834f3595090476cf15c05db2b4f5881c3",
+      "tier": "A",
+      "observaciones": 17,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_004",
+      "archivo": "PERS_004.json",
+      "sha256": "54c564d8594be0b0cecf9e0993c24549dae745e46cd9ba7de7fbdb566a5c7f73",
+      "tier": "A",
+      "observaciones": 10,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_005",
+      "archivo": "PERS_005.json",
+      "sha256": "73d843f10c377da65114b3c5f2816d2965db2f25874ba4044adecfac90508bf6",
+      "tier": "A",
+      "observaciones": 1,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SALUD_005",
+      "archivo": "SALUD_005.json",
+      "sha256": "6bd7421edbe1961846c129b0f829fe5288681f994cc686ea3b5d485fd500d09b",
+      "tier": "C",
+      "observaciones": 0,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "COM_001",
+      "archivo": "COM_001.json",
+      "sha256": "cfeb9ea9b4465ccdccb634a606fb764e0899d9fe299f4789f9a402fd9213a2ab",
+      "tier": "A",
+      "observaciones": 14,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "COM_002",
+      "archivo": "COM_002.json",
+      "sha256": "b901e3683dcf6b64311889e6f4b97ceac2ac6a4a6df9fc5d80c251d61dbd2df2",
+      "tier": "A",
+      "observaciones": 10,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "ECON_001",
+      "archivo": "ECON_001.json",
+      "sha256": "5230d18b92653922b86048d35bd711def520400094da33afa2e9bfd1af62cc65",
+      "tier": "A",
+      "observaciones": 3,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "ECON_002",
+      "archivo": "ECON_002.json",
+      "sha256": "9969c967bb6913f06a74b75dc1028009938425df690c80527c71799bdd4023eb",
+      "tier": "A",
+      "observaciones": 15,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "ECON_003",
+      "archivo": "ECON_003.json",
+      "sha256": "479d22298495f247fbf554cb008a478de0ae55cfeafdf6c071e0ea776a26d11d",
+      "tier": "A",
+      "observaciones": 6,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "ECON_004",
+      "archivo": "ECON_004.json",
+      "sha256": "a3172693ad55b82ee9c6911c6b2b650c90298d0c2eacb17adce889f197b684d5",
+      "tier": "A",
+      "observaciones": 3,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "AMB_001",
+      "archivo": "AMB_001.json",
+      "sha256": "ffc55f51f68cc53939c44a788fa67623f4c8e004d14f805715be17bc4f89ea1a",
+      "tier": "A",
+      "observaciones": 17,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "AMB_002",
+      "archivo": "AMB_002.json",
+      "sha256": "17aacb1671c896c19a6b7b499c636e138c41be198adc6a149e68f005ec826bd1",
+      "tier": "A",
+      "observaciones": 7,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "AMB_003",
+      "archivo": "AMB_003.json",
+      "sha256": "1085267ed786583efe3a9d2be7072e0a4e7e348a9b08f9c4f210e082b4a38da9",
+      "tier": "A",
+      "observaciones": 5,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SALUD_001",
+      "archivo": "SALUD_001.json",
+      "sha256": "c251afa8d7c1ced8301b1ab5651ba3b941fd5ded3c588eef8a6c632705d22954",
+      "tier": "A",
+      "observaciones": 10,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SALUD_002",
+      "archivo": "SALUD_002.json",
+      "sha256": "cf743db47d0e47ec51ddb9812ffa63e32fead770ec93efd9f8e4d29e25a2fdd6",
+      "tier": "A",
+      "observaciones": 6,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SALUD_003",
+      "archivo": "SALUD_003.json",
+      "sha256": "88bc978bf24458142358777b9fbf5e4ab3d66b00e7fba2f38b33eb4d7f85d22b",
+      "tier": "A",
+      "observaciones": 13,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SALUD_004",
+      "archivo": "SALUD_004.json",
+      "sha256": "c1c6489ed47335e0b76cf0627117afb55fa72196dae013ff782760cc5ff9f011",
+      "tier": "A",
+      "observaciones": 2,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "POL_001",
+      "archivo": "POL_001.json",
+      "sha256": "bbbb98c313436b67146e52f1f932f554a1c8342d58fabec63471a21e28a42029",
+      "tier": "A",
+      "observaciones": 5,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "POL_002",
+      "archivo": "POL_002.json",
+      "sha256": "e8e15058def0fc6adf58519a94de3546ad30cb019d4587098878e7d6f8929f93",
+      "tier": "A",
+      "observaciones": 1,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "POL_003",
+      "archivo": "POL_003.json",
+      "sha256": "545af2f4495aeaf5136cd81b2670ac31e52ed1df627c553adcbcb91ff7a1cf21",
+      "tier": "C",
+      "observaciones": 0,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SAT_001",
+      "archivo": "SAT_001.json",
+      "sha256": "57419c69c83856bd0578c02a4608578633d3064668c6f4ed822cecd8b225970d",
+      "tier": "A",
+      "observaciones": 13,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "SAT_002",
+      "archivo": "SAT_002.json",
+      "sha256": "d83d81d8333bb863034747a19b4e1e15c96ede0f2c66ca4aa8b1a05a4ed7331e",
+      "tier": "A",
+      "observaciones": 8,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_007",
+      "archivo": "PERS_007.json",
+      "sha256": "5584d283eeb87e37be967ce54dddc002bb17c03f863112027bddbf8d84b0903c",
+      "tier": "A",
+      "observaciones": 17,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "COM_003",
+      "archivo": "COM_003.json",
+      "sha256": "ba984a8332190c81b91b749ff7176b70efcc43cf52aa35dfe29fa933fecbfc3d",
+      "tier": "A",
+      "observaciones": 17,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_009",
+      "archivo": "PERS_009.json",
+      "sha256": "2fcc89988b43033862b4cd91039682b92c90a802c3aff4992d628da7a0c22bfc",
+      "tier": "A",
+      "observaciones": 1,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "PERS_010",
+      "archivo": "PERS_010.json",
+      "sha256": "3b78910a6c512d0492cf1926c0e4de3ba36b486fd0a62c6b1a5163e5307a0fbf",
+      "tier": "A",
+      "observaciones": 1,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    },
+    {
+      "codigo": "AMB_004",
+      "archivo": "AMB_004.json",
+      "sha256": "f4be28874bf6bf1d3feafc5a3dd682f07322181518295d7c7b67f88cfc84bb29",
+      "tier": "A",
+      "observaciones": 38,
+      "celdas_repetidas": 0,
+      "estado": "no_publicable"
+    }
+  ],
+  "fichas": 29,
+  "tiers": {
+    "A": 27,
+    "C": 2
+  },
+  "banco_solo_lectura": true,
+  "catalogo_modificado": false,
+  "promociones": 0
+}

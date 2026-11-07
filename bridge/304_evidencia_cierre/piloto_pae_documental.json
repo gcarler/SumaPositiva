@@ -1,0 +1,28 @@
+{
+  "fuente": "Unidad Administrativa Especial de Alimentación Escolar – Alimentos para Aprender",
+  "documento": "INOP 007, julio de 2025",
+  "url": "https://www.alimentosparaaprender.gov.co/sites/default/files/2025-08/INOP_JULIO%20VF.pdf",
+  "original_sha256": "651cd214232ec3f1c10be90313898d1a9cc1e9e22a3c8a6c15dfdcf7066a6506",
+  "clase": "documental; no serie de cobertura por barrio",
+  "lecturas": [
+    {
+      "pagina_pdf": 22,
+      "territorio_literal": "Cartagena",
+      "valor_literal": "0",
+      "unidad": "porcentaje de avance de registro MIPAE",
+      "es_cobertura_PAE": false
+    },
+    {
+      "pagina_pdf": 31,
+      "territorio_literal": "Cartagena",
+      "valor_literal": "Sin Reporte",
+      "contexto": "compras públicas locales",
+      "valor_numerico": null
+    }
+  ],
+  "advertencia_temporal": "El documento alterna cortes de abril, junio y julio; gráfica p.7 rotulada 31-06-2025, fecha inválida. No se imputa corte único.",
+  "beneficiarios_cartagena_verificados_en_este_piloto": null,
+  "denominador_elegible_cartagena_verificado": null,
+  "cobertura_barrial": null,
+  "promovido_a_SALUD_005": false
+}

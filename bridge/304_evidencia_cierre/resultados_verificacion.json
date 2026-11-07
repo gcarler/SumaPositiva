@@ -1,0 +1,96 @@
+{
+  "generado_utc": "2026-11-07T18:14:10.944067+00:00",
+  "backend": {
+    "passed": 1915,
+    "skipped": 1,
+    "failed": 0,
+    "total": 1916,
+    "base": "polis_test_304_corpus_r3",
+    "postgres": "18 / 15433",
+    "main_con_SM_comprometido": "da4c54f2",
+    "0097_no_comprometida_excluida": true
+  },
+  "bun": {
+    "passed": 960,
+    "failed": 0
+  },
+  "frontend_check": {
+    "exit": 0
+  },
+  "e2e_enforce": {
+    "criticos": 9,
+    "ampliados": 4,
+    "violaciones_inesperadas": 0,
+    "sonda_bloqueada": true,
+    "axe_superficies": 8,
+    "axe_graves_criticas": 0
+  },
+  "logs": [
+    {
+      "archivo": "backend_full_v5.log.txt",
+      "sha256": "c1c147916795fc1e3f6af296c5726de5c05f538bcc35b3283ab23b6ef5fa13bd",
+      "bytes": 17096,
+      "redactado": false
+    },
+    {
+      "archivo": "backend_full_v5.xml",
+      "sha256": "86d1ace42c4409c5a3537718163f30ba0ce08378c36fa56cd1790aa732d66a88",
+      "bytes": 263208,
+      "redactado": true
+    },
+    {
+      "archivo": "backend_full_v4.log.txt",
+      "sha256": "0f6ed6b572e1d9dc9d878745b4abcf1335295e9ee299c62a9fcc7664265e21ea",
+      "bytes": 17016,
+      "redactado": false
+    },
+    {
+      "archivo": "backend_full_v4.xml",
+      "sha256": "d0298699c4bf22fc5a5da16b9a0df1e2a3ebf3e9bc93db3e85ea2a2e9a818bd1",
+      "bytes": 261483,
+      "redactado": true
+    },
+    {
+      "archivo": "frontend_check.log.txt",
+      "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
+      "bytes": 197,
+      "redactado": false
+    },
+    {
+      "archivo": "bun_tests.log.txt",
+      "sha256": "e57508d66b617a463f559a5b3f279755d5ec5d40beadacd933c7d12ad0cce4e6",
+      "bytes": 176786,
+      "redactado": false
+    },
+    {
+      "archivo": "delta_final.log.txt",
+      "sha256": "50a98ca5a377ecd9419faa547a894fecbb188c84db51a072cd505c1dcf447ec5",
+      "bytes": 110,
+      "redactado": false
+    },
+    {
+      "archivo": "delta_final.xml",
+      "sha256": "32e9bd7fdcbce7e86fc0ce1128b6a4d28347a564f4c42f93c9ea85a1b91648e5",
+      "bytes": 6473,
+      "redactado": false
+    },
+    {
+      "archivo": "e2e_csp_enforce_v2.log.txt",
+      "sha256": "aeeb63119503e93e4506537cebd1ab90cd8f8d5c0c2b2494771fbb9f77387e04",
+      "bytes": 5742,
+      "redactado": false
+    },
+    {
+      "archivo": "e2e_csp_expansion.log.txt",
+      "sha256": "8195b06bba0227c2e53df09cdac5c01724690c3225c5b51e317eef809517c75a",
+      "bytes": 3510,
+      "redactado": false
+    },
+    {
+      "archivo": "tests_csp_js.log.txt",
+      "sha256": "3a2e44d70a8f477ead8191cf57ab0d81baa13f6e2146a09927a2cb56e13ca64c",
+      "bytes": 1284,
+      "redactado": false
+    }
+  ]
+}

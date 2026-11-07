@@ -1,0 +1,7 @@
+{
+  "referencia_sha256": "4422114f50ea2a7fe4d40b7b3f5faf4c2fb972444966b286c6b68540ca6c0d5b",
+  "activa_sha256": "4422114f50ea2a7fe4d40b7b3f5faf4c2fb972444966b286c6b68540ca6c0d5b",
+  "identicas": true,
+  "modo_activo": "Report-Only",
+  "sin_recargar_nginx": true
+}

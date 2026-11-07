@@ -1,0 +1,63 @@
+{
+  "codigo": "SALUD_005",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "SALUD_005",
+    "nombre": "Cobertura de PAE por barrio",
+    "dimension": "SALUD",
+    "definicion": "Candidato futuro para cobertura del Programa de Alimentación Escolar desagregada por barrio.",
+    "formula": "No definida sin fuente verificada",
+    "numerador": "No definido",
+    "denominador": "No definido",
+    "unidad": "beneficiarios cubiertos",
+    "tipo_territorio_fuente": "barrio",
+    "periodicidad": "No definida",
+    "tipo_periodo": "No definido",
+    "fuente": "NO_VERIFICADO",
+    "url_fuente": "NO_VERIFICADO",
+    "custodio": "No identificado",
+    "licencia": "no_verificada",
+    "anio_base": "NO_DEFINIDO",
+    "interpretacion": "Necesitaría datos oficiales con corte por unidad territorial, custodio y universos explícitos.",
+    "riesgo_metodologico": "Sin fuente verificada; requiere custodio, universos y periodicidad antes de calcular.",
+    "tier": "C",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": null,
+  "serie_observada": null,
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "No se ha verificado una licencia específica del producto.",
+    "licencia_producto": null,
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "barrio",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "beneficiarios cubiertos",
+    "universo": "No definido",
+    "periodo": "No definido",
+    "riesgo_declarado": "Sin fuente verificada; requiere custodio, universos y periodicidad antes de calcular.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto",
+      "insumo_observado_a_escala_objetivo",
+      "numerador_denominador_corte_y_unidad",
+      "condiciones_reutilizacion_especificas"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

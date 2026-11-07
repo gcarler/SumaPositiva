@@ -1,0 +1,63 @@
+{
+  "codigo": "POL_003",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "POL_003",
+    "nombre": "Densidad institucional de seguridad y justicia",
+    "dimension": "POL",
+    "definicion": "Candidato futuro para comparar presencia institucional con unidad territorial o población.",
+    "formula": "No definida sin fuente verificada",
+    "numerador": "No definido",
+    "denominador": "No definido",
+    "unidad": "instituciones por 100000 habitantes o por unidad territorial",
+    "tipo_territorio_fuente": "barrio",
+    "periodicidad": "No definida",
+    "tipo_periodo": "No definido",
+    "fuente": "NO_VERIFICADO",
+    "url_fuente": "NO_VERIFICADO",
+    "custodio": "No identificado",
+    "licencia": "no_verificada",
+    "anio_base": "NO_DEFINIDO",
+    "interpretacion": "Permitiría comparar presencia institucional sin inferir efecto.",
+    "riesgo_metodologico": "Sin fuente verificada ni método aprobado; no se usará para ranking territorial.",
+    "tier": "C",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": null,
+  "serie_observada": null,
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "No se ha verificado una licencia específica del producto.",
+    "licencia_producto": null,
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "barrio",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "instituciones por 100000 habitantes o por unidad territorial",
+    "universo": "No definido",
+    "periodo": "No definido",
+    "riesgo_declarado": "Sin fuente verificada ni método aprobado; no se usará para ranking territorial.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto",
+      "insumo_observado_a_escala_objetivo",
+      "numerador_denominador_corte_y_unidad",
+      "condiciones_reutilizacion_especificas"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "codigo": "SALUD_001",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "SALUD_001",
+    "nombre": "Suicidios conocidos por Medicina Legal",
+    "dimension": "SALUD",
+    "definicion": "Presuntos suicidios registrados por Medicina Legal.",
+    "formula": "Valor original publicado: medicina_suicidios.casos_registrados; no se recalcula.",
+    "numerador": "medicina_suicidios.casos_registrados",
+    "denominador": "No aplica: conteo original por año.",
+    "unidad": "casos",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_hecho",
+    "fuente": "medicina_suicidios",
+    "url_fuente": "https://www.datos.gov.co/d/f75u-mirk",
+    "custodio": "Instituto Nacional de Medicina Legal y Ciencias Forenses",
+    "licencia": "CC-BY-SA-4.0; atribución y compartir igual; declarada en metadatos Socrata",
+    "anio_base": "2015",
+    "interpretacion": "Lectura del universo médico legal, separada de otras fuentes.",
+    "riesgo_metodologico": "No equivale a intentos, consultas ni a registros policiales.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "medicina_suicidios",
+    "dataset_id": "f75u-mirk",
+    "titulo": "Presuntos Suicidios. Colombia, 2015 a 2024. Cifras definitivas",
+    "entidad": "Medicina Legal",
+    "dimension": "salud",
+    "pagina": "https://www.datos.gov.co/d/f75u-mirk",
+    "consulta": "https://www.datos.gov.co/resource/f75u-mirk.json?%24select=a_o_del_hecho&%24where=codigo_dane_municipio%3D%2713001%27",
+    "extraido_utc": "2026-10-23T01:50:09.759735+00:00",
+    "sha256": "317be89d9c48f91153112af1b636a848f4454b85c76b39e73cc93a7f70382701",
+    "filas_consultadas": 383,
+    "primer_anio": 2015,
+    "ultimo_anio": 2024,
+    "estado": "disponible"
+  },
+  "serie_observada": {
+    "fuente_clave": "medicina_suicidios",
+    "indicador": "casos_registrados",
+    "selector_literal": null,
+    "observaciones": 10,
+    "valores_no_nulos": 10,
+    "anios": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "subtipos": [
+      "total"
+    ],
+    "unidades": [
+      "casos"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Licencia declarada por el publicador Socrata; atribución y compartir igual.",
+    "licencia_producto": {
+      "url": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "consultado_utc": "2026-11-06T10:50:14.418016+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/f75u-mirk.json",
+      "bytes": 60292,
+      "sha256": "9a9597803b12fd50c1adff6d8f9ec2b32626567deddc365311e70e63023c6a87",
+      "nombre": "Presuntos Suicidios. Colombia, 2015 a 2024. Cifras definitivas",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto Nacional de Medicina Legal y Ciencias Forenses, Bogotá D.C.",
+      "attributionLink": "https://www.medicinalegal.gov.co",
+      "rowsUpdatedAt": 1758298846
+    },
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "casos",
+    "universo": "No aplica: conteo original por año.",
+    "periodo": "anio_hecho",
+    "riesgo_declarado": "No equivale a intentos, consultas ni a registros policiales.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

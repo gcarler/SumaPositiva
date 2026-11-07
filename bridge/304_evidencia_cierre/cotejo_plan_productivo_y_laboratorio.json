@@ -1,0 +1,8 @@
+{
+  "registros_productivos": 67,
+  "registros_laboratorio": 67,
+  "firmas_fuente_y_valor_anterior_identicas": true,
+  "celdas_fuente_distintas": 31,
+  "archivos_fuente_distintos": 14,
+  "pruebas_en_bd_csh": false
+}

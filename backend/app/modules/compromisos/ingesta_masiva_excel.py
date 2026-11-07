@@ -6,6 +6,7 @@ import csv
 import hashlib
 import io
 import json
+import math
 import re
 import unicodedata
 import zipfile
@@ -15,6 +16,7 @@ from itertools import islice
 from pathlib import PurePosixPath
 from typing import Any
 
+from app.modules.compromisos.recuperacion_documentos_pa import tipo_office_zip
 from app.modules.compromisos.taxonomia_seguridad import inferir_taxonomia
 
 MAX_ARCHIVOS = 200
@@ -28,17 +30,9 @@ MAGIC_XLS = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
 
 def detectar_extension_archivo(nombre: str, contenido: bytes) -> str:
     extension = PurePosixPath(nombre).suffix.lower()
-    es_excel_zip = contenido.startswith(MAGIC_XLSX)
-    if not es_excel_zip:
-        try:
-            with zipfile.ZipFile(io.BytesIO(contenido)) as archivo_zip:
-                es_excel_zip = "xl/workbook.xml" in archivo_zip.namelist()
-        except (OSError, zipfile.BadZipFile):
-            es_excel_zip = False
-    if es_excel_zip and extension not in {".xlsx", ".zip"}:
-        return ".xlsx"
-    if es_excel_zip and extension == ".zip":
-        return ".xlsx"
+    tipo = tipo_office_zip(contenido)
+    if tipo is not None:
+        return tipo
     if contenido.startswith(MAGIC_XLS):
         return ".xls"
     return extension
@@ -362,7 +356,8 @@ def _numero(valor: Any) -> float | None:
     if valor is None or isinstance(valor, bool) or str(valor).strip() == "":
         return None
     if isinstance(valor, (int, float)):
-        return float(valor)
+        numero = float(valor)
+        return numero if math.isfinite(numero) else None
     raw = str(valor).strip().replace("$", "").replace("%", "").replace(" ", "")
     if "," in raw and "." in raw:
         raw = raw.replace(".", "").replace(",", ".")
@@ -371,7 +366,8 @@ def _numero(valor: Any) -> float | None:
     elif re.fullmatch(r"-?\d{1,3}(?:\.\d{3})+", raw):
         raw = raw.replace(".", "")
     try:
-        return float(raw)
+        numero = float(raw)
+        return numero if math.isfinite(numero) else None
     except ValueError:
         return None
 
@@ -561,7 +557,7 @@ class IngestorBinarioTriada:
     ) -> list[ArchivoLeido]:
         if len(contenido) > MAX_BYTES_ZIP:
             raise ValueError("El archivo supera el límite de 150 MiB.")
-        if nombre.lower().endswith(".zip"):
+        if nombre.lower().endswith(".zip") and detectar_extension_archivo(nombre, contenido) == ".zip":
             return self._leer_zip(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)
         return [self._leer_archivo(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)]
 

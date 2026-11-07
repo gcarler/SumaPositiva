@@ -1,0 +1,29 @@
+{
+  "intentos": [
+    {
+      "archivo_privado": "/tmp/polis304_20261107/backend_full_v3.xml",
+      "sha256": "c2378a2c8f8ca8566b3a77a24d531b04e42ba25f1cf2386f8a24e587f23b3c35",
+      "casos_registrados": 1902,
+      "fallos": [
+        {
+          "caso": "tests.test_politicas_y_geodatos::test_15_territorios_distritales_con_centroides_postgis[asyncio]",
+          "mensaje": "assert 30 == 15\n +  where 30 = len([<app.modules.geodatos.models.Territorio object at 0x7e21a7aaaea0>, <app.modules.geodatos.models.Territorio object at ...os.models.Territorio object at 0x7e21a7aa8ce0>, <app.modules.geodatos.models.Territorio object at 0x7e21a7aab350>, ...])"
+        }
+      ],
+      "limite": "Prueba territorial suponía tamaño global de semilla; corregida sin borrar territorios."
+    },
+    {
+      "archivo_privado": "/tmp/polis304_20261107/backend_full.xml.pre_v3",
+      "sha256": "bf2cfb0bc796742d8a9d759ce67fb9ecdfd3edfa957fb1345454116cece6f003",
+      "casos_registrados": 1164,
+      "fallos": [
+        {
+          "caso": "tests.test_geodatos_isocronas::test_disponibilidad_pgrouting_en_repositorio[asyncio]",
+          "mensaje": "assert None is not None"
+        }
+      ],
+      "limite": "Corrida interrumpida para incorporar correcciones numéricas; pgrouting no provisionado aún en esa copia."
+    }
+  ],
+  "no_sustituyen_verificacion_final": true
+}

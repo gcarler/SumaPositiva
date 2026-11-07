@@ -1,0 +1,107 @@
+{
+  "codigo": "SALUD_004",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "SALUD_004",
+    "nombre": "Inseguridad alimentaria moderada y grave (SAE)",
+    "dimension": "SALUD",
+    "definicion": "Estimación municipal experimental de inseguridad alimentaria moderada-grave publicada por DANE SAE.",
+    "formula": "Valor original publicado: dane_sae_fies_pobreza_cartagena.inseguridad_alimentaria_moderada_grave_sae; no se recalcula.",
+    "numerador": "dane_sae_fies_pobreza_cartagena.inseguridad_alimentaria_moderada_grave_sae",
+    "denominador": "Población de referencia del modelo SAE publicada por DANE.",
+    "unidad": "porcentaje",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "puntual",
+    "tipo_periodo": "anio_estimacion",
+    "fuente": "dane_sae_fies_pobreza_cartagena",
+    "url_fuente": "https://sitios.dane.gov.co/EstimacionesModeloSAE/",
+    "custodio": "DANE",
+    "licencia": "publica_pendiente_verificacion",
+    "anio_base": "2022",
+    "interpretacion": "Lectura de estimación experimental con incertidumbre original.",
+    "riesgo_metodologico": "No sustituye mediciones directas ni comparaciones con otro modelo.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "dane_sae_fies_pobreza_cartagena",
+    "dataset_id": "SAE-FIES-PM-IPM-2022-2024",
+    "titulo": "Estimaciones municipales SAE de FIES y pobreza para Cartagena",
+    "entidad": "DANE",
+    "dimension": "transversal",
+    "pagina": "https://sitios.dane.gov.co/EstimacionesModeloSAE/",
+    "consulta": "https://sitios.dane.gov.co/EstimacionesModeloSAE/documentos/estimaciones-pobreza-alimentaria-fies-modelo-sae-2022-y-2024.xlsx",
+    "extraido_utc": "2026-10-23T01:51:01.211132+00:00",
+    "sha256": "f544cca76e34ac005a867ac5c0c1e7860401df1ca53c581d8d91228ae6f42010",
+    "filas_consultadas": 6,
+    "primer_anio": 2022,
+    "ultimo_anio": 2024,
+    "estado": "xlsx_oficial_estimacion_experimental"
+  },
+  "serie_observada": {
+    "fuente_clave": "dane_sae_fies_pobreza_cartagena",
+    "indicador": "inseguridad_alimentaria_moderada_grave_sae",
+    "selector_literal": null,
+    "observaciones": 2,
+    "valores_no_nulos": 2,
+    "anios": [
+      2022,
+      2024
+    ],
+    "subtipos": [
+      "Cartagena municipal SAE"
+    ],
+    "unidades": [
+      "%"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "6b5a009f32dc3b20fa95c1cb799686b19a3f705a693c3a895b7907c311668460",
+      "88526023d50008bef2ac623dae52021a8380ce16100996b74d223415f46b83a0"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Política institucional capturada; verificar alcance de cada producto y restricciones.",
+    "licencia_producto": null,
+    "politica_institucional": {
+      "id": "dane_politica_uso",
+      "url": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "fecha_captura_utc": "2026-11-07T17:29:49.552131+00:00",
+      "http": 200,
+      "url_final": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+      "sha256": "747c08eacae36efeed62a3d5f6f63ea9ee9f79442388d3e85164cf897fe0610e",
+      "bytes": 51463,
+      "archivo": "/root/polis/backups/fuentes_304/dane_politica_uso.bin",
+      "content_type": "text/html; charset=utf-8",
+      "last_modified": "Sat, 07 Nov 2026 17:29:47 GMT"
+    },
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "porcentaje",
+    "universo": "Población de referencia del modelo SAE publicada por DANE.",
+    "periodo": "anio_estimacion",
+    "riesgo_declarado": "No sustituye mediciones directas ni comparaciones con otro modelo.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

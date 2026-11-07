@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: el ensayo CSP está desactivado por defecto
+ok 1 - el ensayo CSP está desactivado por defecto
+  ---
+  duration_ms: 1.067646
+  type: 'test'
+  ...
+# Subtest: solo admite enforce explícito y la política idéntica en ambos modos
+ok 2 - solo admite enforce explícito y la política idéntica en ambos modos
+  ---
+  duration_ms: 0.616713
+  type: 'test'
+  ...
+# Subtest: rechaza unsafe-eval y la ausencia de las directivas requeridas
+ok 3 - rechaza unsafe-eval y la ausencia de las directivas requeridas
+  ---
+  duration_ms: 0.241713
+  type: 'test'
+  ...
+# Subtest: conserva literalmente la política y sustituye cabeceras previas sin mutarlas
+ok 4 - conserva literalmente la política y sustituye cabeceras previas sin mutarlas
+  ---
+  duration_ms: 1.464049
+  type: 'test'
+  ...
+# Subtest: el modo por defecto conserva las cabeceras originales
+ok 5 - el modo por defecto conserva las cabeceras originales
+  ---
+  duration_ms: 0.170311
+  type: 'test'
+  ...
+# Subtest: la referencia del repositorio es válida sin cambiar su modo real
+ok 6 - la referencia del repositorio es válida sin cambiar su modo real
+  ---
+  duration_ms: 0.448183
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 120.42858

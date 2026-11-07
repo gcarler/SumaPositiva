@@ -1,0 +1,141 @@
+{
+  "codigo": "AMB_001",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "AMB_001",
+    "nombre": "PM2.5 en media 24 horas por estación",
+    "dimension": "AMB",
+    "definicion": "Concentración media de PM2.5 en 24 horas para una estación publicada por SISAIRE/IDEAM.",
+    "formula": "Valor original publicado: ideam_calidad_aire.concentracion_media_estacion. Seleccionar subtipo con prefijo literal PM2.5 | 24 h | estación ; el comodín final del numerador conserva cada estación y año, sin agregar.",
+    "numerador": "ideam_calidad_aire.concentracion_media_estacion[PM2.5 | 24 h | estación *]",
+    "denominador": "No aplica: medición por estación; no se calcula un promedio distrital.",
+    "unidad": "microgramos por metro cubico",
+    "tipo_territorio_fuente": "estacion",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_medicion",
+    "fuente": "ideam_calidad_aire",
+    "url_fuente": "https://www.datos.gov.co/d/kekd-7v7h",
+    "custodio": "IDEAM / SISAIRE",
+    "licencia": "CC-BY-SA-4.0; atribución y compartir igual; declarada en metadatos Socrata",
+    "anio_base": "2014",
+    "interpretacion": "Lee cada estación y ventana temporal como un valor independiente; conserva 17 filas PM2.5/24 h de las 156 de la fuente.",
+    "riesgo_metodologico": "Las estaciones no representan automáticamente el distrito y hay cobertura variable; no se mapea a barrios ni a UCG.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "ideam_calidad_aire",
+    "dataset_id": "kekd-7v7h",
+    "titulo": "Calidad del Aire en Colombia (Promedio Anual)",
+    "entidad": "IDEAM / SISAIRE",
+    "dimension": "ambiental",
+    "pagina": "https://www.datos.gov.co/d/kekd-7v7h",
+    "consulta": "https://www.datos.gov.co/resource/kekd-7v7h.json?%24select=a_o%2Cid_estacion%2Cestaci_n%2Cvariable%2Ctiempo_de_exposici_n_horas%2Cpromedio%2Cunidades%2Crepresentatividad_temporal%2Clatitud%2Clongitud&%24where=c_digo_del_municipio%3D%2713001%27",
+    "extraido_utc": "2026-10-23T01:50:28.770097+00:00",
+    "sha256": "ddda9b4955372ce909a8e860f3dfa47554d8a3d9a12e6ea510c249fa6e368abe",
+    "filas_consultadas": 156,
+    "primer_anio": 2014,
+    "ultimo_anio": 2025,
+    "estado": "disponible"
+  },
+  "serie_observada": {
+    "fuente_clave": "ideam_calidad_aire",
+    "indicador": "concentracion_media_estacion",
+    "selector_literal": "PM2.5 | 24 h | estación *",
+    "observaciones": 17,
+    "valores_no_nulos": 17,
+    "anios": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "subtipos": [
+      "PM2.5 | 24 h | estación 31431 (BASE NAVAL)",
+      "PM2.5 | 24 h | estación 31441 (ZONA FRANCA LA CANDELARIA)",
+      "PM2.5 | 24 h | estación 31445 (Cartagena - Policía)",
+      "PM2.5 | 24 h | estación 31940 (CAR - CA4 PASACABALLOS)",
+      "PM2.5 | 24 h | estación 31984 (CARDIQUE-RA-01)",
+      "PM2.5 | 24 h | estación 31985 (CARDIQUE-RA-02)",
+      "PM2.5 | 24 h | estación 32001 (CARDIQUE-RA-05)",
+      "PM2.5 | 24 h | estación 32065 (CARDIQUE-CA-04)",
+      "PM2.5 | 24 h | estación 32066 (CARDIQUE-CA-01)"
+    ],
+    "unidades": [
+      "ugm3"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "108c995b953c8a35561103e2014cf828eb654a99e310f87fab94c2f4b7d2a04f",
+      "1a6562590ef19d1045d06c4055742d38288e9e6dcd71ccde5cee80f1d5a774eb",
+      "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+      "31489056e0916d59fe3add79e63f095af3ffb81604691f21cad442a85c7be617",
+      "3ada92f28b4ceda38562ebf047c6ff05400d4c572352a1142eedfef67d21e662",
+      "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9",
+      "3e1e967e9b793e908f8eae83c74dba9bcccce6a5535b4b462bd9994537bfe15c",
+      "49d180ecf56132819571bf39d9b7b342522a2ac6d23c1418d3338251bfe469c8",
+      "59e19706d51d39f66711c2653cd7eb1291c94d9b55eb14bda74ce4dc636d015a",
+      "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+      "8527a891e224136950ff32ca212b45bc93f69fbb801c3b1ebedac52775f99e61",
+      "98010bd9270f9b100b6214a21754fd33bdc8d41b2bc9f9dd16ff54d3c34ffd71",
+      "9f14025af0065b30e47e23ebb3b491d39ae8ed17d33739e5ff3827ffb3634953",
+      "ad57366865126e55649ecb23ae1d48887544976efea46a48eb5d85a6eeb4d306"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Licencia declarada por el publicador Socrata; atribución y compartir igual.",
+    "licencia_producto": {
+      "url": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "consultado_utc": "2026-11-06T10:50:13.654452+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/kekd-7v7h.json",
+      "bytes": 61397,
+      "sha256": "805e4babec0aaf805a5b1cf9e1614ef00f1204caf6dc60ab66b99fb5e4431961",
+      "nombre": "Calidad del Aire en Colombia (Promedio Anual)",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, Bogotá D.C.",
+      "attributionLink": "http://sisaire.ideam.gov.co/ideam-sisaire-web/publicaciones.xhtml?clase=DOCUMENTOS",
+      "rowsUpdatedAt": 1792422278
+    },
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "estacion",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "microgramos por metro cubico",
+    "universo": "No aplica: medición por estación; no se calcula un promedio distrital.",
+    "periodo": "anio_medicion",
+    "riesgo_declarado": "Las estaciones no representan automáticamente el distrito y hay cobertura variable; no se mapea a barrios ni a UCG.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}

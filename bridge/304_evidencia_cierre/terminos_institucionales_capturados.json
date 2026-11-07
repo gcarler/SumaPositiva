@@ -1,0 +1,50 @@
+[
+  {
+    "id": "dane_politica_uso",
+    "url": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+    "fecha_captura_utc": "2026-11-07T17:29:49.552131+00:00",
+    "http": 200,
+    "url_final": "https://www.dane.gov.co/index.php/servicios-al-ciudadano/tramites/ayudas-de-navegabilidad/politica-de-uso",
+    "sha256": "747c08eacae36efeed62a3d5f6f63ea9ee9f79442388d3e85164cf897fe0610e",
+    "bytes": 51463,
+    "archivo": "/root/polis/backups/fuentes_304/dane_politica_uso.bin",
+    "content_type": "text/html; charset=utf-8",
+    "last_modified": "Sat, 07 Nov 2026 17:29:47 GMT"
+  },
+  {
+    "id": "dnp_politica_datos",
+    "url": "https://www.dnp.gov.co/Politica-de-seguridad",
+    "fecha_captura_utc": "2026-11-07T17:29:50.294247+00:00",
+    "http": 200,
+    "url_final": "https://www.dnp.gov.co/Politica-de-seguridad",
+    "sha256": "ba5431185ff5f5266103eb450a1f7b27565e3cf8325d299cdef0903ad2177c66",
+    "bytes": 94024,
+    "archivo": "/root/polis/backups/fuentes_304/dnp_politica_datos.bin",
+    "content_type": "text/html; charset=utf-8",
+    "last_modified": "Sat, 07 Nov 2026 17:29:50 GMT"
+  },
+  {
+    "id": "dnp_sistemas_datos",
+    "url": "https://www.dnp.gov.co/LaEntidad_/Direccion-general/oficina-tecnologia-sistemas-informacion/Paginas/sistemas-de-informacion-y-datos-abiertos.aspx",
+    "fecha_captura_utc": "2026-11-07T17:29:50.938934+00:00",
+    "http": 200,
+    "url_final": "https://www.dnp.gov.co/LaEntidad_/Direccion-general/oficina-tecnologia-sistemas-informacion/Paginas/sistemas-de-informacion-y-datos-abiertos.aspx",
+    "sha256": "f05e97d3e81ab3e92ff70fc97a0c60194345503781056517facd57271d7aa6b4",
+    "bytes": 143804,
+    "archivo": "/root/polis/backups/fuentes_304/dnp_sistemas_datos.bin",
+    "content_type": "text/html; charset=utf-8",
+    "last_modified": "Sat, 07 Nov 2026 17:29:51 GMT"
+  },
+  {
+    "id": "datos_gov_terminos",
+    "url": "https://herramientas.datos.gov.co/terminos",
+    "fecha_captura_utc": "2026-11-07T17:29:51.885689+00:00",
+    "http": 200,
+    "url_final": "https://herramientas.datos.gov.co/terminos",
+    "sha256": "3bf85e754b159934355d7baa9c7e2778f643f796a31b86afa61b277c61add02a",
+    "bytes": 41616,
+    "archivo": "/root/polis/backups/fuentes_304/datos_gov_terminos.bin",
+    "content_type": "text/html; charset=UTF-8",
+    "last_modified": "Sat, 07 Nov 2026 17:29:51 GMT"
+  }
+]

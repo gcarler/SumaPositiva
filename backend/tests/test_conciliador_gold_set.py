@@ -27,6 +27,7 @@ from app.modules.compromisos.gold_set_conciliacion import (
     guardar_articulo,
     identificador_csv,
     intervalos_bootstrap,
+    normalizar_etiquetas_csv,
 )
 
 pytestmark = pytest.mark.integration
@@ -438,17 +439,124 @@ def test_exportar_csv_ciego_escapa_punto_y_coma_en_celdas() -> None:
     par = _par("p1", tipo="EXACTO_BPIM_PROYECTO").model_copy(
         update={
             "codigo_meta": "M;01",
-            "nombre_meta": "Prueba; calor; medición",
+            "nombre_meta": 'Prueba;\n"calor"; medición',
+            "indicador_meta": 'Indicador;\n"unidad"',
             "meta_producto_vigencia": "algo; seguro",
         }
     )
     filas = list(csv.DictReader(io.StringIO(exportar_csv_ciego([par])), delimiter=";"))
     assert len(filas) == 1
     fila = filas[0]
-    assert len(fila) == 7  # ninguna columna desplazada
+    assert len(fila) == 8  # ninguna columna desplazada
     assert fila["codigo_meta"] == "M;01"
-    assert fila["nombre_meta"] == "Prueba; calor; medición"
+    assert fila["nombre_meta"] == 'Prueba;\n"calor"; medición'
+    assert fila["indicador_meta"] == 'Indicador;\n"unidad"'
     assert fila["etiqueta_enviada"] == ""  # plantilla virgen: lista para el anotador
+
+
+def test_plantilla_real_coincide_con_los_240_pares_sin_filas_rotas():
+    import csv
+    import json
+    from pathlib import Path
+
+    raiz = Path(__file__).resolve().parents[2]
+    datos = raiz / "data/gold_set_conciliacion"
+    articulo = json.loads((datos / "gold_set_articulo.json").read_text(encoding="utf-8"))
+    pares = [ParGold.model_validate(p) for p in articulo["pares"]]
+    with (datos / "anotacion_a_ciegas.csv").open(encoding="utf-8", newline="") as entrada:
+        lector = csv.DictReader(entrada, delimiter=";")
+        filas = list(lector)
+        assert set(lector.fieldnames) == {
+            "id_par",
+            "codigo_plan",
+            "codigo_meta",
+            "nombre_meta",
+            "indicador_meta",
+            "codigo_actividad",
+            "meta_producto",
+            "etiqueta_enviada",
+        }
+    assert len(filas) == len(pares) == 240
+    assert all(None not in fila and all(v is not None for v in fila.values()) for fila in filas)
+    por_alias = {fila["id_par"]: fila for fila in filas}
+    assert len(por_alias) == 240
+    for par in pares:
+        fila = por_alias[identificador_csv(par)]
+        assert fila["nombre_meta"] == (par.nombre_meta or "")
+        assert fila["indicador_meta"] == (par.indicador_meta or "")
+        assert fila["meta_producto"] == (par.meta_producto_vigencia or "")
+        assert fila["etiqueta_enviada"] == ""
+
+
+def test_alias_v2_distingue_parejas_con_el_mismo_id_historico():
+    par = _par("neg-id-historico")
+    otro = par.model_copy(update={"actividad_pa_id": "00000000-0000-0000-0000-000000000002"})
+    assert identificador_csv(par) != identificador_csv(otro)
+    assert identificador_csv(par) == identificador_csv(par.model_copy())
+    etiquetas = normalizar_etiquetas_csv(
+        [par, otro], {identificador_csv(par): "VINCULO_CORRECTO", identificador_csv(otro): "VINCULO_INCORRECTO"}
+    )
+    assert len(etiquetas) == 2
+
+
+@pytest.mark.parametrize("formato", ["id", "alias_v1"])
+def test_alias_historico_ambiguo_no_aplica_el_juicio_a_dos_pares(formato):
+    par = _par("neg-historico")
+    otro = par.model_copy(update={"actividad_pa_id": "00000000-0000-0000-0000-000000000002"})
+    clave = par.id if formato == "id" else "GP-" + hashlib.md5(par.id.encode()).hexdigest()[:12].upper()
+    with pytest.raises(ValueError, match="ambiguo"):
+        normalizar_etiquetas_csv([par, otro], {clave: "VINCULO_CORRECTO"})
+
+
+def test_alias_historico_univoco_sigue_siendo_compatible():
+    par = _par("p-unico")
+    antiguo = "GP-" + hashlib.md5(par.id.encode()).hexdigest()[:12].upper()
+    for clave in (par.id, antiguo, identificador_csv(par)):
+        assert normalizar_etiquetas_csv([par], {clave: "VINCULO_CORRECTO"}) == {
+            identificador_csv(par): "VINCULO_CORRECTO"
+        }
+    with pytest.raises(ValueError, match="contradictorias"):
+        normalizar_etiquetas_csv([par], {antiguo: "VINCULO_CORRECTO", identificador_csv(par): "VINCULO_INCORRECTO"})
+    with pytest.raises(ValueError, match="ajeno"):
+        normalizar_etiquetas_csv([par], {"ajeno": "VINCULO_CORRECTO"})
+    with pytest.raises(ValueError, match="repetida"):
+        exportar_csv_ciego([par, par])
+
+
+def test_cli_rechaza_id_ambiguo_antes_de_modificar_articulo(monkeypatch, tmp_path):
+    cli = _cli_gold_set()
+    par = _par("neg-historico")
+    otro = par.model_copy(update={"actividad_pa_id": "00000000-0000-0000-0000-000000000002"})
+    articulo = tmp_path / "articulo_sintetico.json"
+    guardar_articulo([par, otro], str(articulo), "prueba")
+    antes = articulo.read_bytes()
+    etiquetas = tmp_path / "juez_sintetico.csv"
+    etiquetas.write_text("id_par;etiqueta\nneg-historico;VINCULO_CORRECTO\n", encoding="utf-8")
+    _argv(
+        monkeypatch,
+        "importar",
+        "--articulo",
+        str(articulo),
+        "--anotaciones",
+        str(etiquetas),
+        "--juez",
+        "a",
+        "--anotador",
+        "juez-sintetico",
+    )
+    with pytest.raises(SystemExit, match="ambiguo"):
+        cli.main()
+    assert articulo.read_bytes() == antes
+    etiquetas.write_text(
+        f"id_par;etiqueta\n{identificador_csv(par)};VINCULO_CORRECTO\n{identificador_csv(otro)};VINCULO_INCORRECTO\n",
+        encoding="utf-8",
+    )
+    assert cli.main() == 0
+    import json
+
+    anotados = json.loads(articulo.read_text(encoding="utf-8"))["pares"]
+    assert [p["etiqueta_a"] for p in anotados] == ["VINCULO_CORRECTO", "VINCULO_INCORRECTO"]
+    assert [p["id"] for p in anotados] == [par.id, otro.id]
 
 
 def test_lector_rechaza_par_duplicado_con_etiquetas_contradictorias(tmp_path) -> None:

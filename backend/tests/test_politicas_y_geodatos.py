@@ -81,12 +81,30 @@ async def test_fases_politica_ciclo_de_vida(session):
 
 
 async def test_15_territorios_distritales_con_centroides_postgis(session):
-    """Verificar la malla territorial oficial de Cartagena con centroides PostGIS EPSG:4326."""
-    stmt = select(Territorio).order_by(Territorio.codigo)
+    """Verificar los 15 casos de la semilla 0002, no un inventario territorial exhaustivo."""
+    codigos_semilla = {
+        "DISTRITO-CTG",
+        "LOC-1",
+        "LOC-2",
+        "LOC-3",
+        "CORR-BOQUILLA",
+        "CORR-PASACABALLOS",
+        "CORR-BAYUNCA",
+        "INS-BARU",
+        "INS-TIERRABOMBA",
+        "INS-ROSARIO",
+        "BARRIO-OLAYA",
+        "BARRIO-POZON",
+        "BARRIO-MANDELA",
+        "BARRIO-CENTRO",
+        "BARRIO-GETSEMANI",
+    }
+    stmt = select(Territorio).where(Territorio.codigo.in_(codigos_semilla)).order_by(Territorio.codigo)
     result = await session.execute(stmt)
     territorios = list(result.scalars().all())
 
     assert len(territorios) == 15
+    assert {t.codigo for t in territorios} == codigos_semilla
 
     # 1. Distrito
     distrito = next(t for t in territorios if t.codigo == "DISTRITO-CTG")

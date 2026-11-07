@@ -110,6 +110,9 @@ def _datos_registro(
     palabras = (descripcion or "").split(maxsplit=1)
     primera = palabras[0].strip(".,:;()[]{}") if palabras else ""
     verbo = (fila.get("verbo_detectado") or (primera.lower() if primera else None) or "")[:50]
+    apropiacion = fila.get("apropiacion_definitiva_cop")
+    if apropiacion is None:
+        apropiacion = fila.get("apropiacion_inicial_cop")
     return RegistroTriadaNormalizado(
         archivo_id=archivo_id,
         lote_id=lote_id,
@@ -132,7 +135,7 @@ def _datos_registro(
         avance_t4=_porcentaje_opcional(fila.get("avance_t4")),
         avance_fisico_pct=_porcentaje_opcional(fila.get("avance_fisico_pct")),
         avance_estrategico_pct=_porcentaje_opcional(fila.get("avance_estrategico_pct")),
-        apropiacion_definitiva_cop=fila.get("apropiacion_definitiva_cop") or fila.get("apropiacion_inicial_cop"),
+        apropiacion_definitiva_cop=apropiacion,
         cdp_cop=fila.get("cdp_cop"),
         compromisos_rp_cop=fila.get("compromisos_rp_cop"),
         obligaciones_cop=fila.get("obligaciones_cop"),
@@ -464,7 +467,9 @@ class IngestaMasivaService:
                         codigo_meta_pdd=str(row.get("codigo_meta_pdd") or ""),
                         indicador=str(row.get("indicador") or ""),
                         avance_estrategico_pct=_porcentaje(
-                            row.get("avance_estrategico_pct") or row.get("avance_fisico_pct")
+                            row.get("avance_estrategico_pct")
+                            if row.get("avance_estrategico_pct") is not None
+                            else row.get("avance_fisico_pct")
                         ),
                     )
                 )
@@ -485,7 +490,9 @@ class IngestaMasivaService:
                         **base,
                         fuente=str(row.get("fuente_financiacion") or "RECURSOS_PROPIOS"),
                         apropiacion_definitiva_cop=_numero_no_negativo(
-                            row.get("apropiacion_definitiva_cop") or row.get("apropiacion_inicial_cop")
+                            row.get("apropiacion_definitiva_cop")
+                            if row.get("apropiacion_definitiva_cop") is not None
+                            else row.get("apropiacion_inicial_cop")
                         ),
                         cdp_acumulado_cop=_numero_no_negativo(row.get("cdp_cop")),
                         compromisos_rp_cop=_numero_no_negativo(row.get("compromisos_rp_cop")),

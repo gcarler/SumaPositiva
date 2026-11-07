@@ -5,6 +5,7 @@ import http from "node:http";
 import fs from "node:fs";
 
 import { comprobarPuertosLibres, leerConfiguracionE2E } from "./e2e-seguridad.mjs";
+import { cabecerasCspEnsayo, comprobarBloqueoCsp, leerCspEnsayo, observarCsp } from "./e2e-csp.mjs";
 
 const configuracion = leerConfiguracionE2E();
 const BACKEND_PORT = configuracion.backendPort;
@@ -13,6 +14,14 @@ const PROXY_PORT = configuracion.proxyPort;
 const BASE_URL = `http://127.0.0.1:${PROXY_PORT}`;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 const E2E_DATABASE_URL = configuracion.databaseUrl;
+const politicaCsp = leerCspEnsayo();
+const rutaEvidenciaCsp = process.env.POLIS_E2E_CSP_EVIDENCIA;
+if (politicaCsp && (!rutaEvidenciaCsp || fs.existsSync(rutaEvidenciaCsp))) {
+  throw new Error("El ensayo CSP requiere POLIS_E2E_CSP_EVIDENCIA nuevo, sin sobrescritura");
+}
+const observadoresCsp = [];
+let sondaCsp = null;
+let ensayoCspExitoso = false;
 
 let backendProcess = null;
 let frontendProcess = null;
@@ -112,7 +121,7 @@ async function prepararEntornoAislado() {
         headers: { ...req.headers, host: `127.0.0.1:${targetPort}` },
       },
       (proxyRes) => {
-        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        res.writeHead(proxyRes.statusCode, cabecerasCspEnsayo(proxyRes.headers, politicaCsp));
         proxyRes.pipe(res);
       }
     );
@@ -250,12 +259,14 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
 
   try {
+    if (politicaCsp) sondaCsp = await comprobarBloqueoCsp(browser, BASE_URL, politicaCsp);
     // ----------------------------------------------------
     // CONTEXTO 1: AUTORIDAD DISTRITAL (MUTACIONES Y PERSISTENCIA)
     // ----------------------------------------------------
     const contextAutoridad = await browser.newContext({
       viewport: { width: 1440, height: 900 },
     });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextAutoridad, "autoridad_distrital"));
     const pageAutoridad = await contextAutoridad.newPage();
     pageAutoridad.on("pageerror", (err) => console.error("[BROWSER-PAGE-ERROR]", err));
     pageAutoridad.on("console", (msg) => {
@@ -542,6 +553,7 @@ async function main() {
     await pageAutoridad.waitForTimeout(400);
     registrarPaso("7. Devolución de un aporte", "Devolución motivada radicada y persistida en auditoría forense");
 
+    if (politicaCsp) await pageAutoridad.waitForTimeout(200);
     await contextAutoridad.close();
 
     // ----------------------------------------------------
@@ -551,6 +563,7 @@ async function main() {
     const contextAuditor = await browser.newContext({
       viewport: { width: 1440, height: 900 },
     });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextAuditor, "auditor_forense"));
     const pageAuditor = await contextAuditor.newPage();
 
     // Login como auditor_forense
@@ -607,6 +620,7 @@ async function main() {
 
     registrarPaso("8. Modo solo lectura del auditor", "Validado en Seguimiento (3 paneles), Mesas y Configuración");
 
+    if (politicaCsp) await pageAuditor.waitForTimeout(200);
     await contextAuditor.close();
 
     // ----------------------------------------------------
@@ -616,6 +630,7 @@ async function main() {
     const contextA11y = await browser.newContext({
       viewport: { width: 1440, height: 900 },
     });
+    if (politicaCsp) observadoresCsp.push(await observarCsp(contextA11y, "accesibilidad_autoridad"));
     const pageA11y = await contextA11y.newPage();
 
     // Login para tener permisos en vistas
@@ -660,7 +675,15 @@ async function main() {
       "0 violaciones críticas/serias en Dashboard, Mesas, Contenido, Seguimiento (3 pestañas), Configuración y Actores"
     );
 
+    if (politicaCsp) await pageA11y.waitForTimeout(200);
     await contextA11y.close();
+
+    if (politicaCsp) {
+      const violaciones = observadoresCsp.flatMap(o => o.violaciones);
+      assert.equal(violaciones.length, 0, `Violaciones CSP de la aplicación: ${JSON.stringify(violaciones)}`);
+      ensayoCspExitoso = true;
+      console.log(`[CSP] Enforce ${politicaCsp.sha256}: sonda bloqueada y cero violaciones en los flujos`);
+    }
 
     const TOTAL_FLUJOS = 9;
     const totalAprobados = flujosUnicos.size;
@@ -670,6 +693,15 @@ async function main() {
   } finally {
     await browser.close();
     desmontarEntornoAislado();
+    if (politicaCsp) {
+      fs.writeFileSync(rutaEvidenciaCsp, JSON.stringify({
+        generado_utc: new Date().toISOString(), modo: politicaCsp.modo,
+        politica: politicaCsp.valor, politica_sha256: politicaCsp.sha256,
+        laboratorio: { base: configuracion.dbName, puerto_pg: configuracion.dbPort, proxy: PROXY_PORT },
+        exito: ensayoCspExitoso, sonda: sondaCsp, contextos: observadoresCsp,
+        flujos: resultados, servicios_productivos_modificados: false,
+      }, null, 2) + "\n", { flag: "wx", mode: 0o600 });
+    }
   }
 }
 

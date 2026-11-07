@@ -1,0 +1,856 @@
+{
+  "lecturas": [
+    {
+      "id_original": "1c38nQNq-gzo1hk_dmE9yDeKBIanlh5S9",
+      "nombre": "PLAN DE ACCIÒN CORVIVIENDA 2022.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "db1196304436b1d574779da1aa03e320cecd0f6efa5c80d942aa36c67b40ec3b",
+      "vigencia_inferida_por_lector": 2022,
+      "corte_inferido_por_lector": "ANUAL",
+      "entidad_detectada": "Corvivienda",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "PLAN DE ACCIÓN 2022",
+          "fila_encabezado": 3,
+          "filas": 45,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DEL PROYECTO ANUAL",
+            "proyecto_nombre": "PROYECTO",
+            "avance_fisico_pct": "Porcentaje de avance Actividad Proyecto",
+            "apropiacion_definitiva_cop": "APROPIACIÓN DEFINITIVA \n(EN PESOS)",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 15,
+            "PLAN_ACCION": 15,
+            "INVERSION_PRESUPUESTAL": 15
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1Pd4GKaAGF5NLpVaSJ3N2-IuqBVrwA6vq",
+      "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA A JUNIO 30 DE 2022.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "de7bac2a96dcfb62639b6aa92bc15cec909410f47ac5e17521e3ae9c750d12bd",
+      "vigencia_inferida_por_lector": 2022,
+      "corte_inferido_por_lector": "T2",
+      "entidad_detectada": "Corvivienda",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "PLAN DE ACCIÓN 2022",
+          "fila_encabezado": 3,
+          "filas": 60,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DEL PROYECTO",
+            "proyecto_nombre": "PROYECTO",
+            "avance_fisico_pct": "AVANCE META DE BIENESTAR MARZO 2022",
+            "apropiacion_definitiva_cop": "APROPIACIÓN DEFINITIVA \n(EN PESOS)",
+            "pagos_tesoreria_cop": "REPORTE EJECUCIÓN PRESUPUESTAL CORVIVIENDA",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 20,
+            "PLAN_ACCION": 20,
+            "INVERSION_PRESUPUESTAL": 20
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1JHYRRJfbwrzgVkOOqbshZuoOIL7dpq6f",
+      "nombre": "SEGUIMIENTO PLAN DE ACCIÒN CORVIVIENDA IV TRIMESTRE 2023.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "e438b3d905f6640020b48ae1cf2ab8846d4b742cf328f474d23d1fb58cdd175b",
+      "vigencia_inferida_por_lector": 2023,
+      "corte_inferido_por_lector": "T4",
+      "entidad_detectada": "Corvivienda",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "PLAN DE ACCIÓN 2023",
+          "fila_encabezado": 4,
+          "filas": 54,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP ( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_fisico_pct": "AVANCE META PRODUCTO \n2023",
+            "apropiacion_definitiva_cop": "APROPIACIÓN\n DEFINITIVA\n(EN PESOS)",
+            "pagos_tesoreria_cop": "REPORTE EJECUCIÓN PRESUPUESTAL\nPROYECTO\n(RP)",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 18,
+            "PLAN_ACCION": 18,
+            "INVERSION_PRESUPUESTAL": 18
+          }
+        },
+        {
+          "nombre": "Hoja1",
+          "fila_encabezado": 3,
+          "filas": 9,
+          "mapeo": {
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO \n2020-2023",
+            "indicador": "INDICADOR DE PRODUCTO\nPDD 2020-2023",
+            "avance_fisico_pct": "AVANCE METAS PRODUCTOS  CUATRIENIO"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 9
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1w5w5vTU5Z0RUXWLxK-peELoYO0Gl1WrC",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION CORVIVIENDAA 30 DE SEPTIEMBRE2023 (2).xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "3f02343bc292f52c98e0baab98185612c2d552f6d65fa11dd889edf66b5ce954",
+      "vigencia_inferida_por_lector": 2023,
+      "corte_inferido_por_lector": "T3",
+      "entidad_detectada": "Alcaldía Mayor de Cartagena",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "PLAN DE ACCIÓN 2023",
+          "fila_encabezado": 4,
+          "filas": 54,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP ( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_fisico_pct": "AVANCE META PRODUCTO \n2023",
+            "apropiacion_definitiva_cop": "APROPIACIÓN\n DEFINITIVA\n(EN PESOS)",
+            "pagos_tesoreria_cop": "REPORTE EJECUCIÓN PRESUPUESTAL\nPROYECTO",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 18,
+            "PLAN_ACCION": 18,
+            "INVERSION_PRESUPUESTAL": 18
+          }
+        },
+        {
+          "nombre": "Hoja1",
+          "fila_encabezado": 3,
+          "filas": 10,
+          "mapeo": {
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO \n2020-2023",
+            "indicador": "INDICADOR DE PRODUCTO\nPDD 2020-2023",
+            "avance_fisico_pct": "AVANCE METAS PRODUCTOS  CUATRIENIO"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 10
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1IiYF7A2B_rdibtT4_pH4_4mfiVGuoKxq",
+      "nombre": "SEGUIMIENTO Y EVALUACIÓN PLAN DE ACCIÓN DIC 2024 - CORVIVIENDA.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "db9fa4efa754d2d7e8e756f12eab1b1f3fc2678613c53320b733105dfbc3285b",
+      "vigencia_inferida_por_lector": 2024,
+      "corte_inferido_por_lector": "ANUAL",
+      "entidad_detectada": "Corvivienda",
+      "perfil_detectado": "PA_MULTIHOJA_2024_2026",
+      "hojas": [
+        {
+          "nombre": "INSTRUCTIVO",
+          "fila_encabezado": 13,
+          "filas": 55,
+          "mapeo": {
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2024-2027",
+            "indicador": "Ingrese en esta casilla lo que persigue el indicador en el cuatrenio, se encuentra plasmado en el Acuerdo 139 que adopta el Plan de Desarrollo Distrital 2024-2027 'Cartagena, Ciudad de Derechos'"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 55
+          }
+        },
+        {
+          "nombre": "1. ESTRATÉGICO",
+          "fila_encabezado": 7,
+          "filas": 10,
+          "mapeo": {
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2024-2027",
+            "indicador": "INDICADOR DE PRODUCTO SEGÚN PDD",
+            "avance_fisico_pct": "PORCENTAJE AVANCE DE LA META AL AÑO"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 10
+          }
+        },
+        {
+          "nombre": "3. INVERSIÓN",
+          "fila_encabezado": 8,
+          "filas": 60,
+          "mapeo": {
+            "entidad": "NOMBRE DEL RESPONSABLE",
+            "codigo_meta_pdd": "META PRODUCTO PDD 2024",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSIÓN \n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_fisico_pct": "AVANCE ACTIVIDADES DEL PROYECTO DICIEMBRE 30",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(DEC. 1702 18 DIC 2023)\n(en pesos)",
+            "pagos_tesoreria_cop": "EJECUCIÓN PRESUPUESTAL SEGÚN REGISTROS PRESUPUESTALES A AGOSTO 31 DE 2024",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 20,
+            "PLAN_ACCION": 20,
+            "INVERSION_PRESUPUESTAL": 20
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1c-uLJDNoJXui9lQvVSJFd8hSB7pZDd_x",
+      "nombre": "12. SEGUIMIENTO Y EVALUACION  PLAN DE ACCIÓN CORVIVIENDA JUNIO 2023.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "4b8d8cf2b36aeaba37cd8a4259e81f91598e5233482119f77b99d05736dd885d",
+      "vigencia_inferida_por_lector": 2023,
+      "corte_inferido_por_lector": "T2",
+      "entidad_detectada": "Corvivienda",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "JUNIO 2023",
+          "fila_encabezado": 4,
+          "filas": 54,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP ( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_fisico_pct": "AVANCE META PRODUCTO \n2023",
+            "apropiacion_definitiva_cop": "APROPIACIÓN\n DEFINITIVA\n(EN PESOS)",
+            "pagos_tesoreria_cop": "REPORTE EJECUCIÓN PRESUPUESTAL\nPROYECTO",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 18,
+            "PLAN_ACCION": 18,
+            "INVERSION_PRESUPUESTAL": 18
+          }
+        },
+        {
+          "nombre": "Hoja1",
+          "fila_encabezado": 3,
+          "filas": 10,
+          "mapeo": {
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO \n2020-2023",
+            "indicador": "INDICADOR DE PRODUCTO\nPDD 2020-2023",
+            "avance_fisico_pct": "AVANCE METAS PRODUCTOS  CUATRIENIO"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 10
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1SwXsqEavb02YMZAQY0TjzoN_iFFpsBLr",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA 2023 - IV TRIMESTRE.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "5414e81134de6e598b4870c2ca2c6fd2641b80f5f7cb1c1b3fae9cd0fd412033",
+      "vigencia_inferida_por_lector": 2023,
+      "corte_inferido_por_lector": "T4",
+      "entidad_detectada": "Establecimiento Público Ambiental",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "DICIEMBRE 2023",
+          "fila_encabezado": 7,
+          "filas": 474,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_t1": "EJECUCIÓN ACTIVIDADES \nI TRIMESTRE \n(Ene - Mar)",
+            "avance_t2": "EJECUCIÓN ACTIVIDADES \nII TRIMESTRE \n(Abr - Jun)",
+            "avance_t3": "EJECUCIÓN ACTIVIDADES \nIII TRIMESTRE \n(Jul - Sep)",
+            "avance_t4": "EJECUCIÓN ACTIVIDADES \nIV TRIMESTRE \n(Oct - Dic)",
+            "avance_fisico_pct": "AVANCE PORCENTUAL META PRODUCTO AÑO 2023",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(en pesos)",
+            "pagos_tesoreria_cop": "EJECUCION PRESUPUESTAL COMPROMISOS",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 158,
+            "PLAN_ACCION": 158,
+            "INVERSION_PRESUPUESTAL": 158
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1mk08FpFQBXeMIjMVYR5qkbrrjCHIU96-",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA 2024 (PARA VALIDACIOìN PD).xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "6c33a14c8a2f8c25839db2b758eb1f0eea7107e70dee77a83f5736a45416f118",
+      "vigencia_inferida_por_lector": 2024,
+      "corte_inferido_por_lector": "ANUAL",
+      "entidad_detectada": "Establecimiento Público Ambiental",
+      "perfil_detectado": "PA_MULTIHOJA_2024_2026",
+      "hojas": [
+        {
+          "nombre": "INSTRUCTIVO",
+          "fila_encabezado": 5,
+          "filas": 53,
+          "mapeo": {
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "descripcion_actividad": "Colocar en esta casilla la linea estrategica  con el que se articula el programa de su competencia en el PDD Salvemos juntos a Cartagena.  Cada producto formulado en el plan de accion debera asociasrse a un objetivo institucional."
+          },
+          "motores": {
+            "PLAN_ACCION": 53
+          }
+        },
+        {
+          "nombre": "PLAN DE ACCIÓN",
+          "fila_encabezado": 7,
+          "filas": 165,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_t1": "EJECUCIÓN ACTIVIDADES \nI TRIMESTRE \n(Ene - Mar)",
+            "avance_t2": "EJECUCIÓN ACTIVIDADES \nII TRIMESTRE \n(Abr - Jun)",
+            "avance_t3": "EJECUCIÓN ACTIVIDADES \nIII TRIMESTRE \n(Jul - Sep)",
+            "avance_t4": "EJECUCIÓN ACTIVIDADES \nIV TRIMESTRE \n(Oct - Dic)",
+            "avance_fisico_pct": "AVANCE PORCENTUAL META PRODUCTO AÑO 2024",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(en pesos)",
+            "pagos_tesoreria_cop": "EJECUCION PRESUPUESTAL COMPROMISOS",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 55,
+            "PLAN_ACCION": 55,
+            "INVERSION_PRESUPUESTAL": 55
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1aI807etadw4nLxpvGvJV0TuDO15EBhUY",
+      "nombre": "1. SEGUIMIENTO Y EVALUACION PLAN DE ACCION SECRETARIA DE HACIENDA A JUNIO 30 DE 2023.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "8be0e24a8657d039bd4065791ef9fa90e42dfe9755864cbed8517e1b9d359565",
+      "vigencia_inferida_por_lector": 2023,
+      "corte_inferido_por_lector": "T2",
+      "entidad_detectada": "Secretaría de Hacienda",
+      "perfil_detectado": "PA_HIBRIDO_2020_2023",
+      "hojas": [
+        {
+          "nombre": "20230212 PA mod FINANZAS",
+          "fila_encabezado": 7,
+          "filas": 273,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_t1": "EJECUCIÓN FINANCIERA PRIMER TRIMESTRE",
+            "avance_fisico_pct": "AVANCE CUMPLIMIENTO META ene",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(en pesos)",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 91,
+            "PLAN_ACCION": 91,
+            "INVERSION_PRESUPUESTAL": 91
+          }
+        },
+        {
+          "nombre": "Hoja1",
+          "fila_encabezado": 2,
+          "filas": 13,
+          "mapeo": {
+            "codigo_meta_pdd": "PROGRAMACIÓN META PRODUCTO A 2023",
+            "avance_fisico_pct": "AVANCE CUMPLIMIENTO META ene"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 13
+          }
+        },
+        {
+          "nombre": "Hoja2",
+          "fila_encabezado": 5,
+          "filas": 6,
+          "mapeo": {
+            "codigo_meta_pdd": "PROGRAMACIÓN META PRODUCTO A 2023",
+            "avance_fisico_pct": "AVANCE CUMPLIMIENTO META ene"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 6
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "11tfKwlLL0NLwbmvoLq9QbaY2bVN0jo-1",
+      "nombre": "PLAN DE ACCION EPA VIGENCIA A MARZO 31 DE 2024 - EPA CARTAGENA.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "ca6588a3702980bdc60065776aca0cebeb09e47308bf22910b14bd3da74a9d21",
+      "vigencia_inferida_por_lector": 2024,
+      "corte_inferido_por_lector": "T1",
+      "entidad_detectada": "Establecimiento Público Ambiental",
+      "perfil_detectado": "PA_MULTIHOJA_2024_2026",
+      "hojas": [
+        {
+          "nombre": "INSTRUCTIVO",
+          "fila_encabezado": 5,
+          "filas": 53,
+          "mapeo": {
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "descripcion_actividad": "Colocar en esta casilla la linea estrategica  con el que se articula el programa de su competencia en el PDD Salvemos juntos a Cartagena.  Cada producto formulado en el plan de accion debera asociasrse a un objetivo institucional."
+          },
+          "motores": {
+            "PLAN_ACCION": 53
+          }
+        },
+        {
+          "nombre": "PLAN DE ACCIÓN",
+          "fila_encabezado": 7,
+          "filas": 168,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_t1": "EJECUCIÓN ACTIVIDADES \nI TRIMESTRE \n(Ene - Mar)",
+            "avance_t2": "EJECUCIÓN ACTIVIDADES \nII TRIMESTRE \n(Abr - Jun)",
+            "avance_t3": "EJECUCIÓN ACTIVIDADES \nIII TRIMESTRE \n(Jul - Sep)",
+            "avance_t4": "EJECUCIÓN ACTIVIDADES \nIV TRIMESTRE \n(Oct - Dic)",
+            "avance_fisico_pct": "AVANCE PORCENTUAL META PRODUCTO AÑO 2024",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(en pesos)",
+            "pagos_tesoreria_cop": "EJECUCION PRESUPUESTAL COMPROMISOS",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 56,
+            "PLAN_ACCION": 56,
+            "INVERSION_PRESUPUESTAL": 56
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1yPopzkOIH_9qtzrvk3rKKqP4RXbWsAKp",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION A MAYO 31 DE 2024.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "3cf2285d74814f2c0d788b2da890f930b5fcdfbaf6aeb1124d2397a9ab2dd123",
+      "vigencia_inferida_por_lector": 2024,
+      "corte_inferido_por_lector": "T2",
+      "entidad_detectada": "Alcaldía Mayor de Cartagena",
+      "perfil_detectado": "PA_MULTIHOJA_2024_2026",
+      "hojas": [
+        {
+          "nombre": "SEGPAAI-Abr-May 2024",
+          "fila_encabezado": 4,
+          "filas": 42,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LÍNEA ESTRATÉGICA",
+            "codigo_meta_pdd": "DESCRIPCIÓN DE LA META PRODUCTO 2020-2024",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_fisico_pct": "AVANCE PORCENTUAL DE LA ACTIVIDAD",
+            "apropiacion_definitiva_cop": "APROPIACIÓN \nDEFINITIVA\n(EN PESOS)",
+            "pagos_tesoreria_cop": "REPORTE EJECUCIÓN PRESUPUESTAL\nPROYECTO \n(RP)CORVVIENDA",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 14,
+            "PLAN_ACCION": 14,
+            "INVERSION_PRESUPUESTAL": 14
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1sPnWmVENqNo0EVobzoVhFh5VRD7gOV7D",
+      "nombre": "SEGUIMIENTO PLAN DE ACCION EPA A MAYO 31 DE 2024-EPA CARTAGENA.xlsx",
+      "clase": "libro_original_recuperado",
+      "derivado_sha256": "16d84cca405eaffb321ae4fef3ca913f494eda05db55cea2615f077c1f376532",
+      "vigencia_inferida_por_lector": 2024,
+      "corte_inferido_por_lector": "T2",
+      "entidad_detectada": "Establecimiento Público Ambiental",
+      "perfil_detectado": "PA_MULTIHOJA_2024_2026",
+      "hojas": [
+        {
+          "nombre": "INSTRUCTIVO",
+          "fila_encabezado": 5,
+          "filas": 53,
+          "mapeo": {
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "descripcion_actividad": "Colocar en esta casilla la linea estrategica  con el que se articula el programa de su competencia en el PDD Salvemos juntos a Cartagena.  Cada producto formulado en el plan de accion debera asociasrse a un objetivo institucional."
+          },
+          "motores": {
+            "PLAN_ACCION": 53
+          }
+        },
+        {
+          "nombre": "PLAN DE ACCIÓN",
+          "fila_encabezado": 7,
+          "filas": 168,
+          "mapeo": {
+            "entidad": "DEPENDENCIA RESPONSABLE",
+            "linea_estrategica": "LINEA ESTRATEGICA",
+            "codigo_meta_pdd": "DESCRIPCION DE LA META PRODUCTO 2020-2023",
+            "codigo_bpim": "CÓDIGO DE PROYECTO BPIN",
+            "indicador": "INDICADOR DE BIENESTAR",
+            "descripcion_actividad": "ACTIVIDADES DE PROYECTO DE INVERSION VIABILIZADAS EN SUIFP\n\n( HITOS )",
+            "proyecto_nombre": "PROYECTO DE INVERSIÓN",
+            "avance_t1": "EJECUCIÓN ACTIVIDADES \nI TRIMESTRE \n(Ene - Mar)",
+            "avance_t2": "EJECUCIÓN ACTIVIDADES \nII TRIMESTRE \n(Abr - May)",
+            "avance_t3": "EJECUCIÓN ACTIVIDADES \nIII TRIMESTRE \n(Jul - Sep)",
+            "avance_t4": "EJECUCIÓN ACTIVIDADES \nIV TRIMESTRE \n(Oct - Dic)",
+            "avance_fisico_pct": "AVANCE PORCENTUAL META PRODUCTO AÑO 2024",
+            "apropiacion_inicial_cop": "APROPIACIÓN INICIAL\n(en pesos)",
+            "pagos_tesoreria_cop": "EJECUCION PRESUPUESTAL COMPROMISOS",
+            "fuente_financiacion": "FUENTE DE FINANCIACIÓN"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 56,
+            "PLAN_ACCION": 56,
+            "INVERSION_PRESUPUESTAL": 56
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+      "nombre": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx__embebido_1.xlsx",
+      "clase": "libro_embebido_en_documento",
+      "derivado_sha256": "338eb4c0457b041a813bbda917b9ba02993eb929c586243c2bbfcf9ebfd1d4cd",
+      "vigencia_inferida_por_lector": 2027,
+      "corte_inferido_por_lector": "ANUAL",
+      "entidad_detectada": "Secretaría del Interior y Convivencia Ciudadana",
+      "perfil_detectado": "PA_CANONICO_DNP_POLIS",
+      "hojas": [
+        {
+          "nombre": "Seguridad Humana",
+          "fila_encabezado": 2,
+          "filas": 418,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 209,
+            "PLAN_ACCION": 209
+          }
+        },
+        {
+          "nombre": "Vida Digna",
+          "fila_encabezado": 2,
+          "filas": 406,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 203,
+            "PLAN_ACCION": 203
+          }
+        },
+        {
+          "nombre": "Desarrollo Economico",
+          "fila_encabezado": 2,
+          "filas": 260,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 130,
+            "PLAN_ACCION": 130
+          }
+        },
+        {
+          "nombre": "Ciudad Conectada",
+          "fila_encabezado": 2,
+          "filas": 338,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 169,
+            "PLAN_ACCION": 169
+          }
+        },
+        {
+          "nombre": "Innovación Pública",
+          "fila_encabezado": 2,
+          "filas": 278,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 139,
+            "PLAN_ACCION": 139
+          }
+        },
+        {
+          "nombre": "Capitulo Etnico",
+          "fila_encabezado": 2,
+          "filas": 86,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 43,
+            "PLAN_ACCION": 43
+          }
+        },
+        {
+          "nombre": "PLAN DE DESARROLLO 2024 - 2027",
+          "fila_encabezado": 2,
+          "filas": 204,
+          "mapeo": {
+            "codigo_meta_pdd": "ESPERADO PORCENTUAL META PRODUCTO CUATRIENIO EN LA VIGENCIA 2024",
+            "avance_t4": "AVANCE RESPECTO AL PROGRAMADO VIGENCIA  2024  CUARTO TRIMESTRE (ACUMULADO AÑO 2024)",
+            "avance_fisico_pct": "AVANCE RESPECTO AL PROGRAMADO VIGENCIA  2024  CUARTO TRIMESTRE (ACUMULADO AÑO 2024)"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 204
+          }
+        },
+        {
+          "nombre": "GRAFICAS INNOVACIÓN Y PARTICIPA",
+          "fila_encabezado": 10,
+          "filas": 43,
+          "mapeo": {
+            "descripcion_actividad": "Componente Impulsor de avance: Participación Ciudadana y Acción Comunal",
+            "avance_fisico_pct": "Componente Impulsor de avance: Participación Ciudadana y Acción Comunal"
+          },
+          "motores": {
+            "PLAN_ACCION": 43
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    },
+    {
+      "id_original": "1f6w3NE88ZtHL9qvyJYoA660bV-PT6H9v",
+      "nombre": "INFORME DE SEGUIMIENTO DEL PLAN DE DESARROLLO DISTRITAL CARTAGENA CIUDAD DE DERECHOS  2024-2027.docx.xlsx__embebido_2.xlsx",
+      "clase": "libro_embebido_en_documento",
+      "derivado_sha256": "5a434b7add897bf6808c56c6416183d0ccbcc67d2d18be33456dc923dc5c11ce",
+      "vigencia_inferida_por_lector": 2027,
+      "corte_inferido_por_lector": "ANUAL",
+      "entidad_detectada": "Secretaría del Interior y Convivencia Ciudadana",
+      "perfil_detectado": "PA_CANONICO_DNP_POLIS",
+      "hojas": [
+        {
+          "nombre": "Seguridad Humana",
+          "fila_encabezado": 2,
+          "filas": 418,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 209,
+            "PLAN_ACCION": 209
+          }
+        },
+        {
+          "nombre": "Vida Digna",
+          "fila_encabezado": 2,
+          "filas": 406,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 203,
+            "PLAN_ACCION": 203
+          }
+        },
+        {
+          "nombre": "Desarrollo Economico",
+          "fila_encabezado": 2,
+          "filas": 260,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 130,
+            "PLAN_ACCION": 130
+          }
+        },
+        {
+          "nombre": "Ciudad Conectada",
+          "fila_encabezado": 2,
+          "filas": 338,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 169,
+            "PLAN_ACCION": 169
+          }
+        },
+        {
+          "nombre": "Innovación Pública",
+          "fila_encabezado": 2,
+          "filas": 278,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "linea_estrategica": "LINEA ESTRATEGICA/COMPONENTE IMPULSOR/ PROGRAMA/ PRODUCTO (INDICADOR)/ META PRODUCTO",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 139,
+            "PLAN_ACCION": 139
+          }
+        },
+        {
+          "nombre": "Capitulo Etnico",
+          "fila_encabezado": 2,
+          "filas": 86,
+          "mapeo": {
+            "entidad": "RESPONSABLE(S)",
+            "codigo_meta_pdd": "META PRODUCTO (PRODUCTO NUMERICO CUATRIENIO)",
+            "meta_programada_anual": "PROGRAMADO NUMERICO META PRODUCTO 2024",
+            "avance_fisico_pct": "AVANCE  NUMERICO META PRODUCTO  CORTE SEPTIEMBRE 2024"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 43,
+            "PLAN_ACCION": 43
+          }
+        },
+        {
+          "nombre": "PLAN DE DESARROLLO 2024 - 2027",
+          "fila_encabezado": 2,
+          "filas": 204,
+          "mapeo": {
+            "codigo_meta_pdd": "ESPERADO PORCENTUAL META PRODUCTO CUATRIENIO EN LA VIGENCIA 2024",
+            "avance_t4": "AVANCE RESPECTO AL PROGRAMADO VIGENCIA  2024  CUARTO TRIMESTRE (ACUMULADO AÑO 2024)",
+            "avance_fisico_pct": "AVANCE RESPECTO AL PROGRAMADO VIGENCIA  2024  CUARTO TRIMESTRE (ACUMULADO AÑO 2024)"
+          },
+          "motores": {
+            "PLAN_DESARROLLO": 204
+          }
+        },
+        {
+          "nombre": "GRAFICAS INNOVACIÓN Y PARTICIPA",
+          "fila_encabezado": 10,
+          "filas": 43,
+          "mapeo": {
+            "descripcion_actividad": "Componente Impulsor de avance: Participación Ciudadana y Acción Comunal",
+            "avance_fisico_pct": "Componente Impulsor de avance: Participación Ciudadana y Acción Comunal"
+          },
+          "motores": {
+            "PLAN_ACCION": 43
+          }
+        }
+      ],
+      "contexto_temporal_por_fila_validado": false,
+      "autorizacion_publicacion": false
+    }
+  ],
+  "SQL": false,
+  "limite": "Las fechas/entidades inferidas son salida del lector genérico, no certificación de vigencia de cada observación. Los embebidos del informe PDD no se promueven como fuente canónica de metas ni a una serie anual por el nombre del archivo."
+}

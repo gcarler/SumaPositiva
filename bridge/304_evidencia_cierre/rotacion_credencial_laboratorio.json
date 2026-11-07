@@ -1,0 +1,9 @@
+{
+  "fecha_utc": "2026-11-07T17:06:36.200952+00:00",
+  "rol": "polis_304_20261107",
+  "puerto": 15433,
+  "credencial_previa_revocada": true,
+  "motivo": "Una traza de fallo pytest incluía el DSN del laboratorio; rol rotado y entorno privado actualizado.",
+  "produccion_modificada": false,
+  "credenciales_en_evidencia": false
+}

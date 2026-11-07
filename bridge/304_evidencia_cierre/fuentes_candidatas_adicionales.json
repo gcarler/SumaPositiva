@@ -1,0 +1,21 @@
+[
+  {
+    "id": "uapa_inop_julio_2025",
+    "url": "https://www.alimentosparaaprender.gov.co/sites/default/files/2025-08/INOP_JULIO%20VF.pdf",
+    "fecha_captura_utc": "2026-11-07T17:26:03.637770+00:00",
+    "http": 200,
+    "url_final": "https://www.alimentosparaaprender.gov.co/sites/default/files/2025-08/INOP_JULIO%20VF.pdf",
+    "sha256": "651cd214232ec3f1c10be90313898d1a9cc1e9e22a3c8a6c15dfdcf7066a6506",
+    "bytes": 1673220,
+    "archivo": "/root/polis/backups/fuentes_304/uapa_inop_julio_2025.bin",
+    "content_type": "application/pdf",
+    "last_modified": "Sat, 30 Aug 2025 22:31:37 GMT"
+  },
+  {
+    "id": "sed_inventario_pae_2023",
+    "url": "https://www.sedcartagena.gov.co/wp-content/uploads/2023/12/3.-Inventario-de-cocinas-comedores-y-menaje-dispuesto-para-la-preparaci%C3%B3n-de-alimentos-in-situ..pdf",
+    "fecha_captura_utc": "2026-11-07T17:26:03.932619+00:00",
+    "error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1081)>",
+    "http": null
+  }
+]

@@ -1,0 +1,1249 @@
+bun test v1.4.2 (744846f84)
+
+scripts/e2e-csp.test.mjs:
+(pass) el ensayo CSP está desactivado por defecto [4.17ms]
+(pass) solo admite enforce explícito y la política idéntica en ambos modos [1.69ms]
+(pass) rechaza unsafe-eval y la ausencia de las directivas requeridas [0.13ms]
+(pass) conserva literalmente la política y sustituye cabeceras previas sin mutarlas [17.38ms]
+(pass) el modo por defecto conserva las cabeceras originales [0.07ms]
+(pass) la referencia del repositorio es válida sin cambiar su modo real [1.95ms]
+
+scripts/e2e-seguridad.test.mjs:
+(pass) acepta configuración local de pruebas y codifica la contraseña [2.37ms]
+(pass) rechaza configuración insegura: {"POLIS_E2E_DB_NAME":"bd_csh"} [0.28ms]
+(pass) rechaza configuración insegura: {"POLIS_TEMPLATE_DB_NAME":"bd_csh"} [0.04ms]
+(pass) rechaza configuración insegura: {"POLIS_E2E_DB_NAME":"polis_test_x; DROP DATABASE polis"} [0.03ms]
+(pass) rechaza configuración insegura: {"POLIS_TEMPLATE_DB_NAME":"polis_test_e2e"} [0.01ms]
+(pass) rechaza configuración insegura: {"POLIS_DB_PORT":"5432"} [0.03ms]
+(pass) rechaza configuración insegura: {"POLIS_DB_HOST":"servidor-remoto"} [0.01ms]
+(pass) rechaza configuración insegura: {"POLIS_DB_PASS":""} [0.64ms]
+(pass) rechaza configuración insegura: {"E2E_BACKEND_PORT":"8000"} [0.08ms]
+(pass) rechaza configuración insegura: {"E2E_PROXY_PORT":"3000"} [0.02ms]
+(pass) rechaza configuración insegura: {"E2E_BACKEND_PORT":"3100"} [0.03ms]
+(pass) rechaza configuración insegura: {"E2E_PROXY_PORT":"5433"} [0.02ms]
+(pass) rechaza configuración insegura: {"E2E_PROXY_PORT":"1; echo invalido"} [0.02ms]
+(pass) rechaza configuración insegura: {"E2E_PROXY_PORT":"0"} [0.02ms]
+(pass) rechaza configuración insegura: {"POLIS_DB_USER":"rol; SQL"} [0.02ms]
+(pass) un puerto ocupado se rechaza conservando su servidor [7.64ms]
+
+scripts/ui-policy.test.mjs:
+(pass) rejects raw controls and animated action buttons outside the kit [32.07ms]
+(pass) allows shared native controls and semantic animated cards [33.38ms]
+(pass) rejects forbidden dependencies through aliases, relative imports, exports and dynamic imports [4.92ms]
+(pass) rejects Prisma imports and reintroduced legacy-prisma files [8.93ms]
+(pass) rejects Prisma dependencies and SQLite runtime commands [1.58ms]
+(pass) rejects literal palettes, arbitrary colors, CSS colors and colors inside templates [4.10ms]
+(pass) allows semantic tokens and color selectors targeting vendor markup [1.97ms]
+(pass) requires inventory and story imports for new components [14.80ms]
+(pass) rejects stale inventory entries and attempts to exempt a new component as legacy [5.45ms]
+(pass) rejects downgraded and disabled accessibility checks [7.04ms]
+
+scripts/build-polis.test.mjs:
+(pass) resolver distDir default [2.93ms]
+(pass) resolver distDir alternativo interno [0.42ms]
+(pass) distDir absoluto y raíz se rechazan [1.16ms]
+(pass) distDir fuera del proyecto se rechaza [0.35ms]
+(pass) distDir con symlink se rechaza [0.48ms]
+(pass) destination en enlace simbólico se rechaza [4.34ms]
+(pass) destination archivo se rechaza [3.01ms]
+(pass) default usa ruta literal de estáticos [3.01ms]
+(pass) alternativa usa ruta literal de estáticos [1.04ms]
+(pass) public no se duplica [0.76ms]
+(pass) distDir public/build se rechaza [0.59ms]
+(pass) falta build estático [0.64ms]
+(pass) falta server.js [0.42ms]
+(pass) falta public [0.68ms]
+(pass) fallo compilador no ensambla [131.06ms]
+(pass) CLI real con fake Next [93.10ms]
+(pass) CLI real con fallo de compilador [178.89ms]
+(pass) distDir inválido lanza [5.24ms]
+
+src/app/csp-config.test.ts:
+(pass) CSP de producción: Google Identity y restricciones conservadas > la referencia Nginx conserva Report-Only y la misma excepción de estilos [3.52ms]
+(pass) CSP de producción: Google Identity y restricciones conservadas > permite la hoja oficial de Identity sin abrir estilos a cualquier origen [51.97ms]
+
+src/shared/lib/csv.test.ts:
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > retorna comillas vacías ante null o undefined [0.10ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > procesa cadenas de texto estándar correctamente entre comillas [0.08ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > escapa comillas dobles internas duplicándolas según RFC 4180 [0.03ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > convierte tipos numéricos y booleanos de forma transparente [0.07ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza inyección de fórmulas con prefijo '=' anteponiendo comilla simple [0.03ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza inyección de fórmulas con prefijo '+' anteponiendo comilla simple [0.04ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza inyección de fórmulas con prefijo '-' anteponiendo comilla simple [0.02ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza inyección de fórmulas con prefijo '@' anteponiendo comilla simple [0.02ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza caracteres de control de tabulación '\t' y retorno de carro '\r' al inicio [0.02ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > sanitizarCsv y escaparCsv > neutraliza prefijos peligrosos precedidos por espacios en blanco [0.02ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > formatearFilaCsv > convierte una lista de valores en una fila separada por punto y coma por defecto [4.39ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > formatearFilaCsv > admite separador personalizado (coma) [0.06ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > generarCsv > construye un CSV estructurado con encabezados, filas y BOM UTF-8 [0.24ms]
+(pass) Utilidades CSV Centralizadas (AUD-12) > generarCsv > admite deshabilitar el BOM UTF-8 y cambiar separador a coma [4.12ms]
+
+src/shared/branding/logo-polis.test.tsx:
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 1. IsotipoPolis renderiza la geometría concéntrica del isotipo P con variables CSS [13.52ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 2. IsotipoPolis con withBackground renderiza el contenedor squircle institucional [0.85ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 3. LogoPolis renderiza la marca completa con letras OLIS adaptativas currentColor [0.67ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 4. MarcaPolisHeader renderiza el bloque unificado con POLIS y Cartagena 2026–2036 [0.92ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 5. Archivos de Favicon e iconografía existen con formato válido [0.36ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 6. Manifest PWA y layout.tsx están sincronizados con la iconografía oficial [0.39ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 7. Footer renderiza el Isotipo POLIS oficial y no contiene Landmark [0.10ms]
+(pass) POLIS Branding — Componentes Oficiales de Marca e Isotipo > 8. FormularioPublicoPage renderiza el Isotipo POLIS oficial en su cabecera [0.09ms]
+
+src/features/accesibilidad/accesibilidad-widget.test.tsx:
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > renderiza la barra lateral adosada al borde derecho con <nav aria-label='Menú de accesibilidad'> [12.64ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > renderiza las acciones directas de la barra con expansión lateral al hover/focus [2.35ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > en modo alto contraste, el botón de contraste refleja aria-pressed='true' y etiqueta de desactivación [2.05ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > al 200% de tamaño de texto, el botón A+ queda deshabilitado y A− habilitado [7.77ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > cuando isOpen es true, despliega el subpanel de Más Opciones a la izquierda con todos sus controles [52.92ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > en geovisor con isCollapsed=true renderiza únicamente la pestaña mínima compacta para no obstruir paneles [1.03ms]
+(pass) AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función Pública / GOV.CO) > las páginas públicas también admiten la pestaña compacta inferior en móvil [1.52ms]
+
+src/features/accesibilidad/accesibilidad-store.test.ts:
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > proporciona valores iniciales seguros por defecto [0.45ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > persiste los cambios en localStorage con clave versionada [1.52ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > aumenta y disminuye el tamaño de texto dentro del rango seguro [100, 200] [0.23ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > recupera valores por defecto ante datos corruptos o inválidos en localStorage [0.26ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > resetAll restablece todas las configuraciones a sus valores canónicos [0.72ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > respeta las preferencias del sistema cuando matchMedia indica prefers-contrast y prefers-reduced-motion [0.14ms]
+(pass) AccesibilidadStore (A11Y-WIDGET-01) > emite anuncios en aria-live tras cada cambio para lectores de pantalla [0.16ms]
+
+src/core/tests/no-production-mocks.test.ts:
+(pass) AUD-15: Auditoría Automatizada de Purga de Mocks en Producción > Identifica y analiza los archivos fuente de producción en src/ [0.09ms]
+(pass) AUD-15: Auditoría Automatizada de Purga de Mocks en Producción > Ningún archivo de código de producción en src/ importa *.mock*, __fixtures__ ni *-demo-store [69.06ms]
+
+src/core/panels/panel-store.test.ts:
+(pass) pila genérica de paneles > conserva la relación tipo-props, maximiza y cierra por clave [0.47ms]
+(pass) pila genérica de paneles > mantiene un máximo de cinco paneles y cierra la pila completa [0.10ms]
+
+src/app/trazabilidad/normativa.test.ts:
+(pass) Referencias normativas y alcance del diagrama de trazabilidad > usa referencias verificadas sin atribuir adopción distrital al decreto nacional [0.35ms]
+(pass) Referencias normativas y alcance del diagrama de trazabilidad > el vector de seguimiento identifica su perfil como POLIS [0.53ms]
+
+src/app/seguridad-humana/seguridad-humana.test.tsx:
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 1. Metadata de la página configurada correctamente con SEO y OpenGraph [0.04ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 2. Renderiza la vista principal con el lema y pilares de la ONU [20.07ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 3. Renderiza las 7 dimensiones temáticas y sus entidades líderes [9.75ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 4. Renderiza la matriz comparativa de paradigma: ¿Qué NO es vs. ¿Qué SÍ es? [9.58ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 5. Caja de Herramientas: renderiza enlaces de descarga y verifica existencia de los 4 PDFs [9.99ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 6. Renderiza las 10 Preguntas Clave del ABC Ciudadano [8.79ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 7. Renderiza la página completa incluyendo el footer integrado [6.49ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 8. Footer del sitio público incluye enlace directo a /seguridad-humana [0.43ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 9. Encargo 294: Presentación de Diagnóstico Barrial en formato diapositivas ejecutivas visuales [65.95ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 11. La matriz refleja los datos disponibles en el banco: dengue, IRCA e informalidad 2026 [30.35ms]
+(pass) Página interactiva de Seguridad Humana y Caja de Herramientas [ENC-293] > 10. Los documentos de la caja de herramientas no contienen cifras sin fuente ni dominio ajeno [174.24ms]
+
+src/app/marco-legal/page.test.tsx:
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 1. Metadata configurada con diferenciación explícita de ambos marcos [0.08ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 2. Renderiza la estructura general con main accesible y pie fuera de main [19.34ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 3. Título principal institucional y tarjetas comparativas de los dos pilares [11.11ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 4. Conmutador interactivo accesible (role='tablist', 'tab', 'tabpanel') [19.69ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 5. Preservación estricta de anclas históricas y retrocompatibilidad URL (#distrital) [19.13ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 6. Presencia íntegra de normas distritales y de política pública [5.97ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 7. Presencia de referencias de la plataforma y límites de valoración documental [39.57ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 8. Catálogo completo de secciones verificado (9 secciones en total) [0.29ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 9. Ausencia de enlaces http inseguros [10.15ms]
+(pass) Página y Vista de Marcos Jurídicos, Doctrinales y Normativos [ENC-302] > 10. Jurisdicción, sustitución y fuentes de las referencias corregidas [5.56ms]
+
+src/app/indicadores/page.test.tsx:
+(pass) la página declara una región principal y mantiene el pie fuera de ella [0.56ms]
+
+src/app/_components/sidebar-institucional.test.ts:
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 1. Erradicación Absoluta de Botones Inertes con toast.info (GAP-03) > ningún módulo principal invoca toast.info al ser accionado [0.41ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 1. Erradicación Absoluta de Botones Inertes con toast.info (GAP-03) > ningún submódulo invoca toast.info al ser accionado [0.40ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 2. Analítica y Métricas de Formularios (forms_analitica — GAP-03) > despliega panel 'formulario-analitica' con ID real si existen formularios [0.21ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 2. Analítica y Métricas de Formularios (forms_analitica — GAP-03) > despliega selector 'formularios' si la lista está vacía [0.07ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 3. Resolución Dinámica de Mesas en Papelógrafo (mesas_papelografo — GAP-10) > resuelve dinámicamente ID de mesa y submesa real sin valores mockeados fijos [0.15ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 3. Resolución Dinámica de Mesas en Papelógrafo (mesas_papelografo — GAP-10) > abre panel 'mesa' si la mesa no cuenta aún con submesas configuradas [0.08ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 4. Actas Inmutables C-150 (mesas_actas — GAP-03) > abre 'mesa-acta' con mesa que tenga sha256Acta pericial registrado [0.28ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 4. Actas Inmutables C-150 (mesas_actas — GAP-03) > redirige a 'mesas' si no hay mesas en el sistema [0.10ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 5. Presupuesto FONSET y Cadena de Valor (presupuesto — GAP-03) > abre 'asignacion-presupuestal' operativamente en lugar de toast inerte [0.09ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 6. Fichas de Indicadores de Seguimiento (indicadores — GAP-03) > abre 'rendicion-cuentas' operativamente en lugar de toast inerte [0.04ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 7. Navegación a Módulos de Plataforma Administrativa (GAP-FIX-03) > navega a /plataforma/usuarios [0.14ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 7. Navegación a Módulos de Plataforma Administrativa (GAP-FIX-03) > navega a /plataforma/diagnostico [0.05ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 7. Navegación a Módulos de Plataforma Administrativa (GAP-FIX-03) > navega a /plataforma/fuentes [0.06ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 7. Navegación a Módulos de Plataforma Administrativa (GAP-FIX-03) > navega a /plataforma/actores [0.04ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 7. Navegación a Módulos de Plataforma Administrativa (GAP-FIX-03) > navega a /plataforma raíz [0.04ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > politicas_fases abre 'fases-control' [0.04ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > forms_creados abre 'formularios' [0.02ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > forms_builder abre 'formulario-editor' [0.02ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > asistencia_consolidado abre 'participacion-multicanal' [0.04ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > testimonios_curaduria abre 'testimonios-moderacion' [0.03ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > testimonios_nuevo abre 'testimonio-editor' [0.06ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 8. Apertura de Paneles Operativos Especializados > auditoria abre 'auditoria-consola' [0.03ms]
+(pass) Sidebar Institucional — Navegación Operativa y Erradicación de GAPs (GAP-FIX-03) > 9. Integridad y Cobertura de Permisos Institucionales > todos los módulos tienen permisos formalizados en PERMISOS_MODULO [0.07ms]
+
+src/shared/offline/tests/offline-sync.test.ts:
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Base de Datos Local (polis_offline_db / Memoria Fallback) > guarda y recupera asistencias pendientes en la cola outbox [1.39ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Base de Datos Local (polis_offline_db / Memoria Fallback) > guarda y recupera propuestas comunitarias pendientes de Modo Barrio [0.23ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Base de Datos Local (polis_offline_db / Memoria Fallback) > elimina registros tras confirmación de sincronización [0.25ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Base de Datos Local (polis_offline_db / Memoria Fallback) > calcula el consolidado total de registros pendientes en todos los stores [0.19ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Base de Datos Local (polis_offline_db / Memoria Fallback) > registra intentos fallidos y almacena el mensaje de error para reintento [0.35ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Gestor de Sincronización Outbox (SyncManager) > no ejecuta sincronización si no hay registros pendientes [0.61ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Gestor de Sincronización Outbox (SyncManager) > sincroniza exitosamente asistencias y propuestas usando despachadores [0.81ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Gestor de Sincronización Outbox (SyncManager) > omite registros que hayan excedido el límite de 5 reintentos por seguridad [0.14ms]
+(pass) Módulo de Persistencia y Resiliencia Offline (PWA-OFFLINE-01) > Gestor de Sincronización Outbox (SyncManager) > maneja fallos de red registrando el error sin perder los datos del facilitador [0.70ms]
+
+src/shared/monitoring/tests/error-boundary.test.tsx:
+(pass) Componente ErrorBoundary (OPS-OBSERVABILITY-01) > renderiza los hijos normalmente cuando no hay excepciones [0.67ms]
+(pass) Componente ErrorBoundary (OPS-OBSERVABILITY-01) > getDerivedStateFromError actualiza hasError y guarda la instancia del error [0.07ms]
+(pass) Componente ErrorBoundary (OPS-OBSERVABILITY-01) > renderiza la UI de contingencia accesible cuando hasError es true [3.56ms]
+(pass) Componente ErrorBoundary (OPS-OBSERVABILITY-01) > permite renderizar un fallback personalizado si se especifica [0.16ms]
+(pass) Componente ErrorBoundary (OPS-OBSERVABILITY-01) > handleReset reestablece el estado e invoca el callback onReset [0.23ms]
+
+src/features/usuarios/services/usuarios-integracion.test.ts:
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.usuarios consulta usuarios con búsqueda y paginación real [0.15ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.crearUsuario envía payload completo para alta administrativa [0.12ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.editarUsuario procesa actualización con trazabilidad de motivo [0.09ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.revocarUsuario invoca endpoint de seguridad para invalidar sesiones [0.17ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.roles lista roles canónicos y personalizados del sistema [0.16ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > manejo tipado de error ante respuesta 409 o 422 de FastAPI [0.11ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.ambitosUsuario consulta la lista de ámbitos asignados a un usuario [0.07ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.asignarAmbitoUsuario envía asignación controlada con motivo [0.06ms]
+(pass) GAP-FIX-02: Gestión de Usuarios y Roles conectada a API FastAPI > identidadApi.revocarAmbitoUsuario procesa revocación con motivo de auditoría [0.04ms]
+
+src/features/sesion/services/sincronizar-sesion.test.ts:
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) perfil remoto corrige el rol restaurado antes de habilitarlo [1.98ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) revocación 401 limpia la sesión [0.30ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) caducidad impide consultar perfil y limpia sesión [0.11ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) 503 deja el área interna bloqueada con error recuperable [0.10ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) un perfil antiguo no sobrescribe un login más reciente [1.25ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) un perfil de cuenta desactivada limpia el acceso [0.10ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) restauración con rol que exige MFA consulta el estado real y siembra la restricción [0.17ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) sesión activa no acreditada también queda representada como restringida [0.10ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) 503 de mfa/estado queda como lectura no disponible y no da acceso [0.21ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) 401 de mfa/estado limpia la sesión [0.13ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) 409 de mfa/estado también queda como lectura no disponible [0.11ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) perfil con permisos plenos no consulta el estado MFA [0.76ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) cambio de rol a uno exigente restringe la sesión ya activa [0.15ms]
+[zustand persist middleware] Unable to update item 'polis-sesion-v2', the given storage is currently unavailable.
+(pass) un 401 del envío anónimo no cierra la sesión institucional [1.56ms]
+
+src/features/sesion/panels/sesion-activacion.test.tsx:
+(pass) Aviso de Activación de Cuenta Ciudadana > renderiza correctamente las instrucciones pedagógicas de activación y spam [2.01ms]
+
+src/features/sesion/components/campo-contrasena.test.tsx:
+(pass) PasswordInput / CampoContrasena UX y A11y > renderiza inicialmente el campo con type='password' [3.22ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > renderiza el botón de visibilidad con type='button', aria-label y aria-pressed correctos [0.47ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > deshabilita el botón de alternancia si el campo está deshabilitado [1.40ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > permite omitir el botón de visibilidad si mostrarBotonVisibilidad=false [0.33ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > CampoIdentidad integra PasswordInput automáticamente cuando type='password' [0.98ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > CampoContrasena renderiza un campo de contraseña accesible con toggle [0.76ms]
+(pass) PasswordInput / CampoContrasena UX y A11y > CampoIdentidad normal (texto) no incluye botón de contraseña [0.52ms]
+
+src/features/seguimiento/state/devolucion-store.test.ts:
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Fixture Canónico de Devolución (Storybook / Pruebas) > contiene exactamente las 8 propuestas comunitarias estructuradas de Cartagena [0.15ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Fixture Canónico de Devolución (Storybook / Pruebas) > garantiza que el 100% de las propuestas del fixture cuentan con estado explícito y razón vinculante [0.09ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Consolidado Estadístico Multicanal de Cartagena (OBS-07) > el fixture de demostración contiene las métricas del piloto [0.03ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Consolidado Estadístico Multicanal de Cartagena (OBS-07) > OBS-07: CONSOLIDADO_PARTICIPACION_VACIO no contiene cifras codificadas ni desglose inventado [0.03ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Consolidado Estadístico Multicanal de Cartagena (OBS-07) > OBS-07: estado inicial y restablecer inician con consolidado vacío (0s), sin inyectar 968 [0.03ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Filtrado Multicriterio > filtra por territorio [0.12ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Filtrado Multicriterio > filtra por estado de incorporación [0.04ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Filtrado Multicriterio > busca por texto en código, título, autor y motivación [0.15ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > Evaluación con Agente IA C-150 > ejecuta dictamen de devolución con IA garantizando cumplimiento C-150 [9.02ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-05: Proscripción Absoluta de Cifras Ficticias y Estado Inicial Vacío > estado inicial del store es lista vacía, 0 aportes, tasa 0% y cargando=true (OBS-05) [0.11ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-05: Proscripción Absoluta de Cifras Ficticias y Estado Inicial Vacío > ante fallo de conexión en cargarDatos, establece lista vacía, tasa 0% y error explícito sin inyectar datos ficticios (OBS-05) [39.75ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-05: Proscripción Absoluta de Cifras Ficticias y Estado Inicial Vacío > ante fallo de API en obtenerConsolidadoParticipacion, propaga error a cargarDatos sin inventar cifras (OBS-27 / H-04) [0.88ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-05: Proscripción Absoluta de Cifras Ficticias y Estado Inicial Vacío > restablecer devuelve el store a lista vacía y 0 en todas las cifras (OBS-05) [0.07ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-06: Prohibición de Asumir Causal Técnica si Falta en Metadatos > mapearAporteAPropuesta asigna 'no_registrada' y no inventa 'tecnica' cuando un aporte rechazado carece de causal (OBS-06) [0.23ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > OBS-06: Prohibición de Asumir Causal Técnica si Falta en Metadatos > mapearAporteAPropuesta preserva la causal explícita cuando sí está presente en metadatos [0.09ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada > filtra por estado SIN_RESPUESTA correctamente [0.08ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada > AUD-03: mutación exitosa pasa de SIN_RESPUESTA a NO_INCORPORADA_MOTIVADA y recalcula KPIs [0.48ms]
+(pass) Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03) > AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada > AUD-03: si la API falla al registrar devolución, NO muta el store, registra error y retorna false (anti-silent-fallback) [0.22ms]
+
+src/features/seguimiento/state/compromisos-store.test.ts:
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Catálogo Canónico y KPIs Cuatrienales > carga exactamente los 10 compromisos institucionales estructurados para Cartagena [0.09ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Catálogo Canónico y KPIs Cuatrienales > los compromisos canónicos llevan metadatos de propuesta no validada y sin atribución falsa al Decreto 037 (OBS-11) [0.06ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Catálogo Canónico y KPIs Cuatrienales > computa KPIs de cumplimiento, alertas y presupuesto anual distrital [0.12ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Catálogo Canónico y KPIs Cuatrienales > computa promedio y conteos correctamente cuando existen compromisos con reporte real [0.08ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Catálogo Canónico y KPIs Cuatrienales > carga compromisos reactivamente desde el servicio de backend [13.32ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Filtrado Multicriterio > filtra por Entidad Responsable [0.21ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Filtrado Multicriterio > filtra por Línea Estratégica [0.02ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Filtrado Multicriterio > filtra por Estado de Cumplimiento [0.02ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Filtrado Multicriterio > busca por texto en código, nombre, entidad y descripción de meta [0.07ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Control de Fallos y No Mutación Silenciosa (OBS-01) > si PATCH /avance falla en backend, no altera el store, registra error y devuelve false [0.32ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Control de Fallos y No Mutación Silenciosa (OBS-01) > si POST /compromisos falla en backend, no agrega elemento, registra error y devuelve null [0.20ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Control de Fallos y No Mutación Silenciosa (OBS-01) > si DELETE /compromisos falla en backend, no elimina el elemento y devuelve false [0.30ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Mutaciones Exitosas del Store > agrega un nuevo compromiso cuando el backend responde satisfactoriamente [0.21ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Mutaciones Exitosas del Store > actualiza avance cuatrienal cuando el backend responde satisfactoriamente [0.16ms]
+(pass) Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01) > Mutaciones Exitosas del Store > gestiona filtros y restablece valores iniciales [0.06ms]
+
+src/features/seguimiento/state/cadena-valor-store.test.ts:
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Estructura de la Cadena de Valor de Cartagena > carga exactamente los 8 indicadores oficiales en los 3 eslabones causales [0.11ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Estructura de la Cadena de Valor de Cartagena > busca indicadores por ID o por código [0.08ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Cálculo Metodológico de Avance de Indicadores > calcula avance para indicador ascendente (recursos, luminarias, frentes) [0.10ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Cálculo Metodológico de Avance de Indicadores > calcula avance para indicador descendente (homicidios, hurtos, percepción) [0.03ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Cálculo Metodológico de Avance de Indicadores > asigna semáforos cromáticos conforme a rangos de semaforización oficial [0.11ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Carga de Datos y Modo Contingencia (AUD-02) > marca esContingencia en false cuando el backend responde correctamente [0.18ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Carga de Datos y Modo Contingencia (AUD-02) > activa esContingencia en true cuando el backend está caído o responde con error [0.07ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Mutaciones y Registro de Mediciones (AUD-02) > registra una medición cuantitativa y actualiza el valor y porcentaje de avance cuando la API tiene éxito [0.30ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Mutaciones y Registro de Mediciones (AUD-02) > AUD-02: un POST fallido de medición NO altera el store, guarda error y retorna false [0.13ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Mutaciones y Registro de Mediciones (AUD-02) > selecciona y deselecciona indicador activo [0.05ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Mutaciones y Registro de Mediciones (AUD-02) > actualiza metadatos institucionales de la ficha de indicador cuando la API responde exitosamente (EDIT-04) [0.34ms]
+(pass) Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02) > Mutaciones y Registro de Mediciones (AUD-02) > AUD-02: un PATCH fallido de metadatos NO altera el store, guarda error y retorna false [0.15ms]
+
+src/features/seguimiento/panels/compromiso-editor-panel.test.tsx:
+(pass) Compromisos: lista real y apertura con identificador obsoleto > el estado inicial espera la API sin presentar compromisos provisionales [0.07ms]
+(pass) Compromisos: lista real y apertura con identificador obsoleto > un ID que salió de la lista no se convierte en creación de compromiso [3.49ms]
+(pass) Compromisos: lista real y apertura con identificador obsoleto > un ID existente conserva su ficha en modo edición [9.44ms]
+
+src/features/seguimiento/components/triada-motores-tab.test.tsx:
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 1. Catálogo Oficial cartagena.gov.co/transparencia (Secciones 4.1 a 4.4) > contiene las 4 categorías oficiales de Planeación, Presupuesto e Informes [0.15ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 1. Catálogo Oficial cartagena.gov.co/transparencia (Secciones 4.1 a 4.4) > registra exactamente los 23 archivos Excel 2026 institucionales de la Alcaldía [0.06ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 1. Catálogo Oficial cartagena.gov.co/transparencia (Secciones 4.1 a 4.4) > detecta correctamente el archivo legacy DADIS.xls con formato monohoja [0.06ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 1. Catálogo Oficial cartagena.gov.co/transparencia (Secciones 4.1 a 4.4) > los archivos multihoja 2026 poseen 4 hojas estructuradas (Ficha, Indicativo, Acción, POAI) [0.06ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > los 4 perfiles de formato histórico están formalmente tipados y documentados [0.04ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > las 4 muestras de simulación cubren todos los perfiles polimórficos [0.05ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > detecta con alta confianza el formato monohoja 2016 (DADIS) a partir de 1 sola hoja [0.45ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > detecta el formato híbrido por pilares 2020–2023 (Salvemos Juntos) [0.08ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > detecta el formato multihoja 2026 oficial (Secretaría de Planeación) [0.06ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > detecta el formato canónico dual DNP POLIS con confianza superior al 99% [0.04ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > la tabla de homologación semántica mapea todas las columnas clave a POLIS [0.04ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 2. Detector Polimórfico de Formatos Excel (2016 Monohoja vs 2020 vs 2026 Multihoja) > la matriz comparativa interanual estandarizada permite cotejar 2016 vs 2020 vs 2026 [0.03ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > la cascada presupuestal distrital refleja la cadena completa de ejecución [0.03ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > el cruce tripartito cubre los 4 estados forenses del semáforo [0.17ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > detecta sobreejecución financiera con brecha física pericial (+46 pts en Equipamientos) [0.04ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > detecta rezago contractual de inversión (-37 pts en Frentes de Seguridad) [0.03ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > el filtrado por dependencia y fuente funciona correctamente [0.09ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 3. Motor 3 (Inversión) y Cruce Tripartito de las 3 Lecturas > el catálogo canónico incluye metas estratégicas PDD y proyectos de inversión BPIM [0.10ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 4. Renderizado del Componente TriadaMotoresTab > renderiza en modo SSR sin fallos [32.72ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 4. Renderizado del Componente TriadaMotoresTab > el HTML renderizado contiene las pestañas de navegación principales [13.78ms]
+(pass) Triada de Motores y Conector Transparencia Cartagena (Hito [TRIADA-FRONTEND-02]) > 4. Renderizado del Componente TriadaMotoresTab > la sub-vista 1 inicial renderiza los 3 motores y la cascada presupuestal [9.42ms]
+
+src/features/seguimiento/components/motor-plan-accion.test.tsx:
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 1. Validador Lingüístico Oficial DNP (Pág. 12 Instructivo Kit Financiero) > rechaza taxativamente los 16 verbos débiles prohibidos por el DNP [0.59ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 1. Validador Lingüístico Oficial DNP (Pág. 12 Instructivo Kit Financiero) > rechaza redacciones que inicien con sustantivos o palabras que no sean infinitivos [0.09ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 1. Validador Lingüístico Oficial DNP (Pág. 12 Instructivo Kit Financiero) > aprueba redacciones que inicien con verbos fuertes en infinitivo [0.20ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 1. Validador Lingüístico Oficial DNP (Pág. 12 Instructivo Kit Financiero) > normalizarPalabra limpia tildes y preserva la letra ñ del idioma español [0.06ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 2. Resumen Ejecutivo y Cálculo de KPIs del Plan de Acción > calcula métricas consolidadas sobre las 12 actividades canónicas [0.27ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 2. Resumen Ejecutivo y Cálculo de KPIs del Plan de Acción > el catálogo canónico cubre las 8 líneas estratégicas y fuentes DNP [0.09ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza el marco normativo de la Ley 152/94 y Ley 1474/11 [17.78ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza los 7 pasos de la ruta metodológica DNP y el simulador lingüístico [7.75ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > muestra la lista negra de los 16 verbos débiles prohibidos [6.66ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza la Sección 5 de Estructuración y Formulación MGA-DNP y Cadena de Valor [7.62ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza los 4 módulos oficiales de la MGA Web con subetapas y reglas de oro [4.87ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza los 5 eslabones de la Cadena de Valor Pública con ejemplos de Cartagena [6.78ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 3. Componente BancoConocimientoDNPTab > renderiza los criterios de evaluación ex-ante (TSD 12%, VPNE, CAE/ACE, RBC) y plantillas BPIM [21.56ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 4. Componente MotorPlanAccionTab > renderiza los KPIs ejecutivos del Plan de Acción 2026 [16.94ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 4. Componente MotorPlanAccionTab > renderiza la Hoja 1 Matriz Plan de Acción con botones de exportación [13.08ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 4. Componente MotorPlanAccionTab > renderiza el botón de programar actividad cuando el usuario tiene permisos [13.13ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 4. Componente MotorPlanAccionTab > renderiza el botón del Procesador y Auditor DNP en el conmutador de vistas [6.82ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 5. Procesador Masivo por Lotes DNP y Certificado Ley 1474 (Hito PA-PROCESADOR-PUBLICO-02) > procesa lote canónico de demostración DNP de 6 actividades y detecta observaciones [0.75ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 5. Procesador Masivo por Lotes DNP y Certificado Ley 1474 (Hito PA-PROCESADOR-PUBLICO-02) > simula la autocorrección en 1 clic sustituyendo los verbos débiles por sugerencias [0.24ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 6. Sistema Multiagente PDD/PDL y Diagnóstico Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > renderiza las 6 puertas de calidad (A a F), 2.732 evidencias, 1.524 nodos, 2.228 metas PDD y 401 metas PDL [16.54ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 6. Sistema Multiagente PDD/PDL y Diagnóstico Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > renderiza el comparativo de los 5 PDD (A/B/C/N), las 7 dimensiones PNUD, el anexo de 3 PDL y las 4 preguntas estratégicas [6.04ms]
+(pass) Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01) > 6. Sistema Multiagente PDD/PDL y Diagnóstico Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > abre el Drawer lateral (SidePanel · Zero-Modals) con cobertura de 11 PDFs SHA-256 y articulación PA/BPIM [13.62ms]
+
+src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx:
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 1. las cifras auditadas del corpus reflejan exactamente 2.732 evidencias, 1.524 nodos, 2.228 metas PDD y 401 metas PDL [7.94ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 2. verifica la clasificación A/B/C/N y las metas PDD de los 5 Planes de Desarrollo Distritales (2012–2027) [0.29ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 3. mantiene el Anexo Territorial de los 3 PDL (2024–2027) separado con 401 metas y $304.981M COP [0.09ms]
+Fallo obtenerEstadoSistemaMultiagentePdd, usando estado canónico: warn: Offline test
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx:95:74)
+
+Fallo ejecutarSistemaMultiagentePdd, retornando estado de fallo: warn: Offline test
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx:95:74)
+
+Fallo obtenerComparativoSeguridadHumanaPdd, usando comparativo canónico: warn: Offline test
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx:95:74)
+
+Fallo obtenerCruceMultiagentePaBpim, usando cruce canónico: warn: Offline test
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx:95:74)
+
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 4. los clientes API multiagente proveen fallback resiliente cuando el backend no está disponible o devuelve SIN_EJECUCIONES [1.57ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 5. SistemaMultiagentePddPanel renderiza las 6 puertas de calidad (A a F), los 5 PDD, el anexo de 3 PDL y las 4 preguntas estratégicas [11.34ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 6. el Drawer lateral (SidePanel · Zero-Modals) renderiza cobertura de páginas PDF con SHA-256 y articulación PA/BPIM [11.40ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 7. está integrado y accesible desde PddDeaEvaluacionPanel y MotorPlanAccionTab [24.52ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 8. obtenerCruceMultiagentePaBpim normaliza el payload real del backend en vivo sin campos undefined ni NaN [2.76ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 9. obtenerArquitecturaAgentesIaPdd y consultarAgentesInteligentesPdd normalizan respuestas reales de LangGraph + PydanticAI ([20B]) [2.35ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 10. interpretarFragmentoSemanticoPdd normaliza extracción MGA, evaluación CREMA, pesos_7d y sugerencia BPIM ([20B]) [1.33ms]
+(pass) Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]) > 11. Bloque 4 renderiza los 6 agentes LangGraph, las 5 @agent.tool, la Consola de Consulta y el Intérprete Semántico ([20B]) [12.26ms]
+
+src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 1. el catálogo contiene los 5 Planes de Desarrollo Distritales y los 3 Planes Locales (2012–2027) [0.11ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 2. el PDD 2024–2027 «Cartagena, Ciudad de Derechos» (Acuerdo 139) tiene PPI oficial de $12,801B COP [0.07ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 3. el PDD 2020–2023 «Salvemos Juntos a Cartagena» (P.A. 016/2020) tiene PPI de $6,023B COP [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 4. el PDD 2013–2015 «Ahora Sí Cartagena» (Acuerdo 016/2013) tiene PPI de $1.874.167.605.000 COP [0.04ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 5. los 3 Fondos de Desarrollo Local (PDL 2024–2027) suman $304,98 mil millones COP [0.11ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 6. la conciliación PPI vs bd_csh evidencia factor de calibración 0.82x (2024–2027) y 0.80x (2020–2023) [0.07ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 1. Catálogo Histórico y Conciliación Oficial del Plan Plurianual de Inversiones (PPI) > 7. la serie histórica IPC DANE Base Cerrada 2025 = 100 cubre de 2012 a 2025 con inflación 2025 = 5.10% [0.08ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 2. Explorador de Líneas, Impulsores y Programas Oficiales > 8. el árbol programático contiene los impulsores y programas con techos y metas [0.09ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 3. Cumplimiento de Metas & Imputación Tripartita (PDD ↔ PA ↔ Presupuesto) > 9. el cruce tripartito cuantifica 99.424 filas PDD, 28.630 en PA y 20.953 con presupuesto [0.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 3. Cumplimiento de Metas & Imputación Tripartita (PDD ↔ PA ↔ Presupuesto) > 10. la imputación tripartita resuelve 226 metas huérfanas y eleva el avance a 78.42% [0.02ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 3. Cumplimiento de Metas & Imputación Tripartita (PDD ↔ PA ↔ Presupuesto) > 11. el semáforo directo clasifica 3.170 metas únicas con 68% en ruta y 10.3% huérfanas [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 3. Cumplimiento de Metas & Imputación Tripartita (PDD ↔ PA ↔ Presupuesto) > 12. el seguimiento a 19 Macroproyectos incluye Malecón del Mar, Drenajes Pluviales y Ciénaga de la Virgen [0.22ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 4. Monitor Línea 1 «Seguridad Humana» (Acuerdo 139 / 2024–2027) > 13. la Línea 1 asigna $5.666.917.744.338 COP representando el 44.27% del PDD cuatrienal [0.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 4. Monitor Línea 1 «Seguridad Humana» (Acuerdo 139 / 2024–2027) > 14. el Impulsor 1.1 Seguridad Ciudadana y Titán 24 tiene asignados $211.387,6 M COP [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 4. Monitor Línea 1 «Seguridad Humana» (Acuerdo 139 / 2024–2027) > 15. los 5 Impulsores de Seguridad Humana totalizan 892 metas PDD [0.04ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 4. Monitor Línea 1 «Seguridad Humana» (Acuerdo 139 / 2024–2027) > 16. el monitor articula las 8 Dimensiones PNUD de la Seguridad Humana [0.04ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 4. Monitor Línea 1 «Seguridad Humana» (Acuerdo 139 / 2024–2027) > 17. el monitor cruza 35 Mesas Territoriales, 10 Compromisos PAS y 12.280 hurtos georreferenciados [0.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 18. cumple la Regla de Cooper para DMUs de entidades responsables del PDD (n=28 >= 9) [0.04ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 19. los puntajes de eficiencia satisfacen cotas matemáticas 0 < theta <= 1 y theta_CCR <= theta_BCC [0.12ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 20. la eficiencia de escala SE = theta_CCR / theta_BCC está acotada en (0, 1] y clasifica retornos RTS [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 21. las holguras (slacks) y metas objetivo (targets) prescriben incrementos no negativos [0.10ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 22. la frontera DEA programática por Línea Estratégica evalúa las 6 líneas del Acuerdo 139 [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 5. Frontera Eficiente DEA Multi-Nivel con HiGHS Solver > 23. la frontera DEA territorial por Localidad PDL evalúa los 3 Planes Locales [0.06ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 6. Econometría Comparada, Malmquist Inter-Planes, FDR y Wilcoxon > 24. el índice dinámico de Malmquist inter-planes muestra crecimiento acumulado (MPI = 1.050) [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 6. Econometría Comparada, Malmquist Inter-Planes, FDR y Wilcoxon > 25. la matriz de correlaciones con control FDR garantiza q-value >= p-value [0.05ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 6. Econometría Comparada, Malmquist Inter-Planes, FDR y Wilcoxon > 26. la concentración del PPI se cuantifica con Gini = 0.512 y HHI = 1810 para el PDD 2024–2027 [0.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 6. Econometría Comparada, Malmquist Inter-Planes, FDR y Wilcoxon > 27. la prueba pareada de Wilcoxon rechaza H0 entre 2020-2023 y 2024-2027 (p = 0.0038 < 0.01) [0.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 7. Clientes API Tipados y Fallbacks Locales Resilientes > 28. los getters locales devuelven estructuras íntegras de catálogo, explorador y frontera [0.17ms]
+Fallo obtenerCatalogoYConciliacionPpiApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+Fallo obtenerExploradorProgramasYSeguridadHumanaApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+Fallo obtenerCumplimientoMetasPddApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+Fallo obtenerFronteraDeaPddApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+Fallo obtenerEconometriaComparadaPddApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+Fallo obtenerResumenEjecutivoPddDeaApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:392:76)
+
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 7. Clientes API Tipados y Fallbacks Locales Resilientes > 29. los clientes API devuelven fallback seguro en ausencia de red [1.87ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 8. Integración y Renderizado SSR de PddDeaEvaluacionPanel y TriadaMotoresTab > 30. PddDeaEvaluacionPanel se renderiza en SSR con las 6 sub-pestañas y sus test IDs [11.74ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 8. Integración y Renderizado SSR de PddDeaEvaluacionPanel y TriadaMotoresTab > 31. TriadaMotoresTab incluye el botón tab-nav-pdd-dea para la Sub-vista 6 [8.27ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 8. Integración y Renderizado SSR de PddDeaEvaluacionPanel y TriadaMotoresTab > 32. el resumen ejecutivo PDD-DEA consolida los 5 submódulos en un solo objeto auditado [0.18ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10]) > 33. el PPI OCR de PDD 2012–2015 («Campo para Todos» - Acuerdo 001/2012) es exactamente $3.049.788.268.000 COP y desglosa sus 5 Ejes Oficiales [0.43ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10]) > 34. el PPI OCR de PDD 2016–2019 («Primero la Gente» - Acuerdo 006/2016 Tabla 209) es $4.331.941.000.000 COP con 3 Objetivos Estratégicos y conciliación 1.06x [0.17ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10]) > 35. el octeto canónico de 8 planes (5 PDD + 3 PDL) tiene el 100% de techos oficiales extraídos (ppi_estado === 'OFICIAL_EXTRAIDO' y ppi_total_corriente_cop > 0) [0.19ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10]) > 36. el emparejamiento semántico vincula las 2.068 metas oficiales extraídas de los Acuerdos con bd_csh [0.18ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10]) > 37. la tabla anualizada oficial del PPI cubre las 16 vigencias completas (2012–2027) sin vacíos [0.12ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 38. el modelo Network DEA Bi-Etapa evalúa las 12 entidades identificando ilusión burocrática (brecha theta_1 - theta_2 > 0.20) y estabilidad de ranking [0.19ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 39. el simulador Inverse DEA Pareto implementa 3 escenarios (±5%, ±10%, ±15%) con suma cero estricta y ledger de restricciones [0.21ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 40. la auditoría forense de metas de los 8 planes (5 PDD + 3 PDL) desglosa 6 estados de cobertura y 4 niveles taxonómicos MGA [0.14ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 35 mesas y compuerta Moran N < 30 [0.15ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 42. los pliegos de control político/fiscal estructuran cuestionarios por dependencia con hash SHA-256 verificado [0.14ms]
+Fallo obtenerLaboratorioPrescriptivoPddApi, usando fallback local: warn: Offline
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx:802:76)
+
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 43. el cliente API obtenerLaboratorioPrescriptivoPddApi devuelve estructura completa con fallback seguro offline [0.40ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 44. PddDeaEvaluacionPanel incluye la sub-pestaña 7 de Laboratorio Prescriptivo y el id pdd-tab-prescriptivo [7.87ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 45. métricas de cierre documental reflejan 1.805 metas únicas deduplicadas, 78 PDFs y 1.383 documentos totales [0.15ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 46. cliente API de Google Workspace implementa estado y sincronización con fallback seguro offline [0.70ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 47. GoogleWorkspaceSyncCard renderiza data-testid='google-workspace-sync-card', botón de sync y métricas clave [2.03ms]
+(pass) Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRIADA-FRONTEND-DATA-PDD-09]) > 10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B]) > 48. PddDeaEvaluacionPanel incluye acceso a Google Workspace PSHC y embebe la tarjeta de sincronización [17.13ms]
+
+src/features/seguimiento/__tests__/inteligencia-forense-6m.test.tsx:
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 1. Dataset Canónico Auditado de bd_csh > las 8 Dimensiones de Seguridad Humana están formalmente definidas con datos reales [0.07ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 1. Dataset Canónico Auditado de bd_csh > los 3 Periodos de Gobierno cubren desde 2016 hasta 2026 [0.06ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 1. Dataset Canónico Auditado de bd_csh > las 30 Entidades Oficiales Canónicas suman el 99,97% de cobertura distrital [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 1. Dataset Canónico Auditado de bd_csh > el universo M0 refleja exactamente los conteos auditados de bd_csh [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 2. Motor 1: Detector Forense de Efecto Espejismo y Patologías DNP > reporta el balance lingüístico con 57,8% de verbos débiles ('reunionitis') [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 2. Motor 1: Detector Forense de Efecto Espejismo y Patologías DNP > cuantifica las alertas de patologías críticas [0.01ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 2. Motor 1: Detector Forense de Efecto Espejismo y Patologías DNP > el ranking DNP clasifica a cada una de las 30 entidades con puntaje 0-100 [0.07ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 2. Motor 1: Detector Forense de Efecto Espejismo y Patologías DNP > permite filtrar el ranking DNP por entidad específica [0.15ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 3. Motor 2: ADN Continuidad vs Ruptura (2016–2026) > cuantifica los proyectos BPIM sobrevivientes vs huérfanos [0.02ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 3. Motor 2: ADN Continuidad vs Ruptura (2016–2026) > incluye proyectos emblemáticos con continuidad en los 3 gobiernos [0.03ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 3. Motor 2: ADN Continuidad vs Ruptura (2016–2026) > traza la evolución porcentual de las 8 dimensiones de seguridad humana [0.05ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 4. Motor 3: Radar de Inercia, Copy-Paste y Matriz de Transparencia > expone con exactitud los 5 archivos con corte clonado [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 4. Motor 3: Radar de Inercia, Copy-Paste y Matriz de Transparencia > registra la fusión del libro clon de DADIS 2021 [0.02ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 4. Motor 3: Radar de Inercia, Copy-Paste y Matriz de Transparencia > detecta metas congeladas zombies y efecto diciembre mágico [0.02ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 5. Motor 4: Cruce Geoespacial Inversión vs Delito y Mesas > evalúa las 3 Localidades oficiales de Cartagena [0.06ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 5. Motor 4: Cruce Geoespacial Inversión vs Delito y Mesas > identifica el déficit de atención en Localidad 2 [0.03ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 5. Motor 4: Cruce Geoespacial Inversión vs Delito y Mesas > prioriza los barrios foco de Cartagena [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 6. Motor 5: Buscador Transversal e Inspector de Duplicidad > ejecuta búsqueda semántica de respaldo local para términos transversales [0.15ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 6. Motor 5: Buscador Transversal e Inspector de Duplicidad > detecta alertas de duplicidad interinstitucional sobre el mismo tema [0.03ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 7. Motor 6: Simulador Predictivo Cierre de Gobierno (2024–2027) > calcula proyecciones con semáforos para el horizonte 2027 [0.03ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 7. Motor 6: Simulador Predictivo Cierre de Gobierno (2024–2027) > calcula la aceleración trimestral requerida por dependencia [0.04ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 7. Motor 6: Simulador Predictivo Cierre de Gobierno (2024–2027) > permite simular impulso de aceleración dinámica [0.02ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 7. Motor 6: Simulador Predictivo Cierre de Gobierno (2024–2027) > las funciones de fallback local de servicios responden con datos íntegros [0.23ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 8. Renderizado SSR de Componentes > InteligenciaForense6MPanel renderiza en SSR sin errores [6.81ms]
+(pass) Laboratorio de Inteligencia Forense de 6 Motores ([TRIADA-INTELIGENCIA-6M-06]) > 8. Renderizado SSR de Componentes > TriadaMotoresTab incluye la navegación al Laboratorio de Inteligencia y la insignia 99,97% [14.26ms]
+
+src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx:
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 1. Fase 0: Auditoría y Cascada de Saneamiento Econométrico > el embudo financiero reconcilia los $293,8B brutos con la capacidad anual saneada [0.06ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 1. Fase 0: Auditoría y Cascada de Saneamiento Econométrico > la deflactación IPC DANE utiliza la Base Cerrada 2025 (5,10%) y cubre de 2017 a 2026 [0.11ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 1. Fase 0: Auditoría y Cascada de Saneamiento Econométrico > la auditoría de escalas porcentuales aísla las 373 hojas mixtas y 42 casos en cuarentena [0.04ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 1. Fase 0: Auditoría y Cascada de Saneamiento Econométrico > los 6 pares entidad-año sin insumo financiero se excluyen estrictamente sin epsilon artificial [0.08ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 2. Fase 1: Frontera de Eficiencia DEA (CCR · BCC · SBM · Bootstrap) > cumple la Regla de Cooper n >= 9 para el modelo núcleo m=1, s=2 [0.03ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 2. Fase 1: Frontera de Eficiencia DEA (CCR · BCC · SBM · Bootstrap) > todos los puntajes de eficiencia theta satisfacen las cotas teóricas 0 < theta <= 1 [0.15ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 2. Fase 1: Frontera de Eficiencia DEA (CCR · BCC · SBM · Bootstrap) > las holguras (slacks) y metas objetivo (targets) son coherentes con la frontera envolvente [0.28ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 2. Fase 1: Frontera de Eficiencia DEA (CCR · BCC · SBM · Bootstrap) > las fronteras de grupo distinguen cumplimiento de Cooper para Sector Central y Descentralizadas [0.08ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 2. Fase 1: Frontera de Eficiencia DEA (CCR · BCC · SBM · Bootstrap) > el generador de vigencias maneja 2020 con las 3 alcaldías excluidas por falta de insumo [0.46ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 3. Fase 2: Productividad Dinámica de Malmquist > descompone formalmente MPI = EFFCH x TECHCH en todas las transiciones [0.16ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 3. Fase 2: Productividad Dinámica de Malmquist > el acumulado 2020–2025 muestra crecimiento positivo de productividad (+3,2%) [0.05ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 4. Fase 3: Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon > el modelo de segunda etapa excluye estrictamente ln(Presupuesto) como regresor [0.07ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 4. Fase 3: Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon > el coeficiente de Verbo Débil DNP (reunionitis) es negativo y estadísticamente significativo al 99,9% [0.11ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 4. Fase 3: Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon > la matriz de correlaciones aplica control FDR Benjamini-Hochberg (q-value) [0.07ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 4. Fase 3: Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon > la desigualdad presupuestal (Gini) muestra desconcentración histórica de 0,634 a 0,538 [0.06ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 4. Fase 3: Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon > la prueba pareada de Wilcoxon rechaza H0 formalmente al 99,8% de confianza (p = 0,0018) [0.05ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 5. Getters Locales y Fallback de Servicios > obtenerAuditoriaSaneamientoDeaLocal devuelve el dataset completo [0.03ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 5. Getters Locales y Fallback de Servicios > obtenerFronteraEficienciaDeaLocal parametriza por vigencia y modo [0.14ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 5. Getters Locales y Fallback de Servicios > obtenerMalmquistDeaLocal devuelve transiciones válidas [0.03ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 5. Getters Locales y Fallback de Servicios > obtenerSegundaEtapaEconometricaDeaLocal devuelve modelo y correlaciones [0.01ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 5. Getters Locales y Fallback de Servicios > obtenerResumenIntegralDeaLocal resume los 4 bloques [0.04ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 6. Renderizado SSR de DeaEconometriaPanel y TriadaMotoresTab > DeaEconometriaPanel se renderiza en SSR con sus 4 sub-vistas sin errores [12.82ms]
+(pass) Laboratorio de Econometría y Frontera Eficiente DEA ([TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]) > 6. Renderizado SSR de DeaEconometriaPanel y TriadaMotoresTab > TriadaMotoresTab contiene el botón tab-nav-dea-econometria para la Sub-vista 5 [5.13ms]
+
+src/features/proyectos/models/actividad-proyecto.test.ts:
+(pass) Modelo de actividad unificada de Proyectos > cada módulo dueño tiene etiqueta y ruta de plataforma en la app [0.12ms]
+(pass) Modelo de actividad unificada de Proyectos > la guarda acepta solo módulos catalogados y descarta fuentes retiradas [0.04ms]
+(pass) Modelo de actividad unificada de Proyectos > el vocabulario canónico es completo y sin duplicados [0.05ms]
+
+src/features/proyectos/components/calendario-proyectos.test.tsx:
+(pass) Calendario mensual con ventanas largas de Comunicaciones > la ventana plurianual aparece en la celda de cada día visible del mes [12.06ms]
+(pass) Calendario mensual con ventanas largas de Comunicaciones > las ventanas abiertas solo marcan su día de inicio, con corte de 3 + «+N más» [3.39ms]
+
+src/features/politicas/state/hero-store.test.ts:
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > inicia con la imagen recomendada, opacidad al 80% y carrusel activo sin pausa [0.25ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > contiene las 6 opciones requeridas en el catálogo general [0.15ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > filtra exactamente 5 opciones fotográficas para el carrusel [0.19ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > permite cambiar la imagen activa y sincroniza indiceActivo [0.88ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > permite calibrar la opacidad y acota estrictamente entre 10% y 95% [0.37ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > siguienteImagen avanza cíclicamente por las 5 fotografías territoriales [0.20ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > anteriorImagen retrocede cíclicamente [0.10ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > irAImagen salta directamente al ID indicado y actualiza indiceActivo [0.14ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > togglePausa alterna entre pausado y reproducción activa [0.15ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > setModoCarrusel y helpers configuran el motor de rotación [0.12ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > obtenerOpcionHero devuelve la opción correcta o fallback [0.08ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > resetearHeroConfig restaura valores iniciales completos [0.16ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > gestiona imágenes personalizadas por página con setPageImage y resetPageImage [0.59ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > resolverImagenHero traduce IDs a rutas WebP oficiales o preserva URLs externas [0.21ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > Catálogo Temático Centralizado (hero-pages.data.ts) > contiene las 5 diapositivas territoriales requeridas para Home [0.14ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > Catálogo Temático Centralizado (hero-pages.data.ts) > todas las diapositivas de Home tienen imágenes y badges definidos [0.09ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > Catálogo Temático Centralizado (hero-pages.data.ts) > contiene la configuración para todas las páginas públicas requeridas [0.10ms]
+(pass) Hero Config Store & Catálogo (HERO-PAGES-01) > Catálogo Temático Centralizado (hero-pages.data.ts) > obtenerHeroPageConfig y obtenerHeroSlide resuelven correctamente o aplican fallback [0.15ms]
+(pass) Catálogo hero editable y persistido (243) > agrega metadatos, miniatura opcional y un identificador único [0.76ms]
+(pass) Catálogo hero editable y persistido (243) > deshabilita y rehabilita sin borrar metadatos y rechaza su selección mientras está deshabilitada [0.24ms]
+(pass) Catálogo hero editable y persistido (243) > elimina una personalizada y reasigna todas sus referencias por id o ruta [0.33ms]
+(pass) Catálogo hero editable y persistido (243) > permite retirar las seis opciones oficiales y navegar sin dividir entre cero ni resucitarlas [0.27ms]
+(pass) Catálogo hero editable y persistido (243) > rota solamente entre habilitadas y recalcula el índice al retirar una anterior [0.15ms]
+(pass) Catálogo hero editable y persistido (243) > restaura seis opciones, conserva la calibración y sanea asignaciones personalizadas [0.43ms]
+(pass) Catálogo hero editable y persistido (243) > persiste altas, bajas, habilitación y asignaciones y rehidrata sin perder acciones [1.21ms]
+(pass) Catálogo hero editable y persistido (243) > migra el almacenamiento anterior sin catálogo y conserva opciones visuales y URL heredada [0.50ms]
+(pass) Catálogo hero editable y persistido (243) > un catálogo vacío persistido permanece vacío al rehidratar [0.17ms]
+(pass) Catálogo hero editable y persistido (243) > normaliza el almacenamiento sin aceptar acciones, URLs peligrosas ni selecciones deshabilitadas [0.22ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: javascript:alert(1) [0.18ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: data:image/png;base64,AA [0.27ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: //otro.test/foto.png [0.10ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: /images/../archivo.svg [0.06ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: /images/%2e%2e/archivo.svg [0.04ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: /images/documento.pdf [0.05ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza una ruta inválida sin modificar catálogo: http://ejemplo.test/foto.webp [0.07ms]
+(pass) Catálogo hero editable y persistido (243) > rechaza id repetido y miniatura inválida sin altas parciales [0.20ms]
+(pass) Sincronización del catálogo con el servidor (243) > GET conserva deshabilitadas, selección y reemplaza las asignaciones; no vuelve a consultar una carga ya aplicada [0.92ms]
+(pass) Sincronización del catálogo con el servidor (243) > GET vacío explícito conserva la biblioteca vacía y no resucita las cinco fotos oficiales [0.27ms]
+(pass) Sincronización del catálogo con el servidor (243) > GET fallido o mal formado no altera el catálogo ni deja la carga bloqueada [0.37ms]
+(pass) Sincronización del catálogo con el servidor (243) > valida entradas remotas antes de convertirlas en imágenes o narrativa renderizables [0.72ms]
+(pass) Sincronización del catálogo con el servidor (243) > una respuesta GET tardía no pisa una edición local ni lanza cargas duplicadas [0.38ms]
+(pass) Sincronización del catálogo con el servidor (243) > el borrador local pendiente se conserva también al rehidratar antes de consultar el servidor [0.44ms]
+(pass) Sincronización del catálogo con el servidor (243) > PUT incluye habilitada, selección activa, miniaturas y catálogo completo sin las imágenes retiradas [0.83ms]
+(pass) Sincronización del catálogo con el servidor (243) > PUT permite retirar todas las imágenes sin recuperar un carrusel fijo [0.40ms]
+(pass) Sincronización del catálogo con el servidor (243) > error de guardado devuelve false, conserva el borrador y restaurar no acredita un éxito remoto inexistente [0.51ms]
+(pass) Sincronización del catálogo con el servidor (243) > serializa guardados solapados y guarda la edición más reciente al final [0.57ms]
+(pass) Sincronización del catálogo con el servidor (243) > un PUT en curso no borra el indicador de otra edición que aún no se guardó [0.45ms]
+
+src/features/politicas/services/politicas-api.test.ts:
+(pass) Orquestador Multi-Agente del Ciclo de Vida de Política (AUD-SYNC-01) > despacha POST a /ia/ciclo-politica con payload estructurado y retorna veredicto del grafo [0.57ms]
+(pass) Orquestador Multi-Agente del Ciclo de Vida de Política (AUD-SYNC-01) > activa fallback determinista si la API no está disponible o rechaza sin sesión [0.27ms]
+
+src/features/politicas/panels/linea-panel.test.tsx:
+(pass) LineaPanel — Resolución Híbrida TanStack Query [LINEAS-APORTES-01] > renderiza correctamente título, kicker, muro y botón 'Aportar a esta línea' con UUIDs reales y store Zustand vacío [10.49ms]
+(pass) LineaPanel — Resolución Híbrida TanStack Query [LINEAS-APORTES-01] > renderiza estado de carga esqueleto mientras useLineas está pendiente [1.50ms]
+
+src/features/politicas/panels/fases-control-panel.test.ts:
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia error 401 (sin sesión autenticada) [0.13ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia error 403 (permiso insuficiente para ciudadano o auditor) [0.03ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia error 404 (fase no existente en BD) [0.02ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia error 422 (parámetros de validación inválidos) [0.04ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia error 500 (falla interna en servidor distrital) [0.04ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 1. Clasificación Diferenciada de Errores HTTP (AUD-04) > diferencia errores de conexión y red [0.04ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 2. Erradicación de Fases Hardcodeadas en Carga (AUD-04) > cuando la API falla, no inyecta catálogo inventado y propaga la excepción [3617.17ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 3. Reversión Inmediata ante Permiso Insuficiente (Criterio de Aceptación EAF) > ante un 403 Forbidden, el switch revierte a su valor original y emite error de permisos [0.73ms]
+(pass) Centro de Control de Fases de Política (AUD-04) > 3. Reversión Inmediata ante Permiso Insuficiente (Criterio de Aceptación EAF) > ante conmutación exitosa, confirma con respuesta de servidor e invalida queries [1.66ms]
+
+src/features/politicas/components/hero-page-banner.test.tsx:
+(pass) HeroPageBanner Component (HERO-PAGES-03) > renderiza como sección nombrada sin duplicar el landmark banner (F3, axe landmark-no-duplicate-banner) [3.57ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > renderiza correctamente los datos canónicos de cada página pública [3.34ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > aplica alturas diferenciadas: compact para barrio/fases/rendicion y ultracompact para geovisor [2.81ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > permite sobrescribir la altura con alturaOverride [0.47ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > permite sobrescribir título, subtítulo y badge con props específicas [0.50ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > renderiza componentes y elementos hijos inyectados vía children [0.45ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > respeta la opacidad del store y el modo sin fotografía ('ninguna') [0.80ms]
+(pass) HeroPageBanner Component (HERO-PAGES-03) > renderiza la imagen personalizada asignada desde la plataforma [1.19ms]
+(pass) Banners y disponibilidad del catálogo (243) > deshabilitar la imagen temática por defecto también retira su fotografía de páginas sin override [0.62ms]
+(pass) Banners y disponibilidad del catálogo (243) > una imagen personalizada retirada deja de mostrarse en la página que la utilizaba [1.08ms]
+
+src/features/politicas/components/hero-home-showcase.test.tsx:
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > renderiza correctamente la diapositiva inicial, contador 01 / 05 e insignia territorial [14.78ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > cuenta con controles accesibles de navegación con atributos ARIA requeridos [2.62ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > refleja el avance de diapositiva en el contador y la insignia territorial [2.27ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > refleja el retroceso cíclico y salto directo por ID [4.45ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > itera por todas las 5 diapositivas territoriales de manera íntegra [11.29ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > alterna la etiqueta ARIA del botón de pausa cuando el carrusel se detiene [9.38ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > permite suministrar métricas personalizadas [2.60ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > renderiza los botones de acción ciudadana hacia los módulos clave [2.15ms]
+(pass) HeroHomeShowcase Component (HERO-PAGES-02) > soporta modo minimalista oficial sin fotografía de fondo ('ninguna') [2.43ms]
+(pass) Portada con catálogo editable (243) > no renderiza ni ofrece una imagen deshabilitada aunque la lista temática original la contenga [2.32ms]
+(pass) Portada con catálogo editable (243) > renderiza imágenes agregadas con sus metadatos sin inventar procedencia oficial [3.73ms]
+(pass) Portada con catálogo editable (243) > retirar todo el catálogo deja una portada institucional sin imágenes ni errores de índice [4.50ms]
+(pass) Portada con catálogo editable (243) > conserva las URLs de portada previas al catálogo editable [6.73ms]
+
+src/features/politicas/components/dimensiones-grid.test.tsx:
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > DimensionesGrid Component > renderiza las 7 dimensiones ONU canónicas de la Resolución 66/290 [4.69ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > DimensionesGrid Component > renderiza los pilares ONU y la interactividad con foco accesible [2.07ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > DimensionesGrid Component > el store de paneles registra correctamente la apertura de 'dimension-detalle' [0.11ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > Integridad de Datos DIMENSIONES_DETALLE_2026 > cuenta con 8 dimensiones (7 ONU + 1 transversal de crisis) [0.08ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > Integridad de Datos DIMENSIONES_DETALLE_2026 > las 7 dimensiones ONU cuentan con pilar ONU, explicación pedagógica y contexto territorial [0.12ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > Integridad de Datos DIMENSIONES_DETALLE_2026 > las dimensiones tienen amenazas críticas, enfoque diferencial e indicadores trazadores [0.35ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > DimensionDetallePanel Component > renderiza la ficha completa para la dimensión seleccionada (personal) [7.28ms]
+(pass) DimensionesGrid & DimensionDetallePanel (DIM-ONU-01) > DimensionDetallePanel Component > renderiza el selector rápido con las 7 dimensiones ONU [5.08ms]
+
+src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx:
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 1. Vista por Defecto: 27 Dependencias Distritales > renderiza el mosaico completo de las 27 dependencias oficiales con sus semáforos y KPIs [6.65ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > muestra el sello legal de publicación a 31 de enero de 2026 bajo el Estatuto Anticorrupción [13.14ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > renderiza los KPIs ejecutivos consolidados sobre las 12 actividades canónicas [15.62ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > contiene los filtros por Línea Estratégica desde LE-01 hasta LE-08 y buscador de texto [10.57ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > renderiza las 12 actividades del Plan de Acción con códigos PA, códigos BPIM y verbos fuertes DNP [9.84ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > muestra la articulación con Hoja 2 Plan Indicativo PDD (Columnas D y E) y avance trimestral [11.80ms]
+(pass) RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03] > 2. Vista Ciudadana DNP: Matriz Plan de Acción 2026 (Ley 1474) > incluye al pie el botón de enlace directo al Workbench Técnico DNP en Plataforma [6.96ms]
+
+src/features/plataforma/state/configuracion-store.test.ts:
+(pass) Store de Configuración Persistente de Plataforma (GAP-12) > inicia con los valores canónicos por defecto [0.13ms]
+(pass) Store de Configuración Persistente de Plataforma (GAP-12) > permite conmutar la preferencia de resumen semanal [0.05ms]
+(pass) Store de Configuración Persistente de Plataforma (GAP-12) > permite actualizar parcialmente las coordenadas de referencia del geovisor [0.05ms]
+(pass) Store de Configuración Persistente de Plataforma (GAP-12) > restablece la configuración original con resetearConfiguracion [0.04ms]
+
+src/features/plataforma/services/plataforma-api.test.ts:
+(pass) Telemetría Forense SQL - plataformaApi (OPS-FORENSIC-01) > consulta GET /health/database/queries con parámetros por defecto [1.08ms]
+(pass) Telemetría Forense SQL - plataformaApi (OPS-FORENSIC-01) > permite especificar límite y criterio de ordenación personalizado [0.15ms]
+(pass) Telemetría Forense SQL - plataformaApi (OPS-FORENSIC-01) > valida y rechaza respuestas que no cumplan el contrato Zod [1.22ms]
+
+src/features/plataforma/models/acceso.test.ts:
+(pass) Matriz de rutas internas > ciudadano: enlaces y acceso directo coinciden [0.19ms]
+(pass) Matriz de rutas internas > autoridad_distrital: enlaces y acceso directo coinciden [0.60ms]
+(pass) Matriz de rutas internas > facilitador_mesa: enlaces y acceso directo coinciden [0.25ms]
+(pass) Matriz de rutas internas > auditor_forense: enlaces y acceso directo coinciden [0.08ms]
+(pass) Matriz de rutas internas > administrador_identidades: enlaces y acceso directo coinciden [0.05ms]
+(pass) Matriz de rutas internas > rol_desconocido: enlaces y acceso directo coinciden [0.04ms]
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede [0.03ms]
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede
+(pass) Matriz de rutas internas > Una sesión incompleta o caducada no accede
+(pass) Matriz de rutas internas > auditor no puede abrir editores ni emitir respuestas [0.48ms]
+(pass) Matriz de rutas internas > ficha-actividad-proyecto exige lectura de proyectos [0.12ms]
+(pass) Matriz de rutas internas > paneles internos de mesas y diagnóstico sin caso quedaban bloqueados [0.10ms]
+(pass) Matriz de rutas internas > facilitador consulta formularios y gestiona mesas y testimonios sin editar actores [0.53ms]
+(pass) Matriz de rutas internas > noticias y testimonios tienen permisos y paneles separados [0.39ms]
+(pass) Matriz de rutas internas > perfil personalizado administra solo los módulos concedidos [1.38ms]
+(pass) Matriz de rutas internas > roles autorizados editan según matriz de acceso por rol [1.52ms]
+(pass) Matriz de rutas internas > rutas exactas y normalización de barra final [0.27ms]
+
+src/features/plataforma/components/gestor-heros-plataforma.test.tsx:
+(pass) GestorHerosPlataforma Component > renderiza los 8 espacios públicos gestionables con sus rutas oficiales [10.88ms]
+(pass) GestorHerosPlataforma Component > renderiza el live preview y los metadatos institucionales del espacio activo [9.70ms]
+(pass) GestorHerosPlataforma Component > renderiza los controles específicos del carrusel en la portada [4.99ms]
+(pass) GestorHerosPlataforma Component > renderiza la biblioteca completa de fotografías territoriales para asignación [4.37ms]
+(pass) GestorHerosPlataforma Component > renderiza la sección de asignación de URL personalizada y calibración de opacidad [4.07ms]
+(pass) GestorHerosPlataforma Component > refleja en el store la personalización de imagen por página vía setPageImage [0.31ms]
+(pass) GestorHerosPlataforma Component > respeta el modo de solo lectura cuando editar es falso [2.71ms]
+(pass) Gestor de catálogo editable (243) > muestra disponibilidad y acciones con nombres accesibles por imagen [2.92ms]
+(pass) Gestor de catálogo editable (243) > conserva en biblioteca las deshabilitadas pero desactiva su botón Asignar [3.95ms]
+(pass) Gestor de catálogo editable (243) > muestra una biblioteca vacía recuperable y las fotografías agregadas con miniatura [5.77ms]
+
+src/features/participacion/services/participacion-api.test.ts:
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Normalización de DTOs y Esquemas > normalizarConsolidado preserva contrato backend y propiedades de retrocompatibilidad [0.19ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Normalización de DTOs y Esquemas > normalizarConsolidado preserva desglose demográfico real cuando viene en payload [0.05ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Normalización de DTOs y Esquemas > normalizarDesgloseWeb mapea los 179 aportes reales y genera mapa por línea [0.19ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Normalización de DTOs y Esquemas > normalizarDesgloseMesas estructura jerarquía y mapa de asistencia [0.13ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Normalización de DTOs y Esquemas > normalizarEscenario unifica atributos canónicos y de visualización [0.61ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > obtenerConsolidado invoca /participacion/consolidado correctamente [1.28ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > obtenerDesgloseWeb invoca /participacion/canal-web (NO /participacion/web) [0.53ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > obtenerDesgloseMesas invoca /participacion/canal-mesas (NO /participacion/mesas) [0.24ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > obtenerDesgloseEscenarios invoca /participacion/canal-escenarios [0.19ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > listarEscenarios invoca /participacion/escenarios-especiales (NO /participacion/escenarios) [1.04ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > guardarEscenario persiste vía POST a /participacion/escenarios-especiales [0.45ms]
+(pass) Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07) > Alineación de Endpoints HTTP (Cero 404) > erradicación de fallback: ante fallo de red propaga el error (H-04) [0.13ms]
+
+src/features/notificaciones/services/notificaciones-api.test.ts:
+(pass) notificaciones-api service > listarHistorialNotificaciones > llama a /notificaciones/historial sin query params si no se pasan filtros [0.38ms]
+(pass) notificaciones-api service > listarHistorialNotificaciones > construye correctamente los query params para paginación y filtros [0.34ms]
+(pass) notificaciones-api service > listarHistorialNotificaciones > lanza error si el backend responde con error 403 o 500 [0.15ms]
+(pass) notificaciones-api service > consultarRadicado > codifica y normaliza a mayúsculas el código de radicado [1.72ms]
+(pass) notificaciones-api service > consultarRadicado > lanza error en caso de radicado inexistente (404) [0.18ms]
+(pass) notificaciones-api service > obtenerSaludHerald > consulta /notificaciones/salud y retorna métricas completas [0.24ms]
+(pass) notificaciones-api service > obtenerSaludHerald > lanza error si la respuesta es de error [1818.87ms]
+(pass) notificaciones-api service > reintentarNotificacion > hace una petición POST al endpoint de reintento con el ID especificado [0.79ms]
+(pass) notificaciones-api service > reintentarNotificacion > lanza error en caso de 404 o 409 (conflicto) [0.32ms]
+
+src/features/notificaciones/lib/herald-helpers.test.ts:
+(pass) herald-helpers > obtenerNombreTipoEvento > retorna nombres institucionales en español para claves conocidas [0.16ms]
+(pass) herald-helpers > obtenerNombreTipoEvento > formatea amigablemente tipos no catalogados [0.10ms]
+(pass) herald-helpers > obtenerNombreTipoEvento > maneja cadenas vacías o valores atípicos [0.02ms]
+(pass) herald-helpers > formatearSegundos > devuelve 'Sin espera' para valores nulos, indefinidos o NaN [0.14ms]
+(pass) herald-helpers > formatearSegundos > formatea 0 y pocos segundos como '0 s' o segundos [0.07ms]
+(pass) herald-helpers > formatearSegundos > formatea minutos y segundos adecuadamente [0.03ms]
+(pass) herald-helpers > formatearSegundos > formatea horas y minutos adecuadamente [0.02ms]
+(pass) herald-helpers > formatearSegundos > formatea días adecuadamente [0.02ms]
+(pass) herald-helpers > formatearLatido > devuelve 'Sin registro de actividad' cuando la fecha es nula, vacía o indefinida [0.18ms]
+(pass) herald-helpers > formatearLatido > formatea latidos recientes como 'hace unos instantes' [0.05ms]
+(pass) herald-helpers > formatearLatido > formatea fechas ISO válidas transcurridas [0.02ms]
+(pass) herald-helpers > esNotificacionAgotada > retorna false para valores nulos o vacíos [0.03ms]
+(pass) herald-helpers > esNotificacionAgotada > retorna true para notificaciones con estado fallido o error [0.04ms]
+(pass) herald-helpers > esNotificacionAgotada > retorna false para estados activos o exitosos [0.02ms]
+
+src/features/mesas/services/mesas-api.test.ts:
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > normalizarMesaBackend > mapea atributos backend con fallback semántico correcto [0.26ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > normalizarMesaBackend > H-11: prioriza facilitador_nombre retornado por backend [0.04ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > normalizarMesaBackend > H-11: sin facilitador asignado no retorna el valor genérico 'Facilitador Institucional' [0.03ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > actualizarMesaRemota > emite PATCH /mesas/{mesa_id} con la estructura esperada y normaliza respuesta [0.97ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > actualizarMesaRemota > FIX-EDIT-MESA-01: omite estrictamente total_asistentes protegiendo la salvaguarda OBS-21 [0.22ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > actualizarMesaRemota > FIX-EDIT-MESA-01: resuelve código oficial o slug a UUID canónico e inyecta Bearer token [0.42ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > listarMesas (Hito 4 / EDIT-15) > retorna colección normalizada cuando el backend responde exitosamente [0.25ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > listarMesas (Hito 4 / EDIT-15) > retorna arreglo vacío canónico cuando el backend no tiene mesas sin activar fallback [1.10ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > listarMesas (Hito 4 / EDIT-15) > propaga el error si la API falla sin enmascararlo con fallback silencioso [1808.38ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > obtenerMesa (Hito 4 / EDIT-15) > retorna mesa normalizada al encontrarla en el backend [1.11ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > obtenerMesa (Hito 4 / EDIT-15) > propaga el error cuando la mesa remota no existe sin invocar fallback [0.19ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > crearMesaRemota (FIX-MESAS-01) > inyecta Bearer token de la sesión activa, formatea fecha y genera códigos con entropía [0.99ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > crearMesaRemota (FIX-MESAS-01) > envía fecha como null cuando viene vacía para cumplir contrato Pydantic de FastAPI [0.44ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > crearMesaRemota (FIX-MESAS-01) > propaga errores HTTP (401, 403, 500) para captura honesta en la UI [0.21ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > cerrarActaOficial (AUD-SYNC-01) > despacha POST /mesas/{mesa_id}/acta/cerrar y retorna mesa cerrada con SHA-256 [0.86ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > descargarActaPdf (DOC-PDF-ACTAS-01) > despacha GET /mesas/{mesaId}/acta/pdf y retorna Blob con contenido binario PDF [1.60ms]
+(pass) Persistencia y normalización de Mesas de Trabajo (EDIT-01) > descargarActaPdf (DOC-PDF-ACTAS-01) > resuelve código oficial o slug de agenda a UUID antes de descargar el PDF [0.24ms]
+
+src/features/mesas/services/asistencia-api.test.ts:
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Transformación de DTOs y Construcción de Payloads > construirPayloadParticipante genera sujeto_id determinista y empaqueta metadatos cívicos [0.34ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Transformación de DTOs y Construcción de Payloads > mapearParticipanteARegistro convierte DTO de PostgreSQL a formato de UI con flag sincronizado [0.21ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Llamadas HTTP a la API REST de Mesas > registrarAsistenteMesa despacha POST a /mesas/{mesaId}/participantes con el payload correcto [0.37ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Llamadas HTTP a la API REST de Mesas > listarAsistentesMesa despacha GET a /mesas/{mesaId}/participantes [0.23ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > cuando la API responde con éxito, el registro en store adopta el UUID de PostgreSQL y marca sincronizado [0.55ms]
+Aviso de contingencia: no fue posible persistir asistente en PostgreSQL (modo offline/sin red). Asistencia radicada localmente. warn: Network request failed - Offline in rural zone
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/mesas/services/asistencia-api.test.ts:212:42)
+
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > cuando la API falla (offline / caída de red), el registro se retiene en local con pendienteSincronizacion: true [0.40ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > sincronizarPendientes sube los registros locales pendientes y actualiza sus IDs con PostgreSQL [0.64ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > cargarAsistentesDesdeBackend fusiona asistentes remotos sin eliminar pendientes locales [1.03ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > soporta consulta y registro con código de agenda territorial (ej. mt-001) y código oficial (MT-L01-01) [0.22ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > obtenerClavesEquivalentesMesa resuelve UUID, slug, código oficial y código de agenda (QA-004) [0.71ms]
+(pass) Asistencia Digital y Persistencia en PostgreSQL (EDIT-08) > Resiliencia Offline y Persistencia en Store Zustand > obtenerRegistrosMesa consolida y deduplica registros indexados bajo distintas claves (QA-004) [0.28ms]
+
+src/features/mesas/services/agenda-api.test.ts:
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > normalizarAgendaBackend > mapea atributos de backend a MesaAgenda de frontend [0.15ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > listarAgendas > retorna datos de la API cuando la respuesta es exitosa [0.90ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > listarAgendas > propaga excepción ante error de red o backend no disponible (H-04) [0.19ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > listarAgendas > retorna arreglo vacío si el backend devuelve lista vacía (H-04) [0.15ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > obtenerAgenda > retorna agenda por ID si existe remotamente [0.19ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > obtenerAgenda > propaga excepción cuando la API responde 404 (H-04) [0.13ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > crearAgendaRemota > envía POST /mesas/agendas con el payload esperado [0.36ms]
+(pass) Gestión remota de Cronograma de Agendas de Mesas (EDIT-02) > actualizarAgendaRemota > envía PATCH /mesas/agendas/{id} con campos parciales [0.43ms]
+
+src/features/mesas/panels/mesa-editor-panel.test.tsx:
+(pass) MesaEditorPanel — Simplificación de Coordenadas [MESA-UBIC-02] > 1. Verifica que no existan los campos separados Latitud/Longitud individual y sí exista el campo unificado [15.87ms]
+(pass) MesaEditorPanel — Simplificación de Coordenadas [MESA-UBIC-02] > 2. Verifica que enlaces de Google Maps con %2C, /maps/place/ y /maps/search/ extraen coordenadas correctamente [0.87ms]
+(pass) MesaEditorPanel — Simplificación de Coordenadas [MESA-UBIC-02] > 3. Verifica que pegar una URL o coordenadas planas en el campo de texto extrae las coordenadas [0.46ms]
+(pass) MesaEditorPanel — Simplificación de Coordenadas [MESA-UBIC-02] > 4. Renderiza botón Limpiar cuando existen coordenadas cargadas [5.16ms]
+
+src/features/mesas/lib/coordenadas-parser.test.ts:
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > esEnlaceCorto > detecta enlaces cortos de Google Maps [0.04ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > esEnlaceCorto > detecta otros acortadores conocidos [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > esEnlaceCorto > no marca URLs completas como enlaces cortos [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > ignora enlaces cortos para evitar SSRF en servidor [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Google Maps con arroba (@lat,lng) [0.05ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Google Maps con place y data parameters (!3dLAT!4dLNG) [0.04ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Google Maps con parámetro ?q=lat,lng [0.04ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Google Maps con parámetro &query=lat,lng [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Google Maps con coma codificada en URL (%2C) [MESA-UBIC-02] [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea rutas directas /maps/place/lat,lng y /maps/search/lat,lng [MESA-UBIC-02] [0.06ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea parámetros adicionales de mapas: center, viewpoint, daddr, saddr [MESA-UBIC-02] [0.04ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea Waze con parámetro ?ll=lat,lng [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea OpenStreetMap con hash #map=zoom/lat/lon [0.08ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > parsea OpenStreetMap con mlat y mlon [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasUrl > retorna null ante URL vacía o sin coordenadas reconocibles [0.31ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > parsea formato estándar separado por coma [0.07ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > parsea formato separado por punto y coma [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > parsea formato separado por espacio [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > parsea formato etiquetado lat/lng [0.04ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > parsea coordenadas en formato DMS (Grados, Minutos, Segundos) [MESA-UBIC-02] [0.07ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > extrae coordenadas si el usuario pega por error una URL de Google Maps [MESA-UBIC-02] [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > retorna null si las coordenadas están fuera de rango WGS84 [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearTextoCoordenadas > retorna null si el texto no contiene dos números [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasDMS > parsea grados minutos segundos con N y W [0.03ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > parsearCoordenadasDMS > retorna null ante texto no DMS [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > validarLimitesCartagena > confirma coordenadas dentro del Distrito de Cartagena [0.06ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > validarLimitesCartagena > emite advertencia no bloqueante para coordenadas fuera de Cartagena [0.05ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > validarRangoWgs84 > valida rangos latitud y longitud wgs84 [0.02ms]
+(pass) coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-01] > generarUrlComoLlegar > genera enlace universal a Google Maps para navegación [0.03ms]
+
+src/features/mesas/components/selector-ubicacion-mesa.test.tsx:
+(pass) SelectorUbicacionMesa Component [MESA-UBIC-01] > renderiza el mapa accesible con rol application y controles accesibles [2.14ms]
+(pass) SelectorUbicacionMesa Component [MESA-UBIC-01] > renderiza las coordenadas seleccionadas y boton Limpiar cuando existen coordenadas [0.97ms]
+(pass) SelectorUbicacionMesa Component [MESA-UBIC-01] > no muestra boton Limpiar en modo soloLectura [0.52ms]
+
+src/features/marco-legal/views/marco-legal-interaccion.test.ts:
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > todos los controles ARIA resuelven a un panel y los ID son únicos [403.70ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > las flechas, Home y End actualizan selección y foco [1292.91ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > filtra los dos marcos sin mezclar las secciones [592.38ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > un hash cambia al marco que contiene el destino [358.54ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > la recarga directa conserva el destino histórico distrital [255.26ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > el desplazamiento respeta movimiento reducido [428.40ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > el enlace histórico de plataforma selecciona su marco y apunta al contenido [268.82ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > axe no detecta infracciones graves en el marco 0 [1497.11ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > axe no detecta infracciones graves en el marco 1 [1057.51ms]
+(pass) Marco legal: interacción real, anclas y accesibilidad (303) > axe no detecta infracciones graves en el marco 2 [1071.69ms]
+
+src/features/indicadores/views/indicadores-interaccion.test.ts:
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 1. (H297-05) Render real en navegador: cero nodos tbody > div [479.81ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 2. (O297-02) Expansión y colapso interactivo con clic de ratón [268.57ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 3. (O297-02) Expansión y colapso interactivo con teclado (Enter y Espacio) [133.26ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 4. (O297-02) Filtrado interactivo por Tier y Dimensión [912.79ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 5. (O297-02) Búsqueda con debounce: 0 peticiones durante tecleo y 1 petición tras 300 ms [1143.30ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 6. (H297-06) Estado de error 503: role='alert', anuncio y sin atasco en 'Consultando catálogo…' [5443.37ms]
+(pass) Pruebas de Interacción, Accesibilidad axe y Estados [O297-02, H297-05, H297-06] > 7. (O297-02, H297-05) Auditoría axe-core: cero violaciones serious o critical en tabla y detalle abierto [888.48ms]
+
+src/features/indicadores/views/indicadores-catalogo-view.test.tsx:
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 1. (N-1) Utiliza el contenedor fluido del sitio (container-fluid w-full) [9.53ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 2. (N-9) Elimina el total hardcodeado '24' y muestra total dinámico de la API [3.81ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 3. (N-3) Presenta la leyenda cívica de Tiers (A, B, C) y explica 'no publicable' [4.77ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 4. (N-4) Utiliza las etiquetas canónicas de taxonomia_7d_polis.py con códigos visibles [4.63ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 5. (N-2) Corrige ortografía y tildes en textos visibles y aria-label [4.32ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 6. (N-6 y B-2) Las filas Tier C con NO_VERIFICADO no tienen enlace href; Tier A sí [6.25ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 7. (B-3) IndicadorMetodologiaDetalle muestra exhaustivamente los 15 campos metodológicos [3.30ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 8. Quita el truncado rígido del nombre para permitir lectura completa y accesible [6.29ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 9. Renderiza estados de carga, error y vacío con roles accesibles (H297-06) [7.42ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 10. (H297-05) Estructura de tabla válida sin 'div' dentro de 'tbody' (0 nodos tbody > div) [6.26ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 11. (H297-05) Listas de definición estrictamente conformes a HTML5 en la ficha metodológica [2.37ms]
+(pass) Vista del Catálogo de Indicadores [B-2, B-3, N-1..N-9, H297-05, H297-06, O297-01] > 12. (H297-06) FormField propaga id y aria-describedby a los controles vinculando las etiquetas [4.50ms]
+
+src/features/indicadores/services/indicadores-catalogo-api.test.ts:
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > esUrlHttpsSegura (N-6: Validación estricta de esquema seguro) > retorna true únicamente para URLs que inician con https:// [0.07ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > esUrlHttpsSegura (N-6: Validación estricta de esquema seguro) > retorna false para NO_VERIFICADO, http no seguro o entradas inválidas [0.04ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > retorna endpoint base sin parámetros cuando filtros no se proveen o están vacíos [0.09ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > omite comodines como 'todas', 'todos' y cadenas en blanco [0.03ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro dimension individual [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro tier individual [0.01ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > construye URL con parámetro busqueda individual [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > construirUrlCatalogoIndicadores (B-2: Construcción de URL con filtros) > combina múltiples parámetros simultáneos con codificación adecuada [0.02ms]
+(pass) Servicio y cliente de API del Catálogo de Indicadores [B-2, N-6] > obtenerCatalogoIndicadores (B-2: Consumo de cliente apiFetch) > invoca apiFetch con la URL construida a partir de los filtros [0.25ms]
+
+src/features/geovisor/views/geovisor-view.test.tsx:
+(pass) GeovisorView Component (GEO-DOCK-02) > ensambla el espacio de trabajo con los 4 paneles acoplados y el lienzo central [47.84ms]
+
+src/features/geovisor/views/geovisor-page.test.tsx:
+(pass) GeovisorPublicPage /geovisor (GEO-FULL-01) > renderiza en pantalla completa sin Topbar ni Footer del portal [28.35ms]
+
+src/features/geovisor/state/geovisor-layout-store.test.ts:
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > inicia con los valores de visibilidad y tamaños balanceados por defecto [0.21ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > permite alternar la visibilidad de cada panel con togglePanel [0.49ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > permite establecer explícitamente el estado de un panel con setPanelOpen [0.12ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > permite calibrar el tamaño porcentual y acota dentro de rangos seguros [0.13ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > maximizeMap colapsa todos los paneles y restaura el estado previo en la siguiente invocación [0.17ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > abrir manualmente un panel desactiva el estado isMaximized [0.06ms]
+(pass) GeovisorLayoutStore (GEO-DOCK-01) > resetLayout restaura los valores por defecto iniciales [11.71ms]
+(pass) inicia con el lienzo cartografico visible y cambia a solo analitica [0.23ms]
+(pass) permite el cruce analitico con multiples indicadores activos [0.43ms]
+(pass) restablecer disposición recupera el mapa después de Solo analítica [0.06ms]
+
+src/features/geovisor/state/geovisor-layout-store.tabs.test.ts:
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > distribuye las vistas limpias por defecto en los 4 paneles [0.09ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > moveView mueve una vista a otro panel, la activa y abre el destino [0.23ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > moveView reordena dentro del mismo panel [0.13ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > mover la última vista de un panel lo deja vacío y lo oculta [0.05ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > closeView quita la vista y openView la restaura en su panel original [0.19ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > openView activa la vista donde esté acoplada y abre ese panel [0.42ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > cerrar la pestaña activa selecciona una vecina [0.09ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > toggleDockExpanded alterna el panel expandido [0.09ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > sanitizeDockTabs descarta ids desconocidos y duplicados [0.16ms]
+(pass) GeovisorLayoutStore — vistas con pestañas por panel > resetLayout restaura las pestañas por defecto [0.76ms]
+
+src/features/geovisor/services/mesas-geovisor-api.test.ts:
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > resuelve coordenadas por código de agenda directo (ej. mt-001) [0.14ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > resuelve coordenadas por código oficial canónico (ej. MT-L01-01) [0.04ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > resuelve coordenadas por shortcode ciudadano (ej. MT101) [0.05ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > resuelve coordenadas por UUID canónico de PostgreSQL [0.04ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > resuelve correctamente las mesas rurales e insulares y nuevas mesas oficiales (mr-007, mr-010, mr-011, mp-009, ms-012) [0.07ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > buscarCoordenadasMesa > mapeo cubre exactamente las 35 mesas canónicas oficiales [0.04ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > listarMesasGeovisor con API > enriquece mesas sin coordenadas desde el backend usando buscarCoordenadasMesa [0.86ms]
+(pass) Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05) > listarMesasGeovisor con API > respeta tipo_ubicacion 'coordenada_registrada' y no sobreescribe coordenadas propias [MESA-UBIC-01] [0.24ms]
+
+src/features/geovisor/services/hurtos-api.test.ts:
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > normalizarDelitoParam > normaliza variantes de delitos a los valores canónicos [0.08ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > obtenerResumenHurtos > consulta sin parámetros para resumen global 2018-2026 [0.46ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > obtenerResumenHurtos > aplica filtros de delito, año y zona en la query string [0.11ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > obtenerResumenHurtos > normaliza respuestas con periodo pero sin etiqueta ni porcentaje (GEO-FIX-CONSOLE-01) [0.10ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > obtenerPoligonosHurtosGeojson > consulta el FeatureCollection ligero (< 150 KB) con polígonos analíticos [0.20ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > explorarRegistrosHurtos > construye los query params correctamente con filtros y paginación [0.35ms]
+(pass) Servicio de Analítica de Hurtos (GEO-HURTOS-01) > explorarRegistrosHurtos > retorna fallback estructurado cuando apiFetch falla [0.31ms]
+
+src/features/geovisor/services/geovisor-api.test.ts:
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > consulta GET /geodatos/territorios/buscar-por-coordenada con lat y lon [0.29ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > captura errores de red y retorna un array vacío de manera segura [0.11ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > obtiene detalle de territorio por ID mediante GET /geodatos/territorios/{id} [0.14ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > lista capas espaciales disponibles desde GET /geodatos/capas [0.10ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Normalizador Inteligente de Direcciones (GEO-PROC-01) > envía solicitud POST /geodatos/estandarizar-direccion con dirección estructurada [0.22ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Normalizador Inteligente de Direcciones (GEO-PROC-01) > retorna null de forma segura ante cadenas vacías sin invocar a la API [0.09ms]
+Fallo al estandarizar dirección: warn: Network Error
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/geovisor/services/geovisor-api.test.ts:150:65)
+
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Normalizador Inteligente de Direcciones (GEO-PROC-01) > captura errores de red y retorna null defensivamente [0.23ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Isócronas de Accesibilidad y Ruteo de Seguridad (GEO-PROC-02) > consulta GET /geodatos/isocronas con latitud, longitud y parámetros de ruteo [0.31ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Isócronas de Accesibilidad y Ruteo de Seguridad (GEO-PROC-02) > captura errores de red y retorna null de forma segura [0.21ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Banco Multifuente de Seguridad Humana (GEO-FUENTES-01) > consulta GET /geodatos/indicadores con filtros multicriterio [0.28ms]
+(pass) Georreferenciación Territorial Inversa (AUD-SYNC-01) > Banco Multifuente de Seguridad Humana (GEO-FUENTES-01) > consulta GET /geodatos/territorios/{id}/indicadores por UUID de territorio [0.11ms]
+
+src/features/geovisor/hooks/use-mapa-navegacion.test.ts:
+(pass) Enlace Bidireccional de Navegación y Vuelo Cartográfico flyTo (GEO-DOCK-03) > la vista de OpenLayers ejecuta animación flyTo hacia la mesa seleccionada [2.39ms]
+(pass) Enlace Bidireccional de Navegación y Vuelo Cartográfico flyTo (GEO-DOCK-03) > previene animación flyTo si la mesa carece de coordenadas válidas [0.22ms]
+(pass) Enlace Bidireccional de Navegación y Vuelo Cartográfico flyTo (GEO-DOCK-03) > el estilo visual de la mesa seleccionada genera un halo de alta visibilidad [1.72ms]
+(pass) Enlace Bidireccional de Navegación y Vuelo Cartográfico flyTo (GEO-DOCK-03) > la selección de mesa abre automáticamente el panel derecho en el store [0.08ms]
+
+src/features/geovisor/components/geovisor-workspace-layout.test.tsx:
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el panel top oculto no expone controles al teclado [9.34ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el panel left oculto no expone controles al teclado [13.01ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el panel right oculto no expone controles al teclado [9.98ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el panel bottom oculto no expone controles al teclado [9.37ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > renderiza el contenedor principal con semántica accesible y test ID [2.15ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el slot central (lienzo OpenLayers) siempre se renderiza y nunca se omite [2.21ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > refleja el estado por defecto del store: top oculto, left y bottom activos, right colapsado [2.29ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > actualiza el dimensionamiento cuando se modifican los paneles derecho e inferior en el store [1.96ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > maximizar mapa colapsa los 4 paneles a tamaño 0.0 mientras preserva el mapa central [1.65ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > restablecer layout vuelve a colocar los tamaños y visibilidad por defecto [1.60ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > despliega el panel superior con su tamaño calibrado cuando se activa en el store [1.69ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > maneja slots ausentes sin fallar y mantiene los paneles colapsados [1.72ms]
+(pass) GeovisorWorkspaceLayout Component (GEO-DOCK-01) > el contenedor del workspace ocupa altura completa (h-dvh) sin restriccion max-h [1.59ms]
+
+src/features/geovisor/components/geovisor-workbench-bar.test.tsx:
+(pass) GeovisorWorkbenchBar Component (GEO-FULL-01) > renderiza el boton Volver al inicio enlazado a la raiz con accesibilidad [1.19ms]
+(pass) GeovisorWorkbenchBar Component (GEO-FULL-01) > renderiza el acceso a la procedencia y metodo de cada serie [3.42ms]
+(pass) GeovisorWorkbenchBar Component (GEO-FULL-01) > renderiza los controles de vistas y conmutadores de paneles dock [1.36ms]
+(pass) GeovisorWorkbenchBar Component (GEO-FULL-01) > renderiza el acceso a gráficos y el control del panel superior sin cifras fijas [2.15ms]
+(pass) permite ocultar el mapa y pasar a solo analitica [3.14ms]
+
+src/features/geovisor/components/geovisor-top-shelf.test.tsx:
+(pass) GeovisorTopShelf Component (GEO-DOCK-02) > renderiza selectores de zona GeoJSON, capa y año, y 4 KPI chips reales [5.07ms]
+
+src/features/geovisor/components/geovisor-multifuente-panel.test.tsx:
+(pass) GeovisorMultifuentePanel Component (GEO-FUENTES-01) > renderiza el Banco Multifuente con filtros estadisticos compartidos [9.28ms]
+(pass) GeovisorMultifuentePanel Component (GEO-FUENTES-01) > renderiza estado de carga cuando isLoading es true [3.91ms]
+
+src/features/geovisor/components/geovisor-hurtos-panel.test.tsx:
+(pass) GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01) > renderiza el panel con la barra de navegación de 3 modos (Workbench) [7.13ms]
+(pass) GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01) > Modo 1: «Resumen y Gráficos» renderiza selectores, botones rápidos de pintado, KPIs y gráficos [4.86ms]
+(pass) GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01) > Modo 2: «Procesador y Tabla de Datos GeoJSON» renderiza filtros multicriterio, pivot y botones de exportación [11.23ms]
+(pass) GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01) > Modo 3: «Gestor e Importador GeoJSON» renderiza catálogo oficial y dropzone de importación local [3.63ms]
+(pass) GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01) > Modo 1 no falla ante datos de serie con 'periodo' en lugar de 'etiqueta' (GEO-FIX-CONSOLE-01) [5.04ms]
+
+src/features/geovisor/components/geovisor-dock-host.test.tsx:
+(pass) GeovisorDockHost > muestra una pestaña por vista del panel y solo monta la activa [2.65ms]
+(pass) GeovisorDockHost > las pestañas son arrastrables, admiten Suprimir y ofrecen cierre externo de la activa [2.38ms]
+(pass) GeovisorDockHost > un panel sin vistas muestra el estado vacío [1.27ms]
+(pass) GeovisorDockHost > refleja el panel con vistas reubicadas [1.14ms]
+(pass) GeovisorWorkbenchBar > incluye el menú Vistas y los controles de los 4 paneles [2.47ms]
+
+src/features/geovisor/components/geovisor-dock-controls.test.tsx:
+(pass) GeovisorDockControls Component (GEO-DOCK-01) > renderiza los 4 iconos de paneles, maximizar y resetear [0.36ms]
+(pass) GeovisorDockControls Component (GEO-DOCK-01) > refleja los atributos ARIA y aria-pressed según estado inicial [0.48ms]
+(pass) GeovisorDockControls Component (GEO-DOCK-01) > actualiza el estado de los controles cuando cambian los paneles en el store [0.43ms]
+(pass) GeovisorDockControls Component (GEO-DOCK-01) > muestra icono y etiqueta de restaurar cuando el mapa está maximizado [0.60ms]
+
+src/features/fuentes/state/fuentes-store.test.ts:
+(pass) Fuentes Store & Metrics (EDIT-03b / AUD-14 / H-04) > Inicia con catálogo vacío en producción conforme a la regla de cero datos fabricados [0.09ms]
+(pass) Fuentes Store & Metrics (EDIT-03b / AUD-14 / H-04) > Actualiza el estado y datos de una fuente cuando la API responde [1.39ms]
+(pass) Fuentes Store & Metrics (EDIT-03b / AUD-14 / H-04) > Revierte mutación optimista ante error en backend (H-04) [0.39ms]
+(pass) Fuentes Store & Metrics (EDIT-03b / AUD-14 / H-04) > Permite filtrar por ámbito, estado y búsqueda de texto [0.08ms]
+(pass) Fuentes Store & Metrics (EDIT-03b / AUD-14 / H-04) > Agrega una nueva fuente al catálogo cuando la API confirma la persistencia [0.23ms]
+
+src/features/fuentes/services/fuentes-api.test.ts:
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > normalizarFuenteBackend > mapea atributos de backend snake_case a frontend camelCase [0.11ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > listarFuentes > retorna fuentes de la API cuando la respuesta es exitosa [0.54ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > listarFuentes > propaga excepción ante fallo de red o desconexión (H-04) [0.20ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > listarFuentes > retorna arreglo vacío si el backend devuelve lista vacía (H-04) [0.11ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > obtenerFuente > obtiene detalle remoto de fuente [0.25ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > obtenerFuente > arroja error si la API responde 404 y no existe en catálogo [0.16ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > obtenerKpisFuentes > retorna KPIs calculados por backend [0.20ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > crearFuenteRemota > envía POST /fuentes con radicado y estructura requerida [0.49ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > actualizarFuenteRemota > envía PATCH /fuentes/{id} con datos de radicado y observaciones [0.46ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > eliminarFuenteRemota > envía DELETE /fuentes/{id} [0.30ms]
+(pass) Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03) > Fixtures aisladas (EDIT-03b / AUD-15) > los fixtures para historias y pruebas aisladas existen en __fixtures__ [0.11ms]
+
+src/features/formularios/views/formulario-publico-view.test.tsx:
+(pass) FormularioPublicoPage — Navegación de Retorno [NAV-RETORNO-01] > renderiza el logo institucional clicable y el botón 'Volver al inicio' en la cabecera [1.80ms]
+
+src/features/formularios/services/ubicacion-geografica.test.ts:
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: %s [0.42ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: 
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: no-json [0.08ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: [] [0.36ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Polygon","coordinates":[0,0]} [0.48ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Point","coordinates":[-181,10]} [0.13ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Point","coordinates":[-75,91]} [0.11ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Point","coordinates":["-75",10]} [0.08ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Point","coordinates":[-75,null]} [0.07ms]
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Point","coordinates":[-75,10,4]} [0.06ms]
+(pass) Punto geográfico en formularios > punto válido, origen GPS, precisión y respuesta opcional [0.31ms]
+(pass) Punto geográfico en formularios > el punto oculto se excluye como cualquier pregunta condicional [0.47ms]
+(pass) Punto geográfico en formularios > exporta solo puntos válidos del formulario con longitud antes de latitud [0.58ms]
+(pass) Punto geográfico en formularios > guarda el punto vinculado al registro ciudadano de demostración [0.75ms]
+
+src/features/formularios/services/reporte-inseguridad.test.ts:
+(pass) Reporte ciudadano y caché persistente > el producto inicia sin datos ficticios [0.04ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d1 [1.18ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d2 [0.78ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d3 [1.16ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d4 [0.81ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d5 [0.52ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d6 [0.53ms]
+(pass) Reporte ciudadano y caché persistente > solo exige la subcategoría de d7 [0.38ms]
+(pass) Reporte ciudadano y caché persistente > fotos sin punto y descripción excesiva no se aceptan [0.58ms]
+
+src/features/formularios/services/persistencia-formularios.test.ts:
+(pass) un fallo al crear no inventa un formulario local [1.12ms]
+(pass) editar, responder y eliminar requieren confirmación de la API incluso para un registro antiguo [0.70ms]
+(pass) obtenerFormulario resuelve formulario localmente si existe en el store [0.13ms]
+(pass) obtenerFormulario consulta formulariosRemotos.listar() e hidrata el store en arranque en frío (GAP-06) [0.17ms]
+(pass) obtenerFormulario recurre a formulariosRemotos.publico() si no está en listar (GAP-06) [0.22ms]
+(pass) obtenerFormulario arroja excepción si no se encuentra en store ni backend [0.14ms]
+
+src/features/formularios/services/formulario-url.test.ts:
+(pass) normaliza tildes y genera slugs distintos para el mismo título y milisegundo [2.89ms]
+(pass) codifica título y URL sin romper enlaces de compartir [0.22ms]
+
+src/features/formularios/services/formulario-engine.test.ts:
+(pass) Validaciones de respuesta > texto_corto rechaza una respuesta obligatoria vacía [0.47ms]
+(pass) Validaciones de respuesta > texto_largo rechaza una respuesta obligatoria vacía [0.26ms]
+(pass) Validaciones de respuesta > opcion_unica rechaza una respuesta obligatoria vacía [0.20ms]
+(pass) Validaciones de respuesta > opcion_multiple rechaza una respuesta obligatoria vacía [0.18ms]
+(pass) Validaciones de respuesta > lista_desplegable rechaza una respuesta obligatoria vacía [0.20ms]
+(pass) Validaciones de respuesta > likert rechaza una respuesta obligatoria vacía [0.21ms]
+(pass) Validaciones de respuesta > escala_lineal rechaza una respuesta obligatoria vacía [0.19ms]
+(pass) Validaciones de respuesta > fecha rechaza una respuesta obligatoria vacía [0.18ms]
+(pass) Validaciones de respuesta > hora rechaza una respuesta obligatoria vacía [0.19ms]
+(pass) Validaciones de respuesta > numero rechaza una respuesta obligatoria vacía [0.18ms]
+(pass) Validaciones de respuesta > carga_archivo rechaza una respuesta obligatoria vacía [0.18ms]
+(pass) Validaciones de respuesta > bloques informativos no exigen valor [0.26ms]
+(pass) Validaciones de respuesta > longitud, patrón y error personalizado [0.33ms]
+(pass) Validaciones de respuesta > números finitos, rango y paso [0.39ms]
+(pass) Validaciones de respuesta > pasos decimales: tolera redondeo y conserva el origen del mínimo [0.41ms]
+(pass) Validaciones de respuesta > fecha y hora reales [0.38ms]
+(pass) Validaciones de respuesta > opciones válidas, multiselección y Otro con texto [0.44ms]
+(pass) Validaciones de respuesta > archivos verifican tipo y tamaño [0.47ms]
+(pass) Lógica y secciones > operadores, sin respuesta y opciones Otro [0.40ms]
+(pass) Lógica y secciones > ocultas no validan ni exportan respuestas anteriores; dependencias en cadena [0.57ms]
+(pass) Lógica y secciones > rechaza ciclos y dependencias hacia páginas anteriores [0.37ms]
+(pass) Lógica y secciones > salto excluye secciones omitidas y sus preguntas obligatorias [0.74ms]
+(pass) Lógica y secciones > rangos, regex y saltos inválidos impiden guardar [0.59ms]
+(pass) Lógica y secciones > aleatorización no muta originales [0.34ms]
+(pass) CRUD, envío y límites > mocks incluyen todos los barrios y las siete dimensiones [0.57ms]
+(pass) CRUD, envío y límites > CRUD conserva identificadores y no comparte referencias externas [0.68ms]
+(pass) CRUD, envío y límites > validación fallida no escribe ni incrementa; cupo y duplicados atómicos [0.61ms]
+(pass) CRUD, envío y límites > edición reemplaza respuesta incluso con cupo lleno [0.53ms]
+(pass) CRUD, envío y límites > borrador, cierre y autenticación se comprueban al enviar [0.48ms]
+(pass) CRUD, envío y límites > preview no guarda respuestas [0.37ms]
+(pass) Analítica y CSV > ceros, múltiples y promedio cero [0.70ms]
+(pass) Analítica y CSV > CSV incluye todas las respuestas, comillas, saltos y neutraliza fórmulas [0.40ms]
+(pass) últimas respuestas ordenadas por envío, incluida edición [0.40ms]
+
+src/features/evidencias/services/evidencias-api.test.ts:
+(pass) Servicio de Evidencias Sanitizadas (H-08) > subirEvidenciaFotografica despacha POST a /evidencias/subir y genera archivo_url sanitizada [0.54ms]
+(pass) Servicio de Evidencias Sanitizadas (H-08) > incluye propuesta_id en el payload cuando se suministra [0.24ms]
+(pass) Servicio de Evidencias Sanitizadas (H-08) > anti-silent-fallback: propaga error y NO simula retornos si el backend rechaza la subida (401/422/500) [0.22ms]
+
+src/features/diagnostico/services/territorios-api.test.ts:
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > debe cargar los 15 territorios distritales canónicos [0.19ms]
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > debe filtrar territorios por Localidad [0.20ms]
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > debe filtrar territorios por Nivel de Riesgo [0.14ms]
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > debe buscar por barrio, vereda o UCG [0.43ms]
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > obtenerFichaTerritorial retorna la ficha completa con equipamientos y problemáticas [0.13ms]
+(pass) Geodiagnóstico Territorial de Cartagena (Hito D-3) > calcularResumenDiagnosticoTerritorial computa métricas consolidadas [0.17ms]
+
+src/features/diagnostico/services/mga-api.test.ts:
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarNodo procesa un nodo plano y sus hijos recursivamente [0.73ms]
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarInstrumento asigna valores por defecto seguros [0.08ms]
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarArbol estructura correctamente nodo central, causas y efectos [0.11ms]
+(pass) Diagnóstico Territorial y Agente IA > Consultas a catálogo oficial / contingencia > obtenerInstrumentos retorna instrumentos oficiales de Cartagena [17.27ms]
+(pass) Diagnóstico Territorial y Agente IA > Consultas a catálogo oficial / contingencia > obtenerArbol resuelve el árbol canónico de ESCNNA Centro Histórico [14.12ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > detecta alerta metodológica de solución disfrazada (falta de / construir) [0.43ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > valida positivamente problemas formulados con sustantivos negativos [0.23ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > valida objetivos formulados con verbos en infinitivo [0.05ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > genera diagnóstico determinista completo bajo directrices metodológicas [0.59ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > evaluarDiagnosticoIA responde con estructura de dictamen pericial [4.58ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > convertirAObjetivos despacha POST /instrumentos/{id}/convertir-a-objetivos [0.59ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > agregarNodoArbol despacha POST /instrumentos/{id}/nodos y normaliza el nodo retornado [0.49ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > actualizarNodoArbol despacha PUT /instrumentos/{id}/nodos/{nodo_id} [0.29ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > eliminarNodoArbol despacha DELETE /instrumentos/{id}/nodos/{nodo_id} [0.65ms]
+
+src/features/diagnostico/services/indicadores-api.test.ts:
+(pass) Diagnóstico y Línea Base Cuantitativa > Normalización de Fichas de Indicador > Normaliza correctamente un objeto de la API backend [0.15ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Normalización de Fichas de Indicador > Catálogo de contingencia contiene los 8 indicadores oficiales [0.08ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Normalización de Fichas de Indicador > Catálogo de contingencia no contiene cifras de medición ficticias ni porcentajes inventados (AUD-14) [0.05ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Hito D-0: Verificación de Purga Pericial en politicas.mock.ts > No contiene vestigios de movilidad de otras ciudades [0.19ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Hito D-0: Verificación de Purga Pericial en politicas.mock.ts > Contiene las 4 líneas estratégicas reales de Cartagena con sus aportes [0.19ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > listarFichasIndicadores retorna datos de la API cuando responde exitosamente [0.26ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > listarFichasIndicadores devuelve arreglo vacío cuando el backend responde vacío (H-04) [0.12ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > listarFichasIndicadores propaga error cuando el backend falla (H-04) [0.16ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > obtenerFichaIndicador retorna la ficha si existe remotamente [0.23ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > obtenerFichaIndicador propaga excepción cuando responde 404 (H-04) [0.12ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > crearFichaIndicador despacha POST /indicadores/fichas y retorna la ficha creada (GAP-04) [0.33ms]
+(pass) Diagnóstico y Línea Base Cuantitativa > Consumo de API y Erradicación de Fallbacks Silenciosos (H-04) > actualizarFichaIndicador despacha PATCH /indicadores/fichas/{id} y retorna la ficha actualizada (GAP-04) [0.24ms]
+
+src/features/diagnostico/services/arbol-causal-api.test.ts:
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarNodo procesa un nodo plano y sus hijos recursivamente [0.06ms]
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarInstrumento asigna valores por defecto seguros [0.04ms]
+(pass) Diagnóstico Territorial y Agente IA > Normalización de estructuras causales > normalizarArbol estructura correctamente nodo central, causas y efectos [0.08ms]
+(pass) Diagnóstico Territorial y Agente IA > Consultas a catálogo oficial / contingencia > obtenerInstrumentos retorna instrumentos oficiales de Cartagena [10.87ms]
+(pass) Diagnóstico Territorial y Agente IA > Consultas a catálogo oficial / contingencia > obtenerArbol resuelve el árbol canónico de ESCNNA Centro Histórico [20.67ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > detecta alerta metodológica de solución disfrazada (falta de / construir) [0.13ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > valida positivamente problemas formulados con sustantivos negativos [0.36ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > valida objetivos formulados con verbos en infinitivo [0.07ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > genera diagnóstico determinista completo bajo directrices metodológicas [0.17ms]
+(pass) Diagnóstico Territorial y Agente IA > Validador sintáctico y motor causal metodológico > evaluarDiagnosticoIA responde con estructura de dictamen pericial [3.61ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > convertirAObjetivos despacha POST /instrumentos/{id}/convertir-a-objetivos [1.27ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > agregarNodoArbol despacha POST /instrumentos/{id}/nodos y normaliza el nodo retornado [0.57ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > actualizarNodoArbol despacha PUT /instrumentos/{id}/nodos/{nodo_id} [0.32ms]
+(pass) Diagnóstico Territorial y Agente IA > Mutaciones y Conversión Canónica del Árbol Causal (GAP-05) > eliminarNodoArbol despacha DELETE /instrumentos/{id}/nodos/{nodo_id} [0.18ms]
+
+src/features/comunicaciones/services/comunicaciones-api.test.ts:
+(pass) Comunicaciones API Service > listarTareasComunicacion consulta el endpoint y retorna colección [0.43ms]
+(pass) Comunicaciones API Service > obtenerTareaComunicacion consulta tarea por UUID [0.50ms]
+(pass) Comunicaciones API Service > actualizarTareaComunicacion despacha PUT con payload y fechas modificadas [0.29ms]
+(pass) Comunicaciones API Service > crearTareaComunicacion despacha POST con nueva tarea [0.42ms]
+(pass) Comunicaciones API Service > eliminarTareaComunicacion despacha DELETE [0.24ms]
+
+src/features/barrio/tests/barrio-view.test.ts:
+(pass) Modo Barrio — Catálogo Canónico y Lógica Territorial (UX-MOVIL-BARRIO-01) > incluye los barrios populares y corregimientos prioritarios de Cartagena [0.15ms]
+(pass) Modo Barrio — Catálogo Canónico y Lógica Territorial (UX-MOVIL-BARRIO-01) > garantiza que cada barrio tenga estructura canónica completa [0.43ms]
+(pass) Modo Barrio — Catálogo Canónico y Lógica Territorial (UX-MOVIL-BARRIO-01) > retorna Olaya Herrera como barrio por defecto y maneja fallbacks seguros [0.12ms]
+(pass) Modo Barrio — Catálogo Canónico y Lógica Territorial (UX-MOVIL-BARRIO-01) > construye mensajes de difusión comunitaria para WhatsApp con radicado oficial [0.06ms]
+(pass) Modo Barrio — Catálogo Canónico y Lógica Territorial (UX-MOVIL-BARRIO-01) > respeta salvaguardas: cero acrónimos ajenos en datos territoriales [0.53ms]
+
+src/features/alternativas/views/alternativas-gating.test.ts:
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 2 (Alternativas de Solución) en estado 'preparatoria' > bloquea escritura a facilitador_mesa y auditor_forense [0.17ms]
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 2 (Alternativas de Solución) en estado 'preparatoria' > bloquea escritura a rol no-admin aunque tenga permiso alternativas:gestionar [0.07ms]
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 2 (Alternativas de Solución) en estado 'preparatoria' > permite escritura a autoridad_distrital para alistamiento institucional [0.05ms]
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 2 (Alternativas de Solución) en estado 'preparatoria' > habilita escritura para roles autorizados una vez que la Fase 2 pasa a 'activa' [0.02ms]
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 3 (Seguimiento PAS) en estado 'preparatoria' > bloquea escritura a no-admins en estado preparatoria [0.15ms]
+(pass) Gating de Fases de Política en Alternativas y Seguimiento (AUD-05) > Fase 3 (Seguimiento PAS) en estado 'preparatoria' > permite administración y cargue de metas a autoridad_distrital [0.04ms]
+
+src/features/alternativas/state/alternativas-store.test.ts:
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Catálogo Canónico Oficial y KPIs > carga exactamente las 8 iniciativas oficiales de Cartagena [0.15ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Catálogo Canónico Oficial y KPIs > computa KPIs de financiamiento distrital y salvaguarda étnica [0.12ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Filtrado Multicriterio > filtra por Sector de Inversión [0.14ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Filtrado Multicriterio > filtra por Línea Estratégica [0.39ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Filtrado Multicriterio > filtra por Estado de Viabilidad [0.04ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Filtrado Multicriterio > filtra por Enfoque Étnico (Ley 70 de 1993 y Consulta Previa) [0.05ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Filtrado Multicriterio > busca por texto en código, nombre, territorio y objetivos [0.16ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Carga y Contingencia Asíncrona (EDIT-09) > cargarAlternativas actualiza el estado desde backend con esContingencia=false [1.59ms]
+Aviso de contingencia: no fue posible conectar con el servidor para consultar alternativas de solución. Usando catálogo local. warn: Conexión rehusada
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/alternativas/state/alternativas-store.test.ts:159:19)
+      at once (/tmp/polis303_20261106/work/src/core/http/api-client.ts:89:23)
+      at apiFetch (/tmp/polis303_20261106/work/src/core/http/api-client.ts:181:20)
+      at listarAlternativasApi (/tmp/polis303_20261106/work/src/features/alternativas/services/alternativas-api.ts:111:25)
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/alternativas/state/alternativas-store.ts:177:25)
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/alternativas/state/alternativas-store.test.ts:162:45)
+
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Carga y Contingencia Asíncrona (EDIT-09) > cargarAlternativas conmuta a catálogo local y esContingencia=true ante fallo de red [0.46ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > agrega una nueva alternativa de solución con persistencia remota [0.52ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > anti-silent-fallback: previene mutación local si la persistencia remota falla al agregar [3.71ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > actualiza datos de una iniciativa existente con persistencia [0.60ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > cambia el estado de viabilidad de una alternativa [0.27ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > elimina una alternativa del banco distrital [0.28ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > anti-silent-fallback: previene eliminación si el backend retorna 409 por dependencias [0.18ms]
+(pass) Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09) > Mutaciones del Store Zustand con Persistencia Real (EDIT-09) > gestiona filtros y limpieza de estado [0.43ms]
+
+src/features/alternativas/services/viabilidad-api.test.ts:
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Motor Jurídico y Constitucional (LOOT y OIT 169) > valida competencia distrital de Cartagena y no regresividad DESCA [0.19ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Motor Jurídico y Constitucional (LOOT y OIT 169) > activa salvaguarda obligatoria de Consulta Previa ante intervención en territorios étnicos de Cartagena [0.08ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Motor Fiscal y Presupuestal (MFMP y Vigencias Futuras) > evalúa sostenibilidad financiera y asigna fuentes oficiales (FONSET/SGP) [0.75ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Motor Fiscal y Presupuestal (MFMP y Vigencias Futuras) > dispara alerta pericial de Vigencias Futuras Excepcionales (Ley 1483/11) cuando trasciende el cuatrienio [0.17ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Orquestador Integral de Viabilidad > ejecuta dictamen integral sobre iniciativa ordinaria (ALT-ESCNNA-01) [19.81ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Orquestador Integral de Viabilidad > emite veredicto VIABLE CON CONDICIONES en alternativas con salvaguarda étnica o vigencias futuras (ALT-INS-05) [7.37ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Orquestador Integral de Viabilidad > evaluarViabilidadJuridica procesa respuesta de API real cuando el servicio responde 200 [0.68ms]
+(pass) Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2) > Orquestador Integral de Viabilidad > evaluarViabilidadFiscal procesa respuesta de API real cuando el servicio responde 200 [0.27ms]
+
+src/features/alternativas/services/presupuesto-api.test.ts:
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Normalización de Modelos Presupuestales > normaliza fuentes de financiación preservando tipado y metadatos [0.12ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Normalización de Modelos Presupuestales > normaliza asignaciones presupuestales enlazando la fuente correspondiente [0.21ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Cálculo de KPIs y Resumen Financiero > calcula KPIs presupuestales distritales (FONSET, SGP/SGR y Vigencias Futuras) [0.88ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Cálculo de KPIs y Resumen Financiero > genera distribución plurianual y por fuente en resumen de costeo [0.28ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarFuentesFinanciacion retorna las 5 fuentes oficiales o fallback [0.38ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarAsignacionesPresupuestales retorna asignaciones enlazadas [0.79ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > crearAsignacionPresupuestal propaga error ante fallo de autenticación o backend (H-04) [0.31ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarFuentesFinanciacion devuelve lista vacía si el backend responde vacío (H-04) [0.12ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarFuentesFinanciacion consume exitosamente la API real cuando el backend responde 200 [0.25ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > crearAsignacionPresupuestal persiste vía POST cuando el backend responde 201 [0.18ms]
+
+src/features/alternativas/services/alternativas-api.test.ts:
+(pass) Alternativas de Solución API Service (EDIT-09) > Transformación y Mapeo de DTOs > mapearAlternativaDesdeApi transforma correctamente la respuesta de FastAPI [0.12ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Transformación y Mapeo de DTOs > mapearAlternativaHaciaPayload empaqueta correctamente campos para backend [0.05ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > listarAlternativasApi invoca /alternativas y retorna con esContingencia=false [0.40ms]
+Aviso de contingencia: no fue posible conectar con el servidor para consultar alternativas de solución. Usando catálogo local. warn: Network Error - Connection Refused
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/alternativas/services/alternativas-api.test.ts:118:19)
+      at once (/tmp/polis303_20261106/work/src/core/http/api-client.ts:89:23)
+      at apiFetch (/tmp/polis303_20261106/work/src/core/http/api-client.ts:181:20)
+      at listarAlternativasApi (/tmp/polis303_20261106/work/src/features/alternativas/services/alternativas-api.ts:111:25)
+      at <anonymous> (/tmp/polis303_20261106/work/src/features/alternativas/services/alternativas-api.test.ts:121:25)
+
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > listarAlternativasApi conmuta a modo contingencia ante fallo de red [0.24ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > obtenerAlternativaApi consulta iniciativa por código [0.23ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > crearAlternativaApi despacha POST /alternativas [0.17ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > actualizarAlternativaApi despacha PATCH /alternativas/{id} [0.65ms]
+(pass) Alternativas de Solución API Service (EDIT-09) > Operaciones HTTP contra Backend > eliminarAlternativaApi despacha DELETE /alternativas/{id} [0.13ms]
+
+src/features/actores/tests/integridad-pii-catalogos.test.ts:
+(pass) AUD-14: Auditoría Pericial de Integridad y Salvaguarda de Datos Personales (PII) en Catálogos > Identifica y analiza todos los archivos *.data.ts del frontend [0.06ms]
+(pass) AUD-14: Auditoría Pericial de Integridad y Salvaguarda de Datos Personales (PII) en Catálogos > Ningún archivo *.data.ts contiene patrones de PII (telefono, email, +57, correos personales o institucionales) [14.33ms]
+
+src/features/actores/state/actores-store.test.ts:
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Cálculo de Cuadrante de la Matriz 2x2 > Clasifica correctamente los 4 cuadrantes metodológicos [0.14ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Estado Inicial Limpio y Libre de PII (AUD-14) > Inicia estrictamente vacío sin datos personales ni actores simulados [0.04ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Mutaciones y Persistencia con API > Carga actores desde el backend exitosamente [13.33ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Mutaciones y Persistencia con API > Ante fallo del backend al listar actores, propaga error y no inyecta catálogo estático (OBS-27 / H-04) [0.42ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Mutaciones y Persistencia con API > Agrega un nuevo actor tras respuesta exitosa de API [0.73ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > Filtros y Búsqueda > Modifica y restablece los filtros del catálogo [0.10ms]
+(pass) Actores Store & Matriz de Involucramiento (AUD-14) > KPIs Agregados del Servidor (AUD-SYNC-01) > cargarKpis consulta /actores/kpis e hidrata el estado [0.24ms]
+
+src/app/asistencia/[mesaId]/asistencia-cliente.test.tsx:
+(pass) AsistenciaCliente — Navegación de Retorno [NAV-RETORNO-01] > renderiza el enlace al inicio (href='/') en el encabezado institucional [6.31ms]
+(pass) AsistenciaCliente — Navegación de Retorno [NAV-RETORNO-01] > renderiza la barra de navegación de retorno sobre la tarjeta de mesa [3.88ms]
+(pass) AsistenciaCliente — Navegación de Retorno [NAV-RETORNO-01] > renderiza enlace de retorno oficial en el pie de página [3.47ms]
+
+src/app/aportes/[codigo]/validacion-qr.test.tsx:
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 1. Renderiza la tarjeta oficial y solemne de fe pública distrital con radicado auténtico [3.37ms]
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 2. Resuelve correctamente badges y estados institucionales diferenciados [3.86ms]
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 3. Muestra mensaje amigable de verificación fallida y campo de búsqueda cuando el radicado no existe [1.22ms]
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 4. Muestra indicador de carga accesible mientras se consulta el registro distrital [0.32ms]
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 5. Footer incluye atribución explícita a Ples SAS y enlace a /acerca [0.47ms]
+(pass) Sistema de Validación Pública de Códigos QR y Fe Pública [QR-VAL-282] > 6. Verifica que logo-polis.svg tiene trazos blancos (#FFFFFF) en las letras OLIS para legibilidad [0.30ms]
+
+ 960 pass
+ 0 fail
+ 7918 expect() calls
+Ran 960 tests across 98 files. [29.78s]

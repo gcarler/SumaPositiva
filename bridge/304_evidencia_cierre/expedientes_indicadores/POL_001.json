@@ -1,0 +1,115 @@
+{
+  "codigo": "POL_001",
+  "fecha_revision_utc": "2026-11-07T17:35:00Z",
+  "ficha_catalogo": {
+    "codigo": "POL_001",
+    "nombre": "PQRSDF radicadas en sede electrónica",
+    "dimension": "POL",
+    "definicion": "Solicitudes PQRSDF asociadas a Cartagena en la sede electrónica de la Procuraduría.",
+    "formula": "Valor original publicado: procuraduria_pqrsdf_cartagena.pqrsdf_radicadas; no se recalcula.",
+    "numerador": "procuraduria_pqrsdf_cartagena.pqrsdf_radicadas",
+    "denominador": "No aplica: conteo original por tipo.",
+    "unidad": "solicitudes",
+    "tipo_territorio_fuente": "municipal",
+    "periodicidad": "anual",
+    "tipo_periodo": "anio_radicacion",
+    "fuente": "procuraduria_pqrsdf_cartagena",
+    "url_fuente": "https://www.procuraduria.gov.co/Pages/datos-abiertos.aspx",
+    "custodio": "Procuraduría General de la Nación",
+    "licencia": "CC-BY-SA-4.0; atribución y compartir igual; declarada en metadatos Socrata",
+    "anio_base": "2024",
+    "interpretacion": "Lee la demanda institucional registrada, no incidentes de inseguridad.",
+    "riesgo_metodologico": "Solo hay un año; no mide localización del hecho ni calidad de respuesta.",
+    "tier": "A",
+    "estado": "no_publicable"
+  },
+  "fuente_banco": {
+    "clave": "procuraduria_pqrsdf_cartagena",
+    "dataset_id": "s226-fj9i",
+    "titulo": "PQRSDF de la sede electrónica de Procuraduría con municipio Cartagena",
+    "entidad": "Procuraduría General de la Nación",
+    "dimension": "politica",
+    "pagina": "https://www.procuraduria.gov.co/Pages/datos-abiertos.aspx",
+    "consulta": "https://www.datos.gov.co/resource/s226-fj9i.json?%24select=date_extract_y%28fecha_de_radicaci_n%29+as+anio%2Ctipo_de_pqrsdf%2Ccount%28%2A%29+as+n&%24where=departamento%3D%27BOLIVAR%27+AND+municipio%3D%27CARTAGENA%27+AND+fecha_de_radicaci_n+IS+NOT+NULL&%24group=anio%2Ctipo_de_pqrsdf&%24order=anio%2Ctipo_de_pqrsdf&%24limit=1000",
+    "extraido_utc": "2026-10-23T01:51:01.703882+00:00",
+    "sha256": "e1a50834cbbfef2822c56015f40bd1b2a736730c7b9b2dbe3c8d99b986ec0381",
+    "filas_consultadas": 5,
+    "primer_anio": 2024,
+    "ultimo_anio": 2024,
+    "estado": "agregados_por_tipo_y_anio"
+  },
+  "serie_observada": {
+    "fuente_clave": "procuraduria_pqrsdf_cartagena",
+    "indicador": "pqrsdf_radicadas",
+    "selector_literal": null,
+    "observaciones": 5,
+    "valores_no_nulos": 5,
+    "anios": [
+      2024
+    ],
+    "subtipos": [
+      "Derecho de Petición",
+      "QUEJA/DENUNCIA",
+      "Reclamo",
+      "Solicitud de Consulta",
+      "Solicitud de Supervigilancia al Derecho de Petición"
+    ],
+    "unidades": [
+      "solicitudes"
+    ],
+    "celdas_repetidas": 0,
+    "notas_sha256": [
+      "e16f03dfe831e9db66b0e7d41cc5c50388d515f18fa8d963d918ec1187f3f5be"
+    ],
+    "ultimo_anio_no_acredita_anualidad_completa": true
+  },
+  "linaje": {
+    "banco_sha256": "e0c8ba376e45dd08a64034560b8c19a6d3e2ffe99fabaf950395c5ef0f87074d",
+    "catalogo_sha256": "4144a911aa02801a6437c8825b9cadb42b65e92e51dfaab37a2e7075ff67ec1d",
+    "matriz_303_sha256": "9e12bc4bb18ad72cd31fc0eba4a577d8ed00e1fd1e98022c4b6a7cb58768298d"
+  },
+  "reutilizacion": {
+    "estado": "Licencia declarada por el publicador Socrata; atribución y compartir igual.",
+    "licencia_producto": {
+      "url": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "consultado_utc": "2026-11-06T10:50:16.532327+00:00",
+      "http": 200,
+      "url_final": "https://www.datos.gov.co/api/views/s226-fj9i.json",
+      "bytes": 17828,
+      "sha256": "86a52378b4ca5baacc0fa255f37739ab919c60497e5fbd3ab8e3521b697448c6",
+      "nombre": "Datos abiertos de las PQRSDF de la Sede Electrónica de la Procuraduría General de la Nación",
+      "licenseId": "CC_40_BY_SA",
+      "license": {
+        "name": "Creative Commons Attribution | Share Alike 4.0 International",
+        "logoUrl": "images/licenses/cc30bysa.png",
+        "termsLink": "http://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      },
+      "attribution": "Procuraduría General de la Nación - PGN, Bogotá D.C.",
+      "attributionLink": "https://www.datos.gov.co/d/s226-fj9i",
+      "rowsUpdatedAt": 1735660401
+    },
+    "politica_institucional": null,
+    "politicas_adicionales": []
+  },
+  "control_territorial": {
+    "escala_observada": "municipal",
+    "desagregacion_a_barrios_autorizada_por_estos_datos": false,
+    "poblacion": "No reemplazar denominadores publicados; para tasas derivadas comprobar base censal y mismo año/territorio."
+  },
+  "comparabilidad": {
+    "unidad": "solicitudes",
+    "universo": "No aplica: conteo original por tipo.",
+    "periodo": "anio_radicacion",
+    "riesgo_declarado": "Solo hay un año; no mide localización del hecho ni calidad de respuesta.",
+    "causalidad_acreditada": false,
+    "fuentes_policial_forense_procesal_se_mantienen_separadas": true
+  },
+  "aceptacion": {
+    "estado": "no_publicable",
+    "criterios_pendientes": [
+      "responsable_y_aprobacion_metodologica",
+      "condiciones_publicacion_del_producto"
+    ],
+    "aprobacion_institucional_emitida": false
+  }
+}
