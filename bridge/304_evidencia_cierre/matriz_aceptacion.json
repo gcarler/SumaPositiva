@@ -51,10 +51,11 @@
     },
     {
       "id": "R8",
-      "estado": "codigo_y_operacion_publicados_sello_git_en_curso",
+      "estado": "codigo_operacion_y_evidencia_publicados",
       "readiness_http": 200,
       "GET_publicos_200": 18,
-      "restauracion_completa_aislada": true
+      "restauracion_completa_aislada": true,
+      "git_push_verificado": true
     },
     {
       "id": "R9",
@@ -66,5 +67,10 @@
       "adjudicados": 0
     }
   ],
-  "limite": "Pruebas técnicas, descarga y preparación de expedientes no sustituyen insumos auténticos, validación institucional o dictamen independiente."
+  "limite": "Pruebas técnicas, descarga y preparación de expedientes no sustituyen insumos auténticos, validación institucional o dictamen independiente.",
+  "publicacion_git_verificada": {
+    "evidencia_commit": "8d6e2e11fe363adb103760f7ae4acfa109d9da6f",
+    "origin_main_verificado": "8d6e2e11fe363adb103760f7ae4acfa109d9da6f",
+    "codigo_commit": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd"
+  }
 }

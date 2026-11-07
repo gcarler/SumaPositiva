@@ -1,0 +1,20 @@
+{
+  "evidencia_commit": "8d6e2e11fe363adb103760f7ae4acfa109d9da6f",
+  "origin_main_verificado": "8d6e2e11fe363adb103760f7ae4acfa109d9da6f",
+  "codigo_commit": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "fecha_verificacion_utc": "2026-11-07T19:03:55.607524+00:00",
+  "runtime_codigo_commit": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "runtime_release": "/root/polis-releases/backend_cierre_304_43321fc4",
+  "health_ready": {
+    "status": "ready",
+    "database": "ok",
+    "migrations": "ok",
+    "extensions": "ok"
+  },
+  "csp_publica": "Report-Only",
+  "frontend_codigo_modificado_por_304": false,
+  "escrituras_productivas_de_prueba": false,
+  "dictamen_EAF_propio_emitido": false,
+  "aceptacion_integral_completa": false,
+  "alcance_git": "Código y evidencia propios de 304. Los cambios concurrentes 307/308 y la migración 0097 no están incluidos."
+}

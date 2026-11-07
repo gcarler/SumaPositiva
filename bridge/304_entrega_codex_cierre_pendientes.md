@@ -168,7 +168,8 @@ se acotó la prueba a los 15 códigos exactos de semilla sin borrar territorios.
 ## Operación productiva comprobada
 
 - Código: commit `43321fc4d1e603bb7df5cd2e3cee5432a01b69dd`, en `main`.
-  La publicación Git se registra en el sello de este expediente.
+  Código y evidencia propios publicados en `main`/`origin/main`; véase el
+  [sello de publicación](304_evidencia_cierre/sello_publicacion.json).
 - Reparación real de 67 registros, correspondientes a 31 celdas de 14 archivos
   fuente. No son necesariamente los 14 originales recuperados. Se conservan
   los 665 archivos, 225.380 registros y 624 lotes; otra conexión verificó los
