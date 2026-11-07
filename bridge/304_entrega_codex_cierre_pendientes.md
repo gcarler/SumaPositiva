@@ -1,6 +1,6 @@
 # Encargo 304 — Cierre de pendientes de POLIS
 
-Estado: **VERIFICACIÓN TÉCNICA FINALIZADA; OPERACIONES EN EJECUCIÓN**.
+Estado: **CIERRE TÉCNICO PUBLICADO; ACEPTACIÓN INTEGRAL PENDIENTE**.
 Inicio: 2026-11-07. Implementador: Codex.
 Este documento es evidencia del implementador; no es un dictamen EAF.
 Base inicial: `9b6ce794`; integración posterior de SM comprometido: `da4c54f2`.
@@ -165,11 +165,57 @@ la prueba territorial asumía un total global igual al tamaño de la semilla.
 Se provisionaron extensiones, se creó una plantilla E2E desde migraciones y
 se acotó la prueba a los 15 códigos exactos de semilla sin borrar territorios.
 
-## Operaciones y aceptación pendientes
+## Operación productiva comprobada
 
-Esta sección se actualizará con commit, push, despliegue y operaciones reales
-cuando terminen los controles. No se ha emitido un dictamen EAF propio.
-La [solicitud independiente](304_solicitud_eaf_cierre.md) está entregada a coordinación.
+- Código: commit `43321fc4d1e603bb7df5cd2e3cee5432a01b69dd`, en `main`.
+  La publicación Git se registra en el sello de este expediente.
+- Reparación real de 67 registros, correspondientes a 31 celdas de 14 archivos
+  fuente. No son necesariamente los 14 originales recuperados. Se conservan
+  los 665 archivos, 225.380 registros y 624 lotes; otra conexión verificó los
+  ceros y el plan de auditoría. Repetición: cero cambios y 67 ya aplicados.
+- Respaldo específico anterior: filas completas, caches y las dos tablas de
+  evaluación/checkpoint afectadas. Se conservan los originales y los hashes.
+- Recalculados PDT-AI, ocho métodos PDD y seis de inteligencia. Cuatro cachés
+  publicadas; una segunda publicación con workers detenidos evitó que una
+  escritura del proceso anterior restaurara la caché antigua.
+- Respaldo completo adicional del estado corregido: SHA verificado, permisos
+  `0600` y restauración completa en `polis_test_304_respaldo`/15433. Se comprobaron
+  los conteos, los 67 ceros y la revisión 0096. La base de comprobación se eliminó.
+  Este volcado adicional es posterior a la corrección; no se presenta como un
+  volcado completo generado antes de ella.
+
+El primer reinicio detectó un problema operativo real: el grafo Alembic del
+checkout incluía la migración 0097 ajena y sin commit, por lo que readiness
+declaró 503 aunque la API respondía. No se aplicó ni movió ese archivo.
+Se creó una release inmutable de `43321fc4` y se aislaron `app`, `alembic` y los
+scripts mediante montajes de solo lectura exclusivos del servicio systemd.
+Los 427 archivos Python se cotejaron con la suite. Los datos y secretos mantienen
+sus rutas; no se copiaron credenciales. Se comprobó el código a través del
+namespace del proceso. `EXPECTED_REVISION` y su comparación no se modificaron.
+El backend ve el grafo 0096 del commit desplegado, consistente con `bd_csh`.
+
+Resultado final: readiness **200**, base/migraciones/extensiones **ok** y
+**18/18 comprobaciones públicas HTTP 200**. El ETag del catálogo PDD corresponde
+a la caché recalculada. Estas solicitudes GET no ejecutan JavaScript ni acreditan
+por sí solas un CRUD autenticado; esos recorridos se ejecutaron en laboratorio.
+El frontend mantiene la release 303; no se modificó su código en 304. Nginx
+mantiene Report-Only. No hubo envíos de prueba por SMTP ni escritura en Drive.
+
+Evidencia: [aplicación](304_evidencia_cierre/aplicacion_productiva_verificada.json),
+[idempotencia](304_evidencia_cierre/idempotencia_productiva.json),
+[restauración](304_evidencia_cierre/restauracion_respaldo_completo.json),
+[aislamiento](304_evidencia_cierre/aislamiento_runtime_comprobado.json) y
+[verificación pública](304_evidencia_cierre/verificacion_publica_posterior.json).
+El procedimiento de publicación futuro está actualizado en
+[el runbook](../docs/despliegue-produccion.md#31-snapshot-de-backend-y-trabajo-concurrente).
+
+## Aceptación integral pendiente
+
+No se ha emitido un dictamen EAF propio. La
+[solicitud independiente](304_solicitud_eaf_cierre.md) está entregada a coordinación.
+El expediente 307 de otro actor congela `da4c54f2` y excluye `43321fc4`; no acredita
+la revisión independiente de estos cambios. El snapshot actual de 304 se entrega
+por separado para que el evaluador contraste código, datos y operación.
 
 Siguen siendo requisitos externos: guion auténtico Workspace; aprobación de
 las fichas y criterios por producto; insumos PAE/inventario institucional a la

@@ -30,7 +30,8 @@
       "archivo": "backend_full_v5.log.txt",
       "sha256": "c1c147916795fc1e3f6af296c5726de5c05f538bcc35b3283ab23b6ef5fa13bd",
       "bytes": 17096,
-      "redactado": false
+      "redactado": false,
+      "normalizacion_espacios_finales": false
     },
     {
       "archivo": "backend_full_v5.xml",
@@ -42,7 +43,8 @@
       "archivo": "backend_full_v4.log.txt",
       "sha256": "0f6ed6b572e1d9dc9d878745b4abcf1335295e9ee299c62a9fcc7664265e21ea",
       "bytes": 17016,
-      "redactado": false
+      "redactado": false,
+      "normalizacion_espacios_finales": false
     },
     {
       "archivo": "backend_full_v4.xml",
@@ -54,19 +56,22 @@
       "archivo": "frontend_check.log.txt",
       "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94",
       "bytes": 197,
-      "redactado": false
+      "redactado": false,
+      "normalizacion_espacios_finales": false
     },
     {
       "archivo": "bun_tests.log.txt",
-      "sha256": "e57508d66b617a463f559a5b3f279755d5ec5d40beadacd933c7d12ad0cce4e6",
-      "bytes": 176786,
-      "redactado": false
+      "sha256": "0ddccc82719ceccb50972e949c6c33669192dd25c2e1fe7255c7123c5efd8a62",
+      "bytes": 176785,
+      "redactado": false,
+      "normalizacion_espacios_finales": true
     },
     {
       "archivo": "delta_final.log.txt",
       "sha256": "50a98ca5a377ecd9419faa547a894fecbb188c84db51a072cd505c1dcf447ec5",
       "bytes": 110,
-      "redactado": false
+      "redactado": false,
+      "normalizacion_espacios_finales": false
     },
     {
       "archivo": "delta_final.xml",
@@ -76,21 +81,24 @@
     },
     {
       "archivo": "e2e_csp_enforce_v2.log.txt",
-      "sha256": "aeeb63119503e93e4506537cebd1ab90cd8f8d5c0c2b2494771fbb9f77387e04",
-      "bytes": 5742,
-      "redactado": false
+      "sha256": "16703c7ba50c8d126fbc6cb1fb6442a71bf234486c10c79e4c3ba364e239a8d8",
+      "bytes": 5739,
+      "redactado": false,
+      "normalizacion_espacios_finales": true
     },
     {
       "archivo": "e2e_csp_expansion.log.txt",
-      "sha256": "8195b06bba0227c2e53df09cdac5c01724690c3225c5b51e317eef809517c75a",
-      "bytes": 3510,
-      "redactado": false
+      "sha256": "cab4aa8ffbad1e21cfda91c736adfb199dea1376d11d10a39e5b843d5c00575c",
+      "bytes": 3495,
+      "redactado": false,
+      "normalizacion_espacios_finales": true
     },
     {
       "archivo": "tests_csp_js.log.txt",
       "sha256": "3a2e44d70a8f477ead8191cf57ab0d81baa13f6e2146a09927a2cb56e13ca64c",
       "bytes": 1284,
-      "redactado": false
+      "redactado": false,
+      "normalizacion_espacios_finales": false
     }
   ]
 }

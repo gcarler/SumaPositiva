@@ -1,0 +1,7 @@
+[Service]
+# Release 304: los archivos del checkout en edición no son código desplegado.
+PrivateMounts=yes
+BindReadOnlyPaths=/root/polis-releases/backend_cierre_304_43321fc4/backend/app:/root/polis/backend/app
+BindReadOnlyPaths=/root/polis-releases/backend_cierre_304_43321fc4/backend/alembic:/root/polis/backend/alembic
+BindReadOnlyPaths=/root/polis-releases/backend_cierre_304_43321fc4/backend/scripts:/root/polis/backend/scripts
+BindReadOnlyPaths=/root/polis-releases/backend_cierre_304_43321fc4/scripts:/root/polis/scripts

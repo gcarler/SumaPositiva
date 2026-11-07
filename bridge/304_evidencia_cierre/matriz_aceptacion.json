@@ -1,0 +1,70 @@
+{
+  "fecha_utc": "2026-11-07T18:57:58.070122+00:00",
+  "encargo": 304,
+  "aceptacion_global_completa": false,
+  "commit_codigo": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "requisitos": [
+    {
+      "id": "R1",
+      "estado": "recuperacion_tecnica_comprobada",
+      "originales": 14,
+      "incorporacion_productiva_de_derivados": false,
+      "pendiente": "Validar contexto temporal y uso de embebidos antes de promover observaciones."
+    },
+    {
+      "id": "R2",
+      "estado": "cumplido_tecnico",
+      "backend_pass": 1915,
+      "backend_skip": 1,
+      "idempotencia_y_rollback": true,
+      "reparacion_productiva_ceros": 67
+    },
+    {
+      "id": "R3",
+      "estado": "pendiente_insumo_usuario",
+      "guardas_y_sello_unitario": true,
+      "guion_autentico_disponible": false
+    },
+    {
+      "id": "R4",
+      "estado": "expedientes_preparados_aprobacion_pendiente",
+      "fichas": 29,
+      "publicadas": 0
+    },
+    {
+      "id": "R5",
+      "estado": "insumos_parciales_y_metodologia_pendientes",
+      "PAE_por_residencia_barrial": false,
+      "inventario_institucional_completo": false
+    },
+    {
+      "id": "R6",
+      "estado": "ensayo_enforce_comprobado_decision_EAF_pendiente",
+      "e2e": 13,
+      "csp_publica": "Report-Only"
+    },
+    {
+      "id": "R7",
+      "estado": "pendiente_revisor_independiente",
+      "expediente": "snapshot_revision_eaf_r3.json",
+      "307_excluye_codigo_43321": true
+    },
+    {
+      "id": "R8",
+      "estado": "codigo_y_operacion_publicados_sello_git_en_curso",
+      "readiness_http": 200,
+      "GET_publicos_200": 18,
+      "restauracion_completa_aislada": true
+    },
+    {
+      "id": "R9",
+      "estado": "plantilla_saneada_anotacion_humana_pendiente",
+      "pares": 240,
+      "aliases_distintos": 240,
+      "anotados_a": 0,
+      "anotados_b": 0,
+      "adjudicados": 0
+    }
+  ],
+  "limite": "Pruebas técnicas, descarga y preparación de expedientes no sustituyen insumos auténticos, validación institucional o dictamen independiente."
+}

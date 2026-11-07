@@ -999,7 +999,7 @@ src/features/formularios/views/formulario-publico-view.test.tsx:
 
 src/features/formularios/services/ubicacion-geografica.test.ts:
 (pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: %s [0.42ms]
-(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: 
+(pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos:
 (pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: no-json [0.08ms]
 (pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: [] [0.36ms]
 (pass) Punto geográfico en formularios > rechaza coordenadas o formato inválidos: {"type":"Polygon","coordinates":[0,0]} [0.48ms]

@@ -1,0 +1,30 @@
+{
+  "fecha_utc": "2026-11-07T19:00:51.061424+00:00",
+  "archivos": [
+    {
+      "archivo": "cache_pdd_dea_v12.json",
+      "sha256": "8288d32b72e45662c4e9f625a2a283e977751f98e041fbe89bae862edc47918f",
+      "bytes": 71013030,
+      "json_finito": true
+    },
+    {
+      "archivo": "cache_inteligencia_triada_6m.json",
+      "sha256": "5b5334422f3f69c9a27e9b4166c1c022a1cd576233a3d82bc7c78d815b7bc34e",
+      "bytes": 236411,
+      "json_finito": true
+    },
+    {
+      "archivo": "cache_pdt_ai_evaluator.json",
+      "sha256": "d38c61deb66f8b3b979b6fb02f3565da03b269b384be789fa08555595d68e108",
+      "bytes": 2843068,
+      "json_finito": true
+    },
+    {
+      "archivo": "checkpoints_pdt_ai_evaluator.json",
+      "sha256": "41ae56214d69fd225ba7fa1797c73951fb0534859bc7e4717ebbd1146ff8d292",
+      "bytes": 1889544,
+      "json_finito": true
+    }
+  ],
+  "etag_verificado": true
+}

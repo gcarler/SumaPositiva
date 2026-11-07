@@ -1,0 +1,217 @@
+{
+  "generado_utc": "2026-11-07T18:42:43.674186+00:00",
+  "metodo": "GET sin ejecutar JavaScript ni registrar usuarios/casos",
+  "user_agent": "POLIS/304 verificacion-operativa",
+  "comprobaciones": [
+    {
+      "ruta": "/",
+      "fecha_utc": "2026-11-07T18:42:43.180720+00:00",
+      "http": 200,
+      "bytes": 195415,
+      "sha256": "a84b0ee7fae7b86aad5e65255353065d41e29a3327ff84f293efba7a90ce21b1",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"15t0s1v034k46f2\"",
+      "segundos": 0.22043342515826225
+    },
+    {
+      "ruta": "/acerca",
+      "fecha_utc": "2026-11-07T18:42:43.182113+00:00",
+      "http": 200,
+      "bytes": 80095,
+      "sha256": "f4cabc7f20e0c5b147ec104380c4267eb3ab9133ada37aff63db0330e367b29a",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"gywlk393co1pmw\"",
+      "segundos": 0.11773601593449712
+    },
+    {
+      "ruta": "/acerca-de-polis",
+      "fecha_utc": "2026-11-07T18:42:43.182801+00:00",
+      "http": 200,
+      "bytes": 80095,
+      "sha256": "f4cabc7f20e0c5b147ec104380c4267eb3ab9133ada37aff63db0330e367b29a",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"gywlk393co1pmw\"",
+      "segundos": 0.23981010587885976
+    },
+    {
+      "ruta": "/marco-legal",
+      "fecha_utc": "2026-11-07T18:42:43.299886+00:00",
+      "http": 200,
+      "bytes": 153599,
+      "sha256": "b5160cdd570dfabf06a5ae87085e693d91d9e873871f570c96ad37e16ccc19ef",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"thi38swu3a3a7j\"",
+      "segundos": 0.05370569904334843
+    },
+    {
+      "ruta": "/contacto",
+      "fecha_utc": "2026-11-07T18:42:43.353632+00:00",
+      "http": 200,
+      "bytes": 46911,
+      "sha256": "7e3ee75f32831c8ac2619f6841d0d8cde2edc673ea7c80e1e2fa8de4b65c9b03",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"tj00kto25l103z\"",
+      "segundos": 0.031605481868609786
+    },
+    {
+      "ruta": "/seguridad-humana",
+      "fecha_utc": "2026-11-07T18:42:43.385261+00:00",
+      "http": 200,
+      "bytes": 127039,
+      "sha256": "e3357a1a1deaa792373484d0fe2f36910c3d51250f8e22ed411b284d3275195d",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"tld08y8s9t2ptq\"",
+      "segundos": 0.0324832359328866
+    },
+    {
+      "ruta": "/indicadores",
+      "fecha_utc": "2026-11-07T18:42:43.401224+00:00",
+      "http": 200,
+      "bytes": 46002,
+      "sha256": "ac85335d02e6f37e4822d72cb92c89c8cf1b05edbc291d099b86077b1ff03c96",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"7ot05rzuh1zeu\"",
+      "segundos": 0.03142861998640001
+    },
+    {
+      "ruta": "/geovisor",
+      "fecha_utc": "2026-11-07T18:42:43.417773+00:00",
+      "http": 200,
+      "bytes": 120082,
+      "sha256": "4dc9bc86088503744d7470576b94331bc88407149241951a6107da67a2ee64cd",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"vk7xe7is372kjy\"",
+      "segundos": 0.03572728601284325
+    },
+    {
+      "ruta": "/trazabilidad",
+      "fecha_utc": "2026-11-07T18:42:43.422651+00:00",
+      "http": 200,
+      "bytes": 62324,
+      "sha256": "9b7ad98b1927b64cc6311ac7b202dbb7d4e6fe44322055070a8ae3aae2f08b4c",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"avutm3jlq11byy\"",
+      "segundos": 0.035548274172469974
+    },
+    {
+      "ruta": "/barrio",
+      "fecha_utc": "2026-11-07T18:42:43.432681+00:00",
+      "http": 200,
+      "bytes": 62897,
+      "sha256": "8a310f8432f099fd97b45a73b9acc5bd42e20c8e78b90c410bdb8f2b75f28b69",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"12j99opdy5y1cgd\"",
+      "segundos": 0.028526233043521643
+    },
+    {
+      "ruta": "/plataforma",
+      "fecha_utc": "2026-11-07T18:42:43.453555+00:00",
+      "http": 200,
+      "bytes": 18598,
+      "sha256": "bb18e903746f29fd2cda1995a22a237c7657ba75850311dad6e44fa8f8ee82aa",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"vg8hx5o9cgebr\"",
+      "segundos": 0.013293816009536386
+    },
+    {
+      "ruta": "/plataforma/mesas",
+      "fecha_utc": "2026-11-07T18:42:43.458244+00:00",
+      "http": 200,
+      "bytes": 19341,
+      "sha256": "898e06d96118dd68a9b3ace6f1d8ee459b266dd515b0f0257299389a98b94bdf",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"12lu26vmbg8ewe\"",
+      "segundos": 0.015643340069800615
+    },
+    {
+      "ruta": "/plataforma/proyectos",
+      "fecha_utc": "2026-11-07T18:42:43.461253+00:00",
+      "http": 200,
+      "bytes": 19346,
+      "sha256": "870aa763081562c299f84935f64870e593e9c676653db413b199333e1bfbedda",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"qm65he5p35ewj\"",
+      "segundos": 0.014707953901961446
+    },
+    {
+      "ruta": "/plataforma/seguimiento",
+      "fecha_utc": "2026-11-07T18:42:43.466883+00:00",
+      "http": 200,
+      "bytes": 20060,
+      "sha256": "705950bda3826f362af17d9a588725d421918fc3169474bba826dc6acbd76dc7",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"yzosecsppifgd\"",
+      "segundos": 0.011959238909184933
+    },
+    {
+      "ruta": "/api/v1/health/live",
+      "fecha_utc": "2026-11-07T18:42:43.473936+00:00",
+      "http": 200,
+      "bytes": 37,
+      "sha256": "dff5bb435103518eb36e7ebb458d729ca04f43f4aa8a8fccbb9c8473d689a5a5",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": null,
+      "segundos": 0.02959936996921897
+    },
+    {
+      "ruta": "/api/v1/health/ready",
+      "fecha_utc": "2026-11-07T18:42:43.475986+00:00",
+      "http": 200,
+      "bytes": 70,
+      "sha256": "8791693744d4366a9bb15f252f994be39609086c5ce9082c3f004b47d0a93647",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": null,
+      "segundos": 0.03764470596797764,
+      "respuesta": {
+        "status": "ready",
+        "database": "ok",
+        "migrations": "ok",
+        "extensions": "ok"
+      }
+    },
+    {
+      "ruta": "/api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi",
+      "fecha_utc": "2026-11-07T18:42:43.479007+00:00",
+      "http": 200,
+      "bytes": 42613,
+      "sha256": "fcdf5fa13b27683c518be10692c6808fe54b953ba9936a047f782e9202111770",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": "\"fcdf5fa13b27683c518be10692c6808fe54b953ba9936a047f782e9202111770\"",
+      "segundos": 0.19395406288094819
+    },
+    {
+      "ruta": "/api/v1/indicadores/catalogo",
+      "fecha_utc": "2026-11-07T18:42:43.503586+00:00",
+      "http": 200,
+      "bytes": 30976,
+      "sha256": "1f6e06e49b7ae527647215db2e8531e6958660ab769bd8ba9f02eee92012aa94",
+      "csp_report_only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;",
+      "csp_enforce": null,
+      "etag": null,
+      "segundos": 0.13978017400950193,
+      "estructura_catalogo": [
+        "total",
+        "archivo_sha256",
+        "indicadores"
+      ],
+      "cantidad_filas": 29
+    }
+  ]
+}

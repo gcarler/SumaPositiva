@@ -1,0 +1,18 @@
+{
+  "fecha_utc": "2026-11-07T18:20:13.119123+00:00",
+  "base": "bd_csh",
+  "plan_sha256": "050618419d844408a4ffdd6b14caece56894995168aa89cb22af4bab4b2f44d4",
+  "corregidos": 67,
+  "ya_aplicados": 0,
+  "otra_conexion_verificada": true,
+  "conteos": {
+    "archivos_plan_ingeridos": 665,
+    "registros_triada_normalizados": 225380,
+    "lotes_ingesta_planes": 624
+  },
+  "operacion_real_no_prueba": true,
+  "migraciones_ejecutadas": false,
+  "celdas_fuente_distintas": 31,
+  "originales_modificados": false,
+  "test_o_fixture_en_produccion": false
+}

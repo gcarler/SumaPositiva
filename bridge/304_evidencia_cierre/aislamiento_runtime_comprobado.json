@@ -1,0 +1,29 @@
+{
+  "pid_backend": 1217510,
+  "commit_runtime": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "hashes_comprobados": [
+    {
+      "archivo": "backend/app/core/migrations.py",
+      "sha256": "1a33b61fa67f8937e356ed102943ecd8c25f6d897717ad7d6fd236ab7b099b46",
+      "coincide_release": true
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/ingesta_masiva_excel.py",
+      "sha256": "c3ce035c5771cee6d0ed704870a88b27003b4856ace6fa1b11751d704a481eed",
+      "coincide_release": true
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/recuperacion_documentos_pa.py",
+      "sha256": "f2f9a539848e44c8d41782240a98e0d4cb6ca9e41edb2c97f64c41cd6091741d",
+      "coincide_release": true
+    },
+    {
+      "archivo": "backend/app/modules/compromisos/google_workspace_sync_service.py",
+      "sha256": "55a4f4bfcf9a155530f2a3a83c109b1c7d088ac1c75bf8a35bcfebc336628f12",
+      "coincide_release": true
+    }
+  ],
+  "0097_presente_en_host": true,
+  "0097_visible_para_backend": false,
+  "guarda_readiness_modificada": false
+}

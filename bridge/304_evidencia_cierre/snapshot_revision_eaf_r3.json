@@ -1,0 +1,193 @@
+{
+  "encargo": 304,
+  "generado_utc": "2026-11-07T18:59:50.554107+00:00",
+  "base_aplicacion": "9b6ce79460244e85e8f62c7371e822c8e12e0d01",
+  "head_coordinacion": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "archivos": [
+    {
+      "ruta": "backend/app/modules/compromisos/gold_set_conciliacion.py",
+      "sha256": "48ac24b0590c6dd80777d346817ab6062eebe3ffa6e56dfecc3d204febccdf96",
+      "bytes": 20092
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/google_workspace_sync_service.py",
+      "sha256": "55a4f4bfcf9a155530f2a3a83c109b1c7d088ac1c75bf8a35bcfebc336628f12",
+      "bytes": 173188
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/ingesta_masiva_excel.py",
+      "sha256": "c3ce035c5771cee6d0ed704870a88b27003b4856ace6fa1b11751d704a481eed",
+      "bytes": 32307
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/ingesta_masiva_service.py",
+      "sha256": "ce7022309671eb85f1fef3365263dee80554175d07f3e0a7fbfb253f3682e272",
+      "bytes": 39263
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/reconciliacion_ceros_pa.py",
+      "sha256": "f8d407d661a3b7b9003c6503b6a651fb91cff139cd78af432d74c907fa0934dd",
+      "bytes": 7642
+    },
+    {
+      "ruta": "backend/app/modules/compromisos/recuperacion_documentos_pa.py",
+      "sha256": "f2f9a539848e44c8d41782240a98e0d4cb6ca9e41edb2c97f64c41cd6091741d",
+      "bytes": 22819
+    },
+    {
+      "ruta": "backend/pyproject.toml",
+      "sha256": "aafdf84477a3f5cfa998365329067972571dcc38a9fa299c340ce1d511dc4e3a",
+      "bytes": 4191
+    },
+    {
+      "ruta": "backend/scripts/conciliador_gold_set.py",
+      "sha256": "275aafea3010b960c236c5eb40c8c9eaf2672a43365651562d38b1176b8f66b8",
+      "bytes": 19011
+    },
+    {
+      "ruta": "backend/scripts/reconciliar_ceros_planes_accion.py",
+      "sha256": "7b6c140417709b4fa266e58ed878d161b213ce2c0cc23a6f2aea4118483f21ae",
+      "bytes": 3469
+    },
+    {
+      "ruta": "backend/scripts/recuperar_insumos_planes_accion.py",
+      "sha256": "b7b43e2b415ea9692bd387eaa3dba1a8b888adb0bad55585140fc034b9f7b0f3",
+      "bytes": 5624
+    },
+    {
+      "ruta": "backend/tests/test_conciliador_gold_set.py",
+      "sha256": "6cb0d5675f9fbf524cb28b34e0a5ad8ab1fe875bf8dfffd49681d4a550d406f9",
+      "bytes": 31654
+    },
+    {
+      "ruta": "backend/tests/test_google_workspace_sync.py",
+      "sha256": "c221e53f91762e5dd51158123ac7ed63c35a96da08980e1cfad7cf5ade032f67",
+      "bytes": 11349
+    },
+    {
+      "ruta": "backend/tests/test_ingesta_recuperacion_ceros.py",
+      "sha256": "8e775e0e16b2abdca16a3325e5a0a07d8a5cad37328f211f81fa239d6f7f1553",
+      "bytes": 4326
+    },
+    {
+      "ruta": "backend/tests/test_politicas_y_geodatos.py",
+      "sha256": "f3d27e08789dbfbbc529dda8afd7a4c4087af24331fd6df5dfa3ef60a42750e3",
+      "bytes": 7510
+    },
+    {
+      "ruta": "backend/tests/test_reconciliacion_ceros_pa.py",
+      "sha256": "ea9b1cba0a50806475c260d12d57889567cc1b55f8318364034937c647c8e2d1",
+      "bytes": 9307
+    },
+    {
+      "ruta": "backend/tests/test_recuperacion_documentos_pa.py",
+      "sha256": "bad73ed8133cf9d48f623dc5b9bb8ff2ef78209d1eee227755165e30396ccca0",
+      "bytes": 12658
+    },
+    {
+      "ruta": "backend/uv.lock",
+      "sha256": "00bdbbedd90df5cee6008d84b2a7da1ddd677db58b21145a117988d76f059156",
+      "bytes": 320146
+    },
+    {
+      "ruta": "bridge/304_evidencia_cierre/aislamiento_runtime_comprobado.json",
+      "sha256": "a068bc4a99996819fcd77fd113ca1ea712e56027b0e39e7e0a3ee5af5fd83a68",
+      "bytes": 1040
+    },
+    {
+      "ruta": "bridge/304_evidencia_cierre/configuracion_release_backend.txt",
+      "sha256": "55ca1613f288f54b878e56eb88815129cb2a76d5357db796106a3e4ab024b277",
+      "bytes": 528
+    },
+    {
+      "ruta": "bridge/304_evidencia_cierre/procedimiento_saneamiento_productivo.py",
+      "sha256": "768abbf8ea016921afd115470de30c9a4460c73fbb58f18e4912187f505f0351",
+      "bytes": 13401
+    },
+    {
+      "ruta": "data/gold_set_conciliacion/anotacion_a_ciegas.csv",
+      "sha256": "b0fab157a0bbf9ca0a62081445225969418d6ea0f3044a6019ac8101c927aff9",
+      "bytes": 69081
+    },
+    {
+      "ruta": "data/gold_set_conciliacion/gold_set_articulo.json",
+      "sha256": "fd57257d614b710ed741c0cf7b9fb29c1b8231d189591afc9bc707ec864a47e2",
+      "bytes": 236553
+    },
+    {
+      "ruta": "data/gold_set_conciliacion/historico/anotacion_a_ciegas_pre_304.csv",
+      "sha256": "554fe9c7055926fd53db679909506c6250f6ca1295ce291a25683d78037b7c02",
+      "bytes": 36466
+    },
+    {
+      "ruta": "data/planes_desarrollo/cache_inteligencia_triada_6m.json",
+      "sha256": "5b5334422f3f69c9a27e9b4166c1c022a1cd576233a3d82bc7c78d815b7bc34e",
+      "bytes": 236411
+    },
+    {
+      "ruta": "data/planes_desarrollo/cache_pdt_ai_evaluator.json",
+      "sha256": "d38c61deb66f8b3b979b6fb02f3565da03b269b384be789fa08555595d68e108",
+      "bytes": 2843068
+    },
+    {
+      "ruta": "data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json",
+      "sha256": "41ae56214d69fd225ba7fa1797c73951fb0534859bc7e4717ebbd1146ff8d292",
+      "bytes": 1889544
+    },
+    {
+      "ruta": "docs/arquitectura.md",
+      "sha256": "c2618e215304eeb7b8f5b0b0e8ad81aca6bbb797078029a1bebace0b6a32e043",
+      "bytes": 10404
+    },
+    {
+      "ruta": "docs/despliegue-produccion.md",
+      "sha256": "d6022db53fc1b0a1775cde79f44be9ea55267ec3d9460f6e5b6790d77d821d78",
+      "bytes": 28324
+    },
+    {
+      "ruta": "docs/gold-set-anotacion.md",
+      "sha256": "14f09ba6a41de487841c0d64db1ce77268367f7025952b5b578ae93fc4ae67f6",
+      "bytes": 7418
+    },
+    {
+      "ruta": "docs/nginx-csp-polis.conf",
+      "sha256": "6ab51c29fdeb4a58e4474df76577131fce0bb7d866d8c6f7fc306239dfa1c530",
+      "bytes": 3709
+    },
+    {
+      "ruta": "scripts/e2e-csp.mjs",
+      "sha256": "a21e4c18a88942f63f828c81606befb8f9f2b18263f22c3c576d8c88b08368f7",
+      "bytes": 4029
+    },
+    {
+      "ruta": "scripts/e2e-csp.test.mjs",
+      "sha256": "3e0df789836856a66cda83ae5aa008833b9b0d4a3a3ce3cc017e56f475cf1c0a",
+      "bytes": 2272
+    },
+    {
+      "ruta": "scripts/e2e-smoke-expansion-cobertura.mjs",
+      "sha256": "3dad1fbbbc52447bad844d6487311d894d3a29e6993a1fe97bc48c880532d79e",
+      "bytes": 32086
+    },
+    {
+      "ruta": "scripts/e2e-smoke-flujos-criticos.mjs",
+      "sha256": "318484a2aadb6d4787af83ace6e792b46fa0600f98be4db0f26e2491a80a4123",
+      "bytes": 34793
+    }
+  ],
+  "backend_congelado_para_suite": true,
+  "suite_completa": "1915 passed / 1 skipped / 0 failed",
+  "CSP_Enforce_laboratorio": "13_RECORRIDOS_APROBADOS",
+  "cambios_SM_0097_excluidos": true,
+  "revision": "R3",
+  "SM_commiteado_en_main_incluido_en_suite_final": true,
+  "0097_sin_commit_excluida": true,
+  "escritura_productiva": true,
+  "inspeccion_productiva_solo_lectura": true,
+  "commit_codigo": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "backend_release": "/root/polis-releases/backend_cierre_304_43321fc4",
+  "escritura_productiva_de_prueba": false,
+  "estado_readiness": "200 ready",
+  "CSP_publica": "Report-Only",
+  "dictamen_EAF_independiente_emitido": false
+}

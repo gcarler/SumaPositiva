@@ -1,0 +1,107 @@
+{
+  "base": "bd_csh",
+  "plan_sha256": "050618419d844408a4ffdd6b14caece56894995168aa89cb22af4bab4b2f44d4",
+  "fecha_utc": "2026-11-07T18:24:11.897785+00:00",
+  "pasos": [
+    {
+      "motor": "PDT-AI",
+      "segundos": 35.98950239503756,
+      "fingerprint_fuentes_sha256": "0eaa8e9da17c3f8c015d60ec2b148ec0bba0095c1ccbd1381c7f34aec6123e32",
+      "persistencia_pg": {
+        "estado": "SINCRONIZADO_PG",
+        "sha256_payload": "0c766f108b627c571c800c9412007dab618b629322a3eb827ad166d1c99752ef",
+        "sha256_checkpoint": "5bef0b7d2300ff987a4ddf34ae928b6641e0c7e2044be535b982013aee625033"
+      }
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "catalogo_y_conciliacion_ppi",
+      "segundos": 46.73816839186475
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "cumplimiento_metas",
+      "segundos": 0.4623918649740517
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "frontera_dea_pdd",
+      "segundos": 43.52591929701157
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "econometria_comparada_pdd",
+      "segundos": 1.0114710270427167
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "explorador_programas_y_seguridad_humana",
+      "segundos": 1.2251162740867585
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "laboratorio_prescriptivo_pdd",
+      "segundos": 8.17901327717118
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "resumen_ejecutivo",
+      "segundos": 1.971524538937956
+    },
+    {
+      "motor": "PddDeaService",
+      "metodo": "comparativo_seguridad_humana_pdd_only",
+      "segundos": 2.01020273193717
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "alineacion_territorial",
+      "segundos": 21.28268745006062
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "continuidad_gobiernos",
+      "segundos": 4.330663722939789
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "patologias_dnp",
+      "segundos": 2.855943206930533
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "radar_transparencia",
+      "segundos": 2.450542189879343
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "resumen_ejecutivo",
+      "segundos": 5.430710759945214
+    },
+    {
+      "motor": "InteligenciaTriadaService",
+      "metodo": "simulador_cierre",
+      "segundos": 0.00016882014460861683
+    }
+  ],
+  "aprobacion_humana_emitida": false,
+  "archivos": [
+    {
+      "nombre": "cache_pdd_dea_v12.json",
+      "sha256": "8288d32b72e45662c4e9f625a2a283e977751f98e041fbe89bae862edc47918f"
+    },
+    {
+      "nombre": "cache_inteligencia_triada_6m.json",
+      "sha256": "5b5334422f3f69c9a27e9b4166c1c022a1cd576233a3d82bc7c78d815b7bc34e"
+    },
+    {
+      "nombre": "cache_pdt_ai_evaluator.json",
+      "sha256": "d38c61deb66f8b3b979b6fb02f3565da03b269b384be789fa08555595d68e108"
+    },
+    {
+      "nombre": "checkpoints_pdt_ai_evaluator.json",
+      "sha256": "41ae56214d69fd225ba7fa1797c73951fb0534859bc7e4717ebbd1146ff8d292"
+    }
+  ],
+  "operacion_real_no_prueba": true
+}

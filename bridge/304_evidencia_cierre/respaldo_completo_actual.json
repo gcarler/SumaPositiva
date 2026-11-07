@@ -1,0 +1,9 @@
+{
+  "fecha_archivo_utc": "2026-11-07T18:42:54.625468+00:00",
+  "archivo_privado": "/root/polis/backups/bd_csh_20261107_184242.dump",
+  "sha256": "d0fb63fc0ab348c049b747f8f651eebd35f8aca61e6a9a57dfdc0b9b1e094f9c",
+  "bytes": 56750868,
+  "permisos": "0600",
+  "posterior_a_la_correccion": true,
+  "restauracion_verificada": "restauracion_respaldo_completo.json"
+}

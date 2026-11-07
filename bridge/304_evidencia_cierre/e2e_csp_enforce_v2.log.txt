@@ -1,5 +1,5 @@
 ================================================================================
-   POLIS - SUITE SMOKE E2E AISLADA DE FLUJOS CRÍTICOS Y ACCESIBILIDAD (AUD-09)   
+   POLIS - SUITE SMOKE E2E AISLADA DE FLUJOS CRÍTICOS Y ACCESIBILIDAD (AUD-09)
 ================================================================================
 
 [E2E-ENV] 1. Inicializando base de datos aislada y sembrando usuarios dinámicos...

@@ -1,0 +1,15 @@
+{
+  "ready": true,
+  "observaciones": [
+    {
+      "http": 200,
+      "respuesta": {
+        "status": "ready",
+        "database": "ok",
+        "migrations": "ok",
+        "extensions": "ok"
+      }
+    }
+  ],
+  "pruebas_de_escritura": false
+}

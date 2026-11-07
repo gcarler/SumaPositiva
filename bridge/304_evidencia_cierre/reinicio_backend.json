@@ -1,0 +1,28 @@
+{
+  "inicio_reinicio_utc": "2026-11-07T18:27:33.364472+00:00",
+  "fin_comando_inicio_utc": "2026-11-07T18:27:34.798300+00:00",
+  "servicio": "polis-backend.service",
+  "cache_republicada_con_workers_detenidos": true,
+  "archivos": [
+    {
+      "nombre": "cache_pdd_dea_v12.json",
+      "sha256": "8288d32b72e45662c4e9f625a2a283e977751f98e041fbe89bae862edc47918f"
+    },
+    {
+      "nombre": "cache_inteligencia_triada_6m.json",
+      "sha256": "5b5334422f3f69c9a27e9b4166c1c022a1cd576233a3d82bc7c78d815b7bc34e"
+    },
+    {
+      "nombre": "cache_pdt_ai_evaluator.json",
+      "sha256": "d38c61deb66f8b3b979b6fb02f3565da03b269b384be789fa08555595d68e108"
+    },
+    {
+      "nombre": "checkpoints_pdt_ai_evaluator.json",
+      "sha256": "41ae56214d69fd225ba7fa1797c73951fb0534859bc7e4717ebbd1146ff8d292"
+    }
+  ],
+  "frontend_reiniciado": false,
+  "nginx_modificado": false,
+  "migraciones_ejecutadas": false,
+  "commit_codigo": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd"
+}

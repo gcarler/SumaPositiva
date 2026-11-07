@@ -1,0 +1,12 @@
+{
+  "commit": "43321fc4d1e603bb7df5cd2e3cee5432a01b69dd",
+  "aislamiento": "BindReadOnlyPaths de app, Alembic y scripts en el namespace del servicio; rutas de datos y secretos compartidas sin copiarse",
+  "carpetas": [
+    "backend/app",
+    "backend/alembic",
+    "backend/scripts",
+    "scripts"
+  ],
+  "archivos_python_cotejados_con_suite": 427,
+  "0097_no_comprometida_excluida": true
+}

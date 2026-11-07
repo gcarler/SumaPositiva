@@ -5,6 +5,12 @@
 **Clasificación**: Guía Operativa de Infraestructura y Despliegue (AUD-17)  
 **Entorno objetivo**: `production` (`srv2006133` / Entorno Institucional Distrital)
 
+**Actualización operativa 304 (2026-11-07):** el backend ejecuta un snapshot
+verificado mediante montajes de solo lectura en su namespace systemd. Consulte
+§3.1 antes de publicar otro cambio; editar el checkout compartido y reiniciar
+el servicio no actualiza ese snapshot. El modo CSP público observado es
+Report-Only y su cambio a Enforce sigue sujeto a la decisión EAF de §7.5.
+
 ---
 
 ## 1. Alcance, Principios y Salvaguardas Forenses
@@ -59,7 +65,7 @@ A continuación se detalla la nómina de variables requeridas para el funcionami
 | `PORT` | Entero | **Sí** | Puerto TCP en el que escucha el servidor standalone de Next.js (`3000`). |
 | `HOSTNAME` | IP | **Sí** | Dirección IP de enlace del frontend (`127.0.0.1`). |
 | `NODE_ENV` | Literal | **Sí** | Debe fijarse en `production` para optimización de bundles, server components y caché. |
-| `POLIS_CSP_ENFORCE` | Booleano | Opcional | Control de modo de Content-Security-Policy. En `production` aplica `true` (Enforce) por defecto; configurable como opt-out a `false` solo si se requiere Report-Only transitorio. |
+| `POLIS_CSP_ENFORCE` | Booleano | Opcional | Controla la cabecera de Next.js. Nginx sustituye esa cabecera en el dominio público; comprobar el modo efectivo en HTTPS y respetar §7.5. |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | String | Opcional | ID de cliente público de Google OAuth para el componente web de autenticación. |
 
 ---
@@ -77,14 +83,47 @@ El ecosistema productivo se gestiona mediante servicios supervisados por `system
    └── /* (Páginas / Assets) ──► [Next.js Standalone] (127.0.0.1:3000)
                                           │
                                           ▼
-                            [PostgreSQL 16 + PostGIS 3.5]
+                            [PostgreSQL 18 + PostGIS]
                             (127.0.0.1:5432 / bd_csh)
 ```
 
 - **Servicio Backend**: `polis-backend.service` (`uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2`)
 - **Servicio Frontend**: `polis-frontend.service` (`node /root/polis/.next/standalone/server.js` en puerto 3000)
 - **Servicio Proxy**: `nginx.service`
-- **Base de Datos**: PostgreSQL 16 sobre socket Unix o TCP local `127.0.0.1:5432`, base de datos `bd_csh`.
+- **Base de Datos**: PostgreSQL 18 sobre socket Unix o TCP local `127.0.0.1:5432`, base de datos `bd_csh`.
+
+### 3.1. Snapshot de backend y trabajo concurrente
+
+Desde 304, `/etc/systemd/system/polis-backend.service.d/304-release.conf`
+asocia mediante `BindReadOnlyPaths` cuatro directorios del commit desplegado:
+`backend/app`, `backend/alembic`, `backend/scripts` y `scripts`. La release actual
+es `/root/polis-releases/backend_cierre_304_43321fc4`, commit `43321fc4`.
+Los procesos conservan sus rutas `/root/polis/...`; los datos, `.env`, medios y
+credenciales siguen en sus ubicaciones existentes y no se copian a la release.
+
+El aislamiento evita que una migración sin commit o un módulo en edición cambien
+la aplicación activa. La comprobación `EXPECTED_REVISION` sigue leyendo el grafo
+Alembic visible para el proceso: no se fija una revisión a mano ni se omite la
+comparación con PostgreSQL. En 304, la release y `bd_csh` están en 0096; el archivo
+0097 concurrente del host queda fuera de esta release y no se aplica por reiniciar.
+
+Para publicar otra versión:
+
+1. Congelar y verificar un commit; generar un snapshot con `git archive` desde
+   ese commit. Excluir archivos ajenos o sin versionar y cotejar sus hashes.
+2. Aplicar las salvaguardas de respaldo y migraciones de este runbook. Comparar
+   la base con el grafo del snapshot aprobado, sin usar un checkout compartido
+   que contenga migraciones en desarrollo.
+3. Sincronizar las dependencias fijadas; `.venv` sigue compartida y debe coincidir
+   con el lockfile probado. Actualizar las cuatro rutas del drop-in al nuevo snapshot.
+4. Ejecutar `systemctl daemon-reload`, reiniciar el backend y verificar readiness,
+   código visible en `/proc/<MainPID>/root/`, cachés y respuestas públicas.
+
+Un reinicio mantiene la release seleccionada. Para revertir código se selecciona
+un snapshot anterior compatible con la revisión de base; una reversión de datos
+es una operación distinta que debe preservar las escrituras posteriores ajenas.
+La evidencia de 304 está en `bridge/304_evidencia_cierre/`, incluidos el drop-in
+efectivo, hashes del runtime y restauración del respaldo en una base aislada.
 
 ---
 
@@ -175,7 +214,10 @@ echo "Revisión head en código:   $HEAD_REV"
 ```
 
 > [!NOTE]
-> **Estado de `bd_csh` (OBS-20 / OBS-22)**: En el entorno de producción actual, la base de datos `bd_csh` se encuentra en la versión `0040_modulo_actores_estrategicos`. Las revisiones de editabilidad 0041 (`0041_modulo_agendas_mesas`) y 0042 (`0042_modulo_fuentes_informacion`) quedan preparadas en código con fallback resiliente en frontend y se aplicarán sobre `bd_csh` en la ventana de mantenimiento programado con servicios detenidos y respaldo previo.
+> **Registro histórico OBS-20 / OBS-22**: la referencia siguiente a 0040–0042 describe
+> aquella ventana de despliegue. No es el estado actual. En 304, la release activa
+> y `bd_csh` están en `0096_riesgo_sin_evaluar`; verificar cada nueva ventana contra
+> el snapshot aprobado y el endpoint de readiness, conforme a §3.1.
 
 #### 7.2. Ejecución condicional de migraciones
 La ejecución de `alembic upgrade head` debe ser **condicional**: si la base de datos ya se encuentra en `head`, el paso de migración se omite para evitar bloqueos innecesarios:
@@ -336,17 +378,20 @@ En cumplimiento de las directrices de seguridad [CIERRE-04] y [CIERRE-05] (mitig
 
 1. **Nivel Aplicación (Next.js - `next.config.ts`)**:
    - Emite cabeceras de seguridad: `Content-Security-Policy-Report-Only` (por defecto) o `Content-Security-Policy` (en modo restrictivo `Enforce`), `Reporting-Endpoints`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`.
-   - **Modo por defecto**: `Report-Only` para permitir la supervisión pasiva sin disrupción de funcionalidades.
-   - **Activación de Enforce**: Conmutable mediante variables de entorno `POLIS_CSP_ENFORCE=true` o `POLIS_CSP_REPORT_ONLY=false`.
+   - El modo de Next.js depende de la configuración de compilación. El modo público
+     efectivo se comprueba después del proxy.
+   - Las variables de Next.js no activan por sí solas Enforce en Nginx.
 2. **Nivel Servidor / Proxy Inverso (Nginx - `docs/nginx-csp-polis.conf`)**:
    - Plantilla oficial versionada para `/etc/nginx/sites-available/polis` con directivas alineadas a producción.
    - Configurada en `Report-Only` con `Reporting-Endpoints` y directiva `report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;`.
 3. **Nivel API (FastAPI - `backend/app/main.py`)**:
    - Middleware universal de seguridad perimetral (`default-src 'none'; frame-ancestors 'none'`) en todas las respuestas REST.
 
-### 7.2. Política CSP de Producción Endurecida
+### 7.2. Política CSP de referencia (Report-Only en producción)
 
-En producción (`NODE_ENV=production`), la CSP se restringe bajo el principio de mínimo privilegio:
+Estas directivas se publican en modo de observación. Su ensayo Enforce de 304
+aprobó 13 recorridos aislados y una sonda bloqueada; la activación pública requiere
+la decisión descrita en §7.5. Report-Only no acredita bloqueo de recursos por CSP:
 - `default-src 'self'`
 - `script-src 'self' 'unsafe-inline' https://accounts.google.com` (se eliminó terminantemente `'unsafe-eval'`).
 - `style-src 'self' 'unsafe-inline'` (estilos atómicos Tailwind CSS y Framer Motion).
@@ -360,15 +405,25 @@ En producción (`NODE_ENV=production`), la CSP se restringe bajo el principio de
 
 ### 7.3. Justificación Técnica de `'unsafe-inline'` en `script-src` y Gestión de Riesgo Residual
 
-1. **Razón técnica de incompatibilidad con Nonces/Hashes estáticos**:
-   - Next.js App Router con arquitectura standalone compila 192 rutas estáticas pre-renderizadas (`output: "standalone"` / SSG con `generateStaticParams`).
-   - El uso de **nonces** criptográficos requeriría forzar SSR dinámico mediante middleware en cada petición entrante, impidiendo la entrega estática ultra rápida (TTFB < 10ms), invalidando el cacheo de borde en CDN/Nginx y aumentando innecesariamente el consumo de CPU.
-   - El uso de **hashes** para scripts en línea resulta inmanejable en despliegues ágiles, ya que los identificadores de módulos y chunks de hidratación de Next.js mutan con cada build.
+1. **Estado de nonces y hashes**:
+   - La política actual conserva `'unsafe-inline'`; por ello no elimina el riesgo
+     de ejecución de un script inyectado en línea.
+   - Una migración a nonces o hashes requiere diseñar y comprobar la generación
+     de cabeceras, la hidratación y la caché de cada release. No se implementó ni
+     se acredita en 304. Los hashes por build son una alternativa que debe validarse.
 2. **Evaluación de Riesgo Residual y Mitigaciones Compensatorias**:
-   - **Eliminación total de `'unsafe-eval'`**: Impide que una eventual inyección ejecute cadenas de texto como código dinámico (`eval`, `Function`, `setTimeout(string)`).
-   - **Restricción estricta de `connect-src`**: Aunque un atacante lograse inyectar código en el DOM, no cuenta con permisos CSP para exfiltrar credenciales o tokens a servidores externos de comando y control (C2).
-   - **Telemetría continua de violaciones**: Cualquier intento de cargar recursos o conectar fuera de la política autorizada dispara inmediatamente una alerta a través del endpoint de reporte.
-   - **Protección contra clickjacking**: `frame-ancestors 'none'` imposibilita incrustar POLIS en frames de sitios de terceros.
+   - Sin `'unsafe-eval'`, Enforce restringe la compilación de cadenas como código;
+     esto no sustituye sanitización ni neutraliza scripts en línea permitidos.
+   - `connect-src` limita las solicitudes que regula esa directiva; `img-src`
+     gobierna las imágenes. No se acredita ausencia total de exfiltración.
+   - `report-uri` y `report-to` solicitan reportes al navegador. La recepción y
+     una eventual alerta se verifican por separado.
+   - `frame-ancestors` actúa cuando la política está en Enforce; `X-Frame-Options`
+     aporta una restricción independiente en los navegadores que la admiten.
+
+Referencia técnica: [CSP Level 3, borrador de trabajo W3C](https://www.w3.org/TR/CSP3/),
+directivas de recursos y tratamiento de scripts en línea. No se presenta el modo
+Report-Only ni el ensayo aislado como protección XSS completa en producción.
 
 ### 7.4. Endpoint de Recolección de Violaciones (`POST /api/v1/seguridad/csp-report`)
 
@@ -398,5 +453,4 @@ POLIS incorpora un colector pasivo de telemetría de CSP con altos estándares d
    ```bash
    sudo systemctl reload nginx
    ```
-
 

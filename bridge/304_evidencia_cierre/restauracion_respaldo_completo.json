@@ -1,0 +1,20 @@
+{
+  "fecha_utc": "2026-11-07T18:46:18.363045+00:00",
+  "backup_sha256": "d0fb63fc0ab348c049b747f8f651eebd35f8aca61e6a9a57dfdc0b9b1e094f9c",
+  "backup_archivo": "bd_csh_20261107_184242.dump",
+  "base_restaurada": "polis_test_304_respaldo",
+  "puerto_aislado": 15433,
+  "restauracion_completa_exit": 0,
+  "conteos": {
+    "archivos_plan_ingeridos": 665,
+    "registros_triada_normalizados": 225380,
+    "lotes_ingesta_planes": 624,
+    "conciliador_gold_set": 240
+  },
+  "ceros_reparados_preservados": 67,
+  "revision": "0096_riesgo_sin_evaluar",
+  "segundos": 35.22315485496074,
+  "correo_y_APIs_no_ejecutados": true,
+  "escrituras_productivas": false,
+  "base_de_verificacion_eliminada": true
+}

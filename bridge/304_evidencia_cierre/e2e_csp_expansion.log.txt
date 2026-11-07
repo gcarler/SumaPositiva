@@ -1,5 +1,5 @@
 ================================================================================
-   POLIS - SUITE SMOKE E2E DE EXPANSIÓN DE COBERTURA (ENCARGO 290)               
+   POLIS - SUITE SMOKE E2E DE EXPANSIÓN DE COBERTURA (ENCARGO 290)
 ================================================================================
 
 [E2E-ENV] 1. Inicializando base de datos aislada y sembrando usuarios dinámicos...
