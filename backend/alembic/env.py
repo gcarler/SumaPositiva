@@ -29,6 +29,7 @@ from app.modules.politicas import models as politicas_models  # noqa: F401
 from app.modules.presupuesto import models as presupuesto_models  # noqa: F401
 from app.modules.proyectos import models as proyectos_models  # noqa: F401
 from app.modules.sesion import models as sesion_models  # noqa: F401
+from app.modules.sm import models as sm_models  # noqa: F401
 from app.modules.testimonios import models as testimonios_models  # noqa: F401
 
 target_metadata = Base.metadata

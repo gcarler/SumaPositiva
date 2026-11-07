@@ -11,6 +11,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import command
+from app.core.migrations import EXPECTED_REVISION
 
 pytestmark = [pytest.mark.integration, pytest.mark.migration]
 
@@ -86,9 +87,7 @@ def test_censo_preserva_uuid_dependiente_y_mesa_ajena(database_url):
             _consulta(database_url, "SELECT mesa_id FROM mesas_trabajo.agendas WHERE id='mp-001'")[0]["mesa_id"]
             == mesa_id
         )
-        assert _consulta(database_url, "SELECT version_num FROM alembic_version")[0]["version_num"] == (
-            "0096_riesgo_sin_evaluar"
-        )
+        assert _consulta(database_url, "SELECT version_num FROM alembic_version")[0]["version_num"] == EXPECTED_REVISION
     finally:
         _consulta(
             database_url, "DELETE FROM mesas_trabajo.participantes_mesa WHERE sujeto_id=:sujeto", {"sujeto": sujeto}

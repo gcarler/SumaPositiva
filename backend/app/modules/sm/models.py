@@ -183,10 +183,10 @@ class SMAuditoriaRegistro(Base):
         primary_key=True,
         server_default=text("public.generar_uuid_v7()"),
     )
-    evento_id: Mapped[uuid.UUID] = mapped_column(
+    evento_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("participacion_ciudadana.sm_eventos.id", name="fk_sm_auditorias_evento"),
-        nullable=False,
+        nullable=True,
     )
     mensaje_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
