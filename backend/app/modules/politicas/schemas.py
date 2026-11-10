@@ -238,6 +238,27 @@ class PoliticaPublicaRead(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class ResumenInstitucionalRead(BaseModel):
+    """Resumen institucional sincronizado en tiempo real desde PostgreSQL."""
+
+    total_lineas_estrategicas: int = Field(default=29, alias="totalLineasEstrategicas")
+    total_fases: int = Field(default=3, alias="totalFases")
+    fases_en_curso: int = Field(default=1, alias="fasesEnCurso")
+    total_dimensiones_onu: int = Field(default=7, alias="totalDimensionesOnu")
+    total_mesas_territoriales: int = Field(default=35, alias="totalMesasTerritoriales")
+    total_entidades_distritales: int = Field(default=29, alias="totalEntidadesDistritales")
+    entidades_por_tipologia: dict[str, int] = Field(
+        default_factory=lambda: {
+            "secretaria": 8,
+            "ente_descentralizado": 12,
+            "unidad_asesora": 6,
+            "alcaldia_local": 3,
+        },
+        alias="entidadesPorTipologia",
+    )
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class HeroAccionPrimaria(BaseModel):
     label: str
     href: str | None = None

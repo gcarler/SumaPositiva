@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
 import { SearchField } from "@/shared/ui/search-field";
@@ -15,6 +16,7 @@ import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { usePanels } from "@/core/panels/panel-store";
 import { useMesas } from "@/features/mesas/services/use-mesas-queries";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
 import type { EstadoMesa, MesaDeTrabajo } from "@/features/mesas/models/mesas";
 import {
@@ -29,6 +31,21 @@ import {
   Users,
   X,
 } from "lucide-react";
+
+const MesasMatrizCatalogoRevogrid = dynamic(
+  () =>
+    import("@/features/mesas/components/mesas-matriz-catalogo-revogrid").then(
+      (m) => m.MesasMatrizCatalogoRevogrid,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-96 w-full items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-tertiary)]">
+        Iniciando matriz de datos…
+      </div>
+    ),
+  },
+);
 
 type FiltroEstado = "TODAS" | "EN_CURSO" | "PROGRAMADA" | "CERRADA";
 
@@ -73,12 +90,28 @@ export function MesasGestionView() {
   const { openPanel } = usePanels();
   const { data: mesasRemotas } = useMesas();
 
-  const mesas = mesasRemotas ?? mesasStore;
+  const mesas =
+    mesasRemotas && mesasRemotas.length > 0 ? mesasRemotas : mesasStore;
 
-  // Sincronizar mesas remotas de backend en el store
+  // Sincronizar mesas remotas de backend en el store preservando submesas cargadas
   useEffect(() => {
-    if (mesasRemotas) {
-      useMesasStore.setState({ mesas: mesasRemotas });
+    if (mesasRemotas && mesasRemotas.length > 0) {
+      useMesasStore.setState((prev) => {
+        const prevMap = new Map(prev.mesas.map((m) => [m.id, m]));
+        return {
+          mesas: mesasRemotas.map((remota) => {
+            const existente = prevMap.get(remota.id);
+            if (
+              existente &&
+              existente.submesas?.length > 0 &&
+              (!remota.submesas || remota.submesas.length === 0)
+            ) {
+              return { ...remota, submesas: existente.submesas };
+            }
+            return remota;
+          }),
+        };
+      });
     }
   }, [mesasRemotas]);
 
@@ -98,9 +131,24 @@ export function MesasGestionView() {
     }
   }, [openPanel]);
 
+  const subvistaMesas = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["mesas"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
   const [busqueda, setBusqueda] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>("TODAS");
+  const filtroEstado: FiltroEstado =
+    subvistaMesas &&
+    ["TODAS", "EN_CURSO", "PROGRAMADA", "CERRADA"].includes(subvistaMesas)
+      ? (subvistaMesas as FiltroEstado)
+      : "TODAS";
   const [filtroFecha, setFiltroFecha] = useState("");
+
+  const setFiltroEstado = (nuevo: FiltroEstado) => {
+    setSubvistaModulo("mesas", nuevo);
+  };
 
   const editar = puedeEditar(sesion, "mesas");
 
@@ -404,11 +452,22 @@ export function MesasGestionView() {
         <span>
           Mostrando {mesasFiltradas.length} de {mesas.length} mesas
         </span>
-        <CollectionViewToggle value={vista} onValueChange={setVista} label="Vista de las mesas de trabajo" />
+        <CollectionViewToggle
+          value={vista}
+          onValueChange={setVista}
+          label="Vista de las mesas de trabajo"
+          permitirMatriz
+        />
       </div>
 
-      {/* Listado de tarjetas de mesas */}
-      {mesasFiltradas.length === 0 ? (
+      {/* Listado o matriz de mesas */}
+      {vista === "matriz" ? (
+        <MesasMatrizCatalogoRevogrid
+          mesas={mesasFiltradas}
+          onAbrirMesa={(mesaId) => openPanel("mesa", { mesaId })}
+          readOnly={!editar}
+        />
+      ) : mesasFiltradas.length === 0 ? (
         mesas.length === 0 ? (
           <EmptyState
             icon={<Users className="size-6 text-text-tertiary" />}

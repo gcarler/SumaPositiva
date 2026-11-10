@@ -1,0 +1,52 @@
+{
+  "fecha": "2026-11-08",
+  "fuente": "backups/diarios/bd_csh_diario_20261108_020002.dump",
+  "sha256": "99b31be1ece7d37bd5cf410599f1dcdee5ad6a55210990ea34e2058fe3fc18fa",
+  "base_ensayo": "polis_test_p5_paridad_20261108",
+  "periodo": {
+    "desde": "2026-10-11T14:43:53.879725+00:00",
+    "hasta": "2026-11-07T12:00:16.067254+00:00",
+    "dias": 27
+  },
+  "herald": {
+    "total": 18,
+    "destinatarios_unicos": 8,
+    "destinatarios_con_usuario_activo": 4,
+    "tipos_evento": ["alerta_pendientes", "resumen_diario", "registro_bienvenida", "radicacion"]
+  },
+  "consentimientos_sm_sembrados": 4,
+  "primera_pasada": {
+    "emitidos": 13,
+    "omitidos_sin_usuario": 5,
+    "omitidos_sin_consentimiento": 0,
+    "errores": 0,
+    "latencia_hook_ms": {"p50": 8.186, "p95": 10.567, "max": 21.849},
+    "latencia_transaccion_ms": {"p50": 8.76, "p95": 11.724, "max": 22.621}
+  },
+  "segunda_pasada": {
+    "emitidos": 13,
+    "duplicados_nuevos": 0,
+    "errores": 0
+  },
+  "sm": {
+    "eventos": 13,
+    "mensajes": 13,
+    "eventos_herald": 13,
+    "duplicados_idempotencia": 0,
+    "entregas": 0,
+    "estados_mensajes": {"pendiente": 13}
+  },
+  "reversa": {
+    "flag_vacio_retorna": null,
+    "herald_antes": 18,
+    "herald_despues": 18,
+    "sm_antes": 13,
+    "sm_despues": 13
+  },
+  "hallazgos": [
+    "5 de 18 notificaciones de Herald no tienen usuario activo con el que SM pueda resolver contacto; un corte real las perdería.",
+    "El puente SM copia un cuerpo genérico, no el HTML/asunto de Herald; la paridad de contenido no existe.",
+    "El hook agrega p50 8,19 ms y p95 10,57 ms en la base local, por encima del objetivo de 3 ms documentado.",
+    "No existe todavía un modo de corte que haga que Herald omita el envío; el modo actual es solo sombra con worker apagado."
+  ]
+}

@@ -1,0 +1,7 @@
+# Commit puro da4c54f2 (sin migración 0097 no versionada); .env del proyecto enlazado, sin exponer su contenido
+commit=da4c54f2b565709fe46d599dc9270f00324db026
+head_declarado: 0096_riesgo_sin_evaluar (head)
+EXIT_UPGRADE=0
+revision: 0096_riesgo_sin_evaluar (head)
+EXIT_CHECK=0
+No new upgrade operations detected.

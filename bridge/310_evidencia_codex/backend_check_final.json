@@ -1,0 +1,11 @@
+{
+  "comando": [
+    "bun",
+    "run",
+    "backend:check"
+  ],
+  "rc": 143,
+  "segundos": 61.1,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

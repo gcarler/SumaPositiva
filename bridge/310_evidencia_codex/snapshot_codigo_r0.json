@@ -1,0 +1,144 @@
+{
+  "fecha_utc": "2026-11-07T22:58:40.818121+00:00",
+  "head_base": "78cd08e80252b82c7c903030a6bf79fdf9d8fa67",
+  "working_copy_pruebas": "/tmp/polis310/work",
+  "base": "polis_test_sm_core",
+  "puerto": 15433,
+  "archivos": [
+    {
+      "archivo": "backend/alembic/versions/0098_sm_contactos_boveda.py",
+      "sha256": "92630254df44a36f30e70a24e9c174947fa3dd9b1384f9537fdd3ab437675431",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/alembic/versions/0099_sm_worker_backoff.py",
+      "sha256": "b413f71e966bdde0922fc4c8529d253694a543556cf6f17b308dbe1817fb4335",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/core/config.py",
+      "sha256": "60a43cfc3b5ce5edc0e61102704f7decd2c520da61ebb4d60509e28f7e33bb00",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/notificaciones/service.py",
+      "sha256": "55dffe3bd078f790da1f25aed7b3c3eafe1be8e325b8fdd2567b6681d8e8dfd5",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/__init__.py",
+      "sha256": "a4ec350908eb03d431d517f9cf50970051d0435606d8d0dcfb89127cfda1cc0f",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/boveda.py",
+      "sha256": "51953bf325c776651100ea61c8f55c35476570cae73105d1735f06da7044685a",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/bridge.py",
+      "sha256": "3ea878ab38577e0abefbe0d78ba856138e8d626aba046dc51843758a5870151e",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/channels.py",
+      "sha256": "ad6230e31cb1e7a9e1fa920c8d5df1033a5462bcdec16800bcc4297f643c6e7b",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/client.py",
+      "sha256": "d71926bb512f4ed5e3344a0ec0a9847f83ccafb8a3d77ddeacf1c4a92362a4e0",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/contracts.py",
+      "sha256": "772b0508997ee9e8539c1c929f23daf1f00f441dfdb32ee8e0acab21fc0f66de",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/core.py",
+      "sha256": "deee8e716459e9fa897f8cf76d4a86bbd611e940f4201a833aad224218dfc29b",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/models.py",
+      "sha256": "2c7b233755df31d89e50a3a9d8e9875e94356a4e2754830efcc643aa76d1ad4b",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/repository.py",
+      "sha256": "a64f015c4ae152272aae38c6204c23c53f507322efe53880496e094d8ba3bc46",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/router.py",
+      "sha256": "8809078cc1fb526f52888cca93811854662a39a52c5df8bb8821993881b26d6b",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/service.py",
+      "sha256": "92b37d6021b5cf50e2cc36772dd1df6502821cf7c7949eb93e50ae1b8d869d9c",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/service_db.py",
+      "sha256": "77d63d3771ae237843a93068c29c8a7f3be15acc246fbd34fd22cf7221f13649",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/templates.py",
+      "sha256": "2d96ed46531d0816ead3aedfa1f2b8fe2e1f00d3ae80e59f1ed1963532a8d714",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/transports.py",
+      "sha256": "de849662e3f72b0d5498595f4f60fea27dcf56d2b4398ae8004b04eeaae0f607",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/app/modules/sm/worker.py",
+      "sha256": "17ed175cf32d9eab3fcaf3588bfe0827025ce095210d1b00488ae7ee22b26b14",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/pyproject.toml",
+      "sha256": "572b5261d044c468f81a49fc0d5c41e3bd4e54c3f6d1af06e337caf4386328aa",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/scripts/sm_worker_cli.py",
+      "sha256": "46a6e61457d978fe1a81711bd429db635d9f89c69b6dd96983de9821bb85cf3c",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/tests/test_sm_310.py",
+      "sha256": "d900309da18cd0181159000cf6f2bbbd26cdeb96e9dc7d05fec36a30b7049196",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/tests/test_sm_cli_310.py",
+      "sha256": "3e3910979cd0da92852c39c75cc493fa7e31563aadd0c1cd25a37813acf563bc",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/tests/test_sm_core.py",
+      "sha256": "c24bcb7cd7e3154ddda348f466c1d3eba8d1565c34cc6fca1fa36d66dab4ce58",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/tests/test_sm_full.py",
+      "sha256": "90e7a88b6e8d45f8bf42aec2e78936db12b27a85ed54eac78b12a2cbe9271790",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/tests/test_sm_transports_310.py",
+      "sha256": "6052a5bccf2a9bc664cc23c0c1d9cd984aa8b01f26120800266ccc1f70460279",
+      "copia_aislada_identica": true
+    },
+    {
+      "archivo": "backend/uv.lock",
+      "sha256": "22eb8cae318a1b08c0dbeebca158b0a80671873cd0f93b958e2013dfcfbfaa9b",
+      "copia_aislada_identica": true
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Sesion } from "@/features/sesion/models/sesion";
-import { VenetianMask } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { inicialesDe } from "@/shared/components/participation-ui";
 
 export function SesionAvatar({
@@ -18,7 +18,7 @@ export function SesionAvatar({
         className={`flex ${dim} shrink-0 select-none items-center justify-center rounded-full border border-dashed border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-tertiary)]`}
         aria-hidden
       >
-        <VenetianMask className={size === "md" ? "size-4" : "size-3.5"} strokeWidth={1.5} />
+        <UserRound className={size === "md" ? "size-4" : "size-3.5"} strokeWidth={1.5} />
       </span>
     );
   }

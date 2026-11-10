@@ -10,7 +10,7 @@ import {
   ShieldAlert,
   GraduationCap,
   HeartPulse,
-  Utensils,
+  PackageCheck,
   Radio,
   BadgeCheck
 } from "lucide-react";
@@ -271,7 +271,7 @@ export function FichaTerritorialPanel({
               </div>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-surface-2 p-2.5">
-              <Utensils className="size-4 text-text-secondary shrink-0" aria-hidden="true" />
+              <PackageCheck className="size-4 text-text-secondary shrink-0" aria-hidden="true" />
               <div>
                 <span className="text-2xs text-text-tertiary block">Comedores</span>
                 <span className="text-xs font-bold text-text-primary">

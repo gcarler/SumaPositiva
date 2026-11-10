@@ -313,9 +313,9 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
                 <SelectValue placeholder="Estado" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="publicada">🟢 Publicada (Visible)</SelectItem>
-                <SelectItem value="borrador">🟡 Borrador (Oculto)</SelectItem>
-                <SelectItem value="archivada">⚪ Archivada</SelectItem>
+                <SelectItem value="publicada">Publicada (Visible)</SelectItem>
+                <SelectItem value="borrador">Borrador (Oculto)</SelectItem>
+                <SelectItem value="archivada">Archivada</SelectItem>
               </SelectContent>
             </Select>
           </div>

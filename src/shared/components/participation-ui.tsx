@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Progress } from "@/shared/ui/progress";
-import { VenetianMask } from "lucide-react";
+import { UserRound } from "lucide-react";
 
 export function SectionLabel({
   children,
@@ -39,14 +39,14 @@ export function InitialAvatar({ name }: { name: string }) {
   );
 }
 
-/** Avatar de aporte anónimo — máscara veneciana, monocromática */
+/** Avatar de aporte anónimo — silueta minimalista y neutra */
 export function AnonAvatar() {
   return (
     <span
       className="flex size-7 shrink-0 select-none items-center justify-center rounded-full border border-dashed border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-tertiary)]"
       aria-hidden
     >
-      <VenetianMask className="size-3.5" strokeWidth={1.5} />
+      <UserRound className="size-3.5" strokeWidth={1.5} />
     </span>
   );
 }

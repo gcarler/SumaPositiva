@@ -1,0 +1,226 @@
+{
+  "expediente": "EAF-307",
+  "titulo": "Expediente congelado para revisión independiente del cierre de POLIS",
+  "preparado_por": "Buffy (implementador) — no es dictamen EAF",
+  "generado_en_utc": "2026-11-07T18:49:11.003Z",
+  "snapshot": {
+    "commit": "da4c54f2b565709fe46d599dc9270f00324db026",
+    "arbol": "018bc11f9ac10418369a97e0ee68641a13f0f036",
+    "rama": "main",
+    "origen": "origin/main en el momento de la congelación"
+  },
+  "alcance": [
+    "Cierre técnico 303",
+    "Pendientes 304 R1–R8",
+    "Contrato de transacciones",
+    "Matriz de permisos",
+    "Kit UI"
+  ],
+  "fuera_de_alcance": [
+    "Encargo 305/306 SM Core",
+    "Migración 0097_sm_core (no versionada)",
+    "Aprobación institucional de fichas de indicadores",
+    "Autorización de despliegue"
+  ],
+  "entorno": {
+    "postgres": "18.6 (PostGIS 3.6.2, pgRouting 4.0.1)",
+    "python": "3.12.14",
+    "bun": "1.4.2"
+  },
+  "verificaciones": {
+    "frontend_check": "verde (ui-policy, tsc, eslint)",
+    "frontend_tests": "1707 pass / 0 fail / 174 archivos",
+    "backend_suite_polis_test": "1889 pass, 16 skip, 11 fail (todos por la migración 0097 no versionada)",
+    "transacciones": "21 pass",
+    "ruff_arbol_versionado": "All checks passed",
+    "ruff_canonico": "falla por 0097 no versionada (I001) y formato",
+    "migracion_base_vacia": "upgrade head OK (0097); downgrade 0096 OK; re-upgrade OK",
+    "alembic_check_arbol_trabajo": "FAILED (5 tablas sm_* ausentes de la metadata)",
+    "alembic_check_commit_puro": "OK — No new upgrade operations detected (head 0096)",
+    "readiness_produccion": "503 transitorio a las 18:29 sobre el proceso anterior; 200 tras el reinicio de las 18:36 que monta el release 0096 en solo lectura"
+  },
+  "bloqueantes": [
+    "backend/alembic/env.py no importa app.modules.sm.models: la migración 0097 crea tablas invisibles para la metadata",
+    "La migración 0097_sm_core.py no está versionada y elevó el head a 0097 sin aplicarse en bd_csh",
+    "El árbol de trabajo excede al release desplegado (head 0097 sin aplicar en bd_csh): desplegar desde él rompería readiness",
+    "CSP sigue en Report-Only (R6 abierto)",
+    "Sin dictamen EAF independiente (R7)"
+  ],
+  "exclusiones_metodologicas": [
+    "La suite se ejecutó con base polis_test* creada para el expediente y eliminada al finalizar",
+    "No se probó envío real de correo",
+    "No se ejecutó bun run build para no sobrescribir .next/standalone en producción",
+    "Los datos de producción se consultaron en solo lectura"
+  ],
+  "evidencia": [
+    {
+      "archivo": "evidencia/00_snapshot.txt",
+      "bytes": 1677,
+      "sha256": "d1776b7108c446c57502de0b911074e7f61878af108b128037b8f33d451a62d1"
+    },
+    {
+      "archivo": "evidencia/01_alembic_cabeza.txt",
+      "bytes": 63,
+      "sha256": "f9b85f7e831f07b6d4f6809c4b07fc5ba8244b944013e1726390dd670b07f864"
+    },
+    {
+      "archivo": "evidencia/10_instalacion_base_vacia.txt",
+      "bytes": 174,
+      "sha256": "bdc44aeb4e4a4c8392d32b3561c3ec1dcf0782caf9e2f06b5588e3afbc5c7484"
+    },
+    {
+      "archivo": "evidencia/11_alembic_check.txt",
+      "bytes": 9116,
+      "sha256": "004647faa90ad7ea36e53c39ccdf24d1e56982ba7183a81f0462f91031753453"
+    },
+    {
+      "archivo": "evidencia/12_reconstruccion.txt",
+      "bytes": 125,
+      "sha256": "6d7235f094f37abd94960d2ba2e5d3da418717c6c81b302ded6546c8fb85e2ab"
+    },
+    {
+      "archivo": "evidencia/13_commit_puro_alembic.txt",
+      "bytes": 313,
+      "sha256": "a3acb1fab4aa55ae7989544baa976ec992acf771318e61a5dcc49971a5a96fda"
+    },
+    {
+      "archivo": "evidencia/14_commit_congelado_migraciones.txt",
+      "bytes": 333,
+      "sha256": "0dd27222764f4d6e9987a490b930d3d3d2acf1ae1a0e11e2baec71b6e4fec96f"
+    },
+    {
+      "archivo": "evidencia/20_pytest.txt",
+      "bytes": 122626,
+      "sha256": "a683a08228f9239b3cf51841b06731a074f3ba672f3b5291b0c38ca5d9ed646c"
+    },
+    {
+      "archivo": "evidencia/21_pytest_transacciones.txt",
+      "bytes": 164,
+      "sha256": "32506121b03f1d4228acc631f81ff25caa1757adcfcc7153b83bed05c480ae50"
+    },
+    {
+      "archivo": "evidencia/23_commit_congelado_pytest.txt",
+      "bytes": 102651,
+      "sha256": "9872bca58006f0cd8b50f35b0f42d78b0aab1fbe9aa1c0f1bbc5e228244b0570"
+    },
+    {
+      "archivo": "evidencia/30_ruff.txt",
+      "bytes": 9023,
+      "sha256": "aee551946371c5bc4eccd7e267fbfa79da1e3fec53be6411e8a1bd1532af32dd"
+    },
+    {
+      "archivo": "evidencia/31_bun_check.txt",
+      "bytes": 252,
+      "sha256": "72b8187e1aba85a1697a9c415d939caa039b7f5faf4c37cda11b5f73e976da67"
+    },
+    {
+      "archivo": "evidencia/32_bun_test.txt",
+      "bytes": 672,
+      "sha256": "b94cd03857af1f26f7451df5ebb88ecd0c50b5e8a2f8becfc140f0a0ed981913"
+    },
+    {
+      "archivo": "evidencia/40_salud_y_cabeceras.txt",
+      "bytes": 1495,
+      "sha256": "3e32209c840bb5c4552c9801dbb6258df52a485272213604a81c0279f6f55976"
+    },
+    {
+      "archivo": "evidencia/41_bd_produccion_lectura.txt",
+      "bytes": 219,
+      "sha256": "1b076f81ed824b43fb53788dabcda7fb8401e210ffd23a0f0d5671bc561707e3"
+    },
+    {
+      "archivo": "evidencia/42_respaldos.txt",
+      "bytes": 839,
+      "sha256": "0e1941c624ea8d09782b32b34415d4540db45c49319c3a8d61242c225a426c73"
+    },
+    {
+      "archivo": "evidencia/43_estado_posterior_reinicio.txt",
+      "bytes": 1349,
+      "sha256": "bc76b6f54957facca10b0a68a635ecd5af1d2ae8b4af0dea1d02aa4345366627"
+    },
+    {
+      "archivo": "evidencia/50_hashes_artefactos.txt",
+      "bytes": 1313,
+      "sha256": "6e2f1d6cfc2ab10e389ed7d324ed970821de27519f8f7023b7dc4b2d300053ec"
+    },
+    {
+      "archivo": "evidencia/99_cierre.txt",
+      "bytes": 333,
+      "sha256": "d6fb13ba11d9cddc21848484070b825a33b1fabe1d370723d728e026112fafc2"
+    }
+  ],
+  "artefactos": [
+    {
+      "archivo": "AGENTS.md",
+      "sha256": "bd414aab2de7546998246ea724270838f375830b18b8855be8fb5d93a428ece3"
+    },
+    {
+      "archivo": "README.md",
+      "sha256": "964002bdb999a401fd288deaf17db34275c57934bee023f6f8b9ae6f78b0a456"
+    },
+    {
+      "archivo": "docs/arquitectura.md",
+      "sha256": "cb2c60f7d937e87bc51b48e82d8ea10ba92519ecd2884a8689df09dd70de3482"
+    },
+    {
+      "archivo": "docs/transacciones.md",
+      "sha256": "09eee0b157c39b57b8c729a9c8cc7da545c73b4ccc27f58a55ee2ecf4ed5f834"
+    },
+    {
+      "archivo": "docs/permisos-api.md",
+      "sha256": "f8083e8328ae492416987457b453106f9ab9cda46c67f23fad9a713d10fbc383"
+    },
+    {
+      "archivo": "docs/kit-ui-rules.md",
+      "sha256": "97b64cd453852f34e257ff8bd9a74e8016c6f60e7c7179eee023acefe5cd1032"
+    },
+    {
+      "archivo": "docs/operacion.md",
+      "sha256": "f47d37c436b460eb5ec228f060b010bdc6d34e974b81c4c18fcaac48bab452f1"
+    },
+    {
+      "archivo": "docs/despliegue-produccion.md",
+      "sha256": "e029c8660003efa762a379cb755bf9dbabf985f9f0a1f260fa0db1bfb8ce1015"
+    },
+    {
+      "archivo": "backend/app/api/router.py",
+      "sha256": "148ea05b71698e8fcb9d08ff1b17d8845bcb59e9011700617b711d8787ddb3e5"
+    },
+    {
+      "archivo": "backend/app/main.py",
+      "sha256": "7933e19c943fb318c5ec412e10ecfedd7ac0be0b017c21f63b2c648f495e7e49"
+    },
+    {
+      "archivo": "backend/app/core/migrations.py",
+      "sha256": "1a33b61fa67f8937e356ed102943ecd8c25f6d897717ad7d6fd236ab7b099b46"
+    },
+    {
+      "archivo": "backend/alembic/env.py",
+      "sha256": "bdec9b0ed07fad82f8efeec35d93361a65bbf4d5b78d5c8bf1a6b6023e7e15d7"
+    },
+    {
+      "archivo": "backend/alembic/versions/0096_riesgo_sin_evaluar.py",
+      "sha256": "833379762b27eebdce875338b108654be137ecd335718cce5b7afa136e30b805"
+    },
+    {
+      "archivo": "backend/app/modules/health/service.py",
+      "sha256": "cca54190827fac1ddde8d60cad8ab66e9959e3178d71ff2d4ee017aea0e2af42"
+    },
+    {
+      "archivo": "backend/app/modules/sm/models.py",
+      "sha256": "a8a7e9c4e3b697a2d00cffb0ebf2413c3ae42bf026394be0e7ec7fbb5b231415"
+    },
+    {
+      "archivo": "package.json",
+      "sha256": "81ebcf3f3a402470fbc223eae179074e0819cc87794da18164cc90d5af90d111"
+    },
+    {
+      "archivo": "backend/pyproject.toml",
+      "sha256": "b733c26ab33d7f0c484f06e56329e87143a89666c229db8898e9cc3cd2304efc"
+    },
+    {
+      "archivo": ".github/workflows/check.yml",
+      "sha256": "9dcad790fac347edb4b9a188c6757fec347eba4ef4d96231c1c5143db3b5e11b"
+    }
+  ]
+}

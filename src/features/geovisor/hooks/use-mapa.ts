@@ -127,18 +127,18 @@ export interface UseMapaOptions {
  * Excepción explícita al no-hardcode-colors para garantizar compatibilidad nativa con Canvas 2D.
  */
 export const COLORES_MAPA = {
-  loc1: "#e85d04",
-  loc2: "#f48c06",
-  loc3: "#dc2f02",
+  loc1: "#4B2F83",
+  loc2: "#E78B26",
+  loc3: "#ECC22E",
   corregimiento: "#6d6875",
-  barrio: "#3a86ff",
-  barrioHover: "#023e8a",
-  hover: "#023e8a",
+  barrio: "#4B2F83",
+  barrioHover: "#0C0D29",
+  hover: "#4B2F83",
   stroke: "#ffffff",
-  strokeHover: "#1a1a2e",
+  strokeHover: "#0C0D29",
   heatHigh: "#d62828",
-  heatMid: "#f77f00",
-  heatLow: "#fcbf49",
+  heatMid: "#E78B26",
+  heatLow: "#ECC22E",
 } as const;
 
 function normalizar(s: string): string {

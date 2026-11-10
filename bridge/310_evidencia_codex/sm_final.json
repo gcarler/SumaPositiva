@@ -1,0 +1,24 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_sm_core.py",
+    "backend/tests/test_sm_full.py",
+    "backend/tests/test_sm_310.py",
+    "backend/tests/test_sm_transports_310.py",
+    "backend/tests/test_sm_cli_310.py",
+    "backend/tests/test_transactions.py",
+    "backend/tests/test_transaction_policy.py",
+    "backend/tests/test_access_policy.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/310_evidencia_codex/sm_final.xml"
+  ],
+  "rc": 0,
+  "segundos": 79.86,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

@@ -9,11 +9,34 @@ export interface GeovisorCentroConfig {
   zoom: string;
 }
 
+export const SIDEBAR_ANCHO_DEFAULT = 272;
+export const SIDEBAR_ANCHO_MIN = 200;
+export const SIDEBAR_ANCHO_MAX = 420;
+
+export const MODULOS_EXPANDIDOS_DEFAULT: Record<string, boolean> = {
+  dashboard: true,
+  mesas: true,
+  seguimiento: true,
+};
+
 export interface ConfiguracionPlataformaState {
   resumenSemanal: boolean;
   geovisorCentro: GeovisorCentroConfig;
+  sidebarColapsado: boolean;
+  sidebarAncho: number;
+  modulosExpandidos: Record<string, boolean>;
+  subvistaPlataforma: Record<string, string>;
+  panelPendiente: { id: string; props?: Record<string, unknown> } | null;
   setResumenSemanal: (activo: boolean) => void;
   setGeovisorCentro: (coords: Partial<GeovisorCentroConfig>) => void;
+  setSidebarColapsado: (sidebarColapsado: boolean) => void;
+  toggleSidebarColapsado: () => void;
+  setSidebarAncho: (ancho: number) => void;
+  resetSidebarAncho: () => void;
+  toggleModuloExpandido: (id: string) => void;
+  setModuloExpandido: (id: string, expandido: boolean) => void;
+  setSubvistaModulo: (moduloId: string, subvista: string) => void;
+  setPanelPendiente: (panel: { id: string; props?: Record<string, unknown> } | null) => void;
   resetearConfiguracion: () => void;
 }
 
@@ -34,6 +57,11 @@ export const useConfiguracionPlataformaStore = create<ConfiguracionPlataformaSta
     (set) => ({
       resumenSemanal: false,
       geovisorCentro: { ...GEOVISOR_DEFAULT_CONFIG },
+      sidebarColapsado: false,
+      sidebarAncho: SIDEBAR_ANCHO_DEFAULT,
+      modulosExpandidos: { ...MODULOS_EXPANDIDOS_DEFAULT },
+      subvistaPlataforma: {},
+      panelPendiente: null,
 
       setResumenSemanal: (resumenSemanal: boolean) =>
         set({ resumenSemanal }),
@@ -46,10 +74,62 @@ export const useConfiguracionPlataformaStore = create<ConfiguracionPlataformaSta
           },
         })),
 
+      setSidebarColapsado: (sidebarColapsado: boolean) =>
+        set({ sidebarColapsado }),
+
+      toggleSidebarColapsado: () =>
+        set((state) => ({ sidebarColapsado: !state.sidebarColapsado })),
+
+      setSidebarAncho: (ancho: number) =>
+        set({
+          sidebarAncho: Math.min(
+            SIDEBAR_ANCHO_MAX,
+            Math.max(SIDEBAR_ANCHO_MIN, Math.round(ancho))
+          ),
+        }),
+
+      resetSidebarAncho: () =>
+        set({
+          sidebarAncho: SIDEBAR_ANCHO_DEFAULT,
+          sidebarColapsado: false,
+        }),
+
+      toggleModuloExpandido: (id: string) =>
+        set((state) => ({
+          modulosExpandidos: {
+            ...state.modulosExpandidos,
+            [id]: !state.modulosExpandidos[id],
+          },
+        })),
+
+      setModuloExpandido: (id: string, expandido: boolean) =>
+        set((state) => ({
+          modulosExpandidos: {
+            ...state.modulosExpandidos,
+            [id]: expandido,
+          },
+        })),
+
+      setSubvistaModulo: (moduloId: string, subvista: string) =>
+        set((state) => ({
+          subvistaPlataforma: {
+            ...state.subvistaPlataforma,
+            [moduloId]: subvista,
+          },
+        })),
+
+      setPanelPendiente: (panel: { id: string; props?: Record<string, unknown> } | null) =>
+        set({ panelPendiente: panel }),
+
       resetearConfiguracion: () =>
         set({
           resumenSemanal: false,
           geovisorCentro: { ...GEOVISOR_DEFAULT_CONFIG },
+          sidebarColapsado: false,
+          sidebarAncho: SIDEBAR_ANCHO_DEFAULT,
+          modulosExpandidos: { ...MODULOS_EXPANDIDOS_DEFAULT },
+          subvistaPlataforma: {},
+          panelPendiente: null,
         }),
     }),
     {

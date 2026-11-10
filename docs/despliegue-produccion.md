@@ -49,7 +49,7 @@ A continuación se detalla la nómina de variables requeridas para el funcionami
 | `POLIS_IDENTIDAD_VENTANA_SEGUNDOS`| Entero | No | Duración de la ventana de protección de acceso (por defecto: `900` = 15 minutos). |
 | `POLIS_SESION_ANONIMA_LIMITE_IP` | Entero | No | Límite de creación de sesiones ciudadanas anónimas por IP (por defecto: `30`). |
 | `POLIS_IA_LIMITE_IP` | Entero | No | Salvaguarda de cómputo para endpoints del motor analítico de IA (por defecto: `30` req/min). |
-| `POLIS_SMTP_HOST` | String | Opcional | Host del servidor SMTP para el despacho de correos institucionales. Si no está configurado, las acciones que requieran correo retornan `503`. |
+| `POLIS_SMTP_HOST` | String | Opcional | Host del servidor SMTP para el despacho de correos institucionales. Si no está configurado, las acciones que requieran correo retornan `503`. En la arquitectura actual apunta al correo propio (`mail.seguridadhumanaintegral.org:587`); ver `docs/correo-propio.md`. |
 | `POLIS_SMTP_PORT` | Entero | Opcional | Puerto SMTP (por defecto: `587`). |
 | `POLIS_SMTP_TLS` | Booleano | Opcional | Habilitación de TLS para transporte seguro SMTP (por defecto: `true`). |
 | `POLIS_SMTP_USUARIO` | String | Opcional | Usuario autenticado del servidor SMTP distrital. |
@@ -156,7 +156,8 @@ Ejecutar el script oficial de respaldo pericial sobre `bd_csh`:
 El script genera de manera determinista:
 1. Un archivo binario comprimido con formato custom de pg_dump: `/root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump`.
 2. Un archivo de verificación de integridad criptográfica: `/root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump.sha256`.
-3. Permisos restringidos `0600` para proteger la información contra accesos no autorizados.
+3. Un manifiesto `bd_csh_YYYYMMDD_HHMMSS.dump.pgversion` con las versiones de cliente y servidor.
+4. Permisos restringidos `0600` para proteger la información contra accesos no autorizados.
 
 **Verificación obligatoria del respaldo**:
 ```bash
@@ -164,7 +165,20 @@ El script genera de manera determinista:
 ls -lh /root/polis/backups/ | tail -n 2
 cd /root/polis/backups && sha256sum -c bd_csh_*.dump.sha256 | tail -n 1
 # Debe responder: '...dump: OK'
+
+# Registrar con qué cliente se generó: ese cliente manda para la restauración.
+cat /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump.pgversion
+# Ejemplo: pg_dump=18.6 / servidor=18.x
 ```
+
+> [!IMPORTANT]
+> **Versiones de PostgreSQL.** `bd_csh` vive en el PostgreSQL **18** del host y el
+> volcado se genera con el cliente 18, archivo de formato 1.16. El contenedor
+> `polis-database-1` es PostgreSQL **16** y solo hospeda `polis` y `polis_test*`:
+> su `pg_restore` **no puede leer** este volcado. Toda restauración de `bd_csh`
+> usa el cliente del host (`/usr/lib/postgresql/18/bin/pg_restore`).
+> `scripts/restaurar_bd.sh` verifica el formato con `pg_restore -l` antes de
+> tocar la base y aborta si el cliente es insuficiente.
 
 ### Paso 4: Actualización del Código Fuente
 Posicionarse en el directorio del proyecto y verificar el estado del árbol de trabajo:
@@ -324,7 +338,13 @@ Utilizar el script oficial de restauración pasando el volcado generado en el Pa
 
 Para aplicar la restauración directamente sobre la base de datos principal `bd_csh`:
 ```bash
-# Volcar el dump verificado sobre bd_csh con pg_restore:
+# 1. Cliente correcto: el 18 del host, no el 16 del contenedor.
+/usr/lib/postgresql/18/bin/pg_restore --version
+# Debe ser 18.x o superior al pg_dump que generó el archivo (ver .dump.pgversion).
+# Si falla con «unsupported version (1.16)», se está usando el cliente equivocado.
+/usr/lib/postgresql/18/bin/pg_restore -l /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump > /dev/null
+
+# 2. Recrear la base vacía en el mismo servidor PostgreSQL 18 del host.
 sudo -u postgres psql -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'bd_csh' AND pid <> pg_backend_pid();"
 sudo -u postgres dropdb bd_csh
 sudo -u postgres createdb -O polis bd_csh
@@ -333,8 +353,17 @@ sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
 sudo -u postgres psql -d bd_csh -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
-pg_restore --password -h 127.0.0.1 -U polis -d bd_csh --no-owner /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump
+# 3. Restaurar con el cliente 18 del host (autenticación local como postgres).
+sudo -u postgres -- /usr/lib/postgresql/18/bin/pg_restore --no-owner -d bd_csh /root/polis/backups/bd_csh_YYYYMMDD_HHMMSS.dump
 ```
+
+> [!NOTE]
+> **Ensayo del 2026-11-08.** Al restaurar la copia diaria en el contenedor
+> PostgreSQL 16 el `pg_restore` 16 no pudo abrir el archivo (formato 1.16) y, tras
+> usar el cliente 18 del host contra el servidor 16, fue necesario excluir
+> `topology.*` por diferencia de versión de PostGIS. Esa exclusión es propia del
+> destino 16 de laboratorio: **no** se aplica al restaurar sobre el PostgreSQL 18
+> del host, que es el procedimiento de este runbook.
 
 ### 5.3. Rollback alternativo vía Alembic (si la base no sufrió corrupción)
 Si la base de datos está intacta y solo se requiere revertir los cambios de esquema hasta una revisión específica:

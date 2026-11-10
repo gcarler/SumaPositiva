@@ -1,0 +1,11 @@
+[Unit]
+Description=POLIS - ensayo semanal de restauración del respaldo de correo (domingos 04:30 UTC)
+
+[Timer]
+OnCalendar=Sun *-*-* 04:30:00 UTC
+Persistent=true
+RandomizedDelaySec=600
+Unit=polis-correo-restauracion.service
+
+[Install]
+WantedBy=timers.target

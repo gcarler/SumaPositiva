@@ -1,6 +1,7 @@
 """Contexto reproducible de integración, exclusivo de una base polis_test*."""
 
 import asyncio
+import base64
 import os
 from pathlib import Path
 
@@ -8,6 +9,12 @@ from pathlib import Path
 os.environ.setdefault("POLIS_ENVIRONMENT", "test")
 os.environ.setdefault("POLIS_JWT_SECRET_KEY", "polis_test_jwt_secret_key_32bytes_min_longitud!")
 os.environ.setdefault("POLIS_IP_SALT", "salt_test_habeas_data_aislado_32bytes!")
+# SM Core (310/HAL-01): clave AEAD y worker deterministas para que la suite no
+# dependa de secretos locales ni de variables exportadas a mano. Son valores
+# fijos de prueba; POLIS_SM_BOVEDA_KEY productiva sigue siendo independiente y
+# no se reutiliza aquí (solo 32 bytes de relleno).
+os.environ.setdefault("POLIS_SM_BOVEDA_KEY", base64.urlsafe_b64encode(b"polis-test-sm-boveda-key-32byte!").decode())
+os.environ.setdefault("POLIS_SM_WORKER_HABILITADO", "true")
 
 # El DSN de pruebas debe ser explícito. Sin él, las pruebas de integración se omiten;
 # no se leen credenciales del entorno de trabajo ni se reutiliza una base por defecto.

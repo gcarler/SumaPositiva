@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePanelStore } from "@/core/panels/panel-store";
-import { useNavigationStore } from "@/core/navigation/navigation-store";
+import { useNavigationStore, type VistaApp } from "@/core/navigation/navigation-store";
 
 /**
  * Deep-linking público del panel de detalle de mesa (TCA-06).
@@ -21,6 +21,17 @@ import { useNavigationStore } from "@/core/navigation/navigation-store";
  */
 
 const PARAM_MESA = "mesa";
+const PARAM_VISTA = "vista";
+const VISTAS_VALIDAS: readonly string[] = [
+  "inicio",
+  "explorar",
+  "mesas",
+  "geovisor",
+  "noticias",
+  "testimonios",
+  "dimensiones",
+  "indicadores",
+];
 
 let restauracionEjecutadaPagina = false;
 
@@ -44,14 +55,23 @@ export function DeepLinkPanelesPublicos() {
   const restaurado = useRef(restauracionEjecutadaPagina);
 
   /* 1. Restauración al primer montaje de la página: ?mesa=<id> → vista mesas
-        y panel de la mesa. Los remontajes posteriores no repiten la acción. */
+        y panel de la mesa. ?vista=<vista> → conmuta vista activa.
+        Los remontajes posteriores no repiten la acción. */
   useEffect(() => {
     if (restauracionEjecutadaPagina) return;
     restauracionEjecutadaPagina = true;
     const params = new URLSearchParams(window.location.search);
     const mesaId = params.get(PARAM_MESA);
-    if (!mesaId) return;
+    const vistaParam = params.get(PARAM_VISTA);
     const { setVista, vista } = useNavigationStore.getState();
+
+    if (vistaParam && VISTAS_VALIDAS.includes(vistaParam)) {
+      if (vista !== vistaParam) {
+        setVista(vistaParam as VistaApp);
+      }
+    }
+
+    if (!mesaId) return;
     if (vista !== "mesas") setVista("mesas");
     usePanelStore.getState().openPanel("mesa", { mesaId });
     restaurado.current = true;

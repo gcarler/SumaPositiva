@@ -1,0 +1,4 @@
+# Instalación de todas las migraciones en base vacía (rol de prueba con SUPERUSER para extensiones; se elimina al final)
+EXIT=0
+--- revisión final ---
+0097_sm_core (head)

@@ -1,0 +1,361 @@
+{
+  "causa": "Faltaban dos directorios en la copia aislada; se copian sin modificar código o pruebas.",
+  "archivos": [
+    {
+      "archivo": "geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip",
+      "sha256": "1c6dc7e5a0e0410fa13fb2e93a51222cfbb481a27fd0ec776bb3a042e5f5f231"
+    },
+    {
+      "archivo": "geodatos_cartagena/geojson/cartagena_barrios.geojson",
+      "sha256": "882553a8138b0ee786eea14929897ec99ad8956d8259cfe4acc8ce17a98dc64c"
+    },
+    {
+      "archivo": "geodatos_cartagena/geojson/cartagena_corregimientos.geojson",
+      "sha256": "35468b355683e0f0c183aa9a1e6dabb09c2fbf3a0b6c09c53d98fd14c8368291"
+    },
+    {
+      "archivo": "geodatos_cartagena/geojson/cartagena_limite_distrital.geojson",
+      "sha256": "2c9b7129cb134b8447607b08283d72fc02144677d69a4337caff2f05db0f4a55"
+    },
+    {
+      "archivo": "geodatos_cartagena/geojson/cartagena_localidades.geojson",
+      "sha256": "cb138b32278cfd1340737e72488f5b2a3c9b80e9e478a986f6392d38ee413953"
+    },
+    {
+      "archivo": "geodatos_cartagena/geojson/cartagena_perimetro_urbano.geojson",
+      "sha256": "8c3dcca8b6ea91a91bffbe2fe03e4785096cc0b10c25335856e655ed913a1f20"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.dbf",
+      "sha256": "668b6bd7c4aa092aafa8ec05f64f0df4dd476c9ff3ff6bd93731c3ec83eb43fa"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.sbn",
+      "sha256": "aa831686ca2adc1da7a43b0b2de7562116dad5c52c0ad7a84da791c7cf09bdf9"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.sbx",
+      "sha256": "d70d5af26b0c1cf1557dc730496e2f725fffe9c43ed4eb8d66ab495e35c5fd0a"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.shp",
+      "sha256": "468e57784e816cfc75f69714866a786eebcf7ae89fb3eba603eadae8bed3c6c2"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.shp.xml",
+      "sha256": "67b46697a4b092da2ba8c6e07ebb7c4241884a644b72e1ae8e5be8c19e4ad405"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Barrio.shx",
+      "sha256": "3c1e784260a5bb03ba5099f006a390d0903ca8061481d31e0247e4cba913c0aa"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.dbf",
+      "sha256": "776f0d72084594467d6dcec65e3fbc011b256deb5bb8ef6d62459b6b42fd0315"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.sbn",
+      "sha256": "7a0d195273677ced9aa46350b29709606ce6fe06a877949897a38d2b61aeae3b"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.sbx",
+      "sha256": "da2981f01a9fdd14b4f2018d700c0a462c0455a8cd7bd203955f0e883e97ff89"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.shp",
+      "sha256": "83f8d7812d34c7d5db420a637ffbbebd35a83d0e62eda8faa8c3f87d2f915bad"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.shp.xml",
+      "sha256": "ced2c1b79016c525beb6f2fff9a0e9be2476b0433c757be93cba7725e8f92065"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Corregimiento.shx",
+      "sha256": "b751250718a2b6e580a1306ee6c213db5068e84dd2ae68bd75a4c421a721499f"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.dbf",
+      "sha256": "571a51b1c76b812d41d99847098b3741a664221efbe3907a42126580c8e39273"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.sbn",
+      "sha256": "c1a957d5a987e75e1b25d9b6a15205bcdb10ac881b0785fdf7f1c17fb4c7fd6c"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.sbx",
+      "sha256": "c5cbb7bcb2f6ba14589104b94ae5a6fa3b1ef1fde60db4425d6e1aaaf4898d58"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.shp",
+      "sha256": "913c40052ffc27841e64d2c91f59db8aebe22158ba9ce188228790a942e39caf"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.shp.xml",
+      "sha256": "d932f0311f22f42b08f6513fdd8d96988dc4bec717d92db593bcf6f8fa7241d1"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Limitemunicipio.shx",
+      "sha256": "02eff8cbed71e3f9de5cb20107c2a4b0096a519df14b1b80734ea69421ccd853"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.dbf",
+      "sha256": "32440deafd10b5a38bbfb38faeab9e564d15831c6d23034c1e87a4b6d2e2469c"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.sbn",
+      "sha256": "0b9db0b1c2108d5c4a5432265123013e08011111a016dce7832c4114c719277f"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.sbx",
+      "sha256": "f2c4615d3efdc62c7a8906556656f651b1e88518c62abda195199148dfd0ef4a"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.shp",
+      "sha256": "bc7b82e665daede1dfdf3578379d59a5d6817f26748a5673cd62f018f9eab9c5"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.shp.xml",
+      "sha256": "968cb841f6b33557278ecbad593bf78259352433017d987b462a43361a27dd92"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Localidadcomuna.shx",
+      "sha256": "7be964ace3fb867c0077acf3ebfcd3536bb777a84ed61424f974c8fb538999dd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.dbf",
+      "sha256": "c74ccf2fe6f41e6fb9175cb530d47f98c962a6ff5b856d37b01ee11104afdf54"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.sbn",
+      "sha256": "97e5285cd45cee96c24e07699a2ee16506d9756c294e4a2100a071ec00ea440d"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.sbx",
+      "sha256": "f92e24cc8bd6fab52a6240f68292cc61ab898cd113ae39aca440174d8b38eb1c"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.shp",
+      "sha256": "71a8b7dc9ffb4c03bcfece97ad5f6cef16e0564917d8d35156e9b9738032c04c"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.shp.xml",
+      "sha256": "274d85bb345f7af439285fe059a282e92a953951dd0112e26fe68c1d0474153a"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Perimetrourbano.shx",
+      "sha256": "c47dbf275f296fbab9b3b3efe4cf095e6510595b2271ab966ac0417100fd72a7"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.dbf",
+      "sha256": "b75bc75ba4432abc76677349d1ec0e3bee155e1c61b51127497ad4c010b26823"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.sbn",
+      "sha256": "fb9a01c28084319b6703b4aceb2b1b74d096d61157d333b2a0c464deee46bcb4"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.sbx",
+      "sha256": "467fc5d79280b300f3ad28a4e16cbaf5905d1a28e88db1156e30b0067a46dcfc"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.shp",
+      "sha256": "4afa070de9c5979d8f94c20aff972fb378812806a47be1195deea24c9f79bd40"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.shp.xml",
+      "sha256": "467942128f2c6a1496c9cc45d1f4f067132ebd63f21b6106f5f3675ae8aea8a8"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorrural.shx",
+      "sha256": "af6e7431c95e353a50fd21f1b70cce47c4bdb5fd8dde7b8b76a01ef17e0e8ab4"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.dbf",
+      "sha256": "0608f356bfdb56b0f3f07291dfadf31964b8f0b853267b303f8924cfd07049ab"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.sbn",
+      "sha256": "49e467206b3b50ba42323ee704fbdda2fae3bb861293b4568cc448e77c6ef40a"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.sbx",
+      "sha256": "81b878c1b5769f05481c824c70aeeb221da3043a985ff788016e7a5d728e48a2"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.shp",
+      "sha256": "1c61d637492ed3f5bf5437b09c503c8da0fd215c617d91722c8cc82cef0d84dd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.shp.xml",
+      "sha256": "c9c73964a818ce204e8ff0d154f741282168a6a57d0f21734ed5398a2be76d10"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Sectorurbano.shx",
+      "sha256": "b43c02df7342f9358cf214693cae8e7583759978c222d8f5bb8594695a5143ed"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.cpg",
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.dbf",
+      "sha256": "659fb78dc334922b1242bf50a802a34d6065192c131b722f4cc92394e9180b92"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.prj",
+      "sha256": "cf475f4140d876f1fa8b8e3c236861b0f5c66e3c76d6a461fd01cdac056f7ebd"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.sbn",
+      "sha256": "755ba652b9747cc8969296526aade50aa4b337b96283ebd90a7c7254a47863b0"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.sbx",
+      "sha256": "e0223c0dcb48eca1f65c64d0ce3dcfb8638cb541869c92336f4f3633b6e03d7c"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.shp",
+      "sha256": "1c02a0edf1e7ae3d2a6438616c8168d36a4192c061daa2ea02b0b9cb4d5d23c7"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.shp.xml",
+      "sha256": "d8d779863b8175ec47f0a4ba70633a8af9ee3d2923bd1b357b0898ec32984841"
+    },
+    {
+      "archivo": "geodatos_cartagena/shp/SHP_Catastro_AMB_Cartagena/Vereda.shx",
+      "sha256": "e93f200f33444b245aea9d308a38ab90d84f442486ff5c1910b569b110412775"
+    },
+    {
+      "archivo": "knowledge-base/00_INDICE_MAESTRO.md",
+      "sha256": "d7c4cf41213f1a3a53f8e2ede01f86a6a57fd68ac66f7e94e9f0188761ffff01"
+    },
+    {
+      "archivo": "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+      "sha256": "ad6ffa511fe3626e455de622e6ce7ff37fbba6172100baf7434c4fb45733bef6"
+    },
+    {
+      "archivo": "knowledge-base/02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md",
+      "sha256": "e949a3697f8e94db97287617e93c64fff1fb52fe5cd667edc1fe0c1287e8bda2"
+    },
+    {
+      "archivo": "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+      "sha256": "241743e4ac3b0edf44998dd555ca7f99622dcf43745b434c8810866d1dcb286e"
+    },
+    {
+      "archivo": "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+      "sha256": "640a0724fd70b92413ca8e6dd7098a9d7d49ac0570b11b32ef2580c224bf705e"
+    },
+    {
+      "archivo": "knowledge-base/05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md",
+      "sha256": "80db46b5ceca1a453f6c249b8edb4f6fc257a5e53461ac475914ddc0f1bc899a"
+    },
+    {
+      "archivo": "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md",
+      "sha256": "420de8c5fcb31d18ef65e4d1f7939109872ef7cbe1a11cb690597c1f0a82f091"
+    },
+    {
+      "archivo": "knowledge-base/07_SISTEMA_PRESUPUESTAL_Y_FINANCIACION.md",
+      "sha256": "4cd7aa5df383f4d0d9be05517f474376065c07ef6539122373ba925c394f0a67"
+    },
+    {
+      "archivo": "knowledge-base/08_SISTEMA_INDICADORES_MONITOREO_Y_EVALUACION.md",
+      "sha256": "fa7f678bb45b0bc2793df7e8f3588c2be115fb2c04774cea29d93b8d38f76a00"
+    },
+    {
+      "archivo": "knowledge-base/09_CASOS_ESTUDIO_Y_PLANTILLAS_SECTORIALES.md",
+      "sha256": "1d726f042236563bdb0840934aae3a8909ac6536842bad21aa5f305d4f059dcd"
+    },
+    {
+      "archivo": "knowledge-base/10_MANUAL_FACILITACION_Y_AGENTES_IA.md",
+      "sha256": "e60e21962d79b223883308f5ffc25c5da24bcc9fc1dc25624354dc072035d478"
+    },
+    {
+      "archivo": "knowledge-base/11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md",
+      "sha256": "9e312047e407ce66daaed602cce1ac4a04aeb171f883b10ae2246ed9af337681"
+    },
+    {
+      "archivo": "knowledge-base/12_ESTRUCTURACION_PROYECTOS_INVERSION_PUBLICA_MGA_DNP.md",
+      "sha256": "b44e8d1c72b2210967922cf82f612a96b4b4a012c46f5798769a2a7a008f0d83"
+    },
+    {
+      "archivo": "knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md",
+      "sha256": "b1f1e90b51549d729b300931cb609a9666fe00ba9edc13eedc91fd9cab77e8f5"
+    },
+    {
+      "archivo": "knowledge-base/14_MODELO_HOSHIN_KANRI_MATRIZ_X_PDT_GBR.md",
+      "sha256": "979d1b13609ed0993e8097fdcd41e498b994224143ba01dd82d116f4a4c59df0"
+    },
+    {
+      "archivo": "knowledge-base/15_ARQUITECTURA_DEA_4_NIVELES_DMU_GOBERNANZA_CARTAGENA.md",
+      "sha256": "8b386e7f56644d26f1d9dae144abe864a39e17d0a2377b8fbbd9a4f8ab7e15bf"
+    },
+    {
+      "archivo": "knowledge-base/16_ESTRUCTURA_SISPT_DNP_PDT_INDICADORES_PLAN_ACCION_SEGUIMIENTO.md",
+      "sha256": "7edcc9d23a6ff2dafb692452515c4834b92dcb9e519eaacf861f62ddabf84dbb"
+    },
+    {
+      "archivo": "knowledge-base/barrios_cartagena.json",
+      "sha256": "008df5530588fdb8a9454149c9c7b98b10a49401b8836701720a0d842c88d80f"
+    },
+    {
+      "archivo": "knowledge-base/barrios_cartagena.md",
+      "sha256": "f968f21a67d9a5383b3dc6d00008dd6682650c58d3ae4c1a3aa1c0470fd92090"
+    }
+  ]
+}

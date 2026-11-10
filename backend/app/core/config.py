@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, PostgresDsn, model_validator
+from pydantic import Field, PostgresDsn, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -47,6 +47,30 @@ class Settings(BaseSettings):
     # Herald Fase 3: interruptor del resumen diario de pendientes (Encargo 275).
     herald_resumen_activo: bool = True
 
+    # SM: apagado por defecto. Secretos separados de JWT y MFA, sin valores implícitos.
+    sm_boveda_key: SecretStr | None = None
+    sm_boveda_key_id: str = Field(default="v1", pattern=r"^[a-zA-Z0-9_-]{1,40}$")
+    sm_boveda_claves_anteriores: SecretStr | None = None
+    sm_worker_habilitado: bool = False
+    sm_worker_base_segundos: int = Field(default=30, ge=1, le=3600)
+    sm_worker_max_reintentos: int = Field(default=5, ge=1, le=20)
+    sm_worker_lease_segundos: int = Field(default=120, ge=60, le=3600)
+    sm_worker_max_espera_segundos: int = Field(default=3600, ge=60, le=86400)
+    sm_http_timeout_segundos: int = Field(default=10, ge=1, le=20)
+    sm_webhook_secret: SecretStr | None = None
+    sm_webhook_origenes: list[str] = []
+    sm_telegram_token: SecretStr | None = None
+    sm_whatsapp_token: SecretStr | None = None
+    sm_whatsapp_phone_id: str | None = None
+    sm_whatsapp_api_version: str | None = Field(default=None, pattern=r"^v[0-9]+\.0$")
+    sm_whatsapp_plantilla: str | None = None
+    sm_whatsapp_plantilla_aprobada: bool = False
+    sm_whatsapp_idioma: str = "es_CO"
+    sm_eventos_dominio: list[str] = []
+    # Corte real P5: tipos cuyo envío asume SM Core. Debe ser subconjunto de
+    # sm_eventos_dominio; vacío por defecto significa que Herald envía todo.
+    sm_corte_tipos: list[str] = []
+
     identidad_token_minutos: int = Field(default=30, ge=5, le=120)
     identidad_limite_ip: int = Field(default=60, ge=1)
     identidad_limite_cuenta: int = Field(default=10, ge=1)
@@ -65,6 +89,8 @@ class Settings(BaseSettings):
     mfa_bloqueo_minutos: int = Field(default=15, ge=1)
     mfa_token_expira_minutos: int = Field(default=5, ge=1)
     sentry_dsn: str | None = None
+    google_requerido_para_funcionarios: bool = True
+    probar_bloqueo_google_funcionarios: bool = False
 
     @model_validator(mode="after")
     def validar_mfa_encryption_key(self) -> "Settings":
@@ -84,6 +110,18 @@ class Settings(BaseSettings):
                 raise ValueError(
                     f"POLIS_MFA_ENCRYPTION_KEY no es una clave Fernet válida (32 bytes url-safe base64): {e}"
                 ) from e
+        return self
+
+    @model_validator(mode="after")
+    def validar_corte_sm(self) -> "Settings":
+        # Un tipo cortado sin sombra previa nunca pasaría por el puente: Herald
+        # seguiría enviando y la bandera no tendría efecto, en silencio.
+        huerfanos = sorted({tipo for tipo in self.sm_corte_tipos if tipo not in self.sm_eventos_dominio})
+        if huerfanos:
+            raise ValueError(
+                "POLIS_SM_CORTE_TIPOS exige que cada tipo esté también en POLIS_SM_EVENTOS_DOMINIO: "
+                + ", ".join(huerfanos)
+            )
         return self
 
     @property

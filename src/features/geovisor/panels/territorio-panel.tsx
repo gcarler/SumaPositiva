@@ -13,7 +13,7 @@ import { Progress } from "@/shared/ui/progress";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { BARRIOS_POR_LOCALIDAD } from "../data/barrios.data";
 import { ESTADISTICAS_SEGURIDAD_2025 } from "../data/estadisticas.data";
-import { obtenerTerritorio } from "../data/territorios.data";
+import { obtenerTerritorio, TERRITORIOS_CARTAGENA } from "../data/territorios.data";
 
 interface TerritorioPanelProps {
   entryKey: string;
@@ -35,7 +35,18 @@ export function TerritorioPanel({ entryKey, props }: TerritorioPanelProps) {
   const setVista = useNavigationStore((state) => state.setVista);
   const [busquedaBarrio, setBusquedaBarrio] = useState("");
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string | null>(null);
-  const territorio = obtenerTerritorio(props.territorioId);
+  const [territorioIdActivo, setTerritorioIdActivo] = useState(
+    props.territorioId || "loc-1"
+  );
+  const territorio =
+    obtenerTerritorio(territorioIdActivo) ??
+    TERRITORIOS_CARTAGENA.find(
+      (t) =>
+        t.id === props.territorioId ||
+        t.codigo.toLowerCase() === props.territorioId?.toLowerCase()
+    ) ??
+    TERRITORIOS_CARTAGENA[0];
+
   const barrios = territorio ? BARRIOS_POR_LOCALIDAD[territorio.localidadId] : [];
   const localidades = ESTADISTICAS_SEGURIDAD_2025.por_localidad;
   const cifrasLocalidad = territorio ? localidades[territorio.localidadId as keyof typeof localidades] : undefined;
@@ -106,6 +117,26 @@ export function TerritorioPanel({ entryKey, props }: TerritorioPanelProps) {
       }
     >
       <div className="space-y-6 p-5 sm:p-6">
+        {/* Selector rápido de localidad */}
+        <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-2">
+          <span className="text-xs font-medium text-text-tertiary mr-1">Localidad:</span>
+          {TERRITORIOS_CARTAGENA.filter((t) => t.tipo === "localidad").map((t) => (
+            <Button
+              key={t.id}
+              variant={territorio.id === t.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setTerritorioIdActivo(t.id);
+                setBarrioSeleccionado(null);
+                setBusquedaBarrio("");
+              }}
+              className="text-xs h-7 px-2.5"
+            >
+              {t.codigo}
+            </Button>
+          ))}
+        </div>
+
         <section className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge tone="info">{tipoLabel}</StatusBadge>

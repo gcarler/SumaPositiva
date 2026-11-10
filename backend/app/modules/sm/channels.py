@@ -5,6 +5,8 @@ canal. No tiene dependencias de POLIS y puede ser usado por otros software que
 consuman este módulo.
 """
 
+import html
+
 from .contracts import SMCanal, SMContacto, SMMensaje, SMResultadoEntrega
 from .core import SMCanalesNoAutorizados, SMError
 
@@ -38,7 +40,7 @@ class SMCorreoAdapter(SMCanalBase):
             mensaje_id=mensaje.id,
             canal=self.canal,
             intento=1,
-            estado_entrega="enviado",
+            estado_entrega="preparado",
             payload={
                 "destinatario": contacto.identificador,
                 "asunto": mensaje.asunto or "Notificación institucional",
@@ -58,7 +60,7 @@ class SMWhatsAppAdapter(SMCanalBase):
             mensaje_id=mensaje.id,
             canal=self.canal,
             intento=1,
-            estado_entrega="enviado",
+            estado_entrega="preparado",
             payload={
                 "canal": "whatsapp",
                 "to": contacto.identificador,
@@ -79,10 +81,10 @@ class SMTelegramAdapter(SMCanalBase):
             mensaje_id=mensaje.id,
             canal=self.canal,
             intento=1,
-            estado_entrega="enviado",
+            estado_entrega="preparado",
             payload={
                 "chat_id": contacto.identificador,
-                "text": (mensaje.cuerpo or "Notificación institucional")[:4096],
+                "text": html.escape(mensaje.cuerpo or "Notificación institucional")[:4096],
                 "parse_mode": "HTML",
             },
         )
@@ -99,7 +101,7 @@ class SMSMSAdapter(SMCanalBase):
             mensaje_id=mensaje.id,
             canal=self.canal,
             intento=1,
-            estado_entrega="enviado",
+            estado_entrega="preparado",
             payload={
                 "to": contacto.identificador,
                 "text": (mensaje.cuerpo or "Notificación institucional")[:480],
@@ -118,7 +120,7 @@ class SMWebhookAdapter(SMCanalBase):
             mensaje_id=mensaje.id,
             canal=self.canal,
             intento=1,
-            estado_entrega="enviado",
+            estado_entrega="preparado",
             payload={
                 "url": contacto.identificador,
                 "evento": mensaje.idempotencia,

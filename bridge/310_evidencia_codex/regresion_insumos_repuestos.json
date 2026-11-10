@@ -1,0 +1,23 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_catalogo_cartografia_polis.py",
+    "backend/tests/test_catalogo_fuentes_versionado.py",
+    "backend/tests/test_curacion_cartografia_polis.py",
+    "backend/tests/test_inventario_fuentes_polis.py",
+    "backend/tests/test_pdt_ai_evaluator.py",
+    "backend/tests/test_pdt_nodos_espacial_predictivo.py",
+    "backend/tests/test_registro_territorial_polis.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/310_evidencia_codex/insumos_repuestos.xml"
+  ],
+  "rc": 1,
+  "segundos": 38.31,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

@@ -1,0 +1,12 @@
+{
+  "base": "polis_test_sm_core_310_upgrade",
+  "puerto": 15433,
+  "casos": [
+    "upgrade_0097_0098_0099_preserva_mensaje_y_ciphertext",
+    "downgrade_0099_no_convierte_simulacion_en_envio_y_preserva_procedencia",
+    "downgrade_0098_retira_boveda_conserva_outbox",
+    "segundo_upgrade_y_check_sin_drift"
+  ],
+  "ciphertext_sha256": "30acbafc849524fe5b252fd06e07754def3c55da485205436f3f4648eab2651b",
+  "bd_csh_usada": false
+}

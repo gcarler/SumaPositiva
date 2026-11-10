@@ -179,7 +179,7 @@ export const HERO_PAGES_CONFIG: Record<string, HeroPageConfig> = {
     id: "explorar",
     titulo: "Líneas Estratégicas y Gobernanza Distrital",
     subtitulo:
-      "Explora las fases y líneas de la Política Pública de Cartagena, o visualiza cómo las 27 dependencias y sus presupuestos atienden las 7 dimensiones de seguridad humana.",
+      "Explora las fases y líneas de la Política Pública de Cartagena, o visualiza cómo las 29 dependencias y sus presupuestos atienden las 7 dimensiones de seguridad humana.",
     enfoque: "Arquitectura Estratégica y Gobernanza Distrital",
     imagenFondo: "/images/hero/hero-marco-logico.webp",
     ubicacionReal: "Centro Comunitario Nelson Mandela — Localidad 3 (Industrial y de la Bahía)",

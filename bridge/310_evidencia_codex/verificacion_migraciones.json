@@ -1,0 +1,17 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_database_integration.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/310_evidencia_codex/migraciones.xml"
+  ],
+  "rc": 0,
+  "segundos": 28.96,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

@@ -1,0 +1,994 @@
+{
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "SMCanal": {
+        "description": "Canales portables soportados en la primera fase.",
+        "enum": [
+          "correo",
+          "whatsapp",
+          "telegram",
+          "sms",
+          "webhook"
+        ],
+        "title": "SMCanal",
+        "type": "string"
+      },
+      "SMConsentimiento": {
+        "additionalProperties": false,
+        "description": "Consentimiento durable por canal y hash de contacto.",
+        "properties": {
+          "actor": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Actor",
+            "type": "string"
+          },
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "canal": {
+            "$ref": "#/components/schemas/SMCanal"
+          },
+          "contacto_hash": {
+            "maxLength": 80,
+            "title": "Contacto Hash",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/SMEstadoConsentimiento"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "origen": {
+            "default": "sm",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Origen",
+            "type": "string"
+          },
+          "tenant": {
+            "default": "polis",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Tenant",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actor",
+          "canal",
+          "contacto_hash",
+          "estado"
+        ],
+        "title": "SMConsentimiento",
+        "type": "object"
+      },
+      "SMConsentimientoIn": {
+        "additionalProperties": false,
+        "properties": {
+          "actor": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Actor",
+            "type": "string"
+          },
+          "canal": {
+            "$ref": "#/components/schemas/SMCanal"
+          },
+          "consentido": {
+            "title": "Consentido",
+            "type": "boolean"
+          },
+          "contacto": {
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Contacto",
+            "type": "string"
+          },
+          "origen": {
+            "default": "api",
+            "maxLength": 120,
+            "title": "Origen",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actor",
+          "canal",
+          "contacto",
+          "consentido"
+        ],
+        "title": "SMConsentimientoIn",
+        "type": "object"
+      },
+      "SMEstadoConsentimiento": {
+        "description": "Estado del consentimiento por canal y contacto.",
+        "enum": [
+          "otorgado",
+          "revocado"
+        ],
+        "title": "SMEstadoConsentimiento",
+        "type": "string"
+      },
+      "SMEstadoMensaje": {
+        "description": "Estados controlados del outbox portable.",
+        "enum": [
+          "pendiente",
+          "encolado",
+          "enviado",
+          "entregado",
+          "fallido",
+          "agotado",
+          "cancelado",
+          "simulado"
+        ],
+        "title": "SMEstadoMensaje",
+        "type": "string"
+      },
+      "SMEstadoSalud": {
+        "description": "Salud agregada del núcleo.",
+        "enum": [
+          "saludable",
+          "degradado",
+          "critico"
+        ],
+        "title": "SMEstadoSalud",
+        "type": "string"
+      },
+      "SMEventoIn": {
+        "additionalProperties": false,
+        "properties": {
+          "actor": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Actor",
+            "type": "string"
+          },
+          "asunto": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asunto"
+          },
+          "canal": {
+            "$ref": "#/components/schemas/SMCanal"
+          },
+          "contacto": {
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Contacto",
+            "type": "string"
+          },
+          "cuerpo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cuerpo"
+          },
+          "entidad": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entidad"
+          },
+          "entidad_id": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entidad Id"
+          },
+          "idempotencia": {
+            "maxLength": 255,
+            "minLength": 8,
+            "title": "Idempotencia",
+            "type": "string"
+          },
+          "origen": {
+            "default": "api",
+            "maxLength": 120,
+            "title": "Origen",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Payload",
+            "type": "object"
+          },
+          "plantilla": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z][a-z0-9_\\-\\.]{1,79}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plantilla"
+          },
+          "tipo_evento": {
+            "maxLength": 80,
+            "minLength": 3,
+            "title": "Tipo Evento",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo_evento",
+          "actor",
+          "canal",
+          "contacto",
+          "idempotencia"
+        ],
+        "title": "SMEventoIn",
+        "type": "object"
+      },
+      "SMMensaje": {
+        "additionalProperties": false,
+        "description": "Mensaje del outbox portable. No guarda contacto crudo, solo hash.",
+        "properties": {
+          "actor": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Actor",
+            "type": "string"
+          },
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "asunto": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asunto"
+          },
+          "canal": {
+            "$ref": "#/components/schemas/SMCanal"
+          },
+          "contacto_hash": {
+            "maxLength": 80,
+            "title": "Contacto Hash",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "cuerpo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cuerpo"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/SMEstadoMensaje",
+            "default": "pendiente"
+          },
+          "evento_id": {
+            "format": "uuid",
+            "title": "Evento Id",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "idempotencia": {
+            "maxLength": 255,
+            "minLength": 8,
+            "title": "Idempotencia",
+            "type": "string"
+          },
+          "metadatos": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Metadatos",
+            "type": "object"
+          },
+          "plantilla": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z][a-z0-9_\\-\\.]{1,79}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plantilla"
+          },
+          "proximo_intento_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximo Intento En"
+          },
+          "tenant": {
+            "default": "polis",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Tenant",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evento_id",
+          "canal",
+          "actor",
+          "contacto_hash",
+          "idempotencia"
+        ],
+        "title": "SMMensaje",
+        "type": "object"
+      },
+      "SMRespuestaVerificacionConsentimiento": {
+        "properties": {
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "canal": {
+            "$ref": "#/components/schemas/SMCanal"
+          },
+          "consentido": {
+            "title": "Consentido",
+            "type": "boolean"
+          },
+          "contacto_hash": {
+            "title": "Contacto Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actor",
+          "canal",
+          "contacto_hash",
+          "consentido"
+        ],
+        "title": "SMRespuestaVerificacionConsentimiento",
+        "type": "object"
+      },
+      "SMResumenProcesamiento": {
+        "properties": {
+          "agotados": {
+            "default": 0,
+            "title": "Agotados",
+            "type": "integer"
+          },
+          "cancelados": {
+            "default": 0,
+            "title": "Cancelados",
+            "type": "integer"
+          },
+          "enviados": {
+            "default": 0,
+            "title": "Enviados",
+            "type": "integer"
+          },
+          "fallidos": {
+            "default": 0,
+            "title": "Fallidos",
+            "type": "integer"
+          },
+          "procesados": {
+            "default": 0,
+            "title": "Procesados",
+            "type": "integer"
+          },
+          "simulados": {
+            "default": 0,
+            "title": "Simulados",
+            "type": "integer"
+          },
+          "sin_contacto": {
+            "default": 0,
+            "title": "Sin Contacto",
+            "type": "integer"
+          }
+        },
+        "title": "SMResumenProcesamiento",
+        "type": "object"
+      },
+      "SMSalud": {
+        "additionalProperties": false,
+        "description": "Salud agregada del núcleo SM.",
+        "properties": {
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "antiguedad_pendiente_segundos": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Antiguedad Pendiente Segundos"
+          },
+          "canales_degradados": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SMCanal"
+            },
+            "title": "Canales Degradados",
+            "type": "array"
+          },
+          "canales_vivos": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SMCanal"
+            },
+            "title": "Canales Vivos",
+            "type": "array"
+          },
+          "enviados": {
+            "minimum": 0.0,
+            "title": "Enviados",
+            "type": "integer"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/SMEstadoSalud"
+          },
+          "fallidos": {
+            "minimum": 0.0,
+            "title": "Fallidos",
+            "type": "integer"
+          },
+          "motivos": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Motivos",
+            "type": "array"
+          },
+          "pendientes": {
+            "minimum": 0.0,
+            "title": "Pendientes",
+            "type": "integer"
+          },
+          "simulados": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Simulados",
+            "type": "integer"
+          },
+          "tenant": {
+            "default": "polis",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Tenant",
+            "type": "string"
+          },
+          "worker_ultimo_latido": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Worker Ultimo Latido"
+          }
+        },
+        "required": [
+          "estado",
+          "pendientes",
+          "enviados",
+          "fallidos"
+        ],
+        "title": "SMSalud",
+        "type": "object"
+      },
+      "SMWorkerRunIn": {
+        "additionalProperties": false,
+        "properties": {
+          "limite": {
+            "default": 25,
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Limite",
+            "type": "integer"
+          }
+        },
+        "title": "SMWorkerRunIn",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "SM Core 310-BK",
+    "version": "candidato-congelado"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/sm/consent": {
+      "post": {
+        "description": "Registra de manera segura el consentimiento previo del titular para un canal.",
+        "operationId": "registrar_consentimiento_api_v1_sm_consent_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SMConsentimientoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMConsentimiento"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Registrar o actualizar consentimiento",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/consent/{canal}/{actor}": {
+      "get": {
+        "description": "Verifica si un contacto tiene consentimiento vigente (otorgado) sin exponer el contacto crudo.",
+        "operationId": "verificar_consentimiento_api_v1_sm_consent__canal___actor__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "canal",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SMCanal"
+            }
+          },
+          {
+            "in": "path",
+            "name": "actor",
+            "required": true,
+            "schema": {
+              "title": "Actor",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "contacto_hash",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Contacto Hash",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMRespuestaVerificacionConsentimiento"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Verificar consentimiento activo",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/events": {
+      "post": {
+        "description": "Ingresa un evento hacia el outbox multicanal con idempotencia y auditoría forense.",
+        "operationId": "procesar_evento_api_v1_sm_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SMEventoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMMensaje"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ingestar evento transaccional",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/health": {
+      "get": {
+        "description": "Retorna las métricas agregadas del subsistema de mensajería transaccional.",
+        "operationId": "salud_sm_api_v1_sm_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMSalud"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Estado de salud operativo de SM Core",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/messages": {
+      "get": {
+        "description": "Lista mensajes del outbox con filtros operativos.",
+        "operationId": "listar_mensajes_api_v1_sm_messages_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "canal",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SMCanal"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Canal"
+            }
+          },
+          {
+            "in": "query",
+            "name": "estado",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SMEstadoMensaje"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limite",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limite",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SMMensaje"
+                  },
+                  "title": "Response Listar Mensajes Api V1 Sm Messages Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Listar mensajes del outbox",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/messages/{mensaje_id}": {
+      "get": {
+        "description": "Consulta el estado del outbox sin exponer PII.",
+        "operationId": "consultar_mensaje_api_v1_sm_messages__mensaje_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mensaje_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mensaje Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMMensaje"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Consultar mensaje del outbox",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    },
+    "/api/v1/sm/worker/run-once": {
+      "post": {
+        "description": "Ejecuta una ronda de despacho de mensajes encolados aplicando reintentos y auditoría.",
+        "operationId": "ejecutar_worker_api_v1_sm_worker_run_once_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/SMWorkerRunIn"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SMResumenProcesamiento"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Disparar procesamiento de outbox (worker)",
+        "tags": [
+          "SM Core"
+        ]
+      }
+    }
+  }
+}

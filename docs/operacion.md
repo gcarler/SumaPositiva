@@ -246,3 +246,10 @@ Los respaldos `recuperacion_dropin_r4.conf` y `recuperacion_nginx_csp.conf` est�
 restaurar el drop-in anterior, ejecutar `systemctl daemon-reload`, reiniciar
 `polis-frontend.service` y comprobar páginas, API y estáticos. El backend no se
 reinició y no se aplicaron migraciones productivas en este cierre.
+
+## Worker SM Core (310-BK)
+
+El [runbook SM](sm-worker.md) documenta bóveda, claves y rotación, transportes,
+estados simulados, leases/backoff, CLI y unidad systemd propuesta. Su entrega no
+habilita el servicio ni migra `bd_csh`; todos los flags permanecen apagados en
+la configuración de ejemplo. Herald continúa operativo y el puente usa sombra.

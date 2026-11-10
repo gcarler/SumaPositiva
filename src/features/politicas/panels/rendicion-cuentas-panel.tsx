@@ -23,6 +23,7 @@ import {
   DEPENDENCIAS_CARTAGENA_2026,
   AVANCE_PROMEDIO_PDD_2026,
   FECHA_CORTE_AUDITORIA,
+  formatearPresupuestoCop,
 } from "../data/entidades-cartagena.data";
 import {
   obtenerMatrizPlanAccionApi,
@@ -204,7 +205,7 @@ export function RendicionCuentasPanel({
       kicker="Plan de Desarrollo 'Cartagena Ciudad de Derechos'"
       subtitle={
         vistaActiva === "dependencias"
-          ? `Informe Oficial de Avance a corte ${FECHA_CORTE_AUDITORIA} — 27 Dependencias Oficiales`
+          ? `Informe Oficial de Avance a corte ${FECHA_CORTE_AUDITORIA} — ${DEPENDENCIAS_CARTAGENA_2026.length} Dependencias Oficiales`
           : vistaActiva === "plan_accion_dnp"
           ? "Matriz de Actividades DNP / SisPT 2026 — Publicación Oficial Ley 1474 Art. 74"
           : "Triada de Motores Articulados: Plan de Desarrollo · Plan de Acción Multiformato (2016–2026) · Inversión y Transparencia 4.1–4.4"
@@ -226,7 +227,7 @@ export function RendicionCuentasPanel({
                 : "bg-surface-1 text-text-secondary hover:text-text-primary hover:bg-surface-2 border border-transparent"
             }`}
           >
-            27 Dependencias Distritales
+            {DEPENDENCIAS_CARTAGENA_2026.length} Dependencias Distritales
           </Button>
 
           <Button
@@ -477,7 +478,7 @@ export function RendicionCuentasPanel({
                               Presupuesto 2026
                             </span>
                             <span className="font-bold text-text-primary text-sm">
-                              {dep.presupuesto2026Cop ?? "$25.000 Millones"}
+                              {formatearPresupuestoCop(dep.presupuesto2026Cop, "$25.000 Millones")}
                             </span>
                           </div>
                           <div>

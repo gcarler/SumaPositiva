@@ -9,7 +9,7 @@ declare module "@/core/panels/panel-store" {
     "linea-editor": { lineaId?: string };
     linea: { politicaId: string; faseId: string; lineaId: string };
     aporte: { politicaId: string; faseId: string; lineaId: string };
-    sesion: { accion?: "recuperar" | "verificar" | "magic_link"; token?: string };
+    sesion: { accion?: "recuperar" | "restablecer" | "verificar" | "magic_link"; token?: string };
     usuarios: Record<string, never>;
     mesa: { mesaId: string; soloLectura?: boolean };
     papelografo: {
@@ -127,5 +127,6 @@ declare module "@/core/panels/panel-store" {
       /** Acción de edición del módulo dueño; la vista decide por permiso. */
       onEditar?: () => void;
     };
+    "sm-panel": { soloLectura?: boolean };
   }
 }

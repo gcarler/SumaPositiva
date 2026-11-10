@@ -959,8 +959,9 @@ export function SeguridadHumanaView() {
                           >
                             {/* Cita Destacada / Takeaway */}
                             {faq.destacado && (
-                              <div className="rounded-xl border-l-4 border-l-[var(--ember)] bg-[var(--surface-1)] p-3.5 text-xs sm:text-sm font-medium text-[var(--text-primary)] italic">
-                                💡 {faq.destacado}
+                              <div className="rounded-xl border-l-4 border-l-[var(--ember)] bg-[var(--surface-1)] p-3.5 text-xs sm:text-sm font-medium text-[var(--text-primary)] italic flex items-start gap-2">
+                                <Sparkles className="size-3.5 text-[var(--ember)] shrink-0 mt-0.5" aria-hidden="true" />
+                                <span>{faq.destacado}</span>
                               </div>
                             )}
 
@@ -1055,8 +1056,9 @@ export function SeguridadHumanaView() {
                           >
                             {/* Cita Destacada / Takeaway */}
                             {faq.destacado && (
-                              <div className="rounded-xl border-l-4 border-l-[var(--ember)] bg-[var(--surface-1)] p-3.5 text-xs sm:text-sm font-medium text-[var(--text-primary)] italic">
-                                💡 {faq.destacado}
+                              <div className="rounded-xl border-l-4 border-l-[var(--ember)] bg-[var(--surface-1)] p-3.5 text-xs sm:text-sm font-medium text-[var(--text-primary)] italic flex items-start gap-2">
+                                <Sparkles className="size-3.5 text-[var(--ember)] shrink-0 mt-0.5" aria-hidden="true" />
+                                <span>{faq.destacado}</span>
                               </div>
                             )}
 

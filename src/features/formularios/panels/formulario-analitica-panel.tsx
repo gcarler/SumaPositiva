@@ -3,8 +3,11 @@ import { CompartirFormulario } from "../components/compartir-formulario";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { Button } from "@/shared/ui/button";
+import { Notice } from "@/shared/ui/notice";
 import { Progress } from "@/shared/ui/progress";
+import { Plus } from "lucide-react";
 import {
+  useFormularios,
   useFormularioDetalle,
   useFormularioAnalitica,
 } from "../services/use-formularios-queries";
@@ -18,12 +21,43 @@ export function FormularioAnaliticaPanel({
   entryKey: string;
   props: { formularioId: string };
 }) {
-  const { closeTop } = usePanels();
+  const { closeTop, openPanel } = usePanels();
+  const { data: formularios, isLoading: cargandoCatalogo } = useFormularios();
   const { data: form, error } = useFormularioDetalle(props.formularioId);
   const { data: stats, error: errorStats } = useFormularioAnalitica(
-    props.formularioId,
+    form?.id || props.formularioId,
   );
   const respuestas = useFormulariosStore((s) => s.respuestas);
+
+  if (!cargandoCatalogo && formularios && formularios.length === 0) {
+    return (
+      <PanelShell
+        entryKey={entryKey}
+        title="Analítica de Formulario"
+        crumbs={[{ label: "Formularios" }, { label: "Analítica" }]}
+        onClose={closeTop}
+        onCloseToKey={closeTop}
+      >
+        <div className="space-y-4 p-6">
+          <Notice tone="info" title="Aún no hay formularios registrados para analizar">
+            Crea tu primer formulario de consulta ciudadana para visualizar métricas,
+            distribución de respuestas y exportación analítica.
+          </Notice>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => {
+              openPanel("formulario-editor", {});
+            }}
+            className="gap-2 text-xs"
+          >
+            <Plus className="size-4" />
+            <span>Crear primer formulario</span>
+          </Button>
+        </div>
+      </PanelShell>
+    );
+  }
   return (
     <PanelShell
       entryKey={entryKey}

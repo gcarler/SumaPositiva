@@ -1,0 +1,17 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "ruff",
+    "format",
+    "--check",
+    "backend/app/modules/sm",
+    "backend/tests/"
+  ],
+  "rc": 0,
+  "segundos": 0.11,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

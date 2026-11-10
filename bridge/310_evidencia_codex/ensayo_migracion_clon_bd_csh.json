@@ -1,0 +1,18 @@
+{
+  "fecha_utc": "2026-11-07T23:58:25Z",
+  "base_origen": "bd_csh",
+  "tamano_origen_mb": 873,
+  "base_ensayo": "bd_csh_ensayo_sm_310",
+  "puerto": 5432,
+  "secuencia_probada": [
+    "current (inicial 0096_riesgo_sin_evaluar)",
+    "upgrade head (0097 -> 0098 -> 0099)",
+    "alembic check (0 drift, sin nuevas operaciones)",
+    "current (post-upgrade 0099_sm_worker_backoff)",
+    "downgrade 0096_riesgo_sin_evaluar (rollback completo)",
+    "current (post-rollback 0096_riesgo_sin_evaluar)"
+  ],
+  "resultado": "EXITOSO_100_PORCIENTO",
+  "drift_detectado": false,
+  "bd_csh_productiva_modificada": false
+}

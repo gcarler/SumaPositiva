@@ -79,7 +79,10 @@ export async function listarTerritoriosDiagnostico(
 export async function obtenerFichaTerritorial(
   id: string
 ): Promise<FichaTerritorialDiagnostico | undefined> {
-  return TERRITORIOS_DIAGNOSTICO_CANONICOS.find((t) => t.id === id);
+  const match = TERRITORIOS_DIAGNOSTICO_CANONICOS.find(
+    (t) => t.id === id || t.codigo.toLowerCase() === id.toLowerCase()
+  );
+  return match ?? TERRITORIOS_DIAGNOSTICO_CANONICOS[0];
 }
 
 export function calcularResumenDiagnosticoTerritorial(

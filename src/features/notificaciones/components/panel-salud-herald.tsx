@@ -158,6 +158,42 @@ export function PanelSaludHerald({ className = "" }: PanelSaludHeraldProps) {
 
   if (!data) return null;
 
+  const tieneEstructuraValida = Boolean(
+    data &&
+      typeof data === "object" &&
+      data.ejecutor &&
+      data.cola &&
+      data.ultimas_24h
+  );
+
+  if (!tieneEstructuraValida) {
+    return (
+      <div
+        role="region"
+        aria-label="Panel de Salud POLIS Herald"
+        className={`rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-5 shadow-sm ${className}`}
+      >
+        <Notice
+          tone="warning"
+          title="Telemetría de POLIS Herald no disponible o incompleta"
+        >
+          <p className="text-xs mb-3">
+            El servicio distrital de notificaciones no ha retornado la estructura completa de métricas, cola y salud del ejecutor.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => void refetch()}
+            className="text-xs"
+          >
+            <RefreshCw className="size-3.5 mr-1" aria-hidden="true" />
+            Reintentar consulta
+          </Button>
+        </Notice>
+      </div>
+    );
+  }
+
   const configEstado = ESTADO_CONFIG[data.estado] ?? ESTADO_CONFIG.saludable;
   const EstadoIcono = configEstado.icon;
 

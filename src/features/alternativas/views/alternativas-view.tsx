@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useMemo, useEffect} from "react";
+import {useMemo, useEffect} from "react";
 import {toast} from "sonner";
 import {
   Plus,
@@ -54,10 +54,26 @@ import {
 import {sanitizarCsv} from "@/shared/lib/csv";
 import { CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useConfiguracionPlataformaStore } from "@/features/plataforma/state/configuracion-store";
 
 export function AlternativasView() {
   const [vista, setVista] = useCollectionView("alternativas", "lista");
-  const [modoVista, setModoVista] = useState<"banco_mga" | "costeo_presupuesto">("banco_mga");
+  const subvistaAlternativas = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["alternativas"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
+  const modoVista: "banco_mga" | "costeo_presupuesto" =
+    subvistaAlternativas === "costeo_presupuesto"
+      ? "costeo_presupuesto"
+      : "banco_mga";
+
+  const handleCambiarModoVista = (nuevo: "banco_mga" | "costeo_presupuesto") => {
+    setSubvistaModulo("alternativas", nuevo);
+  };
+
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "alternativas");
@@ -278,7 +294,7 @@ export function AlternativasView() {
           <Button
             variant={modoVista === "banco_mga" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModoVista("banco_mga")}
+            onClick={() => handleCambiarModoVista("banco_mga")}
             className={`h-8 gap-2 text-xs font-semibold transition-all ${
               modoVista === "banco_mga"
                 ? "bg-surface-3 text-text-primary shadow-xs"
@@ -291,7 +307,7 @@ export function AlternativasView() {
           <Button
             variant={modoVista === "costeo_presupuesto" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModoVista("costeo_presupuesto")}
+            onClick={() => handleCambiarModoVista("costeo_presupuesto")}
             className={`h-8 gap-2 text-xs font-semibold transition-all ${
               modoVista === "costeo_presupuesto"
                 ? "bg-surface-3 text-text-primary shadow-xs"

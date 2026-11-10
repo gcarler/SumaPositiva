@@ -1,0 +1,119 @@
+{
+  "fecha": "2026-11-08",
+  "alcance": ["P5 corte real Herald->SM", "paridad de contenido", "runbook de respaldos"],
+  "entorno": {
+    "produccion_bd_csh": "host PostgreSQL 18.6, revision 0096_riesgo_sin_evaluar (sin cambios)",
+    "pruebas": "bases polis_test* desechables en contenedor PostgreSQL 16",
+    "servicios": "sin reinicios; sin commit ni push"
+  },
+  "bandera_de_corte": {
+    "variable": "POLIS_SM_CORTE_TIPOS",
+    "default": [],
+    "validacion": "subconjunto de POLIS_SM_EVENTOS_DOMINIO al arrancar",
+    "estado_herald": "delegado",
+    "migracion": "0101_notif_delegado_sm",
+    "fallback": "sin cuenta activa o sin consentimiento SM la fila queda pendiente y Herald envia"
+  },
+  "paridad_contenido": {
+    "asunto": "real de Herald, recortado a 200 caracteres",
+    "cuerpo": "cuerpo_html real de Herald",
+    "restriccion": "el validador del nucleo rechaza correo o telefono en el cuerpo"
+  },
+  "reversa": {
+    "comando": "python -m app.modules.notificaciones.worker_cli --liberar-delegadas",
+    "entrada": "3 filas delegado (1 con sm_mensajes.estado=enviado)",
+    "salida": {"liberadas": 2, "conservadas_entregadas_por_sm": 1},
+    "con_corte_activo": {"liberadas": 0, "conservadas_entregadas_por_sm": 0}
+  },
+  "pruebas": {
+    "test_sm_310": "29 passed",
+    "suites_herald": "60 passed, 1 skipped",
+    "test_sm_310_mas_test_sm_full_base_nueva": "60 passed",
+    "suites_finales_transports_salud_sm_310_sm_full": "124 passed, 1 skipped",
+    "transports_salud_sm_310_base_nueva_20261109": "93 passed, 1 skipped",
+    "suite_completa_base_nueva": "1993 passed, 27 skipped, 1 failed por extension pgrouting no instalada; el test pasa al instalarla",
+    "ruff_check": "sin hallazgos",
+    "ruff_format_check": "622 archivos formateados",
+    "alembic_check": "sin drift",
+    "migracion_0101_reversa": "downgrade y upgrade OK",
+    "frontend_check": "ui:check, tsc y eslint OK"
+  },
+  "respaldos": {
+    "hallazgo": "bd_csh en PostgreSQL 18.6 del host; contenedor polis-database-1 en 16; dump en formato 1.16 ilegible por pg_restore 16",
+    "manifiesto": ".dump.pgversion con pg_dump y servidor, tambien en copias semanal y mensual",
+    "restauracion": "pg_restore 18 del host con preflight -l; nunca el cliente 16 del contenedor",
+    "ensayo": "log: pg_dump 18.6 contra servidor 16.9; manifiesto pg_dump=18.6 servidor=16.9"
+  },
+  "alerta_delegadas": {
+    "regla": "delegado con mas de 30 min sin entrega SM confirmada",
+    "efectos": ["motivo en /health/herald sin cifras", "cola.delegadas_sin_entrega", "WARNING al arrancar"],
+    "verificado": "arranque real con 1 fila vencida y health degradado"
+  },
+  "ensayo_transporte_real": {
+    "base": "copia restaurada 20261108_020002, migrada 0096->0101 en 2.83 s",
+    "transporte": "SMTP real a sumidero local, sin red externa",
+    "notificaciones": 18,
+    "sm": 5,
+    "herald": 13,
+    "entregadas_correo_real": 16,
+    "no_emailable": 2,
+    "duplicadas": 0,
+    "contenido_divergente": 0,
+    "hook_p50_p95_ms": [1.89, 25.45],
+    "carga_200": {"enviados": 200, "fallidos": 0, "segundos": 13.85, "msg_s": 14.4, "cola_p50_p95_s": [9.85, 13.75]}
+  },
+  "paridad_contenido_render": "el cuerpo HTML se envia como text/html multipart; prueba en test_sm_transports_310",
+  "cobertura": {
+    "total": "18/18 con sumidero local; con relay real 16/16 correos y 2 filas wa: no enrutables",
+    "sin_cuenta_correo_real": 3,
+    "identificadores_wa_invalidos": 2,
+    "resolucion": "procedimiento por destinatario en docs/sm-worker.md; staging: SM 5/13 sin alta y 8/10 tras alta+consentimiento de las 3 filas con correo",
+    "bloqueos_cobertura_solo_sm": [
+      "alta y consentimiento de 3 ciudadanos",
+      "correccion o baja de 2 filas wa:",
+      "hook de resumen_diario",
+      "estrategia para enlaces de uso unico"
+    ]
+  },
+  "ensayo_staging_relay_externo": {
+    "base": "respaldo diario 20261108_020002 en polis_staging_315_20261109 (PG16), migrada 0096->0101",
+    "perfil": "POLIS_ENVIRONMENT no admite 'staging'; base desechable con environment=development",
+    "relay": "Postfix 127.0.0.1:25 con relayhost vacio (entrega directa a MX); no es relay autenticado",
+    "buzon": "buzon externo efimero (mail.tm); conserva solo los mensajes mas recientes",
+    "datos": "18 sinteticas equivalentes por fase; ningun correo de ciudadano salio",
+    "fase_a_sin_cuenta": {"delegadas": 5, "herald_enviadas": 11, "rechazadas_relay_wa": 2, "correos_entregables": 16},
+    "fase_b_con_alta": {"delegadas": 8, "herald_enviadas": 8, "rechazadas_relay_wa": 2, "correos_entregables": 16},
+    "rechazo_relay": "550 / SMTPRecipientsRefused para wa:+57...",
+    "relay_aceptados": 62,
+    "relay_entregas_confirmadas": 62,
+    "buzon_visibles_al_verificar": 30,
+    "paridad_html_muestra": "3/3",
+    "carga_30": {"enviados": 30, "fallidos": 0, "encolado_s": 1.14, "drenaje_s": 7.15, "msg_s": 4.2, "latencia_p50_s": 3.01, "latencia_p95_s": 5.7}
+  },
+  "ensayo_mta_propio_20261109": {
+    "base": "respaldo diario 20261109_020001 en polis_staging_315_mta_20261109 (PG16), migrada 0096->0101",
+    "relay": "mail.seguridadhumanaintegral.org:587, STARTTLS verificado + AUTH del buzon institucional",
+    "verificacion": "IMAP 993 TLS sobre buzon local de Dovecot (Maildir), sin proveedor externo",
+    "buzon": "ensayo315@seguridadhumanaintegral.org (efimero, retirado al cerrar la evidencia)",
+    "fase_a_sin_cuenta": {"delegadas": 5, "herald_enviadas": 11, "rechazadas_wa": 2, "entregables": 16},
+    "fase_b_con_alta": {"delegadas": 8, "herald_enviadas": 8, "rechazadas_wa": 2, "entregables": 16},
+    "aceptados_submission": 62,
+    "recibidos_buzon": 62,
+    "esperados": 62,
+    "duplicados": 0,
+    "faltantes_emailable": 0,
+    "contenido_divergente": 0,
+    "muestra_paridad": 6,
+    "dkim_firmados": 62,
+    "dkim_validos_muestra": "6/6 con dkimpy y DNS real",
+    "esmtpsa_y_lmtp": "62/62",
+    "carga_30": {"enviados": 30, "fallidos": 0, "encolado_s": 0.67, "drenaje_s": 5.4},
+    "harness": "ensayo_corte_mta_propio.py",
+    "evidencia": ["resultados_mta_propio_20261109.json", "registro_ensayo_mta_propio_20261109.log"]
+  },
+  "pendiente": [
+    "decision de producto sobre cuentas, wa: y tokens",
+    "hook de resumen_diario si se quiere cortar",
+    "P6 EAF independiente y P7 despliegue"
+  ]
+}

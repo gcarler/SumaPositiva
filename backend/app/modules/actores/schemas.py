@@ -93,6 +93,26 @@ class ActorEstrategicoRespuesta(ActorEstrategicoBase):
     actualizado_en: datetime
 
 
+class ContactoActorPublico(BaseModel):
+    """Datos institucionales del contacto publicables sin tratamiento de PII."""
+
+    model_config = ConfigDict(str_strip_whitespace=True, extra="ignore")
+
+    organizacion: str = Field(default="", max_length=200)
+    cargo: str = Field(default="", max_length=150)
+
+
+class ActorEstrategicoPublico(ActorEstrategicoBase):
+    """Ficha pública: excluye nombre del líder, teléfono, correo y dirección."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    contacto: ContactoActorPublico = Field(default_factory=ContactoActorPublico)
+    id: uuid.UUID
+    creado_en: datetime
+    actualizado_en: datetime
+
+
 class KpisActoresRespuesta(BaseModel):
     total_actores: int
     por_tipo: dict[str, int]

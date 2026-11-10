@@ -1,0 +1,17 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_sm_310.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/310_evidencia_codex/sm_casos_caidas.xml"
+  ],
+  "rc": 0,
+  "segundos": 8.83,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=POLIS SM Core - ejecutor outbox worker multicanal
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/root/polis/backend
+EnvironmentFile=/root/polis/backend/.env
+ExecStart=/root/polis/backend/.venv/bin/python scripts/sm_worker_cli.py once
+TimeoutStopSec=60
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+# El ejecutor procesa lotes de salida (outbox) con leases distribuidos SKIP LOCKED.
+# Se dispara periódicamente mediante polis-sm-worker.timer.

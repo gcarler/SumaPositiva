@@ -358,8 +358,8 @@ export function TimbradoCompetenciaLegal({
         </p>
 
         <div className="flex flex-wrap items-center gap-y-1 gap-x-4 pt-2 border-t border-[var(--border)] text-[11px] text-[var(--text-tertiary)]">
-          <span>🏛️ {info.marcoIntervencion}</span>
-          <span>⚖️ {info.fundamentoLegal}</span>
+          <span>{info.marcoIntervencion}</span>
+          <span>{info.fundamentoLegal}</span>
         </div>
 
         {/* Canales Oficiales */}

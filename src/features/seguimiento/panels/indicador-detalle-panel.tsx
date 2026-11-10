@@ -43,13 +43,22 @@ export function IndicadorDetallePanel({
     sesion?.rol === "auditor_forense" || Boolean(props?.soloLectura);
 
   const getIndicadorById = useCadenaValorStore((s) => s.getIndicadorById);
+  const cadenaValor = useCadenaValorStore((s) => s.cadenaValor);
   const registrarMedicionStore = useCadenaValorStore((s) => s.registrarMedicion);
   const actualizarMetadatosFichaStore = useCadenaValorStore((s) => s.actualizarMetadatosFicha);
 
   const indicador = useMemo(() => {
-    if (!props?.indicadorId) return null;
-    return getIndicadorById(props.indicadorId);
-  }, [props?.indicadorId, getIndicadorById]);
+    if (props?.indicadorId) {
+      const match = getIndicadorById(props.indicadorId);
+      if (match) return match;
+    }
+    return (
+      cadenaValor.resultado?.[0] ??
+      cadenaValor.producto?.[0] ??
+      cadenaValor.insumo?.[0] ??
+      null
+    );
+  }, [props?.indicadorId, getIndicadorById, cadenaValor]);
 
   // Estado del formulario de medición
   const [periodo, setPeriodo] = useState("2026-S1");

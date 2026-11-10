@@ -1,0 +1,57 @@
+{
+  "tipo": "revision_interna_EDD",
+  "dictamen_independiente": false,
+  "desplegado": false,
+  "commit_codex_310": false,
+  "push_codex_310": false,
+  "aceptacion_global_sm_core": false,
+  "validacion_general": "aprobada_internamente_EDD",
+  "alcance": {
+    "P2": {
+      "estado": "implementado_con_pruebas",
+      "evidencia": [
+        "snapshot_codigo.json",
+        "sm_congelado_r1.xml",
+        "upgrade_con_datos.json"
+      ]
+    },
+    "P1": {
+      "estado": "transportes_implementados_con_contratos_locales",
+      "canales": [
+        "correo",
+        "webhook",
+        "telegram",
+        "whatsapp",
+        "sms_modular"
+      ],
+      "credenciales_productivas_verificadas": false
+    },
+    "P3": {
+      "estado": "worker_y_cli_implementados",
+      "backoff": "base * 2^intento + jitter; intento inicial 1",
+      "systemd_instalado": false
+    },
+    "P4": {
+      "estado": "outbox_de_dominio_y_hook_Herald_en_sombra",
+      "activado": false,
+      "corte_Herald": false
+    }
+  },
+  "pendientes_operativos": [
+    "Dictamen EAF por otro evaluador",
+    "Clave y rotación productivas",
+    "Credenciales oficiales y proveedor SMS",
+    "Migraciones y release coordinadas tras respaldo/ensayo",
+    "Paridad y corte de Herald en tarea separada"
+  ],
+  "backend": {
+    "total": 2010,
+    "passed": 1994,
+    "skipped": 16,
+    "failed": 0
+  },
+  "sm": {
+    "passed": 95,
+    "failed": 0
+  }
+}

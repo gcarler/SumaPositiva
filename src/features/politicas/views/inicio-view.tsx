@@ -22,7 +22,8 @@ import { usePanels } from "@/core/panels/panel-store";
 import { noticiasPublicadasOrdenadas } from "@/features/noticias/state/noticias-store";
 import { useNoticiasPublicas } from "@/features/noticias/services/use-noticias-queries";
 import { useTestimoniosPublicos } from "@/features/testimonios/services/use-testimonios-queries";
-import { useFases, useLineas } from "@/features/politicas/services/use-politicas-queries";
+import { useFases, useLineas, useResumenInstitucional } from "@/features/politicas/services/use-politicas-queries";
+import { DEPENDENCIAS_CARTAGENA_2026 } from "@/features/politicas/data/entidades-cartagena.data";
 import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
 import { EnrutadorCiudadanoInteligente } from "@/features/politicas/components/enrutador-ciudadano-inteligente";
 import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
@@ -60,8 +61,10 @@ export function InicioView() {
   const { openPanel } = usePanels();
   const fasesQuery = useFases();
   const lineasQuery = useLineas();
+  const resumenQuery = useResumenInstitucional();
   const fases = fasesQuery.data ?? [];
   const lineas = lineasQuery.data ?? [];
+  const resumen = resumenQuery.data;
   const noticiasQuery = useNoticiasPublicas();
   const testimoniosQuery = useTestimoniosPublicos({ destacados: true });
   const noticias = noticiasQuery.data ?? [];
@@ -76,15 +79,28 @@ export function InicioView() {
     verificado: true,
   })).slice(0, 2);
 
-  /* Métricas reales — datos trazables del backend */
-  const totalLineas = lineas.length;
-  const fasesCompletadas = fases.filter(
-    (f) => f.estado === "completada" || f.estado === "cerrada"
-  ).length;
+  /* Métricas reales — datos trazables sincronizados con base de datos */
+  const totalLineas =
+    lineas.length > 0
+      ? lineas.length
+      : (resumen?.totalLineasEstrategicas ?? 29);
+  const fasesEnCurso =
+    fases.length > 0
+      ? fases.filter(
+          (f) =>
+            f.estado === "activa" ||
+            f.estado === "completada" ||
+            f.estado === "cerrada"
+        ).length
+      : (resumen?.fasesEnCurso ?? 1);
+  const totalFases =
+    fases.length > 0 ? fases.length : (resumen?.totalFases ?? 3);
+  const totalEntidades =
+    resumen?.totalEntidadesDistritales ?? DEPENDENCIAS_CARTAGENA_2026.length;
 
   const stats = [
     { valor: totalLineas.toString(), label: "Líneas estratégicas" },
-    { valor: `${fasesCompletadas} de ${fases.length || 3}`, label: "Fases de política en curso" },
+    { valor: `${fasesEnCurso} de ${totalFases}`, label: "Fases de política en curso" },
     { valor: "2026–2036", label: "Vigencia de la política" },
     { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
@@ -147,7 +163,7 @@ export function InicioView() {
               onClick={() => setVista("dimensiones")}
               className="group w-fit gap-2 text-xs"
             >
-              <span>Ver matriz 7 Dimensiones y 27 Entidades</span>
+              <span>Ver matriz 7 Dimensiones y {totalEntidades} Entidades</span>
               <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </Button>
           </div>

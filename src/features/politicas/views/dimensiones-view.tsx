@@ -19,16 +19,19 @@ import {
   Users,
   Target,
   ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import {usePanels} from "@/core/panels/panel-store";
 import {useNavigationStore} from "@/core/navigation/navigation-store";
+import {useResumenInstitucional} from "@/features/politicas/services/use-politicas-queries";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
 import {
   DEPENDENCIAS_CARTAGENA_2026,
   AVANCE_PROMEDIO_PDD_2026,
   FECHA_CORTE_AUDITORIA,
+  formatearPresupuestoCop,
   obtenerDependenciaPorId
 } from "../data/entidades-cartagena.data";
 import {
@@ -93,10 +96,29 @@ export function DimensionesView() {
       .filter((item): item is NonNullable<typeof item> => item !== null);
   }, [dimensionActiva]);
 
-  // Lista enriquecida de las 27+ dependencias para Modo B
+  // Lista enriquecida de las 29 dependencias para Modo B
   const dependenciasEnriquecidas = useMemo(() => {
     return DEPENDENCIAS_CARTAGENA_2026.map(obtenerEntidadConTitular);
   }, []);
+
+  const { data: resumen } = useResumenInstitucional();
+
+  const conteosEntidades = useMemo(() => {
+    const secretarias = dependenciasEnriquecidas.filter((d) => d.tipo === "secretaria").length;
+    const descentralizados = dependenciasEnriquecidas.filter((d) =>
+      ["ente_descentralizado", "empresa_industrial", "institucion_educativa"].includes(d.tipo)
+    ).length;
+    const unidadesAsesoras = dependenciasEnriquecidas.filter((d) => d.tipo === "unidad_asesora").length;
+    const alcaldiasLocales = dependenciasEnriquecidas.filter((d) => d.tipo === "alcaldia_local").length;
+    const total = resumen?.totalEntidadesDistritales ?? dependenciasEnriquecidas.length;
+    return {
+      total,
+      secretarias: resumen?.entidadesPorTipologia?.secretaria ?? secretarias,
+      descentralizados: resumen?.entidadesPorTipologia?.ente_descentralizado ?? descentralizados,
+      unidadesAsesoras: resumen?.entidadesPorTipologia?.unidad_asesora ?? unidadesAsesoras,
+      alcaldiasLocales: resumen?.entidadesPorTipologia?.alcaldia_local ?? alcaldiasLocales,
+    };
+  }, [dependenciasEnriquecidas, resumen]);
 
   // Filtrado de dependencias en Modo B
   const dependenciasFiltradas = useMemo(() => {
@@ -163,7 +185,7 @@ export function DimensionesView() {
             </div>
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
               <p className="text-xs font-medium text-[var(--text-tertiary)]">Dependencias Distritales</p>
-              <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">27 Oficiales</p>
+              <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">{conteosEntidades.total} Oficiales</p>
             </div>
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
               <p className="text-xs font-medium text-[var(--text-tertiary)]">Avance Promedio Auditado</p>
@@ -221,7 +243,7 @@ export function DimensionesView() {
               <Building2 className="size-4 text-[var(--info)]" />
               <span>Por Dependencias Distritales</span>
               <span className="rounded-full bg-[var(--surface-3)] px-1.5 py-0.2 text-[10px] text-[var(--text-tertiary)]">
-                27
+                {conteosEntidades.total}
               </span>
             </Button>
           </div>
@@ -338,8 +360,9 @@ export function DimensionesView() {
                         Dimensión {dimensionActiva.codigo}
                       </span>
                       {dimensionActiva.pilarOnu && (
-                        <span className="rounded-full bg-[var(--surface-3)] border border-[var(--border)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">
-                          🛡️ {dimensionActiva.pilarOnu}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-3)] border border-[var(--border)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">
+                          <ShieldCheck className="size-3 text-[var(--ember)]" aria-hidden="true" />
+                          <span>{dimensionActiva.pilarOnu}</span>
                         </span>
                       )}
                       <span className="text-xs text-[var(--text-tertiary)]">
@@ -532,8 +555,9 @@ export function DimensionesView() {
                       <h3 className="mt-1 text-lg sm:text-xl font-bold text-[var(--text-primary)]">
                         {entidadLider.nombre}
                       </h3>
-                      <p className="mt-0.5 text-xs sm:text-sm font-medium text-[var(--ember)]">
-                        🏛️ {entidadLider.titular}
+                      <p className="mt-0.5 text-xs sm:text-sm font-medium text-[var(--ember)] flex items-center gap-1.5">
+                        <Building2 className="size-3.5 shrink-0" aria-hidden="true" />
+                        <span>{entidadLider.titular}</span>
                       </p>
                     </div>
 
@@ -569,7 +593,7 @@ export function DimensionesView() {
                       </p>
                       <div className="flex items-baseline gap-2">
                         <span className="text-base font-extrabold text-[var(--text-primary)]">
-                          ${entidadLider.presupuesto2026Cop ?? "Por definir"}
+                          ${formatearPresupuestoCop(entidadLider.presupuesto2026Cop, "Por definir")}
                         </span>
                         <span className="text-xs text-[var(--text-secondary)]">asignado para el año</span>
                       </div>
@@ -615,7 +639,8 @@ export function DimensionesView() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
-                    <span>🤝 Entidades Corresponsables en la Dimensión</span>
+                    <Users className="size-4 text-[var(--ember)] shrink-0" aria-hidden="true" />
+                    <span>Entidades Corresponsables en la Dimensión</span>
                     <span className="rounded-full bg-[var(--surface-2)] border border-[var(--border)] px-2.5 py-0.5 text-xs font-bold text-[var(--ember)]">
                       {corresponsablesEnriquecidos.length}
                     </span>
@@ -792,11 +817,11 @@ export function DimensionesView() {
             {/* Filtros por tipo de entidad */}
             <div className="flex flex-wrap items-center gap-1.5">
               {[
-                { id: "todas", label: "Todas las Entidades (27)" },
-                { id: "secretaria", label: "Secretarías (8)" },
-                { id: "ente_descentralizado", label: "Descentralizados (10)" },
-                { id: "unidad_asesora", label: "Oficinas Asesoras (4)" },
-                { id: "alcaldia_local", label: "Alcaldías Locales (3)" },
+                { id: "todas", label: `Todas las Entidades (${conteosEntidades.total})` },
+                { id: "secretaria", label: `Secretarías (${conteosEntidades.secretarias})` },
+                { id: "ente_descentralizado", label: `Descentralizados (${conteosEntidades.descentralizados})` },
+                { id: "unidad_asesora", label: `Oficinas Asesoras (${conteosEntidades.unidadesAsesoras})` },
+                { id: "alcaldia_local", label: `Alcaldías Locales (${conteosEntidades.alcaldiasLocales})` },
               ].map((tab) => (
                 <Button
                   variant="unstyled"
@@ -827,13 +852,14 @@ export function DimensionesView() {
                 type="button"
                 onClick={() => setSemaforoFiltro(semaforoFiltro === "verde" ? "todos" : "verde")}
                 aria-label="Filtrar entidades en verde mayor o igual a 40%"
-                className={`rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
                   semaforoFiltro === "verde"
                     ? "bg-[var(--success)] text-[var(--text-inverse)]"
                     : "text-[var(--success)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
                 }`}
               >
-                🟢 ≥40%
+                <span className="size-2 rounded-full bg-current" aria-hidden="true" />
+                <span>≥40%</span>
               </Button>
               <Button
                 variant="unstyled"
@@ -841,13 +867,14 @@ export function DimensionesView() {
                 type="button"
                 onClick={() => setSemaforoFiltro(semaforoFiltro === "amarillo" ? "todos" : "amarillo")}
                 aria-label="Filtrar entidades en amarillo 25 a 39%"
-                className={`rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
                   semaforoFiltro === "amarillo"
                     ? "bg-[var(--warning)] text-[var(--text-inverse)]"
                     : "text-[var(--warning)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
                 }`}
               >
-                🟡 25–39%
+                <span className="size-2 rounded-full bg-current" aria-hidden="true" />
+                <span>25–39%</span>
               </Button>
               <Button
                 variant="unstyled"
@@ -855,18 +882,19 @@ export function DimensionesView() {
                 type="button"
                 onClick={() => setSemaforoFiltro(semaforoFiltro === "rojo" ? "todos" : "rojo")}
                 aria-label="Filtrar entidades en rojo menor a 25%"
-                className={`rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold transition-all ${
                   semaforoFiltro === "rojo"
                     ? "bg-[var(--danger)] text-[var(--text-inverse)]"
                     : "text-[var(--danger)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
                 }`}
               >
-                🔴 &lt;25%
+                <span className="size-2 rounded-full bg-current" aria-hidden="true" />
+                <span>&lt;25%</span>
               </Button>
             </div>
           </div>
 
-          {/* Mosaico de las 27 Dependencias */}
+          {/* Mosaico de las 29 Dependencias */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {dependenciasFiltradas.map((dep) => {
               const avance = dep.avancePlanAccion2026 ?? 38.8;
@@ -981,7 +1009,7 @@ export function DimensionesView() {
                         Presupuesto 2026:
                       </span>
                       <span className="text-xs font-bold text-[var(--text-primary)]">
-                        ${dep.presupuesto2026Cop ?? "Por definir"}
+                        ${formatearPresupuestoCop(dep.presupuesto2026Cop, "Por definir")}
                       </span>
                     </div>
 

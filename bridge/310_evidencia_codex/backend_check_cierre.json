@@ -1,0 +1,12 @@
+{
+  "comando": [
+    "bun",
+    "run",
+    "backend:check"
+  ],
+  "rc": 143,
+  "segundos": 105.06,
+  "base": "polis_test_sm_core",
+  "puerto": 15433,
+  "opciones_pytest": "--junitxml=bridge/310_evidencia_codex/backend_check_completo.xml -rs"
+}

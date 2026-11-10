@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Plus,
@@ -60,10 +60,38 @@ import {
 import { sanitizarCsv } from "@/shared/lib/csv";
 import { CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useConfiguracionPlataformaStore } from "@/features/plataforma/state/configuracion-store";
+
+const PESTANAS_SEGUIMIENTO_VALIDAS = [
+  "triada_motores",
+  "motor_plan_accion",
+  "banco_conocimiento_dnp",
+  "matriz_compromisos",
+  "cadena_valor",
+  "rendicion_cuentas",
+] as const;
 
 export function SeguimientoView() {
   const [vista, setVista] = useCollectionView("seguimiento", "lista");
-  const [tabActiva, setTabActiva] = useState<string>("matriz_compromisos");
+  const subvistaSeguimiento = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["seguimiento"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
+  const tabActiva =
+    subvistaSeguimiento &&
+    PESTANAS_SEGUIMIENTO_VALIDAS.includes(
+      subvistaSeguimiento as (typeof PESTANAS_SEGUIMIENTO_VALIDAS)[number]
+    )
+      ? subvistaSeguimiento
+      : "triada_motores";
+
+  const handleTabChange = (nuevaTab: string) => {
+    setSubvistaModulo("seguimiento", nuevaTab);
+  };
+
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "seguimiento");
@@ -310,7 +338,7 @@ export function SeguimientoView() {
       {/* Navegación por Pestañas */}
       <Tabs
         value={tabActiva}
-        onValueChange={setTabActiva}
+        onValueChange={handleTabChange}
         className="w-full space-y-6"
       >
         <div className="rounded-xl border border-border bg-surface-1 p-2">

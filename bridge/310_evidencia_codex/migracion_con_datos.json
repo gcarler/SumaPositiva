@@ -1,0 +1,14 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "python",
+    "/root/polis/bridge/310_evidencia_codex/ensayo_upgrade_datos.py"
+  ],
+  "rc": 0,
+  "segundos": 11.15,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

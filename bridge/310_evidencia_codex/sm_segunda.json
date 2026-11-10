@@ -1,0 +1,20 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "pytest",
+    "backend/tests/test_sm_core.py",
+    "backend/tests/test_sm_full.py",
+    "backend/tests/test_sm_310.py",
+    "backend/tests/test_sm_transports_310.py",
+    "-q",
+    "--tb=short",
+    "--junitxml=bridge/310_evidencia_codex/sm_segunda.xml"
+  ],
+  "rc": 1,
+  "segundos": 24.97,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

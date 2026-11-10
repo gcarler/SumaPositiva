@@ -1,0 +1,13 @@
+[Unit]
+Description=POLIS SM Core - programador periódico del outbox worker (cada 60 segundos)
+After=network.target
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=60s
+AccuracySec=5s
+Persistent=true
+Unit=polis-sm-worker.service
+
+[Install]
+WantedBy=timers.target

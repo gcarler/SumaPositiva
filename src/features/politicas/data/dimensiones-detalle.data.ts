@@ -3,7 +3,7 @@ import {
   Users,
   Briefcase,
   Leaf,
-  Wheat,
+  PackageCheck,
   HeartPulse,
   Scale,
   AlertTriangle,
@@ -592,7 +592,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     numero: "05",
     nombre: "Seguridad Alimentaria y Nutricional",
     nombreCorto: "Alimentaria",
-    icono: Wheat,
+    icono: PackageCheck,
     lema: "Soberanía nutricional, erradicación del hambre infantil y apoyo a la ruralidad",
     descripcion:
       "Garantía del derecho humano a la alimentación adecuada, comedores comunitarios dignos, nutrición escolar con calidad y circuitos cortos de comercialización con los campesinos corregimentales.",

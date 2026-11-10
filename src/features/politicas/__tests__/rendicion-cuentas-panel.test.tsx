@@ -6,20 +6,20 @@ import { ACTIVIDADES_PA_CANONICAS } from "@/features/seguimiento/services/plan-a
 import { DEPENDENCIAS_CARTAGENA_2026 } from "../data/entidades-cartagena.data";
 
 describe("RendicionCuentasPanel — Visor Ciudadano Ley 1474 / DNP [PA-TRANSPARENCIA-03]", () => {
-  describe("1. Vista por Defecto: 27 Dependencias Distritales", () => {
-    test("renderiza el mosaico completo de las 27 dependencias oficiales con sus semáforos y KPIs", () => {
+  describe("1. Vista por Defecto: 29 Dependencias Distritales", () => {
+    test("renderiza el mosaico completo de las 29 dependencias oficiales con sus semáforos y KPIs", () => {
       const html = renderToString(
         <RendicionCuentasPanel entryKey="rendicion-cuentas-test" />
       );
 
       // Verificación de títulos y encabezados de la vista institucional
       expect(html).toContain("Rendición de Cuentas y Cumplimiento 2026");
-      expect(html).toContain("27 Dependencias Oficiales");
+      expect(html).toContain("29 Dependencias Oficiales");
       expect(html).toContain("Plan de Acción Distrital 2026");
       expect(html).toContain("Avance Promedio Distrital");
 
       // Verificación del selector de vista
-      expect(html).toContain("27 Dependencias Distritales");
+      expect(html).toContain("29 Dependencias Distritales");
       expect(html).toContain('data-testid="tab-publico-plan-accion-dnp"');
       expect(html).toContain("Matriz Plan de Acción DNP 2026 (Ley 1474)");
 

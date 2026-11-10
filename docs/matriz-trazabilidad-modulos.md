@@ -1,7 +1,7 @@
 # Matriz de trazabilidad de módulos POLIS
 
 **Snapshot censado:** 2026-10-14, rama `main`, base de la tarea `0ed3e66f2a67fdd9aac25d86b4f0b3f1265492ed` más cambios locales de `[ARCH-CONSOLIDACION-01]`.
-**Alembic:** el snapshot del 2026-10-14 se censó con cabeza `0062_motor_plan_accion_dnp` (head único consultado con `uv run --project backend alembic -c backend/alembic.ini heads`). Cabeza vigente verificada el 2026-10-27 [encargo 244]: `0084_aportes_colas_y_apoyos` (head único, mismo comando); la evolución 0063–0084 está resumida en [arquitectura.md](arquitectura.md).
+**Alembic:** el snapshot del 2026-10-14 se censó con cabeza `0062_motor_plan_accion_dnp` (head único consultado con `uv run --project backend alembic -c backend/alembic.ini heads`). Cabeza vigente verificada el 2026-11-07: `0099_sm_worker_backoff` (head único, mismo comando). La evolución 0063–0099 está resumida en [arquitectura.md](arquitectura.md).
 **Permisos:** la clasificación de método, ruta y acceso está en [permisos-api.md](permisos-api.md); la matriz siguiente no reemplaza ese contrato.
 
 ## Criterio de estado
@@ -15,13 +15,13 @@ No se asigna “persistente verificado” a un módulo solo por tener router, se
 
 ## Censo frontend
 
-Se encontraron **21 directorios** directos bajo `src/features/`; la asignación EAF esperaba 23. No se inventan dos entradas para completar el conteo. El estado funcional individual no se certificó durante el censo.
+El snapshot censó **21 directorios** directos bajo `src/features/`; la revisión del 2026-11-07 encuentra **27**, tras incorporar `indicadores`, `marco-legal`, `notificaciones`, `proyectos`, `seguridad-humana` y `sm`. No se inventan entradas para completar conteos. El estado funcional individual no se certificó durante el censo.
 
 | Feature | Estado de integración de este snapshot | Observación/alcance |
 | --- | --- | --- |
 | accesibilidad | Pendiente de verificación | Inventariada en el frontend; recorrido de persistencia no acreditado. |
-| actores | Parcial | Corresponde al módulo backend `actores`, cuyo router existe pero no está montado. |
-| alternativas | Parcial | Router backend existente y no montado en el ensamblador API. |
+| actores | Parcial | Router montado en `api/router.py`; la ficha pública minimiza el contacto y la edición lo consulta con `politicas:gestionar`. |
+| alternativas | Parcial | Router montado en `api/router.py`. |
 | aportes | Parcial | Router montado; la cobertura histórica no sustituye verificación E2E actual. |
 | auditoria | Parcial | Router montado; alcance de lectura/escritura sujeto a permisos API. |
 | barrio | Pendiente de verificación | No se identificó router backend homónimo en el censo. |
@@ -29,7 +29,7 @@ Se encontraron **21 directorios** directos bajo `src/features/`; la asignación 
 | diagnostico | Pendiente de verificación | No se identificó router backend homónimo; verificar integración con instrumentos/IA. |
 | evidencias | Parcial | Corresponde a `evidencia`; router montado. |
 | formularios | Parcial | Router montado; no se verificaron aquí todos los recorridos de escritura. |
-| fuentes | Parcial | Router backend existente y no montado. |
+| fuentes | Parcial | Router montado en `api/router.py`. |
 | geovisor | Parcial | Corresponde a `geodatos`; router montado. Hay cambios simultáneos de agy2 fuera del alcance de esta asignación. |
 | mesas | Parcial | Router montado; cobertura histórica de mesas no certifica todos los flujos actuales. |
 | noticias | Parcial | Router montado; lecturas y mutaciones requieren validación por recorrido. ESLint vuelve a incluir el feature. |
@@ -43,7 +43,7 @@ Se encontraron **21 directorios** directos bajo `src/features/`; la asignación 
 
 ## Routers montados en `backend/app/api/router.py`
 
-El archivo contiene **22 llamadas `include_router`**. Incluye el router de canales WhatsApp con prefijo local `/canales/whatsapp`.
+El archivo contiene **27 llamadas `include_router`** y es el único ensamblador de routers; `main.py` solo lo incluye con el prefijo `/api/v1`. Incluye el router de canales WhatsApp con prefijo local `/canales/whatsapp`.
 
 | Router/módulo montado | Estado en esta ejecución |
 | --- | --- |
@@ -69,13 +69,17 @@ El archivo contiene **22 llamadas `include_router`**. Incluye el router de canal
 | notificaciones | Parcial; ver permisos-api.md |
 | canales (WhatsApp) | Parcial; ver permisos-api.md |
 | seguridad | Parcial; ver permisos-api.md |
+| actores | Parcial; ver permisos-api.md |
+| alternativas | Parcial; ver permisos-api.md |
+| fuentes | Parcial; ver permisos-api.md |
+| sm | Parcial; ver permisos-api.md |
 
-## Módulos con `router.py` no montados
+## Cobertura del ensamblador API
 
-El filesystem contiene **25 módulos** con `router.py`; tres no aparecen en el ensamblador API actual: `actores`, `alternativas` y `fuentes`. Su existencia no los hace accesibles por HTTP. Revisar y decidir montaje, retiro o documentación como internos en una tarea de alcance funcional.
+Los **27 módulos** con `router.py` están montados en `backend/app/api/router.py`; no quedan routers inaccesibles por HTTP. La paridad entre rutas efectivas y matriz de permisos se comprueba en `backend/tests/test_access_policy.py`.
 
 ## Límites de la evidencia
 
-- El conteo inspeccionado no coincide con los “23 features / 23 routers” de la asignación; se reporta el hallazgo para que EAF valide si esperaba otra rama o definición de “módulo”.
+- El conteo inspeccionado en el snapshot (21 features / 22 routers) no coincidía con los “23 features / 23 routers” de la asignación; la revisión del 2026-11-07 censa 27 features y 27 routers, todos montados. La diferencia histórica queda documentada para EAF.
 - Esta matriz es inventario estructural con clasificación conservadora, no certificación de conexión total ni de preparación de producción.
 - No se verificaron despliegue, CSP activo en producción, proveedores externos ni todos los recorridos de escritura. Las pruebas de esta tarea se reportan aparte en `bridge/02_entrega_codex.md`.

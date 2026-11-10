@@ -43,6 +43,34 @@ if ! sha256sum -c "$(basename "$HASH_FILE")"; then
     exit 1
 fi
 
+# pg_restore del HOST (18.x), no el del contenedor PostgreSQL 16.
+# Un volcado hecho con pg_dump 18 (bd_csh) usa formato de archivo 1.16 que el
+# pg_restore 16 del contenedor no puede leer: falla con «unsupported version».
+if [ -n "${PG_RESTORE_BIN:-}" ]; then
+    :
+else
+    PG_RESTORE_BIN=$(ls -1d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -n 1)
+    PG_RESTORE_BIN="${PG_RESTORE_BIN:+${PG_RESTORE_BIN}/}pg_restore"
+    command -v "${PG_RESTORE_BIN}" >/dev/null 2>&1 || PG_RESTORE_BIN="pg_restore"
+fi
+export PG_RESTORE_BIN
+
+echo "Usando pg_restore: ${PG_RESTORE_BIN} ($(${PG_RESTORE_BIN} --version))"
+if [ -f "${BACKUP_FILE}.pgversion" ]; then
+    echo "Origen del volcado: $(tr '\n' ' ' < "${BACKUP_FILE}.pgversion")"
+fi
+
+# Preflight de compatibilidad: `-l` solo abre el archivo si la versión del
+# cliente soporta su formato. Sin esto el error aparecería a mitad del restore.
+if ! "${PG_RESTORE_BIN}" -l "$BACKUP_FILE" >/dev/null 2>"${BACKUP_FILE}.restore.err"; then
+    echo "Error: ${PG_RESTORE_BIN} no puede leer este volcado. Use el cliente pg_restore del host" >&2
+    echo "(p. ej. /usr/lib/postgresql/18/bin/pg_restore) o alinee las versiones de PostgreSQL." >&2
+    cat "${BACKUP_FILE}.restore.err" >&2
+    rm -f "${BACKUP_FILE}.restore.err"
+    exit 1
+fi
+rm -f "${BACKUP_FILE}.restore.err"
+
 # Realizar restauración de prueba
 echo "Preparando base de datos de prueba $TEST_DB..."
 sudo -u postgres dropdb --if-exists "$TEST_DB"
@@ -50,7 +78,8 @@ sudo -u postgres createdb -O polis "$TEST_DB"
 sudo -u postgres psql -d "$TEST_DB" -c "CREATE EXTENSION postgis;"
 
 echo "Restaurando en $TEST_DB..."
-pg_restore -h 127.0.0.1 -U polis -d "$TEST_DB" --no-owner "$BACKUP_FILE" || true
+# Solo el host 18 puede leer el volcado de bd_csh; no usar docker exec pg_restore.
+"${PG_RESTORE_BIN}" -h 127.0.0.1 -U polis -d "$TEST_DB" --no-owner "$BACKUP_FILE" || true
 
 echo "Verificando recuento de tablas..."
 psql -h 127.0.0.1 -U polis -d "$TEST_DB" -c "

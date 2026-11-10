@@ -1,7 +1,7 @@
 import { DEPENDENCIAS_CARTAGENA_2026 } from "../data/entidades-cartagena.data";
 import {
   Coins,
-  Wheat,
+  PackageCheck,
   HeartPulse,
   Leaf,
   Shield,
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 export const DIMENSIONES_META = {
   economica: { Icon: Coins, color: "text-warning" },
-  alimentaria: { Icon: Wheat, color: "text-warning" },
+  alimentaria: { Icon: PackageCheck, color: "text-warning" },
   salud: { Icon: HeartPulse, color: "text-danger" },
   ambiental: { Icon: Leaf, color: "text-success" },
   personal: { Icon: Shield, color: "text-danger" },

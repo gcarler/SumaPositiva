@@ -13,7 +13,7 @@ import { FormField } from "@/shared/ui/form-field";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
-import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus, FileText, Send } from "lucide-react";
+import { CheckCircle2, Star, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus, FileText, Send } from "lucide-react";
 import type { EstadoTestimonio } from "../models/testimonio";
 
 import { FotosMesasModeracion } from "@/features/evidencias/components/fotos-mesas-moderacion";
@@ -282,7 +282,7 @@ export function TestimoniosModeracionContenido() {
                         onClick={() => handleModerar(t.id, "DESTACADO")}
                         className="text-xs h-8 text-[var(--ember)] border-[var(--border)]"
                       >
-                        <Sparkles className="mr-1 size-3.5" />
+                        <Star className="mr-1 size-3.5" />
                         Destacar
                       </Button>
                     )}

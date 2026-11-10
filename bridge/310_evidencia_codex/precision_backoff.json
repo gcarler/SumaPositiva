@@ -1,0 +1,7 @@
+{
+  "formula_final": "base_segundos * (2 ** intento) + jitter",
+  "primer_intento": 1,
+  "base_segundos_default": 30,
+  "primer_backoff_antes_jitter": 60,
+  "razon": "Formula literal 310 y convencion de Herald. Corridas anteriores con exponente intento-1 quedan como historico."
+}

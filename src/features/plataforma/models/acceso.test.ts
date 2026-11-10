@@ -8,6 +8,7 @@ import {
   modulosPermitidos,
   panelPermitido,
   moduloDeRuta,
+  submodulosPermitidos,
 } from "./acceso";
 const sesion = (rol: string, cambios: Partial<Sesion> = {}): Sesion => ({
   modo: "institucional",
@@ -331,5 +332,33 @@ describe("Matriz de rutas internas", () => {
     expect(moduloDeRuta("/plataforma/noticias")).toBe("noticias");
     expect(moduloDeRuta("/plataforma/testimonios/")).toBe("testimonios");
     expect(moduloDeRuta("/plataforma/usuarios/desconocido")).toBeUndefined();
+  });
+
+  test("submodulosPermitidos filtra submódulos según permisos de edición del rol (Encargo 323)", () => {
+    const moduloMesas = MODULOS.find((m) => m.id === "mesas")!;
+    expect(moduloMesas).toBeDefined();
+
+    // Facilitador puede editar mesas: debe ver paneles de edición y de lectura
+    const facilitador = sesion("facilitador_mesa");
+    const subFacilitador = submodulosPermitidos(facilitador, moduloMesas);
+    const idsFacilitador = subFacilitador.map((s) => s.id);
+    expect(idsFacilitador).toContain("mesas_todas");
+    expect(idsFacilitador).toContain("panel_nueva_mesa");
+    expect(idsFacilitador).toContain("panel_papelografo");
+    expect(idsFacilitador).toContain("panel_acta");
+
+    // Auditor no puede editar: no debe ver paneles de edición pero sí los de lectura y subvistas
+    const auditor = sesion("auditor_forense");
+    const subAuditor = submodulosPermitidos(auditor, moduloMesas);
+    const idsAuditor = subAuditor.map((s) => s.id);
+    expect(idsAuditor).toContain("mesas_todas");
+    expect(idsAuditor).toContain("mesas_en_curso");
+    expect(idsAuditor).toContain("panel_acta");
+    expect(idsAuditor).not.toContain("panel_nueva_mesa");
+    expect(idsAuditor).not.toContain("panel_papelografo");
+
+    // Ciudadano no tiene acceso a la plataforma: submodulos vacíos
+    const ciudadano = sesion("ciudadano");
+    expect(submodulosPermitidos(ciudadano, moduloMesas)).toEqual([]);
   });
 });

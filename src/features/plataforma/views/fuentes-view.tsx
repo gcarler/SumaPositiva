@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Search, RotateCcw, Filter, Plus } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -18,6 +18,7 @@ import { puedeEditar } from "../models/acceso";
 import { FuentesKpis } from "@/features/fuentes/components/fuentes-kpis";
 import { FuentesDataGrid } from "@/features/fuentes/components/fuentes-datagrid";
 import { useFuentesStore } from "@/features/fuentes/state/fuentes-store";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import type { AmbitoFuente, EstadoEntrega } from "@/features/fuentes/models/fuente";
 
 export function FuentesView() {
@@ -25,13 +26,27 @@ export function FuentesView() {
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarFuentes = puedeEditar(sesion, "fuentes");
 
-  useEffect(() => {
-    void useFuentesStore.getState().cargarFuentes();
-  }, []);
-
+  const subvistaFuentes = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["fuentes"]
+  );
   const filtros = useFuentesStore((s) => s.filtros);
   const setFiltros = useFuentesStore((s) => s.setFiltros);
   const limpiarFiltros = useFuentesStore((s) => s.limpiarFiltros);
+
+  const [prevSubvista, setPrevSubvista] = useState<string | undefined>(subvistaFuentes);
+
+  if (subvistaFuentes !== prevSubvista) {
+    setPrevSubvista(subvistaFuentes);
+    if (subvistaFuentes === "radicadas") {
+      setFiltros({ estado: "entregada" });
+    } else if (subvistaFuentes === "monitoreo") {
+      setFiltros({ estado: "todos" });
+    }
+  }
+
+  useEffect(() => {
+    void useFuentesStore.getState().cargarFuentes();
+  }, []);
 
   const hayFiltrosActivos =
     filtros.busqueda !== "" ||

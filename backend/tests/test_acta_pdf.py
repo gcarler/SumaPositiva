@@ -211,3 +211,143 @@ def test_generar_acta_pdf_unitario_con_qr():
     assert isinstance(pdf_bytes, bytes)
     assert pdf_bytes.startswith(b"%PDF")
     assert len(pdf_bytes) > 2000
+
+
+def test_generar_acta_pdf_estilos_google_docs_exhaustivo():
+    """Valida el diseño editorial estilo Google Docs con árboles, compromisos, QR y fe pública (ENCARGO 320)."""
+    from datetime import date
+    import subprocess
+    import tempfile
+
+    from app.modules.mesas.acta_pdf import generar_acta_pdf
+    from app.modules.mesas.models import ActaComunitaria, Mesa, ParticipanteMesa
+
+    mesa = Mesa(
+        id=uuid.UUID("01a0f5fe-86df-717b-a4d0-5b6605bdf993"),
+        tipo_mesa="TERRITORIAL",
+        codigo_oficial="MT-L01-01",
+        shortcode_ciudadano="ML0101",
+        slug="mt-l01-01-centro-historico",
+        ruta_jerarquica="raiz.l01",
+        nombre="Mesa Territorial de Seguridad Humana — Centro Histórico y San Diego",
+        lugar_nombre="Claustro de la Merced — Salón Paraninfo",
+        fecha=date(2026, 9, 24),
+        horario="08:30 – 12:30 COT",
+        aforo_maximo=80,
+        total_asistentes=54,
+        estado="CONCERTADA",
+        modalidad="PRESENCIAL",
+        metadatos={
+            "localidad": "Localidad 1: Histórica y del Caribe Norte",
+            "ucg": "UCG 1 — Centro Histórico",
+            "barrio": "San Diego / Getsemaní",
+            "direccion": "Calle de la Chicharra No. 38-42",
+            "coordenadas": {"lat": 10.4241, "lng": -75.5478},
+            "facilitador": "Dra. Carmen Mendoza Gómez (Secretaría del Interior)",
+            "relator": "Lic. Andrés Felipe Quintana (Secretaría de Planeación Distrital)",
+            "arbolProblemas": {
+                "problemaCentral": "Inseguridad ciudadana y deterioro de la convivencia nocturna por microtráfico y exceso de ruido",
+                "causas": [
+                    {
+                        "texto": "Inspección y control policivo nocturno insuficiente",
+                        "metadatos": {"dimensionOnu": "Seguridad Personal", "actorResponsable": "Secretaría del Interior"},
+                        "hijos": [
+                            {"texto": "Déficit de cámaras domo en puntos ciegos", "metadatos": {"actorResponsable": "Distriseguridad"}}
+                        ]
+                    }
+                ],
+                "efectos": [
+                    {"texto": "Pérdida de tranquilidad residencial y habitabilidad comunitaria"}
+                ]
+            },
+            "arbolSoluciones": {
+                "objetivoCentral": "Garantizar la seguridad humana integral y la convivencia pacífica nocturna en el Centro Histórico",
+                "medios": [
+                    {"texto": "Despliegue de cuadrantes mixtos y monitoreo inteligente", "metadatos": {"actorResponsable": "Distriseguridad"}}
+                ],
+                "fines": [
+                    {"texto": "Preservación del patrimonio residencial y cívico de Cartagena"}
+                ]
+            },
+            "compromisos": [
+                {
+                    "codigo": "COMP-01",
+                    "descripcion": "Puesto de Mando Unificado nocturno en Plaza San Diego.",
+                    "entidadResponsable": "Secretaría del Interior",
+                    "personaResponsable": "Dr. Bruno Hernández",
+                    "fechaLimite": "15 de Octubre de 2026",
+                    "tipo": "gestion_institucional",
+                    "estado": "en_ejecucion",
+                    "observaciones": "Operativo piloto en marcha."
+                }
+            ],
+            "logistica": {
+                "observacionesLogistica": "Equipamiento completo con rotafolios de marco lógico y accesibilidad garantizada."
+            },
+            "informe": "Deliberación comunitaria articulada entre autoridades distritales y 54 delegados ciudadanos."
+        },
+    )
+
+    acta = ActaComunitaria(
+        id=uuid.uuid4(),
+        mesa_id=mesa.id,
+        numero_acta="ACTA-2026-MT-L01-01",
+        estado="CONCERTADA",
+        quorum_alcanzado=True,
+        total_participantes=54,
+        resumen_deliberacion=mesa.metadatos["informe"],
+        sha256_acta="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        nombre_facilitador_firma="Dra. Carmen Mendoza Gómez",
+    )
+
+    participante = ParticipanteMesa(
+        id=uuid.uuid4(),
+        mesa_id=mesa.id,
+        sujeto_id="sujeto-test-01",
+        nombre_completo="Vocero Comunitario San Diego",
+        rol_en_mesa="delegado_comunitario",
+        asistencia_confirmada=True,
+    )
+
+    pdf_bytes = generar_acta_pdf(
+        mesa=mesa,
+        acta=acta,
+        participantes=[participante],
+        url_base_publica="https://seguridadhumanaintegral.org",
+    )
+
+    assert isinstance(pdf_bytes, bytes)
+    assert pdf_bytes.startswith(b"%PDF")
+    assert len(pdf_bytes) > 10000  # Documento exhaustivo con estilo Google Docs
+
+    # Verificación de texto extraído mediante pdftotext
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(pdf_bytes)
+        tmp_path = tmp.name
+
+    res = subprocess.run(["pdftotext", tmp_path, "-"], capture_output=True, text=True, check=True)
+    contenido_txt = res.stdout
+
+    # Validaciones obligatorias de contenido territorial y estilo editorial
+    txt_normalizado = " ".join(contenido_txt.split())
+    assert "REPÚBLICA DE COLOMBIA" in txt_normalizado
+    assert "ALCALDÍA MAYOR DE CARTAGENA DE INDIAS" in txt_normalizado
+    assert "ACTA OFICIAL DE CONCERTACIÓN Y DELIBERACIÓN TERRITORIAL" in txt_normalizado
+    assert "1. MARCO NORMATIVO Y FUNDAMENTO JURÍDICO VINCULANTE" in txt_normalizado
+    assert "Ley Estatutaria 1757 de 2015" in txt_normalizado
+    assert "Sentencia C-150 de 2015" in txt_normalizado
+    assert "Decreto Distrital 1070 de 2021" in txt_normalizado
+    assert "3. DIAGNÓSTICO TERRITORIAL CONCERTADO — ÁRBOL DE PROBLEMAS" in txt_normalizado
+    assert "PROBLEMA CENTRAL PRIORIZADO POR LA COMUNIDAD" in txt_normalizado
+    assert "4. ESTRUCTURA PROGRAMÁTICA DE TRANSFORMACIÓN — ÁRBOL DE SOLUCIONES" in txt_normalizado
+    assert "OBJETIVO CENTRAL TRANSFORMADOR ACORDADO" in txt_normalizado
+    assert "5. MATRIZ VINCULANTE DE COMPROMISOS INSTITUCIONALES Y CIUDADANOS" in txt_normalizado
+    assert "COMP-01" in txt_normalizado
+    assert "6. MEMORIA TÉCNICA Y SÍNTESIS DE LA RELATORÍA COMUNITARIA" in txt_normalizado
+    assert "8. CERTIFICACIÓN DE INTEGRIDAD DIGITAL Y FE PÚBLICA" in txt_normalizado
+    assert "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" in txt_normalizado
+    assert "9. CONSTANCIA DE SUSCRIPCIÓN Y FE DE DELIBERACIÓN" in txt_normalizado
+    assert "Dra. Carmen Mendoza Gómez" in txt_normalizado
+    assert "Lic. Andrés Felipe Quintana" in txt_normalizado
+    assert "Página 1 de" in txt_normalizado
+

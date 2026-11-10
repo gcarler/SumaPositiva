@@ -1,0 +1,19 @@
+# Estado del servicio tras el reinicio de las 18:36 UTC (release montado en solo lectura)
+2026-11-07T18:48:51Z
+--- ready ---
+{"status":"ready","database":"ok","migrations":"ok","extensions":"ok"}
+HTTP=200
+--- system ---
+{"status":"ok","timestamp":"2026-11-07T18:48:51.702513+00:00","service":"polis-api","version":"0.2.1","environment":"production","database":{"status":"ok","ping_ms":12.62,"active_connections":7,"max_connections":100,"migration_revision":"0096_riesgo_sin_evaluar","migrations_status":"ok","extensions_status":"ok","installed_extensions":["address_standardizer","ltree","pg_stat_statements","pg_trgm","pgcrypto","pgrouting","plpgsql","postgis","postgis_raster","postgis_sfcgal","postgis_topology"]},"pr
+--- montajes read-only del backend en el espacio de nombres del servicio ---
+/dev/sda1 /root/polis/backend/alembic ext4 ro,relatime,discard,errors=remount-ro,commit=30 0 0
+/dev/sda1 /root/polis/backend/app ext4 ro,relatime,discard,errors=remount-ro,commit=30 0 0
+/dev/sda1 /root/polis/backend/scripts ext4 ro,relatime,discard,errors=remount-ro,commit=30 0 0
+/dev/sda1 /root/polis/scripts ext4 ro,relatime,discard,errors=remount-ro,commit=30 0 0
+--- versiones visibles en el namespace (sin 0097) ---
+0095_sembrar_censo_35_mesas.py
+0096_riesgo_sin_evaluar.py
+__pycache__
+--- árbol de trabajo real ---
+0097_sm_core.py
+__pycache__

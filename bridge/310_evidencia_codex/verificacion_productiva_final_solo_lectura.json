@@ -1,0 +1,15 @@
+{
+  "fecha_utc": "2026-11-07T23:30:15.506068+00:00",
+  "sonda": {
+    "http": 200,
+    "respuesta": {
+      "status": "ready",
+      "database": "ok",
+      "migrations": "ok",
+      "extensions": "ok"
+    }
+  },
+  "reinicios_codex_310": 0,
+  "migraciones_bd_csh_codex_310": 0,
+  "worker_productivo_activado": false
+}

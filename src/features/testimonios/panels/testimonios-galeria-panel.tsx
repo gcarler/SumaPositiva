@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
-import { Quote, Sparkles, Plus, ShieldCheck, MapPin, Tag, User } from "lucide-react";
+import { Quote, Star, Plus, ShieldCheck, MapPin, Tag, User } from "lucide-react";
 import type { Testimonio } from "../models/testimonio";
 
 export function TestimoniosGaleriaPanel({ entryKey }: { entryKey: string }) {
@@ -109,7 +109,7 @@ export function TestimoniosGaleriaPanel({ entryKey }: { entryKey: string }) {
               onClick={() => setSoloDestacados(!soloDestacados)}
               className="text-xs h-8"
             >
-              <Sparkles className="mr-1 size-3.5" />
+              <Star className="mr-1 size-3.5" />
               Solo Destacados
             </Button>
           </div>

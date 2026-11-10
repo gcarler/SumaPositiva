@@ -356,3 +356,29 @@ html[data-a11y-reduced-motion="true"] *::after {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+/* ============================================================
+   POLIS — Celdas Multilínea para Matrices RevoGrid
+   Garantiza lectura completa de problemas, causas, efectos y soluciones
+   ============================================================ */
+.polis-revogrid-container revo-grid revogr-data .rgRow {
+  line-height: 1.35 !important;
+}
+
+.polis-revogrid-container revo-grid revogr-data .rgCell {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  text-overflow: clip !important;
+  line-height: 1.35 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 6px 8px !important;
+  overflow-y: auto !important;
+}
+
+.polis-revogrid-container revo-grid .rowHeaders revogr-data .rgCell {
+  white-space: nowrap !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}

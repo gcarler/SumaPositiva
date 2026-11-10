@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { puedeEntrar } from "@/features/plataforma/models/acceso";
+import { puedeEntrar, ROLES } from "@/features/plataforma/models/acceso";
 import { Button } from "@/shared/ui/button";
 
 import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, UserRound, BarChart3, Smartphone, BookOpen } from "lucide-react";
+import { Moon, Sun, UserRound, BarChart3, Smartphone, BookOpen, KanbanSquare } from "lucide-react";
 import { IsotipoPolis } from "@/shared/branding/logo-polis";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import type { VistaApp } from "@/core/navigation/navigation-store";
@@ -50,27 +50,35 @@ function ThemeToggle() {
 
 function SesionButton() {
   const { openPanel } = usePanels();
-  const sesion = useSesionStore((s) => s.sesion);
-  const mounted = useMounted();
+  const clientSesion = useSesionStore((s) => s.sesion);
+  const sesion = typeof window === "undefined" ? useSesionStore.getState().sesion : clientSesion;
+  const clientMounted = useMounted();
+  const mounted = typeof window === "undefined" ? true : clientMounted;
 
   const abrir = () => openPanel("sesion", {});
 
-  if (!mounted || !sesion) {
+  const esIdentidad = !!mounted && !!sesion && sesion.modo !== "anonimo" && !!sesion.identidad;
+
+  if (!esIdentidad) {
     return (
       <Button
         variant="default"
         size="sm"
         type="button"
         onClick={abrir}
-        aria-label="Iniciar sesión"
+        aria-label="Iniciar sesión en POLIS"
+        className="gap-1.5 font-semibold text-xs shadow-xs bg-[var(--brand-polis-blue)] text-[var(--text-inverse)] hover:bg-[var(--brand-polis-cyan)] hover:text-[var(--text-primary)] border-0"
       >
-        <UserRound className="size-3.5" strokeWidth={1.5} />
+        <UserRound className="size-3.5" strokeWidth={2} aria-hidden="true" />
         <span>Iniciar sesión</span>
       </Button>
     );
   }
 
-  const esIdentidad = sesion.modo !== "anonimo" && !!sesion.identidad;
+  const esCiudadano = sesion.rol === "ciudadano";
+  const rolLabel = esCiudadano
+    ? "Ciudadano"
+    : (ROLES[sesion.rol ?? ""] ?? "Equipo Técnico");
 
   return (
     <Button
@@ -78,13 +86,21 @@ function SesionButton() {
       size="sm"
       type="button"
       onClick={abrir}
-      aria-label={
-        esIdentidad ? `Sesión: ${sesion.identidad!.nombre}` : "Sesión: anónimo"
-      }
+      className="gap-2 border-[var(--border)] hover:border-[var(--border-strong)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)]"
+      aria-label={`Sesión activa: ${sesion.identidad!.nombre} (${rolLabel})`}
     >
       <SesionAvatar sesion={sesion} />
-      <span className="hidden max-w-[110px] truncate text-xs font-medium text-[var(--text-primary)] sm:inline">
-        {esIdentidad ? sesion.identidad!.nombre : "Anónimo"}
+      <span className="max-w-[120px] truncate text-xs font-medium text-[var(--text-primary)]">
+        {sesion.identidad!.nombre}
+      </span>
+      <span
+        className={`hidden sm:inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+          esCiudadano
+            ? "bg-[var(--surface-3)] text-[var(--text-secondary)]"
+            : "bg-[var(--ember-soft)] text-[var(--ember)] border border-[var(--ember)]/30"
+        }`}
+      >
+        {esCiudadano ? "Ciudadano" : "Técnico"}
       </span>
     </Button>
   );
@@ -92,35 +108,33 @@ function SesionButton() {
 
 const NAV: { id: VistaApp; label: string; labelCorto?: string; href?: string }[] = [
   { id: "inicio", label: "Inicio" },
-  { id: "explorar", label: "Líneas Estratégicas", labelCorto: "Explorar" },
+  { id: "explorar", label: "Líneas Estratégicas", labelCorto: "Líneas" },
   { id: "dimensiones", label: "Dimensiones y Entidades", labelCorto: "Dimensiones" },
   { id: "mesas", label: "Mesas de Trabajo", labelCorto: "Mesas" },
   { id: "noticias", label: "Noticias", labelCorto: "Noticias" },
   { id: "testimonios", label: "Testimonios", labelCorto: "Testimonios" },
   { id: "geovisor", label: "Datos", labelCorto: "Datos" },
-  { id: "indicadores", label: "Catálogo de Indicadores", labelCorto: "Catálogo", href: "/indicadores" },
+  { id: "indicadores", label: "Indicadores", labelCorto: "Indicadores", href: "/indicadores" },
 ];
 
 export function Topbar() {
   const vista = useNavigationStore((s) => s.vista);
   const setVista = useNavigationStore((s) => s.setVista);
-  const sesion = useSesionStore((s) => s.sesion);
+  const clientSesion = useSesionStore((s) => s.sesion);
+  const sesion = typeof window === "undefined" ? useSesionStore.getState().sesion : clientSesion;
   const { openPanel } = usePanels();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md">
-      {/* min-h en lugar de altura fija: al envolver la navegación en anchos
-          intermedios (TCA-01) la banda crece sin superponer el wordmark ni
-          desbordar el contenido bajo la cabecera pegajosa. */}
-      <div className="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:min-h-20 md:flex-wrap md:justify-between md:gap-x-4 md:py-0">
-        <div className="flex min-w-0 shrink-0 items-center gap-3">
-          {/* Marca Institucional POLIS */}
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/90 backdrop-blur-md">
+      <div className="container-fluid flex h-16 items-center justify-between gap-2 sm:gap-4">
+        {/* Marca Institucional POLIS */}
+        <div className="flex shrink-0 items-center">
           <Button
             variant="unstyled"
             size="unstyled"
             type="button"
             onClick={() => setVista("inicio")}
-            className="group flex items-center gap-2.5 text-left transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] rounded-lg"
+            className="group flex items-center gap-2 text-left transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] rounded-lg"
             aria-label="POLIS — Seguridad Humana Cartagena 2026–2036 — Inicio"
           >
             <div className="relative flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-lg bg-[var(--surface-2)] border border-[var(--border-strong)] p-1 transition-all duration-200 group-hover:scale-105 group-hover:border-[var(--ember)] shadow-xs">
@@ -132,12 +146,12 @@ export function Topbar() {
                   POLIS
                 </span>
                 <span
-                  className="hidden text-[11px] font-medium text-[var(--text-tertiary)] sm:inline"
+                  className="hidden text-[11px] font-medium text-[var(--text-tertiary)] xl:inline"
                   aria-hidden="true"
                 >
                   •
                 </span>
-                <span className="hidden text-[12px] font-semibold text-[var(--text-secondary)] sm:inline">
+                <span className="hidden text-[12px] font-semibold text-[var(--text-secondary)] xl:inline">
                   Seguridad Humana
                 </span>
                 <span
@@ -145,16 +159,16 @@ export function Topbar() {
                   aria-hidden="true"
                 />
               </div>
-              <span className="text-[11px] font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
+              <span className="text-[10px] sm:text-[11px] font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
                 Cartagena 2026–2036
               </span>
             </div>
           </Button>
         </div>
 
-        {/* Nav */}
+        {/* Menú de Navegación Principal en una sola línea horizontal con scroll limpio en pantallas pequeñas */}
         <nav
-          className="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+          className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto no-scrollbar py-1 px-1"
           aria-label="Navegación principal"
         >
           {NAV.map((item) => {
@@ -166,18 +180,16 @@ export function Topbar() {
                   size="unstyled"
                   key={item.id}
                   asChild
-                  className={`rounded-full border px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 ${
+                  className={`shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3 ${
                     active
-                      ? "border-[var(--ember)] bg-[var(--surface-3)] text-[var(--text-primary)]"
-                      : "border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--ember)] hover:text-[var(--text-primary)]"
+                      ? "bg-[var(--surface-3)] text-[var(--text-primary)] font-semibold border border-[var(--ember)]/40 shadow-2xs"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                   }`}
                   aria-current={active ? "page" : undefined}
                 >
                   <Link href={item.href}>
-                    <span className="hidden md:inline">{item.label}</span>
-                    <span className="md:hidden">
-                      {item.labelCorto ?? item.label}
-                    </span>
+                    <span className="hidden xl:inline">{item.label}</span>
+                    <span className="xl:hidden">{item.labelCorto ?? item.label}</span>
                   </Link>
                 </Button>
               );
@@ -189,49 +201,34 @@ export function Topbar() {
                 key={item.id}
                 type="button"
                 onClick={() => setVista(item.id)}
-                className={`rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 ${
+                className={`shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3 ${
                   active
-                    ? "bg-[var(--surface-3)] text-[var(--text-primary)]"
-                    : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    ? "bg-[var(--surface-3)] text-[var(--text-primary)] font-semibold border border-[var(--ember)]/40 shadow-2xs"
+                    : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className="hidden md:inline">{item.label}</span>
-                <span className="md:hidden">
-                  {item.labelCorto ?? item.label}
-                </span>
+                <span className="hidden xl:inline">{item.label}</span>
+                <span className="xl:hidden">{item.labelCorto ?? item.label}</span>
               </Button>
             );
           })}
         </nav>
 
-        {/* Acciones */}
-        <div className="flex flex-wrap items-center justify-end gap-2">
+        {/* Acciones principales: Iniciar Sesión garantizado y siempre visible */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <OfflineStatusBadge />
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
-            title="Conocer más acerca de POLIS, su marco doctrinal y titularidad de Ples SAS"
-          >
-            <Link href="/acerca">
-              <span className="hidden sm:inline">Acerca de POLIS</span>
-              <span className="sm:hidden">Acerca</span>
-            </Link>
-          </Button>
 
           <Button
             asChild
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            className="hidden 2xl:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
             title="Saber más sobre la Política de Seguridad Humana Integral (ONU Res. 66/290 y Caja de Herramientas)"
           >
             <Link href="/seguridad-humana">
               <BookOpen className="size-3.5 text-[var(--ember)]" />
-              <span className="hidden xl:inline">Saber más sobre Seguridad Humana</span>
-              <span className="xl:hidden hidden sm:inline">Seguridad Humana</span>
+              <span>Seguridad Humana</span>
             </Link>
           </Button>
 
@@ -239,12 +236,12 @@ export function Topbar() {
             asChild
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            className="hidden lg:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
             title="Modo Barrio: vista ultraligera y bajo consumo de datos para celulares"
           >
             <Link href="/barrio">
               <Smartphone className="size-3.5 text-[var(--ember)]" />
-              <span className="hidden sm:inline">Modo Barrio</span>
+              <span>Modo Barrio</span>
             </Link>
           </Button>
 
@@ -253,22 +250,29 @@ export function Topbar() {
             size="sm"
             type="button"
             onClick={() => openPanel("rendicion-cuentas", {})}
-            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
-            title="Ver Semáforo de Cumplimiento Real 2026 de las 27 dependencias"
+            className="hidden md:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            title="Ver Semáforo de Cumplimiento Real 2026 de las dependencias distritales"
           >
             <BarChart3 className="size-3.5 text-[var(--ember)]" />
-            <span className="hidden sm:inline">Rendición 2026</span>
+            <span>Rendición 2026</span>
           </Button>
+
           {puedeEntrar(sesion) && (
             <Button
               asChild
-              variant="outline"
+              variant="ember"
               size="sm"
-              className="h-auto min-h-9 whitespace-normal text-center"
+              className="gap-1.5 text-xs font-semibold shadow-xs"
+              title="Acceder al área de trabajo técnica para formuladores y autoridades de política pública"
             >
-              <Link href="/plataforma">Ir a la Plataforma →</Link>
+              <Link href="/plataforma">
+                <KanbanSquare className="size-3.5" aria-hidden="true" />
+                <span className="hidden sm:inline">Área de Trabajo →</span>
+                <span className="sm:hidden">Gestión</span>
+              </Link>
             </Button>
           )}
+
           <SesionButton />
           <ThemeToggle />
         </div>

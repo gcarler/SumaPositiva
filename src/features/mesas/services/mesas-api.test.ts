@@ -78,6 +78,39 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       expect(mesa.facilitador).toBe("");
       expect(mesa.facilitador).not.toBe("Facilitador Institucional");
     });
+
+    test("normaliza árbol de problemas y soluciones y metadatos extendidos desde backend", () => {
+      const backendData: MesaBackendResponse = {
+        id: "mesa-uuid-arbol",
+        nombre: "Mesa con Árbol",
+        metadatos: {
+          arbolProblemas: {
+            problemaCentral: "Inseguridad alimentaria",
+            dimensionPrincipal: "Seguridad Alimentaria",
+            causas: [{ id: "c1", texto: "Falta de centros de abasto", hijos: [] }],
+            efectos: [{ id: "e1", texto: "Desnutrición infantil", hijos: [] }],
+          },
+          arbolSoluciones: {
+            objetivoCentral: "Garantizar soberanía alimentaria",
+            medios: [{ id: "m1", texto: "Crear comedores comunitarios", hijos: [] }],
+            fines: [{ id: "f1", texto: "Reducción de anemia infantil", hijos: [] }],
+          },
+          modoRelatoria: "matriz",
+          publicarResultados: true,
+          publicadoPor: "Carlos Gómez",
+          coordenadas: { latitud: 10.42, longitud: -75.54 },
+        },
+      };
+
+      const mesa = normalizarMesaBackend(backendData);
+      expect(mesa.arbolProblemas?.problemaCentral).toBe("Inseguridad alimentaria");
+      expect(mesa.arbolProblemas?.causas).toHaveLength(1);
+      expect(mesa.arbolSoluciones?.objetivoCentral).toBe("Garantizar soberanía alimentaria");
+      expect(mesa.modoRelatoria).toBe("matriz");
+      expect(mesa.publicarResultados).toBe(true);
+      expect(mesa.publicadoPor).toBe("Carlos Gómez");
+      expect(mesa.coordenadas).toEqual({ lat: 10.42, lng: -75.54 });
+    });
   });
 
   describe("actualizarMesaRemota", () => {
@@ -239,6 +272,41 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       expect(capturedUrl).toContain("/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993");
       expect(capturedHeaders["Authorization"] || capturedHeaders["authorization"]).toBe("Bearer jwt-test-token-edicion");
       expect(res.lugar).toBe("Nuevo Lugar Comunal San Francisco");
+    });
+
+    test("persiste árbol de problemas y soluciones y publicación en metadatos hacia backend", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (_info, init) => {
+        if (init?.body && typeof init.body === "string") {
+          capturedBody = JSON.parse(init.body);
+        }
+        return new Response(
+          JSON.stringify({
+            id: "01924567-89ab-7cde-f012-3456789abcde",
+            nombre: "Mesa con Árbol Persistido",
+            metadatos: capturedBody.metadatos,
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        );
+      });
+
+      const arbolP = {
+        problemaCentral: "Falta de iluminación en vías",
+        causas: [{ id: "c1", texto: "Postes dañados", hijos: [] }],
+        efectos: [{ id: "e1", texto: "Percepción de inseguridad", hijos: [] }],
+      };
+
+      const res = await actualizarMesaRemota("01924567-89ab-7cde-f012-3456789abcde", {
+        arbolProblemas: arbolP,
+        publicarResultados: true,
+      });
+
+      expect(capturedBody.metadatos).toBeDefined();
+      const meta = capturedBody.metadatos as Record<string, unknown>;
+      expect(meta.arbolProblemas).toEqual(arbolP);
+      expect(meta.publicarResultados).toBe(true);
+      expect(res.arbolProblemas?.problemaCentral).toBe("Falta de iluminación en vías");
     });
   });
 

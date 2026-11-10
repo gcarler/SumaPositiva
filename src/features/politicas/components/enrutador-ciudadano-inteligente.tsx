@@ -6,6 +6,7 @@ import {
   Search,
   MapPin,
   Building2,
+  Landmark,
   Globe,
   ArrowRight,
   Sparkles,
@@ -13,6 +14,14 @@ import {
   ShieldCheck,
   CheckCircle2,
   BarChart3,
+  Trash2,
+  AlertTriangle,
+  Users,
+  Lightbulb,
+  ShieldAlert,
+  Droplets,
+  Banknote,
+  Mountain,
   X
 } from "lucide-react";
 import {Button} from "@/shared/ui/button";
@@ -22,18 +31,19 @@ import {usePanels} from "@/core/panels/panel-store";
 import {
   DEPENDENCIAS_CARTAGENA_2026,
   enrutarCasoCiudadano,
+  formatearPresupuestoCop,
   type EnrutamientoCiudadanoResultado
 } from "../data/entidades-cartagena.data";
 
 const EJEMPLOS_CONSULTA = [
-  { texto: "Basuras y sedimentos en el caño que causan inundaciones", etiqueta: "🗑️ Basuras y caños" },
-  { texto: "Punto de venta y consumo de drogas cerca a colegio", etiqueta: "💊 Drogas en colegio" },
-  { texto: "Riñas entre pandillas y enfrentamientos con armas", etiqueta: "⚔️ Riñas y pandillas" },
-  { texto: "Zona oscura sin alumbrado público con atracos constantes", etiqueta: "💡 Alumbrado público" },
-  { texto: "Menores en riesgo y explotación sexual en entorno turístico", etiqueta: "🛡️ ESCNNA en turismo" },
-  { texto: "Focos de aguas estancadas y proliferación de dengue", etiqueta: "🦟 Criaderos de dengue" },
-  { texto: "Cobro extorsivo o intimidación de prestamistas gota a gota", etiqueta: "💸 Extorsión y gota a gota" },
-  { texto: "Riesgo de deslizamiento de tierra en ladera", etiqueta: "⛰️ Riesgo de derrumbe" },
+  { texto: "Basuras y sedimentos en el caño que causan inundaciones", etiqueta: "Basuras y caños", icono: Trash2 },
+  { texto: "Punto de venta y consumo de drogas cerca a colegio", etiqueta: "Drogas en colegio", icono: AlertTriangle },
+  { texto: "Riñas entre pandillas y enfrentamientos con armas", etiqueta: "Riñas y pandillas", icono: Users },
+  { texto: "Zona oscura sin alumbrado público con atracos constantes", etiqueta: "Alumbrado público", icono: Lightbulb },
+  { texto: "Menores en riesgo y explotación sexual en entorno turístico", etiqueta: "ESCNNA en turismo", icono: ShieldAlert },
+  { texto: "Focos de aguas estancadas y proliferación de dengue", etiqueta: "Criaderos de dengue", icono: Droplets },
+  { texto: "Cobro extorsivo o intimidación de prestamistas gota a gota", etiqueta: "Extorsión y gota a gota", icono: Banknote },
+  { texto: "Riesgo de deslizamiento de tierra en ladera", etiqueta: "Riesgo de derrumbe", icono: Mountain },
 ];
 
 const TERRITORIOS_OPCIONES = [
@@ -71,7 +81,10 @@ export function EnrutadorCiudadanoInteligente() {
      territorio. Se calcula del catálogo auditado; no se inventan datos. */
   const dependenciasTerritorio = useMemo(() => {
     if (territorioSeleccionado === "todos") {
-      return DEPENDENCIAS_CARTAGENA_2026.map((dep) => ({ dep, prioridad: false }));
+      return DEPENDENCIAS_CARTAGENA_2026.map((dep) => ({
+        dep,
+        prioridad: (dep.territoriosPrioritarios?.length ?? 0) > 0,
+      }));
     }
     return DEPENDENCIAS_CARTAGENA_2026.map((dep) => ({
       dep,
@@ -280,21 +293,25 @@ export function EnrutadorCiudadanoInteligente() {
           <Sparkles className="size-3 text-[var(--ember)]" />
           Ejemplos rápidos:
         </span>
-        {EJEMPLOS_CONSULTA.map((ej) => (
-          <Button
-            key={ej.etiqueta}
-            variant="unstyled"
-            size="unstyled"
-            type="button"
-            onClick={() => {
-              setConsulta(ej.texto);
-              procesarBusqueda(ej.texto);
-            }}
-            className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs text-[var(--text-secondary)] hover:border-[var(--ember)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            {ej.etiqueta}
-          </Button>
-        ))}
+        {EJEMPLOS_CONSULTA.map((ej) => {
+          const IconoChip = ej.icono;
+          return (
+            <Button
+              key={ej.etiqueta}
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() => {
+                setConsulta(ej.texto);
+                procesarBusqueda(ej.texto);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs text-[var(--text-secondary)] hover:border-[var(--ember)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <IconoChip className="size-3 text-[var(--text-tertiary)] shrink-0" aria-hidden="true" />
+              <span>{ej.etiqueta}</span>
+            </Button>
+          );
+        })}
       </div>
 
       {/* Ficha de Enrutamiento Inteligente */}
@@ -327,8 +344,9 @@ export function EnrutadorCiudadanoInteligente() {
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                🏛️ Autoridad Competente Líder designada en el Plan de Desarrollo Distrital 2024–2027
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5 flex items-center gap-1.5">
+                <Landmark className="size-3.5 text-[var(--ember)] shrink-0" aria-hidden="true" />
+                <span>Autoridad Competente Líder designada en el Plan de Desarrollo Distrital 2024–2027</span>
               </p>
             </div>
 
@@ -460,7 +478,7 @@ export function EnrutadorCiudadanoInteligente() {
                   />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--text-tertiary)]">
-                  <span>Presupuesto 2026: {resultado.dependenciaLider.presupuesto2026Cop ?? "Auditado"}</span>
+                  <span>Presupuesto 2026: {formatearPresupuestoCop(resultado.dependenciaLider.presupuesto2026Cop, "Auditado")}</span>
                   <Button
                     variant="unstyled"
                     size="unstyled"

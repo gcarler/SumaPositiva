@@ -1,0 +1,1000 @@
+# Suite backend completa con base polis_test*
+........................................................................ [  3%]
+........................................................................ [  7%]
+........................................................................ [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 18%]
+........................................................................ [ 22%]
+........................................................................ [ 26%]
+...F.................................................................... [ 30%]
+.........F.............................................................. [ 33%]
+........................................................................ [ 37%]
+.....................................................F.................. [ 41%]
+..................................F..........F.......................... [ 45%]
+........................................................................ [ 48%]
+................................F..................s.................... [ 52%]
+......................................F........................F........ [ 56%]
+........................................................................ [ 60%]
+........................................................................ [ 63%]
+........................................................................ [ 67%]
+............................F........................................... [ 71%]
+........................................................................ [ 75%]
+................................sss.....................s...sss.....ss.. [ 78%]
+..ss.sss.......s........................................................ [ 82%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+.................................................FF..................... [ 93%]
+........................................................................ [ 97%]
+............................................                             [100%]
+=================================== FAILURES ===================================
+_______________ test_migraciones_preservan_registros_existentes ________________
+
+reporte = (<starlette.testclient.TestClient object at 0x75715ff37110>, {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp...-ee7d-78cf-8371-982212f553b4', 'origenDatos': 'api', 'titulo': 'QA geoespacial 3bce79ee605f40648e8f953ffe74a82c', ...})
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+
+    @pytest.mark.migration
+    def test_migraciones_preservan_registros_existentes(reporte, database_url):
+        from alembic.config import Config
+    
+        from alembic import command
+    
+        client, _, form = reporte
+        r = client.post(ruta(form) + "/respuestas", headers=anonimo(client), json=datos([foto()]))
+        assert r.status_code == 201
+        sql = "SELECT id,datos_respuesta FROM participacion_ciudadana.respuestas_formulario WHERE formulario_id=:id"
+        antes = consultar(database_url, sql, {"id": form["id"]})
+        config = Config(str(Path(__file__).parents[1] / "alembic.ini"))
+        command.downgrade(config, "0031_reporte_inseguridad")
+        assert consultar(database_url, sql, {"id": form["id"]}) == antes
+        command.upgrade(config, "head")
+>       command.check(config)
+
+tests/test_calidad_formularios.py:462: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x757161ea7a70>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f45e810>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715fab2d50>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f45ca10>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f45e810>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571473574a0>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757161258710>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571473574a0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147356c00>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147357c80>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147356fc0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147356c00>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715eb82cf0>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147355a60>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715eb81940>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715eb82cf0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f34b8c0>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147355880>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f349100>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f34b8c0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f349700>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+______________ test_censo_preserva_uuid_dependiente_y_mesa_ajena _______________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+
+    @pytest.mark.migration
+    def test_censo_preserva_uuid_dependiente_y_mesa_ajena(database_url):
+        config = _config()
+        command.downgrade(config, "0094_herald_salud_resumen")
+        mesa_id, extra_id = uuid.uuid4(), uuid.uuid4()
+        sujeto = uuid.uuid4().hex
+        try:
+            _consulta(
+                database_url,
+                """
+                INSERT INTO mesas_trabajo.mesas
+                    (id, ruta_jerarquica, tipo_mesa, codigo_oficial, shortcode_ciudadano,
+                     nombre, slug, aforo_maximo, total_asistentes)
+                VALUES (:id, 'prueba.censo', 'POBLACIONAL', 'MP-POB-01', :sujeto,
+                        'Mesa anterior con participantes', :slug, 10, 1),
+                       (:extra, 'prueba.ajena', 'BARRIAL', :sujeto, :otro_slug,
+                        'Mesa fuera del censo', :otro_slug, 10, 0)
+                """,
+                {"id": mesa_id, "extra": extra_id, "sujeto": sujeto, "slug": sujeto, "otro_slug": f"x-{sujeto}"},
+            )
+            _consulta(
+                database_url,
+                """INSERT INTO mesas_trabajo.participantes_mesa (mesa_id, sujeto_id, nombre_completo)
+                   VALUES (:id, :sujeto, 'Participante anterior')""",
+                {"id": mesa_id, "sujeto": sujeto},
+            )
+            command.upgrade(config, "head")
+            mesas = _consulta(
+                database_url,
+                "SELECT id, total_asistentes FROM mesas_trabajo.mesas WHERE id IN (:id, :extra)",
+                {"id": mesa_id, "extra": extra_id},
+            )
+            assert {r["id"] for r in mesas} == {mesa_id, extra_id}
+            assert next(r for r in mesas if r["id"] == mesa_id)["total_asistentes"] == 1
+            assert (
+                _consulta(
+                    database_url,
+                    "SELECT mesa_id FROM mesas_trabajo.participantes_mesa WHERE sujeto_id=:sujeto",
+                    {"sujeto": sujeto},
+                )[0]["mesa_id"]
+                == mesa_id
+            )
+            assert (
+                _consulta(database_url, "SELECT mesa_id FROM mesas_trabajo.agendas WHERE id='mp-001'")[0]["mesa_id"]
+                == mesa_id
+            )
+            # Un downgrade con dependientes debe abortar: no borra participantes ni sus vínculos.
+            with pytest.raises(RuntimeError, match="con datos dependientes"):
+                command.downgrade(config, "0094_herald_salud_resumen")
+            assert (
+                _consulta(database_url, "SELECT mesa_id FROM mesas_trabajo.agendas WHERE id='mp-001'")[0]["mesa_id"]
+                == mesa_id
+            )
+>           assert _consulta(database_url, "SELECT version_num FROM alembic_version")[0]["version_num"] == (
+                "0096_riesgo_sin_evaluar"
+            )
+E           AssertionError: assert '0097_sm_core' == '0096_riesgo_sin_evaluar'
+E             
+E             - 0096_riesgo_sin_evaluar
+E             + 0097_sm_core
+
+tests/test_censo_mesas_migracion.py:89: AssertionError
+___________ test_tabla_gold_set_en_base_aislada_y_carga_idempotente ____________
+
+prepared_test_database = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307'
+
+    def test_tabla_gold_set_en_base_aislada_y_carga_idempotente(prepared_test_database) -> None:
+        from pathlib import Path
+    
+        from alembic.config import Config
+    
+        from alembic import command
+    
+        if not prepared_test_database:
+            pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+        if not (make_url(prepared_test_database).database or "").startswith("polis_test"):
+            pytest.fail("La base de pruebas debe llamarse polis_test o comenzar por polis_test")
+    
+        config_cmd = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+>       command.check(config_cmd)  # modelo ⇔ esquema coincide (incluye 0083)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_conciliador_gold_set.py:662: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x75715f802db0>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145a1de80>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571473873e0>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160ac7080>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145a1de80>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715c5268d0>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147d8fe60>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715c5268d0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f58650>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715c5273e0>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f584d0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f58650>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f597f0>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f59df0>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f58260>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f597f0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715fdf0c20>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757146f59fa0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715fdf0d40>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715fdf0c20>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715fdf0050>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+___________________ test_corridas_pipeline_regimen_operativo ___________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75714562c7a0>
+
+    def test_corridas_pipeline_regimen_operativo(monkeypatch):
+        database_url = os.getenv("POLIS_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva de pruebas")
+        if not (make_url(database_url).database or "").startswith("polis_test"):
+            pytest.fail("La base de pruebas debe llamarse polis_test o comenzar por polis_test")
+    
+        # La migración 0070 debe instalar limpio y pasar alembic check en la base de pruebas.
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = _config_alembic()
+        command.upgrade(config, "head")
+>       command.check(config)
+
+tests/test_corridas_pipeline.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x7571454e09b0>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f6f3dd0>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715c3d4a10>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f6f18e0>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f6f3dd0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145a694c0>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160caa300>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145a694c0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160d0cdd0>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145a69910>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160d0c740>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160d0cdd0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715edd9f70>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160d0c0b0>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715edda960>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715edd9f70>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571454a7c80>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715edd9d60>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571454a7a10>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571454a7c80>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571454a7e90>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+__________________ test_migrations_and_readiness_on_postgres ___________________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7571607e5940>
+
+    @pytest.mark.migration
+    def test_migrations_and_readiness_on_postgres(database_url, monkeypatch):
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+        command.upgrade(config, "head")
+>       command.check(config)
+
+tests/test_database_integration.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x75714593d220>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f06f90>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75716050d070>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f05070>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f06f90>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f04f20>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571607bb3e0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f04f20>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f04b90>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f05a30>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f078c0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f04b90>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160cd5fd0>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144f05f10>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160cd71a0>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160cd5fd0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571605b8080>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160cd5a60>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571605b9220>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571605b8080>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571605bb1d0>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+____________ test_disponibilidad_pgrouting_en_repositorio[asyncio] _____________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307'
+
+    @pytest.mark.anyio
+    async def test_disponibilidad_pgrouting_en_repositorio(database_url: str):
+        """Verifica que pgRouting 4.x esté activo y disponible en el motor de base de datos."""
+        from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    
+        engine = create_async_engine(database_url)
+        session_factory = async_sessionmaker(engine, expire_on_commit=False)
+        async with session_factory() as session:
+            repo = GeodatosRepository(session)
+            version = await repo.verificar_pgrouting()
+>           assert version is not None
+E           assert None is not None
+
+tests/test_geodatos_isocronas.py:140: AssertionError
+________________________ test_ciclo_migracion_0093_0094 ________________________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x757147e7dac0>
+
+    @pytest.mark.migration
+    def test_ciclo_migracion_0093_0094(database_url, monkeypatch) -> None:
+        """0093 → 0094 → 0093 → 0094 con verificación de tabla, CHECK e índice."""
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = _config_alembic()
+        command.upgrade(config, "head")
+    
+        async def _verificar_head() -> None:
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.connect() as conexion:
+                    tabla = await conexion.scalar(text("SELECT to_regclass('participacion_ciudadana.herald_latido')"))
+                    assert tabla and tabla.endswith("herald_latido")
+                    tipos = (
+                        await conexion.execute(
+                            text(
+                                "SELECT pg_get_constraintdef(oid) FROM pg_constraint "
+                                "WHERE conname = 'chk_notificaciones_tipo_evento'"
+                            )
+                        )
+                    ).scalar_one()
+                    assert "resumen_diario" in tipos
+                    indice = await conexion.scalar(
+                        text(
+                            "SELECT indexdef FROM pg_indexes "
+                            "WHERE schemaname = 'participacion_ciudadana' "
+                            "AND indexname = 'uq_notif_resumen_destinatario_dia'"
+                        )
+                    )
+                    assert indice and "UNIQUE" in indice and "resumen_diario" in indice
+            finally:
+                await engine.dispose()
+    
+        async def _verificar_0093() -> None:
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.connect() as conexion:
+                    tabla = await conexion.scalar(text("SELECT to_regclass('participacion_ciudadana.herald_latido')"))
+                    assert not tabla
+                    tipos = (
+                        await conexion.execute(
+                            text(
+                                "SELECT pg_get_constraintdef(oid) FROM pg_constraint "
+                                "WHERE conname = 'chk_notificaciones_tipo_evento'"
+                            )
+                        )
+                    ).scalar_one()
+                    assert "resumen_diario" not in tipos
+            finally:
+                await engine.dispose()
+    
+        asyncio.run(_verificar_head())
+        command.downgrade(config, "0093_herald_gestion")
+        asyncio.run(_verificar_0093())
+        command.upgrade(config, "head")
+        command.downgrade(config, "0093_herald_gestion")
+        command.upgrade(config, "head")
+        asyncio.run(_verificar_head())
+>       command.check(config)
+
+tests/test_herald_salud_resumen.py:962: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x757144c1ade0>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d4cb0>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75713537d790>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d49b0>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d4cb0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d5f10>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356092e0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d5f10>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d7c80>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d7200>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d7b30>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d7c80>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356c9910>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356d74d0>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356c9850>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356c9910>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356cb7a0>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356cb2f0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356cb6e0>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356cb7a0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571356cb860>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+________ test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin ________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75714514a3c0>
+
+    @pytest.mark.migration
+    def test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin(database_url, monkeypatch):
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+    
+        async def limpiar_admins():
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.begin() as connection:
+                    await connection.execute(
+                        text("""UPDATE autenticacion.usuarios SET rol_id=(
+                        SELECT id FROM autenticacion.roles WHERE codigo='ciudadano')
+                        WHERE rol_id=(SELECT id FROM autenticacion.roles WHERE codigo='administrador_identidades')""")
+                    )
+            finally:
+                await engine.dispose()
+    
+        asyncio.run(limpiar_admins())
+        command.downgrade(config, "0020_formularios_y_consultas")
+        usuario_id = uuid.uuid4()
+        correo = f"Legado-{uuid.uuid4().hex}@Example.org"
+        hash_clave = obtener_hash_contrasena("ClaveLegada2026*")
+    
+        async def consulta(accion):
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.begin() as connection:
+                    if accion == "insertar":
+                        await connection.execute(
+                            text("""INSERT INTO autenticacion.usuarios
+                            (id, rol_id, correo, hash_contrasena, nombres, apellidos, metadatos)
+                            VALUES (:id, (SELECT id FROM autenticacion.roles WHERE codigo='ciudadano'),
+                            :correo, :hash, 'Usuario', 'Legado', CAST(:metadatos AS jsonb))"""),
+                            {
+                                "id": usuario_id,
+                                "correo": correo,
+                                "hash": hash_clave,
+                                "metadatos": '{"legado":true}',
+                            },
+                        )
+                    elif accion == "comprobar":
+                        usuario = (
+                            await connection.execute(
+                                text("SELECT * FROM autenticacion.usuarios WHERE id=:id"),
+                                {"id": usuario_id},
+                            )
+                        ).one()
+                        assert usuario.correo == correo and usuario.hash_contrasena == hash_clave
+                        assert usuario.metadatos == {"legado": True} and usuario.correo_verificado_en is None
+                    elif accion == "promover":
+                        await connection.execute(
+                            text("""UPDATE autenticacion.usuarios SET rol_id=(
+                            SELECT id FROM autenticacion.roles WHERE codigo='administrador_identidades')
+                            WHERE id=:id"""),
+                            {"id": usuario_id},
+                        )
+                    else:
+                        await connection.execute(
+                            text("DELETE FROM autenticacion.usuarios WHERE id=:id"), {"id": usuario_id}
+                        )
+            finally:
+                await engine.dispose()
+    
+        try:
+            asyncio.run(consulta("insertar"))
+            command.upgrade(config, "head")
+>           command.check(config)
+
+tests/test_identidad_migracion.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x75716038ce90>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145312e40>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144d273b0>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145313470>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757145312e40>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d4b60>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571453135c0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d4b60>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d7200>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d6150>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d6a80>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d7200>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d5eb0>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571458d7680>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d7fe0>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d5eb0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d4890>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d6450>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d6150>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d4890>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571457d66c0>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+_____________________ test_migracion_0071_diario_auditable _____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75716acc67e0>
+
+    def test_migracion_0071_diario_auditable(monkeypatch):
+        """La revisión 0071 instala el enlace de hilos y el diario auditable con su guardia."""
+        database_url = _url_pruebas()
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = _config_alembic()
+        command.upgrade(config, "head")
+>       command.check(config)
+
+tests/test_orquestador_grafo.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x757144b430b0>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f93f350>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571474f8260>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f93c290>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f93f350>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134260fb0>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571343dd610>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134260fb0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134b7ade0>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134263f20>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134b7bb30>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134b7ade0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c7890>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757134b7b980>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c63f0>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c7890>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c5ee0>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715ed42570>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c6870>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c5ee0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571443c4890>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+________________ test_tres_tablas_dea_versionadas_check_limpio _________________
+
+prepared_test_database = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x757144b40e30>
+
+    def test_tres_tablas_dea_versionadas_check_limpio(prepared_test_database, monkeypatch) -> None:
+        """Con la base al head la estructura modelo↔BD coincide y las 3 tablas existen."""
+        if not prepared_test_database:
+            pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+        if not (make_url(prepared_test_database).database or "").startswith("polis_test"):
+            pytest.fail("La base de pruebas debe llamarse polis_test o comenzar por polis_test")
+        monkeypatch.setenv("POLIS_DATABASE_URL", prepared_test_database)
+>       command.check(_config_alembic())
+
+tests/test_tablas_dea_dmu_lineage.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x757144b40d10>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b37a0>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571352b62a0>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b3c20>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b37a0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b2090>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571455e8e00>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b2090>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75713525b860>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571341b2f60>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571352599d0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75713525b860>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f58f6e0>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757135258d70>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f58d580>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f58f6e0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571446116a0>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f58eb40>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571446139e0>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571446116a0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757144611a00>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+________ test_downgrade_0081_no_destruye_datos_y_reconstruccion_limpia _________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307:e636ec19327b6cc2f929cd86@127.0.0.1:5432/polis_test_eaf_307_migraciones'
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x75716031c0b0>
+
+    @pytest.mark.migration
+    def test_downgrade_0081_no_destruye_datos_y_reconstruccion_limpia(database_url, monkeypatch) -> None:
+        """El downgrade documentado como no-op conserva filas; la reconstrucción vuelve al head."""
+        monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
+        config = _config_alembic()
+        command.upgrade(config, "head")
+    
+        async def _sembrar_fila_de_prueba() -> None:
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.begin() as conexion:
+                    await conexion.execute(
+                        text(
+                            "INSERT INTO seguimiento.pdd_fuentes_financiacion_dmu "
+                            "(dmu_codigo, nombre_dmu, nivel_dmu, sgr_regalias_cop, credito_publico_cop, "
+                            "sgp_transferencias_cop, icld_recursos_propios_cop, cofinanciacion_nacion_cop, "
+                            "total_fuentes_cop) VALUES ('POLIS-TEST-0082', 'Prueba lineage', 'L3', 1, 2, 3, 4, 5, 15) "
+                            "ON CONFLICT (dmu_codigo) DO NOTHING"
+                        )
+                    )
+            finally:
+                await engine.dispose()
+    
+        asyncio.run(_sembrar_fila_de_prueba())
+        command.downgrade(config, "0081_proteger_correspondencias")
+    
+        # Las filas reales del padrón deben sobrevivir el downgrade (retiro de la
+        # tabla requiere decisión EDD/EAF; el downgrade del lineage no borra).
+    
+        async def _confirmar_conservacion_y_reconstruccion() -> None:
+            engine = create_async_engine(database_url)
+            try:
+                async with engine.begin() as conexion:
+                    fila = (
+                        await conexion.execute(
+                            text(
+                                "SELECT COUNT(*) FROM seguimiento.pdd_fuentes_financiacion_dmu "
+                                "WHERE dmu_codigo='POLIS-TEST-0082'"
+                            )
+                        )
+                    ).scalar()
+                    assert int(fila or 0) == 1
+                    await conexion.execute(
+                        text("DELETE FROM seguimiento.pdd_fuentes_financiacion_dmu WHERE dmu_codigo='POLIS-TEST-0082'")
+                    )
+            finally:
+                await engine.dispose()
+    
+        asyncio.run(_confirmar_conservacion_y_reconstruccion())
+        command.upgrade(config, "head")
+>       command.check(config)
+
+tests/test_tablas_dea_dmu_lineage.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <alembic.config.Config object at 0x75715ea02330>
+
+    def check(config: Config) -> None:
+        """Check if revision command with autogenerate has pending upgrade ops.
+    
+        :param config: a :class:`.Config` object.
+    
+        .. versionadded:: 1.9.0
+    
+        """
+    
+        script_directory = ScriptDirectory.from_config(config)
+    
+        command_args = dict(
+            message=None,
+            autogenerate=True,
+            sql=False,
+            head="head",
+            splice=False,
+            branch_label=None,
+            version_path=None,
+            rev_id=None,
+            depends_on=None,
+        )
+        revision_context = autogen.RevisionContext(
+            config,
+            script_directory,
+            command_args,
+        )
+    
+        def retrieve_migrations(rev, context):
+            revision_context.run_autogenerate(rev, context)
+            return []
+    
+        with EnvironmentContext(
+            config,
+            script_directory,
+            fn=retrieve_migrations,
+            as_sql=False,
+            template_args=revision_context.template_args,
+            revision_context=revision_context,
+        ):
+            script_directory.run_env()
+    
+        # the revision_context now has MigrationScript structure(s) present.
+    
+        migration_script = revision_context.generated_revisions[-1]
+        diffs = []
+        for upgrade_ops in migration_script.upgrade_ops_list:
+            diffs.extend(upgrade_ops.as_diffs())
+    
+        if diffs:
+>           raise util.AutogenerateDiffsDetected(
+                f"New upgrade operations detected: {diffs}",
+                revision_context=revision_context,
+                diffs=diffs,
+            )
+E           alembic.util.exc.AutogenerateDiffsDetected: New upgrade operations detected: [('remove_index', Index('ix_sm_eventos_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715ee4e8d0>, for_update=False)))), ('remove_index', Index('ix_sm_eventos_tipo', Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False))), ('remove_table', Table('sm_eventos', MetaData(), Column('id', UUID(), table=<sm_eventos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715e8682f0>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_eventos>, nullable=False), Column('tipo_evento', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('entidad', VARCHAR(length=80), table=<sm_eventos>), Column('entidad_id', VARCHAR(length=200), table=<sm_eventos>), Column('payload', JSONB(astext_type=Text()), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715ee4f140>, for_update=False)), Column('idempotencia', VARCHAR(length=255), table=<sm_eventos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_eventos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_eventos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_eventos>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_eventos>), Column('asunto', VARCHAR(length=200), table=<sm_eventos>), Column('cuerpo', TEXT(), table=<sm_eventos>), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_eventos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715ee4e8d0>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_auditorias_evento', Column('evento_id', UUID(), table=<sm_auditorias>, nullable=False))), ('remove_index', Index('ix_sm_auditorias_mensaje', Column('mensaje_id', UUID(), table=<sm_auditorias>))), ('remove_index', Index('ix_sm_auditorias_tenant_creado', Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160f4bc50>, for_update=False)))), ('remove_table', Table('sm_auditorias', MetaData(), Column('id', UUID(), table=<sm_auditorias>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715c776db0>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_auditorias>, nullable=False), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_auditorias>), Column('tenant', VARCHAR(length=32), table=<sm_auditorias>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_auditorias>, nullable=False), Column('accion', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('detalle', VARCHAR(length=500), table=<sm_auditorias>), Column('hash', VARCHAR(length=80), table=<sm_auditorias>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_auditorias>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757160f4bc50>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_consentimientos_actualizado', Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f650860>, for_update=False)))), ('remove_index', Index('ix_sm_consentimientos_tenant', Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False))), ('remove_table', Table('sm_consentimientos', MetaData(), Column('id', UUID(), table=<sm_consentimientos>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f80c440>, for_update=False)), Column('tenant', VARCHAR(length=32), table=<sm_consentimientos>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_consentimientos>, nullable=False), Column('estado', VARCHAR(length=20), table=<sm_consentimientos>, nullable=False), Column('origen', VARCHAR(length=120), table=<sm_consentimientos>, nullable=False), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f6528a0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_consentimientos>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f650860>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_entregas_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147c9c500>, for_update=False)))), ('remove_index', Index('ix_sm_entregas_mensaje', Column('mensaje_id', UUID(), table=<sm_entregas>, nullable=False))), ('remove_table', Table('sm_entregas', MetaData(), Column('id', UUID(), table=<sm_entregas>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f80da90>, for_update=False)), Column('mensaje_id', UUID(), ForeignKey('participacion_ciudadana.sm_mensajes.id'), table=<sm_entregas>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_entregas>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_entregas>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('intento', INTEGER(), table=<sm_entregas>, nullable=False), Column('estado_entrega', VARCHAR(length=20), table=<sm_entregas>, nullable=False), Column('externo_id', VARCHAR(length=200), table=<sm_entregas>), Column('detalle', VARCHAR(length=500), table=<sm_entregas>), Column('payload', JSONB(astext_type=Text()), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147c9ec00>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_entregas>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x757147c9c500>, for_update=False)), schema='participacion_ciudadana')), ('remove_index', Index('ix_sm_mensajes_cola', Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False))), ('remove_index', Index('ix_sm_mensajes_creado', Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571608287d0>, for_update=False)))), ('remove_index', Index('ix_sm_mensajes_evento', Column('evento_id', UUID(), table=<sm_mensajes>, nullable=False))), ('remove_table', Table('sm_mensajes', MetaData(), Column('id', UUID(), table=<sm_mensajes>, primary_key=True, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715f03cc50>, for_update=False)), Column('evento_id', UUID(), ForeignKey('participacion_ciudadana.sm_eventos.id'), table=<sm_mensajes>, nullable=False), Column('tenant', VARCHAR(length=32), table=<sm_mensajes>, nullable=False), Column('canal', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('actor', VARCHAR(length=120), table=<sm_mensajes>, nullable=False), Column('contacto_hash', VARCHAR(length=80), table=<sm_mensajes>, nullable=False), Column('plantilla', VARCHAR(length=80), table=<sm_mensajes>), Column('asunto', VARCHAR(length=200), table=<sm_mensajes>), Column('cuerpo', TEXT(), table=<sm_mensajes>), Column('estado', VARCHAR(length=20), table=<sm_mensajes>, nullable=False), Column('idempotencia', VARCHAR(length=255), table=<sm_mensajes>, nullable=False), Column('metadatos', JSONB(astext_type=Text()), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75715ef48e60>, for_update=False)), Column('creado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x7571608287d0>, for_update=False)), Column('actualizado_en', TIMESTAMP(timezone=True), table=<sm_mensajes>, nullable=False, server_default=DefaultClause(<sqlalchemy.sql.elements.TextClause object at 0x75716082b860>, for_update=False)), schema='participacion_ciudadana'))]
+
+.venv/lib/python3.12/site-packages/alembic/command.py:370: AutogenerateDiffsDetected
+=============================== warnings summary ===============================
+tests/test_ingesta_masiva_triada.py::test_official_cartagena_corpus_detects_historical_profiles_and_three_engines
+  /root/polis/backend/.venv/lib/python3.12/site-packages/openpyxl/worksheet/_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+    warn(msg)
+
+tests/test_motor_plan_accion_dnp.py::test_crear_actividad_rechaza_verbo_debil
+  /root/polis/backend/app/modules/compromisos/router.py:649: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+    return await service.crear_actividad(datos, actor_id=sujeto.sujeto_id)
+
+tests/test_pipeline_p0_unit.py::test_timeout_cancela_trabajo_y_cierra_resultado
+  /root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=1201547) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_calidad_formularios.py::test_migraciones_preservan_registros_existentes
+FAILED tests/test_censo_mesas_migracion.py::test_censo_preserva_uuid_dependiente_y_mesa_ajena
+FAILED tests/test_conciliador_gold_set.py::test_tabla_gold_set_en_base_aislada_y_carga_idempotente
+FAILED tests/test_corridas_pipeline.py::test_corridas_pipeline_regimen_operativo
+FAILED tests/test_database_integration.py::test_migrations_and_readiness_on_postgres
+FAILED tests/test_geodatos_isocronas.py::test_disponibilidad_pgrouting_en_repositorio[asyncio]
+FAILED tests/test_herald_salud_resumen.py::test_ciclo_migracion_0093_0094 - a...
+FAILED tests/test_identidad_migracion.py::test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin
+FAILED tests/test_orquestador_grafo.py::test_migracion_0071_diario_auditable
+FAILED tests/test_tablas_dea_dmu_lineage.py::test_tres_tablas_dea_versionadas_check_limpio
+FAILED tests/test_tablas_dea_dmu_lineage.py::test_downgrade_0081_no_destruye_datos_y_reconstruccion_limpia
+11 failed, 1889 passed, 16 skipped, 3 warnings in 746.02s (0:12:26)
+EXIT=1

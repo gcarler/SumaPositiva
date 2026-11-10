@@ -48,6 +48,9 @@ def _evento(idempotencia: str = "aporte-radicado-prueba-100") -> SMEvento:
     )
 
 
+SECRETO_CONTACTO = "secreto-de-prueba-sm-core-32-bytes"
+
+
 def test_hash_contacto_es_stable_y_anti_pii():
     contacto = _evento().contacto
     identificador = contacto.identificador
@@ -56,12 +59,14 @@ def test_hash_contacto_es_stable_y_anti_pii():
         actor=contacto.actor,
         canal=contacto.canal.value,
         identificador=identificador,
+        secreto=SECRETO_CONTACTO.encode(),
     )
     hash_b = hash_contacto(
         tenant="polis",
         actor=contacto.actor,
         canal=contacto.canal.value,
         identificador=identificador,
+        secreto=SECRETO_CONTACTO.encode(),
     )
     assert hash_a == hash_b
     assert contacto.identificador not in hash_a
@@ -84,6 +89,7 @@ def test_mensaje_desde_evento_lleva_trazabilidad_y_sin_contacto_crudo():
             actor=evento.actor,
             canal=evento.canal.value,
             identificador=evento.contacto.identificador,
+            secreto=SECRETO_CONTACTO.encode(),
         ),
     )
     assert mensaje.evento_id == evento.id
@@ -93,7 +99,7 @@ def test_mensaje_desde_evento_lleva_trazabilidad_y_sin_contacto_crudo():
 
 def test_consentimiento_registra_hash_no_contacto():
     async def flujo():
-        servicio = SMCoreService()
+        servicio = SMCoreService(secreto_contacto=SECRETO_CONTACTO)
         evento = _evento()
         return await servicio.registrar_consentimiento(
             actor=evento.actor,
@@ -108,7 +114,7 @@ def test_consentimiento_registra_hash_no_contacto():
 
 def test_evento_requiere_consentimiento_y_genera_mensaje():
     async def flujo():
-        servicio = SMCoreService()
+        servicio = SMCoreService(secreto_contacto=SECRETO_CONTACTO)
         evento = _evento()
         with pytest.raises(SMConsentimientoFaltante):
             await servicio.procesar_evento(evento)
@@ -128,7 +134,7 @@ def test_evento_requiere_consentimiento_y_genera_mensaje():
 
 def test_evento_repetido_con_otro_datos_conflicto():
     async def flujo():
-        servicio = SMCoreService()
+        servicio = SMCoreService(secreto_contacto=SECRETO_CONTACTO)
         evento = _evento()
         await servicio.registrar_consentimiento(
             actor=evento.actor,
@@ -145,7 +151,7 @@ def test_evento_repetido_con_otro_datos_conflicto():
 
 def test_mensaje_whatsapp_se_adapta_y_registra_entrega():
     async def flujo():
-        servicio = SMCoreService()
+        servicio = SMCoreService(secreto_contacto=SECRETO_CONTACTO)
         evento = _evento()
         await servicio.registrar_consentimiento(
             actor=evento.actor,
@@ -158,9 +164,9 @@ def test_mensaje_whatsapp_se_adapta_y_registra_entrega():
         return entrega, await servicio.salud()
 
     entrega, salud = asyncio.run(flujo())
-    assert entrega.payload["canal"] == "whatsapp"
+    assert len(entrega.payload["payload_sha256"]) == 64
     assert salud.pendientes == 0
-    assert salud.enviados == 1
+    assert salud.enviados == 0
 
 
 def test_adaptador_por_canal_conversa_a_dialecto_portable():
@@ -176,6 +182,7 @@ def test_adaptador_por_canal_conversa_a_dialecto_portable():
             actor=evento.actor,
             canal=evento.canal.value,
             identificador=contacto.identificador,
+            secreto=SECRETO_CONTACTO.encode(),
         ),
         plantilla=evento.plantilla,
         asunto=evento.asunto,
@@ -186,7 +193,7 @@ def test_adaptador_por_canal_conversa_a_dialecto_portable():
     entrega = adaptador_por_canal(SMCanal.WHATSAPP).construir(mensaje, contacto)
     assert entrega.mensaje_id == mensaje.id
     assert entrega.canal == contacto.canal
-    assert entrega.estado_entrega == "enviado"
+    assert entrega.estado_entrega == "preparado"
     assert "Su aporte fue radicado" in entrega.payload["text"]
 
 
@@ -198,3 +205,17 @@ def test_adaptador_webhook_sin_contacto_crudo():
         actor="otro-software",
     )
     assert adapter.canal == contacto.canal
+
+
+def test_hash_contacto_depende_del_secreto():
+    contacto = _evento().contacto
+    argumentos = {
+        "tenant": "polis",
+        "actor": contacto.actor,
+        "canal": contacto.canal.value,
+        "identificador": contacto.identificador,
+    }
+    primera = hash_contacto(**argumentos, secreto=b"a" * 32)
+    segunda = hash_contacto(**argumentos, secreto=b"b" * 32)
+    assert primera != segunda
+    assert len(primera) == len(segunda) == 64

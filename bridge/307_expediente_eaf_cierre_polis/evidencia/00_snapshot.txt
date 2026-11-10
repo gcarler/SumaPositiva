@@ -1,0 +1,37 @@
+# Snapshot congelado
+2026-11-07T18:14:52Z
+commit=da4c54f2b565709fe46d599dc9270f00324db026
+arbol=018bc11f9ac10418369a97e0ee68641a13f0f036
+da4c54f2b565709fe46d599dc9270f00324db026 2026-11-07 17:30:26 +0000 feat: implementar nucleo portable SM
+--- git status --porcelain ---
+ M backend/app/modules/compromisos/gold_set_conciliacion.py
+ M backend/app/modules/compromisos/google_workspace_sync_service.py
+ M backend/app/modules/compromisos/ingesta_masiva_excel.py
+ M backend/app/modules/compromisos/ingesta_masiva_service.py
+ M backend/pyproject.toml
+ M backend/scripts/conciliador_gold_set.py
+ M backend/tests/test_conciliador_gold_set.py
+ M backend/tests/test_google_workspace_sync.py
+ M backend/tests/test_politicas_y_geodatos.py
+ M backend/uv.lock
+ M bridge/01_tarea_activa.md
+ M data/gold_set_conciliacion/anotacion_a_ciegas.csv
+ M docs/gold-set-anotacion.md
+ M scripts/e2e-smoke-expansion-cobertura.mjs
+ M scripts/e2e-smoke-flujos-criticos.mjs
+?? backend/alembic/versions/0097_sm_core.py
+?? backend/app/modules/compromisos/reconciliacion_ceros_pa.py
+?? backend/app/modules/compromisos/recuperacion_documentos_pa.py
+?? backend/scripts/reconciliar_ceros_planes_accion.py
+?? backend/scripts/recuperar_insumos_planes_accion.py
+?? backend/tests/test_ingesta_recuperacion_ceros.py
+?? backend/tests/test_reconciliacion_ceros_pa.py
+?? backend/tests/test_recuperacion_documentos_pa.py
+?? bridge/304_entrega_codex_cierre_pendientes.md
+?? bridge/304_evidencia_cierre/
+?? bridge/304_plan_codex_cierre_pendientes.md
+?? bridge/304_solicitud_eaf_cierre.md
+?? bridge/307_expediente_eaf_cierre_polis/
+?? data/gold_set_conciliacion/historico/
+?? scripts/e2e-csp.mjs
+?? scripts/e2e-csp.test.mjs

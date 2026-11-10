@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { Search, Users, VenetianMask, UserRound, Plus } from "lucide-react";
+import { Search, Users, Shield, UserRound, Plus } from "lucide-react";
 import { SearchField } from "./search-field";
 import { FilterChip } from "./filter-chip";
 import { EmptyState } from "./empty-state";
@@ -135,7 +135,7 @@ function ChoiceDemo() {
           value: "anonimo",
           label: "De forma anónima",
           description: "Participa sin publicar tu nombre.",
-          icon: <VenetianMask />,
+          icon: <Shield />,
         },
         {
           value: "identidad",

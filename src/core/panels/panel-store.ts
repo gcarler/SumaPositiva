@@ -47,7 +47,12 @@ function createEntry<T extends PanelType>(
 ): AnyPanelEntry {
   // The generic arguments keep `type` and `props` correlated; the mapped union
   // is not inferred by TypeScript when T itself is generic.
-  return { key: nextKey(type), type, props, maximized: false } as AnyPanelEntry;
+  return {
+    key: nextKey(type),
+    type,
+    props: (props ?? {}) as PanelPropsRegistry[T],
+    maximized: false,
+  } as AnyPanelEntry;
 }
 
 export const usePanelStore = create<PanelState>((set) => ({

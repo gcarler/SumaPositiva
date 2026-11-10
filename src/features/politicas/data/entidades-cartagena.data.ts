@@ -1,5 +1,5 @@
 /**
- * POLIS — Censo Oficial de 27 Dependencias de la Alcaldía Mayor de Cartagena (2026)
+ * POLIS — Censo Oficial de 29 Dependencias de la Alcaldía Mayor de Cartagena (2026)
  * Fuente Oficial: Informe de Seguimiento a Planes de Acción 2026 a corte 30 de junio de 2026
  * Plan de Desarrollo Distrital "Cartagena Ciudad de Derechos" (2024–2027).
  * Articulado con las 7 Dimensiones de Seguridad Humana (Ley Estatutaria 1757 de 2015).
@@ -40,7 +40,14 @@ export interface DependenciaDistrital {
 
 export const AVANCE_PROMEDIO_PDD_2026 = 38.8;
 export const FECHA_CORTE_AUDITORIA = "30 de junio de 2026";
-export const PRESUPUESTO_TOTAL_SEGURIDAD_HUMANA_2026 = ".1 Billones COP";
+export const PRESUPUESTO_TOTAL_SEGURIDAD_HUMANA_2026 = "1.1 Billones COP";
+export const TOTAL_ENTIDADES_DISTRITALES_2026 = 29;
+
+export function formatearPresupuestoCop(valor?: string, fallback = "Por definir"): string {
+  if (!valor || !valor.trim()) return fallback;
+  const limpio = valor.trim().replace(/^\.(\d+)/, "$1");
+  return limpio;
+}
 
 export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
   {
@@ -341,7 +348,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
       "ICLD"
     ],
     "metasPriorizadas": [
-      "Recaudo fiscal récord de .2 Billones COP para inversión social",
+      "Recaudo fiscal récord de 1.2 Billones COP para inversión social",
       "Modernización del catastro multipropósito distrital",
       "Asignación oportuna y auditada del 100% de los recursos FONSET a seguridad"
     ],
@@ -810,7 +817,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     "competenciaSeguridadHumana": "Fortalecimiento organizativo y garantías para los dignatarios de las Juntas de Acción Comunal (JAC) y organizaciones de base ciudadana.",
     "misionPlanAccion2026": "Fortalecer la gobernanza comunal, capacitar a las JAC y proteger la vida de líderes y lideresas barriales.",
     "avancePlanAccion2026": 34.1,
-    "presupuesto2026Cop": ".900 Millones",
+    "presupuesto2026Cop": "900 Millones",
     "fuentesFinanciacion": [
       "ICLD"
     ],
@@ -1261,7 +1268,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     "competenciaSeguridadHumana": "Articulación interinstitucional para la seguridad en el Centro Histórico, San Diego y Getsemaní: rumba segura, control de ruido y orden urbano.",
     "misionPlanAccion2026": "Articular de manera integral la seguridad, la habitabilidad y el ordenamiento en el Centro Histórico, San Diego y Getsemaní.",
     "avancePlanAccion2026": 45.0,
-    "presupuesto2026Cop": ".800 Millones",
+    "presupuesto2026Cop": "800 Millones",
     "fuentesFinanciacion": [
       "ICLD"
     ],
@@ -1308,7 +1315,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     "competenciaSeguridadHumana": "Pedagogía ciudadana de la legalidad, desarme de palabras, cultura tributaria y formación de líderes comunitarios en derechos humanos.",
     "misionPlanAccion2026": "Promover la cultura ciudadana, la pedagogía de la paz, la resolución dialogada de conflictos y el liderazgo democrático barrial.",
     "avancePlanAccion2026": 38.2,
-    "presupuesto2026Cop": ".200 Millones",
+    "presupuesto2026Cop": "200 Millones",
     "fuentesFinanciacion": [
       "ICLD"
     ],

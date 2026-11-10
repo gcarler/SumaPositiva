@@ -1,0 +1,11 @@
+[Unit]
+Description=POLIS - respaldo diario del correo propio a las 03:30 UTC
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 UTC
+Persistent=true
+RandomizedDelaySec=300
+Unit=polis-correo-respaldo.service
+
+[Install]
+WantedBy=timers.target

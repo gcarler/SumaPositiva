@@ -13,8 +13,17 @@ import type {
   EntidadResponsable,
   PersonaResponsable,
   AdjuntoMesa,
+  LogisticaMesa,
+  ItemChecklistLogistico,
+  ResponsableLogistico,
+  CompromisoMesa,
+  ConfiguracionSorteoAzar,
+  IntervencionSorteada,
+  MetodoConvocatoriaMesa,
+  NotaMesa,
+  FotoEvidenciaMesa,
 } from "@/features/mesas/models/mesas";
-import { uidNodo, calcularTotalAsistentes } from "@/features/mesas/models/mesas";
+import { uidNodo, calcularTotalAsistentes, crearLogisticaPorDefecto } from "@/features/mesas/models/mesas";
 
 /**
  * POLIS — Store del Área de Trabajo (mesas públicas + papelografo).
@@ -68,12 +77,13 @@ interface MesasState {
 
   /* Mesa */
   crearMesa: (input: MesaInput) => MesaDeTrabajo;
-  actualizarMesa: (mesaId: string, patch: Partial<MesaInput & { informe?: string }>) => void;
+  actualizarMesa: (mesaId: string, patch: Partial<MesaDeTrabajo>) => void;
   setAcuerdosPlenaria: (mesaId: string, acuerdos: string) => void;
   setInformeMesa: (mesaId: string, informe: string) => void;
   setAsistentesPlenaria: (mesaId: string, cantidad: number | null) => void;
   setConteoIndependiente: (mesaId: string, conteoIndependiente: boolean) => void;
   eliminarMesa: (mesaId: string) => void;
+  setPublicarResultados: (mesaId: string, publicar: boolean, usuario?: string) => void;
   agregarAdjuntoMesa: (mesaId: string, adjunto: AdjuntoMesa) => void;
   eliminarAdjuntoMesa: (mesaId: string, adjuntoId: string) => void;
 
@@ -133,6 +143,43 @@ interface MesasState {
    * Devuelve false si ya existe un árbol de soluciones.
    */
   derivarSoluciones: (mesaId: string, submesaId: string) => boolean;
+
+  /* Encargo 308: Motor Integral de 3 Fases (Logística, Compromisos, Sorteo, Notas, Galería) */
+  actualizarLogistica: (mesaId: string, logistica: Partial<LogisticaMesa>) => void;
+  toggleChecklistLogistico: (mesaId: string, itemId: string) => void;
+  agregarItemChecklist: (mesaId: string, item: Omit<ItemChecklistLogistico, "id">) => void;
+  eliminarItemChecklist: (mesaId: string, itemId: string) => void;
+  agregarResponsableLogistico: (mesaId: string, responsable: Omit<ResponsableLogistico, "id">) => void;
+  eliminarResponsableLogistico: (mesaId: string, responsableId: string) => void;
+
+  agregarCompromiso: (mesaId: string, compromiso: Omit<CompromisoMesa, "id">) => void;
+  actualizarCompromiso: (mesaId: string, compromisoId: string, patch: Partial<CompromisoMesa>) => void;
+  eliminarCompromiso: (mesaId: string, compromisoId: string) => void;
+
+  ejecutarSorteoIntervencion: (
+    mesaId: string,
+    asistente: { id: string; nombre: string },
+    duracionMinutos?: number,
+    tema?: string
+  ) => void;
+  eliminarSorteoIntervencion: (mesaId: string, asistenteId: string) => void;
+  generarMuestraAleatoriaAsistencia: (
+    mesaId: string,
+    asistentesIds: string[],
+    tamanoMuestra: number
+  ) => string[];
+  actualizarMetodoConvocatoria: (
+    mesaId: string,
+    metodo: MetodoConvocatoriaMesa,
+    estratificacion?: string
+  ) => void;
+
+  agregarNotaMesa: (mesaId: string, nota: Omit<NotaMesa, "id" | "creadoEn">) => void;
+  eliminarNotaMesa: (mesaId: string, notaId: string) => void;
+
+  agregarFotoEvidencia: (mesaId: string, foto: Omit<FotoEvidenciaMesa, "id" | "subidoEn">) => void;
+  recargarFotoEvidencia: (mesaId: string, fotoId: string, nuevaFoto: Partial<FotoEvidenciaMesa>) => void;
+  eliminarFotoEvidencia: (mesaId: string, fotoId: string) => void;
 }
 
 /* ---------- Helpers inmutables ---------- */
@@ -254,26 +301,76 @@ export const useMesasStore = create<MesasState>((set, get) => ({
   },
 
   actualizarMesa: (mesaId, patch) =>
-    set((s) => ({
-      mesas: s.mesas.map((m) => {
-        if (m.id !== mesaId) return m;
-        const entidad =
-          patch.entidades && patch.entidades.length > 0
-            ? patch.entidades[0].nombre
-            : (patch.entidad ?? m.entidad);
-        const facilitador =
-          patch.responsables && patch.responsables.length > 0
-            ? (patch.responsables.find((r) => r.esFacilitador)?.nombre ??
-              patch.responsables[0].nombre)
-            : (patch.facilitador ?? m.facilitador);
+    set((s) => {
+      const existe = s.mesas.some((m) => m.id === mesaId);
+      if (!existe) {
         return {
-          ...m,
-          ...patch,
-          entidad,
-          facilitador,
+          mesas: [
+            ...s.mesas,
+            {
+              id: mesaId,
+              nombre: patch.nombre ?? "",
+              lugar: patch.lugar ?? "",
+              entidad: patch.entidad ?? "",
+              facilitador: patch.facilitador ?? "",
+              totalAsistentes: patch.totalAsistentes ?? 0,
+              plenaria: patch.plenaria ?? { acuerdos: "" },
+              submesas: patch.submesas ?? [],
+              estado: patch.estado ?? "programada",
+              ...patch,
+            } as MesaDeTrabajo,
+          ],
         };
-      }),
-    })),
+      }
+      return {
+        mesas: s.mesas.map((m) => {
+          if (m.id !== mesaId) return m;
+          const entidad =
+            patch.entidades && patch.entidades.length > 0
+              ? patch.entidades[0].nombre
+              : (patch.entidad ?? m.entidad);
+          const facilitador =
+            patch.responsables && patch.responsables.length > 0
+              ? (patch.responsables.find((r) => r.esFacilitador)?.nombre ??
+                patch.responsables[0].nombre)
+              : (patch.facilitador ?? m.facilitador);
+          return {
+            ...m,
+            ...patch,
+            arbolProblemas:
+              patch.arbolProblemas !== undefined
+                ? patch.arbolProblemas
+                : m.arbolProblemas,
+            arbolSoluciones:
+              patch.arbolSoluciones !== undefined
+                ? patch.arbolSoluciones
+                : m.arbolSoluciones,
+            compromisos:
+              patch.compromisos !== undefined
+                ? patch.compromisos
+                : m.compromisos,
+            logistica:
+              patch.logistica !== undefined ? patch.logistica : m.logistica,
+            sorteoAzar:
+              patch.sorteoAzar !== undefined ? patch.sorteoAzar : m.sorteoAzar,
+            notas: patch.notas !== undefined ? patch.notas : m.notas,
+            galeriaFotos:
+              patch.galeriaFotos !== undefined
+                ? patch.galeriaFotos
+                : m.galeriaFotos,
+            adjuntos:
+              patch.adjuntos !== undefined ? patch.adjuntos : m.adjuntos,
+            publicarResultados:
+              patch.publicarResultados !== undefined
+                ? patch.publicarResultados
+                : m.publicarResultados,
+            informe: patch.informe !== undefined ? patch.informe : m.informe,
+            entidad,
+            facilitador,
+          };
+        }),
+      };
+    }),
 
   setAcuerdosPlenaria: (mesaId, acuerdos) =>
     set((s) => ({
@@ -312,6 +409,20 @@ export const useMesasStore = create<MesasState>((set, get) => ({
   eliminarMesa: (mesaId) =>
     set((s) => ({ mesas: s.mesas.filter((m) => m.id !== mesaId) })),
 
+  setPublicarResultados: (mesaId, publicar, usuario) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? {
+              ...m,
+              publicarResultados: publicar,
+              fechaPublicacionResultados: publicar ? new Date().toISOString() : undefined,
+              publicadoPor: publicar ? usuario || "Administrador Institucional" : undefined,
+            }
+          : m
+      ),
+    })),
+
   agregarAdjuntoMesa: (mesaId, adjunto) =>
     set((s) => ({
       mesas: s.mesas.map((m) =>
@@ -333,18 +444,62 @@ export const useMesasStore = create<MesasState>((set, get) => ({
   /* ---------- Relatoría y Matriz de Árbol a nivel de Mesa ---------- */
 
   setArbolProblemasMesa: (mesaId, arbol) =>
-    set((s) => ({
-      mesas: s.mesas.map((m) =>
-        m.id === mesaId ? { ...m, arbolProblemas: arbol } : m
-      ),
-    })),
+    set((s) => {
+      const existe = s.mesas.some((m) => m.id === mesaId);
+      if (!existe) {
+        return {
+          mesas: [
+            ...s.mesas,
+            {
+              id: mesaId,
+              nombre: "",
+              lugar: "",
+              entidad: "",
+              facilitador: "",
+              totalAsistentes: 0,
+              plenaria: { acuerdos: "" },
+              submesas: [],
+              estado: "programada",
+              arbolProblemas: arbol,
+            } as MesaDeTrabajo,
+          ],
+        };
+      }
+      return {
+        mesas: s.mesas.map((m) =>
+          m.id === mesaId ? { ...m, arbolProblemas: arbol } : m
+        ),
+      };
+    }),
 
   setArbolSolucionesMesa: (mesaId, arbol) =>
-    set((s) => ({
-      mesas: s.mesas.map((m) =>
-        m.id === mesaId ? { ...m, arbolSoluciones: arbol } : m
-      ),
-    })),
+    set((s) => {
+      const existe = s.mesas.some((m) => m.id === mesaId);
+      if (!existe) {
+        return {
+          mesas: [
+            ...s.mesas,
+            {
+              id: mesaId,
+              nombre: "",
+              lugar: "",
+              entidad: "",
+              facilitador: "",
+              totalAsistentes: 0,
+              plenaria: { acuerdos: "" },
+              submesas: [],
+              estado: "programada",
+              arbolSoluciones: arbol,
+            } as MesaDeTrabajo,
+          ],
+        };
+      }
+      return {
+        mesas: s.mesas.map((m) =>
+          m.id === mesaId ? { ...m, arbolSoluciones: arbol } : m
+        ),
+      };
+    }),
 
   setModoRelatoriaMesa: (mesaId, modo) =>
     set((s) => ({
@@ -817,6 +972,329 @@ export const useMesasStore = create<MesasState>((set, get) => ({
     );
     return true;
   },
+
+  /* Encargo 308: Implementaciones del Motor Integral */
+  actualizarLogistica: (mesaId, logisticaPatch) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            ...logisticaPatch,
+          },
+        };
+      }),
+    })),
+
+  toggleChecklistLogistico: (mesaId, itemId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        const nuevaLista = actual.checklist.map((item) =>
+          item.id === itemId ? { ...item, completado: !item.completado } : item
+        );
+        const completados = nuevaLista.filter((i) => i.completado).length;
+        const nuevoEstado: "pendiente" | "en_progreso" | "listo" =
+          completados === nuevaLista.length && nuevaLista.length > 0
+            ? "listo"
+            : completados > 0
+            ? "en_progreso"
+            : "pendiente";
+
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            checklist: nuevaLista,
+            estadoPreparacion: nuevoEstado,
+          },
+        };
+      }),
+    })),
+
+  agregarItemChecklist: (mesaId, item) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        const nuevoItem: ItemChecklistLogistico = {
+          ...item,
+          id: `chk-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+        };
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            checklist: [...actual.checklist, nuevoItem],
+          },
+        };
+      }),
+    })),
+
+  eliminarItemChecklist: (mesaId, itemId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            checklist: actual.checklist.filter((i) => i.id !== itemId),
+          },
+        };
+      }),
+    })),
+
+  agregarResponsableLogistico: (mesaId, responsable) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        const nuevoResp: ResponsableLogistico = {
+          ...responsable,
+          id: `resp-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+        };
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            equipoLogistico: [...actual.equipoLogistico, nuevoResp],
+          },
+        };
+      }),
+    })),
+
+  eliminarResponsableLogistico: (mesaId, responsableId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actual = m.logistica ?? crearLogisticaPorDefecto();
+        return {
+          ...m,
+          logistica: {
+            ...actual,
+            equipoLogistico: actual.equipoLogistico.filter((r) => r.id !== responsableId),
+          },
+        };
+      }),
+    })),
+
+  agregarCompromiso: (mesaId, compromiso) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.compromisos ?? [];
+        const nuevo: CompromisoMesa = {
+          ...compromiso,
+          id: `comp-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+          codigo: compromiso.codigo || `COMP-${(actuales.length + 1).toString().padStart(2, "0")}`,
+        };
+        return {
+          ...m,
+          compromisos: [...actuales, nuevo],
+        };
+      }),
+    })),
+
+  actualizarCompromiso: (mesaId, compromisoId, patch) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.compromisos ?? [];
+        return {
+          ...m,
+          compromisos: actuales.map((c) => (c.id === compromisoId ? { ...c, ...patch } : c)),
+        };
+      }),
+    })),
+
+  eliminarCompromiso: (mesaId, compromisoId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.compromisos ?? [];
+        return {
+          ...m,
+          compromisos: actuales.filter((c) => c.id !== compromisoId),
+        };
+      }),
+    })),
+
+  ejecutarSorteoIntervencion: (mesaId, asistente, duracionMinutos = 3, tema) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actualSorteo: ConfiguracionSorteoAzar = m.sorteoAzar ?? {
+          metodoConvocatoria: "sorteo_civico_aleatorio",
+          intervencionesSorteo: [],
+        };
+        const nuevaIntervencion: IntervencionSorteada = {
+          asistenteId: asistente.id,
+          nombre: asistente.nombre,
+          horaSorteo: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
+          duracionMinutos,
+          tema: tema || "Intervención ciudadana al azar",
+        };
+        return {
+          ...m,
+          sorteoAzar: {
+            ...actualSorteo,
+            intervencionesSorteo: [...actualSorteo.intervencionesSorteo, nuevaIntervencion],
+          },
+        };
+      }),
+    })),
+
+  eliminarSorteoIntervencion: (mesaId, asistenteId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        if (!m.sorteoAzar) return m;
+        return {
+          ...m,
+          sorteoAzar: {
+            ...m.sorteoAzar,
+            intervencionesSorteo: m.sorteoAzar.intervencionesSorteo.filter(
+              (i) => i.asistenteId !== asistenteId
+            ),
+          },
+        };
+      }),
+    })),
+
+  generarMuestraAleatoriaAsistencia: (mesaId, asistentesIds, tamanoMuestra) => {
+    if (asistentesIds.length === 0 || tamanoMuestra <= 0) return [];
+    // Algoritmo Fisher-Yates seguro
+    const copia = [...asistentesIds];
+    for (let i = copia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    const muestra = copia.slice(0, Math.min(tamanoMuestra, copia.length));
+
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actualSorteo: ConfiguracionSorteoAzar = m.sorteoAzar ?? {
+          metodoConvocatoria: "sorteo_civico_aleatorio",
+          intervencionesSorteo: [],
+        };
+        return {
+          ...m,
+          sorteoAzar: {
+            ...actualSorteo,
+            muestraAleatoriaAuditoria: muestra,
+          },
+        };
+      }),
+    }));
+
+    return muestra;
+  },
+
+  actualizarMetodoConvocatoria: (mesaId, metodo, estratificacion) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actualSorteo: ConfiguracionSorteoAzar = m.sorteoAzar ?? {
+          metodoConvocatoria: metodo,
+          intervencionesSorteo: [],
+        };
+        return {
+          ...m,
+          sorteoAzar: {
+            ...actualSorteo,
+            metodoConvocatoria: metodo,
+            estratificacion: estratificacion ?? actualSorteo.estratificacion,
+          },
+        };
+      }),
+    })),
+
+  agregarNotaMesa: (mesaId, nota) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.notas ?? [];
+        const nuevaNota: NotaMesa = {
+          ...nota,
+          id: `nota-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+          creadoEn: new Date().toISOString(),
+        };
+        return {
+          ...m,
+          notas: [nuevaNota, ...actuales], // Más recientes primero
+        };
+      }),
+    })),
+
+  eliminarNotaMesa: (mesaId, notaId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.notas ?? [];
+        return {
+          ...m,
+          notas: actuales.filter((n) => n.id !== notaId),
+        };
+      }),
+    })),
+
+  agregarFotoEvidencia: (mesaId, foto) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.galeriaFotos ?? [];
+        const nuevaFoto: FotoEvidenciaMesa = {
+          ...foto,
+          id: `foto-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+          subidoEn: new Date().toISOString(),
+          exifDespojado: true, // Cumplimiento Ley 1581/2012
+        };
+        return {
+          ...m,
+          galeriaFotos: [...actuales, nuevaFoto],
+        };
+      }),
+    })),
+
+  recargarFotoEvidencia: (mesaId, fotoId, nuevaFoto) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.galeriaFotos ?? [];
+        return {
+          ...m,
+          galeriaFotos: actuales.map((f) =>
+            f.id === fotoId
+              ? {
+                  ...f,
+                  ...nuevaFoto,
+                  subidoEn: new Date().toISOString(),
+                  exifDespojado: true,
+                }
+              : f
+          ),
+        };
+      }),
+    })),
+
+  eliminarFotoEvidencia: (mesaId, fotoId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const actuales = m.galeriaFotos ?? [];
+        return {
+          ...m,
+          galeriaFotos: actuales.filter((f) => f.id !== fotoId),
+        };
+      }),
+    })),
 }));
 
 /* ---------- Selectores / hooks ---------- */

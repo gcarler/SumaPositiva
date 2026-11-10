@@ -1,20 +1,27 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, TableProperties } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "@/shared/ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
 
-export type CollectionViewMode = "lista" | "tarjetas";
+export type CollectionViewMode = "lista" | "tarjetas" | "matriz";
 
 export function CollectionViewToggle({
   value,
   onValueChange,
   label = "Vista de los registros",
+  permitirMatriz = false,
 }: {
   value: CollectionViewMode;
   onValueChange: (value: CollectionViewMode) => void;
   label?: string;
+  permitirMatriz?: boolean;
 }) {
   return (
     <ToggleGroup
@@ -24,15 +31,61 @@ export function CollectionViewToggle({
       value={value}
       aria-label={label}
       onValueChange={(next) => {
-        if (next === "lista" || next === "tarjetas") onValueChange(next);
+        if (next === "lista" || next === "tarjetas" || next === "matriz") {
+          onValueChange(next as CollectionViewMode);
+        }
       }}
+      className="inline-flex items-center gap-0.5"
     >
-      <ToggleGroupItem value="lista" aria-label="Vista en lista" className="gap-1.5">
-        <List className="size-4" aria-hidden="true" />Lista
-      </ToggleGroupItem>
-      <ToggleGroupItem value="tarjetas" aria-label="Vista en tarjetas" className="gap-1.5">
-        <LayoutGrid className="size-4" aria-hidden="true" />Tarjetas
-      </ToggleGroupItem>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <ToggleGroupItem
+            value="lista"
+            aria-label="Vista en lista"
+            title="Vista en lista"
+            className="size-8 p-0"
+          >
+            <List className="size-4" aria-hidden="true" />
+          </ToggleGroupItem>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={6}>
+          Vista en lista
+        </TooltipContent>
+      </Tooltip>
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <ToggleGroupItem
+            value="tarjetas"
+            aria-label="Vista en cuadrícula"
+            title="Vista en cuadrícula"
+            className="size-8 p-0"
+          >
+            <LayoutGrid className="size-4" aria-hidden="true" />
+          </ToggleGroupItem>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={6}>
+          Vista en cuadrícula
+        </TooltipContent>
+      </Tooltip>
+
+      {permitirMatriz && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <ToggleGroupItem
+              value="matriz"
+              aria-label="Vista en matriz"
+              title="Vista en matriz"
+              className="size-8 p-0"
+            >
+              <TableProperties className="size-4" aria-hidden="true" />
+            </ToggleGroupItem>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={6}>
+            Vista en matriz
+          </TooltipContent>
+        </Tooltip>
+      )}
     </ToggleGroup>
   );
 }

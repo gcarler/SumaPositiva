@@ -5,9 +5,11 @@ import {
   actualizarAcuerdosPlenaria,
   actualizarInformeMesa,
   crearSubMesa,
-  actualizarSubMesa
+  actualizarSubMesa,
+  actualizarMesaRemota,
+  actualizarMatrizArbolMesa,
 } from "./mesas-api";
-import type {SubMesa} from "@/features/mesas/models/mesas";
+import type {SubMesa, MesaDeTrabajo, ArbolProblemas, ArbolSoluciones} from "@/features/mesas/models/mesas";
 import {useMesasStore} from "@/features/mesas/state/mesas-store";
 import {apiFetch} from "@/core/http/api-client";
 
@@ -32,10 +34,56 @@ export function useMesaQuery(mesaId: string) {
   return useQuery({
     queryKey: MESAS_KEYS.detail(mesaId),
     queryFn: async () => {
-      return await obtenerMesa(mesaId);
+      const data = await obtenerMesa(mesaId);
+      if (data) {
+        useMesasStore.getState().actualizarMesa(mesaId, data);
+      }
+      return data;
     },
     staleTime: 1000 * 30,
     enabled: !!mesaId,
+  });
+}
+
+export function useActualizarMesa() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      mesaId,
+      datos,
+    }: {
+      mesaId: string;
+      datos: Partial<MesaDeTrabajo>;
+    }) => {
+      return actualizarMesaRemota(mesaId, datos);
+    },
+    onSuccess: (mesaActualizada, { mesaId }) => {
+      queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+    },
+  });
+}
+
+export function useActualizarMatrizArbol() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      mesaId,
+      datos,
+    }: {
+      mesaId: string;
+      datos: {
+        arbolProblemas?: ArbolProblemas;
+        arbolSoluciones?: ArbolSoluciones;
+        modoRelatoria?: "narrativo" | "matriz" | "hibrido";
+      };
+    }) => {
+      return actualizarMatrizArbolMesa(mesaId, datos);
+    },
+    onSuccess: (mesaActualizada, { mesaId }) => {
+      queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+    },
   });
 }
 

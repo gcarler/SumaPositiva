@@ -1,22 +1,28 @@
 "use client";
 
-import { useRef, useState, type DragEvent, type ChangeEvent } from "react";
+import { useRef, useState, type DragEvent, type ChangeEvent, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   Download,
+  ExternalLink,
   FileSpreadsheet,
   FileText,
+  FolderOpen,
   ImageIcon,
   Music,
   Paperclip,
   Plus,
+  Presentation,
   Trash2,
   UploadCloud,
   Video,
+  X,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import type { AdjuntoMesa } from "@/features/mesas/models/mesas";
+import { Label } from "@/shared/ui/label";
+import { Badge } from "@/shared/ui/badge";
+import type { AdjuntoMesa, TipoGoogleDrive } from "@/features/mesas/models/mesas";
 
 export interface AdjuntosZonaProps {
   adjuntos: AdjuntoMesa[];
@@ -59,7 +65,38 @@ function clasificarTipo(mimeType: string, nombre: string): AdjuntoMesa["tipo"] {
   return "otro";
 }
 
+function detectarTipoGoogle(url: string): { tipoGoogle: TipoGoogleDrive; label: string } {
+  const u = url.toLowerCase();
+  if (u.includes("docs.google.com/document")) {
+    return { tipoGoogle: "google_doc", label: "Google Doc" };
+  }
+  if (u.includes("docs.google.com/spreadsheets")) {
+    return { tipoGoogle: "google_sheet", label: "Google Sheet" };
+  }
+  if (u.includes("docs.google.com/presentation")) {
+    return { tipoGoogle: "google_slide", label: "Google Slide" };
+  }
+  if (u.includes("drive.google.com/drive/folders") || (u.includes("drive.google.com") && u.includes("folders"))) {
+    return { tipoGoogle: "google_drive_folder", label: "Carpeta Drive" };
+  }
+  return { tipoGoogle: "google_drive_file", label: "Archivo Drive" };
+}
+
 function renderIconoAdjunto(adjunto: AdjuntoMesa) {
+  if (adjunto.proveedor === "google_drive" || adjunto.tipo === "google_drive") {
+    switch (adjunto.tipoGoogle) {
+      case "google_doc":
+        return <FileText className="size-4 shrink-0 text-[var(--info)]" />;
+      case "google_sheet":
+        return <FileSpreadsheet className="size-4 shrink-0 text-[var(--success)]" />;
+      case "google_slide":
+        return <Presentation className="size-4 shrink-0 text-[var(--warning)]" />;
+      case "google_drive_folder":
+        return <FolderOpen className="size-4 shrink-0 text-[var(--accent)]" />;
+      default:
+        return <ExternalLink className="size-4 shrink-0 text-[var(--ember)]" />;
+    }
+  }
   switch (adjunto.tipo) {
     case "imagen":
       return <ImageIcon className="size-4 shrink-0 text-[var(--info)]" />;
@@ -85,6 +122,43 @@ export function AdjuntosZona({
 }: AdjuntosZonaProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [arrastrando, setArrastrando] = useState(false);
+  const [formDriveAbierto, setFormDriveAbierto] = useState(false);
+  const [urlDrive, setUrlDrive] = useState("");
+  const [nombreDrive, setNombreDrive] = useState("");
+
+  const handleVincularGoogleDrive = (e: FormEvent) => {
+    e.preventDefault();
+    const urlTrim = urlDrive.trim();
+    if (!urlTrim) {
+      toast.error("Por favor ingresa la URL de Google Drive, Doc, Sheet o Slide.");
+      return;
+    }
+    if (!urlTrim.startsWith("http://") && !urlTrim.startsWith("https://")) {
+      toast.error("El enlace debe iniciar con https:// o http://");
+      return;
+    }
+
+    const { tipoGoogle, label } = detectarTipoGoogle(urlTrim);
+    const nombreFinal = nombreDrive.trim() || `${label} institucional`;
+
+    const nuevoAdjunto: AdjuntoMesa = {
+      id: `adj-gdrive-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      nombre: nombreFinal,
+      tipo: "google_drive",
+      mimeType: "application/vnd.google-apps",
+      tamaño: 0,
+      url: urlTrim,
+      subidoEn: new Date().toISOString(),
+      proveedor: "google_drive",
+      tipoGoogle,
+    };
+
+    onAgregar(nuevoAdjunto);
+    toast.success(`"${nombreFinal}" vinculado correctamente.`);
+    setUrlDrive("");
+    setNombreDrive("");
+    setFormDriveAbierto(false);
+  };
 
   const procesarArchivos = (archivos: FileList | File[]) => {
     let procesados = 0;
@@ -154,26 +228,109 @@ export function AdjuntosZona({
       />
 
       {/* Cabecera de la zona */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Paperclip className="size-4 text-[var(--text-tertiary)]" />
           <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-            Adjuntos ({adjuntos.length})
+            Adjuntos y Documentos ({adjuntos.length})
           </h4>
         </div>
         {!soloLectura && (
-          <Button
-            variant="outline"
-            size="sm"
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="gap-1.5 text-xs"
-          >
-            <Plus className="size-3.5" />
-            Adjuntar archivo
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => setFormDriveAbierto((v) => !v)}
+              className="gap-1.5 text-xs text-[var(--ember)] border-[var(--ember)]/30 hover:bg-[var(--ember)]/10"
+            >
+              <ExternalLink className="size-3.5" />
+              <span>Google Drive / Docs</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="gap-1.5 text-xs"
+            >
+              <Plus className="size-3.5" />
+              <span>Subir archivo</span>
+            </Button>
+          </div>
         )}
       </div>
+
+      {/* Formulario para vincular Google Drive */}
+      {!soloLectura && formDriveAbierto && (
+        <form
+          onSubmit={handleVincularGoogleDrive}
+          className="space-y-3 rounded-lg border border-[var(--ember)]/40 bg-[var(--surface-2)] p-3.5 sm:p-4"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-[var(--text-primary)] inline-flex items-center gap-1.5">
+              <ExternalLink className="size-3.5 text-[var(--ember)]" />
+              Vincular Google Workspace (Doc, Sheet, Slide, Drive)
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              type="button"
+              onClick={() => setFormDriveAbierto(false)}
+              className="text-[var(--text-tertiary)]"
+            >
+              <X className="size-3.5" />
+            </Button>
+          </div>
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="space-y-1 sm:col-span-2">
+              <Label htmlFor="url-gdrive" className="text-[11px] font-medium text-[var(--text-secondary)]">
+                URL del Documento de Google Drive / Docs / Sheets / Slides *
+              </Label>
+              <Input
+                id="url-gdrive"
+                value={urlDrive}
+                onChange={(e) => setUrlDrive(e.target.value)}
+                placeholder="https://docs.google.com/document/d/... o https://drive.google.com/..."
+                className="text-xs h-8"
+                required
+              />
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label htmlFor="nombre-gdrive" className="text-[11px] font-medium text-[var(--text-secondary)]">
+                Título o descripción del documento (opcional)
+              </Label>
+              <Input
+                id="nombre-gdrive"
+                value={nombreDrive}
+                onChange={(e) => setNombreDrive(e.target.value)}
+                placeholder="Ej.: Relatoría Comunitaria - Mesa Localidad Histórica"
+                className="text-xs h-8"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2 pt-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              onClick={() => setFormDriveAbierto(false)}
+              className="text-xs h-7"
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              type="submit"
+              className="text-xs h-7 gap-1"
+            >
+              <Plus className="size-3" />
+              Vincular documento
+            </Button>
+          </div>
+        </form>
+      )}
 
       {/* Lista de archivos adjuntos */}
       {adjuntos.length > 0 ? (
@@ -201,9 +358,20 @@ export function AdjuntosZona({
                   <p className="truncate text-xs font-medium text-[var(--text-primary)]">
                     {item.nombre}
                   </p>
-                  <p className="text-[11px] text-[var(--text-tertiary)] tabular">
-                    {formatearTamaño(item.tamaño)}
-                  </p>
+                  {item.proveedor === "google_drive" || item.tipo === "google_drive" ? (
+                    <div className="flex items-center gap-1.5 pt-0.5">
+                      <Badge variant="outline" className="text-[9px] py-0 px-1 font-mono uppercase bg-[var(--surface-1)]">
+                        {item.tipoGoogle ? item.tipoGoogle.replace("google_", "") : "Google Drive"}
+                      </Badge>
+                      <span className="text-[11px] text-[var(--text-tertiary)]">
+                        Enlace en la nube
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-[var(--text-tertiary)] tabular">
+                      {formatearTamaño(item.tamaño)}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -213,10 +381,14 @@ export function AdjuntosZona({
                   size="icon-sm"
                   type="button"
                   onClick={() => window.open(item.url, "_blank")}
-                  title="Descargar / Abrir adjunto"
-                  aria-label={`Descargar o abrir ${item.nombre}`}
+                  title={item.proveedor === "google_drive" ? "Abrir en Google Drive / Docs" : "Descargar / Abrir adjunto"}
+                  aria-label={`Abrir o descargar ${item.nombre}`}
                 >
-                  <Download className="size-3.5 text-[var(--text-secondary)]" />
+                  {item.proveedor === "google_drive" || item.tipo === "google_drive" ? (
+                    <ExternalLink className="size-3.5 text-[var(--ember)]" />
+                  ) : (
+                    <Download className="size-3.5 text-[var(--text-secondary)]" />
+                  )}
                 </Button>
                 {!soloLectura && (
                   <Button
@@ -240,7 +412,7 @@ export function AdjuntosZona({
         </div>
       ) : (
         <p className="rounded-lg border border-dashed border-[var(--border)] p-3.5 text-center text-xs text-[var(--text-tertiary)]">
-          Sin archivos adjuntos aún.
+          Sin archivos ni documentos adjuntos aún.
         </p>
       )}
 

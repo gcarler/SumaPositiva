@@ -8,7 +8,7 @@ auditoría.
 
 import uuid
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, text
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, LargeBinary, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import conv
@@ -16,6 +16,39 @@ from sqlalchemy.schema import conv
 from app.core.database import Base
 
 SCHEMA = "participacion_ciudadana"
+
+
+class SMContactoBovedaRegistro(Base):
+    """Única copia del destinatario; ciphertext autenticado ligado a su identidad."""
+
+    __tablename__ = "sm_contactos_boveda"
+    __table_args__ = (
+        CheckConstraint("tenant <> '' AND actor <> '' AND key_id <> ''", name=conv("chk_sm_boveda_identidad")),
+        Index("uq_sm_boveda_contacto", "tenant", "actor", "canal", "contacto_hash", unique=True),
+        {"schema": SCHEMA, "comment": "Contactos SM cifrados AES-256-GCM; descifrado exclusivo de despacho/rotación"},
+    )
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
+    )
+    tenant: Mapped[str] = mapped_column(String(32), nullable=False)
+    actor: Mapped[str] = mapped_column(String(120), nullable=False)
+    canal: Mapped[str] = mapped_column(String(20), nullable=False)
+    contacto_hash: Mapped[str] = mapped_column(String(80), nullable=False)
+    contacto_cifrado: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+    key_id: Mapped[str] = mapped_column(String(40), nullable=False)
+    creado_en: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+    actualizado_en: Mapped[object] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class SMWorkerLatidoRegistro(Base):
+    __tablename__ = "sm_worker_latidos"
+    __table_args__ = {"schema": SCHEMA, "comment": "Última ronda del worker SM por tenant; sin datos personales"}
+    tenant: Mapped[str] = mapped_column(String(32), primary_key=True)
+    ultimo_latido_en: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class SMEventoRegistro(Base):
@@ -65,7 +98,7 @@ class SMMensajeRegistro(Base):
     __table_args__ = (
         CheckConstraint("tenant <> ''", name=conv("chk_sm_mensajes_tenant")),
         CheckConstraint(
-            "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado')",
+            "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado','simulado')",
             name=conv("chk_sm_mensajes_estado"),
         ),
         CheckConstraint("idempotencia <> ''", name=conv("chk_sm_mensajes_idempotencia")),
@@ -73,6 +106,7 @@ class SMMensajeRegistro(Base):
         Index("ix_sm_mensajes_cola", "estado", "canal"),
         Index("ix_sm_mensajes_evento", "evento_id"),
         Index("ix_sm_mensajes_creado", "creado_en"),
+        Index("ix_sm_mensajes_proximo_intento", "tenant", "estado", "proximo_intento_en"),
         {
             "schema": SCHEMA,
             "comment": "Outbox portable del núcleo SM",
@@ -113,6 +147,10 @@ class SMMensajeRegistro(Base):
         server_default=text("clock_timestamp()"),
         nullable=False,
     )
+    proximo_intento_en: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reclamado_hasta: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reclamacion_token: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    reintentable: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
 
 
 class SMEntregaRegistro(Base):
@@ -122,7 +160,7 @@ class SMEntregaRegistro(Base):
     __table_args__ = (
         CheckConstraint("idempotencia <> ''", name=conv("chk_sm_entregas_mensaje")),
         CheckConstraint(
-            "estado_entrega IN ('enviado','fallido')",
+            "estado_entrega IN ('enviado','fallido','simulado','en_curso','incierto')",
             name=conv("chk_sm_entregas_estado"),
         ),
         Index("uq_sm_entregas_mensaje_intento", "mensaje_id", "intento", unique=True),
@@ -195,6 +233,7 @@ class SMAuditoriaRegistro(Base):
     )
     tenant: Mapped[str] = mapped_column(String(32), nullable=False)
     actor: Mapped[str] = mapped_column(String(120), nullable=False)
+    operador: Mapped[str | None] = mapped_column(String(120), nullable=True)
     accion: Mapped[str] = mapped_column(String(80), nullable=False)
     detalle: Mapped[str | None] = mapped_column(String(500), nullable=True)
     hash: Mapped[str] = mapped_column(String(80), nullable=False)

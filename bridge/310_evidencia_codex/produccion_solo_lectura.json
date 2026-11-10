@@ -1,0 +1,16 @@
+{
+  "fecha_utc": "2026-11-07T22:58:40.910462+00:00",
+  "sonda": {
+    "http": 200,
+    "respuesta": {
+      "status": "ready",
+      "database": "ok",
+      "migrations": "ok",
+      "extensions": "ok"
+    }
+  },
+  "servicio": "ActiveState=active\nDropInPaths=/etc/systemd/system/polis-backend.service.d/304-release.conf\nMainPID=1217510\n",
+  "operaciones_sobre_bd_csh": [],
+  "reinicios_realizados": 0,
+  "nota": "La sonda de disponibilidad solo lee. No se migró ni desplegó el checkout 0099."
+}

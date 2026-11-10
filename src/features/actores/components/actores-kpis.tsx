@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Users, Star, HeartHandshake, CheckCircle2, FileText } from "lucide-react";
+import { Users, Star, Network, CheckCircle2, FileText } from "lucide-react";
 import { useActoresMetricas, useActoresStore } from "../state/actores-store";
 
 export function ActoresKpis() {
@@ -38,7 +38,7 @@ export function ActoresKpis() {
       titulo: "Base Social",
       valor: baseSocial,
       subtexto: "Comunidades y veedurías",
-      icono: HeartHandshake,
+      icono: Network,
       variante: "success" as const,
     },
     {

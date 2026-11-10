@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from time import perf_counter
@@ -29,9 +30,42 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         database = Database(settings)
         app.state.database = database
         app.state.settings = settings
+
+        async def advertir_delegadas() -> None:
+            """Aviso de arranque: mensajes delegados a SM sin entrega confirmada.
+
+            Se ejecuta fuera del arranque para no retrasarlo ni impedirlo si la
+            base no está disponible; un fallo aquí nunca tumba el servicio.
+            """
+            from app.modules.notificaciones.salud import (
+                UMBRAL_DELEGADA_SIN_ENTREGA_SEGUNDOS,
+                contar_delegadas_sin_entrega,
+            )
+
+            try:
+                async with database.sessions() as session:
+                    delegadas = await contar_delegadas_sin_entrega(session)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                logger.warning(
+                    "No se pudo verificar la cola de notificaciones delegadas a SM al arrancar", exc_info=True
+                )
+                return
+            if delegadas:
+                logger.warning(
+                    "Arranque con %s notificaciones delegadas a SM sin entrega confirmada tras %s minutos; "
+                    "revise /sm/health y, si el corte se revirtió, ejecute worker_cli --liberar-delegadas.",
+                    delegadas,
+                    UMBRAL_DELEGADA_SIN_ENTREGA_SEGUNDOS // 60,
+                )
+
+        tarea_delegadas = asyncio.create_task(advertir_delegadas())
         try:
             yield
         finally:
+            tarea_delegadas.cancel()
+            await asyncio.gather(tarea_delegadas, return_exceptions=True)
             await database.engine.dispose()
 
     application = FastAPI(
@@ -140,14 +174,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         return response
 
-    from app.modules.actores.router import router as actores_router
-    from app.modules.alternativas.router import router as alternativas_router
-    from app.modules.fuentes.router import router as fuentes_router
-
     application.include_router(api_router)
-    application.include_router(actores_router, prefix="/api/v1")
-    application.include_router(fuentes_router, prefix="/api/v1")
-    application.include_router(alternativas_router, prefix="/api/v1")
     return application
 
 

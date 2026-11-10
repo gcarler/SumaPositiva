@@ -1,0 +1,51 @@
+{
+  "fecha": "2026-11-08",
+  "entorno": "copia restaurada del respaldo diario 20261108_020002 en polis_ensayo_corte_20261108 (PostgreSQL 16 del contenedor), migrada 0096 -> 0101 en 2.83 s",
+  "transporte": "SMTP real contra sumidero local 127.0.0.1:2528; sin red externa",
+  "corte": ["radicacion", "alerta_pendientes"],
+  "fase_18": {
+    "notificaciones": 18,
+    "destinatarios_con_cuenta": 4,
+    "delegadas_a_sm": 5,
+    "smtp_recibidos": 18,
+    "entregadas_correo_real": 16,
+    "no_emailable": ["wa:+573159988776", "wa:+573001234567"],
+    "sin_entrega": [],
+    "duplicadas": [],
+    "contenido_divergente": [],
+    "desglose_herald": {"delegado": 5, "enviado": 13},
+    "desglose_sm": {"enviado": 5},
+    "hook_p50_ms": 1.89,
+    "hook_p95_ms": 25.45
+  },
+  "carga": {
+    "notificaciones": 200,
+    "encolado_segundos": 6.17,
+    "drenaje_segundos": 13.85,
+    "mensajes_por_segundo": 14.4,
+    "sm_procesados": 200,
+    "sm_enviados": 200,
+    "sm_fallidos": 0,
+    "smtp_recibidos": 200,
+    "entregas_unicas": 200,
+    "latencia_cola_p50_s": 9.85,
+    "latencia_cola_p95_s": 13.752,
+    "latencia_cola_max_s": 13.909
+  },
+  "staging_relay_externo_20261109": {
+    "base": "respaldo 20261108_020002 en polis_staging_315_20261109 (PG16), migrada 0096->0101",
+    "relay": "Postfix del host 127.0.0.1:25, relayhost vacio (directo a MX)",
+    "datos": "18 sinteticas por fase; sin correos de ciudadanos",
+    "fase_a_sin_cuenta": {"delegadas": 5, "herald": 11, "rechazadas_wa": 2, "entregables": 16},
+    "fase_b_con_alta_y_consentimiento": {"delegadas": 8, "herald": 8, "rechazadas_wa": 2, "entregables": 16},
+    "relay_aceptados": 62,
+    "relay_entregas_confirmadas": 62,
+    "buzon_efimero_visible": 30,
+    "paridad_html_muestra": "3/3",
+    "carga_30": {"enviados": 30, "fallidos": 0, "encolado_s": 1.14, "drenaje_s": 7.15, "p50_s": 3.01, "p95_s": 5.7}
+  },
+  "observaciones": [
+    "El sumidero local acepta cualquier RCPT; un rele real rechazaria las dos filas wa:+57 sin @.",
+    "La salud publica de Herald expone el motivo de delegadas sin entrega sin cifras."
+  ]
+}

@@ -1,0 +1,16 @@
+FIN=2026-11-07T18:29:52Z
+00_snapshot.txt
+01_alembic_cabeza.txt
+10_instalacion_base_vacia.txt
+11_alembic_check.txt
+12_reconstruccion.txt
+20_pytest.txt
+21_pytest_transacciones.txt
+30_ruff.txt
+31_bun_check.txt
+32_bun_test.txt
+40_salud_y_cabeceras.txt
+41_bd_produccion_lectura.txt
+42_respaldos.txt
+50_hashes_artefactos.txt
+99_cierre.txt

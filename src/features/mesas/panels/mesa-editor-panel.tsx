@@ -140,7 +140,7 @@ type MesaForm = z.infer<typeof mesaSchema>;
 
 export function MesaEditorPanel({
   entryKey,
-  props,
+  props = {},
 }: {
   entryKey: string;
   props: { mesaId?: string };
@@ -152,11 +152,11 @@ export function MesaEditorPanel({
   const crearMesa = useMesasStore((s) => s.crearMesa);
   const actualizarMesa = useMesasStore((s) => s.actualizarMesa);
 
-  const { data: mesaRemota, isLoading: cargandoRemota } = useMesaQuery(props.mesaId ?? "");
-  const mesaStore = useMesa(props.mesaId ?? "");
+  const { data: mesaRemota, isLoading: cargandoRemota } = useMesaQuery(props?.mesaId ?? "");
+  const mesaStore = useMesa(props?.mesaId ?? "");
   const mesaEditada = mesaRemota ?? mesaStore;
   
-  const esEdicion = Boolean(props.mesaId);
+  const esEdicion = Boolean(props?.mesaId);
 
   let defaultHoraInicio = "";
   let defaultHoraFin = "";

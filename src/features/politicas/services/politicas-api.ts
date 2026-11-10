@@ -68,6 +68,29 @@ export interface LineaEstrategicaApi {
   actualizado_en?: string;
 }
 
+export interface ResumenInstitucionalApi {
+  totalLineasEstrategicas: number;
+  totalFases: number;
+  fasesEnCurso: number;
+  totalDimensionesOnu: number;
+  totalMesasTerritoriales: number;
+  totalEntidadesDistritales: number;
+  entidadesPorTipologia: {
+    secretaria: number;
+    ente_descentralizado: number;
+    unidad_descentralizada?: number;
+    unidad_asesora: number;
+    alcaldia_local: number;
+  };
+}
+
+/**
+ * Consulta el resumen institucional de contadores desde PostgreSQL.
+ */
+export async function obtenerResumenInstitucional(): Promise<ResumenInstitucionalApi> {
+  return await apiFetch<ResumenInstitucionalApi>("/politicas/resumen-institucional");
+}
+
 /**
  * Consulta las 7 dimensiones canónicas de la Seguridad Humana (ONU).
  */

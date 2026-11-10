@@ -1,0 +1,71 @@
+{
+  "entorno": {
+    "fecha": "2026-11-08",
+    "sistema": "linux",
+    "postgres": "docker polis-database-1, 127.0.0.1:5433",
+    "base_pruebas": "polis_test_sm_med3_20261108",
+    "base_migraciones": "polis_test_sm_med3_mig_20261108",
+    "extensiones": ["postgis", "pgrouting"]
+  },
+  "checks": [
+    {
+      "id": "ruff",
+      "comando": "backend/.venv/bin/ruff check backend && backend/.venv/bin/ruff format --check backend",
+      "resultado": "exit 0",
+      "detalle": "ruff check: sin hallazgos; 621 archivos ya formateados"
+    },
+    {
+      "id": "sm-suites",
+      "comando": "env -u POLIS_SM_BOVEDA_KEY -u POLIS_SM_WORKER_HABILITADO POLIS_TEST_DATABASE_URL=... pytest tests/test_sm_*.py -q",
+      "resultado": "101 passed, 0 failed",
+      "duracion_segundos": 55.44,
+      "detalle": "Incluye salud autenticada (401/403 anónima) y verificación sin eco de contacto_hash"
+    },
+    {
+      "id": "access-policy",
+      "comando": "pytest tests/test_access_policy.py -q",
+      "resultado": "130 passed, 1 skipped",
+      "duracion_segundos": 49.53,
+      "detalle": "La matriz docs/permisos-api.md coincide con las dependencias reales"
+    },
+    {
+      "id": "backend-completo",
+      "comando": "POLIS_TEST_DATABASE_URL=... POLIS_TEST_MIGRATIONS_DATABASE_URL=... bun run backend:check",
+      "resultado": "2001 passed, 16 skipped, 0 failed",
+      "duracion_segundos": 960.89,
+      "detalle": "exit 0; sin fallos ambientales de pgrouting"
+    },
+    {
+      "id": "frontend-check",
+      "comando": "bun run check",
+      "resultado": "exit 0",
+      "detalle": "Incluye ui:check, tsc --noEmit y eslint"
+    },
+    {
+      "id": "frontend-pruebas",
+      "comando": "bun test src/features/sm src/features/mesas",
+      "resultado": "172 passed, 0 failed",
+      "detalle": "14 pruebas SM y 158 de Mesas en la corrida final"
+    },
+    {
+      "id": "alembic-heads",
+      "comando": "alembic -c alembic.ini heads",
+      "resultado": "0100_sm_auditoria_operador (head)"
+    },
+    {
+      "id": "migracion-0100",
+      "comando": "alembic upgrade head; alembic downgrade 0099_sm_worker_backoff; alembic upgrade head",
+      "resultado": "exit 0 en los tres pasos"
+    },
+    {
+      "id": "inventario",
+      "comando": "sha256sum sobre 34 archivos de SM, pruebas, migraciones, docs y frontend",
+      "resultado": "inventario_archivos.sha256"
+    }
+  ],
+  "notas": [
+    "La suite se ejecutó sin exportar POLIS_SM_BOVEDA_KEY ni POLIS_SM_WORKER_HABILITADO.",
+    "No hubo commit, push, despliegue ni reinicio de servicios.",
+    "Las bases de prueba son desechables y no son bd_csh."
+  ]
+}

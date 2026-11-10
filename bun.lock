@@ -41,6 +41,8 @@
         "@radix-ui/react-tooltip": "^1.2.7",
         "@react-oauth/google": "^0.13.5",
         "@reactuses/core": "^6.0.5",
+        "@revolist/react-datagrid": "^4.31.4",
+        "@revolist/revogrid": "^4.31.4",
         "@tanstack/react-query": "^5.82.0",
         "@tanstack/react-table": "^8.21.3",
         "class-variance-authority": "^0.7.1",
@@ -748,6 +750,10 @@
     "@react-oauth/google": ["@react-oauth/google@0.13.5", "", { "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-xQWri2s/3nNekZJ4uuov2aAfQYu83bN3864KcFqw2pK1nNbFurQIjPFDXhWaKH3IjYJ2r/9yyIIpsn5lMqrheQ=="],
 
     "@reactuses/core": ["@reactuses/core@6.1.9", "https://registry.npmjs.com/@reactuses/core/-/core-6.1.9.tgz", { "dependencies": { "@microsoft/fetch-event-source": "^2.0.1", "js-cookie": "^3.0.5", "lodash-es": "^4.17.21", "screenfull": "^5.0.0", "use-sync-external-store": "^1.2.0" }, "peerDependencies": { "qrcode": "^1.5", "react": "^16.8.0  || ^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["qrcode"] }, "sha512-ahXOyJ92RvhYMvgXaKXqrSzIz0H2SUNaFy3zbrcmgfs4H46rOGTsxoy+ObxjXCogp6uZFYaFumSMO0u/xWcQMg=="],
+
+    "@revolist/react-datagrid": ["@revolist/react-datagrid@4.31.4", "", { "dependencies": { "@revolist/revogrid": "4.31.4" } }, "sha512-nfMT7J9jlxyu7XNU1aTpPPWSBn8JF/mpnrHBZDlT2bCttadxsBI+Ti0dTSYQCP9xMWswJ6gEV7Y+memWVesyPQ=="],
+
+    "@revolist/revogrid": ["@revolist/revogrid@4.31.4", "", {}, "sha512-qOStHkP+Wawrl5r7Lh3rNX5J27WVsuARh3mlXGdmZLcpohJWN6MRaMyXSQcC2+lo9VyrnZP2QXts4zmKDDraXQ=="],
 
     "@rolldown/binding-android-arm-eabi": ["@rolldown/binding-android-arm-eabi@1.2.12", "", { "os": "android", "cpu": "arm" }, "sha512-dB/a1214qKfHMXCpgqR4OZT+jS4kTyEXbQGJPqzobt5EwH5rX080pxE37alt3RzvR1bf1Yz/yGqRfrYAxuPw0A=="],
 

@@ -665,21 +665,24 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
 
                     if (realizada) {
                       return (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
-                          🟢 Realizada / Cerrada
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--success)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
+                          <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
+                          <span>Realizada / Cerrada</span>
                         </span>
                       );
                     }
                     if (enCurso) {
                       return (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--info)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--info)]">
-                          🔵 En curso
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--info)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--info)]">
+                          <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
+                          <span>En curso</span>
                         </span>
                       );
                     }
                     return (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ember)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--ember)]">
-                        🟡 Programada
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--ember)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--ember)]">
+                        <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
+                        <span>Programada</span>
                       </span>
                     );
                   })()}
@@ -835,7 +838,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(
             ) : (
               <>
                 <div className="flex items-center gap-1.5 border-b border-[var(--border)] pb-2 mb-2">
-                  <span className="text-xs">📍</span>
+                  <span className="size-2 rounded-full bg-[var(--ember)] shrink-0" aria-hidden="true" />
                   <span className="text-xs font-bold text-[var(--text-primary)] truncate">
                     {hoverInfo.nombre}
                   </span>

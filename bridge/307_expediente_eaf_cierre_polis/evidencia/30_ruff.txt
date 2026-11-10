@@ -1,0 +1,154 @@
+# ruff sobre el árbol del commit (excluye migración no versionada 0097)
+All checks passed!
+EXIT_TRACKED=0
+--- ruff canónico (incluye WIP no versionado) ---
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/alembic/versions/0097_sm_core.py:14:1
+   |
+12 |   """
+13 |
+14 | / from collections.abc import Sequence
+15 | |
+16 | | import sqlalchemy as sa
+17 | | from alembic import op
+18 | | from sqlalchemy.dialects import postgresql
+   | |__________________________________________^
+19 |
+20 |   revision: str = "0097_sm_core"
+   |
+help: Organize imports
+   |
+16 | import sqlalchemy as sa
+   - from alembic import op
+17 | from sqlalchemy.dialects import postgresql
+18 |
+19 + from alembic import op
+20 +
+21 | revision: str = "0097_sm_core"
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+EXIT_CANONICO=1
+unformatted: File would be reformatted
+   --> backend/alembic/versions/0097_sm_core.py:31:19
+    |
+30  |         "sm_eventos",
+    -         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True),
+31  +         sa.Column(
+32  +             "id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True
+33  +         ),
+34  |         sa.Column("tenant", sa.String(length=32), nullable=False),
+--------------------------------------------------------------------------------
+38  |         sa.Column("entidad_id", sa.String(length=200), nullable=True),
+    -         sa.Column("payload", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False),
+39  +         sa.Column(
+40  +             "payload", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False
+41  +         ),
+42  |         sa.Column("idempotencia", sa.String(length=255), nullable=False),
+--------------------------------------------------------------------------------
+59  |         "sm_mensajes",
+    -         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True),
+    -         sa.Column("evento_id", postgresql.UUID(as_uuid=True), sa.ForeignKey(f"{SCHEMA}.sm_eventos.id", name="fk_sm_mensajes_evento"), nullable=False),
+60  +         sa.Column(
+61  +             "id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True
+62  +         ),
+63  +         sa.Column(
+64  +             "evento_id",
+65  +             postgresql.UUID(as_uuid=True),
+66  +             sa.ForeignKey(f"{SCHEMA}.sm_eventos.id", name="fk_sm_mensajes_evento"),
+67  +             nullable=False,
+68  +         ),
+69  |         sa.Column("tenant", sa.String(length=32), nullable=False),
+--------------------------------------------------------------------------------
+77  |         sa.Column("idempotencia", sa.String(length=255), nullable=False),
+    -         sa.Column("metadatos", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False),
+78  +         sa.Column(
+79  +             "metadatos", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False
+80  +         ),
+81  |         sa.Column("creado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False),
+    -         sa.Column("actualizado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False),
+82  +         sa.Column(
+83  +             "actualizado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False
+84  +         ),
+85  |         sa.CheckConstraint("tenant <> ''", name=op.f("chk_sm_mensajes_tenant")),
+--------------------------------------------------------------------------------
+100 |         "sm_entregas",
+    -         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True),
+    -         sa.Column("mensaje_id", postgresql.UUID(as_uuid=True), sa.ForeignKey(f"{SCHEMA}.sm_mensajes.id", name="fk_sm_entregas_mensaje"), nullable=False),
+101 +         sa.Column(
+102 +             "id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True
+103 +         ),
+104 +         sa.Column(
+105 +             "mensaje_id",
+106 +             postgresql.UUID(as_uuid=True),
+107 +             sa.ForeignKey(f"{SCHEMA}.sm_mensajes.id", name="fk_sm_entregas_mensaje"),
+108 +             nullable=False,
+109 +         ),
+110 |         sa.Column("tenant", sa.String(length=32), nullable=False),
+--------------------------------------------------------------------------------
+116 |         sa.Column("detalle", sa.String(length=500), nullable=True),
+    -         sa.Column("payload", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False),
+117 +         sa.Column(
+118 +             "payload", postgresql.JSONB(astext_type=sa.Text()), server_default=sa.text("'{}'::jsonb"), nullable=False
+119 +         ),
+120 |         sa.Column("creado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False),
+--------------------------------------------------------------------------------
+131 |         "sm_auditorias",
+    -         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True),
+    -         sa.Column("evento_id", postgresql.UUID(as_uuid=True), sa.ForeignKey(f"{SCHEMA}.sm_eventos.id", name="fk_sm_auditorias_evento"), nullable=False),
+    -         sa.Column("mensaje_id", postgresql.UUID(as_uuid=True), sa.ForeignKey(f"{SCHEMA}.sm_mensajes.id", name="fk_sm_auditorias_mensaje"), nullable=True),
+132 +         sa.Column(
+133 +             "id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True
+134 +         ),
+135 +         sa.Column(
+136 +             "evento_id",
+137 +             postgresql.UUID(as_uuid=True),
+138 +             sa.ForeignKey(f"{SCHEMA}.sm_eventos.id", name="fk_sm_auditorias_evento"),
+139 +             nullable=False,
+140 +         ),
+141 +         sa.Column(
+142 +             "mensaje_id",
+143 +             postgresql.UUID(as_uuid=True),
+144 +             sa.ForeignKey(f"{SCHEMA}.sm_mensajes.id", name="fk_sm_auditorias_mensaje"),
+145 +             nullable=True,
+146 +         ),
+147 |         sa.Column("tenant", sa.String(length=32), nullable=False),
+--------------------------------------------------------------------------------
+156 |     )
+    -     op.create_index("ix_sm_auditorias_tenant_creado", "sm_auditorias", ["tenant", "creado_en"], unique=False, schema=SCHEMA)
+157 +     op.create_index(
+158 +         "ix_sm_auditorias_tenant_creado", "sm_auditorias", ["tenant", "creado_en"], unique=False, schema=SCHEMA
+159 +     )
+160 |     op.create_index("ix_sm_auditorias_evento", "sm_auditorias", ["evento_id"], unique=False, schema=SCHEMA)
+--------------------------------------------------------------------------------
+164 |         "sm_consentimientos",
+    -         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True),
+165 +         sa.Column(
+166 +             "id", postgresql.UUID(as_uuid=True), server_default=sa.text("public.generar_uuid_v7()"), primary_key=True
+167 +         ),
+168 |         sa.Column("tenant", sa.String(length=32), nullable=False),
+--------------------------------------------------------------------------------
+174 |         sa.Column("creado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False),
+    -         sa.Column("actualizado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False),
+175 +         sa.Column(
+176 +             "actualizado_en", sa.DateTime(timezone=True), server_default=sa.text("clock_timestamp()"), nullable=False
+177 +         ),
+178 |         sa.CheckConstraint("estado IN ('otorgado','revocado')", name=op.f("chk_sm_consentimientos_estado")),
+    -         sa.UniqueConstraint("tenant", "actor", "canal", "contacto_hash", name=op.f("uq_sm_consentimientos_tenant_actor_canal_contacto")),
+179 +         sa.UniqueConstraint(
+180 +             "tenant", "actor", "canal", "contacto_hash", name=op.f("uq_sm_consentimientos_tenant_actor_canal_contacto")
+181 +         ),
+182 |         schema=SCHEMA,
+183 |         comment="Consentimiento por canal y contacto hash",
+184 |     )
+185 |     op.create_index("ix_sm_consentimientos_tenant", "sm_consentimientos", ["tenant"], unique=False, schema=SCHEMA)
+    -     op.create_index("ix_sm_consentimientos_actualizado", "sm_consentimientos", ["actualizado_en"], unique=False, schema=SCHEMA)
+186 +     op.create_index(
+187 +         "ix_sm_consentimientos_actualizado", "sm_consentimientos", ["actualizado_en"], unique=False, schema=SCHEMA
+188 +     )
+189 |
+    |
+
+1 file would be reformatted, 603 files already formatted
+EXIT_FORMATO=1

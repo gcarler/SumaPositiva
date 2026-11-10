@@ -34,9 +34,13 @@ export function useFormularios() {
   return { data, isLoading: remoto.isFetching, error: remoto.error };
 }
 export function useFormularioDetalle(id: string) {
-  const data = useFormulariosStore((s) =>
-    s.formularios.find((f) => f.id === id),
-  );
+  const data = useFormulariosStore((s) => {
+    const match = s.formularios.find(
+      (f) => f.id === id || f.configuracion?.slug === id
+    );
+    if (match) return match;
+    return s.formularios[0];
+  });
   return {
     data,
     isLoading: false,

@@ -78,6 +78,7 @@ class NotificacionService:
         self.session.add(notificacion)
         await self.session.flush()
         await self.session.refresh(notificacion)
+        await self._sincronizar_sm(notificacion)
         return notificacion
 
     async def enviar_notificacion_cambio_estado(
@@ -115,6 +116,7 @@ class NotificacionService:
         self.session.add(notificacion)
         await self.session.flush()
         await self.session.refresh(notificacion)
+        await self._sincronizar_sm(notificacion)
         return notificacion
 
     async def _encolar(
@@ -138,7 +140,27 @@ class NotificacionService:
         self.session.add(notificacion)
         await self.session.flush()
         await self.session.refresh(notificacion)
+        await self._sincronizar_sm(notificacion)
         return notificacion
+
+    async def _sincronizar_sm(self, notificacion: NotificacionTransaccional) -> None:
+        """Sombra o corte real por tipo, dentro de la transacción del caso de uso.
+
+        Si el puente no acepta la notificación (sin cuenta activa o sin
+        consentimiento SM), la fila sigue ``pendiente`` y Herald la envía: el
+        corte nunca pierde un correo. Solo cuando SM encoló el mensaje se marca
+        ``delegado`` y el worker de Herald deja de reclamarla.
+        """
+        tipo = notificacion.tipo_evento
+        if tipo not in self.settings.sm_eventos_dominio:
+            return
+        from app.modules.sm.bridge import SMBridge
+
+        mensaje = await SMBridge(settings=self.settings).sincronizar_notificacion(self.session, notificacion)
+        if mensaje is None or tipo not in self.settings.sm_corte_tipos:
+            return
+        notificacion.estado_envio = "delegado"
+        await self.session.flush()
 
     async def enviar_bienvenida_registro(
         self,

@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
-  <!-- Fondo institucional de alto contraste para pestañas claras y oscuras -->
-  <rect width="128" height="128" rx="28" fill="#0F172A"/>
-  <rect x="1" y="1" width="126" height="126" rx="27" stroke="#1E293B" stroke-width="2"/>
+  <!-- Fondo institucional Azul Marino Universidad de Cartagena (#0C0D29) -->
+  <rect width="128" height="128" rx="28" fill="#0C0D29"/>
+  <rect x="1" y="1" width="126" height="126" rx="27" stroke="#4B2F83" stroke-width="2"/>
   
-  <!-- Isotipo P: Ágora Concéntrica de POLIS -->
+  <!-- Isotipo P: Ágora Concéntrica de POLIS (Paleta Universidad de Cartagena) -->
   <g transform="translate(64, 64) scale(0.52) translate(-112, -99)">
-    <path d="M44 176 V90" stroke="#0369A1" stroke-width="18" stroke-linecap="round"/>
-    <path d="M44 90 C44 52.4446 74.4446 22 112 22 C149.555 22 180 52.4446 180 90 C180 127.555 149.555 158 112 158 H78" stroke="#38BDF8" stroke-width="18" stroke-linecap="round"/>
-    <path d="M68 90 C68 65.6995 87.6995 46 112 46 C136.301 46 156 65.6995 156 90 C156 114.301 136.301 134 112 134" stroke="#0284C7" stroke-width="14" stroke-linecap="round"/>
-    <circle cx="112" cy="90" r="22" fill="#7DD3FC"/>
+    <path d="M44 176 V90" stroke="#4B2F83" stroke-width="18" stroke-linecap="round"/>
+    <path d="M44 90 C44 52.4446 74.4446 22 112 22 C149.555 22 180 52.4446 180 90 C180 127.555 149.555 158 112 158 H78" stroke="#E78B26" stroke-width="18" stroke-linecap="round"/>
+    <path d="M68 90 C68 65.6995 87.6995 46 112 46 C136.301 46 156 65.6995 156 90 C156 114.301 136.301 134 112 134" stroke="#ECC22E" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="112" cy="90" r="22" fill="#ECC22E" fill-opacity="0.28"/>
     <circle cx="112" cy="90" r="9" fill="#FFFFFF"/>
   </g>
 </svg>

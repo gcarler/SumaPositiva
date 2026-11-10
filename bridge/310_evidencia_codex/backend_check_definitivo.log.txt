@@ -1,0 +1,567 @@
+$ uv run --project backend ruff check backend && uv run --project backend ruff format --check backend && uv run --project backend pytest backend/tests
+All checks passed!
+620 files already formatted
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tmp/polis310/work/backend
+configfile: pyproject.toml
+plugins: platformdirs-4.14.5, logfire-sdk-5.4.0, langsmith-0.14.17, anyio-4.15.1
+collected 2010 items
+
+backend/tests/test_access_policy.py .................................... [  1%]
+........................................................................ [  5%]
+......................                                                   [  6%]
+backend/tests/test_acta_pdf.py ....                                      [  6%]
+backend/tests/test_actas_y_participantes.py ....                         [  6%]
+backend/tests/test_actores_estrategicos.py ..                            [  6%]
+backend/tests/test_adaptador_catalogo_fuentes_polis.py ................  [  7%]
+backend/tests/test_agentes_inteligentes_pdd.py ........                  [  8%]
+backend/tests/test_alternativas_mga.py ....                              [  8%]
+backend/tests/test_aportes.py ....                                       [  8%]
+backend/tests/test_aportes_legado_publico.py ........................... [  9%]
+........................................................................ [ 13%]
+....................................................                     [ 16%]
+backend/tests/test_aportes_remediacion.py .............................. [ 17%]
+.......................                                                  [ 18%]
+backend/tests/test_apoyos_unicos.py .                                    [ 18%]
+backend/tests/test_apoyos_voto.py .                                      [ 18%]
+backend/tests/test_aud05_gating_fases.py .....                           [ 19%]
+backend/tests/test_aud06_perfil_produccion.py .........                  [ 19%]
+backend/tests/test_aud11_scripts_seguridad.py ................           [ 20%]
+backend/tests/test_auditoria_indicadores_planeacion_polis.py ........... [ 20%]
+.....................................                                    [ 22%]
+backend/tests/test_cadena_analitica_corte_polis.py ....                  [ 22%]
+backend/tests/test_calidad_correo_herald.py ...............              [ 23%]
+backend/tests/test_calidad_formularios.py .............................. [ 25%]
+...........................                                              [ 26%]
+backend/tests/test_canal_whatsapp.py .....                               [ 26%]
+backend/tests/test_candidatos_programa_meta_polis.py ..                  [ 26%]
+backend/tests/test_catalogo_cartografia_polis.py F.                      [ 26%]
+backend/tests/test_catalogo_fuentes_versionado.py FF                     [ 27%]
+backend/tests/test_catalogo_indicadores_integridad.py .................. [ 27%]
+.......                                                                  [ 28%]
+backend/tests/test_catalogo_indicadores_polis.py .......                 [ 28%]
+backend/tests/test_catalogo_ocho_planes_polis.py ..                      [ 28%]
+backend/tests/test_catalogo_planeacion_corte_polis.py ...............    [ 29%]
+backend/tests/test_censo_mesas_migracion.py ..                           [ 29%]
+backend/tests/test_cierre01_migracion_asistencia.py ....                 [ 29%]
+backend/tests/test_cierre02_herramientas_identidad.py ......             [ 30%]
+backend/tests/test_cierre04_seguridad.py ....                            [ 30%]
+backend/tests/test_cierre05_csp_report.py ......                         [ 30%]
+backend/tests/test_cierre06_mfa_totp.py .....                            [ 30%]
+backend/tests/test_cierre07_ambito_territorial.py .......                [ 31%]
+backend/tests/test_cli_ficha_territorial_polis.py ............           [ 31%]
+backend/tests/test_cli_workspace.py ....                                 [ 31%]
+backend/tests/test_comparacion_ppi_catalogo_polis.py ................... [ 32%]
+.............                                                            [ 33%]
+backend/tests/test_compromisos_pas.py ...                                [ 33%]
+backend/tests/test_comunicaciones.py .....                               [ 33%]
+backend/tests/test_conciliacion_retrospectiva_fuentes_polis.py ......... [ 34%]
+...............................................................          [ 37%]
+backend/tests/test_conciliador_gold_set.py ...........................   [ 38%]
+backend/tests/test_conciliador_vinculos_calidad_polis.py .......         [ 39%]
+backend/tests/test_concurrencia_y_conflictos.py ..                       [ 39%]
+backend/tests/test_config.py ...                                         [ 39%]
+backend/tests/test_consolidar_datos_integral_p1.py ....                  [ 39%]
+backend/tests/test_contexto_corte_polis.py ......                        [ 39%]
+backend/tests/test_contrastar_fuentes_polis.py ....                      [ 40%]
+backend/tests/test_contratos_observacion_polis.py ........               [ 40%]
+backend/tests/test_control_acceso.py ........                            [ 40%]
+backend/tests/test_control_fases_y_oauth.py ......                       [ 41%]
+backend/tests/test_corpus_vinculos_polis.py ...                          [ 41%]
+backend/tests/test_correspondencias_meta_pa_polis.py .                   [ 41%]
+backend/tests/test_corridas_pipeline.py ..                               [ 41%]
+backend/tests/test_corte_datos_polis.py .......                          [ 41%]
+backend/tests/test_curacion_cartografia_polis.py F.                      [ 41%]
+backend/tests/test_database_integration.py .                             [ 42%]
+backend/tests/test_database_telemetry.py ......                          [ 42%]
+backend/tests/test_dea_econometria_triada.py ...........                 [ 42%]
+backend/tests/test_devolucion_razones.py .                               [ 42%]
+backend/tests/test_e2e_destinos_seguridad.py ............                [ 43%]
+backend/tests/test_e2e_persistencia.py .                                 [ 43%]
+backend/tests/test_enfoque_etnico.py .                                   [ 43%]
+backend/tests/test_evidencia_segura.py .....                             [ 43%]
+backend/tests/test_evidencias.py .....                                   [ 44%]
+backend/tests/test_exception_handlers.py ......                          [ 44%]
+backend/tests/test_ficha_territorial_polis.py .......................... [ 45%]
+................                                                         [ 46%]
+backend/tests/test_formularios_admin.py ...                              [ 46%]
+backend/tests/test_formularios_consultas.py .....                        [ 46%]
+backend/tests/test_fotos_mesas.py ..                                     [ 47%]
+backend/tests/test_fuentes_informacion.py .....                          [ 47%]
+backend/tests/test_geodatos_analitica_hurtos.py .....                    [ 47%]
+backend/tests/test_geodatos_estandarizacion.py ......                    [ 47%]
+backend/tests/test_geodatos_fuentes.py ........                          [ 48%]
+backend/tests/test_geodatos_isocronas.py .......                         [ 48%]
+backend/tests/test_geodatos_test_isolation_policy.py ..                  [ 48%]
+backend/tests/test_geovisor_postgis.py ....                              [ 48%]
+backend/tests/test_geovisor_ubicacion_mesa.py .                          [ 48%]
+backend/tests/test_google_token_verificado.py ........                   [ 49%]
+backend/tests/test_google_workspace_sync.py ...s......                   [ 49%]
+backend/tests/test_grafo_validacion_fuentes_polis.py .                   [ 49%]
+backend/tests/test_health.py ........                                    [ 50%]
+backend/tests/test_herald_fase2.py ...........                           [ 50%]
+backend/tests/test_herald_salud_resumen.py ............................. [ 52%]
+....                                                                     [ 52%]
+backend/tests/test_identidad_completa.py ........................        [ 53%]
+backend/tests/test_identidad_migracion.py .                              [ 53%]
+backend/tests/test_identidad_remediacion_eaf.py ........................ [ 54%]
+.........                                                                [ 55%]
+backend/tests/test_identidad_territorial_catalogo_polis.py ............. [ 55%]
+..................                                                       [ 56%]
+backend/tests/test_identidad_y_permisos.py .                             [ 56%]
+backend/tests/test_indicadores_canonicos_polis.py .....                  [ 57%]
+backend/tests/test_indicadores_metadatos.py ...                          [ 57%]
+backend/tests/test_ingesta_indicadores.py ..                             [ 57%]
+backend/tests/test_ingesta_masiva_triada.py ....................         [ 58%]
+backend/tests/test_ingesta_recuperacion_ceros.py .....                   [ 58%]
+backend/tests/test_integridad_compromisos.py ....                        [ 58%]
+backend/tests/test_integridad_mediciones.py ..                           [ 58%]
+backend/tests/test_integridad_pii_catalogos.py .                         [ 59%]
+backend/tests/test_inteligencia_triada.py ..                             [ 59%]
+backend/tests/test_inventario_fuentes_polis.py ...F..................... [ 60%]
+..............                                                           [ 61%]
+backend/tests/test_ipc_deflactor_polis.py ....                           [ 61%]
+backend/tests/test_lector_serie_corte_polis.py .                         [ 61%]
+backend/tests/test_licencias_catalogo_indicadores.py ...                 [ 61%]
+backend/tests/test_lineas_constructor.py ............................    [ 62%]
+backend/tests/test_magic_link.py ...                                     [ 62%]
+backend/tests/test_matriz_correspondencias_corte_polis.py .......        [ 63%]
+backend/tests/test_mesas_agenda.py .                                     [ 63%]
+backend/tests/test_mesas_ltree.py ..                                     [ 63%]
+backend/tests/test_mesas_seguridad_auditoria.py .........                [ 63%]
+backend/tests/test_mesas_submesas_put.py .                               [ 63%]
+backend/tests/test_metadatos_socrata_polis.py ....                       [ 64%]
+backend/tests/test_migration_database_isolation.py .......               [ 64%]
+backend/tests/test_motor_mga.py ...                                      [ 64%]
+backend/tests/test_motor_multiagente_pdd.py ..........                   [ 65%]
+backend/tests/test_motor_plan_accion_dnp.py ........                     [ 65%]
+backend/tests/test_normalizar_observaciones_polis.py ..                  [ 65%]
+backend/tests/test_noticias.py ...                                       [ 65%]
+backend/tests/test_notificaciones_y_radicacion.py .....                  [ 66%]
+backend/tests/test_observability.py ...                                  [ 66%]
+backend/tests/test_orquestador_grafo.py .......                          [ 66%]
+backend/tests/test_paneles_series_7d_polis.py .......                    [ 66%]
+backend/tests/test_parser_terridata_polis.py ........................... [ 68%]
+..................................                                       [ 69%]
+backend/tests/test_participacion_multicanal.py .....                     [ 70%]
+backend/tests/test_pdd_dea_triada.py ..............................      [ 71%]
+backend/tests/test_pdd_seguridad_humana_16.py ......                     [ 71%]
+backend/tests/test_pdt_ai_evaluator.py ........F........                 [ 72%]
+backend/tests/test_pdt_analisis_planes_tendencias.py .......             [ 73%]
+backend/tests/test_pdt_dea_4niveles_cartagena.py ........                [ 73%]
+backend/tests/test_pdt_diagnostico_seguridad_humana_8planes.py sss.      [ 73%]
+backend/tests/test_pdt_dictamen_ejecutivo.py ......                      [ 74%]
+backend/tests/test_pdt_hoshin_kanri.py .......                           [ 74%]
+backend/tests/test_pdt_nodos_espacial_predictivo.py .F.....s.            [ 74%]
+backend/tests/test_pdt_normalizador_y_vinculos_8planes.py ..sss          [ 75%]
+backend/tests/test_pdt_persistencia_pg.py .....ss                        [ 75%]
+backend/tests/test_pdt_revision_por_meta.py ....ss.sss..                 [ 76%]
+backend/tests/test_pdt_sispt_dnp_evaluador.py .....s                     [ 76%]
+backend/tests/test_pipeline_p0_unit.py .........................         [ 77%]
+backend/tests/test_plan_actualizacion_fuentes_polis.py ..                [ 77%]
+backend/tests/test_plantillas_stack.py .........                         [ 78%]
+backend/tests/test_politicas_catalogo.py ..                              [ 78%]
+backend/tests/test_politicas_heros.py ....                               [ 78%]
+backend/tests/test_politicas_y_geodatos.py .....                         [ 78%]
+backend/tests/test_ppi_agentes_corte_polis.py .................          [ 79%]
+backend/tests/test_ppi_planeacion_corte_polis.py ....................... [ 80%]
+.........................                                                [ 81%]
+backend/tests/test_presupuesto_e_indicadores.py ...                      [ 82%]
+backend/tests/test_proyectos_agregacion.py .......                       [ 82%]
+backend/tests/test_proyectos_anexos.py ...                               [ 82%]
+backend/tests/test_reconciliacion_ceros_pa.py ...............            [ 83%]
+backend/tests/test_recuperacion_documentos_pa.py ....................... [ 84%]
+...............                                                          [ 85%]
+backend/tests/test_red_multiagente_ia.py ..........                      [ 85%]
+backend/tests/test_registro_territorial_polis.py FF                      [ 85%]
+backend/tests/test_reporte_geoespacial.py ......                         [ 86%]
+backend/tests/test_revision_taxonomia_7d_polis.py ...                    [ 86%]
+backend/tests/test_series_7d_polis.py .....                              [ 86%]
+backend/tests/test_servicio_correo_transaccional.py ............         [ 87%]
+backend/tests/test_sesion_anonima.py .....                               [ 87%]
+backend/tests/test_sincronizar_fuentes_publicas.py ........              [ 87%]
+backend/tests/test_sincronizar_fuentes_versionado.py .....               [ 88%]
+backend/tests/test_sm_310.py ......................                      [ 89%]
+backend/tests/test_sm_cli_310.py .......                                 [ 89%]
+backend/tests/test_sm_core.py ........                                   [ 89%]
+backend/tests/test_sm_full.py .............................              [ 91%]
+backend/tests/test_sm_transports_310.py .............................    [ 92%]
+backend/tests/test_supervisor_planeacion_corte_polis.py .......          [ 93%]
+backend/tests/test_tablas_dea_dmu_lineage.py ..                          [ 93%]
+backend/tests/test_tablero_operacion_fuentes_polis.py ...                [ 93%]
+backend/tests/test_taxonomia_7d_polis.py .......                         [ 93%]
+backend/tests/test_testimonios_comunitarios.py .......                   [ 94%]
+backend/tests/test_toolbox_linaje_territorial.py ......                  [ 94%]
+backend/tests/test_transaction_policy.py .                               [ 94%]
+backend/tests/test_transactions.py .....                                 [ 94%]
+backend/tests/test_transactions_integration.py .....................     [ 95%]
+backend/tests/test_transmision_y_purga_anexos.py ........                [ 96%]
+backend/tests/test_triada_motores.py ....................                [ 97%]
+backend/tests/test_urls_formularios.py ...................               [ 98%]
+backend/tests/test_validar_banco_staging_polis.py ..                     [ 98%]
+backend/tests/test_validar_catalogo_indicadores.py ...                   [ 98%]
+backend/tests/test_validar_cifras_publicadas.py ......................   [ 99%]
+backend/tests/test_whatsapp_remediacion.py .............                 [100%]
+
+=================================== FAILURES ===================================
+_________ test_registro_capas_conserva_17_corregimientos_y_cuarentena __________
+
+    def test_registro_capas_conserva_17_corregimientos_y_cuarentena():
+        modulo = _modulo()
+        registro = modulo.generar()
+>       assert len(registro["capas"]) == 21
+E       AssertionError: assert 16 == 21
+E        +  where 16 = len([{'archivo': 'data/cartografia_fuentes/ucg_cartagena_15.geojson', 'sha256': '04dfec6e1fb8c634c0cf81dc85aa178d62e166a36...4272181aa1b33537ef1099d85f12af76aefd8f7a3d24b30ea4', 'version_id': '845f7d524f5b8642', 'formato': 'zip_shp', ...}, ...])
+
+backend/tests/test_catalogo_cartografia_polis.py:20: AssertionError
+___________________ test_carga_real_no_duplica_y_no_promueve ___________________
+
+prepared_test_database = '[privado]'
+
+    def test_carga_real_no_duplica_y_no_promueve(prepared_test_database):
+        if prepared_test_database is None:
+            pytest.skip("Se requiere POLIS_TEST_DATABASE_URL")
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text())
+>       primera = asyncio.run(cargar(prepared_test_database, inventario))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_catalogo_fuentes_versionado.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+backend/scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inventario = {'esquema': 'polis.inventario_fuentes.v1', 'generado_utc': '2026-11-05T03:30:21.959420+00:00', 'corte_consolidado_sha256': 'a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa', 'fuentes_clave': 43, ...}
+
+    def verificar_inventario(inventario: dict) -> None:
+        if inventario.get("esquema") != "polis.inventario_fuentes.v1":
+            raise ValueError("Versión de inventario no reconocida")
+        if len(inventario["fuentes"]) != inventario["fuentes_clave"]:
+            raise ValueError("Conteo de claves no coincide")
+        if len(inventario["archivos"]) != inventario["artefactos"]:
+            raise ValueError("Conteo de artefactos no coincide")
+        if _sha256(CONSOLIDADO) != inventario["corte_consolidado_sha256"]:
+            raise ValueError("El consolidado no coincide con el corte inventariado")
+        paquetes = inventario.get("paquetes", {})
+        if not paquetes:
+            raise ValueError("Faltan las fichas de paquetes locales")
+        catalogos: dict[str, dict[str, dict]] = {}
+        for archivo in inventario["archivos"]:
+            paquete = paquetes.get(archivo.get("paquete_clave"))
+            if not paquete or not archivo["ruta"].startswith(paquete["prefijo"]):
+                raise ValueError(f"Artefacto sin ficha de paquete válida: {archivo['ruta']}")
+            ruta = RAIZ / archivo["ruta"]
+            if not ruta.is_file() or _sha256(ruta) != archivo["sha256"]:
+>               raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E               ValueError: Artefacto ausente o con SHA distinto: geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip
+
+backend/scripts/cargar_catalogo_fuentes.py:88: ValueError
+_______ test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion _______
+
+prepared_test_database = '[privado]'
+
+    def test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion(prepared_test_database):
+        if prepared_test_database is None:
+            pytest.skip("Se requiere POLIS_TEST_DATABASE_URL")
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = deepcopy(json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text()))
+    
+        def extra(ruta_relativa: str, formato: str) -> dict:
+            ruta = raiz / ruta_relativa
+            return {
+                "ruta": ruta_relativa,
+                "paquete_clave": "banco_local",
+                "evidencia_origen": {},
+                "sha256": hashlib.sha256(ruta.read_bytes()).hexdigest(),
+                "bytes": ruta.stat().st_size,
+                "formato": formato,
+                "rol": "control",
+            }
+    
+        ruta_nueva = "data/banco_fuentes_oficiales/inventario_pipeline_2026.json"
+        inventario["archivos"].append(extra(ruta_nueva, "json"))
+        inventario["archivos"].append(extra("data/banco_fuentes_oficiales/plan_actualizacion_2026.json", "x" * 41))
+        inventario["artefactos"] += 2
+        with pytest.raises(SQLAlchemyError):
+>           asyncio.run(cargar(prepared_test_database, inventario))
+
+backend/tests/test_catalogo_fuentes_versionado.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+backend/scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inventario = {'esquema': 'polis.inventario_fuentes.v1', 'generado_utc': '2026-11-05T03:30:21.959420+00:00', 'corte_consolidado_sha256': 'a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa', 'fuentes_clave': 43, ...}
+
+    def verificar_inventario(inventario: dict) -> None:
+        if inventario.get("esquema") != "polis.inventario_fuentes.v1":
+            raise ValueError("Versión de inventario no reconocida")
+        if len(inventario["fuentes"]) != inventario["fuentes_clave"]:
+            raise ValueError("Conteo de claves no coincide")
+        if len(inventario["archivos"]) != inventario["artefactos"]:
+            raise ValueError("Conteo de artefactos no coincide")
+        if _sha256(CONSOLIDADO) != inventario["corte_consolidado_sha256"]:
+            raise ValueError("El consolidado no coincide con el corte inventariado")
+        paquetes = inventario.get("paquetes", {})
+        if not paquetes:
+            raise ValueError("Faltan las fichas de paquetes locales")
+        catalogos: dict[str, dict[str, dict]] = {}
+        for archivo in inventario["archivos"]:
+            paquete = paquetes.get(archivo.get("paquete_clave"))
+            if not paquete or not archivo["ruta"].startswith(paquete["prefijo"]):
+                raise ValueError(f"Artefacto sin ficha de paquete válida: {archivo['ruta']}")
+            ruta = RAIZ / archivo["ruta"]
+            if not ruta.is_file() or _sha256(ruta) != archivo["sha256"]:
+>               raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E               ValueError: Artefacto ausente o con SHA distinto: geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip
+
+backend/scripts/cargar_catalogo_fuentes.py:88: ValueError
+_______________ test_seis_reparaciones_conservan_original_y_sha ________________
+
+    def test_seis_reparaciones_conservan_original_y_sha():
+        registro = json.loads((FUENTES / "registro_correccion_geometrica_2026.json").read_text())
+        assert len(registro["reparaciones"]) == 6
+        for reparacion in registro["reparaciones"]:
+            original = RAIZ / reparacion["origen"]
+            derivado = RAIZ / reparacion["derivado"]
+>           assert hashlib.sha256(original.read_bytes()).hexdigest() == reparacion["sha256_origen"]
+                                  ^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_curacion_cartografia_polis.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_barrios.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_barrios.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_inventario_publicado_coincide_con_archivos_actuales ___________
+
+    def test_inventario_publicado_coincide_con_archivos_actuales():
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text())
+        for archivo in inventario["archivos"]:
+            ruta = raiz / archivo["ruta"]
+>           assert ruta.is_file(), archivo["ruta"]
+E           AssertionError: geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip
+E           assert False
+E            +  where False = is_file()
+E            +    where is_file = PosixPath('/tmp/polis310/work/geodatos_cartagena/Cartografia_Catastro_AMB_Cartagena.zip').is_file
+
+backend/tests/test_inventario_fuentes_polis.py:82: AssertionError
+______________ test_system_prompt_matches_knowledge_specification ______________
+
+    def test_system_prompt_matches_knowledge_specification():
+        from pathlib import Path
+    
+        knowledge = (
+            Path(__file__).resolve().parents[2] / "knowledge-base" / "13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md"
+        )
+>       content = knowledge.read_text()
+                  ^^^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_pdt_ai_evaluator.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/polis310/work/knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/polis310/work/knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_econometria_espacial_desagregacion_cartagena_ucg_barrios _________
+
+    def test_econometria_espacial_desagregacion_cartagena_ucg_barrios() -> None:
+        """Verifica que cuando se entregan las 3 Localidades de Cartagena (< 15 unidades),
+        el nodo desagrega y enriquece automáticamente con las 15 UCG de barrios_cartagena.json.
+        """
+        cartagena_base = [
+            {
+                "codigo": "LOC-1",
+                "nombre": "Localidad 1 Histórica y del Caribe Norte",
+                "lon": -75.535,
+                "lat": 10.422,
+                "nombre_indicador": "IPM Territorial (%)",
+                "valor": 21.4,
+                "fuente_datos": "geodatos.indicadores_territorio",
+            },
+            {
+                "codigo": "LOC-2",
+                "nombre": "Localidad 2 De la Virgen y Turística",
+                "lon": -75.485,
+                "lat": 10.408,
+                "nombre_indicador": "IPM Territorial (%)",
+                "valor": 45.2,
+                "fuente_datos": "geodatos.indicadores_territorio",
+            },
+            {
+                "codigo": "LOC-3",
+                "nombre": "Localidad 3 Industrial y de la Bahía",
+                "lon": -75.482,
+                "lat": 10.368,
+                "nombre_indicador": "IPM Territorial (%)",
+                "valor": 33.8,
+                "fuente_datos": "geodatos.indicadores_territorio",
+            },
+        ]
+    
+        result = ejecutar_econometria_espacial_pdt(
+            territory_records=cartagena_base,
+            unidades_ineficientes_dea=["Secretaría de Educación Pública"],
+            permutations=199,
+        )
+    
+>       assert result["estado"] == "ESTIMADO_GEOPANDAS_LISA"
+E       AssertionError: assert 'PENDIENTE_DATOS_ESPACIALES' == 'ESTIMADO_GEOPANDAS_LISA'
+E         
+E         - ESTIMADO_GEOPANDAS_LISA
+E         + PENDIENTE_DATOS_ESPACIALES
+
+backend/tests/test_pdt_nodos_espacial_predictivo.py:185: AssertionError
+_________ test_registro_versionado_253_unidades_sin_imputar_46_barrios _________
+
+    def test_registro_versionado_253_unidades_sin_imputar_46_barrios():
+>       registro = _modulo().generar()
+                   ^^^^^^^^^^^^^^^^^^^
+
+backend/tests/test_registro_territorial_polis.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/registrar_territorios_polis.py:38: in generar
+    sha = _sha(ruta)
+          ^^^^^^^^^^
+scripts/registrar_territorios_polis.py:31: in _sha
+    return hashlib.sha256(ruta.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_limite_distrital.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_limite_distrital.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____________ test_registro_publicado_conserva_hashes_de_las_capas _____________
+
+    def test_registro_publicado_conserva_hashes_de_las_capas():
+        modulo = _modulo()
+        publicado = json.loads(modulo.SALIDA.read_text())
+>       assert publicado == modulo.generar()
+                            ^^^^^^^^^^^^^^^^
+
+backend/tests/test_registro_territorial_polis.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/registrar_territorios_polis.py:38: in generar
+    sha = _sha(ruta)
+          ^^^^^^^^^^
+scripts/registrar_territorios_polis.py:31: in _sha
+    return hashlib.sha256(ruta.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_limite_distrital.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/polis310/work/geodatos_cartagena/geojson/cartagena_limite_distrital.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=============================== warnings summary ===============================
+tests/test_ingesta_masiva_triada.py::test_official_cartagena_corpus_detects_historical_profiles_and_three_engines
+  /root/polis/backend/.venv/lib/python3.12/site-packages/openpyxl/worksheet/_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+    warn(msg)
+
+tests/test_motor_plan_accion_dnp.py::test_crear_actividad_rechaza_verbo_debil
+  /tmp/polis310/work/backend/app/modules/compromisos/router.py:649: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+    return await service.crear_actividad(datos, actor_id=sujeto.sujeto_id)
+
+tests/test_pipeline_p0_unit.py::test_timeout_cancela_trabajo_y_cierra_resultado
+  /root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=1340953) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED backend/tests/test_catalogo_cartografia_polis.py::test_registro_capas_conserva_17_corregimientos_y_cuarentena
+FAILED backend/tests/test_catalogo_fuentes_versionado.py::test_carga_real_no_duplica_y_no_promueve
+FAILED backend/tests/test_catalogo_fuentes_versionado.py::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion
+FAILED backend/tests/test_curacion_cartografia_polis.py::test_seis_reparaciones_conservan_original_y_sha
+FAILED backend/tests/test_inventario_fuentes_polis.py::test_inventario_publicado_coincide_con_archivos_actuales
+FAILED backend/tests/test_pdt_ai_evaluator.py::test_system_prompt_matches_knowledge_specification
+FAILED backend/tests/test_pdt_nodos_espacial_predictivo.py::test_econometria_espacial_desagregacion_cartagena_ucg_barrios
+FAILED backend/tests/test_registro_territorial_polis.py::test_registro_versionado_253_unidades_sin_imputar_46_barrios
+FAILED backend/tests/test_registro_territorial_polis.py::test_registro_publicado_conserva_hashes_de_las_capas
+====== 9 failed, 1985 passed, 16 skipped, 3 warnings in 691.17s (0:11:31) ======
+error: script "backend:check" exited with code 1

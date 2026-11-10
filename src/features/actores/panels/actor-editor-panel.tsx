@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, type FormEvent} from "react";
+import {useEffect, useState, type FormEvent} from "react";
 import {toast} from "sonner";
 import {
   Users,
@@ -35,6 +35,7 @@ import type {
   TipoActor
 } from "../models/actor";
 import {calcularCuadrante, useActoresStore} from "../state/actores-store";
+import {obtenerContactoActorApi} from "../services/actores-api";
 
 const DIMENSIONES_OPCIONES = [
   { id: "personal", label: "Seguridad Personal / Convivencia" },
@@ -90,6 +91,26 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
   const [expectativas, setExpectativas] = useState(actor?.expectativasPrincipales ?? "");
   const [acciones, setAcciones] = useState(actor?.accionesInvolucramiento ?? "");
 
+  // La ficha pública no incluye datos personales: se piden aparte, solo para edición.
+  const [contactoCargado, setContactoCargado] = useState(!actor);
+  useEffect(() => {
+    if (!actor || !tienePermisoEscritura) return;
+    let activo = true;
+    void obtenerContactoActorApi(actor.id).then((contacto) => {
+      if (!activo || !contacto) return;
+      setNombreLider(contacto.nombreLider ?? "");
+      setCargo(contacto.cargo ?? "");
+      setOrganizacion(contacto.organizacion ?? "");
+      setTelefono(contacto.telefono ?? "");
+      setEmail(contacto.email ?? "");
+      setDireccion(contacto.direccion ?? "");
+      setContactoCargado(true);
+    });
+    return () => {
+      activo = false;
+    };
+  }, [actor, tienePermisoEscritura]);
+
   const cuadranteCalculado = calcularCuadrante(nivelPoder, nivelInteres);
 
   const toggleDimension = (dimId: string) => {
@@ -122,14 +143,18 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
         nivelInteres,
         postura,
         dimensionesPrincipales: dimensiones,
-        contacto: {
-          nombreLider: nombreLider.trim(),
-          cargo: cargo.trim(),
-          organizacion: organizacion.trim() || nombre.trim(),
-          telefono: telefono.trim() || undefined,
-          email: email.trim() || undefined,
-          direccion: direccion.trim() || undefined,
-        },
+        ...(contactoCargado
+          ? {
+              contacto: {
+                nombreLider: nombreLider.trim(),
+                cargo: cargo.trim(),
+                organizacion: organizacion.trim() || nombre.trim(),
+                telefono: telefono.trim() || undefined,
+                email: email.trim() || undefined,
+                direccion: direccion.trim() || undefined,
+              },
+            }
+          : {}),
         expectativasPrincipales: expectativas.trim(),
         accionesInvolucramiento: acciones.trim(),
       });

@@ -9,11 +9,13 @@ import {
   listarFases,
   listarLineas,
   listarPoliticas,
+  obtenerResumenInstitucional,
 } from "./politicas-api";
 import type {
   DimensionApi,
   FasePoliticaApi,
   LineaEstrategicaApi,
+  ResumenInstitucionalApi,
 } from "./politicas-api";
 import type { PoliticaPublica } from "@/features/politicas/models/politicas";
 
@@ -22,7 +24,16 @@ export const POLITICAS_QUERY_KEYS = {
   dimensiones: ["politicas", "dimensiones"] as const,
   fases: ["politicas", "fases"] as const,
   lineas: ["politicas", "lineas"] as const,
+  resumenInstitucional: ["politicas", "resumen-institucional"] as const,
 };
+
+export function useResumenInstitucional(): UseQueryResult<ResumenInstitucionalApi, Error> {
+  return useQuery({
+    queryKey: POLITICAS_QUERY_KEYS.resumenInstitucional,
+    queryFn: obtenerResumenInstitucional,
+    staleTime: 1000 * 60 * 5,
+  });
+}
 
 export function useDimensiones(): UseQueryResult<DimensionApi[], Error> {
   return useQuery({

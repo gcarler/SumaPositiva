@@ -135,7 +135,7 @@ export function ConfiguracionView() {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-border bg-surface-1">
+        <section id="geovisor-config" className="overflow-hidden rounded-2xl border border-border bg-surface-1">
           <CabeceraSeccion icono={<MapPinned className="size-5" />} titulo="Geovisor" detalle="Valores iniciales de referencia para el mapa distrital." />
           <div className="space-y-4 p-5">
             <div className="grid gap-4 sm:grid-cols-3">

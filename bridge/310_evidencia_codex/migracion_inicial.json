@@ -1,0 +1,17 @@
+{
+  "comando": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "alembic",
+    "-c",
+    "backend/alembic.ini",
+    "upgrade",
+    "head"
+  ],
+  "rc": 0,
+  "segundos": 7.35,
+  "base": "polis_test_sm_core",
+  "puerto": 15433
+}

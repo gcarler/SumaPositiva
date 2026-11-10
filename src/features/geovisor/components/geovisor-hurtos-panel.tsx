@@ -55,6 +55,7 @@ export interface GeovisorHurtosPanelProps {
   onActivarCapaMapa?: (delito: string) => void;
   onCargarGeojsonPersonalizado?: (geojson: unknown, nombreCapa: string, color: string) => void;
   modoInicial?: ModoHurtos;
+  onModoChange?: (modo: ModoHurtos) => void;
 }
 
 const OPCIONES_DELITOS: Array<{ id: string; label: string; canonico: DelitoTipo | null; color: string }> = [
@@ -103,9 +104,21 @@ export function GeovisorHurtosPanel({
   onActivarCapaMapa,
   onCargarGeojsonPersonalizado,
   modoInicial = "resumen",
+  onModoChange,
 }: GeovisorHurtosPanelProps) {
   // Modo de navegación activo en la herramienta
   const [modo, setModo] = useState<ModoHurtos>(modoInicial);
+  const [prevModoInicial, setPrevModoInicial] = useState<ModoHurtos>(modoInicial);
+
+  if (modoInicial !== prevModoInicial) {
+    setPrevModoInicial(modoInicial);
+    setModo(modoInicial);
+  }
+
+  const handleCambiarModo = (nuevoModo: ModoHurtos) => {
+    setModo(nuevoModo);
+    onModoChange?.(nuevoModo);
+  };
 
   // Filtros compartidos y de analítica
   const [zonaFiltro, setZonaFiltro] = useState<string>("TODAS");
@@ -399,7 +412,7 @@ export function GeovisorHurtosPanel({
             aria-selected={modo === "resumen"}
             variant={modo === "resumen" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModo("resumen")}
+            onClick={() => handleCambiarModo("resumen")}
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <BarChart3 className="size-3.5" />
@@ -411,7 +424,7 @@ export function GeovisorHurtosPanel({
             aria-selected={modo === "procesador"}
             variant={modo === "procesador" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModo("procesador")}
+            onClick={() => handleCambiarModo("procesador")}
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <TableIcon className="size-3.5" />
@@ -423,7 +436,7 @@ export function GeovisorHurtosPanel({
             aria-selected={modo === "gestor"}
             variant={modo === "gestor" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModo("gestor")}
+            onClick={() => handleCambiarModo("gestor")}
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <Layers className="size-3.5" />

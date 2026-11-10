@@ -26,6 +26,7 @@ import { ActoresKpis } from "@/features/actores/components/actores-kpis";
 import { ActoresMatriz } from "@/features/actores/components/actores-matriz";
 import { ActoresDataGrid } from "@/features/actores/components/actores-datagrid";
 import { useActoresStore } from "@/features/actores/state/actores-store";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import type {
   CuadranteMatriz,
   PosturaActor,
@@ -34,7 +35,31 @@ import type {
 } from "@/features/actores/models/actor";
 
 export function ActoresView() {
-  const [modoVista, setModoVista] = useState<"matriz" | "datagrid">("datagrid");
+  const subvistaActores = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["actores"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
+  const modoEfectivo: "matriz" | "datagrid" =
+    subvistaActores === "matriz" || subvistaActores === "mapa"
+      ? "matriz"
+      : "datagrid";
+
+  const [modoVista, setModoVista] = useState<"matriz" | "datagrid">(modoEfectivo);
+  const [prevSubvista, setPrevSubvista] = useState<string | undefined>(subvistaActores);
+
+  if (subvistaActores !== prevSubvista) {
+    setPrevSubvista(subvistaActores);
+    setModoVista(modoEfectivo);
+  }
+
+  const handleCambiarModo = (nuevoModo: "matriz" | "datagrid") => {
+    setModoVista(nuevoModo);
+    setSubvistaModulo("actores", nuevoModo);
+  };
+
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const editable = puedeEditar(sesion, "actores");
@@ -72,7 +97,7 @@ export function ActoresView() {
             <Button
               variant={modoVista === "matriz" ? "secondary" : "ghost"}
               size="sm"
-              onClick={() => setModoVista("matriz")}
+              onClick={() => handleCambiarModo("matriz")}
               className="h-8 gap-1.5 text-xs"
               aria-pressed={modoVista === "matriz"}
             >
@@ -82,7 +107,7 @@ export function ActoresView() {
             <Button
               variant={modoVista === "datagrid" ? "secondary" : "ghost"}
               size="sm"
-              onClick={() => setModoVista("datagrid")}
+              onClick={() => handleCambiarModo("datagrid")}
               className="h-8 gap-1.5 text-xs"
               aria-pressed={modoVista === "datagrid"}
             >

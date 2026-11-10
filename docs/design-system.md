@@ -48,6 +48,13 @@ Las alturas base son 36, 44 y 48 px. Los campos usan 44 px y los paneles respeta
 el área segura inferior del dispositivo. Geist se sirve desde dependencias locales,
 sin solicitar fuentes externas durante la compilación.
 
+### Iconografía: minimalismo y sofisticación institucional
+
+En cumplimiento estricto de las directrices visuales de POLIS:
+- **Cero dibujos o figuras figurativas:** Prohibido el uso de iconos con dibujos literales, caricaturas o metáforas lúdicas (dados de azar, tazas de café, megáfonos, bombillos de ideas, máscaras de teatro, corazones o ilustraciones de alimentos).
+- **Líneas sobrias y geométricas:** La iconografía se compone exclusivamente de glifos minimalistas, esquemáticos y neutros de trazo fino uniforme (1.5–2 px) basados en Lucide React.
+- **Semántica técnica:** Cada icono acompaña la jerarquía de la información sin saturar el espacio visual, garantizando una estética institucional, sobria y de alto rigor técnico.
+
 ## Desarrollo
 
 ```bash

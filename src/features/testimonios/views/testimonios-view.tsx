@@ -7,8 +7,8 @@ import {
   Plus,
   ShieldCheck,
   MapPin,
-  Sparkles,
-  HeartHandshake,
+  Star,
+  MessageSquare,
 } from "lucide-react";
 import { usePanels } from "@/core/panels/panel-store";
 import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
@@ -169,7 +169,7 @@ export function TestimoniosView() {
       <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-8 text-center sm:p-12">
         <div className="mx-auto max-w-2xl space-y-4">
           <div className="inline-flex size-12 items-center justify-center rounded-full bg-[var(--surface-2)] text-[var(--ember)] border border-[var(--border)]">
-            <HeartHandshake className="size-6" />
+            <MessageSquare className="size-6" />
           </div>
           <h2 className="text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
             ¿Quieres compartir tu testimonio?
@@ -227,7 +227,7 @@ function TestimonioCard({
         <div className="flex flex-wrap items-center gap-1.5">
           {testimonio.destacado && (
             <Badge variant="ember" className="text-[10px] gap-1">
-              <Sparkles className="size-2.5" />
+              <Star className="size-2.5" />
               Destacado
             </Badge>
           )}

@@ -1,0 +1,46 @@
+{
+  "fecha": "2026-11-09T01:14:26Z",
+  "buzon_externo": "polis-ensayo-9oxfn5mvea@fldubai.com",
+  "relay_entregas_confirmadas_en_log": 63,
+  "relay_entregas_del_ensayo": 62,
+  "mensajes_visibles": 30,
+  "mensajes_visibles_en_bd": 30,
+  "por_fase": {
+    "[A]": {
+      "esperados": 16,
+      "recibidos": 0
+    },
+    "[B]": {
+      "esperados": 16,
+      "recibidos": 0
+    },
+    "CARGA": {
+      "esperados": 30,
+      "recibidos": 30
+    }
+  },
+  "no_emailable": [
+    "[A] radicacion 008",
+    "[A] radicacion 009",
+    "[B] radicacion 008",
+    "[B] radicacion 009"
+  ],
+  "muestra_paridad_html": [
+    {
+      "asunto": "POLIS: Comprobante de gestión - Carga externa 0028",
+      "html_presente": true,
+      "paridad": true
+    },
+    {
+      "asunto": "POLIS: Comprobante de gestión - Carga externa 0029",
+      "html_presente": true,
+      "paridad": true
+    },
+    {
+      "asunto": "POLIS: Comprobante de gestión - Carga externa 0022",
+      "html_presente": true,
+      "paridad": true
+    }
+  ],
+  "observacion": "El proveedor efímero conserva solo los mensajes más recientes; A y B se entregaron (log del relay) pero ya no son visibles en el buzón."
+}

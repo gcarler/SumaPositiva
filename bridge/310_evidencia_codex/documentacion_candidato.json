@@ -1,0 +1,24 @@
+{
+  "archivos": [
+    {
+      "archivo": "backend/.env.example",
+      "sha256": "8c58a74c23cb31d1516768f3aca8567a9080cd22987561160b7baa945b7f009f"
+    },
+    {
+      "archivo": "docs/permisos-api.md",
+      "sha256": "fbd6c77aa19938e2af1fed88d8c6ccb0f29040764783b78bef11dbc402dafb44"
+    },
+    {
+      "archivo": "docs/operacion.md",
+      "sha256": "43bb98b0fc75caf5bb2b794d88df13131666e243454738c428efd69305ddcab9"
+    },
+    {
+      "archivo": "docs/sm-worker.md",
+      "sha256": "bf5174f3720e30a8d114786efe10e3680d8da72ea8b55ee17b04116b49ef58e6"
+    },
+    {
+      "archivo": "bridge/310_entrega_codex_sm_core.md",
+      "sha256": "4e44add5532da432ac4f0f54965cd79708e3f046287545214344bd71db41b27a"
+    }
+  ]
+}

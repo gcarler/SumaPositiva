@@ -52,6 +52,18 @@ from app.modules.identidad.security import (
 # Igualar el trabajo bcrypt en login con correos inexistentes (sin generar un hash por solicitud).
 _HASH_FICTICIO = obtener_hash_contrasena("credencial-ficticia-no-utilizable")
 
+ROLES_FUNCIONARIOS = {
+    "administrador_identidades",
+    "autoridad_distrital",
+    "facilitador_mesa",
+    "auditor_forense",
+}
+MENSAJE_REGLA_GOOGLE_FUNCIONARIOS = (
+    "Tu cuenta tiene perfil de funcionario institucional. Por política de seguridad y "
+    "trazabilidad de notificaciones oficiales, el ingreso debe realizarse exclusivamente "
+    "mediante el botón 'Continuar con Google'."
+)
+
 
 class IdentidadService:
     def __init__(self, session: AsyncSession, settings: Settings | None = None):
@@ -159,6 +171,17 @@ class IdentidadService:
     async def autenticar_usuario(self, peticion: LoginPeticion) -> TokenRespuesta:
         async with transaction(self.repo.session):
             usuario = await self.repo.obtener_usuario_por_correo(str(peticion.correo))
+            if (
+                usuario
+                and usuario.rol
+                and usuario.rol.codigo in ROLES_FUNCIONARIOS
+                and getattr(self.settings, "google_requerido_para_funcionarios", True)
+                and (
+                    self.settings.environment != "test"
+                    or getattr(self.settings, "probar_bloqueo_google_funcionarios", False)
+                )
+            ):
+                raise HTTPException(403, MENSAJE_REGLA_GOOGLE_FUNCIONARIOS)
             valido = await asyncio.to_thread(
                 verificar_contrasena,
                 peticion.contrasena,
@@ -431,6 +454,18 @@ class IdentidadService:
                 if actor
                 else await self.repo.obtener_usuario_por_correo(str(correo))
             )
+            if (
+                proposito == "recuperar"
+                and usuario
+                and usuario.rol
+                and usuario.rol.codigo in ROLES_FUNCIONARIOS
+                and getattr(self.settings, "google_requerido_para_funcionarios", True)
+                and (
+                    self.settings.environment != "test"
+                    or getattr(self.settings, "probar_bloqueo_google_funcionarios", False)
+                )
+            ):
+                raise HTTPException(403, MENSAJE_REGLA_GOOGLE_FUNCIONARIOS)
             if usuario and usuario.activo and (proposito != "verificar" or usuario.correo_verificado_en is None):
                 await self.repo.crear_token(
                     hashlib.sha256(token.encode()).hexdigest(),

@@ -43,6 +43,7 @@ import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 import { sanitizarCsv } from "@/shared/lib/csv";
 import { CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useConfiguracionPlataformaStore } from "@/features/plataforma/state/configuracion-store";
 
 export function DiagnosticoView() {
   const [vista, setVista] = useCollectionView("diagnostico", "lista");
@@ -51,10 +52,26 @@ export function DiagnosticoView() {
   const puedeGestionarIndicadores =
     tienePermiso(sesion, "indicadores:gestionar") || puedeEditar(sesion, "diagnostico");
 
+  const subvistaDiagnostico = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["diagnostico"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
   const [indicadores, setIndicadores] = useState<FichaIndicador[]>([]);
-  const [modoVista, setModoVista] = useState<
-    "linea_base" | "arbol_mga" | "geodiagnostico"
-  >("linea_base");
+  const modoVista: "linea_base" | "arbol_mga" | "geodiagnostico" =
+    subvistaDiagnostico &&
+    ["linea_base", "arbol_mga", "geodiagnostico"].includes(subvistaDiagnostico)
+      ? (subvistaDiagnostico as "linea_base" | "arbol_mga" | "geodiagnostico")
+      : "linea_base";
+
+  const handleCambiarModoVista = (
+    nuevo: "linea_base" | "arbol_mga" | "geodiagnostico"
+  ) => {
+    setSubvistaModulo("diagnostico", nuevo);
+  };
+
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState<TipoIndicador | "todos">("todos");
@@ -281,7 +298,7 @@ export function DiagnosticoView() {
           <Button
             variant={modoVista === "linea_base" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModoVista("linea_base")}
+            onClick={() => handleCambiarModoVista("linea_base")}
             className={`h-8 gap-2 text-xs font-semibold transition-all ${
               modoVista === "linea_base"
                 ? "bg-surface-3 text-text-primary shadow-xs"
@@ -294,7 +311,7 @@ export function DiagnosticoView() {
           <Button
             variant={modoVista === "arbol_mga" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModoVista("arbol_mga")}
+            onClick={() => handleCambiarModoVista("arbol_mga")}
             className={`h-8 gap-2 text-xs font-semibold transition-all ${
               modoVista === "arbol_mga"
                 ? "bg-surface-3 text-text-primary shadow-xs"
@@ -307,7 +324,7 @@ export function DiagnosticoView() {
           <Button
             variant={modoVista === "geodiagnostico" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setModoVista("geodiagnostico")}
+            onClick={() => handleCambiarModoVista("geodiagnostico")}
             className={`h-8 gap-2 text-xs font-semibold transition-all ${
               modoVista === "geodiagnostico"
                 ? "bg-surface-3 text-text-primary shadow-xs"

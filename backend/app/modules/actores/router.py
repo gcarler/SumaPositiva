@@ -7,7 +7,9 @@ from app.core.database import SessionDependency
 from app.modules.actores.schemas import (
     ActorEstrategicoActualizar,
     ActorEstrategicoCrear,
+    ActorEstrategicoPublico,
     ActorEstrategicoRespuesta,
+    ContactoActor,
     KpisActoresRespuesta,
 )
 from app.modules.actores.service import ActoresService
@@ -23,7 +25,7 @@ def get_actores_service(session: SessionDependency) -> ActoresService:
 ActoresServiceDep = Annotated[ActoresService, Depends(get_actores_service)]
 
 
-@router.get("", response_model=list[ActorEstrategicoRespuesta])
+@router.get("", response_model=list[ActorEstrategicoPublico])
 async def listar_actores(
     service: ActoresServiceDep,
     tipo: str | None = Query(default=None),
@@ -46,10 +48,23 @@ async def obtener_kpis(service: ActoresServiceDep):
     return await service.obtener_kpis()
 
 
-@router.get("/{id}", response_model=ActorEstrategicoRespuesta)
+@router.get("/{id}", response_model=ActorEstrategicoPublico)
 async def obtener_actor(id: uuid.UUID, service: ActoresServiceDep):
-    """Consulta la ficha técnica de un actor estratégico por su identificador único."""
+    """Consulta la ficha pública de un actor estratégico, sin datos personales."""
     return await service.obtener_por_id(id)
+
+
+@router.get(
+    "/{id}/contacto",
+    response_model=ContactoActor,
+    dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
+)
+async def obtener_contacto_actor(id: uuid.UUID, service: ActoresServiceDep) -> ContactoActor:
+    """Devuelve el contacto completo para edición autorizada, fuera de la ficha pública."""
+    actor = await service.obtener_por_id(id)
+    contacto = dict(actor.contacto or {})
+    contacto.setdefault("organizacion", actor.nombre)
+    return ContactoActor.model_validate(contacto)
 
 
 @router.post(

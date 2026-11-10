@@ -1,0 +1,51 @@
+......F..............F......................FF.....                      [100%]
+=================================== FAILURES ===================================
+____________ test_adaptador_por_canal_conversa_a_dialecto_portable _____________
+backend/tests/test_sm_core.py:189: in test_adaptador_por_canal_conversa_a_dialecto_portable
+    assert entrega.estado_entrega == "enviado"
+E   AssertionError: assert <SMEstadoEntr...: 'preparado'> == 'enviado'
+E     
+E     - enviado
+E     + preparado
+______________________ test_bridge_polis_alerta_seguridad ______________________
+backend/tests/test_sm_full.py:482: in test_bridge_polis_alerta_seguridad
+    msg = await bridge.notificar_alerta_seguridad(
+backend/app/modules/sm/bridge.py:187: in notificar_alerta_seguridad
+    return await self.emitir_evento_dominio(
+backend/app/modules/sm/bridge.py:70: in emitir_evento_dominio
+    return await self.repo.procesar_evento(session, evento)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/modules/sm/repository.py:193: in procesar_evento
+    validar_datos_no_personales(
+backend/app/modules/sm/boveda.py:48: in validar_datos_no_personales
+    raise SMError("Los campos persistentes requieren identificadores opacos y contenido sin contactos")
+E   app.modules.sm.core.SMError: Los campos persistentes requieren identificadores opacos y contenido sin contactos
+__________ test_worker_rechaza_transaccion_ajena_y_resolutor_cruzado ___________
+backend/tests/test_sm_310.py:304: in test_worker_rechaza_transaccion_ajena_y_resolutor_cruzado
+    await worker.procesar_lote(session)
+backend/app/modules/sm/worker.py:264: in procesar_lote
+    rec = await self._reclamar(session, excluidos)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/modules/sm/worker.py:86: in _reclamar
+    async with transaction(session):
+               ^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+backend/app/core/transactions.py:21: in transaction
+    raise RuntimeError("No se pueden anidar casos de uso transaccionales")
+E   RuntimeError: No se pueden anidar casos de uso transaccionales
+____________ test_bridge_outbox_rollback_despues_de_escritura_real _____________
+backend/tests/test_sm_310.py:318: in test_bridge_outbox_rollback_despues_de_escritura_real
+    await bridge.notificar_convocatoria_mesa(session, mesa_id="prueba310", mesa_nombre="Mesa",
+backend/app/modules/sm/bridge.py:124: in notificar_convocatoria_mesa
+    return await self.emitir_evento_dominio(
+backend/app/modules/sm/bridge.py:49: in emitir_evento_dominio
+    raise SMError("SMBridge requiere la transacción del caso de uso de dominio")
+E   app.modules.sm.core.SMError: SMBridge requiere la transacción del caso de uso de dominio
+=========================== short test summary info ============================
+FAILED backend/tests/test_sm_core.py::test_adaptador_por_canal_conversa_a_dialecto_portable
+FAILED backend/tests/test_sm_full.py::test_bridge_polis_alerta_seguridad - ap...
+FAILED backend/tests/test_sm_310.py::test_worker_rechaza_transaccion_ajena_y_resolutor_cruzado
+FAILED backend/tests/test_sm_310.py::test_bridge_outbox_rollback_despues_de_escritura_real
+4 failed, 47 passed in 21.91s

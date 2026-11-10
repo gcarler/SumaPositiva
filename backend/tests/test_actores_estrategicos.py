@@ -85,6 +85,10 @@ def test_actores_crud_y_auditoria(database_url: str, monkeypatch):
             "contacto": {
                 "organizacion": "Organización Comunitaria de Prueba",
                 "cargo": "Vocero Delegado",
+                "nombre_lider": "Lider de Prueba",
+                "telefono": "+573001112233",
+                "email": "lider@example.org",
+                "direccion": "Calle de Prueba 123",
             },
             "mesas_asistidas": [],
             "propuestas_radicadas": 0,
@@ -99,15 +103,41 @@ def test_actores_crud_y_auditoria(database_url: str, monkeypatch):
         actor_id = actor_creado["id"]
         assert actor_creado["codigo"] == codigo_prueba
 
-        # 2. Consultar por ID
+        # 2. Consultar por ID: la ficha pública no expone datos personales
         r_get = client.get(f"/api/v1/actores/{actor_id}")
         assert r_get.status_code == 200
         assert r_get.json()["nombre"] == payload["nombre"]
+        contacto_publico = r_get.json()["contacto"]
+        assert contacto_publico["organizacion"] == "Organización Comunitaria de Prueba"
+        assert contacto_publico["cargo"] == "Vocero Delegado"
+        for campo_pii in ("nombre_lider", "telefono", "email", "direccion"):
+            assert campo_pii not in contacto_publico, campo_pii
 
-        # 3. Listar con filtro
+        # 3. Listar con filtro: mismo criterio de minimización
         r_list = client.get(f"/api/v1/actores?buscar={codigo_prueba}")
         assert r_list.status_code == 200
         assert len(r_list.json()) == 1
+        assert "telefono" not in r_list.json()[0]["contacto"]
+        assert "email" not in r_list.json()[0]["contacto"]
+
+        # 3.1 El contacto completo exige permiso de gestión
+        r_contacto_anon = client.get(f"/api/v1/actores/{actor_id}/contacto")
+        assert r_contacto_anon.status_code == 401
+        token_ciudadano = crear_token_acceso(
+            sujeto_id=usuario_test_id,
+            rol="ciudadano",
+            nivel_identidad="declarada",
+            permisos=["aportes:leer"],
+        )
+        r_contacto_ciudadano = client.get(
+            f"/api/v1/actores/{actor_id}/contacto",
+            headers={"Authorization": f"Bearer {token_ciudadano}"},
+        )
+        assert r_contacto_ciudadano.status_code == 403
+        r_contacto_autorizado = client.get(f"/api/v1/actores/{actor_id}/contacto", headers=auth_headers)
+        assert r_contacto_autorizado.status_code == 200
+        assert r_contacto_autorizado.json()["telefono"] == "+573001112233"
+        assert r_contacto_autorizado.json()["email"] == "lider@example.org"
 
         # 4. Actualizar
         r_put = client.put(

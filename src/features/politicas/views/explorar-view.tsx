@@ -8,7 +8,8 @@ import {EmptyState} from "@/shared/ui/empty-state";
 import {Button} from "@/shared/ui/button";
 import {motion, useReducedMotion} from "framer-motion";
 import {Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2} from "lucide-react";
-import {useFases, useLineas, usePoliticas} from "@/features/politicas/services/use-politicas-queries";
+import {useFases, useLineas, usePoliticas, useResumenInstitucional} from "@/features/politicas/services/use-politicas-queries";
+import {DEPENDENCIAS_CARTAGENA_2026} from "@/features/politicas/data/entidades-cartagena.data";
 import {usePanels} from "@/core/panels/panel-store";
 import {FlujoInversionGobernanza} from "@/features/politicas/components/flujo-inversion-gobernanza";
 
@@ -35,8 +36,11 @@ export function ExplorarView() {
   const politicaPrincipal = politicasQuery.data?.[0];
   const fasesQuery = useFases();
   const lineasQuery = useLineas();
+  const resumenQuery = useResumenInstitucional();
   const fases = fasesQuery.data ?? [];
   const lineasApi = lineasQuery.data ?? [];
+  const resumen = resumenQuery.data;
+  const totalEntidades = resumen?.totalEntidadesDistritales ?? DEPENDENCIAS_CARTAGENA_2026.length;
 
   /* Obtener todas las líneas estratégicas con su fase correspondiente */
   const todasLasLineas = useMemo(() => {
@@ -103,7 +107,7 @@ export function ExplorarView() {
           className="gap-2"
         >
           <Layers className="size-4" />
-          <span>Líneas Estratégicas ({todasLasLineas.length})</span>
+          <span>Líneas Estratégicas ({todasLasLineas.length > 0 ? todasLasLineas.length : (resumen?.totalLineasEstrategicas ?? 29)})</span>
         </Button>
         <Button
           variant={pestana === "gobernanza" ? "default" : "outline"}
@@ -113,7 +117,7 @@ export function ExplorarView() {
           className="gap-2"
         >
           <Building2 className="size-4" />
-          <span>Mapa de Inversión y Gobernanza (27 Dependencias)</span>
+          <span>Mapa de Inversión y Gobernanza ({totalEntidades} Dependencias)</span>
         </Button>
       </div>
 

@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { HeartHandshake, MapPin, Tag, RefreshCw, FileText, Send, CheckCircle2 } from "lucide-react";
+import { Quote, MapPin, Tag, RefreshCw, FileText, Send, CheckCircle2 } from "lucide-react";
 
 interface TestimonioEditorPanelProps {
   entryKey: string;
@@ -238,7 +238,7 @@ export function TestimonioEditorPanel({ entryKey, props }: TestimonioEditorPanel
 
         {/* Encuadre normativo y ético */}
         <div className="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex items-start gap-3">
-          <HeartHandshake className="size-5 text-[var(--ember)] shrink-0 mt-0.5" />
+          <Quote className="size-5 text-[var(--ember)] shrink-0 mt-0.5" />
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
             La memoria colectiva consolida la historia y necesidades prioritarias del territorio. Conforme a la
             Ley Estatutaria 1757 de 2015, los testimonios aportan insumos cualitativos a las 7 Dimensiones de la Política Pública de Seguridad Humana.

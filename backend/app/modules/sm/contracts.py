@@ -31,6 +31,7 @@ class SMEstadoMensaje(StrEnum):
     FALLIDO = "fallido"
     AGOTADO = "agotado"
     CANCELADO = "cancelado"
+    SIMULADO = "simulado"
 
 
 class SMEstadoEntrega(StrEnum):
@@ -38,6 +39,10 @@ class SMEstadoEntrega(StrEnum):
 
     ENVIADO = "enviado"
     FALLIDO = "fallido"
+    PREPARADO = "preparado"
+    SIMULADO = "simulado"
+    EN_CURSO = "en_curso"
+    INCIERTO = "incierto"
 
 
 class SMEstadoConsentimiento(StrEnum):
@@ -61,7 +66,7 @@ class SMContacto(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     canal: SMCanal
-    identificador: str = Field(min_length=3, max_length=255)
+    identificador: str = Field(min_length=3, max_length=255, repr=False)
     actor: str = Field(min_length=1, max_length=120)
 
 
@@ -81,9 +86,9 @@ class SMEvento(BaseModel):
     origen: str = Field(default="sm", min_length=1, max_length=120)
     canal: SMCanal
     contacto: SMContacto
-    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-]{1,79}$")
+    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-\.]{1,79}$")
     asunto: str | None = Field(default=None, max_length=200)
-    cuerpo: str | None
+    cuerpo: str | None = None
     creado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
@@ -98,14 +103,16 @@ class SMMensaje(BaseModel):
     canal: SMCanal
     actor: str = Field(min_length=1, max_length=120)
     contacto_hash: str = Field(..., max_length=80)
-    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-]{1,79}$")
+    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-\.]{1,79}$")
     asunto: str | None = Field(default=None, max_length=200)
-    cuerpo: str | None
+    cuerpo: str | None = None
     estado: SMEstadoMensaje = SMEstadoMensaje.PENDIENTE
     idempotencia: str = Field(..., min_length=8, max_length=255)
     metadatos: dict[str, str] = Field(default_factory=dict)
     creado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
     actualizado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    proximo_intento_en: datetime | None = None
 
 
 class SMEntrega(BaseModel):
@@ -132,7 +139,7 @@ class SMAuditoria(BaseModel):
 
     id: UUID = Field(default_factory=uuid4)
     tenant: str = Field(min_length=1, max_length=32, default="polis")
-    evento_id: UUID
+    evento_id: UUID | None = None
     mensaje_id: UUID | None = None
     actor: str = Field(min_length=1, max_length=120)
     accion: str = Field(min_length=1, max_length=80)
@@ -165,7 +172,7 @@ class SMResultadoEntrega(BaseModel):
     mensaje_id: UUID
     canal: SMCanal
     intento: int = Field(ge=1)
-    estado_entrega: SMEstadoEntrega = SMEstadoEntrega.ENVIADO
+    estado_entrega: SMEstadoEntrega = SMEstadoEntrega.PREPARADO
     payload: dict[str, str] = Field(default_factory=dict)
     externo_id: str | None = Field(default=None, max_length=200)
     detalle: str | None = Field(default=None, max_length=500)
@@ -185,3 +192,7 @@ class SMSalud(BaseModel):
     canales_vivos: tuple[SMCanal, ...] = ()
     motivos: tuple[str, ...] = ()
     actualizado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    simulados: int = Field(default=0, ge=0)
+    worker_ultimo_latido: datetime | None = None
+    antiguedad_pendiente_segundos: float | None = None
+    canales_degradados: tuple[SMCanal, ...] = ()

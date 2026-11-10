@@ -1,0 +1,4 @@
+# Suite de transacciones (contrato docs/transacciones.md)
+.....................                                                    [100%]
+21 passed in 4.42s
+EXIT=0

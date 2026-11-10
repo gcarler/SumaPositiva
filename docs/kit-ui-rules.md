@@ -49,6 +49,12 @@ es la fuente de las restricciones y criterios de aceptación.
 9. **Cambios verificables.** Ejecutar los checks afectados y documentar resultados.
    No ocultar errores de TypeScript ni modificar el validador, las pruebas o la
    configuración de accesibilidad para eludir una restricción.
+10. **Iconografía minimalista y sofisticada.** Nada de iconos con dibujos, ilustraciones
+   figurativas, caricaturas, metáforas lúdicas o skeuomórficas (dados, tazas de café,
+   megáfonos, bombillos, máscaras teatrales, corazones, destellos mágicos ni alimentos).
+   Toda la iconografía debe ser sobria, geométrica, de trazo lineal limpio y uniforme
+   (Lucide estándar con trazo armónico de 1.5–2 px), respetando la arquitectura cívica,
+   institucional y de alto rigor técnico de POLIS.
 
 ## Tipado de contratos y entradas
 

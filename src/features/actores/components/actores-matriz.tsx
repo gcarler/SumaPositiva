@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Star, ShieldAlert, HeartHandshake, Eye, MapPin, ArrowRight } from "lucide-react";
+import { Star, ShieldAlert, Network, Eye, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { usePanels } from "@/core/panels/panel-store";
@@ -204,7 +204,7 @@ export function ActoresMatriz() {
           subtitulo="Medio o Bajo Poder / Alto Interés y Afectación"
           estrategia="Canales de consulta pública permanente, papelógrafos territoriales y veedurías."
           actores={cuadrantes.base_social}
-          icono={HeartHandshake}
+          icono={Network}
           claseEstilo="border-success/30 bg-surface-1"
           onSeleccionarActor={handleSeleccionarActor}
         />

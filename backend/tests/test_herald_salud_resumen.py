@@ -38,6 +38,7 @@ from app.modules.notificaciones.salud import (
     ESTADO_DEGRADADO,
     ESTADO_SALUDABLE,
     calcular_estado,
+    contar_delegadas_sin_entrega,
     escribir_latido,
     recolectar_salud,
 )
@@ -177,6 +178,17 @@ def test_estado_degradado_por_tasa_exito_baja():
     assert any("tasa de éxito" in m for m in motivos)
 
 
+def test_estado_degradado_por_delegadas_sin_entrega():
+    """Una fila delegada antigua sin entrega SM confirmada no puede pasar inadvertida."""
+    kwargs = _saludable_kwargs()
+    kwargs["delegadas_sin_entrega"] = 2
+    estado, motivos = calcular_estado(**kwargs)
+    assert estado == ESTADO_DEGRADADO
+    assert any("delegadas a SM" in m for m in motivos)
+    _, publico = calcular_estado(**{**kwargs, "incluir_cifras": False})
+    assert re.search(r"\b\d+\s*notificaciones delegadas", " ".join(publico)) is None
+
+
 def test_estado_critico_produccion_sin_smtp():
     kwargs = _saludable_kwargs()
     kwargs["smtp_configurado"] = False
@@ -235,6 +247,86 @@ def test_estado_sin_cifras_omite_agregados_operativos():
     assert "40%" not in texto_publico
     # Los umbrales de cada regla sí se conservan: describen la regla, no el estado real.
     assert "90%" in texto_publico
+
+
+async def test_delegada_antigua_sin_entrega_cuenta_y_se_limpia(database_url: str):
+    """El corte a SM no puede ocultar una entrega delegada que no ocurrió."""
+    engine = create_async_engine(database_url, hide_parameters=True)
+    sessions = async_sessionmaker(engine, expire_on_commit=False)
+    marca = f"PRUEBA-DELEGADA-{uuid.uuid4().hex[:12]}"
+    notificacion_id = None
+    try:
+        async with sessions() as session:
+            async with transaction(session):
+                notificacion_id = await session.scalar(
+                    text(
+                        """
+                        INSERT INTO participacion_ciudadana.notificaciones_transaccionales
+                            (codigo_radicado, destinatario_correo, tipo_evento, asunto, cuerpo_html,
+                             estado_envio, creado_en)
+                        VALUES (:codigo, 'delegada@example.org', 'gestion_institucional', 'Aviso',
+                                '<p>Aviso institucional</p>', 'delegado',
+                                clock_timestamp() - interval '31 minutes')
+                        RETURNING id
+                        """
+                    ),
+                    {"codigo": marca},
+                )
+                await session.execute(
+                    text(
+                        """
+                        WITH evento AS (
+                            INSERT INTO participacion_ciudadana.sm_eventos
+                                (tenant, tipo_evento, actor, payload, idempotencia, origen, canal,
+                                 contacto_hash, id)
+                            VALUES ('polis', 'herald.gestion_institucional', 'actor-prueba', '{}'::jsonb,
+                                    :idem, 'polis.bridge', 'correo', repeat('b', 64), gen_random_uuid())
+                            RETURNING id
+                        )
+                        INSERT INTO participacion_ciudadana.sm_mensajes
+                            (evento_id, tenant, canal, actor, contacto_hash, estado, idempotencia,
+                             asunto, cuerpo)
+                        SELECT id, 'polis', 'correo', 'actor-prueba', repeat('b', 64), 'pendiente',
+                               :idem, 'Aviso', '<p>Aviso institucional</p>'
+                        FROM evento
+                        """
+                    ),
+                    {"idem": f"herald:{notificacion_id}"},
+                )
+        async with sessions() as session:
+            antes = await contar_delegadas_sin_entrega(session)
+            assert antes >= 1
+            salud = await recolectar_salud(session, Settings(database_url=database_url), incluir_cifras=False)
+            assert salud["cola"]["delegadas_sin_entrega"] >= 1
+            assert any("delegadas a SM" in motivo for motivo in salud["motivos"])
+            assert re.search(r"\b\d+\s*notificaciones delegadas", " ".join(salud["motivos"])) is None
+        async with sessions() as session:
+            async with transaction(session):
+                await session.execute(
+                    text(
+                        "UPDATE participacion_ciudadana.sm_mensajes SET estado = 'enviado' WHERE idempotencia = :idem"
+                    ),
+                    {"idem": f"herald:{notificacion_id}"},
+                )
+        async with sessions() as session:
+            assert await contar_delegadas_sin_entrega(session) == antes - 1
+    finally:
+        if notificacion_id is not None:
+            async with sessions() as session:
+                async with transaction(session):
+                    await session.execute(
+                        text("DELETE FROM participacion_ciudadana.sm_mensajes WHERE idempotencia = :idem"),
+                        {"idem": f"herald:{notificacion_id}"},
+                    )
+                    await session.execute(
+                        text("DELETE FROM participacion_ciudadana.sm_eventos WHERE idempotencia = :idem"),
+                        {"idem": f"herald:{notificacion_id}"},
+                    )
+                    await session.execute(
+                        text("DELETE FROM participacion_ciudadana.notificaciones_transaccionales WHERE id = :id"),
+                        {"id": notificacion_id},
+                    )
+        await engine.dispose()
 
 
 # ---------------------------------------------------------------------------

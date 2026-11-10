@@ -1,0 +1,9 @@
+# Respaldos y continuidad
+-rw------- 1 root root 56532033 2026-11-05T02:00 /var/backups/polis_offsite/bd_csh_diario_20261105_020001.dump
+-rw------- 1 root root 56745058 2026-11-06T02:01 /var/backups/polis_offsite/bd_csh_diario_20261106_020003.dump
+-rw------- 1 root root 56745175 2026-11-07T02:01 /var/backups/polis_offsite/bd_csh_diario_20261107_020001.dump
+[2026-11-07 02:01:01] === CICLO DE RESPALDO GFS FINALIZADO EXITOSAMENTE ===
+[2026-11-07 02:01:01] === CICLO DE RESPALDO GFS FINALIZADO EXITOSAMENTE ===
+[2026-11-07 02:30:03] ========================================================================
+[2026-11-07 02:30:03] ========================================================================
+Sun 2026-11-08 12:00:00 UTC      17h Sat 2026-11-07 12:00:01 UTC       6h ago polis-herald-resumen.timer     polis-herald-resumen.service

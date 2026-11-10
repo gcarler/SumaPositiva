@@ -4,8 +4,8 @@
 
 [![Ples SAS](https://img.shields.io/badge/Propietario-Ples%20SAS%20(ples.com.co)-0B2545?style=flat-square)](https://ples.com.co)
 [![Quality Gates](https://img.shields.io/badge/Quality%20Gates-100%25%20Verde-success?style=flat-square)](docs/DOCUMENTACION_OFICIAL_POLIS.md)
-[![Frontend Tests](https://img.shields.io/badge/Bun%20Test-420%20passed-success?style=flat-square)](src/)
-[![RBAC Parity](https://img.shields.io/badge/RBAC%20Coverage-97%2F97%20Rutas-blue?style=flat-square)](docs/permisos-api.md)
+[![Frontend Tests](https://img.shields.io/badge/Bun%20Test-1730%20passed-success?style=flat-square)](src/)
+[![RBAC Parity](https://img.shields.io/badge/RBAC%20Coverage-290%2F290%20Operaciones-blue?style=flat-square)](docs/permisos-api.md)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.6%20PostGIS%20%2F%20pgRouting-336791?style=flat-square)](backend/)
 
 ---
@@ -32,7 +32,7 @@ Para consultar el manual técnico completo, diagramas y especificaciones formale
 | Capa | Tecnologías Clave | Propósito / Características |
 | :--- | :--- | :--- |
 | **Frontend** | Next.js 16.1.3 (Standalone), React 19, TypeScript 5.9, Zustand, TanStack Query | Salida optimizada `standalone`, renderizado híbrido SSG/SSR, gobernanza estricta de tokens semánticos de diseño (`ui-policy.mjs`). |
-| **Backend** | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2.0 AsyncIO (`asyncpg`) | Arquitectura modular DDD por dominios, pool de conexiones asíncrono, ReportLab para actas oficiales, 97 endpoints REST documentados. |
+| **Backend** | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2.0 AsyncIO (`asyncpg`) | Arquitectura modular DDD por dominios, pool de conexiones asíncrono, ReportLab para actas oficiales, 290 operaciones REST documentadas sobre 27 routers montados en un solo ensamblador. |
 | **Motor Espacial y Base de Datos** | PostgreSQL 18.6, PostGIS 3.6, pgRouting 4.0, ltree, pgcrypto, pg_stat_statements | Súper-tuning aplicado (`shared_buffers=8GB`, `effective_cache_size=24GB`), jerarquías de mesas con `ltree`, analítica de rutas e isócronas. |
 | **Perímetro de Ciberdefensa** | Nginx 1.28.3, UFW Firewall, Fail2ban | Aislamiento de Next.js y FastAPI a `127.0.0.1`, TLS 1.3 estricto, HSTS Preload, Permissions-Policy, redirección universal 301, Rate Limiting cívico. |
 | **Respaldo y Continuidad** | Scripts Bash GFS, pg_dump, sha256sum | Respaldos diarios, semanales y mensuales cifrados, replicación offsite a `/var/backups/polis_offsite/`. |
@@ -86,7 +86,7 @@ bun run ui:check
 # Verificación global de TypeScript y ESLint
 bun run check
 
-# Suite completa de pruebas frontend (420+ pruebas)
+# Suite completa de pruebas frontend (1730+ pruebas)
 bun test
 
 # Pruebas backend de generación de actas en PDF y QR (ReportLab)
@@ -95,7 +95,7 @@ bun test
 # Pruebas backend de telemetría forense SQL (pg_stat_statements)
 /root/polis/venv/bin/pytest backend/tests/test_database_telemetry.py
 
-# Verificación de paridad estricta en matriz RBAC (97 endpoints)
+# Verificación de paridad estricta en matriz RBAC (290 operaciones)
 /root/polis/venv/bin/pytest backend/tests/test_access_policy.py
 
 # Verificación de cero drift en esquemas de base de datos
@@ -140,7 +140,7 @@ cd backend && /root/polis/venv/bin/alembic check
 │   └── respaldo_offsite.sh       # Replicación segura fuera de banda
 ├── docs/                         # Documentación técnica, jurídica y de arquitectura
 │   ├── DOCUMENTACION_OFICIAL_POLIS.md # Libro Maestro de Documentación (Ples SAS)
-│   ├── permisos-api.md           # Matriz contractual RBAC de 97 endpoints
+│   ├── permisos-api.md           # Matriz contractual RBAC de 290 operaciones
 │   ├── arquitectura.md           # Convenciones de software y patrones
 │   └── despliegue-produccion.md  # Guía de hardening y despliegue seguro
 └── bridge/                       # Informes periciales y actas de auditoría forense

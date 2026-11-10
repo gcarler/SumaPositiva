@@ -1,0 +1,20 @@
+{
+  "backend/app/modules/sm/__init__.py": "f077cf595a4c889c6532d056b00a1aa9bd31a356d7be0590fe4225caf2dabf3e",
+  "backend/app/modules/sm/bridge.py": "d1e43f8d4bdfc03affdf81219c0b958f24dd388313cb9ef16fe4ac37636950e9",
+  "backend/app/modules/sm/channels.py": "c9396c8cca2e145a9b8f438a0a7550e8bd90c8d77b8b0631825d99a514c9c7b1",
+  "backend/app/modules/sm/client.py": "d71926bb512f4ed5e3344a0ec0a9847f83ccafb8a3d77ddeacf1c4a92362a4e0",
+  "backend/app/modules/sm/contracts.py": "a166908da2fe73d9380a079960f52b6cb455469758cfe7991c10961900e17355",
+  "backend/app/modules/sm/core.py": "f779ca6482bca76c260222efb9b7cc53ef48a8e7870d0de76d7cf18e5570e180",
+  "backend/app/modules/sm/models.py": "2039860ed84b1167d47397d56b4e8c4a8655641ce96c550475f27e0020a90da7",
+  "backend/app/modules/sm/repository.py": "499543919f87d4daf9970fa54152053be6cbe49843f6486fe9210d686dd61b62",
+  "backend/app/modules/sm/router.py": "23b43f120060add4115771bb9029c931435d4e1165d87f50e65c0ee386a3ec94",
+  "backend/app/modules/sm/service.py": "8b80b3968cd877875b2a3373656cec67eb204015e124b02b8746b9d1de34fbe7",
+  "backend/app/modules/sm/templates.py": "2d96ed46531d0816ead3aedfa1f2b8fe2e1f00d3ae80e59f1ed1963532a8d714",
+  "backend/app/modules/sm/worker.py": "f0d8573286296ad844f58f30d1c9a525dbb8c7ef97eef1068c66f4ba4ade52cc",
+  "backend/app/core/config.py": "61f8a180bc1ae6c2026355dfdcd324f44e990ed5ac9a166a8535dabf73e57a5a",
+  "backend/tests/test_sm_full.py": "b17138844b920de16a52b8b2d46f6534b36f62a396f908b861833f1fa96316cf",
+  "backend/.env.example": "f3bbcc0df114890402db7becb0163b789bbfecc5c926b30b0e48a84b4cb7d560",
+  "backend/pyproject.toml": "aafdf84477a3f5cfa998365329067972571dcc38a9fa299c340ce1d511dc4e3a",
+  "docs/permisos-api.md": "9267797f3d6f8cacc7038872028476b5191ccaf298309c668994bde11d646120",
+  "backend/app/modules/notificaciones/service.py": "cc0e7d5de1f7b0d9ec1a4953cb0950a1f7f6fa971bdb080ac4c920ca778e0948"
+}

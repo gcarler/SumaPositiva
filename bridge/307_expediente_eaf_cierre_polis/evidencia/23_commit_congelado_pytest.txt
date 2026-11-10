@@ -1,0 +1,1991 @@
+........................................................................ [  3%]
+........................................................................ [  7%]
+..FFF................................................................... [ 11%]
+........................................................................ [ 15%]
+........................................................................ [ 19%]
+........................................F............................... [ 23%]
+........................................................................ [ 27%]
+............................FFFF................................FF...... [ 31%]
+........................................................................ [ 35%]
+........................................................................ [ 38%]
+.............................................................F.......... [ 42%]
+.....................................FF................................. [ 46%]
+.........................................................F.............. [ 50%]
+..........................F..................s.......................... [ 54%]
+........................................................................ [ 58%]
+........................................................................ [ 62%]
+.............FF.F....................................................... [ 66%]
+........................................................................ [ 70%]
+........................................................................ [ 74%]
+........................................................................ [ 77%]
+................sss.....................s...sss.....ss....ss.sss.......s [ 81%]
+........................................................................ [ 85%]
+...............................................................FF....... [ 89%]
+.......................................................................F [ 93%]
+FFFFF................................................................... [ 97%]
+.........FFF...................................                          [100%]
+=================================== FAILURES ===================================
+_______________ test_cli_real_catalogar_y_planificar_registrado ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_cli_real_catalogar_y_plan0')
+
+    def test_cli_real_catalogar_y_planificar_registrado(tmp_path):
+        cli_aislada = copiar_cli(tmp_path, CLI.name)
+        salida = cli_aislada.bridge / f"catalogar_planificar_cli_registrado-{uuid.uuid4().hex}"
+        candidatos_path = Path(str(salida) + ".candidatos.json")
+        perfil_path = Path(str(salida) + ".perfil.json")
+        plan_path = Path(str(salida) + ".plan.json")
+        candidatos_path.parent.mkdir(parents=True, exist_ok=True)
+        candidatos_path.write_text(json.dumps([_candidato().model_dump(mode="json")], ensure_ascii=False), encoding="utf-8")
+        perfil = {
+            "politica_id": "prueba_sintetica",
+            "version": "2026-10-25",
+            "sector": "prueba",
+            "fecha_revision": "2026-10-25",
+            "necesidades": [
+                {
+                    "necesidad_id": "N1",
+                    "concepto": "prueba",
+                    "indicador": "prueba",
+                    "unidad": "prueba",
+                    "territorio": "prueba",
+                    "poblacion": "prueba",
+                    "anios": [2020],
+                    "motores": ["prueba"],
+                    "candidatos": ["local:dnp_terridata_13001"],
+                }
+            ],
+        }
+        perfil_path.write_text(json.dumps(perfil, ensure_ascii=False), encoding="utf-8")
+>       subprocess.run(
+            [
+                str(PYTHON),
+                str(cli_aislada.script),
+                "catalogar-clasificado",
+                "--catalogo",
+                str(CATALOGO),
+                "--version",
+                "2026-10-25",
+                "--procedencia",
+                "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+                "--salida",
+                str(salida),
+                "--candidatos",
+                str(candidatos_path),
+            ],
+            cwd=RAIZ,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=cli_aislada.env,
+        )
+
+tests/test_adaptador_catalogo_fuentes_polis.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['/tmp/eaf307_pure/backend/.venv/bin/python', ...>
+args = ['/tmp/eaf307_pure/backend/.venv/bin/python', '/tmp/pytest-of-root/pytest-492/test_cli_real_catalogar_y_plan0/checkout...asificado', '--catalogo', '/tmp/eaf307_pure/bridge/65_catalogo_clasificado_fuentes_ollamacodex.json', '--version', ...]
+executable = b'/tmp/eaf307_pure/backend/.venv/bin/python', preexec_fn = None
+close_fds = True, pass_fds = (), cwd = PosixPath('/tmp/eaf307_pure')
+env = {'POLIS_DATABASE_URL': 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307...l+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d_mig', 'SHELL': '/bin/bash', ...}
+startupinfo = None, creationflags = 0, shell = False, p2cread = -1
+p2cwrite = -1, c2pread = 13, c2pwrite = 14, errread = 15, errwrite = 16
+restore_signals = True, gid = None, gids = None, uid = None, umask = -1
+start_new_session = False, process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/backend/.venv/bin/python'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1955: FileNotFoundError
+___________________ test_cli_real_rechaza_registro_inventado ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_cli_real_rechaza_registro0')
+
+    def test_cli_real_rechaza_registro_inventado(tmp_path):
+        cli_aislada = copiar_cli(tmp_path, CLI.name)
+        salida = cli_aislada.bridge / f"cli_registro_inventado-{uuid.uuid4().hex}"
+        candidatos_path = Path(str(salida) + ".candidatos.json")
+        registro_path = Path(str(salida) + ".registro.json")
+        candidatos_path.parent.mkdir(parents=True, exist_ok=True)
+        candidatos_path.write_text(json.dumps([_candidato().model_dump(mode="json")], ensure_ascii=False), encoding="utf-8")
+        registro_path.write_text(
+            json.dumps([{"producto_id": "local:producto_inventado", "adaptador": "inventado"}]), encoding="utf-8"
+        )
+        try:
+>           finished = subprocess.run(
+                [
+                    str(PYTHON),
+                    str(cli_aislada.script),
+                    "catalogar-clasificado",
+                    "--catalogo",
+                    str(CATALOGO),
+                    "--version",
+                    "2026-10-25",
+                    "--procedencia",
+                    "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+                    "--salida",
+                    str(salida),
+                    "--candidatos",
+                    str(candidatos_path),
+                    "--registro",
+                    str(registro_path),
+                ],
+                cwd=RAIZ,
+                capture_output=True,
+                text=True,
+                env=cli_aislada.env,
+            )
+
+tests/test_adaptador_catalogo_fuentes_polis.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['/tmp/eaf307_pure/backend/.venv/bin/python', ...>
+args = ['/tmp/eaf307_pure/backend/.venv/bin/python', '/tmp/pytest-of-root/pytest-492/test_cli_real_rechaza_registro0/checkout...asificado', '--catalogo', '/tmp/eaf307_pure/bridge/65_catalogo_clasificado_fuentes_ollamacodex.json', '--version', ...]
+executable = b'/tmp/eaf307_pure/backend/.venv/bin/python', preexec_fn = None
+close_fds = True, pass_fds = (), cwd = PosixPath('/tmp/eaf307_pure')
+env = {'POLIS_DATABASE_URL': 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307...l+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d_mig', 'SHELL': '/bin/bash', ...}
+startupinfo = None, creationflags = 0, shell = False, p2cread = -1
+p2cwrite = -1, c2pread = 13, c2pwrite = 14, errread = 15, errwrite = 16
+restore_signals = True, gid = None, gids = None, uid = None, umask = -1
+start_new_session = False, process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/backend/.venv/bin/python'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1955: FileNotFoundError
+________________________ test_cli_real_unico_por_limite ________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_cli_real_unico_por_limite0')
+
+    def test_cli_real_unico_por_limite(tmp_path):
+        cli_aislada = copiar_cli(tmp_path, CLI.name)
+        salida = cli_aislada.bridge / f"cli_limite-{uuid.uuid4().hex}"
+        archivo = Path(str(salida) + ".catalogo.json")
+        try:
+            archivo.write_bytes(b"x" * (33 * 1024 * 1024))
+>           finished = subprocess.run(
+                [
+                    str(PYTHON),
+                    str(cli_aislada.script),
+                    "catalogar-clasificado",
+                    "--catalogo",
+                    str(archivo),
+                    "--version",
+                    "2026-10-25",
+                    "--procedencia",
+                    "bridge/65_catalogo_clasificado_fuentes_ollamacodex.json",
+                    "--salida",
+                    str(salida),
+                ],
+                cwd=RAIZ,
+                capture_output=True,
+                text=True,
+                env=cli_aislada.env,
+            )
+
+tests/test_adaptador_catalogo_fuentes_polis.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['/tmp/eaf307_pure/backend/.venv/bin/python', ...>
+args = ['/tmp/eaf307_pure/backend/.venv/bin/python', '/tmp/pytest-of-root/pytest-492/test_cli_real_unico_por_limite0/checkout...li_real_unico_por_limite0/checkout/bridge/cli_limite-81af8ff026dd49d095c53b9e7ef2d809.catalogo.json', '--version', ...]
+executable = b'/tmp/eaf307_pure/backend/.venv/bin/python', preexec_fn = None
+close_fds = True, pass_fds = (), cwd = PosixPath('/tmp/eaf307_pure')
+env = {'POLIS_DATABASE_URL': 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307...l+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d_mig', 'SHELL': '/bin/bash', ...}
+startupinfo = None, creationflags = 0, shell = False, p2cread = -1
+p2cwrite = -1, c2pread = 13, c2pwrite = 14, errread = 15, errwrite = 16
+restore_signals = True, gid = None, gids = None, uid = None, umask = -1
+start_new_session = False, process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/backend/.venv/bin/python'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1955: FileNotFoundError
+_ TestGuardasBaseDatosDemo.test_ejecucion_cli_aborta_con_bloqueo_de_seguridad_obs13 _
+
+self = <test_aud11_scripts_seguridad.TestGuardasBaseDatosDemo object at 0x7d4586760950>
+
+    def test_ejecucion_cli_aborta_con_bloqueo_de_seguridad_obs13(self):
+        """Verifica el comportamiento CLI real del script ejecutado como subproceso contra bd_csh."""
+        python_bin = ROOT_DIR / "backend" / ".venv" / "bin" / "python"
+        script_path = SCRIPTS_DIR / "sembrar_compromisos_demo.py"
+    
+>       resultado = subprocess.run(
+            [str(python_bin), str(script_path), "--db-url", "postgresql+asyncpg://polis:pass@127.0.0.1:5432/bd_csh"],
+            capture_output=True,
+            text=True,
+        )
+
+tests/test_aud11_scripts_seguridad.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['/tmp/eaf307_pure/backend/.venv/bin/python', ...>
+args = ['/tmp/eaf307_pure/backend/.venv/bin/python', '/tmp/eaf307_pure/scripts/sembrar_compromisos_demo.py', '--db-url', 'postgresql+asyncpg://polis:pass@127.0.0.1:5432/bd_csh']
+executable = b'/tmp/eaf307_pure/backend/.venv/bin/python', preexec_fn = None
+close_fds = True, pass_fds = (), cwd = None, env = None, startupinfo = None
+creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1, c2pread = 13
+c2pwrite = 14, errread = 15, errwrite = 16, restore_signals = True, gid = None
+gids = None, uid = None, umask = -1, start_new_session = False
+process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/backend/.venv/bin/python'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1955: FileNotFoundError
+_________ test_registro_capas_conserva_17_corregimientos_y_cuarentena __________
+
+    def test_registro_capas_conserva_17_corregimientos_y_cuarentena():
+        modulo = _modulo()
+>       registro = modulo.generar()
+                   ^^^^^^^^^^^^^^^^
+
+tests/test_catalogo_cartografia_polis.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/catalogar_cartografia_polis.py:91: in generar
+    seleccion = json.loads((FUENTES / "cartografia_corregimientos_activa.json").read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/cartografia_corregimientos_activa.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/cartografia_corregimientos_activa.json'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________________ test_hashes_geograficos_reproducibles _____________________
+
+    def test_hashes_geograficos_reproducibles():
+        modulo = _modulo()
+>       registro = modulo.generar()
+                   ^^^^^^^^^^^^^^^^
+
+tests/test_catalogo_cartografia_polis.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/catalogar_cartografia_polis.py:91: in generar
+    seleccion = json.loads((FUENTES / "cartografia_corregimientos_activa.json").read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/cartografia_corregimientos_activa.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/cartografia_corregimientos_activa.json'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________________ test_carga_real_no_duplica_y_no_promueve ___________________
+
+prepared_test_database = 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d'
+
+    def test_carga_real_no_duplica_y_no_promueve(prepared_test_database):
+        if prepared_test_database is None:
+            pytest.skip("Se requiere POLIS_TEST_DATABASE_URL")
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text())
+>       primera = asyncio.run(cargar(prepared_test_database, inventario))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_catalogo_fuentes_versionado.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inventario = {'esquema': 'polis.inventario_fuentes.v1', 'generado_utc': '2026-11-05T03:30:21.959420+00:00', 'corte_consolidado_sha256': 'a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa', 'fuentes_clave': 43, ...}
+
+    def verificar_inventario(inventario: dict) -> None:
+        if inventario.get("esquema") != "polis.inventario_fuentes.v1":
+            raise ValueError("Versión de inventario no reconocida")
+        if len(inventario["fuentes"]) != inventario["fuentes_clave"]:
+            raise ValueError("Conteo de claves no coincide")
+        if len(inventario["archivos"]) != inventario["artefactos"]:
+            raise ValueError("Conteo de artefactos no coincide")
+        if _sha256(CONSOLIDADO) != inventario["corte_consolidado_sha256"]:
+            raise ValueError("El consolidado no coincide con el corte inventariado")
+        paquetes = inventario.get("paquetes", {})
+        if not paquetes:
+            raise ValueError("Faltan las fichas de paquetes locales")
+        catalogos: dict[str, dict[str, dict]] = {}
+        for archivo in inventario["archivos"]:
+            paquete = paquetes.get(archivo.get("paquete_clave"))
+            if not paquete or not archivo["ruta"].startswith(paquete["prefijo"]):
+                raise ValueError(f"Artefacto sin ficha de paquete válida: {archivo['ruta']}")
+            ruta = RAIZ / archivo["ruta"]
+            if not ruta.is_file() or _sha256(ruta) != archivo["sha256"]:
+>               raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E               ValueError: Artefacto ausente o con SHA distinto: data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+
+scripts/cargar_catalogo_fuentes.py:88: ValueError
+_______ test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion _______
+
+prepared_test_database = 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d'
+
+    def test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion(prepared_test_database):
+        if prepared_test_database is None:
+            pytest.skip("Se requiere POLIS_TEST_DATABASE_URL")
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = deepcopy(json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text()))
+    
+        def extra(ruta_relativa: str, formato: str) -> dict:
+            ruta = raiz / ruta_relativa
+            return {
+                "ruta": ruta_relativa,
+                "paquete_clave": "banco_local",
+                "evidencia_origen": {},
+                "sha256": hashlib.sha256(ruta.read_bytes()).hexdigest(),
+                "bytes": ruta.stat().st_size,
+                "formato": formato,
+                "rol": "control",
+            }
+    
+        ruta_nueva = "data/banco_fuentes_oficiales/inventario_pipeline_2026.json"
+        inventario["archivos"].append(extra(ruta_nueva, "json"))
+        inventario["archivos"].append(extra("data/banco_fuentes_oficiales/plan_actualizacion_2026.json", "x" * 41))
+        inventario["artefactos"] += 2
+        with pytest.raises(SQLAlchemyError):
+>           asyncio.run(cargar(prepared_test_database, inventario))
+
+tests/test_catalogo_fuentes_versionado.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inventario = {'esquema': 'polis.inventario_fuentes.v1', 'generado_utc': '2026-11-05T03:30:21.959420+00:00', 'corte_consolidado_sha256': 'a92b00b9f3bf2b62c3f1a7e7013000c95e00c7d7c7d81ff70269901081491cfa', 'fuentes_clave': 43, ...}
+
+    def verificar_inventario(inventario: dict) -> None:
+        if inventario.get("esquema") != "polis.inventario_fuentes.v1":
+            raise ValueError("Versión de inventario no reconocida")
+        if len(inventario["fuentes"]) != inventario["fuentes_clave"]:
+            raise ValueError("Conteo de claves no coincide")
+        if len(inventario["archivos"]) != inventario["artefactos"]:
+            raise ValueError("Conteo de artefactos no coincide")
+        if _sha256(CONSOLIDADO) != inventario["corte_consolidado_sha256"]:
+            raise ValueError("El consolidado no coincide con el corte inventariado")
+        paquetes = inventario.get("paquetes", {})
+        if not paquetes:
+            raise ValueError("Faltan las fichas de paquetes locales")
+        catalogos: dict[str, dict[str, dict]] = {}
+        for archivo in inventario["archivos"]:
+            paquete = paquetes.get(archivo.get("paquete_clave"))
+            if not paquete or not archivo["ruta"].startswith(paquete["prefijo"]):
+                raise ValueError(f"Artefacto sin ficha de paquete válida: {archivo['ruta']}")
+            ruta = RAIZ / archivo["ruta"]
+            if not ruta.is_file() or _sha256(ruta) != archivo["sha256"]:
+>               raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E               ValueError: Artefacto ausente o con SHA distinto: data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+
+scripts/cargar_catalogo_fuentes.py:88: ValueError
+___________ test_ocho_planes_tienen_evidencia_documental_versionada ____________
+
+    def test_ocho_planes_tienen_evidencia_documental_versionada():
+        catalogo = generar()
+        planes = catalogo["planes"]
+        assert catalogo["total_planes"] == 8
+        assert len({plan["codigo_plan"] for plan in planes}) == 8
+        assert sum(plan["codigo_plan"].startswith("PDD_") for plan in planes) == 5
+        assert sum(plan["codigo_plan"].startswith("PDL_") for plan in planes) == 3
+        for plan in planes:
+            assert plan["documentos_referidos"]
+            for documento in plan["documentos_referidos"]:
+>               assert documento["estado"] == "localizado"
+E               AssertionError: assert 'referencia_sin_archivo_local' == 'localizado'
+E                 
+E                 - localizado
+E                 + referencia_sin_archivo_local
+
+tests/test_catalogo_ocho_planes_polis.py:19: AssertionError
+_______________ test_catalogo_publicado_coincide_con_generacion ________________
+
+    def test_catalogo_publicado_coincide_con_generacion():
+>       assert json.loads(SALIDA.read_text()) == generar()
+E       AssertionError: assert {'esquema': '...igo estable.'} == {'esquema': '...igo estable.'}
+E         
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'planes': [{'codigo_plan': 'PDD_2012_2015', 'nombre_oficial_en_motor': 'En Cartagena Hay Campo para Todos', 'norma_ad...órica y del Caribe Norte', 'norma_adopcion_en_motor': 'Acuerdo Local 004 de 2024', 'periodo': [2024, 2027], ...}, ...]} != {'planes': [{'codigo_plan': 'PDD_2012_2015', 'nombre_oficial_en_motor': 'En Cartagena Hay Campo para Todos', 'norma_ad...órica y del Caribe Norte', 'norma_adopcion_en_motor': 'Acuerdo Local 004 de 2024', 'periodo': [2024, 2027], ...}, ...]}
+E         Use -v to get more diff
+
+tests/test_catalogo_ocho_planes_polis.py:28: AssertionError
+_________________ test_excel_policial_separado_y_2026_parcial __________________
+
+    def test_excel_policial_separado_y_2026_parcial():
+>       filas = _modulo()._policia_excel_compartido()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_consolidar_datos_integral_p1.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../data/banco_fuentes_oficiales/consolidar_datos_integral.py:359: in _policia_excel_compartido
+    for fila in _csv(ruta):
+                ^^^^^^^^^^
+../data/banco_fuentes_oficiales/consolidar_datos_integral.py:91: in _csv
+    with path.open(encoding="utf-8", newline="") as stream:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/drive_pshc_insumos/policia_cartagena_delitos_anuales_2020_2026.csv')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = ''
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/drive_pshc_insumos/policia_cartagena_delitos_anuales_2020_2026.csv'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______________ test_seis_reparaciones_conservan_original_y_sha ________________
+
+    def test_seis_reparaciones_conservan_original_y_sha():
+>       registro = json.loads((FUENTES / "registro_correccion_geometrica_2026.json").read_text())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_curacion_cartografia_polis.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/registro_correccion_geometrica_2026.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/registro_correccion_geometrica_2026.json'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_topologia_no_promueve_capas_con_solapes_o_fuera_de_limite ________
+
+    def test_topologia_no_promueve_capas_con_solapes_o_fuera_de_limite():
+>       auditoria = json.loads((FUENTES / "auditoria_topologia_2026.json").read_text())
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_curacion_cartografia_polis.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/auditoria_topologia_2026.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/auditoria_topologia_2026.json'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_cli_real_publica_hash_de_bytes_reales_y_filtro_2020 ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_cli_real_publica_hash_de_0')
+
+    def test_cli_real_publica_hash_de_bytes_reales_y_filtro_2020(tmp_path):
+        cli_aislada = copiar_cli(
+            tmp_path,
+            CLI.name,
+            modulos=("ficha_territorial_polis.py", "parser_terridata_polis.py"),
+        )
+        trabajo = cli_aislada.bridge / f"cli-test-{uuid.uuid4().hex}"
+        trabajo.mkdir(parents=True, exist_ok=False)
+        try:
+            (trabajo / "seleccion.json").write_text(
+                json.dumps({"descripcion": "solo año 2020", "anios": [2020]}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+>           salida = ejecutar_cli(
+                trabajo / "publicacion",
+                trabajo / "seleccion.json",
+                cli_aislada,
+            )
+
+tests/test_ficha_territorial_polis.py:573: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_ficha_territorial_polis.py:520: in ejecutar_cli
+    resultado = subprocess.run(
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:548: in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['/tmp/eaf307_pure/backend/.venv/bin/python', ...>
+args = ['/tmp/eaf307_pure/backend/.venv/bin/python', '/tmp/pytest-of-root/pytest-492/test_cli_real_publica_hash_de_0/checkout...58-dd2b10a1c230/original.zip', '--sha256-zip', 'b6851ceee5f02572db8099b6a82d00161a13ca9163128aef7fb11e4e98257e15', ...]
+executable = b'/tmp/eaf307_pure/backend/.venv/bin/python', preexec_fn = None
+close_fds = True, pass_fds = (), cwd = PosixPath('/tmp/eaf307_pure')
+env = {'POLIS_TEST_MIGRATIONS_DATABASE_URL': 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d_mig', 'SHELL': '/bin/bash', 'COLORTERM': 'truecolor', 'TERM_PROGRAM_VERSION': '3.6', ...}
+startupinfo = None, creationflags = 0, shell = False, p2cread = -1
+p2cwrite = -1, c2pread = 13, c2pwrite = 14, errread = 15, errwrite = 16
+restore_signals = True, gid = None, gids = None, uid = None, umask = -1
+start_new_session = False, process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/backend/.venv/bin/python'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/subprocess.py:1955: FileNotFoundError
+____________ test_disponibilidad_pgrouting_en_repositorio[asyncio] _____________
+
+database_url = 'postgresql+asyncpg://polis_eaf_307d:0239463790906f52839e5a83@127.0.0.1:5432/polis_test_eaf_307d'
+
+    @pytest.mark.anyio
+    async def test_disponibilidad_pgrouting_en_repositorio(database_url: str):
+        """Verifica que pgRouting 4.x esté activo y disponible en el motor de base de datos."""
+        from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    
+        engine = create_async_engine(database_url)
+        session_factory = async_sessionmaker(engine, expire_on_commit=False)
+        async with session_factory() as session:
+            repo = GeodatosRepository(session)
+            version = await repo.verificar_pgrouting()
+>           assert version is not None
+E           assert None is not None
+
+tests/test_geodatos_isocronas.py:140: AssertionError
+_______ test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales ________
+
+    def test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales():
+        modulo = _modulo()
+>       inventario = modulo.generar()
+                     ^^^^^^^^^^^^^^^^
+
+tests/test_inventario_fuentes_polis.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/inventariar_fuentes_polis.py:468: in generar
+    } | _trazabilidad(artefactos)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+../scripts/inventariar_fuentes_polis.py:331: in _trazabilidad
+    _verificar_referencia(anterior["inventario_anterior"])
+../scripts/inventariar_fuentes_polis.py:227: in _verificar_referencia
+    contenido = _leer_regular(ruta)
+                ^^^^^^^^^^^^^^^^^^^
+../scripts/inventariar_fuentes_polis.py:181: in _leer_regular
+    with _abrir_regular(ruta) as archivo:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ruta = PosixPath('/tmp/eaf307_pure/data/fuentes_versiones/inventarios/c296df0017064b9259c5768dbdb04b84e52332f36b44b3bba4db1dbd6e03efe1.json')
+
+    def _abrir_regular(ruta: Path) -> BinaryIO:
+        ruta = _ruta_sin_enlaces(ruta)
+        if not ruta.is_file():
+>           raise ValueError(f"No es un archivo regular: {ruta}")
+E           ValueError: No es un archivo regular: /tmp/eaf307_pure/data/fuentes_versiones/inventarios/c296df0017064b9259c5768dbdb04b84e52332f36b44b3bba4db1dbd6e03efe1.json
+
+../scripts/inventariar_fuentes_polis.py:172: ValueError
+__________ test_inventario_no_declara_drive_como_fuente_institucional __________
+
+    def test_inventario_no_declara_drive_como_fuente_institucional():
+>       fuentes = _modulo().generar()["fuentes"]
+                  ^^^^^^^^^^^^^^^^^^^
+
+tests/test_inventario_fuentes_polis.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/inventariar_fuentes_polis.py:468: in generar
+    } | _trazabilidad(artefactos)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+../scripts/inventariar_fuentes_polis.py:331: in _trazabilidad
+    _verificar_referencia(anterior["inventario_anterior"])
+../scripts/inventariar_fuentes_polis.py:227: in _verificar_referencia
+    contenido = _leer_regular(ruta)
+                ^^^^^^^^^^^^^^^^^^^
+../scripts/inventariar_fuentes_polis.py:181: in _leer_regular
+    with _abrir_regular(ruta) as archivo:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ruta = PosixPath('/tmp/eaf307_pure/data/fuentes_versiones/inventarios/c296df0017064b9259c5768dbdb04b84e52332f36b44b3bba4db1dbd6e03efe1.json')
+
+    def _abrir_regular(ruta: Path) -> BinaryIO:
+        ruta = _ruta_sin_enlaces(ruta)
+        if not ruta.is_file():
+>           raise ValueError(f"No es un archivo regular: {ruta}")
+E           ValueError: No es un archivo regular: /tmp/eaf307_pure/data/fuentes_versiones/inventarios/c296df0017064b9259c5768dbdb04b84e52332f36b44b3bba4db1dbd6e03efe1.json
+
+../scripts/inventariar_fuentes_polis.py:172: ValueError
+___________ test_inventario_publicado_coincide_con_archivos_actuales ___________
+
+    def test_inventario_publicado_coincide_con_archivos_actuales():
+        raiz = Path(__file__).resolve().parents[2]
+        inventario = json.loads((raiz / "data/banco_fuentes_oficiales/inventario_pipeline_2026.json").read_text())
+        for archivo in inventario["archivos"]:
+            ruta = raiz / archivo["ruta"]
+>           assert ruta.is_file(), archivo["ruta"]
+E           AssertionError: data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+E           assert False
+E            +  where False = is_file()
+E            +    where is_file = PosixPath('/tmp/eaf307_pure/data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite').is_file
+
+tests/test_inventario_fuentes_polis.py:82: AssertionError
+_________ test_registro_versionado_253_unidades_sin_imputar_46_barrios _________
+
+    def test_registro_versionado_253_unidades_sin_imputar_46_barrios():
+>       registro = _modulo().generar()
+                   ^^^^^^^^^^^^^^^^^^^
+
+tests/test_registro_territorial_polis.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/registrar_territorios_polis.py:38: in generar
+    sha = _sha(ruta)
+          ^^^^^^^^^^
+../scripts/registrar_territorios_polis.py:31: in _sha
+    return hashlib.sha256(ruta.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/ucg_cartagena_15.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/ucg_cartagena_15.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____________ test_registro_publicado_conserva_hashes_de_las_capas _____________
+
+    def test_registro_publicado_conserva_hashes_de_las_capas():
+        modulo = _modulo()
+>       publicado = json.loads(modulo.SALIDA.read_text())
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_registro_territorial_polis.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/registro_territorial_2026.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/registro_territorial_2026.json'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_linaje_real_coteja_geometrias_y_programacion_sin_escribir ________
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+
+    def test_linaje_real_coteja_geometrias_y_programacion_sin_escribir(generador):
+>       linaje = generador.cargar_linaje_territorial()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_toolbox_linaje_territorial.py:23: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_linaje_alterado_se_rechaza_sin_generar_documentos[sha_capa] _______
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_linaje_alterado_se_rechaz0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d45ae85dd60>
+alteracion = 'sha_capa'
+
+    @pytest.mark.parametrize("alteracion", ["sha_capa", "conteo_capa", "sha_mesas", "codigos_mesas", "conteo_mesas"])
+    def test_linaje_alterado_se_rechaza_sin_generar_documentos(generador, tmp_path, monkeypatch, alteracion):
+        linaje = json.loads(generador.ARCHIVO_LINAJE.read_text())
+        if alteracion == "sha_capa":
+            linaje["capas"][0]["sha256"] = "0" * 64
+        elif alteracion == "conteo_capa":
+            linaje["capas"][0]["cantidad_objetos"] += 1
+        elif alteracion == "sha_mesas":
+            linaje["programacion_mesas"]["sha256"] = "0" * 64
+        elif alteracion == "codigos_mesas":
+            linaje["programacion_mesas"]["codigos"][0] = "NO_ES_UN_CODIGO_REAL"
+        else:
+            linaje["programacion_mesas"]["cantidad_codigos"] += 1
+        archivo = tmp_path / "linaje.json"
+        archivo.write_text(json.dumps(linaje))
+        monkeypatch.setattr(generador, "ARCHIVO_LINAJE", archivo)
+        with pytest.raises(ValueError):
+>           generador.cargar_linaje_territorial()
+
+tests/test_toolbox_linaje_territorial.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_linaje_alterado_se_rechaza_sin_generar_documentos[conteo_capa] ______
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_linaje_alterado_se_rechaz1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d45ae8cf5c0>
+alteracion = 'conteo_capa'
+
+    @pytest.mark.parametrize("alteracion", ["sha_capa", "conteo_capa", "sha_mesas", "codigos_mesas", "conteo_mesas"])
+    def test_linaje_alterado_se_rechaza_sin_generar_documentos(generador, tmp_path, monkeypatch, alteracion):
+        linaje = json.loads(generador.ARCHIVO_LINAJE.read_text())
+        if alteracion == "sha_capa":
+            linaje["capas"][0]["sha256"] = "0" * 64
+        elif alteracion == "conteo_capa":
+            linaje["capas"][0]["cantidad_objetos"] += 1
+        elif alteracion == "sha_mesas":
+            linaje["programacion_mesas"]["sha256"] = "0" * 64
+        elif alteracion == "codigos_mesas":
+            linaje["programacion_mesas"]["codigos"][0] = "NO_ES_UN_CODIGO_REAL"
+        else:
+            linaje["programacion_mesas"]["cantidad_codigos"] += 1
+        archivo = tmp_path / "linaje.json"
+        archivo.write_text(json.dumps(linaje))
+        monkeypatch.setattr(generador, "ARCHIVO_LINAJE", archivo)
+        with pytest.raises(ValueError):
+>           generador.cargar_linaje_territorial()
+
+tests/test_toolbox_linaje_territorial.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_linaje_alterado_se_rechaza_sin_generar_documentos[sha_mesas] _______
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_linaje_alterado_se_rechaz2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d45ae8f2ab0>
+alteracion = 'sha_mesas'
+
+    @pytest.mark.parametrize("alteracion", ["sha_capa", "conteo_capa", "sha_mesas", "codigos_mesas", "conteo_mesas"])
+    def test_linaje_alterado_se_rechaza_sin_generar_documentos(generador, tmp_path, monkeypatch, alteracion):
+        linaje = json.loads(generador.ARCHIVO_LINAJE.read_text())
+        if alteracion == "sha_capa":
+            linaje["capas"][0]["sha256"] = "0" * 64
+        elif alteracion == "conteo_capa":
+            linaje["capas"][0]["cantidad_objetos"] += 1
+        elif alteracion == "sha_mesas":
+            linaje["programacion_mesas"]["sha256"] = "0" * 64
+        elif alteracion == "codigos_mesas":
+            linaje["programacion_mesas"]["codigos"][0] = "NO_ES_UN_CODIGO_REAL"
+        else:
+            linaje["programacion_mesas"]["cantidad_codigos"] += 1
+        archivo = tmp_path / "linaje.json"
+        archivo.write_text(json.dumps(linaje))
+        monkeypatch.setattr(generador, "ARCHIVO_LINAJE", archivo)
+        with pytest.raises(ValueError):
+>           generador.cargar_linaje_territorial()
+
+tests/test_toolbox_linaje_territorial.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_linaje_alterado_se_rechaza_sin_generar_documentos[codigos_mesas] _____
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_linaje_alterado_se_rechaz3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d45ae64b9b0>
+alteracion = 'codigos_mesas'
+
+    @pytest.mark.parametrize("alteracion", ["sha_capa", "conteo_capa", "sha_mesas", "codigos_mesas", "conteo_mesas"])
+    def test_linaje_alterado_se_rechaza_sin_generar_documentos(generador, tmp_path, monkeypatch, alteracion):
+        linaje = json.loads(generador.ARCHIVO_LINAJE.read_text())
+        if alteracion == "sha_capa":
+            linaje["capas"][0]["sha256"] = "0" * 64
+        elif alteracion == "conteo_capa":
+            linaje["capas"][0]["cantidad_objetos"] += 1
+        elif alteracion == "sha_mesas":
+            linaje["programacion_mesas"]["sha256"] = "0" * 64
+        elif alteracion == "codigos_mesas":
+            linaje["programacion_mesas"]["codigos"][0] = "NO_ES_UN_CODIGO_REAL"
+        else:
+            linaje["programacion_mesas"]["cantidad_codigos"] += 1
+        archivo = tmp_path / "linaje.json"
+        archivo.write_text(json.dumps(linaje))
+        monkeypatch.setattr(generador, "ARCHIVO_LINAJE", archivo)
+        with pytest.raises(ValueError):
+>           generador.cargar_linaje_territorial()
+
+tests/test_toolbox_linaje_territorial.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_linaje_alterado_se_rechaza_sin_generar_documentos[conteo_mesas] _____
+
+generador = <module 'toolbox_linaje_pruebas' from '/tmp/eaf307_pure/scripts/generar_toolbox_completa_pdf.py'>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_linaje_alterado_se_rechaz4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d45ae2329f0>
+alteracion = 'conteo_mesas'
+
+    @pytest.mark.parametrize("alteracion", ["sha_capa", "conteo_capa", "sha_mesas", "codigos_mesas", "conteo_mesas"])
+    def test_linaje_alterado_se_rechaza_sin_generar_documentos(generador, tmp_path, monkeypatch, alteracion):
+        linaje = json.loads(generador.ARCHIVO_LINAJE.read_text())
+        if alteracion == "sha_capa":
+            linaje["capas"][0]["sha256"] = "0" * 64
+        elif alteracion == "conteo_capa":
+            linaje["capas"][0]["cantidad_objetos"] += 1
+        elif alteracion == "sha_mesas":
+            linaje["programacion_mesas"]["sha256"] = "0" * 64
+        elif alteracion == "codigos_mesas":
+            linaje["programacion_mesas"]["codigos"][0] = "NO_ES_UN_CODIGO_REAL"
+        else:
+            linaje["programacion_mesas"]["cantidad_codigos"] += 1
+        archivo = tmp_path / "linaje.json"
+        archivo.write_text(json.dumps(linaje))
+        monkeypatch.setattr(generador, "ARCHIVO_LINAJE", archivo)
+        with pytest.raises(ValueError):
+>           generador.cargar_linaje_territorial()
+
+tests/test_toolbox_linaje_territorial.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../scripts/generar_toolbox_completa_pdf.py:42: in cargar_linaje_territorial
+    original = (RAIZ_REPO / capa["archivo"]).read_bytes()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/eaf307_pure/data/cartografia_fuentes/curadas/cartagena_localidades/cb138b32278cfd13.geojson'
+
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_validador_rechaza_prefijo_y_dimension_incompatibles ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_validador_rechaza_prefijo0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d4572db0560>
+
+    def test_validador_rechaza_prefijo_y_dimension_incompatibles(tmp_path, monkeypatch):
+        modulo = _cargar_modulo()
+        ruta = _catalogo_modificado(tmp_path, "PERS_001", {"dimension": "AMB"})
+        monkeypatch.setattr(modulo, "CATALOGO", ruta)
+>       assert modulo.main() == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = <function main at 0x7d45702e6f20>()
+E        +    where <function main at 0x7d45702e6f20> = <module 'validar_catalogo' from '/tmp/eaf307_pure/scripts/validar_catalogo_indicadores.py'>.main
+
+tests/test_validar_catalogo_indicadores.py:46: AssertionError
+----------------------------- Captured stderr call -----------------------------
+ERROR: no existe el banco SQLite: /tmp/eaf307_pure/data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+______________ test_validador_rechaza_tier_a_sin_referencia_real _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_validador_rechaza_tier_a_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d4571109cd0>
+
+    def test_validador_rechaza_tier_a_sin_referencia_real(tmp_path, monkeypatch):
+        modulo = _cargar_modulo()
+        ruta = _catalogo_modificado(
+            tmp_path,
+            "PERS_002",
+            {
+                "numerador": "Sin referencia al banco",
+                "denominador": "Sin referencia al banco",
+                "formula": "Sin referencia al banco",
+            },
+        )
+        monkeypatch.setattr(modulo, "CATALOGO", ruta)
+>       assert modulo.main() == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = <function main at 0x7d45702e6fc0>()
+E        +    where <function main at 0x7d45702e6fc0> = <module 'validar_catalogo' from '/tmp/eaf307_pure/scripts/validar_catalogo_indicadores.py'>.main
+
+tests/test_validar_catalogo_indicadores.py:61: AssertionError
+----------------------------- Captured stderr call -----------------------------
+ERROR: no existe el banco SQLite: /tmp/eaf307_pure/data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+________________ test_validador_rechaza_url_con_query_diferente ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-492/test_validador_rechaza_url_con0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d457110b050>
+
+    def test_validador_rechaza_url_con_query_diferente(tmp_path, monkeypatch):
+        modulo = _cargar_modulo()
+        url = "https://www.datos.gov.co/d/vtub-3de2?edicion=inexistente"
+        ruta = _catalogo_modificado(tmp_path, "PERS_002", {"url_fuente": url})
+        monkeypatch.setattr(modulo, "CATALOGO", ruta)
+>       assert modulo.main() == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = <function main at 0x7d45702e6b60>()
+E        +    where <function main at 0x7d45702e6b60> = <module 'validar_catalogo' from '/tmp/eaf307_pure/scripts/validar_catalogo_indicadores.py'>.main
+
+tests/test_validar_catalogo_indicadores.py:69: AssertionError
+----------------------------- Captured stderr call -----------------------------
+ERROR: no existe el banco SQLite: /tmp/eaf307_pure/data/banco_fuentes_oficiales/cartagena_seguridad_humana.sqlite
+=============================== warnings summary ===============================
+tests/test_ingesta_masiva_triada.py::test_official_cartagena_corpus_detects_historical_profiles_and_three_engines
+  /root/polis/backend/.venv/lib/python3.12/site-packages/openpyxl/worksheet/_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+    warn(msg)
+
+tests/test_motor_plan_accion_dnp.py::test_crear_actividad_rechaza_verbo_debil
+  /tmp/eaf307_pure/backend/app/modules/compromisos/router.py:649: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+    return await service.crear_actividad(datos, actor_id=sujeto.sujeto_id)
+
+tests/test_pipeline_p0_unit.py::test_timeout_cancela_trabajo_y_cierra_resultado
+  /root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=1216061) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_adaptador_catalogo_fuentes_polis.py::test_cli_real_catalogar_y_planificar_registrado
+FAILED tests/test_adaptador_catalogo_fuentes_polis.py::test_cli_real_rechaza_registro_inventado
+FAILED tests/test_adaptador_catalogo_fuentes_polis.py::test_cli_real_unico_por_limite
+FAILED tests/test_aud11_scripts_seguridad.py::TestGuardasBaseDatosDemo::test_ejecucion_cli_aborta_con_bloqueo_de_seguridad_obs13
+FAILED tests/test_catalogo_cartografia_polis.py::test_registro_capas_conserva_17_corregimientos_y_cuarentena
+FAILED tests/test_catalogo_cartografia_polis.py::test_hashes_geograficos_reproducibles
+FAILED tests/test_catalogo_fuentes_versionado.py::test_carga_real_no_duplica_y_no_promueve
+FAILED tests/test_catalogo_fuentes_versionado.py::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion
+FAILED tests/test_catalogo_ocho_planes_polis.py::test_ocho_planes_tienen_evidencia_documental_versionada
+FAILED tests/test_catalogo_ocho_planes_polis.py::test_catalogo_publicado_coincide_con_generacion
+FAILED tests/test_consolidar_datos_integral_p1.py::test_excel_policial_separado_y_2026_parcial
+FAILED tests/test_curacion_cartografia_polis.py::test_seis_reparaciones_conservan_original_y_sha
+FAILED tests/test_curacion_cartografia_polis.py::test_topologia_no_promueve_capas_con_solapes_o_fuera_de_limite
+FAILED tests/test_ficha_territorial_polis.py::test_cli_real_publica_hash_de_bytes_reales_y_filtro_2020
+FAILED tests/test_geodatos_isocronas.py::test_disponibilidad_pgrouting_en_repositorio[asyncio]
+FAILED tests/test_inventario_fuentes_polis.py::test_inventario_registra_cuarenta_y_tres_claves_y_hashes_reales
+FAILED tests/test_inventario_fuentes_polis.py::test_inventario_no_declara_drive_como_fuente_institucional
+FAILED tests/test_inventario_fuentes_polis.py::test_inventario_publicado_coincide_con_archivos_actuales
+FAILED tests/test_registro_territorial_polis.py::test_registro_versionado_253_unidades_sin_imputar_46_barrios
+FAILED tests/test_registro_territorial_polis.py::test_registro_publicado_conserva_hashes_de_las_capas
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_real_coteja_geometrias_y_programacion_sin_escribir
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_alterado_se_rechaza_sin_generar_documentos[sha_capa]
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_alterado_se_rechaza_sin_generar_documentos[conteo_capa]
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_alterado_se_rechaza_sin_generar_documentos[sha_mesas]
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_alterado_se_rechaza_sin_generar_documentos[codigos_mesas]
+FAILED tests/test_toolbox_linaje_territorial.py::test_linaje_alterado_se_rechaza_sin_generar_documentos[conteo_mesas]
+FAILED tests/test_validar_catalogo_indicadores.py::test_validador_rechaza_prefijo_y_dimension_incompatibles
+FAILED tests/test_validar_catalogo_indicadores.py::test_validador_rechaza_tier_a_sin_referencia_real
+FAILED tests/test_validar_catalogo_indicadores.py::test_validador_rechaza_url_con_query_diferente
+29 failed, 1802 passed, 16 skipped, 3 warnings in 696.24s (0:11:36)
+EXIT=1

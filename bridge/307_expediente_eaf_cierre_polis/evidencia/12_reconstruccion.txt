@@ -1,0 +1,5 @@
+# Reconstrucción: downgrade a 0096 y re-upgrade
+EXIT_DOWNGRADE=0
+0096_riesgo_sin_evaluar
+EXIT_UPGRADE=0
+0097_sm_core (head)

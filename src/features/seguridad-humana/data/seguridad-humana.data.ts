@@ -1,9 +1,9 @@
 import {
   ShieldCheck,
-  HeartHandshake,
+  Users,
   TrendingUp,
   Leaf,
-  UtensilsCrossed,
+  PackageCheck,
   Activity,
   Vote,
   type LucideIcon,
@@ -130,7 +130,7 @@ export const DIMENSIONES: DimensionInfo[] = [
     nombre: "Seguridad Comunitaria y Convivencia",
     nombreCorto: "Comunitaria",
     pilarOnu: "miedo",
-    icono: HeartHandshake,
+    icono: Users,
     lema: "Tejido social, resolución pacífica y erradicación de violencias basadas en género",
     colorVar: "var(--warning)",
     descripcion:
@@ -184,7 +184,7 @@ export const DIMENSIONES: DimensionInfo[] = [
     nombre: "Seguridad Alimentaria y Nutrición",
     nombreCorto: "Alimentaria",
     pilarOnu: "necesidad",
-    icono: UtensilsCrossed,
+    icono: PackageCheck,
     lema: "Cero hambre infantil, comedores populares y soberanía alimentaria local",
     colorVar: "var(--secondary)",
     descripcion:

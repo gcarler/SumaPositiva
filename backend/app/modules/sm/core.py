@@ -1,6 +1,7 @@
 """Pure core del núcleo portable SM, sin dependencias externas."""
 
 import hashlib
+import hmac
 import json
 from datetime import UTC, datetime
 from typing import Any
@@ -28,12 +29,17 @@ class SMIdempotenciaConflict(SMError):
     """La misma llave de idempotencia reutiliza datos distintos."""
 
 
-def hash_contacto(tenant: str, actor: str, canal: str, identificador: str) -> str:
-    """Hash estable del contacto. No se guarda el contacto crudo en SM."""
-    if not tenant or not actor or not identificador:
-        raise SMContactoInvalido("tenant, actor e identificador son obligatorios")
+def hash_contacto(tenant: str, actor: str, canal: str, identificador: str, *, secreto: bytes) -> str:
+    """HMAC-SHA256 del contacto con un secreto de servidor, no un SHA-256 desnudo.
+
+    El secreto impide probar correos/teléfonos por fuerza bruta a partir del hash
+    almacenado. La rotación se resuelve probando las huellas de todas las claves
+    vigentes; nunca se guarda el contacto crudo.
+    """
+    if not tenant or not actor or not identificador or not secreto:
+        raise SMContactoInvalido("tenant, actor, identificador y secreto son obligatorios")
     base = f"{tenant}|{actor}|{canal}|{FIRMA_VERSION}|{identificador}"
-    return hashlib.sha256(base.encode("utf-8")).hexdigest()
+    return hmac.new(secreto, base.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
 def hash_traza(
@@ -85,7 +91,13 @@ def transicion_estado(actual: SMEstadoMensaje, nuevo: SMEstadoMensaje) -> SMEsta
     """Transiciones controladas. El outbox no regresa a pendiente salvo reintento."""
     if actual == nuevo:
         return nuevo
-    if actual in (SMEstadoMensaje.CANCELADO, SMEstadoMensaje.AGOTADO):
+    if actual in (
+        SMEstadoMensaje.CANCELADO,
+        SMEstadoMensaje.AGOTADO,
+        SMEstadoMensaje.SIMULADO,
+        SMEstadoMensaje.ENVIADO,
+        SMEstadoMensaje.ENTREGADO,
+    ):
         raise SMError(f"No se puede cambiar un mensaje en estado {actual.value}")
     if nuevo == SMEstadoMensaje.PENDIENTE and actual != SMEstadoMensaje.FALLIDO:
         raise SMError("Solo un mensaje fallido puede volver a pendiente (reintento)")

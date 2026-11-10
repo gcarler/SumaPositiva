@@ -44,6 +44,7 @@ const ESTADO_BADGES: Record<string, { label: string; tone: StatusTone }> = {
   pendiente: { label: "En cola de envío", tone: "warning" },
   fallido: { label: "Error de despacho", tone: "danger" },
   error: { label: "Error de despacho", tone: "danger" },
+  delegado: { label: "Envío delegado a SM", tone: "info" },
 };
 
 const PAGE_SIZE = 10;

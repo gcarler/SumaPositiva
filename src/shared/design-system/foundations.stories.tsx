@@ -8,7 +8,7 @@ import {
   Landmark,
   MessageSquare,
   Users,
-  VenetianMask,
+  Shield,
   Sun,
   Moon,
 } from "lucide-react";
@@ -255,7 +255,7 @@ export const Iconography: Story = {
           { Icon: Landmark, label: "Institución" },
           { Icon: MessageSquare, label: "Aportes" },
           { Icon: Users, label: "Comunidad" },
-          { Icon: VenetianMask, label: "Anonimato" },
+          { Icon: Shield, label: "Privacidad" },
           { Icon: Sun, label: "Claro" },
           { Icon: Moon, label: "Oscuro" },
         ].map(({ Icon, label }) => (

@@ -1,0 +1,29 @@
+...............................................F..........F............. [ 83%]
+..............                                                           [100%]
+=================================== FAILURES ===================================
+________ test_puente_real_herald_transaccion_misma_sombra_sin_duplicar _________
+backend/tests/test_sm_310.py:434: in test_puente_real_herald_transaccion_misma_sombra_sin_duplicar
+    UsuarioCreacion(correo=correo, contrasena="PruebaSM310Segura!", nombres="Prueba", apellidos="Aislada")
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for UsuarioCreacion
+E   correo
+E     value is not a valid email address: The part after the @-sign is a special-use or reserved name that cannot be used with email. [type=value_error, input_value='sm310-c2863beb8c8c420da8...1b478bf@example.invalid', input_type=str]
+_____ test_smtp_servidor_loopback_efimero_envio_real_y_message_id_estable ______
+backend/tests/test_sm_transports_310.py:126: in test_smtp_servidor_loopback_efimero_envio_real_y_message_id_estable
+    recibo = await transporte.enviar(payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/modules/sm/transports.py:141: in enviar
+    return await asyncio.to_thread(self._enviar, preparado)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/threads.py:25: in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend/app/modules/sm/transports.py:182: in _enviar
+    raise SMFalloTransporte("smtp_respuesta", transitorio=400 <= exc.smtp_code < 500) from None
+E   app.modules.sm.transports.SMFalloTransporte: smtp_respuesta
+=========================== short test summary info ============================
+FAILED backend/tests/test_sm_310.py::test_puente_real_herald_transaccion_misma_sombra_sin_duplicar
+FAILED backend/tests/test_sm_transports_310.py::test_smtp_servidor_loopback_efimero_envio_real_y_message_id_estable
+2 failed, 84 passed in 30.36s

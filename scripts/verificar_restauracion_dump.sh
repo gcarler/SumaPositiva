@@ -40,6 +40,25 @@ if [ ! -f "${HASH_FILE}" ]; then
     exit 1
 fi
 
+# pg_restore del HOST (18.x): un volcado de bd_csh usa formato 1.16 que el
+# cliente 16 del contenedor no puede leer. Preflight antes de crear la base.
+if [ -n "${PG_RESTORE_BIN:-}" ]; then
+    :
+else
+    PG_RESTORE_BIN=$(ls -1d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -n 1)
+    PG_RESTORE_BIN="${PG_RESTORE_BIN:+${PG_RESTORE_BIN}/}pg_restore"
+    command -v "${PG_RESTORE_BIN}" >/dev/null 2>&1 || PG_RESTORE_BIN="pg_restore"
+fi
+export PG_RESTORE_BIN
+echo "Cliente de restauración: ${PG_RESTORE_BIN} ($("${PG_RESTORE_BIN}" --version))"
+if [ -f "${DUMP_FILE}.pgversion" ]; then
+    echo "Origen del volcado: $(tr '\n' ' ' < "${DUMP_FILE}.pgversion")"
+fi
+if ! "${PG_RESTORE_BIN}" -l "${DUMP_FILE}" >/dev/null; then
+    echo "ERROR CRÍTICO: ${PG_RESTORE_BIN} no puede leer el volcado; use el cliente del host o alinee versiones." >&2
+    exit 1
+fi
+
 echo "Verificando suma de comprobación criptográfica SHA-256..."
 DUMP_DIR=$(dirname "${DUMP_FILE}")
 DUMP_NAME=$(basename "${DUMP_FILE}")
@@ -84,7 +103,7 @@ sudo -u postgres psql -d "${TEST_DB}" -q -c "
 # 4. Restauración del Volcado en la Base Efímera
 # ------------------------------------------------------------------------------
 echo "Restaurando volcado en la base efímera ${TEST_DB}..."
-cat "${DUMP_FILE}" | sudo -u postgres pg_restore -d "${TEST_DB}" --no-owner
+sudo -u postgres -- "${PG_RESTORE_BIN}" -d "${TEST_DB}" --no-owner "${DUMP_FILE}"
 
 # ------------------------------------------------------------------------------
 # 5. Auditoría Estructural y Cuantitativa de Integridad de Datos

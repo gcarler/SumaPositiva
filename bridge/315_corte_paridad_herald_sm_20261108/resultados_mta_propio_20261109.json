@@ -1,0 +1,79 @@
+{
+  "fecha": "2026-11-09T13:42:42Z",
+  "entorno": "staging (base desechable) con MTA propio",
+  "base": "respaldo diario 20261109_020001 en polis_staging_315_mta_20261109 (PG16), migrada 0096 -> 0101",
+  "relay": {
+    "aceptados_por_proxy": 62,
+    "rechazados_por_proxy": 4,
+    "rechazados_muestra": [
+      "+573001234567",
+      "+573159988776"
+    ],
+    "autenticado_en_submission": true,
+    "recibidos_en_buzon": 62,
+    "esperados": 62,
+    "duplicados": []
+  },
+  "buzon_verificacion": "ensayo315@seguridadhumanaintegral.org",
+  "datos": "sintéticos; ningún correo de ciudadano sale del servidor",
+  "corte": [
+    "radicacion",
+    "alerta_pendientes"
+  ],
+  "cuentas_sinteticas": 4,
+  "fase_a_sin_cuenta": {
+    "delegadas": 5,
+    "herald": {
+      "enviado": 11,
+      "fallido": 2
+    },
+    "sm": {
+      "procesados": 5,
+      "enviados": 5,
+      "fallidos": 0,
+      "simulados": 0,
+      "sin_contacto": 0
+    },
+    "hook_p50_ms": 1.86,
+    "hook_p95_ms": 24.6
+  },
+  "fase_b_con_alta": {
+    "delegadas": 8,
+    "herald": {
+      "fallido": 2,
+      "enviado": 8
+    },
+    "sm": {
+      "procesados": 8,
+      "enviados": 8,
+      "fallidos": 0,
+      "simulados": 0,
+      "sin_contacto": 0
+    },
+    "hook_p50_ms": 3.09,
+    "hook_p95_ms": 14.76
+  },
+  "carga_encolado_s": 0.67,
+  "carga_drenaje_s": 5.4,
+  "carga_sm": {
+    "procesados": 30,
+    "enviados": 30,
+    "fallidos": 0
+  },
+  "paridad": {
+    "filas": 36,
+    "esperados_email": 32,
+    "faltantes_emailable": [],
+    "contenido_divergente": [],
+    "muestra": 6,
+    "dkim_firmados_en_muestra": 6,
+    "dkim_validos_en_muestra": 6,
+    "dkim_interprete": "/tmp/dkimenv/bin/python",
+    "recibidos_por_submission_autenticado": 6
+  },
+  "evidencia": {
+    "registro": "/tmp/ensayo315_mta_propio.log",
+    "buzon": "ensayo315@seguridadhumanaintegral.org (buzón local de Dovecot, Maildir)",
+    "verificacion": "IMAP 993 con TLS y login del buzón; lectura de asuntos y cuerpo"
+  }
+}

@@ -65,8 +65,8 @@ describe("POLIS Branding — Componentes Oficiales de Marca e Isotipo", () => {
 
     const svgContent = fs.readFileSync(faviconSvg, "utf8");
     expect(svgContent).toContain("viewBox=\"0 0 128 128\"");
-    expect(svgContent).toContain('fill="#0F172A"');
-    expect(svgContent).toContain('stroke="#38BDF8"');
+    expect(svgContent).toContain('fill="#0C0D29"');
+    expect(svgContent).toContain('stroke="#E78B26"');
   });
 
   test("6. Manifest PWA y layout.tsx están sincronizados con la iconografía oficial", () => {

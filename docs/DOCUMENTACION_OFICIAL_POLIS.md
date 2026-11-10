@@ -33,7 +33,7 @@
 5. [Seguridad Perimetral, Ciberdefensa y Matriz RBAC](#5-seguridad-perimetral-ciberdefensa-y-matriz-rbac)
    - [5.1 Aislamiento de Red y Firewall UFW](#51-aislamiento-de-red-y-firewall-ufw)
    - [5.2 Hardening de Nginx, TLS 1.3 y Rate Limiting](#52-hardening-de-nginx-tls-13-y-rate-limiting)
-   - [5.3 Matriz de Roles y Permisos (RBAC 97 Rutas)](#53-matriz-de-roles-y-permisos-rbac-97-rutas)
+   - [5.3 Matriz de Roles y Permisos (RBAC 290 Operaciones)](#53-matriz-de-roles-y-permisos-rbac-290-operaciones)
 6. [Observabilidad Forense y Telemetría SQL en Vivo](#6-observabilidad-forense-y-telemetría-sql-en-vivo)
 7. [Estrategia de Respaldo, Continuidad y Réplica Offsite](#7-estrategia-de-respaldo-continuidad-y-réplica-offsite)
 8. [Manual de Operación, Despliegue y Quality Gates](#8-manual-de-operación-despliegue-y-quality-gates)
@@ -95,7 +95,7 @@ flowchart TB
         end
 
         subgraph BackTier["Capa de Negocio y Servicios"]
-            FastAPI["POLIS Backend API (FastAPI / Uvicorn)\nPuerto: 127.0.0.1:8000\n• Python 3.12 / Pydantic v2\n• SQLAlchemy 2.0 AsyncIO\n• ReportLab PDF Engine\n• Router RBAC (97 endpoints)"]
+            FastAPI["POLIS Backend API (FastAPI / Uvicorn)\nPuerto: 127.0.0.1:8000\n• Python 3.12 / Pydantic v2\n• SQLAlchemy 2.0 AsyncIO\n• ReportLab PDF Engine\n• Router RBAC (290 operaciones)"]
         end
 
         subgraph DataTier["Capa de Datos y Cómputo Espacial"]
@@ -142,7 +142,7 @@ flowchart TB
     schemas (Pydantic v2)   reglas de negocio / validaciones
   ```
 - **Inyección de Dependencias:** Gestión estricta de sesiones de base de datos asíncronas (`async_sessionmaker`), asegurando cierre determinista y prevención de fugas de conexiones (*connection leaks*).
-- **Mapeo de Rutas y Matriz RBAC:** Total de 97 endpoints REST documentados en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) con validación cruzada automatizada en suites de pruebas unitarias (`test_access_policy.py`).
+- **Mapeo de Rutas y Matriz RBAC:** Total de 290 operaciones REST documentadas en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) con validación cruzada automatizada en suites de pruebas unitarias (`test_access_policy.py`).
 
 ### 3.4 Capa de Persistencia y Super-Tuning de PostgreSQL 18
 El motor de base de datos de producción `bd_csh` opera sobre **PostgreSQL 18.6** compilado con soporte espacial y analítico completo:
@@ -289,7 +289,7 @@ La configuración de Nginx actúa como escudo perimetral inexpugnable:
    - Zona general de API: 30 peticiones/segundo con ráfaga (*burst*) de 50.
    - Zona cívica y autenticación: 5 peticiones/segundo para mitigar ataques de fuerza bruta y saturación de votos.
 
-### 5.3 Matriz de Roles y Permisos (RBAC 97 Rutas)
+### 5.3 Matriz de Roles y Permisos (RBAC 290 Operaciones)
 El sistema de autorización de POLIS, documentado en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md), evalúa en cada petición el token JWT y los permisos asignados en PostgreSQL:
 
 ```text
@@ -403,7 +403,7 @@ bun run ui:check
 # 2. Análisis estático de tipos y linter
 bun run check
 
-# 3. Suite completa de pruebas frontend (420+ pruebas)
+# 3. Suite completa de pruebas frontend (1730+ pruebas)
 bun test
 
 # 4. Pruebas backend de fe pública y generación de actas PDF
@@ -412,7 +412,7 @@ bun test
 # 5. Pruebas backend de telemetría SQL forense
 /root/polis/venv/bin/pytest backend/tests/test_database_telemetry.py
 
-# 6. Verificación de paridad estricta RBAC (97 endpoints documentados)
+# 6. Verificación de paridad estricta RBAC (290 operaciones documentadas)
 /root/polis/venv/bin/pytest backend/tests/test_access_policy.py
 
 # 7. Verificación de cero drift en el esquema de base de datos

@@ -13,7 +13,9 @@ import {
   MailCheck,
   ChevronDown,
   ChevronUp,
+  KanbanSquare,
 } from "lucide-react";
+import { puedeEntrar, ROLES } from "@/features/plataforma/models/acceso";
 import { VisorNotificacionesHerald } from "@/features/notificaciones/components/visor-notificaciones-herald";
 import { identidadApi, type MfaIniciar } from "@/features/sesion/services/identidad-api";
 import { sincronizarRestriccionMfa } from "@/features/sesion/services/sincronizar-sesion";
@@ -28,7 +30,8 @@ import {
 } from "@/features/sesion/components/campo-identidad";
 
 export function CuentaUsuario() {
-  const sesion = useSesionStore((s) => s.sesion);
+  const clientSesion = useSesionStore((s) => s.sesion);
+  const sesion = typeof window === "undefined" ? useSesionStore.getState().sesion : clientSesion;
   const { openPanel, closeAll } = usePanels();
   const cache = useQueryClient();
   const [error, setError] = useState("");
@@ -236,10 +239,69 @@ export function CuentaUsuario() {
           </Notice>
         )}
       <section className="space-y-3">
-        <h3 className="text-base font-semibold text-text-primary">Perfil</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-base font-semibold text-text-primary">Perfil</h3>
+          <Badge
+            variant={sesion?.rol === "ciudadano" ? "secondary" : "ember"}
+            className="text-xs font-semibold"
+          >
+            {ROLES[sesion?.rol ?? ""] ?? (sesion?.rol === "ciudadano" ? "Ciudadano" : "Equipo Técnico")}
+          </Badge>
+        </div>
         <p className="break-words text-sm text-text-secondary">
           {usuario.correo} · {usuario.codigo_rol}
         </p>
+
+        {sesion?.rol === "ciudadano" && (
+          <Notice
+            tone="info"
+            title="Identidad Ciudadana Verificada"
+            className="border-[var(--brand-polis-cyan)]/30"
+          >
+            <div className="space-y-1.5 text-xs text-text-secondary leading-relaxed">
+              <p>
+                Estás participando con tu <strong>identidad ciudadana verificada</strong> en POLIS. Tus propuestas, votos y aportes territoriales quedan formalmente registrados a tu nombre bajo el marco de la Ley 1757 de 2015.
+              </p>
+              <p className="text-[11px] text-text-tertiary">
+                El espacio de trabajo técnico (/plataforma) está reservado para los equipos formuladores y facilitadores acreditados de la política pública.
+              </p>
+            </div>
+          </Notice>
+        )}
+
+        {puedeEntrar(sesion) && (
+          <div className="rounded-xl border border-[var(--brand-polis-blue)]/30 bg-[var(--surface-2)] p-4 space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-polis-blue)] dark:text-[var(--brand-polis-sky)] flex items-center gap-1.5">
+                <KanbanSquare className="size-4" aria-hidden="true" />
+                Área de Trabajo Institucional
+              </span>
+              <Badge variant="ember" className="text-[10px] uppercase font-bold">
+                {ROLES[sesion?.rol ?? ""] ?? "Equipo Técnico"}
+              </Badge>
+            </div>
+            <p className="text-xs text-text-secondary leading-relaxed">
+              Tu rol institucional te otorga acceso al espacio técnico de formulación, mesas territoriales, indicadores y seguimiento.
+            </p>
+            <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-2.5 text-xs text-text-secondary">
+              <span className="size-2 rounded-full bg-[var(--success)] shrink-0" aria-hidden="true" />
+              <div className="min-w-0">
+                <p className="font-semibold text-text-primary text-[11px]">
+                  Autenticación institucional Google Workspace
+                </p>
+                <p className="text-[10px] text-text-tertiary">
+                  Las notificaciones oficiales, convocatorias y actas de tus mesas de trabajo se envían a este correo corporativo.
+                </p>
+              </div>
+            </div>
+            <Button asChild variant="ember" size="sm" className="w-full">
+              <Link href="/plataforma" onClick={closeAll}>
+                Ir al Área de Trabajo (/plataforma) →
+              </Link>
+            </Button>
+          </div>
+        )}
+
         <p className="text-sm text-text-secondary">
           {usuario.correo_verificado_en
             ? "Correo verificado"
@@ -678,7 +740,7 @@ export function CuentaUsuario() {
           Mis permisos
         </h3>
         <ul className="space-y-1 break-words text-sm text-text-secondary">
-          {usuario.permisos.map((p) => (
+          {(usuario.permisos ?? []).map((p) => (
             <li key={p}>{p}</li>
           ))}
         </ul>

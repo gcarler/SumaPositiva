@@ -10,9 +10,10 @@ import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { plataformaApi } from "../services/plataforma-api";
 import { EstadoConsulta } from "../components/estado-consulta";
-import { GeovisorHurtosPanel } from "@/features/geovisor/components/geovisor-hurtos-panel";
+import { GeovisorHurtosPanel, type ModoHurtos } from "@/features/geovisor/components/geovisor-hurtos-panel";
 import { CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 
 const MapaApi = dynamic(
   () =>
@@ -25,6 +26,20 @@ const MapaApi = dynamic(
 export function GeovisorAdministrativoView() {
   const [vista, setVista] = useCollectionView("geovisor");
   const [seleccion, setSeleccion] = useState<string>("");
+  const subvistaGeovisor = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["geovisor"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
+  const modoHurtos: ModoHurtos =
+    subvistaGeovisor === "procesador"
+      ? "procesador"
+      : subvistaGeovisor === "gestor"
+      ? "gestor"
+      : "resumen";
+
   const territorios = useQuery({
     queryKey: ["plataforma", "territorios"],
     queryFn: plataformaApi.territorios,
@@ -60,7 +75,10 @@ export function GeovisorAdministrativoView() {
             </Link>
           </Button>
         </div>
-        <GeovisorHurtosPanel />
+        <GeovisorHurtosPanel
+          modoInicial={modoHurtos}
+          onModoChange={(nuevoModo) => setSubvistaModulo("geovisor", nuevoModo)}
+        />
       </section>
 
       <section className="space-y-4" aria-label="División territorial registrada">

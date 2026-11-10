@@ -34,7 +34,7 @@ class NotificacionTransaccional(Base):
             name=conv("chk_notificaciones_tipo_evento"),
         ),
         CheckConstraint(
-            "estado_envio IN ('pendiente', 'procesando', 'enviado', 'simulado', 'fallido')",
+            "estado_envio IN ('pendiente', 'procesando', 'enviado', 'simulado', 'fallido', 'delegado')",
             name=conv("chk_notificaciones_estado_envio"),
         ),
         Index("idx_notif_codigo_radicado", "codigo_radicado"),

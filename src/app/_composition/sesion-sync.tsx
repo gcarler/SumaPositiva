@@ -21,6 +21,7 @@ export function SesionSync() {
     const token = fragmento.get("token") ?? busqueda.get("token");
     if (
       (accion === "recuperar" ||
+        accion === "restablecer" ||
         accion === "verificar" ||
         accion === "magic_link") &&
       token

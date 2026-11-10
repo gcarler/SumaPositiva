@@ -1,0 +1,50 @@
+..FF.....F...........................................................s.. [ 98%]
+.                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_carga_real_no_duplica_y_no_promueve ___________________
+backend/tests/test_catalogo_fuentes_versionado.py:24: in test_carga_real_no_duplica_y_no_promueve
+    primera = asyncio.run(cargar(prepared_test_database, inventario))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+backend/scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+backend/scripts/cargar_catalogo_fuentes.py:88: in verificar_inventario
+    raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E   ValueError: Artefacto ausente o con SHA distinto: public/geodatos/cartagena_barrios.geojson
+_______ test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion _______
+backend/tests/test_catalogo_fuentes_versionado.py:103: in test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion
+    asyncio.run(cargar(prepared_test_database, inventario))
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+backend/scripts/cargar_catalogo_fuentes.py:108: in cargar
+    verificar_inventario(inventario)
+backend/scripts/cargar_catalogo_fuentes.py:88: in verificar_inventario
+    raise ValueError(f"Artefacto ausente o con SHA distinto: {archivo['ruta']}")
+E   ValueError: Artefacto ausente o con SHA distinto: public/geodatos/cartagena_barrios.geojson
+___________ test_inventario_publicado_coincide_con_archivos_actuales ___________
+backend/tests/test_inventario_fuentes_polis.py:82: in test_inventario_publicado_coincide_con_archivos_actuales
+    assert ruta.is_file(), archivo["ruta"]
+E   AssertionError: public/geodatos/cartagena_barrios.geojson
+E   assert False
+E    +  where False = is_file()
+E    +    where is_file = PosixPath('/tmp/polis310/work/public/geodatos/cartagena_barrios.geojson').is_file
+=========================== short test summary info ============================
+FAILED backend/tests/test_catalogo_fuentes_versionado.py::test_carga_real_no_duplica_y_no_promueve
+FAILED backend/tests/test_catalogo_fuentes_versionado.py::test_fallo_tardio_revierte_artefacto_insertado_desde_otra_sesion
+FAILED backend/tests/test_inventario_fuentes_polis.py::test_inventario_publicado_coincide_con_archivos_actuales
+3 failed, 69 passed, 1 skipped in 33.66s

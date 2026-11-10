@@ -7,7 +7,7 @@ import {
   Building2,
   ArrowRight,
   Search,
-  Sparkles,
+  Star,
   Newspaper,
   Plus,
   Play,
@@ -124,7 +124,7 @@ export function NoticiasView() {
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)]/80 via-[var(--background)]/30 to-transparent lg:hidden" />
               <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
                 <Badge variant="ember" className="gap-1 shadow-md">
-                  <Sparkles className="size-3" />
+                  <Star className="size-3" />
                   Noticia Destacada
                 </Badge>
                 {noticiaDestacada.videoUrl && (

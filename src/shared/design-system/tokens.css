@@ -6,52 +6,62 @@
   --brand-google-yellow: #FBBC05;
   --brand-google-red: #EA4335;
 
-  /* Identidad y marca oficial POLIS / Ples SAS */
-  --brand-polis-blue: #0369a1;
-  --brand-polis-sky: #38bdf8;
-  --brand-polis-cyan: #0284c7;
-  --brand-polis-light: #7dd3fc;
-  --brand-polis-core: #ffffff;
-  --brand-ples-blue: #009fe3;
+  /* Paleta Oficial Universidad de Cartagena (Manual de Identidad Visual):
+     - Azul Marino Profundo: #0C0D29 (oklch(0.165 0.048 278))
+     - Púrpura Institucional: #4B2F83 (oklch(0.37 0.145 296))
+     - Naranja Institucional: #E78B26 (oklch(0.715 0.158 65))
+     - Amarillo Dorado Institucional: #ECC22E (oklch(0.83 0.162 88)) */
+  --ucartagena-navy: #0C0D29;
+  --ucartagena-purple: #4B2F83;
+  --ucartagena-orange: #E78B26;
+  --ucartagena-gold: #ECC22E;
+
+  /* Identidad y marca oficial POLIS — Armonizada con Manual de Identidad Visual Universidad de Cartagena */
+  --brand-polis-blue: oklch(0.37 0.145 296); /* #4B2F83 Púrpura Institucional */
+  --brand-polis-sky: oklch(0.715 0.158 65); /* #E78B26 Naranja Institucional */
+  --brand-polis-cyan: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Institucional */
+  --brand-polis-light: oklch(0.83 0.162 88 / 22%);
+  --brand-polis-core: var(--surface-0);
+  --brand-ples-blue: oklch(0.715 0.158 65); /* #E78B26 Naranja Institucional */
   --layer-dropdown: 100;
   --radius: 0.75rem;
-  --territory-loc-1: #e85d04;
-  --territory-loc-2: #f48c06;
-  --territory-loc-3: #dc2f02;
+  --territory-loc-1: #4B2F83;
+  --territory-loc-2: #E78B26;
+  --territory-loc-3: #ECC22E;
 
   /* Superficies */
-  --background: oklch(0.985 0.002 90); /* blanco cálido */
+  --background: oklch(0.985 0.004 285); /* blanco cálido académico */
   --surface-0: oklch(1 0 0); /* blanco puro */
   --surface-1: oklch(1 0 0); /* tarjetas */
-  --surface-2: oklch(0.968 0.003 90); /* hundido sutil */
-  --surface-3: oklch(0.945 0.004 90); /* hover elevado */
+  --surface-2: oklch(0.968 0.007 288); /* hundido sutil institucional */
+  --surface-3: oklch(0.945 0.012 288); /* hover elevado */
 
-  /* Texto */
-  --text-primary: oklch(0.155 0.005 90); /* casi negro */
-  --text-secondary: oklch(0.44 0.008 90);
-  --text-tertiary: oklch(0.5 0.008 90);
-  --text-inverse: oklch(0.985 0.002 90);
+  /* Texto — Azul Marino Profundo Universidad de Cartagena (#0C0D29) */
+  --text-primary: oklch(0.165 0.048 278); /* #0C0D29 */
+  --text-secondary: oklch(0.38 0.042 280);
+  --text-tertiary: oklch(0.47 0.036 280);
+  --text-inverse: oklch(0.99 0.002 90);
 
   /* Bordes — hairlines (decorativos, contraste regido por su contrato propio) */
-  --border: oklch(0.155 0.005 90 / 9%);
-  --border-strong: oklch(0.155 0.005 90 / 22%);
+  --border: oklch(0.165 0.048 278 / 10%);
+  --border-strong: oklch(0.37 0.145 296 / 26%);
   /* Límite sólido de control de campo: ≥ 3:1 sobre las superficies del tema (F05, 1.4.11) */
-  --border-control: oklch(0.64 0.004 90); /* ≈ #8c8c8c: 3,4:1 sobre blanco/superficies claras */
+  --border-control: oklch(0.62 0.025 282); /* ≥ 3,4:1 sobre blanco/superficies claras */
 
-  /* Acento ember — uso mínimo y preciso */
-  --ember: oklch(0.53 0.17 41);
-  --ember-soft: oklch(0.62 0.19 41 / 10%);
-  --ember-foreground: oklch(0.985 0.01 60);
+  /* Acento institucional — Púrpura Universidad de Cartagena (#4B2F83) con halo cálido dorado/naranja */
+  --ember: oklch(0.38 0.145 296); /* #4B2F83 Púrpura Institucional */
+  --ember-soft: oklch(0.715 0.158 65 / 14%); /* #E78B26 Naranja/Dorado suave al 14% */
+  --ember-foreground: oklch(0.99 0.004 85);
 
   /* Estados (uso discreto) */
   --success: oklch(0.46 0.11 155);
-  --warning: oklch(0.48 0.1 75);
+  --warning: oklch(0.56 0.155 64); /* Naranja/Ocre Unicartagena (#E78B26 calibrado AA) */
   --danger: oklch(0.52 0.19 25);
-  --info: oklch(0.48 0.1 240);
-  --role-authority: oklch(0.46 0.13 300);
-  --role-authority-soft: color-mix(in oklch, var(--role-authority) 10%, var(--surface-1));
+  --info: oklch(0.37 0.145 296); /* #4B2F83 Púrpura Institucional */
+  --role-authority: oklch(0.56 0.155 64); /* Naranja/Ocre Institucional */
+  --role-authority-soft: color-mix(in oklch, var(--role-authority) 12%, var(--surface-1));
 
-  --overlay: oklch(0.15 0.005 90 / 32%);
+  --overlay: oklch(0.165 0.048 278 / 36%);
 
   /* Compat shadcn */
   --foreground: var(--text-primary);
@@ -59,7 +69,7 @@
   --card-foreground: var(--text-primary);
   --popover: var(--surface-0);
   --popover-foreground: var(--text-primary);
-  --primary: var(--text-primary);
+  --primary: oklch(0.37 0.145 296); /* #4B2F83 Púrpura Institucional Unicartagena */
   --primary-foreground: var(--text-inverse);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--text-primary);
@@ -71,41 +81,51 @@
   --input: var(--border-control);
   --ring: var(--ember);
 
-  --scrollbar-thumb: oklch(0.155 0.005 90 / 18%);
+  --scrollbar-thumb: oklch(0.37 0.145 296 / 22%);
 }
 
 /* ============ DARK MODE ============ */
 .dark {
-  --background: oklch(0.13 0.004 270);
-  --surface-0: oklch(0.155 0.005 270);
-  --surface-1: oklch(0.178 0.006 270);
-  --surface-2: oklch(0.215 0.007 270);
-  --surface-3: oklch(0.25 0.008 270);
+  --background: oklch(0.155 0.042 278); /* #0C0D29 Azul Marino Profundo Unicartagena */
+  --surface-0: oklch(0.18 0.045 278);
+  --surface-1: oklch(0.205 0.048 280);
+  --surface-2: oklch(0.24 0.052 282);
+  --surface-3: oklch(0.275 0.056 284);
 
-  --text-primary: oklch(0.965 0.002 90);
-  --text-secondary: oklch(0.72 0.005 90);
-  --text-tertiary: oklch(0.67 0.006 90);
-  --text-inverse: oklch(0.13 0.004 270);
+  --text-primary: oklch(0.97 0.004 90);
+  --text-secondary: oklch(0.76 0.018 282);
+  --text-tertiary: oklch(0.68 0.022 282);
+  --text-inverse: oklch(0.155 0.042 278);
 
-  --border: oklch(1 0 0 / 8%);
-  --border-strong: oklch(1 0 0 / 20%);
+  --border: oklch(1 0 0 / 10%);
+  --border-strong: oklch(0.83 0.162 88 / 28%);
   /* Límite sólido de control de campo: ≥ 4:1 sobre superficies oscuras (F05, 1.4.11) */
-  --border-control: oklch(0.70 0.006 270); /* ≈ #a4a4ab */
+  --border-control: oklch(0.70 0.02 282);
 
-  --ember: oklch(0.7 0.185 45);
-  --ember-soft: oklch(0.7 0.185 45 / 14%);
-  --ember-foreground: oklch(0.13 0.02 40);
+  --ember: oklch(0.74 0.158 65); /* #E78B26 Naranja Institucional Unicartagena */
+  --ember-soft: oklch(0.74 0.158 65 / 16%);
+  --ember-foreground: oklch(0.155 0.042 278);
 
   --success: oklch(0.7 0.14 155);
-  --warning: oklch(0.78 0.14 75);
+  --warning: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Institucional Unicartagena */
   --danger: oklch(0.68 0.19 25);
-  --info: oklch(0.7 0.11 240);
-  --role-authority: oklch(0.76 0.12 300);
+  --info: oklch(0.74 0.135 296); /* Púrpura luminoso Unicartagena */
+  --role-authority: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Institucional */
   --role-authority-soft: color-mix(in oklch, var(--role-authority) 16%, var(--surface-1));
 
-  --overlay: oklch(0 0 0 / 55%);
+  --overlay: oklch(0 0 0 / 60%);
 
-  --scrollbar-thumb: oklch(1 0 0 / 14%);
+  --primary: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Institucional */
+  --primary-foreground: oklch(0.155 0.042 278); /* #0C0D29 Azul Marino Profundo */
+
+  --brand-polis-blue: oklch(0.74 0.135 296);
+  --brand-polis-sky: oklch(0.74 0.158 65);
+  --brand-polis-cyan: oklch(0.83 0.162 88);
+  --brand-polis-light: oklch(0.83 0.162 88 / 18%);
+  --brand-polis-core: var(--surface-0);
+  --brand-ples-blue: oklch(0.74 0.158 65);
+
+  --scrollbar-thumb: oklch(1 0 0 / 16%);
 }
 
 /* Shared scales; colors stay semantic in consuming components. */
@@ -137,10 +157,10 @@
   --info-soft: color-mix(in oklch, var(--info) 10%, var(--surface-1));
   --destructive-foreground: oklch(1 0 0);
   --chart-1: var(--ember);
-  --chart-2: var(--info);
-  --chart-3: var(--success);
-  --chart-4: var(--warning);
-  --chart-5: var(--text-secondary);
+  --chart-2: oklch(0.715 0.158 65); /* #E78B26 Naranja Institucional Unicartagena */
+  --chart-3: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Institucional Unicartagena */
+  --chart-4: var(--success);
+  --chart-5: var(--text-primary);
   --sidebar: var(--surface-1);
   --sidebar-foreground: var(--text-primary);
   --sidebar-primary: var(--primary);
@@ -162,15 +182,15 @@
   --reporte-personal: var(--danger);
   --reporte-convivencia: var(--ember);
   --reporte-ambiental: var(--success);
-  --reporte-economica: oklch(0.88 0.17 95);
-  --reporte-alimentaria: oklch(0.55 0.2 300);
+  --reporte-economica: oklch(0.83 0.162 88); /* #ECC22E Amarillo Dorado Unicartagena */
+  --reporte-alimentaria: oklch(0.715 0.158 65); /* #E78B26 Naranja Unicartagena */
   --reporte-politica: var(--info);
-  --reporte-alertas: oklch(0.2 0 0);
+  --reporte-alertas: oklch(0.165 0.048 278); /* #0C0D29 Azul Marino Unicartagena */
 }
 .dark {
-  --reporte-economica: oklch(0.88 0.17 95);
-  --reporte-alimentaria: oklch(0.75 0.16 300);
-  --reporte-alertas: oklch(0.2 0 0);
+  --reporte-economica: oklch(0.83 0.162 88);
+  --reporte-alimentaria: oklch(0.74 0.158 65);
+  --reporte-alertas: oklch(0.165 0.048 278);
 }
 
 /* ============ ALTO CONTRASTE (WCAG AAA >= 7:1) ============ */

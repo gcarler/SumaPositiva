@@ -123,21 +123,21 @@ Esta regla guía revisiones; no certifica la configuración de una base desplega
 ## Estado del dominio y fuentes de verdad
 
 La organización de módulos es normativa; el estado de entregas está en
-[el plan de trabajo](plan-trabajo.md). `backend/app/api/router.py` registra los
-routers: `health`, `aportes`, `sesion`, `politicas`, `identidad`, `evidencia`,
-`mesas`, `instrumentos`, `ia`, `geodatos`, `presupuesto`, `proyectos`, `indicadores`,
+[el plan de trabajo](plan-trabajo.md). `backend/app/api/router.py` es el único
+ensamblador: registra los routers de `health`, `aportes`, `sesion`, `politicas`,
+`identidad`, `evidencia`, `actores`, `alternativas`, `fuentes`, `mesas`,
+`instrumentos`, `ia`, `geodatos`, `presupuesto`, `proyectos`, `indicadores`,
 `formularios`, `participacion`, `testimonios`, `auditoria`, `compromisos`,
-`noticias`, `comunicaciones`, `notificaciones`, `canales/whatsapp` y `seguridad`.
-`create_app` en `backend/app/main.py` monta además `actores`, `alternativas`
-y `fuentes` con prefijo `/api/v1`. Sus rutas están activas y se incluyen en la
-matriz de permisos. El ensamblaje efectivo se comprueba en ambos archivos. El
-inventario de features, módulos, conexión y límites de evidencia está en la
-[matriz de trazabilidad](matriz-trazabilidad-modulos.md). El censo encuentra
-21 directorios frontend en aquella revisión, no los 23 esperados por la asignación; la diferencia
-queda pendiente de revisión EAF.
+`noticias`, `comunicaciones`, `notificaciones`, `canales/whatsapp`, `seguridad`
+y `sm`. `create_app` en `backend/app/main.py` solo incluye ese agregado con el
+prefijo `/api/v1`, de modo que los 27 routers quedan bajo la misma matriz de
+permisos y no hay montajes dispersos entre archivos. El inventario de features,
+módulos, conexión y límites de evidencia está en la
+[matriz de trazabilidad](matriz-trazabilidad-modulos.md). El censo de esa revisión
+encontró 21 directorios frontend; la revisión del 2026-11-07 censa 27.
 
-El registro histórico de Alembic recoge la cabeza `0084_aportes_colas_y_apoyos`, verificada el
-2026-10-27 con `cd backend && .venv/bin/alembic -c alembic.ini heads`
+El registro histórico de Alembic recoge la cabeza `0100_sm_auditoria_operador`,
+verificada el 2026-11-08 con `cd backend && .venv/bin/alembic -c alembic.ini heads`
 (actualizada desde la cita histórica `0062_motor_plan_accion_dnp` por el encargo
 [EAF 244]). En 304, la release de backend `43321fc4` y la base productiva verificada
 están en `0096_riesgo_sin_evaluar`; los archivos de otra revisión en el checkout

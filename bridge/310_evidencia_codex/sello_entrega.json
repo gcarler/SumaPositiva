@@ -1,0 +1,453 @@
+{
+  "fecha_utc": "2026-11-07T23:31:24.136346+00:00",
+  "codigo_congelado": true,
+  "dictamen_EAF": false,
+  "backend_check": {
+    "exit": 0,
+    "passed": 1994,
+    "skipped": 16,
+    "failed": 0
+  },
+  "sm": {
+    "passed": 95,
+    "failed": 0
+  },
+  "head_base": "78cd08e80252b82c7c903030a6bf79fdf9d8fa67",
+  "commit_codex_310": false,
+  "push_codex_310": false,
+  "bd_csh_migrada": false,
+  "despliegue_realizado": false,
+  "restarts_codex_310": 0,
+  "archivos": [
+    {
+      "archivo": "backend/.env.example",
+      "sha256": "8c58a74c23cb31d1516768f3aca8567a9080cd22987561160b7baa945b7f009f",
+      "bytes": 2084
+    },
+    {
+      "archivo": "bridge/310_entrega_codex_sm_core.md",
+      "sha256": "4e44add5532da432ac4f0f54965cd79708e3f046287545214344bd71db41b27a",
+      "bytes": 11032
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/ajuste_laboratorio_0099.json",
+      "sha256": "619af8e6a381b39996912d0fecc31c0e3af0295c1ac9aaabd92469be0adde7a1",
+      "bytes": 258
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/ajuste_laboratorio_0099.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check.json",
+      "sha256": "f0ec9154d6e852acbf98b3f69c56ef88f0aa91fb2818fd9d81a332864401d183",
+      "bytes": 221
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check.log.txt",
+      "sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+      "bytes": 36
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check_definitivo.json",
+      "sha256": "b36c70f7a44861bfd698142059db59f02277e76b21922ac993cab106d9ee9f60",
+      "bytes": 222
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check_definitivo.log.txt",
+      "sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+      "bytes": 36
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check_entrega.json",
+      "sha256": "b4f90d36352cb511393808ec6af2a353103c1a5dc212922d4322fd6e96deaf40",
+      "bytes": 222
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/alembic_check_entrega.log.txt",
+      "sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+      "bytes": 36
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check.json",
+      "sha256": "81d52ee39452ef985ac18f196f6ac708e4d2e5d2e2ffb20a818182100684d31f",
+      "bytes": 150
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check.log.txt",
+      "sha256": "6dc9772a2e866f6ad31cda1087de2f1549826cca8c06b221ceee0950027bb92e",
+      "bytes": 698
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_cierre.json",
+      "sha256": "f16978a4de1d87b19ecd9610c99fec32c054e5861a723ed2dbfa2aee8bdec84e",
+      "bytes": 244
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_cierre.log.txt",
+      "sha256": "58b999c8a1ab08aef42af440db7dc13bc1687d8015479ff87bb8dd37d1aedc57",
+      "bytes": 1640
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_completo.xml",
+      "sha256": "742df91d73d846fae60751818ffe82ac76a21b11099a6919a1d5d032d31fb843",
+      "bytes": 280589
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_definitivo.json",
+      "sha256": "79bb82a80b43b8a7bc70af164771b8f67d6a51c9ee8bb13a13019ae085992de6",
+      "bytes": 149
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_definitivo.log.txt",
+      "sha256": "0bf5b7b9adb2abb7bd08d322c252f61dd1ce84029c2b3b06c2c669cb0e29cfb7",
+      "bytes": 36424
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_entrega.json",
+      "sha256": "f9c7aeb7f12bc6b82341f18c197601e6ac516bac2be3c1668b7f074cb4af896b",
+      "bytes": 242
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_entrega.log.txt",
+      "sha256": "8a0e21015e772a9ab8f4da54cb66e12adc0dc0e6ff52d3e20fa3fb190364f84d",
+      "bytes": 20808
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_final.json",
+      "sha256": "b134e589c3687ca0a746fffa3c5b73078d0ad33f0b303ece98ac779cbde05c55",
+      "bytes": 149
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/backend_check_final.log.txt",
+      "sha256": "c58e9ed3cbe3aa302634063028f2d1e669617a5f6369489ae837d21cf37915de",
+      "bytes": 725
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/baseline_archivos.json",
+      "sha256": "ac3261980f7b9d1c44ba3cb100190a33f52d73de57184a744260cafc3e961892",
+      "bytes": 1894
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/candidato_documentacion.patch",
+      "sha256": "e1a5a405a9b0e85f4badfd031f7938861e96d651c63099bb6c441b085566b281",
+      "bytes": 26078
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/candidato_sm_contra_head.patch",
+      "sha256": "b9cc2d32f166215443b3c6a281878549939609a7c4797c689e5e3e5bbdd56505",
+      "bytes": 187595
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/contrato_api_sm.json",
+      "sha256": "f9b6d828bc6e359f88d61c8d5d128012c4929e135fe8baf8268ef2c454696f68",
+      "bytes": 25475
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/contrato_api_sm.log.txt",
+      "sha256": "4be78c59f098df30140a97600df0f5570d643abdbe4333b8a928d04a1e0849c5",
+      "bytes": 29
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/documentacion_candidato.json",
+      "sha256": "cedbf92e4f8a04a22ab744e00fbc3fd269e2bb482d83fbc36758e3719d39a914",
+      "bytes": 717
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/ensayo_upgrade_datos.py",
+      "sha256": "5ea366faf081d3d9c5692e2bb3d4d0af7ae0fb3356f30845b925d31f7e9f30db",
+      "bytes": 5204
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/formato_sm_tests_final.json",
+      "sha256": "ae93f6244ed4304998d5ca4f5c4d37d001a03aa4cb2bb0b8ddb2b00ca7581dda",
+      "bytes": 250
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/formato_sm_tests_final.log.txt",
+      "sha256": "c0f9c747ad491bb65b3a843ef99f08d2d00c7aee3b8ca1e196a8644a0297f026",
+      "bytes": 28
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/insumos_regresion_completados.json",
+      "sha256": "fefc565b51ebc2ff6396690ef8a7af1cce7790aa896c0e3d1fee655c04eb08a4",
+      "bytes": 16220
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/insumos_repuestos.xml",
+      "sha256": "c28e964f1d09a4d719af18ab3e90cea46c107ea96506dfa1a1b0cf42b9e9d285",
+      "bytes": 13821
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/inventario_repuesto.json",
+      "sha256": "fd5a162e7da3e34e394d48218e728b9b4059d0547c2a40114731a0bcd4e1e96c",
+      "bytes": 380
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/inventario_repuesto.log.txt",
+      "sha256": "8d57080899a66e82ffcbbb39b9ec85f0a62048ec1bd8752420bd96ba911a1b9a",
+      "bytes": 100
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/inventario_repuesto.xml",
+      "sha256": "1102b9c437c032d44497b3883856a8a0283f13d7eae4b4fc506c25b99764fd6f",
+      "bytes": 5966
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/matriz_aceptacion.json",
+      "sha256": "14c36a27eca40277d13af8d1d613852d2446fc920e8e86186f8f3c711ce7db10",
+      "bytes": 1421
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/migracion_con_datos.json",
+      "sha256": "3627d6367d5b4f432a8d0f8c983f13d2fa8d7e338d5d7e9744c86ddd605d88c7",
+      "bytes": 242
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/migracion_con_datos.log.txt",
+      "sha256": "e35d9b3e29bdab0f01263eeb10a15026805432292c471ac0549fa8dc10b43830",
+      "bytes": 470
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/migracion_inicial.json",
+      "sha256": "4e2865b9930b96d90488ccfbf496f90e3505c2e81e70295aa5209471a79eb52a",
+      "bytes": 236
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/migracion_inicial.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/migraciones.xml",
+      "sha256": "70f5735d7f1a6b27598f882e2b8ce7dac0300a310c2487c29dbf347a8b24012b",
+      "bytes": 366
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/precision_backoff.json",
+      "sha256": "fe9b2844d6c3fa2c63347272bd47b1de01c677a57074037aa564c5aac77ab777",
+      "bytes": 281
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/preflight_inventario_regresion.json",
+      "sha256": "b998e1784d8c25969fecf3ddbafc16430ca478bb86a12f467f2d4cec6ca6ba8a",
+      "bytes": 397
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/produccion_solo_lectura.json",
+      "sha256": "b0ebb67d29cff7cf0be5671959ec716bfaabac81fc62649120d51355ff4f6060",
+      "bytes": 500
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/regresion_insumos_repuestos.json",
+      "sha256": "9b27c241e45557cf2a2ede602d8e49fbbf26ddcc82632bfdcfcea840a9ccd66e",
+      "bytes": 651
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/regresion_insumos_repuestos.log.txt",
+      "sha256": "dced884eb68452f5b0702af5260045c3311a9a9152c68851ced4d52cd1a728f9",
+      "bytes": 3514
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/resultados_verificacion.json",
+      "sha256": "43d371a1231f88dc16a01c972f612ff2a7cc8ee2d3b98eb80433435b94168c04",
+      "bytes": 5304
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/ruff_sm_tests_final.json",
+      "sha256": "23da78a550540857ec4868c551a1313639447e344cd0baa3422cbb3d3455792d",
+      "bytes": 233
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/ruff_sm_tests_final.log.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_casos_caidas.json",
+      "sha256": "af3798ec750b9889d2e803990fd5a462a3ac9d283299e1d5d8edcbccb82e4450",
+      "bytes": 300
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_casos_caidas.log.txt",
+      "sha256": "41d948030521842cd982b67a52a737cce428519d31ac7b402c6cca51ed95bbca",
+      "bytes": 99
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_casos_caidas.xml",
+      "sha256": "8127fb3031a2b3f495cae9a584dd70b74ddfc08240e97e4671b0de2e32641a3f",
+      "bytes": 2781
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado.json",
+      "sha256": "72ca708869c6aa1835c8398e29f2e355ac7c966c340743bd79613c4c17a505f5",
+      "bytes": 471
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado.log.txt",
+      "sha256": "dad5b1f9746cc97b2e166b185ff8612f4e46ecbbdae068282f401bd92175660d",
+      "bytes": 180
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado.xml",
+      "sha256": "0460a2659c0b1f120843a07364092004478ec31b2f08185925a442760600697e",
+      "bytes": 11416
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado_r1.json",
+      "sha256": "47d80b3e9ddc93e09ca28f2930ca64b80fcb48a0aa4d90ee52c373d7cdcb3ed4",
+      "bytes": 474
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado_r1.log.txt",
+      "sha256": "dad5b1f9746cc97b2e166b185ff8612f4e46ecbbdae068282f401bd92175660d",
+      "bytes": 180
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_congelado_r1.xml",
+      "sha256": "2cd30ccc37c8ca78431e1239fbda4e3e99e95251f25686f00a7f7896a9ff3b74",
+      "bytes": 11416
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_cuarta.json",
+      "sha256": "818ac04e100716e7117699e2f270a0573dad69edb2dacb0b02869e4ad9c0dd66",
+      "bytes": 456
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_cuarta.log.txt",
+      "sha256": "dd1a858d13baf38c0ac08394f1fbd41f2e06eb30aa3fb5cfdecaf2d367596307",
+      "bytes": 180
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_cuarta.xml",
+      "sha256": "f0831be4fe08a9067ab6a27b5fb3b2edf845707277d9ee181f1d0c9c03d7755b",
+      "bytes": 10335
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_final.json",
+      "sha256": "25dc2812948e1ce0fdc0f6e7523b4723412b36863d00077f6018c635746b9d80",
+      "bytes": 588
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_final.log.txt",
+      "sha256": "45a3d8fd62537a181a389ee6358a25047411e54d012bf96b8bebfd47af00dfe8",
+      "bytes": 351
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_final.xml",
+      "sha256": "485b23397a62a3e81311aa5f38fa94a11a6107a36a1b7b835456565db250734f",
+      "bytes": 31110
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_inicial.json",
+      "sha256": "1f1706101bc019feb355ce8d4c484cc91fe6ec4dcacc08183d704ea770b2058a",
+      "bytes": 370
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_inicial.log.txt",
+      "sha256": "5d227248044a4bf811814b7e74bea630aff8f5e82be9e511146f252541d770ef",
+      "bytes": 3327
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_inicial.xml",
+      "sha256": "8192664abf099861dd9493ca6f57f8fd261c69cea379989d427412d6cc8d5d10",
+      "bytes": 8813
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_segunda.json",
+      "sha256": "69491431bf15b1aba91842877686eba2adcc7d3234b8167a2010a9a9c1424cb2",
+      "bytes": 417
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_segunda.log.txt",
+      "sha256": "c35790f30e0ef98ad48cc825d06c43b010f22e144cb44cdaa411a483f69a3485",
+      "bytes": 1572
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_segunda.xml",
+      "sha256": "6c392e889b7bbead285f846f0215f09b08cb2e41181dbe418924c3bd86f10722",
+      "bytes": 10490
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_tercera.json",
+      "sha256": "2d0e48b68f396c48c73d3ac79a4add0cfa066b3916b08d9485e77b74e8743e6c",
+      "bytes": 457
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_tercera.log.txt",
+      "sha256": "d41f4415dd2a2f1394fd34b8563a6d29475c971b35ab2df98f3a803607263a2b",
+      "bytes": 2293
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/sm_tercera.xml",
+      "sha256": "09785dc6a52c353be52733c5a3ac4fc9e71935fd0dfe6f0500792d2796b239ea",
+      "bytes": 12370
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/snapshot_codigo.json",
+      "sha256": "f291f572057aece328b045732412f24da7375176dbaa543cfc4a998ed6c7a02f",
+      "bytes": 5451
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/snapshot_codigo_r0.json",
+      "sha256": "7cecaf3f196dbc346e47fe71f6511ae437377e133c617b084b2ad47b066ffa8e",
+      "bytes": 5317
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/snapshot_regresion_backend.json",
+      "sha256": "f86ad189a1ffe5fa8b178d5204b8ac4c3e422679041827def70f29dcb3028bdd",
+      "bytes": 131115
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/snapshot_regresion_backend_r0.json",
+      "sha256": "9172afb707edcc4c73901e917d455af8954a7f90ddadf555cbeaabbc253ebb80",
+      "bytes": 131233
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/upgrade_0099_final.json",
+      "sha256": "711051a7f01916f0dc2e09648ee135a0bf8fef00c397ce226fa5fbb9d7f2cb81",
+      "bytes": 236
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/upgrade_0099_final.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/upgrade_con_datos.json",
+      "sha256": "720c35668e6da01c9b3fadd23b0b76b21e56af0cdc086cc8c6017cb24ace2535",
+      "bytes": 430
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/verificacion_migraciones.json",
+      "sha256": "24461964ff73fe2d6208a99c9bebc83ae1c178a7a6557f652fa347dda6a349d1",
+      "bytes": 311
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/verificacion_migraciones.log.txt",
+      "sha256": "3c9dbeea6478f05852dd0baadf88bcf4dfc331ea1b17be36e7b66b23e90bb006",
+      "bytes": 99
+    },
+    {
+      "archivo": "bridge/310_evidencia_codex/verificacion_productiva_final_solo_lectura.json",
+      "sha256": "7e1679b3e56534a04ee0a85346159ec771e732981d4b4be86b12a2c6395eb4b0",
+      "bytes": 318
+    },
+    {
+      "archivo": "docs/operacion.md",
+      "sha256": "43bb98b0fc75caf5bb2b794d88df13131666e243454738c428efd69305ddcab9",
+      "bytes": 18243
+    },
+    {
+      "archivo": "docs/permisos-api.md",
+      "sha256": "fbd6c77aa19938e2af1fed88d8c6ccb0f29040764783b78bef11dbc402dafb44",
+      "bytes": 61060
+    },
+    {
+      "archivo": "docs/sm-worker.md",
+      "sha256": "bf5174f3720e30a8d114786efe10e3680d8da72ea8b55ee17b04116b49ef58e6",
+      "bytes": 8178
+    }
+  ]
+}

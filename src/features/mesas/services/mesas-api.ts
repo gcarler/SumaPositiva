@@ -1,6 +1,18 @@
 import { apiFetch, setBearerToken, construirUrl } from "@/core/http/api-client";
-import type { MesaDeTrabajo, SubMesa, EstadoMesa } from "@/features/mesas/models/mesas";
-import { useMesasStore, type MesaInput } from "@/features/mesas/state/mesas-store";
+import type {
+  MesaDeTrabajo,
+  SubMesa,
+  EstadoMesa,
+  ArbolProblemas,
+  ArbolSoluciones,
+  LogisticaMesa,
+  CompromisoMesa,
+  ConfiguracionSorteoAzar,
+  NotaMesa,
+  FotoEvidenciaMesa,
+  AdjuntoMesa,
+} from "@/features/mesas/models/mesas";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 
 function normalizarEstado(estado?: string): EstadoMesa {
@@ -48,6 +60,9 @@ export interface MesaBackendResponse {
   horario?: string;
   modalidad?: string;
   sha256_acta?: string;
+  arbolProblemas?: ArbolProblemas;
+  arbolSoluciones?: ArbolSoluciones;
+  modoRelatoria?: "narrativo" | "matriz" | "hibrido";
   metadatos?: {
     lugar?: string;
     entidad?: string;
@@ -55,6 +70,18 @@ export interface MesaBackendResponse {
     acuerdos?: string;
     informe?: string;
     totalAsistentes?: number;
+    arbolProblemas?: ArbolProblemas;
+    arbolSoluciones?: ArbolSoluciones;
+    modoRelatoria?: "narrativo" | "matriz" | "hibrido";
+    logistica?: LogisticaMesa;
+    compromisos?: CompromisoMesa[];
+    sorteoAzar?: ConfiguracionSorteoAzar;
+    notas?: NotaMesa[];
+    galeriaFotos?: FotoEvidenciaMesa[];
+    adjuntos?: AdjuntoMesa[];
+    publicarResultados?: boolean;
+    fechaPublicacionResultados?: string;
+    publicadoPor?: string;
     [key: string]: unknown;
   };
 }
@@ -99,6 +126,17 @@ function normalizarSubMesa(s: SubMesaBackendResponse): SubMesa {
 
 export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
   const submesas = Array.isArray(b.submesas) ? b.submesas.map(normalizarSubMesa) : [];
+  const coords = (() => {
+    const rawCoords = b.metadatos?.coordenadas as Record<string, unknown> | undefined;
+    if (!rawCoords || typeof rawCoords !== "object") return undefined;
+    const lat = Number(rawCoords.lat ?? rawCoords.latitud);
+    const lng = Number(rawCoords.lng ?? rawCoords.longitud);
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      return { lat, lng };
+    }
+    return undefined;
+  })();
+
   return {
     id: b.id,
     nombre: b.nombre,
@@ -116,11 +154,24 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
     horario: b.horario || "Por definir",
     modalidad: b.modalidad,
     sha256Acta: b.sha256_acta,
-    coordenadas: (b.metadatos?.coordenadas as { lat: number; lng: number } | undefined) ?? undefined,
+    coordenadas: coords,
     urlMapa: (b.metadatos?.urlMapa as string | undefined) ?? undefined,
     aforo: (b.metadatos?.aforo as number | undefined) ?? b.aforo_maximo ?? undefined,
     entidades: (b.metadatos?.entidades as MesaDeTrabajo["entidades"] | undefined) ?? undefined,
     responsables: (b.metadatos?.responsables as MesaDeTrabajo["responsables"] | undefined) ?? undefined,
+    informe: (b.metadatos?.informe as string | undefined) ?? undefined,
+    arbolProblemas: (b.metadatos?.arbolProblemas as ArbolProblemas | undefined) ?? b.arbolProblemas ?? undefined,
+    arbolSoluciones: (b.metadatos?.arbolSoluciones as ArbolSoluciones | undefined) ?? b.arbolSoluciones ?? undefined,
+    modoRelatoria: (b.metadatos?.modoRelatoria as ("narrativo" | "matriz" | "hibrido") | undefined) ?? b.modoRelatoria ?? undefined,
+    logistica: (b.metadatos?.logistica as LogisticaMesa | undefined) ?? undefined,
+    compromisos: (b.metadatos?.compromisos as CompromisoMesa[] | undefined) ?? undefined,
+    sorteoAzar: (b.metadatos?.sorteoAzar as ConfiguracionSorteoAzar | undefined) ?? undefined,
+    notas: (b.metadatos?.notas as NotaMesa[] | undefined) ?? undefined,
+    galeriaFotos: (b.metadatos?.galeriaFotos as FotoEvidenciaMesa[] | undefined) ?? undefined,
+    adjuntos: (b.metadatos?.adjuntos as AdjuntoMesa[] | undefined) ?? undefined,
+    publicarResultados: (b.metadatos?.publicarResultados as boolean | undefined) ?? undefined,
+    fechaPublicacionResultados: (b.metadatos?.fechaPublicacionResultados as string | undefined) ?? undefined,
+    publicadoPor: (b.metadatos?.publicadoPor as string | undefined) ?? undefined,
   };
 }
 
@@ -226,7 +277,7 @@ export async function crearMesaRemota(datos: {
  */
 export async function actualizarMesaRemota(
   mesaId: string,
-  datos: Partial<MesaInput>
+  datos: Partial<MesaDeTrabajo>
 ): Promise<MesaDeTrabajo> {
   const sesion = useSesionStore.getState().sesion;
   if (sesion?.token) setBearerToken(sesion.token);
@@ -270,6 +321,18 @@ export async function actualizarMesaRemota(
   if (datos.coordenadas !== undefined) metadatos.coordenadas = datos.coordenadas;
   if (datos.urlMapa !== undefined) metadatos.urlMapa = datos.urlMapa;
   if (datos.informe !== undefined) metadatos.informe = datos.informe;
+  if (datos.arbolProblemas !== undefined) metadatos.arbolProblemas = datos.arbolProblemas;
+  if (datos.arbolSoluciones !== undefined) metadatos.arbolSoluciones = datos.arbolSoluciones;
+  if (datos.modoRelatoria !== undefined) metadatos.modoRelatoria = datos.modoRelatoria;
+  if (datos.logistica !== undefined) metadatos.logistica = datos.logistica;
+  if (datos.compromisos !== undefined) metadatos.compromisos = datos.compromisos;
+  if (datos.sorteoAzar !== undefined) metadatos.sorteoAzar = datos.sorteoAzar;
+  if (datos.notas !== undefined) metadatos.notas = datos.notas;
+  if (datos.galeriaFotos !== undefined) metadatos.galeriaFotos = datos.galeriaFotos;
+  if (datos.adjuntos !== undefined) metadatos.adjuntos = datos.adjuntos;
+  if (datos.publicarResultados !== undefined) metadatos.publicarResultados = datos.publicarResultados;
+  if (datos.fechaPublicacionResultados !== undefined) metadatos.fechaPublicacionResultados = datos.fechaPublicacionResultados;
+  if (datos.publicadoPor !== undefined) metadatos.publicadoPor = datos.publicadoPor;
 
   if (Object.keys(metadatos).length > 0) {
     body.metadatos = metadatos;
@@ -285,7 +348,37 @@ export async function actualizarMesaRemota(
     headers,
     body,
   });
-  return normalizarMesaBackend(resp);
+  const normalizada = normalizarMesaBackend(resp);
+  useMesasStore.getState().actualizarMesa(idResuelto, normalizada);
+  return normalizada;
+}
+
+/**
+ * Persiste la matriz de relatoría (árbol de problemas, árbol de soluciones y modo) en backend y store.
+ */
+export async function actualizarMatrizArbolMesa(
+  mesaId: string,
+  datos: {
+    arbolProblemas?: ArbolProblemas;
+    arbolSoluciones?: ArbolSoluciones;
+    modoRelatoria?: "narrativo" | "matriz" | "hibrido";
+  }
+): Promise<MesaDeTrabajo> {
+  if (datos.arbolProblemas) {
+    useMesasStore.getState().setArbolProblemasMesa(mesaId, datos.arbolProblemas);
+  }
+  if (datos.arbolSoluciones) {
+    useMesasStore.getState().setArbolSolucionesMesa(mesaId, datos.arbolSoluciones);
+  }
+  if (datos.modoRelatoria) {
+    useMesasStore.getState().setModoRelatoriaMesa(mesaId, datos.modoRelatoria);
+  }
+
+  return actualizarMesaRemota(mesaId, {
+    arbolProblemas: datos.arbolProblemas,
+    arbolSoluciones: datos.arbolSoluciones,
+    modoRelatoria: datos.modoRelatoria,
+  });
 }
 
 /**

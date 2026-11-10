@@ -98,7 +98,7 @@ export function SaludSistemaSection() {
   };
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-surface-1 xl:col-span-2">
+    <section id="salud" className="overflow-hidden rounded-2xl border border-border bg-surface-1 xl:col-span-2">
       <header className="flex flex-col gap-3 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <span className="rounded-xl bg-ember-soft p-2.5 text-ember">

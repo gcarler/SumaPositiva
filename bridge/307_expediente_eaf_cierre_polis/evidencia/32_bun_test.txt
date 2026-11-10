@@ -1,0 +1,9 @@
+# bun test
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarFuentesFinanciacion devuelve lista vacía si el backend responde vacío (H-04) [0.07ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > listarFuentesFinanciacion consume exitosamente la API real cuando el backend responde 200 [0.05ms]
+(pass) Costeo Presupuestal y Asignación de Fuentes (Hito F-3) > Servicio y Métodos Asíncronos > crearAsignacionPresupuestal persiste vía POST cuando el backend responde 201 [0.05ms]
+
+ 1707 pass
+ 0 fail
+ 13410 expect() calls
+Ran 1707 tests across 174 files. [35.16s]

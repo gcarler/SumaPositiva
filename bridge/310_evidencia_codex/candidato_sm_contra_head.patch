@@ -1,0 +1,4772 @@
+diff --git a/backend/app/core/config.py b/backend/app/core/config.py
+index abe5fc21..e6240bb3 100644
+--- a/backend/app/core/config.py
++++ b/backend/app/core/config.py
+@@ -1,7 +1,7 @@
+ from pathlib import Path
+ from typing import Literal
+ 
+-from pydantic import Field, PostgresDsn, model_validator
++from pydantic import Field, PostgresDsn, SecretStr, model_validator
+ from pydantic_settings import BaseSettings, SettingsConfigDict
+ 
+ BACKEND_DIR = Path(__file__).resolve().parents[2]
+@@ -47,6 +47,26 @@ class Settings(BaseSettings):
+     # Herald Fase 3: interruptor del resumen diario de pendientes (Encargo 275).
+     herald_resumen_activo: bool = True
+ 
++    # SM: apagado por defecto. Secretos separados de JWT y MFA, sin valores implícitos.
++    sm_boveda_key: SecretStr | None = None
++    sm_boveda_key_id: str = Field(default="v1", pattern=r"^[a-zA-Z0-9_-]{1,40}$")
++    sm_boveda_claves_anteriores: SecretStr | None = None
++    sm_worker_habilitado: bool = False
++    sm_worker_base_segundos: int = Field(default=30, ge=1, le=3600)
++    sm_worker_max_reintentos: int = Field(default=5, ge=1, le=20)
++    sm_worker_lease_segundos: int = Field(default=120, ge=60, le=3600)
++    sm_http_timeout_segundos: int = Field(default=10, ge=1, le=20)
++    sm_webhook_secret: SecretStr | None = None
++    sm_webhook_origenes: list[str] = []
++    sm_telegram_token: SecretStr | None = None
++    sm_whatsapp_token: SecretStr | None = None
++    sm_whatsapp_phone_id: str | None = None
++    sm_whatsapp_api_version: str | None = Field(default=None, pattern=r"^v[0-9]+\.0$")
++    sm_whatsapp_plantilla: str | None = None
++    sm_whatsapp_plantilla_aprobada: bool = False
++    sm_whatsapp_idioma: str = "es_CO"
++    sm_eventos_dominio: list[str] = []
++
+     identidad_token_minutos: int = Field(default=30, ge=5, le=120)
+     identidad_limite_ip: int = Field(default=60, ge=1)
+     identidad_limite_cuenta: int = Field(default=10, ge=1)
+diff --git a/backend/app/modules/notificaciones/service.py b/backend/app/modules/notificaciones/service.py
+index e4920d78..10379f9c 100644
+--- a/backend/app/modules/notificaciones/service.py
++++ b/backend/app/modules/notificaciones/service.py
+@@ -78,6 +78,7 @@ class NotificacionService:
+         self.session.add(notificacion)
+         await self.session.flush()
+         await self.session.refresh(notificacion)
++        await self._sincronizar_sm(notificacion)
+         return notificacion
+ 
+     async def enviar_notificacion_cambio_estado(
+@@ -115,6 +116,7 @@ class NotificacionService:
+         self.session.add(notificacion)
+         await self.session.flush()
+         await self.session.refresh(notificacion)
++        await self._sincronizar_sm(notificacion)
+         return notificacion
+ 
+     async def _encolar(
+@@ -138,8 +140,16 @@ class NotificacionService:
+         self.session.add(notificacion)
+         await self.session.flush()
+         await self.session.refresh(notificacion)
++        await self._sincronizar_sm(notificacion)
+         return notificacion
+ 
++    async def _sincronizar_sm(self, notificacion: NotificacionTransaccional) -> None:
++        # Interruptor por tipo apagado por defecto. No transporte ni commit aquí.
++        if notificacion.tipo_evento in self.settings.sm_eventos_dominio:
++            from app.modules.sm.bridge import SMBridge
++
++            await SMBridge(settings=self.settings).sincronizar_notificacion(self.session, notificacion)
++
+     async def enviar_bienvenida_registro(
+         self,
+         destinatario: str,
+diff --git a/backend/app/modules/sm/__init__.py b/backend/app/modules/sm/__init__.py
+index d68253be..b9dbe707 100644
+--- a/backend/app/modules/sm/__init__.py
++++ b/backend/app/modules/sm/__init__.py
+@@ -1 +1,121 @@
+-"""SM Core: núcleo transaccional y portable de trazabilidad multicanal."""
++"""SM Core: Núcleo transaccional, multicanal y portable para trazabilidad y mensajería."""
++
++from .boveda import SMBovedaContactoDB, SMBovedaError, SMResolutorContacto
++from .bridge import SMBridge
++from .channels import (
++    SMCanalBase,
++    SMCorreoAdapter,
++    SMSMSAdapter,
++    SMTelegramAdapter,
++    SMWebhookAdapter,
++    SMWhatsAppAdapter,
++)
++from .client import SMClient
++from .contracts import (
++    FIRMA_VERSION,
++    SMAuditoria,
++    SMCanal,
++    SMConsentimiento,
++    SMContacto,
++    SMEntrega,
++    SMEstadoConsentimiento,
++    SMEstadoEntrega,
++    SMEstadoMensaje,
++    SMEstadoSalud,
++    SMEvento,
++    SMMensaje,
++    SMResultadoEntrega,
++    SMSalud,
++)
++from .core import (
++    SMCanalesNoAutorizados,
++    SMConsentimientoFaltante,
++    SMContactoInvalido,
++    SMError,
++    SMIdempotenciaConflict,
++    hash_contacto,
++    hash_traza,
++    mensaje_desde_evento,
++    transicion_estado,
++)
++from .models import (
++    SMAuditoriaRegistro,
++    SMConsentimientoRegistro,
++    SMEntregaRegistro,
++    SMEventoRegistro,
++    SMMensajeRegistro,
++)
++from .repository import SMRepository
++from .service import SMCoreService
++from .service_db import SMServicioDB
++from .templates import SMMotorPlantillas, SMPlantilla, SMPlantillaInvalida, motor_plantillas
++from .transports import (
++    SMCorreoTransporte,
++    SMFalloTransporte,
++    SMReciboTransporte,
++    SMSMSTransporte,
++    SMTelegramTransporte,
++    SMTransporte,
++    SMWebhookTransporte,
++    SMWhatsAppTransporte,
++)
++from .worker import SMResumenProcesamiento, SMWorker
++
++__all__ = [
++    "FIRMA_VERSION",
++    "SMAuditoria",
++    "SMAuditoriaRegistro",
++    "SMBridge",
++    "SMBovedaContactoDB",
++    "SMBovedaError",
++    "SMResolutorContacto",
++    "SMServicioDB",
++    "SMTransporte",
++    "SMCorreoTransporte",
++    "SMWebhookTransporte",
++    "SMTelegramTransporte",
++    "SMWhatsAppTransporte",
++    "SMSMSTransporte",
++    "SMFalloTransporte",
++    "SMReciboTransporte",
++    "SMCanal",
++    "SMCanalBase",
++    "SMCanalesNoAutorizados",
++    "SMClient",
++    "SMConsentimiento",
++    "SMConsentimientoFaltante",
++    "SMConsentimientoRegistro",
++    "SMContacto",
++    "SMContactoInvalido",
++    "SMCoreService",
++    "SMCorreoAdapter",
++    "SMEntrega",
++    "SMEntregaRegistro",
++    "SMError",
++    "SMEstadoConsentimiento",
++    "SMEstadoEntrega",
++    "SMEstadoMensaje",
++    "SMEstadoSalud",
++    "SMEvento",
++    "SMEventoRegistro",
++    "SMIdempotenciaConflict",
++    "SMMensaje",
++    "SMMensajeRegistro",
++    "SMMotorPlantillas",
++    "SMPlantilla",
++    "SMPlantillaInvalida",
++    "SMRepository",
++    "SMResultadoEntrega",
++    "SMSMSAdapter",
++    "SMSalud",
++    "SMTelegramAdapter",
++    "SMWebhookAdapter",
++    "SMWhatsAppAdapter",
++    "SMWorker",
++    "SMResumenProcesamiento",
++    "hash_contacto",
++    "hash_traza",
++    "mensaje_desde_evento",
++    "motor_plantillas",
++    "transicion_estado",
++]
+diff --git a/backend/app/modules/sm/channels.py b/backend/app/modules/sm/channels.py
+index a5cf5e4f..55a3e1aa 100644
+--- a/backend/app/modules/sm/channels.py
++++ b/backend/app/modules/sm/channels.py
+@@ -5,6 +5,8 @@ canal. No tiene dependencias de POLIS y puede ser usado por otros software que
+ consuman este módulo.
+ """
+ 
++import html
++
+ from .contracts import SMCanal, SMContacto, SMMensaje, SMResultadoEntrega
+ from .core import SMCanalesNoAutorizados, SMError
+ 
+@@ -38,7 +40,7 @@ class SMCorreoAdapter(SMCanalBase):
+             mensaje_id=mensaje.id,
+             canal=self.canal,
+             intento=1,
+-            estado_entrega="enviado",
++            estado_entrega="preparado",
+             payload={
+                 "destinatario": contacto.identificador,
+                 "asunto": mensaje.asunto or "Notificación institucional",
+@@ -58,7 +60,7 @@ class SMWhatsAppAdapter(SMCanalBase):
+             mensaje_id=mensaje.id,
+             canal=self.canal,
+             intento=1,
+-            estado_entrega="enviado",
++            estado_entrega="preparado",
+             payload={
+                 "canal": "whatsapp",
+                 "to": contacto.identificador,
+@@ -79,10 +81,10 @@ class SMTelegramAdapter(SMCanalBase):
+             mensaje_id=mensaje.id,
+             canal=self.canal,
+             intento=1,
+-            estado_entrega="enviado",
++            estado_entrega="preparado",
+             payload={
+                 "chat_id": contacto.identificador,
+-                "text": (mensaje.cuerpo or "Notificación institucional")[:4096],
++                "text": html.escape(mensaje.cuerpo or "Notificación institucional")[:4096],
+                 "parse_mode": "HTML",
+             },
+         )
+@@ -99,7 +101,7 @@ class SMSMSAdapter(SMCanalBase):
+             mensaje_id=mensaje.id,
+             canal=self.canal,
+             intento=1,
+-            estado_entrega="enviado",
++            estado_entrega="preparado",
+             payload={
+                 "to": contacto.identificador,
+                 "text": (mensaje.cuerpo or "Notificación institucional")[:480],
+@@ -118,7 +120,7 @@ class SMWebhookAdapter(SMCanalBase):
+             mensaje_id=mensaje.id,
+             canal=self.canal,
+             intento=1,
+-            estado_entrega="enviado",
++            estado_entrega="preparado",
+             payload={
+                 "url": contacto.identificador,
+                 "evento": mensaje.idempotencia,
+diff --git a/backend/app/modules/sm/contracts.py b/backend/app/modules/sm/contracts.py
+index 92bd74bd..e1c5fea1 100644
+--- a/backend/app/modules/sm/contracts.py
++++ b/backend/app/modules/sm/contracts.py
+@@ -31,6 +31,7 @@ class SMEstadoMensaje(StrEnum):
+     FALLIDO = "fallido"
+     AGOTADO = "agotado"
+     CANCELADO = "cancelado"
++    SIMULADO = "simulado"
+ 
+ 
+ class SMEstadoEntrega(StrEnum):
+@@ -38,6 +39,10 @@ class SMEstadoEntrega(StrEnum):
+ 
+     ENVIADO = "enviado"
+     FALLIDO = "fallido"
++    PREPARADO = "preparado"
++    SIMULADO = "simulado"
++    EN_CURSO = "en_curso"
++    INCIERTO = "incierto"
+ 
+ 
+ class SMEstadoConsentimiento(StrEnum):
+@@ -61,7 +66,7 @@ class SMContacto(BaseModel):
+     model_config = ConfigDict(extra="forbid")
+ 
+     canal: SMCanal
+-    identificador: str = Field(min_length=3, max_length=255)
++    identificador: str = Field(min_length=3, max_length=255, repr=False)
+     actor: str = Field(min_length=1, max_length=120)
+ 
+ 
+@@ -81,9 +86,9 @@ class SMEvento(BaseModel):
+     origen: str = Field(default="sm", min_length=1, max_length=120)
+     canal: SMCanal
+     contacto: SMContacto
+-    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-]{1,79}$")
++    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-\.]{1,79}$")
+     asunto: str | None = Field(default=None, max_length=200)
+-    cuerpo: str | None
++    cuerpo: str | None = None
+     creado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
+ 
+ 
+@@ -98,15 +103,17 @@ class SMMensaje(BaseModel):
+     canal: SMCanal
+     actor: str = Field(min_length=1, max_length=120)
+     contacto_hash: str = Field(..., max_length=80)
+-    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-]{1,79}$")
++    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-\.]{1,79}$")
+     asunto: str | None = Field(default=None, max_length=200)
+-    cuerpo: str | None
++    cuerpo: str | None = None
+     estado: SMEstadoMensaje = SMEstadoMensaje.PENDIENTE
+     idempotencia: str = Field(..., min_length=8, max_length=255)
+     metadatos: dict[str, str] = Field(default_factory=dict)
+     creado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
+     actualizado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
+ 
++    proximo_intento_en: datetime | None = None
++
+ 
+ class SMEntrega(BaseModel):
+     """Intento de entrega registrado de forma forense."""
+@@ -132,7 +139,7 @@ class SMAuditoria(BaseModel):
+ 
+     id: UUID = Field(default_factory=uuid4)
+     tenant: str = Field(min_length=1, max_length=32, default="polis")
+-    evento_id: UUID
++    evento_id: UUID | None = None
+     mensaje_id: UUID | None = None
+     actor: str = Field(min_length=1, max_length=120)
+     accion: str = Field(min_length=1, max_length=80)
+@@ -165,7 +172,7 @@ class SMResultadoEntrega(BaseModel):
+     mensaje_id: UUID
+     canal: SMCanal
+     intento: int = Field(ge=1)
+-    estado_entrega: SMEstadoEntrega = SMEstadoEntrega.ENVIADO
++    estado_entrega: SMEstadoEntrega = SMEstadoEntrega.PREPARADO
+     payload: dict[str, str] = Field(default_factory=dict)
+     externo_id: str | None = Field(default=None, max_length=200)
+     detalle: str | None = Field(default=None, max_length=500)
+@@ -185,3 +192,7 @@ class SMSalud(BaseModel):
+     canales_vivos: tuple[SMCanal, ...] = ()
+     motivos: tuple[str, ...] = ()
+     actualizado_en: datetime = Field(default_factory=lambda: datetime.now(UTC))
++    simulados: int = Field(default=0, ge=0)
++    worker_ultimo_latido: datetime | None = None
++    antiguedad_pendiente_segundos: float | None = None
++    canales_degradados: tuple[SMCanal, ...] = ()
+diff --git a/backend/app/modules/sm/core.py b/backend/app/modules/sm/core.py
+index e514f5ef..ed8bf99c 100644
+--- a/backend/app/modules/sm/core.py
++++ b/backend/app/modules/sm/core.py
+@@ -85,7 +85,13 @@ def transicion_estado(actual: SMEstadoMensaje, nuevo: SMEstadoMensaje) -> SMEsta
+     """Transiciones controladas. El outbox no regresa a pendiente salvo reintento."""
+     if actual == nuevo:
+         return nuevo
+-    if actual in (SMEstadoMensaje.CANCELADO, SMEstadoMensaje.AGOTADO):
++    if actual in (
++        SMEstadoMensaje.CANCELADO,
++        SMEstadoMensaje.AGOTADO,
++        SMEstadoMensaje.SIMULADO,
++        SMEstadoMensaje.ENVIADO,
++        SMEstadoMensaje.ENTREGADO,
++    ):
+         raise SMError(f"No se puede cambiar un mensaje en estado {actual.value}")
+     if nuevo == SMEstadoMensaje.PENDIENTE and actual != SMEstadoMensaje.FALLIDO:
+         raise SMError("Solo un mensaje fallido puede volver a pendiente (reintento)")
+diff --git a/backend/app/modules/sm/models.py b/backend/app/modules/sm/models.py
+index 16ea5000..131198bb 100644
+--- a/backend/app/modules/sm/models.py
++++ b/backend/app/modules/sm/models.py
+@@ -8,7 +8,7 @@ auditoría.
+ 
+ import uuid
+ 
+-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, text
++from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, LargeBinary, String, Text, text
+ from sqlalchemy.dialects.postgresql import JSONB, UUID
+ from sqlalchemy.orm import Mapped, mapped_column
+ from sqlalchemy.schema import conv
+@@ -18,6 +18,39 @@ from app.core.database import Base
+ SCHEMA = "participacion_ciudadana"
+ 
+ 
++class SMContactoBovedaRegistro(Base):
++    """Única copia del destinatario; ciphertext autenticado ligado a su identidad."""
++
++    __tablename__ = "sm_contactos_boveda"
++    __table_args__ = (
++        CheckConstraint("tenant <> '' AND actor <> '' AND key_id <> ''", name=conv("chk_sm_boveda_identidad")),
++        Index("uq_sm_boveda_contacto", "tenant", "actor", "canal", "contacto_hash", unique=True),
++        {"schema": SCHEMA, "comment": "Contactos SM cifrados AES-256-GCM; descifrado exclusivo de despacho/rotación"},
++    )
++    id: Mapped[uuid.UUID] = mapped_column(
++        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
++    )
++    tenant: Mapped[str] = mapped_column(String(32), nullable=False)
++    actor: Mapped[str] = mapped_column(String(120), nullable=False)
++    canal: Mapped[str] = mapped_column(String(20), nullable=False)
++    contacto_hash: Mapped[str] = mapped_column(String(80), nullable=False)
++    contacto_cifrado: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
++    key_id: Mapped[str] = mapped_column(String(40), nullable=False)
++    creado_en: Mapped[object] = mapped_column(
++        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
++    )
++    actualizado_en: Mapped[object] = mapped_column(
++        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
++    )
++
++
++class SMWorkerLatidoRegistro(Base):
++    __tablename__ = "sm_worker_latidos"
++    __table_args__ = {"schema": SCHEMA, "comment": "Última ronda del worker SM por tenant; sin datos personales"}
++    tenant: Mapped[str] = mapped_column(String(32), primary_key=True)
++    ultimo_latido_en: Mapped[object] = mapped_column(DateTime(timezone=True), nullable=False)
++
++
+ class SMEventoRegistro(Base):
+     """Evento durable de SM. Un evento es la intención trazable y auditable."""
+ 
+@@ -65,7 +98,7 @@ class SMMensajeRegistro(Base):
+     __table_args__ = (
+         CheckConstraint("tenant <> ''", name=conv("chk_sm_mensajes_tenant")),
+         CheckConstraint(
+-            "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado')",
++            "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado','simulado')",
+             name=conv("chk_sm_mensajes_estado"),
+         ),
+         CheckConstraint("idempotencia <> ''", name=conv("chk_sm_mensajes_idempotencia")),
+@@ -73,6 +106,7 @@ class SMMensajeRegistro(Base):
+         Index("ix_sm_mensajes_cola", "estado", "canal"),
+         Index("ix_sm_mensajes_evento", "evento_id"),
+         Index("ix_sm_mensajes_creado", "creado_en"),
++        Index("ix_sm_mensajes_proximo_intento", "tenant", "estado", "proximo_intento_en"),
+         {
+             "schema": SCHEMA,
+             "comment": "Outbox portable del núcleo SM",
+@@ -113,6 +147,10 @@ class SMMensajeRegistro(Base):
+         server_default=text("clock_timestamp()"),
+         nullable=False,
+     )
++    proximo_intento_en: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
++    reclamado_hasta: Mapped[object | None] = mapped_column(DateTime(timezone=True), nullable=True)
++    reclamacion_token: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
++    reintentable: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
+ 
+ 
+ class SMEntregaRegistro(Base):
+@@ -122,7 +160,7 @@ class SMEntregaRegistro(Base):
+     __table_args__ = (
+         CheckConstraint("idempotencia <> ''", name=conv("chk_sm_entregas_mensaje")),
+         CheckConstraint(
+-            "estado_entrega IN ('enviado','fallido')",
++            "estado_entrega IN ('enviado','fallido','simulado','en_curso','incierto')",
+             name=conv("chk_sm_entregas_estado"),
+         ),
+         Index("uq_sm_entregas_mensaje_intento", "mensaje_id", "intento", unique=True),
+diff --git a/backend/app/modules/sm/service.py b/backend/app/modules/sm/service.py
+index 2b401995..9375d0d1 100644
+--- a/backend/app/modules/sm/service.py
++++ b/backend/app/modules/sm/service.py
+@@ -14,6 +14,7 @@ from .contracts import (
+     SMContacto,
+     SMEntrega,
+     SMEstadoConsentimiento,
++    SMEstadoEntrega,
+     SMEstadoMensaje,
+     SMEstadoSalud,
+     SMEvento,
+@@ -104,7 +105,7 @@ class SMCoreService:
+         self._auditar(
+             actor=actor,
+             accion="consentimiento.registrado",
+-            evento_id=registro.id,
++            evento_id=None,
+             mensaje_id=None,
+             payload={"canal": canal.value, "estado": registro.estado.value},
+         )
+@@ -165,6 +166,11 @@ class SMCoreService:
+ 
+         intento = sum(1 for e in self._entregas if e.mensaje_id == mensaje.id) + 1
+         entrega.intento = intento
++        entrega.estado_entrega = SMEstadoEntrega.SIMULADO
++        entrega.detalle = "nucleo_memoria_sin_transporte"
++        from .boveda import huella_payload
++
++        entrega.payload = {"payload_sha256": huella_payload(entrega.payload)}
+         self._entregas.append(
+             SMEntrega(
+                 tenant=mensaje.tenant,
+@@ -177,7 +183,7 @@ class SMCoreService:
+                 payload=entrega.payload,
+             )
+         )
+-        mensaje.estado = transicion_estado(mensaje.estado, SMEstadoMensaje.ENVIADO)
++        mensaje.estado = transicion_estado(mensaje.estado, SMEstadoMensaje.SIMULADO)
+         mensaje.actualizado_en = datetime.now(UTC)
+         self._auditar(
+             actor=mensaje.actor,
+@@ -228,6 +234,7 @@ class SMCoreService:
+             fallidos=fallidos,
+             canales_vivos=canales,
+             motivos=tuple(motivos),
++            simulados=sum(m.estado == SMEstadoMensaje.SIMULADO for m in self._mensajes.values()),
+         )
+ 
+     async def auditorias(self) -> tuple[SMAuditoria, ...]:
+@@ -238,7 +245,7 @@ class SMCoreService:
+         *,
+         actor: str,
+         accion: str,
+-        evento_id: UUID,
++        evento_id: UUID | None,
+         mensaje_id: UUID | None,
+         payload: dict[str, str],
+     ) -> SMAuditoria:
+@@ -252,7 +259,7 @@ class SMCoreService:
+                 tenant=self._tenant,
+                 actor=actor,
+                 accion=accion,
+-                evento_id=str(evento_id),
++                evento_id=str(evento_id) if evento_id else "",
+                 mensaje_id=str(mensaje_id) if mensaje_id else None,
+                 payload=payload,
+             ),
+diff --git a/backend/pyproject.toml b/backend/pyproject.toml
+index e4e6e1c0..20244afc 100644
+--- a/backend/pyproject.toml
++++ b/backend/pyproject.toml
+@@ -15,6 +15,7 @@ dependencies = [
+   "alembic>=1.16,<2",
+   "asyncpg>=0.30,<1",
+   "bcrypt>=4.0",
++  "cryptography>=46,<51",
+   "email-validator>=2.3.0",
+   "fastapi>=0.115,<1",
+   "geoalchemy2>=0.20.0",
+diff --git a/backend/tests/test_sm_core.py b/backend/tests/test_sm_core.py
+index 242d1558..bc2375e1 100644
+--- a/backend/tests/test_sm_core.py
++++ b/backend/tests/test_sm_core.py
+@@ -158,9 +158,9 @@ def test_mensaje_whatsapp_se_adapta_y_registra_entrega():
+         return entrega, await servicio.salud()
+ 
+     entrega, salud = asyncio.run(flujo())
+-    assert entrega.payload["canal"] == "whatsapp"
++    assert len(entrega.payload["payload_sha256"]) == 64
+     assert salud.pendientes == 0
+-    assert salud.enviados == 1
++    assert salud.enviados == 0
+ 
+ 
+ def test_adaptador_por_canal_conversa_a_dialecto_portable():
+@@ -186,7 +186,7 @@ def test_adaptador_por_canal_conversa_a_dialecto_portable():
+     entrega = adaptador_por_canal(SMCanal.WHATSAPP).construir(mensaje, contacto)
+     assert entrega.mensaje_id == mensaje.id
+     assert entrega.canal == contacto.canal
+-    assert entrega.estado_entrega == "enviado"
++    assert entrega.estado_entrega == "preparado"
+     assert "Su aporte fue radicado" in entrega.payload["text"]
+ 
+ 
+diff --git a/backend/uv.lock b/backend/uv.lock
+index 3ddfa79d..92922aaf 100644
+--- a/backend/uv.lock
++++ b/backend/uv.lock
+@@ -1607,6 +1607,7 @@ dependencies = [
+     { name = "alembic" },
+     { name = "asyncpg" },
+     { name = "bcrypt" },
++    { name = "cryptography" },
+     { name = "email-validator" },
+     { name = "fastapi" },
+     { name = "geoalchemy2" },
+@@ -1651,6 +1652,7 @@ requires-dist = [
+     { name = "alembic", specifier = ">=1.16,<2" },
+     { name = "asyncpg", specifier = ">=0.30,<1" },
+     { name = "bcrypt", specifier = ">=4.0" },
++    { name = "cryptography", specifier = ">=46,<51" },
+     { name = "email-validator", specifier = ">=2.3.0" },
+     { name = "fastapi", specifier = ">=0.115,<1" },
+     { name = "geoalchemy2", specifier = ">=0.20.0" },
+diff --git a/backend/alembic/versions/0098_sm_contactos_boveda.py b/backend/alembic/versions/0098_sm_contactos_boveda.py
+new file mode 100644
+index 00000000..e236c19c
+--- /dev/null
++++ b/backend/alembic/versions/0098_sm_contactos_boveda.py
+@@ -0,0 +1,45 @@
++"""Bóveda AEAD de contactos SM; no modifica contactos históricos ni envía mensajes."""
++
++import sqlalchemy as sa
++from sqlalchemy.dialects import postgresql
++
++from alembic import op
++
++revision = "0098_sm_contactos_boveda"
++down_revision = "0097_sm_core"
++branch_labels = None
++depends_on = None
++SCHEMA = "participacion_ciudadana"
++
++
++def upgrade() -> None:
++    op.create_table(
++        "sm_contactos_boveda",
++        sa.Column(
++            "id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("public.generar_uuid_v7()")
++        ),
++        sa.Column("tenant", sa.String(32), nullable=False),
++        sa.Column("actor", sa.String(120), nullable=False),
++        sa.Column("canal", sa.String(20), nullable=False),
++        sa.Column("contacto_hash", sa.String(80), nullable=False),
++        sa.Column("contacto_cifrado", sa.LargeBinary(), nullable=False),
++        sa.Column("key_id", sa.String(40), nullable=False),
++        sa.Column("creado_en", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("clock_timestamp()")),
++        sa.Column(
++            "actualizado_en", sa.DateTime(timezone=True), nullable=False, server_default=sa.text("clock_timestamp()")
++        ),
++        sa.CheckConstraint("tenant <> '' AND actor <> '' AND key_id <> ''", name=op.f("chk_sm_boveda_identidad")),
++        schema=SCHEMA,
++        comment="Contactos SM cifrados AES-256-GCM; descifrado exclusivo de despacho/rotación",
++    )
++    op.create_index(
++        "uq_sm_boveda_contacto",
++        "sm_contactos_boveda",
++        ["tenant", "actor", "canal", "contacto_hash"],
++        unique=True,
++        schema=SCHEMA,
++    )
++
++
++def downgrade() -> None:
++    op.drop_table("sm_contactos_boveda", schema=SCHEMA)
+diff --git a/backend/alembic/versions/0099_sm_worker_backoff.py b/backend/alembic/versions/0099_sm_worker_backoff.py
+new file mode 100644
+index 00000000..e506e578
+--- /dev/null
++++ b/backend/alembic/versions/0099_sm_worker_backoff.py
+@@ -0,0 +1,72 @@
++"""Programación, reclamaciones recuperables y simulación explícita del worker SM."""
++
++import sqlalchemy as sa
++from sqlalchemy.dialects import postgresql
++
++from alembic import op
++
++revision = "0099_sm_worker_backoff"
++down_revision = "0098_sm_contactos_boveda"
++branch_labels = None
++depends_on = None
++SCHEMA = "participacion_ciudadana"
++
++
++def upgrade() -> None:
++    op.add_column("sm_mensajes", sa.Column("proximo_intento_en", sa.DateTime(timezone=True)), schema=SCHEMA)
++    op.add_column("sm_mensajes", sa.Column("reclamado_hasta", sa.DateTime(timezone=True)), schema=SCHEMA)
++    op.add_column("sm_mensajes", sa.Column("reclamacion_token", postgresql.UUID(as_uuid=True)), schema=SCHEMA)
++    op.add_column(
++        "sm_mensajes",
++        sa.Column("reintentable", sa.Boolean(), nullable=False, server_default=sa.text("true")),
++        schema=SCHEMA,
++    )
++    op.create_index(
++        "ix_sm_mensajes_proximo_intento", "sm_mensajes", ["tenant", "estado", "proximo_intento_en"], schema=SCHEMA
++    )
++    op.drop_constraint("chk_sm_mensajes_estado", "sm_mensajes", schema=SCHEMA)
++    op.create_check_constraint(
++        op.f("chk_sm_mensajes_estado"),
++        "sm_mensajes",
++        "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado','simulado')",
++        schema=SCHEMA,
++    )
++    op.drop_constraint("chk_sm_entregas_estado", "sm_entregas", schema=SCHEMA)
++    op.create_check_constraint(
++        op.f("chk_sm_entregas_estado"),
++        "sm_entregas",
++        "estado_entrega IN ('enviado','fallido','simulado','en_curso','incierto')",
++        schema=SCHEMA,
++    )
++    op.create_table(
++        "sm_worker_latidos",
++        sa.Column("tenant", sa.String(32), primary_key=True),
++        sa.Column("ultimo_latido_en", sa.DateTime(timezone=True), nullable=False),
++        schema=SCHEMA,
++        comment="Última ronda del worker SM por tenant; sin datos personales",
++    )
++
++
++def downgrade() -> None:
++    # No reinterpretar una simulación como envío real al volver a 0098.
++    op.execute(f"""UPDATE {SCHEMA}.sm_mensajes
++        SET metadatos=metadatos || jsonb_build_object('sm_estado_pre_downgrade', estado), estado='cancelado'
++        WHERE estado='simulado' OR reclamacion_token IS NOT NULL""")
++    op.execute(f"""UPDATE {SCHEMA}.sm_entregas
++        SET payload=payload || jsonb_build_object('sm_estado_pre_downgrade', estado_entrega), estado_entrega='fallido'
++        WHERE estado_entrega IN ('simulado','en_curso','incierto')""")
++    op.drop_table("sm_worker_latidos", schema=SCHEMA)
++    op.drop_constraint("chk_sm_entregas_estado", "sm_entregas", schema=SCHEMA)
++    op.create_check_constraint(
++        op.f("chk_sm_entregas_estado"), "sm_entregas", "estado_entrega IN ('enviado','fallido')", schema=SCHEMA
++    )
++    op.drop_constraint("chk_sm_mensajes_estado", "sm_mensajes", schema=SCHEMA)
++    op.create_check_constraint(
++        op.f("chk_sm_mensajes_estado"),
++        "sm_mensajes",
++        "estado IN ('pendiente','encolado','enviado','entregado','fallido','agotado','cancelado')",
++        schema=SCHEMA,
++    )
++    op.drop_index("ix_sm_mensajes_proximo_intento", table_name="sm_mensajes", schema=SCHEMA)
++    for columna in ("reintentable", "reclamacion_token", "reclamado_hasta", "proximo_intento_en"):
++        op.drop_column("sm_mensajes", columna, schema=SCHEMA)
+diff --git a/backend/app/modules/sm/boveda.py b/backend/app/modules/sm/boveda.py
+new file mode 100644
+index 00000000..b2b9e32f
+--- /dev/null
++++ b/backend/app/modules/sm/boveda.py
+@@ -0,0 +1,188 @@
++"""Contactos AES-256-GCM. El repositorio no confirma y no revela el texto en errores."""
++
++from __future__ import annotations
++
++import base64
++import hashlib
++import json
++import os
++import re
++from collections.abc import Mapping
++from typing import Protocol
++
++from cryptography.exceptions import InvalidTag
++from cryptography.hazmat.primitives.ciphers.aead import AESGCM
++from sqlalchemy import delete, func, select
++from sqlalchemy.dialects.postgresql import insert
++from sqlalchemy.ext.asyncio import AsyncSession
++
++from app.core.config import Settings
++
++from .contracts import SMCanal, SMContacto, SMMensaje
++from .core import SMError, hash_contacto
++from .models import SMContactoBovedaRegistro
++
++
++class SMBovedaError(SMError):
++    """Error de configuración/integridad sin texto de contacto ni bytes criptográficos."""
++
++
++class SMResolutorContacto(Protocol):
++    async def resolver(self, session: AsyncSession, mensaje: SMMensaje) -> SMContacto | None: ...
++
++
++def validar_datos_no_personales(*valores: str | None, contacto: str | None = None) -> None:
++    """No aceptar destinos en campos libres persistentes. Los actores deben ser IDs opacos.
++
++    Esto no convierte texto libre en anónimo: los llamadores deben enviar resúmenes
++    institucionales sin nombres/datos personales, no expedientes ni plantillas de Herald.
++    """
++    for valor in valores:
++        sin_ids = re.sub(r"\b[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\b", "", valor or "")
++        sin_ids = re.sub(r"\b[12][0-9]{3}-[01][0-9]-[0-3][0-9]\b", "", sin_ids)
++        telefonos = re.findall(r"(?<![\w])\+?[0-9][0-9 ()-]{8,}[0-9](?![\w])", sin_ids)
++        if valor and (
++            re.search(r"[^\s<>]+@[^\s<>]+\.[a-zA-Z]{2,}", valor)
++            or any(len(re.sub(r"\D", "", candidato)) >= 10 for candidato in telefonos)
++            or (contacto and len(contacto) >= 3 and contacto.casefold() in valor.casefold())
++        ):
++            raise SMError("Los campos persistentes requieren identificadores opacos y contenido sin contactos")
++
++
++class SMBovedaContactoDB:
++    """El cifrado liga tenant/actor/canal/hash/key_id mediante AAD.
++
++    El worker es el único consumidor de resolver(); rotar() es la operación
++    administrativa explícita para sustituir claves sin exponer el texto.
++    """
++
++    def __init__(self, *, claves: Mapping[str, bytes], key_id: str) -> None:
++        if (
++            not re.fullmatch(r"[a-zA-Z0-9_-]{1,40}", key_id)
++            or key_id not in claves
++            or len(claves) > 10
++            or any(not isinstance(k, str) or not re.fullmatch(r"[a-zA-Z0-9_-]{1,40}", k) for k in claves)
++            or any(len(k) != 32 for k in claves.values())
++        ):
++            raise SMBovedaError("Configuración de bóveda no válida")
++        self._claves = dict(claves)
++        self.key_id = key_id
++
++    @classmethod
++    def desde_settings(cls, settings: Settings | None = None) -> SMBovedaContactoDB:
++        config = settings or Settings()
++        try:
++            claves = (
++                json.loads(config.sm_boveda_claves_anteriores.get_secret_value())
++                if config.sm_boveda_claves_anteriores
++                else {}
++            )
++            if not isinstance(claves, dict) or config.sm_boveda_key_id in claves or not config.sm_boveda_key:
++                raise ValueError
++            claves[config.sm_boveda_key_id] = config.sm_boveda_key.get_secret_value()
++            decodificadas = {
++                k: base64.b64decode(v.encode("ascii"), altchars=b"-_", validate=True) for k, v in claves.items()
++            }
++            return cls(claves=decodificadas, key_id=config.sm_boveda_key_id)
++        except (ValueError, TypeError, AttributeError, UnicodeError):
++            raise SMBovedaError("Configure POLIS_SM_BOVEDA_KEY: clave AES de 32 bytes en base64") from None
++
++    @staticmethod
++    def _aad(tenant: str, actor: str, canal: str, contacto_hash: str, key_id: str) -> bytes:
++        return json.dumps(
++            ["sm-boveda-v1", tenant, actor, canal, contacto_hash, key_id], ensure_ascii=True, separators=(",", ":")
++        ).encode()
++
++    def _cifrar(self, texto: str, tenant: str, actor: str, canal: str, contacto_hash: str) -> bytes:
++        nonce = os.urandom(12)
++        aad = self._aad(tenant, actor, canal, contacto_hash, self.key_id)
++        return b"\x01" + nonce + AESGCM(self._claves[self.key_id]).encrypt(nonce, texto.encode(), aad)
++
++    def _descifrar(self, registro: SMContactoBovedaRegistro) -> str:
++        try:
++            datos = registro.contacto_cifrado
++            if len(datos) < 30 or datos[0] != 1:
++                raise ValueError
++            aad = self._aad(registro.tenant, registro.actor, registro.canal, registro.contacto_hash, registro.key_id)
++            texto = AESGCM(self._claves[registro.key_id]).decrypt(datos[1:13], datos[13:], aad).decode()
++            if hash_contacto(registro.tenant, registro.actor, registro.canal, texto) != registro.contacto_hash:
++                raise ValueError
++            return texto
++        except (KeyError, InvalidTag, ValueError, UnicodeError):
++            raise SMBovedaError("No se pudo autenticar el contacto cifrado") from None
++
++    async def almacenar(self, session: AsyncSession, *, tenant: str, contacto: SMContacto) -> None:
++        validar_datos_no_personales(tenant, contacto.actor, contacto=contacto.identificador)
++        huella = hash_contacto(tenant, contacto.actor, contacto.canal.value, contacto.identificador)
++        stmt = insert(SMContactoBovedaRegistro).values(
++            tenant=tenant,
++            actor=contacto.actor,
++            canal=contacto.canal.value,
++            contacto_hash=huella,
++            contacto_cifrado=self._cifrar(contacto.identificador, tenant, contacto.actor, contacto.canal.value, huella),
++            key_id=self.key_id,
++        )
++        await session.execute(
++            stmt.on_conflict_do_update(
++                index_elements=["tenant", "actor", "canal", "contacto_hash"],
++                set_={
++                    "contacto_cifrado": stmt.excluded.contacto_cifrado,
++                    "key_id": self.key_id,
++                    "actualizado_en": func.clock_timestamp(),
++                },
++            )
++        )
++        await session.flush()
++
++    @staticmethod
++    async def purgar(session: AsyncSession, *, tenant: str, actor: str, canal: SMCanal, contacto_hash: str) -> None:
++        await session.execute(
++            delete(SMContactoBovedaRegistro).where(
++                SMContactoBovedaRegistro.tenant == tenant,
++                SMContactoBovedaRegistro.actor == actor,
++                SMContactoBovedaRegistro.canal == canal.value,
++                SMContactoBovedaRegistro.contacto_hash == contacto_hash,
++            )
++        )
++        await session.flush()
++
++    async def resolver(self, session: AsyncSession, mensaje: SMMensaje) -> SMContacto | None:
++        registro = await session.scalar(
++            select(SMContactoBovedaRegistro).where(
++                SMContactoBovedaRegistro.tenant == mensaje.tenant,
++                SMContactoBovedaRegistro.actor == mensaje.actor,
++                SMContactoBovedaRegistro.canal == mensaje.canal.value,
++                SMContactoBovedaRegistro.contacto_hash == mensaje.contacto_hash,
++            )
++        )
++        if registro is None:
++            return None
++        return SMContacto(canal=mensaje.canal, actor=mensaje.actor, identificador=self._descifrar(registro))
++
++    async def rotar(self, session: AsyncSession, *, tenant: str, limite: int = 100) -> int:
++        registros = (
++            await session.scalars(
++                select(SMContactoBovedaRegistro)
++                .where(
++                    SMContactoBovedaRegistro.tenant == tenant,
++                    SMContactoBovedaRegistro.key_id != self.key_id,
++                )
++                .order_by(SMContactoBovedaRegistro.id)
++                .limit(limite)
++                .with_for_update(skip_locked=True)
++            )
++        ).all()
++        for registro in registros:
++            texto = self._descifrar(registro)
++            registro.contacto_cifrado = self._cifrar(
++                texto, registro.tenant, registro.actor, registro.canal, registro.contacto_hash
++            )
++            registro.key_id = self.key_id
++            registro.actualizado_en = func.clock_timestamp()
++        await session.flush()
++        return len(registros)
++
++
++def huella_payload(payload: dict[str, str]) -> str:
++    """Guardar una huella del payload de envío, nunca el payload que contiene el destino."""
++    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=True).encode()).hexdigest()
+diff --git a/backend/app/modules/sm/bridge.py b/backend/app/modules/sm/bridge.py
+new file mode 100644
+index 00000000..9818ec23
+--- /dev/null
++++ b/backend/app/modules/sm/bridge.py
+@@ -0,0 +1,201 @@
++"""Puente institucional de eventos POLIS hacia el núcleo portable SM.
++
++Provee coexistencia pacífica con el subsistema Herald legacy y traduce eventos
++del dominio de POLIS (mesas, compromisos, seguridad) al modelo agnóstico SM.
++"""
++
++from __future__ import annotations
++
++import uuid
++from datetime import UTC, datetime
++
++from sqlalchemy import func, select
++from sqlalchemy.ext.asyncio import AsyncSession
++
++from app.core.config import Settings
++from app.modules.identidad.models import Usuario
++
++from .contracts import SMCanal, SMContacto, SMEvento, SMMensaje
++from .core import SMError, hash_contacto
++from .repository import SMRepository
++
++
++class SMBridge:
++    """Adaptador de eventos de dominio POLIS hacia SM Core."""
++
++    def __init__(self, tenant: str = "polis", *, settings: Settings | None = None) -> None:
++        self.tenant = tenant
++        self.settings = settings or Settings()
++        self.repo = SMRepository(tenant=tenant)
++
++    async def emitir_evento_dominio(
++        self,
++        session: AsyncSession,
++        *,
++        tipo_evento: str,
++        actor: str,
++        canal: SMCanal,
++        contacto_identificador: str,
++        idempotencia: str,
++        entidad: str | None = None,
++        entidad_id: str | None = None,
++        plantilla: str | None = None,
++        asunto: str | None = None,
++        cuerpo: str | None = None,
++        payload: dict[str, str] | None = None,
++    ) -> SMMensaje:
++        """Emite un evento de POLIS al núcleo SM garantizando trazabilidad y no repudio."""
++        if not session.in_transaction() and not session.info.get("polis_transaction_owner"):
++            raise SMError("SMBridge requiere la transacción del caso de uso de dominio")
++        contacto = SMContacto(
++            canal=canal,
++            identificador=contacto_identificador,
++            actor=actor,
++        )
++        evento = SMEvento(
++            tenant=self.tenant,
++            tipo_evento=tipo_evento,
++            actor=actor,
++            entidad=entidad,
++            entidad_id=entidad_id,
++            payload=payload or {},
++            idempotencia=idempotencia,
++            origen="polis.bridge",
++            canal=canal,
++            contacto=contacto,
++            plantilla=plantilla,
++            asunto=asunto,
++            cuerpo=cuerpo,
++        )
++        return await self.repo.procesar_evento(session, evento)
++
++    async def sincronizar_notificacion(self, session: AsyncSession, notificacion) -> SMMensaje | None:
++        """Herald → outbox SM en la misma transacción, flag por tipo apagado por defecto.
++
++        No hereda consentimientos de Herald ni copia sus nombres, correos, HTML,
++        tokens o expedientes. Sombra obligatoria: este hook nunca duplica el envío
++        de Herald. El corte de canal es una operación posterior de coordinación.
++        """
++        if notificacion.tipo_evento not in self.settings.sm_eventos_dominio:
++            return None
++        if not session.in_transaction() and not session.info.get("polis_transaction_owner"):
++            raise SMError("El evento de dominio debe estar dentro de una transacción")
++        actor_id = await session.scalar(
++            select(Usuario.id).where(
++                func.lower(Usuario.correo) == notificacion.destinatario_correo.lower(), Usuario.activo.is_(True)
++            )
++        )
++        if actor_id is None:
++            return None
++        actor = str(actor_id)
++        huella = hash_contacto(self.tenant, actor, SMCanal.CORREO.value, notificacion.destinatario_correo)
++        if not await self.repo.verificar_consentimiento(
++            session, actor=actor, canal=SMCanal.CORREO, contacto_hash=huella
++        ):
++            return None
++        return await self.emitir_evento_dominio(
++            session,
++            tipo_evento=f"herald.{notificacion.tipo_evento}",
++            actor=actor,
++            canal=SMCanal.CORREO,
++            contacto_identificador=notificacion.destinatario_correo,
++            idempotencia=f"herald:{notificacion.id}",
++            entidad="notificacion",
++            entidad_id=str(notificacion.id),
++            asunto="Actualización institucional",
++            cuerpo="Hay una actualización disponible en la plataforma.",
++            payload={"notificacion_id": str(notificacion.id), "sm_modo_sombra": "1"},
++        )
++
++    async def notificar_convocatoria_mesa(
++        self,
++        session: AsyncSession,
++        *,
++        mesa_id: str,
++        mesa_nombre: str,
++        actor: str,
++        canal: SMCanal,
++        contacto: str,
++        fecha: str,
++        lugar: str,
++        enlace: str = "https://polis.gob.co/mesas",
++    ) -> SMMensaje:
++        """Convocatoria oficial a mesa de trabajo ciudadana."""
++        return await self.emitir_evento_dominio(
++            session=session,
++            tipo_evento="mesa.convocatoria",
++            actor=actor,
++            canal=canal,
++            contacto_identificador=contacto,
++            idempotencia=f"mesa-convocatoria-{mesa_id}-{actor}-{fecha}",
++            entidad="mesa",
++            entidad_id=mesa_id,
++            plantilla="sm.mesa.convocatoria",
++            payload={
++                "mesa_nombre": mesa_nombre,
++                "fecha": fecha,
++                "lugar": lugar,
++                "enlace": enlace,
++            },
++        )
++
++    async def notificar_asignacion_compromiso(
++        self,
++        session: AsyncSession,
++        *,
++        compromiso_id: str,
++        titulo: str,
++        actor: str,
++        canal: SMCanal,
++        contacto: str,
++        fecha_limite: str,
++        descripcion: str = "",
++        enlace: str = "https://polis.gob.co/compromisos",
++    ) -> SMMensaje:
++        """Asignación de responsabilidad sobre un compromiso ciudadano."""
++        return await self.emitir_evento_dominio(
++            session=session,
++            tipo_evento="compromiso.asignado",
++            actor=actor,
++            canal=canal,
++            contacto_identificador=contacto,
++            idempotencia=f"compromiso-asig-{compromiso_id}-{actor}",
++            entidad="compromiso",
++            entidad_id=compromiso_id,
++            plantilla="sm.compromiso.asignado",
++            payload={
++                "compromiso_id": compromiso_id,
++                "titulo": titulo,
++                "fecha_limite": fecha_limite,
++                "descripcion": descripcion,
++                "enlace": enlace,
++            },
++        )
++
++    async def notificar_alerta_seguridad(
++        self,
++        session: AsyncSession,
++        *,
++        actor: str,
++        accion: str,
++        canal: SMCanal,
++        contacto: str,
++        hash_traza: str,
++    ) -> SMMensaje:
++        """Notificación de evento de seguridad o auditoría crítica."""
++        ahora_str = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
++        return await self.emitir_evento_dominio(
++            session=session,
++            tipo_evento="seguridad.alerta",
++            actor=actor,
++            canal=canal,
++            contacto_identificador=contacto,
++            idempotencia=f"seguridad-alerta-{uuid.uuid4().hex[:12]}",
++            entidad="seguridad",
++            plantilla="sm.seguridad.alerta",
++            payload={
++                "accion": accion,
++                "fecha": ahora_str,
++                "hash": hash_traza,
++            },
++        )
+diff --git a/backend/app/modules/sm/client.py b/backend/app/modules/sm/client.py
+new file mode 100644
+index 00000000..382e9dc0
+--- /dev/null
++++ b/backend/app/modules/sm/client.py
+@@ -0,0 +1,105 @@
++"""Cliente portable y SDK oficial de SM Core para aplicaciones externas.
++
++Permite a cualquier sistema (interno o externo) consumir las capacidades de
++mensajería transaccional, consentimiento y trazabilidad forense de SM Core,
++ya sea en memoria (in-process) o remotamente vía API REST.
++"""
++
++from __future__ import annotations
++
++from .contracts import (
++    SMCanal,
++    SMConsentimiento,
++    SMContacto,
++    SMEvento,
++    SMMensaje,
++    SMSalud,
++)
++from .service import SMCoreService
++
++
++class SMClient:
++    """SDK portable para integración rápida con el núcleo SM."""
++
++    def __init__(
++        self,
++        tenant: str = "polis",
++        *,
++        service: SMCoreService | None = None,
++        base_url: str | None = None,
++        api_token: str | None = None,
++    ) -> None:
++        self.tenant = tenant
++        self.base_url = base_url.rstrip("/") if base_url else None
++        self.api_token = api_token
++        # Por defecto inicializa un servicio en memoria si no se indica URL remota
++        self._service = service or SMCoreService(tenant=tenant)
++
++    async def otorgar_consentimiento(
++        self,
++        *,
++        actor: str,
++        canal: SMCanal,
++        contacto: str,
++    ) -> SMConsentimiento:
++        """Registra consentimiento explícito (opt-in) para un canal y actor."""
++        return await self._service.registrar_consentimiento(
++            actor=actor,
++            canal=canal,
++            contacto=contacto,
++            consentido=True,
++        )
++
++    async def revocar_consentimiento(
++        self,
++        *,
++        actor: str,
++        canal: SMCanal,
++        contacto: str,
++    ) -> SMConsentimiento:
++        """Revoca consentimiento (opt-out) para un canal y actor."""
++        return await self._service.registrar_consentimiento(
++            actor=actor,
++            canal=canal,
++            contacto=contacto,
++            consentido=False,
++        )
++
++    async def emitir_evento(
++        self,
++        *,
++        tipo_evento: str,
++        actor: str,
++        canal: SMCanal,
++        contacto_identificador: str,
++        idempotencia: str,
++        asunto: str | None = None,
++        cuerpo: str | None = None,
++        plantilla: str | None = None,
++        payload: dict[str, str] | None = None,
++        origen: str = "sm.sdk",
++    ) -> SMMensaje:
++        """Emite un evento transaccional que produce un mensaje outbox trazable."""
++        contacto = SMContacto(
++            canal=canal,
++            identificador=contacto_identificador,
++            actor=actor,
++        )
++        evento = SMEvento(
++            tenant=self.tenant,
++            tipo_evento=tipo_evento,
++            actor=actor,
++            payload=payload or {},
++            idempotencia=idempotencia,
++            origen=origen,
++            canal=canal,
++            contacto=contacto,
++            plantilla=plantilla,
++            asunto=asunto,
++            cuerpo=cuerpo,
++        )
++        return await self._service.procesar_evento(evento)
++
++    async def consultar_salud(self) -> SMSalud:
++        """Consulta el estado operativo del núcleo."""
++        return await self._service.salud()
+diff --git a/backend/app/modules/sm/repository.py b/backend/app/modules/sm/repository.py
+new file mode 100644
+index 00000000..d998ffba
+--- /dev/null
++++ b/backend/app/modules/sm/repository.py
+@@ -0,0 +1,522 @@
++"""Capa de persistencia relacional y repositorio del núcleo SM.
++
++Gestiona las operaciones transaccionales en PostgreSQL sobre las tablas
++`sm_eventos`, `sm_mensajes`, `sm_entregas`, `sm_auditorias` y `sm_consentimientos`,
++garantizando idempotencia, no repudio y aislamiento sin exponer PII.
++"""
++
++from __future__ import annotations
++
++import uuid
++from collections.abc import Sequence
++from datetime import UTC, datetime
++
++from sqlalchemy import func, select
++from sqlalchemy.ext.asyncio import AsyncSession
++
++from app.core.config import Settings
++
++from .boveda import SMBovedaContactoDB, validar_datos_no_personales
++from .channels import SMCanalBase, SMCorreoAdapter, SMSMSAdapter, SMTelegramAdapter, SMWebhookAdapter, SMWhatsAppAdapter
++from .contracts import (
++    SMCanal,
++    SMConsentimiento,
++    SMContacto,
++    SMEstadoConsentimiento,
++    SMEstadoMensaje,
++    SMEstadoSalud,
++    SMEvento,
++    SMMensaje,
++    SMResultadoEntrega,
++    SMSalud,
++)
++from .core import (
++    SMCanalesNoAutorizados,
++    SMConsentimientoFaltante,
++    SMError,
++    SMIdempotenciaConflict,
++    hash_contacto,
++    hash_traza,
++)
++from .models import (
++    SMAuditoriaRegistro,
++    SMConsentimientoRegistro,
++    SMEventoRegistro,
++    SMMensajeRegistro,
++    SMWorkerLatidoRegistro,
++)
++from .templates import motor_plantillas
++from .transports import transportes_desde_settings
++
++ADAPTADORES_BASE: dict[SMCanal, type[SMCanalBase]] = {
++    SMCanal.CORREO: SMCorreoAdapter,
++    SMCanal.WHATSAPP: SMWhatsAppAdapter,
++    SMCanal.TELEGRAM: SMTelegramAdapter,
++    SMCanal.WEBHOOK: SMWebhookAdapter,
++    SMCanal.SMS: SMSMSAdapter,
++}
++
++
++class SMRepository:
++    """Repositorio transaccional de persistencia para SM Core."""
++
++    def __init__(self, tenant: str = "polis", *, boveda: SMBovedaContactoDB | None = None) -> None:
++        self.tenant = tenant
++        self.boveda = boveda
++        self.adaptadores = dict(ADAPTADORES_BASE)
++
++    async def registrar_consentimiento(
++        self,
++        session: AsyncSession,
++        *,
++        actor: str,
++        canal: SMCanal,
++        contacto: str,
++        consentido: bool,
++        origen: str = "sm",
++    ) -> SMConsentimiento:
++        """Registra o actualiza consentimiento en base de datos.
++
++        El identificador de contacto se anonimiza inmediatamente a SHA-256.
++        """
++        contacto_hash = hash_contacto(
++            tenant=self.tenant,
++            actor=actor,
++            canal=canal.value,
++            identificador=contacto,
++        )
++
++        validar_datos_no_personales(self.tenant, actor, origen, contacto=contacto)
++        await self._bloquear_clave(session, "consentimiento", actor, canal.value, contacto_hash)
++        query = select(SMConsentimientoRegistro).where(
++            SMConsentimientoRegistro.tenant == self.tenant,
++            SMConsentimientoRegistro.actor == actor,
++            SMConsentimientoRegistro.canal == canal.value,
++            SMConsentimientoRegistro.contacto_hash == contacto_hash,
++        )
++        res = await session.execute(query.with_for_update().execution_options(populate_existing=True))
++        registro = res.scalar_one_or_none()
++
++        nuevo_estado = "otorgado" if consentido else "revocado"
++        ahora = datetime.now(UTC)
++
++        if registro:
++            registro.estado = nuevo_estado
++            registro.actualizado_en = ahora
++        else:
++            registro = SMConsentimientoRegistro(
++                id=uuid.uuid4(),
++                tenant=self.tenant,
++                actor=actor,
++                canal=canal.value,
++                contacto_hash=contacto_hash,
++                estado=nuevo_estado,
++                origen=origen,
++                creado_en=ahora,
++                actualizado_en=ahora,
++            )
++            session.add(registro)
++
++        if consentido:
++            boveda = self.boveda or SMBovedaContactoDB.desde_settings()
++            await boveda.almacenar(
++                session, tenant=self.tenant, contacto=SMContacto(canal=canal, actor=actor, identificador=contacto)
++            )
++        else:
++            await SMBovedaContactoDB.purgar(
++                session, tenant=self.tenant, actor=actor, canal=canal, contacto_hash=contacto_hash
++            )
++
++        # Auditoría transaccional sin PII
++        auditoria_hash = hash_traza(
++            tenant=self.tenant,
++            actor=actor,
++            accion="consentimiento.registrado",
++            evento_id="",
++            mensaje_id=None,
++            payload={"canal": canal.value, "estado": nuevo_estado, "origen": origen},
++        )
++        auditoria = SMAuditoriaRegistro(
++            id=uuid.uuid4(),
++            evento_id=None,
++            mensaje_id=None,
++            tenant=self.tenant,
++            actor=actor,
++            accion="consentimiento.registrado",
++            detalle=f"Consentimiento {nuevo_estado} para canal {canal.value}",
++            hash=auditoria_hash,
++            creado_en=ahora,
++        )
++        session.add(auditoria)
++        await session.flush()
++
++        return SMConsentimiento(
++            id=registro.id,
++            tenant=registro.tenant,
++            actor=registro.actor,
++            canal=SMCanal(registro.canal),
++            contacto_hash=registro.contacto_hash,
++            estado=SMEstadoConsentimiento(registro.estado),
++            origen=registro.origen,
++            creado_en=registro.creado_en if isinstance(registro.creado_en, datetime) else ahora,
++            actualizado_en=registro.actualizado_en if isinstance(registro.actualizado_en, datetime) else ahora,
++        )
++
++    async def verificar_consentimiento(
++        self,
++        session: AsyncSession,
++        *,
++        actor: str,
++        canal: SMCanal,
++        contacto_hash: str,
++    ) -> bool:
++        """Verifica si existe consentimiento otorgado y vigente."""
++        query = select(SMConsentimientoRegistro.estado).where(
++            SMConsentimientoRegistro.tenant == self.tenant,
++            SMConsentimientoRegistro.actor == actor,
++            SMConsentimientoRegistro.canal == canal.value,
++            SMConsentimientoRegistro.contacto_hash == contacto_hash,
++        )
++        res = await session.execute(query)
++        estado = res.scalar_one_or_none()
++        return estado == "otorgado"
++
++    async def procesar_evento(
++        self,
++        session: AsyncSession,
++        evento: SMEvento,
++    ) -> SMMensaje:
++        """Ingresa un evento al outbox relacional con idempotencia y auditoría."""
++        if evento.tenant != self.tenant:
++            raise SMIdempotenciaConflict(f"Tenant '{evento.tenant}' no coincide con '{self.tenant}'")
++
++        validar_datos_no_personales(
++            evento.tenant,
++            evento.actor,
++            evento.tipo_evento,
++            evento.entidad,
++            evento.entidad_id,
++            evento.idempotencia,
++            evento.origen,
++            evento.asunto,
++            evento.cuerpo,
++            *evento.payload.keys(),
++            *evento.payload.values(),
++            contacto=evento.contacto.identificador,
++        )
++        if evento.actor != evento.contacto.actor:
++            raise SMError("El actor del contacto debe coincidir con el evento")
++        await self._bloquear_clave(session, "evento", evento.idempotencia)
++        # 1. Chequeo de idempotencia
++        query_idem = select(SMEventoRegistro).where(
++            SMEventoRegistro.tenant == self.tenant,
++            SMEventoRegistro.idempotencia == evento.idempotencia,
++        )
++        res_idem = await session.execute(query_idem)
++        evento_existente = res_idem.scalar_one_or_none()
++
++        if evento_existente:
++            if (
++                evento_existente.payload != evento.payload
++                or evento_existente.entidad != evento.entidad
++                or evento_existente.entidad_id != evento.entidad_id
++                or evento_existente.plantilla != evento.plantilla
++                or evento_existente.origen != evento.origen
++                or evento_existente.tipo_evento != evento.tipo_evento
++                or evento_existente.actor != evento.actor
++                or evento_existente.canal != evento.canal.value
++                or evento_existente.contacto_hash
++                != hash_contacto(evento.tenant, evento.actor, evento.canal.value, evento.contacto.identificador)
++            ):
++                raise SMIdempotenciaConflict("idempotencia repetida con datos distintos")
++            asunto_idem, cuerpo_idem = evento.asunto, evento.cuerpo
++            if evento.plantilla:
++                a, c = motor_plantillas.renderizar(evento.plantilla, {"actor": evento.actor, **evento.payload})
++                asunto_idem, cuerpo_idem = a or asunto_idem, c or cuerpo_idem
++            if evento_existente.asunto != asunto_idem or evento_existente.cuerpo != cuerpo_idem:
++                raise SMIdempotenciaConflict("idempotencia repetida con contenido distinto")
++            query_msg = select(SMMensajeRegistro).where(
++                SMMensajeRegistro.evento_id == evento_existente.id,
++            )
++            res_msg = await session.execute(query_msg)
++            msg_existente = res_msg.scalar_one_or_none()
++            if msg_existente:
++                return self._mapear_mensaje_modelo(msg_existente)
++            raise SMIdempotenciaConflict("Evento existente sin mensaje asociado")
++
++        # 2. Validación de canal y contacto
++        if evento.contacto.canal != evento.canal:
++            raise SMConsentimientoFaltante("El canal del contacto y el evento deben ser idénticos")
++
++        contacto_hash = hash_contacto(
++            tenant=evento.tenant,
++            actor=evento.actor,
++            canal=evento.canal.value,
++            identificador=evento.contacto.identificador,
++        )
++
++        # 3. Validación de consentimiento previo
++        tiene_consentimiento = await self.verificar_consentimiento(
++            session,
++            actor=evento.actor,
++            canal=evento.canal,
++            contacto_hash=contacto_hash,
++        )
++        if not tiene_consentimiento:
++            raise SMConsentimientoFaltante(
++                f"No existe consentimiento otorgado para {evento.actor} en canal {evento.canal.value}"
++            )
++
++        # 4. Renderizado opcional de plantilla
++        asunto = evento.asunto
++        cuerpo = evento.cuerpo
++        if evento.plantilla:
++            vars_render = {"actor": evento.actor, **evento.payload}
++            asunto_rend, cuerpo_rend = motor_plantillas.renderizar(evento.plantilla, vars_render)
++            asunto = asunto_rend or asunto
++            cuerpo = cuerpo_rend or cuerpo
++
++        validar_datos_no_personales(asunto, cuerpo, contacto=evento.contacto.identificador)
++        ahora = datetime.now(UTC)
++
++        # 5. Persistencia de SMEvento
++        evento_reg = SMEventoRegistro(
++            id=evento.id,
++            tenant=evento.tenant,
++            tipo_evento=evento.tipo_evento,
++            actor=evento.actor,
++            entidad=evento.entidad,
++            entidad_id=evento.entidad_id,
++            payload=evento.payload,
++            idempotencia=evento.idempotencia,
++            origen=evento.origen,
++            canal=evento.canal.value,
++            contacto_hash=contacto_hash,
++            plantilla=evento.plantilla,
++            asunto=asunto,
++            cuerpo=cuerpo,
++            creado_en=ahora,
++        )
++        session.add(evento_reg)
++        await session.flush()
++
++        # 6. Persistencia de SMMensaje en Outbox
++        metadatos = {
++            "sm_origen": evento.origen,
++            "sm_entidad": evento.entidad or "",
++            "sm_entidad_id": evento.entidad_id or "",
++            "sm_tipo_evento": evento.tipo_evento,
++            **evento.payload,
++        }
++        mensaje_id = uuid.uuid4()
++        mensaje_reg = SMMensajeRegistro(
++            id=mensaje_id,
++            evento_id=evento.id,
++            tenant=evento.tenant,
++            canal=evento.canal.value,
++            actor=evento.actor,
++            contacto_hash=contacto_hash,
++            plantilla=evento.plantilla,
++            asunto=asunto,
++            cuerpo=cuerpo,
++            estado=SMEstadoMensaje.PENDIENTE.value,
++            idempotencia=evento.idempotencia,
++            metadatos=metadatos,
++            creado_en=ahora,
++            actualizado_en=ahora,
++        )
++        session.add(mensaje_reg)
++        await session.flush()
++
++        # 7. Auditoría forense
++        auditoria_hash = hash_traza(
++            tenant=evento.tenant,
++            actor=evento.actor,
++            accion="evento.registrado",
++            evento_id=str(evento.id),
++            mensaje_id=str(mensaje_id),
++            payload={"mensaje": evento.idempotencia, "estado": "pendiente"},
++        )
++        auditoria = SMAuditoriaRegistro(
++            id=uuid.uuid4(),
++            evento_id=evento.id,
++            mensaje_id=mensaje_id,
++            tenant=evento.tenant,
++            actor=evento.actor,
++            accion="evento.registrado",
++            detalle=f"Evento {evento.tipo_evento} encolado para {evento.canal.value}",
++            hash=auditoria_hash,
++            creado_en=ahora,
++        )
++        session.add(auditoria)
++        await session.flush()
++
++        return self._mapear_mensaje_modelo(mensaje_reg)
++
++    async def despachar_mensaje(
++        self,
++        session: AsyncSession,
++        mensaje_id: uuid.UUID,
++        *,
++        contacto: SMContacto,
++    ) -> SMResultadoEntrega:
++        """Despacha un mensaje del outbox usando el adaptador correspondiente."""
++        query = (
++            select(SMMensajeRegistro)
++            .where(SMMensajeRegistro.id == mensaje_id, SMMensajeRegistro.tenant == self.tenant)
++            .with_for_update()
++        )
++        res = await session.execute(query)
++        mensaje = res.scalar_one_or_none()
++
++        if not mensaje:
++            raise SMError(f"Mensaje {mensaje_id} no existe")
++
++        canal_enum = SMCanal(mensaje.canal)
++        if canal_enum != contacto.canal or mensaje.actor != contacto.actor:
++            raise SMError("El contacto no corresponde al mensaje")
++
++        if canal_enum not in self.adaptadores:
++            raise SMCanalesNoAutorizados(f"Canal {canal_enum.value} no configurado")
++
++        # Compatibilidad: esta API prepara, NO registra entregas ni finge despacho.
++        # El envío durable se realiza exclusivamente mediante SMWorker, fuera de
++        # la transacción del dominio y con consentimiento vigente en cada intento.
++        if not await self.verificar_consentimiento(
++            session, actor=mensaje.actor, canal=canal_enum, contacto_hash=mensaje.contacto_hash
++        ):
++            raise SMConsentimientoFaltante("Consentimiento no vigente")
++        if (
++            hash_contacto(self.tenant, contacto.actor, canal_enum.value, contacto.identificador)
++            != mensaje.contacto_hash
++        ):
++            raise SMError("El contacto no corresponde al mensaje")
++        return self.adaptadores[canal_enum]().construir(self._mapear_mensaje_modelo(mensaje), contacto)
++
++    async def _bloquear_clave(self, session: AsyncSession, *partes: str) -> None:
++        import hashlib
++        import json
++
++        raw = json.dumps(["sm", self.tenant, *partes], separators=(",", ":")).encode()
++        llave = int.from_bytes(hashlib.sha256(raw).digest()[:8], "big", signed=True)
++        await session.execute(select(func.pg_advisory_xact_lock(llave)))
++
++    async def obtener_mensaje(
++        self,
++        session: AsyncSession,
++        mensaje_id: uuid.UUID,
++    ) -> SMMensaje | None:
++        """Obtiene un mensaje por su ID."""
++        query = select(SMMensajeRegistro).where(
++            SMMensajeRegistro.id == mensaje_id,
++            SMMensajeRegistro.tenant == self.tenant,
++        )
++        res = await session.execute(query)
++        reg = res.scalar_one_or_none()
++        if not reg:
++            return None
++        return self._mapear_mensaje_modelo(reg)
++
++    async def listar_mensajes(
++        self,
++        session: AsyncSession,
++        *,
++        canal: SMCanal | None = None,
++        estado: SMEstadoMensaje | None = None,
++        limite: int = 50,
++    ) -> Sequence[SMMensaje]:
++        """Consulta el outbox relacional."""
++        query = select(SMMensajeRegistro).where(SMMensajeRegistro.tenant == self.tenant)
++        if canal:
++            query = query.where(SMMensajeRegistro.canal == canal.value)
++        if estado:
++            query = query.where(SMMensajeRegistro.estado == estado.value)
++        query = query.order_by(SMMensajeRegistro.creado_en.desc()).limit(limite)
++        res = await session.execute(query)
++        return [self._mapear_mensaje_modelo(m) for m in res.scalars().all()]
++
++    async def salud(self, session: AsyncSession, *, settings: Settings | None = None) -> SMSalud:
++        """Calcula el estado de salud operativo consultando la base de datos."""
++        query = (
++            select(
++                SMMensajeRegistro.estado,
++                func.count(SMMensajeRegistro.id),
++            )
++            .where(SMMensajeRegistro.tenant == self.tenant)
++            .group_by(SMMensajeRegistro.estado)
++        )
++        res = await session.execute(query)
++        conteo_estados = dict(res.all())
++
++        pendientes = conteo_estados.get("pendiente", 0) + conteo_estados.get("encolado", 0)
++        enviados = conteo_estados.get("enviado", 0) + conteo_estados.get("entregado", 0)
++        fallidos = conteo_estados.get("fallido", 0) + conteo_estados.get("agotado", 0)
++
++        estado = SMEstadoSalud.SALUDABLE
++        motivos: list[str] = []
++        if fallidos > 0 and pendientes == 0:
++            estado = SMEstadoSalud.CRITICO
++            motivos.append("Existen mensajes fallidos/agotados sin pendientes en curso")
++        elif pendientes > 100:
++            estado = SMEstadoSalud.DEGRADADO
++            motivos.append(f"Cola acumulada con {pendientes} mensajes pendientes")
++
++        settings = settings or Settings()
++        transportes = transportes_desde_settings(settings)
++        degradados = tuple(c for c, t in transportes.items() if not t.disponible)
++        vivos = tuple(c for c, t in transportes.items() if t.disponible)
++        latido = await session.get(SMWorkerLatidoRegistro, self.tenant)
++        ultimo = latido.ultimo_latido_en if latido else None
++        ahora = datetime.now(UTC)
++        mas_viejo = await session.scalar(
++            select(func.min(SMMensajeRegistro.creado_en)).where(
++                SMMensajeRegistro.tenant == self.tenant,
++                SMMensajeRegistro.estado.in_(["pendiente", "encolado", "fallido"]),
++                SMMensajeRegistro.reintentable.is_(True),
++            )
++        )
++        if degradados:
++            motivos.append("Canales sin transporte configurado o en simulación")
++            if estado == SMEstadoSalud.SALUDABLE:
++                estado = SMEstadoSalud.DEGRADADO
++        if not settings.sm_worker_habilitado:
++            motivos.append("Worker deshabilitado por configuración")
++            if pendientes and estado != SMEstadoSalud.CRITICO:
++                estado = SMEstadoSalud.DEGRADADO
++        elif ultimo is None or (ahora - ultimo).total_seconds() > 300:
++            motivos.append("Worker sin latido reciente")
++            if estado != SMEstadoSalud.CRITICO:
++                estado = SMEstadoSalud.DEGRADADO
++        return SMSalud(
++            tenant=self.tenant,
++            estado=estado,
++            pendientes=pendientes,
++            enviados=enviados,
++            fallidos=fallidos,
++            canales_vivos=vivos,
++            canales_degradados=degradados,
++            simulados=conteo_estados.get("simulado", 0),
++            worker_ultimo_latido=ultimo,
++            antiguedad_pendiente_segundos=max(0, (ahora - mas_viejo).total_seconds()) if mas_viejo else None,
++            motivos=tuple(motivos),
++        )
++
++    @staticmethod
++    def _mapear_mensaje_modelo(reg: SMMensajeRegistro) -> SMMensaje:
++        return SMMensaje(
++            id=reg.id,
++            tenant=reg.tenant,
++            evento_id=reg.evento_id,
++            canal=SMCanal(reg.canal),
++            actor=reg.actor,
++            contacto_hash=reg.contacto_hash,
++            plantilla=reg.plantilla,
++            asunto=reg.asunto,
++            cuerpo=reg.cuerpo,
++            estado=SMEstadoMensaje(reg.estado),
++            idempotencia=reg.idempotencia,
++            metadatos={str(k): str(v) for k, v in reg.metadatos.items()} if reg.metadatos else {},
++            creado_en=reg.creado_en if isinstance(reg.creado_en, datetime) else datetime.now(UTC),
++            actualizado_en=reg.actualizado_en if isinstance(reg.actualizado_en, datetime) else datetime.now(UTC),
++            proximo_intento_en=reg.proximo_intento_en if isinstance(reg.proximo_intento_en, datetime) else None,
++        )
+diff --git a/backend/app/modules/sm/router.py b/backend/app/modules/sm/router.py
+new file mode 100644
+index 00000000..c2c6bb8d
+--- /dev/null
++++ b/backend/app/modules/sm/router.py
+@@ -0,0 +1,276 @@
++"""Router HTTP para el núcleo portable SM.
++
++Expone endpoints seguros y transaccionales para ingesta de eventos, gestión de
++consentimiento (Habeas Data Ley 1581 / GDPR), inspección del outbox y salud
++operativa sin exponer jamás datos de contacto en texto claro.
++"""
++
++from __future__ import annotations
++
++import logging
++from typing import Annotated
++from uuid import UUID
++
++from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
++from pydantic import BaseModel, ConfigDict, Field
++
++from app.core.database import SessionDependency
++from app.modules.identidad.deps import requerir_permiso
++
++from .contracts import (
++    SMCanal,
++    SMConsentimiento,
++    SMContacto,
++    SMEstadoMensaje,
++    SMEvento,
++    SMMensaje,
++    SMSalud,
++)
++from .core import SMConsentimientoFaltante, SMError, SMIdempotenciaConflict
++from .repository import SMRepository
++from .service_db import SMServicioDB
++from .worker import SMResumenProcesamiento, SMWorker
++
++logger = logging.getLogger("sm.router")
++
++router = APIRouter(prefix="/sm", tags=["SM Core"])
++repo = SMRepository(tenant="polis")
++
++
++# --- Esquemas de entrada y salida ---
++
++
++class SMConsentimientoIn(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++
++    actor: str = Field(min_length=1, max_length=120)
++    canal: SMCanal
++    contacto: str = Field(min_length=3, max_length=255, repr=False)
++    consentido: bool
++    origen: str = Field(default="api", max_length=120)
++
++
++class SMEventoIn(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++
++    tipo_evento: str = Field(min_length=3, max_length=80)
++    actor: str = Field(min_length=1, max_length=120)
++    canal: SMCanal
++    contacto: str = Field(min_length=3, max_length=255, repr=False)
++    idempotencia: str = Field(min_length=8, max_length=255)
++    entidad: str | None = Field(default=None, max_length=80)
++    entidad_id: str | None = Field(default=None, max_length=200)
++    plantilla: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_\-\.]{1,79}$")
++    asunto: str | None = Field(default=None, max_length=200)
++    cuerpo: str | None = None
++    payload: dict[str, str] = Field(default_factory=dict)
++    origen: str = Field(default="api", max_length=120)
++
++
++class SMWorkerRunIn(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++
++    limite: int = Field(default=25, ge=1, le=200)
++
++
++class SMRespuestaVerificacionConsentimiento(BaseModel):
++    actor: str
++    canal: SMCanal
++    contacto_hash: str
++    consentido: bool
++
++
++# --- Endpoints ---
++
++
++@router.post(
++    "/consent",
++    response_model=SMConsentimiento,
++    status_code=status.HTTP_200_OK,
++    summary="Registrar o actualizar consentimiento",
++    dependencies=[Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))],
++)
++async def registrar_consentimiento(
++    payload: SMConsentimientoIn,
++    session: SessionDependency,
++    request: Request,
++) -> SMConsentimiento:
++    """Registra de manera segura el consentimiento previo del titular para un canal."""
++    try:
++        consentimiento = await SMServicioDB(session, settings=request.app.state.settings).registrar_consentimiento(
++            actor=payload.actor,
++            canal=payload.canal,
++            contacto=payload.contacto,
++            consentido=payload.consentido,
++            origen=payload.origen,
++        )
++        return consentimiento
++    except Exception as exc:
++        logger.warning("sm.consentimiento_rechazado")
++        raise HTTPException(
++            status_code=status.HTTP_400_BAD_REQUEST,
++            detail="No fue posible registrar el consentimiento.",
++        ) from exc
++
++
++@router.get(
++    "/consent/{canal}/{actor}",
++    response_model=SMRespuestaVerificacionConsentimiento,
++    summary="Verificar consentimiento activo",
++    dependencies=[Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))],
++)
++async def verificar_consentimiento(
++    canal: SMCanal,
++    actor: str,
++    contacto_hash: Annotated[str, Query(pattern=r"^[a-f0-9]{64}$")],
++    session: SessionDependency,
++) -> SMRespuestaVerificacionConsentimiento:
++    """Verifica si un contacto tiene consentimiento vigente (otorgado) sin exponer el contacto crudo."""
++    otorgado = await repo.verificar_consentimiento(
++        session,
++        actor=actor,
++        canal=canal,
++        contacto_hash=contacto_hash,
++    )
++    return SMRespuestaVerificacionConsentimiento(
++        actor=actor,
++        canal=canal,
++        contacto_hash=contacto_hash,
++        consentido=otorgado,
++    )
++
++
++@router.post(
++    "/events",
++    response_model=SMMensaje,
++    status_code=status.HTTP_201_CREATED,
++    summary="Ingestar evento transaccional",
++    dependencies=[Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))],
++)
++async def procesar_evento(
++    payload: SMEventoIn,
++    session: SessionDependency,
++) -> SMMensaje:
++    """Ingresa un evento hacia el outbox multicanal con idempotencia y auditoría forense."""
++    contacto = SMContacto(
++        canal=payload.canal,
++        identificador=payload.contacto,
++        actor=payload.actor,
++    )
++    evento = SMEvento(
++        tenant="polis",
++        tipo_evento=payload.tipo_evento,
++        actor=payload.actor,
++        entidad=payload.entidad,
++        entidad_id=payload.entidad_id,
++        payload=payload.payload,
++        idempotencia=payload.idempotencia,
++        origen=payload.origen,
++        canal=payload.canal,
++        contacto=contacto,
++        plantilla=payload.plantilla,
++        asunto=payload.asunto,
++        cuerpo=payload.cuerpo,
++    )
++    try:
++        mensaje = await SMServicioDB(session).procesar_evento(evento)
++        return mensaje
++    except SMConsentimientoFaltante as exc:
++        raise HTTPException(
++            status_code=status.HTTP_403_FORBIDDEN,
++            detail=str(exc),
++        ) from exc
++    except SMIdempotenciaConflict as exc:
++        raise HTTPException(
++            status_code=status.HTTP_409_CONFLICT,
++            detail=str(exc),
++        ) from exc
++    except SMError as exc:
++        raise HTTPException(
++            status_code=status.HTTP_400_BAD_REQUEST,
++            detail=str(exc),
++        ) from exc
++    except Exception as exc:
++        logger.warning("sm.operacion_fallida")
++        raise HTTPException(
++            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
++            detail="Fallo interno al procesar el evento.",
++        ) from exc
++
++
++@router.get(
++    "/messages/{mensaje_id}",
++    response_model=SMMensaje,
++    summary="Consultar mensaje del outbox",
++    dependencies=[Depends(requerir_permiso("auditoria:leer", nivel_minimo="declarada"))],
++)
++async def consultar_mensaje(
++    mensaje_id: UUID,
++    session: SessionDependency,
++) -> SMMensaje:
++    """Consulta el estado del outbox sin exponer PII."""
++    mensaje = await repo.obtener_mensaje(session, mensaje_id)
++    if not mensaje:
++        raise HTTPException(
++            status_code=status.HTTP_404_NOT_FOUND,
++            detail=f"Mensaje {mensaje_id} no encontrado",
++        )
++    return mensaje
++
++
++@router.get(
++    "/messages",
++    response_model=list[SMMensaje],
++    summary="Listar mensajes del outbox",
++    dependencies=[Depends(requerir_permiso("auditoria:leer", nivel_minimo="declarada"))],
++)
++async def listar_mensajes(
++    session: SessionDependency,
++    canal: SMCanal | None = None,
++    estado: SMEstadoMensaje | None = None,
++    limite: Annotated[int, Query(ge=1, le=100)] = 50,
++) -> list[SMMensaje]:
++    """Lista mensajes del outbox con filtros operativos."""
++    mensajes = await repo.listar_mensajes(session, canal=canal, estado=estado, limite=limite)
++    return list(mensajes)
++
++
++@router.post(
++    "/worker/run-once",
++    response_model=SMResumenProcesamiento,
++    summary="Disparar procesamiento de outbox (worker)",
++    dependencies=[Depends(requerir_permiso("comunicaciones:gestionar", nivel_minimo="declarada"))],
++)
++async def ejecutar_worker(
++    request: Request,
++    payload: SMWorkerRunIn | None = None,
++) -> SMResumenProcesamiento:
++    """Ejecuta una ronda de despacho de mensajes encolados aplicando reintentos y auditoría."""
++    limite = payload.limite if payload else 25
++    try:
++        settings = request.app.state.settings
++        if not settings.sm_worker_habilitado:
++            raise HTTPException(status_code=409, detail="Worker SM deshabilitado por configuración")
++        async with request.app.state.database.sessions() as session:
++            return await SMWorker(settings=settings).procesar_lote(session, limite=limite)
++    except HTTPException:
++        raise
++    except Exception as exc:
++        logger.warning("sm.operacion_fallida")
++        raise HTTPException(
++            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
++            detail="Fallo interno al ejecutar el worker.",
++        ) from exc
++
++
++@router.get(
++    "/health",
++    response_model=SMSalud,
++    summary="Estado de salud operativo de SM Core",
++)
++async def salud_sm(
++    session: SessionDependency,
++    request: Request,
++) -> SMSalud:
++    """Retorna las métricas agregadas del subsistema de mensajería transaccional."""
++    return await repo.salud(session, settings=request.app.state.settings)
+diff --git a/backend/app/modules/sm/service_db.py b/backend/app/modules/sm/service_db.py
+new file mode 100644
+index 00000000..ec4854cf
+--- /dev/null
++++ b/backend/app/modules/sm/service_db.py
+@@ -0,0 +1,40 @@
++"""Límites de casos de uso SM. El puente compone el repositorio, no este servicio."""
++
++from sqlalchemy.ext.asyncio import AsyncSession
++
++from app.core.config import Settings
++from app.core.transactions import transaction
++
++from .boveda import SMBovedaContactoDB
++from .contracts import SMConsentimiento, SMEvento, SMMensaje
++from .repository import SMRepository
++
++
++class SMServicioDB:
++    def __init__(
++        self,
++        session: AsyncSession,
++        *,
++        tenant: str = "polis",
++        boveda: SMBovedaContactoDB | None = None,
++        settings: Settings | None = None,
++    ):
++        self.session = session
++        self.repo = SMRepository(tenant=tenant, boveda=boveda)
++        self.settings = settings
++
++    async def registrar_consentimiento(self, **datos) -> SMConsentimiento:
++        async with transaction(self.session):
++            if datos["consentido"] and self.repo.boveda is None:
++                self.repo.boveda = SMBovedaContactoDB.desde_settings(self.settings)
++            resultado = await self.repo.registrar_consentimiento(self.session, **datos)
++            return SMConsentimiento.model_validate(resultado)
++
++    async def procesar_evento(self, evento: SMEvento) -> SMMensaje:
++        async with transaction(self.session):
++            resultado = await self.repo.procesar_evento(self.session, evento)
++            return SMMensaje.model_validate(resultado)
++
++    async def rotar_boveda(self, boveda: SMBovedaContactoDB, *, limite: int = 100) -> int:
++        async with transaction(self.session):
++            return await boveda.rotar(self.session, tenant=self.repo.tenant, limite=limite)
+diff --git a/backend/app/modules/sm/templates.py b/backend/app/modules/sm/templates.py
+new file mode 100644
+index 00000000..3763cd94
+--- /dev/null
++++ b/backend/app/modules/sm/templates.py
+@@ -0,0 +1,147 @@
++"""Motor de plantillas institucional del núcleo SM.
++
++Permite registrar, validar y renderizar plantillas de notificación con variables
++dinámicas por canal, garantizando que ninguna notificación se envíe con campos
++faltantes o formatos erróneos.
++"""
++
++from __future__ import annotations
++
++import re
++from dataclasses import dataclass
++from typing import Any
++
++from .contracts import SMCanal
++from .core import SMError
++
++
++class SMPlantillaInvalida(SMError):
++    """La plantilla no existe o faltan variables requeridas."""
++
++
++@dataclass(frozen=True)
++class SMPlantilla:
++    """Definición inmutable de una plantilla institucional."""
++
++    nombre: str
++    cuerpo_patron: str
++    asunto_patron: str | None = None
++    canal: SMCanal | None = None
++    variables_requeridas: tuple[str, ...] = ()
++    descripcion: str = ""
++
++
++class SMMotorPlantillas:
++    """Motor de registro y renderizado seguro de plantillas SM."""
++
++    def __init__(self) -> None:
++        self._plantillas: dict[str, SMPlantilla] = {}
++        self._registrar_plantillas_por_defecto()
++
++    def registrar(self, plantilla: SMPlantilla) -> None:
++        """Registra una plantilla institucional."""
++        if not re.match(r"^[a-z][a-z0-9_\-\.]{1,79}$", plantilla.nombre):
++            raise SMPlantillaInvalida(f"Nombre de plantilla inválido: {plantilla.nombre}")
++        self._plantillas[plantilla.nombre] = plantilla
++
++    def obtener(self, nombre: str) -> SMPlantilla | None:
++        """Obtiene una plantilla registrada por su identificador."""
++        return self._plantillas.get(nombre)
++
++    def renderizar(
++        self,
++        nombre: str,
++        variables: dict[str, Any],
++    ) -> tuple[str | None, str]:
++        """Renderiza una plantilla reemplazando variables.
++
++        Retorna:
++            (asunto_renderizado, cuerpo_renderizado)
++        """
++        plantilla = self.obtener(nombre)
++        if not plantilla:
++            raise SMPlantillaInvalida(f"Plantilla no encontrada: '{nombre}'")
++
++        # Validar variables requeridas
++        faltantes = [v for v in plantilla.variables_requeridas if v not in variables or variables[v] is None]
++        if faltantes:
++            raise SMPlantillaInvalida(
++                f"Faltan variables obligatorias para la plantilla '{nombre}': {', '.join(faltantes)}"
++            )
++
++        # Reemplazo seguro
++        cuerpo = plantilla.cuerpo_patron
++        for clave, valor in variables.items():
++            marcador = f"{{{clave}}}"
++            if marcador in cuerpo:
++                cuerpo = cuerpo.replace(marcador, str(valor))
++
++        asunto = None
++        if plantilla.asunto_patron:
++            asunto = plantilla.asunto_patron
++            for clave, valor in variables.items():
++                marcador = f"{{{clave}}}"
++                if marcador in asunto:
++                    asunto = asunto.replace(marcador, str(valor))
++
++        return asunto, cuerpo
++
++    def _registrar_plantillas_por_defecto(self) -> None:
++        """Carga el catálogo institucional por defecto."""
++        self.registrar(
++            SMPlantilla(
++                nombre="sm.notificacion.general",
++                asunto_patron="Notificación: {titulo}",
++                cuerpo_patron="Estimado/a {actor}:\n\n{mensaje}\n\nCordialmente,\n{entidad}",
++                variables_requeridas=("actor", "titulo", "mensaje"),
++                descripcion="Notificación general institucional",
++            )
++        )
++        self.registrar(
++            SMPlantilla(
++                nombre="sm.mesa.convocatoria",
++                asunto_patron="Convocatoria a Mesa de Trabajo: {mesa_nombre}",
++                cuerpo_patron=(
++                    "Estimado/a {actor}:\n\n"
++                    "Ha sido convocado/a a participar en la mesa '{mesa_nombre}' que tendrá lugar "
++                    "el día {fecha} en {lugar}.\n\n"
++                    "Consulte los detalles en el portal institucional: {enlace}\n\n"
++                    "Atentamente,\nEquipo de Participación Ciudadana"
++                ),
++                variables_requeridas=("actor", "mesa_nombre", "fecha", "lugar"),
++                descripcion="Convocatoria institucional a mesas ciudadanas",
++            )
++        )
++        self.registrar(
++            SMPlantilla(
++                nombre="sm.compromiso.asignado",
++                asunto_patron="Compromiso Asignado: {compromiso_id}",
++                cuerpo_patron=(
++                    "Estimado/a {actor}:\n\n"
++                    "Se le ha asignado la responsabilidad sobre el compromiso: '{titulo}'.\n"
++                    "Fecha límite de cumplimiento: {fecha_limite}.\n"
++                    "Detalle: {descripcion}\n\n"
++                    "Seguimiento: {enlace}"
++                ),
++                variables_requeridas=("actor", "compromiso_id", "titulo", "fecha_limite"),
++                descripcion="Notificación de asignación de compromisos de mesa",
++            )
++        )
++        self.registrar(
++            SMPlantilla(
++                nombre="sm.seguridad.alerta",
++                asunto_patron="Alerta de Seguridad POLIS",
++                cuerpo_patron=(
++                    "AVISO DE SEGURIDAD\n\n"
++                    "Se ha registrado una acción crítica en su cuenta ({accion}) el {fecha}.\n"
++                    "Si no reconoce esta actividad, reporte de inmediato a soporte.\n"
++                    "Hash de trazabilidad: {hash}"
++                ),
++                variables_requeridas=("accion", "fecha", "hash"),
++                descripcion="Alerta de seguridad y verificación de cuenta",
++            )
++        )
++
++
++# Instancia compartida por defecto
++motor_plantillas = SMMotorPlantillas()
+diff --git a/backend/app/modules/sm/transports.py b/backend/app/modules/sm/transports.py
+new file mode 100644
+index 00000000..0eafd54c
+--- /dev/null
++++ b/backend/app/modules/sm/transports.py
+@@ -0,0 +1,399 @@
++"""Transportes SM: envío real separado de construcción; auditoría sin destinatarios.
++
++Los clientes HTTP/SMTP son inyectables. Test nunca usa credenciales ni Postfix.
++Una aceptación del proveedor es `enviado`, no prueba de lectura/entrega final.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import hashlib
++import hmac
++import json
++import logging
++import re
++import smtplib
++import time
++from contextlib import contextmanager
++from contextvars import ContextVar
++from dataclasses import dataclass
++from email.message import EmailMessage
++from email.utils import parseaddr
++from typing import Protocol
++from urllib.parse import urlsplit
++
++import httpx
++
++from app.core.config import Settings
++
++from .contracts import SMCanal, SMEstadoEntrega, SMResultadoEntrega
++
++_HTTP_SM = ContextVar("http_sm_sin_pii", default=False)
++
++
++class _SinURLsSM(logging.Filter):
++    def filter(self, record: logging.LogRecord) -> bool:
++        return not _HTTP_SM.get()
++
++
++# httpx INFO incluye la URL; Telegram lleva el secreto en el path. Filtrar solo
++# nuestras llamadas, no silenciar la telemetría del resto de la aplicación.
++for _logger in (
++    "httpx",
++    "httpcore",
++    "httpcore.connection",
++    "httpcore.http11",
++    "httpcore.http2",
++    "httpcore.proxy",
++    "httpcore.socks",
++):
++    logging.getLogger(_logger).addFilter(_SinURLsSM())
++
++
++@contextmanager
++def _sin_urls():
++    token = _HTTP_SM.set(True)
++    try:
++        yield
++    finally:
++        _HTTP_SM.reset(token)
++
++
++class SMFalloTransporte(Exception):
++    """Código cerrado: jamás interpolar respuestas, direcciones o excepciones originales."""
++
++    def __init__(self, codigo: str, *, transitorio: bool) -> None:
++        self.codigo = codigo if re.fullmatch(r"[a-z_]{1,60}", codigo) else "transporte_error"
++        self.transitorio = transitorio
++        super().__init__(self.codigo)
++
++
++@dataclass(frozen=True)
++class SMReciboTransporte:
++    estado_entrega: SMEstadoEntrega
++    codigo: str
++    externo_id: str | None = None
++
++    def __post_init__(self):
++        if not re.fullmatch(r"[a-z_]{1,60}", self.codigo):
++            raise ValueError("El recibo requiere un código cerrado sin contenido del proveedor")
++        if self.externo_id and not re.fullmatch(r"[0-9a-f]{64}", self.externo_id):
++            object.__setattr__(self, "externo_id", hashlib.sha256(self.externo_id.encode()).hexdigest())
++
++
++class SMTransporte(Protocol):
++    @property
++    def disponible(self) -> bool: ...
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte: ...
++
++
++def _simulado(codigo: str) -> SMReciboTransporte:
++    return SMReciboTransporte(SMEstadoEntrega.SIMULADO, codigo)
++
++
++def _recibo(externo: str) -> SMReciboTransporte:
++    # El proveedor puede incluir teléfono/correo en su ID: conservar solo SHA.
++    return SMReciboTransporte(SMEstadoEntrega.ENVIADO, "proveedor_acepto", hashlib.sha256(externo.encode()).hexdigest())
++
++
++class _LectorSMTP:
++    def __init__(self, archivo, smtp):
++        self.archivo, self.smtp = archivo, smtp
++
++    def readline(self, size=-1):
++        self.smtp._presupuesto()
++        return self.archivo.readline(size)
++
++    def close(self):
++        self.archivo.close()
++
++
++class _SMTPConDeadline(smtplib.SMTP):
++    """Presupuesto total, también ante replies multilínea o varios comandos SMTP."""
++
++    def __init__(self, host, port, *, timeout):
++        self._limite = time.monotonic() + timeout
++        super().__init__(host, port, timeout=timeout)
++
++    def _presupuesto(self):
++        restante = self._limite - time.monotonic()
++        if restante <= 0:
++            raise TimeoutError("smtp_timeout")
++        if self.sock:
++            self.sock.settimeout(restante)
++
++    def getreply(self):
++        self._presupuesto()
++        if self.file is None:
++            self.file = _LectorSMTP(self.sock.makefile("rb"), self)
++        return super().getreply()
++
++    def send(self, s):
++        self._presupuesto()
++        return super().send(s)
++
++
++class SMCorreoTransporte:
++    def __init__(self, settings: Settings, *, smtp_factory=_SMTPConDeadline) -> None:
++        self.settings = settings
++        self.smtp_factory = smtp_factory
++
++    @property
++    def disponible(self) -> bool:
++        return self.settings.environment != "test"
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        if not self.disponible:
++            return _simulado("entorno_test")
++        return await asyncio.to_thread(self._enviar, preparado)
++
++    def _enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        config = self.settings
++        destino = preparado.payload.get("destinatario", "")
++        remitente = config.smtp_remitente
++        if (
++            any(c in destino + remitente for c in "\r\n")
++            or "@" not in parseaddr(destino)[1]
++            or parseaddr(destino)[1] != destino
++            or not parseaddr(remitente)[1]
++        ):
++            raise SMFalloTransporte("smtp_direccion_invalida", transitorio=False)
++        try:
++            mensaje = EmailMessage()
++            mensaje["From"] = remitente
++            mensaje["To"] = destino
++            mensaje["Subject"] = preparado.payload.get("asunto", "Notificación institucional")
++            mensaje["Message-ID"] = f"<{preparado.mensaje_id}@sm.invalid>"
++            mensaje.set_content(preparado.payload.get("cuerpo", ""))
++            host = config.smtp_host or "127.0.0.1"
++            puerto = config.smtp_port if config.smtp_host else 25
++            with self.smtp_factory(host, puerto, timeout=config.sm_http_timeout_segundos) as smtp:
++                smtp.ehlo()
++                if config.smtp_host and config.smtp_tls:
++                    smtp.starttls()
++                    smtp.ehlo()
++                if config.smtp_usuario:
++                    if not config.smtp_tls and host not in ("127.0.0.1", "localhost", "::1"):
++                        raise SMFalloTransporte("smtp_tls_requerido", transitorio=False)
++                    smtp.login(config.smtp_usuario, config.smtp_contrasena or "")
++                rechazados = smtp.send_message(mensaje, from_addr=parseaddr(remitente)[1], to_addrs=[destino])
++                if rechazados:
++                    raise SMFalloTransporte("smtp_rechazado", transitorio=False)
++            return _recibo(str(preparado.mensaje_id))
++        except SMFalloTransporte:
++            raise
++        except smtplib.SMTPNotSupportedError:
++            raise SMFalloTransporte("smtp_no_soportado", transitorio=False) from None
++        except smtplib.SMTPRecipientsRefused as exc:
++            transitorio = any(400 <= valor[0] < 500 for valor in exc.recipients.values())
++            raise SMFalloTransporte("smtp_rechazado", transitorio=transitorio) from None
++        except smtplib.SMTPResponseException as exc:
++            raise SMFalloTransporte("smtp_respuesta", transitorio=400 <= exc.smtp_code < 500) from None
++        except (OSError, smtplib.SMTPException):
++            raise SMFalloTransporte("smtp_conexion", transitorio=True) from None
++        except (ValueError, KeyError):
++            raise SMFalloTransporte("smtp_payload_invalido", transitorio=False) from None
++
++
++class _HTTPTransporte:
++    def __init__(self, settings: Settings, *, http_transport: httpx.AsyncBaseTransport | None = None) -> None:
++        self.settings = settings
++        self.http_transport = http_transport
++
++    async def _post(self, url: str, *, contenido: bytes, headers: dict[str, str]) -> dict:
++        try:
++            with _sin_urls():
++                async with httpx.AsyncClient(
++                    transport=self.http_transport,
++                    timeout=self.settings.sm_http_timeout_segundos,
++                    trust_env=False,
++                    follow_redirects=False,
++                ) as client:
++                    async with client.stream("POST", url, content=contenido, headers=headers) as response:
++                        if not 200 <= response.status_code < 300:
++                            raise SMFalloTransporte(
++                                "http_respuesta",
++                                transitorio=response.status_code in (408, 425, 429) or response.status_code >= 500,
++                            )
++                        partes = bytearray()
++                        async for parte in response.aiter_bytes():
++                            partes.extend(parte)
++                            if len(partes) > 65536:
++                                raise SMFalloTransporte("http_respuesta_excesiva", transitorio=False)
++                        try:
++                            datos = json.loads(partes) if partes else {}
++                        except ValueError:
++                            datos = {}
++                        return datos if isinstance(datos, dict) else {}
++        except httpx.HTTPError:
++            raise SMFalloTransporte("http_conexion", transitorio=True) from None
++
++
++def _json(datos: dict) -> bytes:
++    return json.dumps(datos, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
++
++
++class SMWebhookTransporte(_HTTPTransporte):
++    @property
++    def disponible(self) -> bool:
++        secret = self.settings.sm_webhook_secret
++        return self.settings.environment != "test" and bool(
++            secret and len(secret.get_secret_value()) >= 32 and self.settings.sm_webhook_origenes
++        )
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        if not self.disponible:
++            return _simulado("webhook_sin_configuracion")
++        url = preparado.payload.get("url", "")
++        try:
++            partes = urlsplit(url)
++            origen = f"{partes.scheme}://{partes.netloc}"
++            if (
++                partes.scheme != "https"
++                or partes.username
++                or partes.password
++                or partes.fragment
++                or origen not in self.settings.sm_webhook_origenes
++            ):
++                raise ValueError
++        except ValueError:
++            raise SMFalloTransporte("webhook_destino_no_autorizado", transitorio=False) from None
++        cuerpo = _json({k: v for k, v in preparado.payload.items() if k != "url"})
++        timestamp = str(int(time.time()))
++        secret = self.settings.sm_webhook_secret.get_secret_value().encode()
++        firma = hmac.new(secret, timestamp.encode() + b"." + cuerpo, hashlib.sha256).hexdigest()
++        await self._post(
++            url,
++            contenido=cuerpo,
++            headers={
++                "Content-Type": "application/json",
++                "X-SM-Signature": f"sha256={firma}",
++                "X-SM-Timestamp": timestamp,
++                "X-SM-Message-ID": str(preparado.mensaje_id),
++                "Idempotency-Key": str(preparado.mensaje_id),
++            },
++        )
++        return _recibo(str(preparado.mensaje_id))
++
++
++class SMTelegramTransporte(_HTTPTransporte):
++    @property
++    def disponible(self) -> bool:
++        token = self.settings.sm_telegram_token
++        return self.settings.environment != "test" and bool(token and token.get_secret_value())
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        if not self.disponible:
++            return _simulado("telegram_sin_configuracion")
++        token = self.settings.sm_telegram_token.get_secret_value()
++        if not re.fullmatch(r"[0-9]+:[a-zA-Z0-9_-]+", token):
++            raise SMFalloTransporte("telegram_configuracion_invalida", transitorio=False)
++        respuesta = await self._post(
++            f"https://api.telegram.org/bot{token}/sendMessage",
++            contenido=_json(preparado.payload),
++            headers={"Content-Type": "application/json"},
++        )
++        if respuesta.get("ok") is not True or not isinstance(respuesta.get("result"), dict):
++            raise SMFalloTransporte("telegram_no_acepto", transitorio=respuesta.get("error_code") == 429)
++        message_id = respuesta["result"].get("message_id")
++        if message_id is None:
++            raise SMFalloTransporte("telegram_sin_recibo", transitorio=True)
++        return _recibo(str(message_id))
++
++
++class SMWhatsAppTransporte(_HTTPTransporte):
++    @property
++    def disponible(self) -> bool:
++        s = self.settings
++        return s.environment != "test" and bool(
++            s.sm_whatsapp_token
++            and s.sm_whatsapp_token.get_secret_value()
++            and s.sm_whatsapp_phone_id
++            and s.sm_whatsapp_api_version
++            and s.sm_whatsapp_plantilla
++            and s.sm_whatsapp_plantilla_aprobada
++        )
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        if not self.disponible:
++            return _simulado("whatsapp_sin_plantilla_aprobada_o_credenciales")
++        s = self.settings
++        if not re.fullmatch(r"[0-9]+", s.sm_whatsapp_phone_id or ""):
++            raise SMFalloTransporte("whatsapp_configuracion_invalida", transitorio=False)
++        # No asumir ventana de 24h: solo plantilla aprobada, con un parámetro body
++        # cuyo contrato debe coincidir con la plantilla configurada por el operador.
++        datos = {
++            "messaging_product": "whatsapp",
++            "to": preparado.payload.get("to", ""),
++            "type": "template",
++            "template": {
++                "name": s.sm_whatsapp_plantilla,
++                "language": {"code": s.sm_whatsapp_idioma},
++                "components": [
++                    {"type": "body", "parameters": [{"type": "text", "text": preparado.payload.get("text", "")}]}
++                ],
++            },
++        }
++        respuesta = await self._post(
++            f"https://graph.facebook.com/{s.sm_whatsapp_api_version}/{s.sm_whatsapp_phone_id}/messages",
++            contenido=_json(datos),
++            headers={
++                "Authorization": f"Bearer {s.sm_whatsapp_token.get_secret_value()}",
++                "Content-Type": "application/json",
++            },
++        )
++        messages = respuesta.get("messages")
++        if (
++            not isinstance(messages, list)
++            or not messages
++            or not isinstance(messages[0], dict)
++            or not messages[0].get("id")
++        ):
++            raise SMFalloTransporte("whatsapp_sin_recibo", transitorio=True)
++        return _recibo(str(messages[0]["id"]))
++
++
++class SMSMSCliente(Protocol):
++    async def enviar(self, *, destinatario: str, texto: str, idempotencia: str) -> str: ...
++
++
++class SMSMSTransporte:
++    """Proveedor oficial inyectable; no elegir ni fingir un proveedor sin contrato."""
++
++    def __init__(self, settings: Settings, *, cliente: SMSMSCliente | None = None) -> None:
++        self.settings, self.cliente = settings, cliente
++
++    @property
++    def disponible(self) -> bool:
++        return self.settings.environment != "test" and self.cliente is not None
++
++    async def enviar(self, preparado: SMResultadoEntrega) -> SMReciboTransporte:
++        if not self.disponible:
++            return _simulado("sms_sin_proveedor")
++        try:
++            recibo = await asyncio.wait_for(
++                self.cliente.enviar(
++                    destinatario=preparado.payload.get("to", ""),
++                    texto=preparado.payload.get("text", ""),
++                    idempotencia=str(preparado.mensaje_id),
++                ),
++                timeout=self.settings.sm_http_timeout_segundos,
++            )
++        except SMFalloTransporte:
++            raise
++        except Exception:
++            raise SMFalloTransporte("sms_conexion", transitorio=True) from None
++        if not recibo:
++            raise SMFalloTransporte("sms_sin_recibo", transitorio=True)
++        return _recibo(str(recibo))
++
++
++def transportes_desde_settings(settings: Settings) -> dict[SMCanal, SMTransporte]:
++    return {
++        SMCanal.CORREO: SMCorreoTransporte(settings),
++        SMCanal.WEBHOOK: SMWebhookTransporte(settings),
++        SMCanal.TELEGRAM: SMTelegramTransporte(settings),
++        SMCanal.WHATSAPP: SMWhatsAppTransporte(settings),
++        SMCanal.SMS: SMSMSTransporte(settings),
++    }
+diff --git a/backend/app/modules/sm/worker.py b/backend/app/modules/sm/worker.py
+new file mode 100644
+index 00000000..4e0952c8
+--- /dev/null
++++ b/backend/app/modules/sm/worker.py
+@@ -0,0 +1,340 @@
++"""Outbox con reclamación confirmada antes de enviar y finalización independiente.
++
++SKIP LOCKED + token/lease excluyen workers simultáneos. Tras caída se recupera el
++mensaje con el mismo ID externo. SMTP no ofrece exactly-once: una caída después
++de aceptar y antes de confirmar puede repetir un envío; ver runbook.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import re
++import secrets
++import uuid
++from collections.abc import Callable
++from dataclasses import dataclass
++from datetime import datetime, timedelta
++
++from sqlalchemy import func, or_, select
++from sqlalchemy.dialects.postgresql import insert
++from sqlalchemy.exc import SQLAlchemyError
++from sqlalchemy.ext.asyncio import AsyncSession
++
++from app.core.config import Settings
++from app.core.transactions import transaction
++
++from .boveda import SMBovedaContactoDB, SMBovedaError, SMResolutorContacto, huella_payload
++from .channels import SMCanalBase
++from .contracts import SMCanal, SMContacto, SMEstadoEntrega, SMMensaje
++from .core import SMError, hash_contacto, hash_traza
++from .models import (
++    SMAuditoriaRegistro,
++    SMConsentimientoRegistro,
++    SMEntregaRegistro,
++    SMMensajeRegistro,
++    SMWorkerLatidoRegistro,
++)
++from .repository import ADAPTADORES_BASE, SMRepository
++from .transports import SMFalloTransporte, SMReciboTransporte, SMTransporte, transportes_desde_settings
++
++
++@dataclass(frozen=True)
++class SMResumenProcesamiento:
++    procesados: int = 0
++    enviados: int = 0
++    fallidos: int = 0
++    agotados: int = 0
++    sin_contacto: int = 0
++    simulados: int = 0
++    cancelados: int = 0
++
++
++@dataclass(frozen=True)
++class _Reclamacion:
++    mensaje: SMMensaje
++    token: uuid.UUID
++    intento: int
++    entrega_id: uuid.UUID
++
++
++class SMWorker:
++    def __init__(
++        self,
++        tenant: str = "polis",
++        max_reintentos: int | None = None,
++        adaptadores: dict[SMCanal, type[SMCanalBase]] | None = None,
++        *,
++        settings: Settings | None = None,
++        resolutor: SMResolutorContacto | None = None,
++        transportes: dict[SMCanal, SMTransporte] | None = None,
++        reloj: Callable[[], datetime] | None = None,
++        jitter: Callable[[], float] | None = None,
++    ) -> None:
++        self.settings = settings or Settings()
++        if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,31}", tenant):
++            raise SMError("El tenant debe ser un identificador opaco")
++        self.tenant = tenant
++        self.max_reintentos = self.settings.sm_worker_max_reintentos if max_reintentos is None else max_reintentos
++        if not 1 <= self.max_reintentos <= 20:
++            raise ValueError("max_reintentos fuera de rango")
++        self.adaptadores = dict(ADAPTADORES_BASE if adaptadores is None else adaptadores)
++        self.transportes = transportes_desde_settings(self.settings) if transportes is None else dict(transportes)
++        self.resolutor = resolutor
++        self.reloj = reloj
++        self.jitter = jitter or (lambda: secrets.randbelow(1000) / 1000)
++
++    async def _ahora(self, session: AsyncSession) -> datetime:
++        return self.reloj() if self.reloj else await session.scalar(select(func.clock_timestamp()))
++
++    async def _reclamar(self, session: AsyncSession, excluidos: set[uuid.UUID]) -> _Reclamacion | None:
++        async with transaction(session):
++            ahora = await self._ahora(session)
++            await session.execute(
++                insert(SMWorkerLatidoRegistro)
++                .values(
++                    tenant=self.tenant,
++                    ultimo_latido_en=ahora,
++                )
++                .on_conflict_do_update(index_elements=["tenant"], set_={"ultimo_latido_en": ahora})
++            )
++            msg = await session.scalar(
++                select(SMMensajeRegistro)
++                .where(
++                    SMMensajeRegistro.tenant == self.tenant,
++                    SMMensajeRegistro.reintentable.is_(True),
++                    SMMensajeRegistro.estado.in_(["pendiente", "fallido", "encolado"]),
++                    or_(SMMensajeRegistro.proximo_intento_en.is_(None), SMMensajeRegistro.proximo_intento_en <= ahora),
++                    or_(SMMensajeRegistro.reclamado_hasta.is_(None), SMMensajeRegistro.reclamado_hasta <= ahora),
++                    SMMensajeRegistro.id.not_in(excluidos),
++                )
++                .order_by(SMMensajeRegistro.creado_en, SMMensajeRegistro.id)
++                .limit(1)
++                .with_for_update(skip_locked=True)
++            )
++            if msg is None:
++                return None
++            anteriores = (
++                await session.scalar(
++                    select(func.count()).select_from(SMEntregaRegistro).where(SMEntregaRegistro.mensaje_id == msg.id)
++                )
++                or 0
++            )
++            if msg.reclamacion_token is not None:
++                perdidas = (
++                    await session.scalars(
++                        select(SMEntregaRegistro).where(
++                            SMEntregaRegistro.mensaje_id == msg.id,
++                            SMEntregaRegistro.estado_entrega == "en_curso",
++                        )
++                    )
++                ).all()
++                for perdida in perdidas:
++                    perdida.estado_entrega = "incierto"
++                    perdida.detalle = "resultado_desconocido_tras_caida"
++            if anteriores >= self.max_reintentos:
++                msg.estado, msg.reintentable, msg.proximo_intento_en = "agotado", False, None
++                msg.reclamacion_token, msg.reclamado_hasta = None, None
++                msg.actualizado_en = ahora
++                session.add(
++                    SMAuditoriaRegistro(
++                        tenant=self.tenant,
++                        evento_id=msg.evento_id,
++                        mensaje_id=msg.id,
++                        actor=msg.actor,
++                        accion="worker.agotado",
++                        detalle="max_intentos_tras_caida",
++                        hash=hash_traza(self.tenant, msg.actor, "worker.agotado", str(msg.evento_id), str(msg.id), {}),
++                    )
++                )
++                return _Reclamacion(SMRepository._mapear_mensaje_modelo(msg), uuid.uuid4(), 0, uuid.uuid4())
++            token, entrega_id = uuid.uuid4(), uuid.uuid4()
++            msg.estado, msg.reclamacion_token = "encolado", token
++            msg.reclamado_hasta = ahora + timedelta(seconds=self.settings.sm_worker_lease_segundos)
++            msg.actualizado_en = ahora
++            session.add(
++                SMEntregaRegistro(
++                    id=entrega_id,
++                    mensaje_id=msg.id,
++                    tenant=self.tenant,
++                    idempotencia=f"{msg.id}:{anteriores + 1}",
++                    canal=msg.canal,
++                    intento=anteriores + 1,
++                    estado_entrega="en_curso",
++                    detalle="reclamacion_pendiente_de_resultado",
++                    payload={},
++                )
++            )
++            await session.flush()
++            return _Reclamacion(SMRepository._mapear_mensaje_modelo(msg), token, anteriores + 1, entrega_id)
++
++    async def _contacto(
++        self,
++        session: AsyncSession,
++        reclamacion: _Reclamacion,
++        contactos: dict[str, SMContacto],
++    ) -> SMContacto | None:
++        msg = reclamacion.mensaje
++        async with transaction(session):
++            consentimiento = await session.scalar(
++                select(SMConsentimientoRegistro)
++                .where(
++                    SMConsentimientoRegistro.tenant == msg.tenant,
++                    SMConsentimientoRegistro.actor == msg.actor,
++                    SMConsentimientoRegistro.canal == msg.canal.value,
++                    SMConsentimientoRegistro.contacto_hash == msg.contacto_hash,
++                )
++                .with_for_update()
++            )
++            if consentimiento is None or consentimiento.estado != "otorgado":
++                return None
++            contacto = contactos.get(msg.contacto_hash)
++            if contacto is None:
++                resolutor = self.resolutor or SMBovedaContactoDB.desde_settings(self.settings)
++                contacto = await resolutor.resolver(session, msg)
++            if contacto and (
++                contacto.actor != msg.actor
++                or contacto.canal != msg.canal
++                or hash_contacto(msg.tenant, contacto.actor, contacto.canal.value, contacto.identificador)
++                != msg.contacto_hash
++            ):
++                raise SMBovedaError("El contacto no corresponde a la reclamación")
++            if contacto is None:
++                raise SMBovedaError("Contacto no disponible en bóveda")
++            return contacto
++
++    async def _finalizar(
++        self,
++        session: AsyncSession,
++        rec: _Reclamacion,
++        *,
++        recibo: SMReciboTransporte | None,
++        fallo: SMFalloTransporte | None = None,
++        payload_hash: str | None = None,
++    ) -> str:
++        async with transaction(session):
++            msg = await session.scalar(
++                select(SMMensajeRegistro)
++                .where(
++                    SMMensajeRegistro.id == rec.mensaje.id,
++                    SMMensajeRegistro.tenant == self.tenant,
++                )
++                .with_for_update()
++            )
++            if msg is None or msg.reclamacion_token != rec.token:
++                raise SMError("Reclamación vencida o sustituida; resultado externo incierto")
++            entrega = await session.get(SMEntregaRegistro, rec.entrega_id)
++            ahora = await self._ahora(session)
++            if recibo is None and fallo is None:
++                estado, codigo = "cancelado", "consentimiento_revocado"
++                entrega.estado_entrega = "fallido"
++                msg.reintentable = False
++            elif fallo:
++                codigo = fallo.codigo
++                agotado = rec.intento >= self.max_reintentos and fallo.transitorio
++                estado = "agotado" if agotado else "fallido"
++                entrega.estado_entrega = "fallido"
++                msg.reintentable = fallo.transitorio and not agotado
++                if msg.reintentable:
++                    espera = self.settings.sm_worker_base_segundos * (2**rec.intento)
++                    msg.proximo_intento_en = ahora + timedelta(seconds=espera + max(0, min(1, self.jitter())))
++            else:
++                if recibo.estado_entrega not in (SMEstadoEntrega.ENVIADO, SMEstadoEntrega.SIMULADO):
++                    raise SMError("El transporte no confirmó envío ni simulación")
++                estado, codigo = recibo.estado_entrega.value, recibo.codigo
++                entrega.estado_entrega = estado
++                entrega.externo_id = recibo.externo_id
++                msg.reintentable = False
++            if not msg.reintentable:
++                msg.proximo_intento_en = None
++            entrega.detalle = codigo
++            entrega.payload = {"codigo": codigo, "payload_sha256": payload_hash or ""}
++            msg.estado, msg.actualizado_en = estado, ahora
++            msg.reclamacion_token, msg.reclamado_hasta = None, None
++            accion = f"worker.{estado}"
++            session.add(
++                SMAuditoriaRegistro(
++                    tenant=self.tenant,
++                    evento_id=msg.evento_id,
++                    mensaje_id=msg.id,
++                    actor=msg.actor,
++                    accion=accion,
++                    detalle=codigo,
++                    hash=hash_traza(
++                        self.tenant,
++                        msg.actor,
++                        accion,
++                        str(msg.evento_id),
++                        str(msg.id),
++                        {"intento": str(rec.intento), "codigo": codigo},
++                    ),
++                )
++            )
++            await session.flush()
++            return estado
++
++    async def procesar_lote(
++        self,
++        session: AsyncSession,
++        *,
++        limite: int = 25,
++        contactos_resolver: dict[str, SMContacto] | None = None,
++        detener: Callable[[], bool] | None = None,
++    ) -> SMResumenProcesamiento:
++        """Sesión exclusiva nueva. Cada mensaje se procesa como máximo una vez por ronda.
++
++        El despacho tiene un límite de tiempo inferior al lease. Una revocación
++        posterior a la autorización no deshace un envío ya aceptado externamente.
++        """
++        if session.in_transaction() or session.info.get("polis_transaction_owner") or not 1 <= limite <= 200:
++            raise SMError("El worker requiere sesión nueva y límite entre 1 y 200")
++        contadores = {campo: 0 for campo in SMResumenProcesamiento.__dataclass_fields__}
++        excluidos: set[uuid.UUID] = set()
++        for _ in range(limite):
++            if detener is not None and detener():
++                break
++            rec = await self._reclamar(session, excluidos)
++            if rec is None:
++                break
++            excluidos.add(rec.mensaje.id)
++            contadores["procesados"] += 1
++            if rec.intento == 0:
++                contadores["agotados"] += 1
++                continue
++            recibo, fallo, payload_hash = None, None, None
++            try:
++                contacto = await self._contacto(session, rec, contactos_resolver or {})
++                if contacto:
++                    adaptador = self.adaptadores.get(rec.mensaje.canal)
++                    transporte = self.transportes.get(rec.mensaje.canal)
++                    if adaptador is None or transporte is None:
++                        raise SMFalloTransporte("canal_no_configurado", transitorio=False)
++                    preparado = adaptador().construir(mensaje=rec.mensaje, contacto=contacto)
++                    payload_hash = huella_payload(preparado.payload)
++                    if rec.mensaje.metadatos.get("sm_modo_sombra") == "1":
++                        recibo = SMReciboTransporte(SMEstadoEntrega.SIMULADO, "puente_modo_sombra")
++                    else:
++                        recibo = await asyncio.wait_for(
++                            transporte.enviar(preparado), timeout=self.settings.sm_http_timeout_segundos * 2 + 5
++                        )
++                    del contacto, preparado
++            except SMBovedaError:
++                contadores["sin_contacto"] += 1
++                fallo = SMFalloTransporte("boveda_no_disponible", transitorio=True)
++            except SMFalloTransporte as exc:
++                fallo = exc
++            except SQLAlchemyError:
++                raise
++            except Exception:
++                fallo = SMFalloTransporte("despacho_error", transitorio=True)
++            # La persistencia no se captura como fallo del proveedor: propaga y revierte.
++            estado = await self._finalizar(session, rec, recibo=recibo, fallo=fallo, payload_hash=payload_hash)
++            contadores[
++                {
++                    "enviado": "enviados",
++                    "simulado": "simulados",
++                    "fallido": "fallidos",
++                    "agotado": "agotados",
++                    "cancelado": "cancelados",
++                }[estado]
++            ] += 1
++        return SMResumenProcesamiento(**contadores)
+diff --git a/backend/scripts/sm_worker_cli.py b/backend/scripts/sm_worker_cli.py
+new file mode 100644
+index 00000000..b373d381
+--- /dev/null
++++ b/backend/scripts/sm_worker_cli.py
+@@ -0,0 +1,79 @@
++"""Ejecutor SM. No migra, no configura proveedores y está apagado por defecto."""
++
++from __future__ import annotations
++
++import argparse
++import asyncio
++import json
++import signal
++import sys
++from dataclasses import asdict
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
++
++from app.core.config import Settings  # noqa: E402
++from app.core.database import Database  # noqa: E402
++from app.modules.sm.boveda import SMBovedaContactoDB  # noqa: E402
++from app.modules.sm.worker import SMWorker  # noqa: E402
++
++
++def argumentos(argv: list[str] | None = None) -> argparse.Namespace:
++    parser = argparse.ArgumentParser(description="Outbox SM (sin migraciones ni activación implícita)")
++    modo = parser.add_mutually_exclusive_group(required=True)
++    modo.add_argument("--once", action="store_true")
++    modo.add_argument("--daemon", action="store_true")
++    parser.add_argument("--tenant", default="polis")
++    parser.add_argument("--limite", type=int, default=25, choices=range(1, 201), metavar="1..200")
++    parser.add_argument("--intervalo", type=float, default=5)
++    args = parser.parse_args(argv)
++    if not 0.1 <= args.intervalo <= 60:
++        parser.error("--intervalo debe estar entre 0.1 y 60 segundos")
++    if not args.tenant or len(args.tenant) > 32:
++        parser.error("--tenant requiere entre 1 y 32 caracteres")
++    return args
++
++
++async def ejecutar(args: argparse.Namespace) -> int:
++    settings = Settings()
++    if not settings.sm_worker_habilitado:
++        print(json.dumps({"estado": "deshabilitado", "envios": 0}))
++        return 0
++    # Fallar antes de abrir conexiones o enviar si falta la clave.
++    boveda = SMBovedaContactoDB.desde_settings(settings)
++    database = Database(settings)
++    worker = SMWorker(tenant=args.tenant, settings=settings, resolutor=boveda)
++    stop = asyncio.Event()
++    loop = asyncio.get_running_loop()
++    for sig in (signal.SIGINT, signal.SIGTERM):
++        loop.add_signal_handler(sig, stop.set)
++    try:
++        while not stop.is_set():
++            async with database.sessions() as session:
++                resumen = await worker.procesar_lote(session, limite=args.limite, detener=stop.is_set)
++            print(json.dumps({"estado": "ronda_completada", **asdict(resumen)}), flush=True)
++            if args.once:
++                break
++            try:
++                await asyncio.wait_for(stop.wait(), timeout=args.intervalo)
++            except TimeoutError:
++                pass
++        return 0
++    finally:
++        await database.engine.dispose()
++
++
++def main(argv: list[str] | None = None) -> int:
++    args = argumentos(argv)
++    try:
++        return asyncio.run(ejecutar(args))
++    except KeyboardInterrupt:
++        return 130
++    except Exception:
++        # Nunca imprimir DSN, SQL, destinos, claves o excepciones del proveedor.
++        print(json.dumps({"estado": "error", "codigo": "sm_worker_fallo"}), file=sys.stderr)
++        return 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/backend/tests/test_sm_310.py b/backend/tests/test_sm_310.py
+new file mode 100644
+index 00000000..d0e9a9d2
+--- /dev/null
++++ b/backend/tests/test_sm_310.py
+@@ -0,0 +1,606 @@
++"""Aceptación 310-BK en PostgreSQL exclusivo; sin red externa ni SMTP productivo."""
++
++from __future__ import annotations
++
++import asyncio
++import base64
++import json
++import os
++from datetime import UTC, datetime, timedelta
++from uuid import uuid4
++
++import pytest
++from sqlalchemy import func, select, text
++from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
++
++from app.core.config import Settings
++from app.core.transactions import transaction
++from app.modules.sm.boveda import SMBovedaContactoDB, SMBovedaError
++from app.modules.sm.bridge import SMBridge
++from app.modules.sm.contracts import SMCanal, SMContacto, SMEstadoEntrega, SMEvento
++from app.modules.sm.core import SMError, SMIdempotenciaConflict
++from app.modules.sm.models import (
++    SMAuditoriaRegistro,
++    SMConsentimientoRegistro,
++    SMContactoBovedaRegistro,
++    SMEntregaRegistro,
++    SMEventoRegistro,
++    SMMensajeRegistro,
++)
++from app.modules.sm.repository import SMRepository
++from app.modules.sm.service_db import SMServicioDB
++from app.modules.sm.transports import SMFalloTransporte, SMReciboTransporte
++from app.modules.sm.worker import SMWorker
++
++pytestmark = pytest.mark.anyio
++
++
++@pytest.fixture
++def anyio_backend():
++    return "asyncio"
++
++
++@pytest.fixture
++async def sm310(database_url):
++    engine = create_async_engine(database_url, hide_parameters=True)
++    sessions = async_sessionmaker(engine, expire_on_commit=False)
++    key = os.urandom(32)
++    settings = Settings(
++        _env_file=None,
++        database_url=database_url,
++        environment="test",
++        sm_boveda_key=base64.urlsafe_b64encode(key).decode(),
++        sm_worker_habilitado=True,
++    )
++    boveda = SMBovedaContactoDB(claves={"v1": key}, key_id="v1")
++    tenant = "t310_" + uuid4().hex[:20]
++    try:
++        yield sessions, boveda, tenant, settings
++    finally:
++        await engine.dispose()
++
++
++def evento(tenant, *, contacto="contacto310@example.invalid", canal=SMCanal.CORREO, actor="actor-opaco"):
++    return SMEvento(
++        tenant=tenant,
++        actor=actor,
++        tipo_evento="prueba.institucional",
++        canal=canal,
++        contacto=SMContacto(canal=canal, actor=actor, identificador=contacto),
++        cuerpo="Aviso institucional sin datos personales",
++        idempotencia="sm310:" + uuid4().hex,
++    )
++
++
++async def encolar(sm310, ev=None):
++    sessions, boveda, tenant, _ = sm310
++    ev = ev or evento(tenant)
++    repo = SMRepository(tenant, boveda=boveda)
++    async with sessions() as session:
++        async with transaction(session):
++            await repo.registrar_consentimiento(
++                session, actor=ev.actor, canal=ev.canal, contacto=ev.contacto.identificador, consentido=True
++            )
++            msg = await repo.procesar_evento(session, ev)
++    return msg, ev
++
++
++class TransporteControlado:
++    disponible = True
++
++    def __init__(self, *, error=None, pausa=None):
++        self.error, self.pausa = error, pausa
++        self.enviados = []
++
++    async def enviar(self, preparado):
++        self.enviados.append(preparado.mensaje_id)
++        if self.pausa:
++            await self.pausa()
++        if self.error:
++            raise self.error
++        return SMReciboTransporte(SMEstadoEntrega.ENVIADO, "proveedor_acepto", "f" * 64)
++
++
++async def test_boveda_ciphertext_nonce_aad_y_lectura_privada(sm310):
++    sessions, boveda, tenant, _ = sm310
++    msg, ev = await encolar(sm310)
++    async with sessions() as observer:
++        reg = await observer.scalar(select(SMContactoBovedaRegistro).where(SMContactoBovedaRegistro.tenant == tenant))
++        inicial = reg.contacto_cifrado
++        assert ev.contacto.identificador.encode() not in inicial
++        assert (await boveda.resolver(observer, msg)).identificador == ev.contacto.identificador
++        assert await boveda.resolver(observer, msg.model_copy(update={"tenant": "otro"})) is None
++        assert await boveda.resolver(observer, msg.model_copy(update={"actor": "otro"})) is None
++    async with sessions() as session:
++        async with transaction(session):
++            await boveda.almacenar(session, tenant=tenant, contacto=ev.contacto)
++    async with sessions() as observer:
++        reg = await observer.scalar(select(SMContactoBovedaRegistro).where(SMContactoBovedaRegistro.tenant == tenant))
++        assert reg.contacto_cifrado != inicial
++        sin_clave = SMBovedaContactoDB(claves={"v1": os.urandom(32)}, key_id="v1")
++        with pytest.raises(SMBovedaError, match="autenticar"):
++            await sin_clave.resolver(observer, msg)
++    async with sessions() as session:
++        async with transaction(session):
++            reg = await session.scalar(
++                select(SMContactoBovedaRegistro).where(SMContactoBovedaRegistro.tenant == tenant)
++            )
++            reg.contacto_cifrado = inicial[:-1] + bytes([inicial[-1] ^ 1])
++    async with sessions() as observer:
++        with pytest.raises(SMBovedaError, match="autenticar"):
++            await boveda.resolver(observer, msg)
++
++
++async def test_rotacion_recifra_sin_perdida_y_clave_vieja_no_abre(sm310):
++    sessions, vieja, tenant, _ = sm310
++    msg, ev = await encolar(sm310)
++    nueva_key = os.urandom(32)
++    nueva = SMBovedaContactoDB(claves={**vieja._claves, "v2": nueva_key}, key_id="v2")
++    async with sessions() as session:
++        assert await SMServicioDB(session, tenant=tenant).rotar_boveda(nueva) == 1
++    async with sessions() as session:
++        solo_nueva = SMBovedaContactoDB(claves={"v2": nueva_key}, key_id="v2")
++        assert (await solo_nueva.resolver(session, msg)).identificador == ev.contacto.identificador
++        with pytest.raises(SMBovedaError):
++            await vieja.resolver(session, msg)
++
++
++async def test_revocacion_purga_y_bloquea_mensaje_ya_encolado(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    async with sessions() as session:
++        await SMServicioDB(session, tenant=tenant, boveda=boveda).registrar_consentimiento(
++            actor=ev.actor, canal=ev.canal, contacto=ev.contacto.identificador, consentido=False
++        )
++    transporte = TransporteControlado()
++    async with sessions() as session:
++        resumen = await SMWorker(
++            tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte}
++        ).procesar_lote(session)
++    async with sessions() as observer:
++        assert (
++            await observer.scalar(
++                select(func.count())
++                .select_from(SMContactoBovedaRegistro)
++                .where(SMContactoBovedaRegistro.tenant == tenant)
++            )
++            == 0
++        )
++        assert (await observer.get(SMMensajeRegistro, msg.id)).estado == "cancelado"
++    assert resumen.cancelados == 1 and not transporte.enviados
++
++
++@pytest.mark.parametrize("revocar", [False, True])
++async def test_rollback_real_despues_de_flush_consentimiento_y_boveda(sm310, monkeypatch, revocar):
++    sessions, boveda, tenant, _ = sm310
++    ev = evento(tenant)
++    if revocar:
++        await encolar(sm310, ev)
++    original = SMRepository.registrar_consentimiento
++
++    async def falla(self, session, **datos):
++        await original(self, session, **datos)
++        raise RuntimeError("fallo posterior al flush")
++
++    monkeypatch.setattr(SMRepository, "registrar_consentimiento", falla)
++    async with sessions() as session:
++        with pytest.raises(RuntimeError):
++            await SMServicioDB(session, tenant=tenant, boveda=boveda).registrar_consentimiento(
++                actor=ev.actor, canal=ev.canal, contacto=ev.contacto.identificador, consentido=not revocar
++            )
++    async with sessions() as observer:
++        count = await observer.scalar(
++            select(func.count()).select_from(SMContactoBovedaRegistro).where(SMContactoBovedaRegistro.tenant == tenant)
++        )
++        assert count == int(revocar)
++        estado = await observer.scalar(
++            select(SMConsentimientoRegistro.estado).where(SMConsentimientoRegistro.tenant == tenant)
++        )
++        assert estado == ("otorgado" if revocar else None)
++        if not revocar:
++            assert (
++                await observer.scalar(
++                    select(func.count()).select_from(SMAuditoriaRegistro).where(SMAuditoriaRegistro.tenant == tenant)
++                )
++                == 0
++            )
++
++
++async def test_consentimiento_sin_clave_no_confirma(sm310, monkeypatch):
++    sessions, _, tenant, _ = sm310
++
++    def falla(*_args, **_kwargs):
++        raise SMBovedaError("sin clave")
++
++    monkeypatch.setattr(SMBovedaContactoDB, "desde_settings", falla)
++    async with sessions() as session:
++        with pytest.raises(SMBovedaError):
++            await SMServicioDB(session, tenant=tenant).registrar_consentimiento(
++                actor="opaco", canal=SMCanal.CORREO, contacto="sinclave@example.invalid", consentido=True
++            )
++    async with sessions() as observer:
++        assert (
++            await observer.scalar(
++                select(func.count())
++                .select_from(SMConsentimientoRegistro)
++                .where(SMConsentimientoRegistro.tenant == tenant)
++            )
++            == 0
++        )
++
++
++async def test_backoff_reloj_controlado_permanente_y_agotamiento(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    tiempo = [datetime.now(UTC)]
++    transporte = TransporteControlado(error=SMFalloTransporte("proveedor_temporal", transitorio=True))
++    worker = SMWorker(
++        tenant,
++        max_reintentos=2,
++        settings=settings,
++        resolutor=boveda,
++        transportes={ev.canal: transporte},
++        reloj=lambda: tiempo[0],
++        jitter=lambda: 0.5,
++    )
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).fallidos == 1
++    async with sessions() as observer:
++        reg = await observer.get(SMMensajeRegistro, msg.id)
++        assert reg.proximo_intento_en == tiempo[0] + timedelta(seconds=60.5)
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).procesados == 0
++    tiempo[0] += timedelta(seconds=61)
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).agotados == 1
++        assert (await worker.procesar_lote(session)).procesados == 0
++    assert transporte.enviados == [msg.id, msg.id]
++
++    msg2, _ = await encolar(sm310)
++    transporte.error = SMFalloTransporte("proveedor_permanente", transitorio=False)
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).fallidos == 1
++        assert (await worker.procesar_lote(session)).procesados == 0
++    async with sessions() as observer:
++        reg = await observer.get(SMMensajeRegistro, msg2.id)
++        assert reg.estado == "fallido" and not reg.reintentable and reg.proximo_intento_en is None
++
++
++async def test_dos_workers_sin_duplicados_sin_transaccion_durante_envio(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    entro, liberar = asyncio.Event(), asyncio.Event()
++
++    async def pausa():
++        async with sessions() as observer:
++            estado = (await observer.get(SMMensajeRegistro, msg.id)).estado
++            assert estado == "encolado"  # Reclamación ya visible a otra conexión.
++        entro.set()
++        await liberar.wait()
++
++    transporte = TransporteControlado(pausa=pausa)
++    worker = SMWorker(tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte})
++
++    async def procesar():
++        async with sessions() as session:
++            return await worker.procesar_lote(session, limite=1)
++
++    tarea = asyncio.create_task(procesar())
++    try:
++        await asyncio.wait_for(entro.wait(), timeout=10)
++        segundo = await asyncio.wait_for(procesar(), timeout=10)
++        assert segundo.procesados == 0
++    finally:
++        liberar.set()
++    assert (await tarea).enviados == 1
++    assert transporte.enviados == [msg.id]
++
++
++async def test_recupera_lease_vencido_y_no_admite_finalizacion_antigua(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    tiempo = [datetime.now(UTC)]
++    transporte = TransporteControlado()
++    worker = SMWorker(
++        tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte}, reloj=lambda: tiempo[0]
++    )
++    async with sessions() as session:
++        antigua = await worker._reclamar(session, set())
++    tiempo[0] += timedelta(seconds=settings.sm_worker_lease_segundos + 1)
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).enviados == 1
++    async with sessions() as session:
++        with pytest.raises(SMError, match="sustituida"):
++            await worker._finalizar(session, antigua, recibo=SMReciboTransporte(SMEstadoEntrega.ENVIADO, "ok"))
++    async with sessions() as observer:
++        entregas = (
++            await observer.scalars(
++                select(SMEntregaRegistro)
++                .where(SMEntregaRegistro.mensaje_id == msg.id)
++                .order_by(SMEntregaRegistro.intento)
++            )
++        ).all()
++        assert [e.estado_entrega for e in entregas] == ["incierto", "enviado"]
++    assert transporte.enviados == [msg.id]
++
++
++async def test_worker_simulado_y_volcado_sin_contactos_o_error_crudo(sm310, caplog):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    async with sessions() as session:
++        resumen = await SMWorker(tenant, settings=settings, resolutor=boveda).procesar_lote(session)
++    assert resumen.simulados == 1 and resumen.enviados == 0
++    async with sessions() as observer:
++        for tabla in (
++            SMEventoRegistro,
++            SMMensajeRegistro,
++            SMEntregaRegistro,
++            SMAuditoriaRegistro,
++            SMConsentimientoRegistro,
++        ):
++            datos = (
++                (
++                    await observer.execute(
++                        text(
++                            f"SELECT row_to_json(t) FROM participacion_ciudadana.{tabla.__tablename__} t "
++                            "WHERE tenant=:tenant"
++                        ),
++                        {"tenant": tenant},
++                    )
++                )
++                .scalars()
++                .all()
++            )
++            assert ev.contacto.identificador not in json.dumps(datos, default=str)
++        reg = await observer.get(SMMensajeRegistro, msg.id)
++        assert reg.estado == "simulado" and not reg.reintentable
++    msg2, _ = await encolar(sm310)
++    transporte = TransporteControlado(error=RuntimeError("password=secreto " + ev.contacto.identificador))
++    async with sessions() as session:
++        await SMWorker(tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte}).procesar_lote(
++            session
++        )
++    async with sessions() as observer:
++        entrega = await observer.scalar(select(SMEntregaRegistro).where(SMEntregaRegistro.mensaje_id == msg2.id))
++        assert entrega.detalle == "despacho_error" and "secreto" not in json.dumps(entrega.payload)
++    assert ev.contacto.identificador not in caplog.text and "password=" not in caplog.text
++
++
++async def test_worker_rechaza_transaccion_ajena_y_resolutor_cruzado(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    worker = SMWorker(tenant, settings=settings, resolutor=boveda)
++    async with sessions() as session:
++        async with transaction(session):
++            with pytest.raises(SMError, match="sesión nueva"):
++                await worker.procesar_lote(session)
++    equivocado = SMContacto(canal=ev.canal, actor="otro", identificador=ev.contacto.identificador)
++    async with sessions() as session:
++        resumen = await worker.procesar_lote(session, contactos_resolver={msg.contacto_hash: equivocado})
++    assert resumen.sin_contacto == 1 and resumen.enviados == 0
++
++
++async def test_bridge_outbox_rollback_despues_de_escritura_real(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    bridge = SMBridge(tenant, settings=settings)
++    async with sessions() as session:
++        with pytest.raises(RuntimeError, match="dominio"):
++            async with transaction(session):
++                await bridge.notificar_convocatoria_mesa(
++                    session,
++                    mesa_id="prueba310",
++                    mesa_nombre="Mesa",
++                    actor=ev.actor,
++                    canal=ev.canal,
++                    contacto=ev.contacto.identificador,
++                    fecha="2026-12-01",
++                    lugar="Centro institucional",
++                )
++                raise RuntimeError("fallo posterior de dominio")
++    async with sessions() as observer:
++        ids = (await observer.scalars(select(SMMensajeRegistro.id).where(SMMensajeRegistro.tenant == tenant))).all()
++        assert ids == [msg.id]
++
++
++async def test_idempotencia_concurrente_y_contenido_distinto(sm310):
++    sessions, boveda, tenant, _ = sm310
++    _, ev = await encolar(sm310)
++
++    async def alta():
++        async with sessions() as session:
++            return await SMServicioDB(session, tenant=tenant, boveda=boveda).procesar_evento(ev)
++
++    a, b = await asyncio.gather(alta(), alta())
++    assert a.id == b.id
++    async with sessions() as session:
++        with pytest.raises(SMIdempotenciaConflict):
++            await SMServicioDB(session, tenant=tenant, boveda=boveda).procesar_evento(
++                ev.model_copy(update={"cuerpo": "Contenido distinto"})
++            )
++
++
++async def test_puente_real_herald_transaccion_misma_sombra_sin_duplicar(sm310):
++    from app.modules.identidad.schemas import UsuarioCreacion
++    from app.modules.identidad.service import IdentidadService
++    from app.modules.notificaciones.models import NotificacionTransaccional
++    from app.modules.notificaciones.service import NotificacionService
++
++    sessions, boveda, tenant, settings = sm310
++    # El hook de la aplicación usa el tenant polis. Aislar por usuario e ID del outbox.
++    correo = f"sm310-{uuid4().hex}@example.org"
++    async with sessions() as session:
++        usuario = await IdentidadService(session, settings=settings).registrar_usuario(
++            UsuarioCreacion(correo=correo, contrasena="PruebaSM310Segura!", nombres="Prueba", apellidos="Aislada")
++        )
++    actor = str(usuario.id)
++    async with sessions() as session:
++        await SMServicioDB(session, boveda=boveda).registrar_consentimiento(
++            actor=actor, canal=SMCanal.CORREO, contacto=correo, consentido=True
++        )
++    settings = settings.model_copy(update={"sm_eventos_dominio": ["gestion_institucional"]})
++    async with sessions() as session:
++        async with transaction(session):
++            notificacion = await NotificacionService(session, settings=settings).enviar_comprobante_gestion_interna(
++                destinatario=correo,
++                nombre_actor="Prueba",
++                rol="Prueba",
++                accion="Gestión",
++                detalle_accion="Evento de dominio de prueba",
++            )
++    async with sessions() as observer:
++        msg = await observer.scalar(
++            select(SMMensajeRegistro).where(SMMensajeRegistro.idempotencia == f"herald:{notificacion.id}")
++        )
++        assert msg and msg.metadatos["sm_modo_sombra"] == "1"
++        assert correo not in json.dumps(msg.metadatos) and correo not in (msg.cuerpo or "")
++        assert (await observer.get(NotificacionTransaccional, notificacion.id)).estado_envio == "pendiente"
++        msg_id = msg.id
++    # Resolver/transportes solo para este actor; los demás mensajes polis se excluyen
++    # temporalmente por tenant distinto en el worker de prueba, sin cambiar producción.
++    async with sessions() as session:
++        async with transaction(session):
++            reg = await session.get(SMMensajeRegistro, msg_id)
++            reg.proximo_intento_en = datetime.now(UTC) + timedelta(days=1)
++    # Probar atomicidad del hook real: fallo tras flush revierte Herald y SM juntos.
++    ids_nuevos = []
++    async with sessions() as session:
++        with pytest.raises(RuntimeError):
++            async with transaction(session):
++                n = await NotificacionService(session, settings=settings).enviar_comprobante_gestion_interna(
++                    destinatario=correo,
++                    nombre_actor="Prueba",
++                    rol="Prueba",
++                    accion="Gestión revertida",
++                    detalle_accion="Operación de prueba",
++                )
++                ids_nuevos.append(n.id)
++                raise RuntimeError("dominio revierte")
++    async with sessions() as observer:
++        assert await observer.get(NotificacionTransaccional, ids_nuevos[0]) is None
++        assert (
++            await observer.scalar(
++                select(SMMensajeRegistro.id).where(SMMensajeRegistro.idempotencia == f"herald:{ids_nuevos[0]}")
++            )
++            is None
++        )
++
++
++async def test_modo_sombra_no_invoca_transporte_ni_con_credenciales(sm310):
++    sessions, boveda, tenant, settings = sm310
++    ev = evento(tenant).model_copy(update={"payload": {"sm_modo_sombra": "1"}})
++    await encolar(sm310, ev)
++    transporte = TransporteControlado()
++    async with sessions() as session:
++        r = await SMWorker(
++            tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte}
++        ).procesar_lote(session)
++    assert r.simulados == 1 and r.enviados == 0 and not transporte.enviados
++
++
++async def test_caida_en_ultimo_intento_agota_sin_repetir_despacho(sm310):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    tiempo = [datetime.now(UTC)]
++    transporte = TransporteControlado()
++    worker = SMWorker(
++        tenant,
++        settings=settings,
++        resolutor=boveda,
++        max_reintentos=1,
++        transportes={ev.canal: transporte},
++        reloj=lambda: tiempo[0],
++    )
++    async with sessions() as session:
++        await worker._reclamar(session, set())
++    tiempo[0] += timedelta(seconds=settings.sm_worker_lease_segundos + 1)
++    async with sessions() as session:
++        assert (await worker.procesar_lote(session)).agotados == 1
++    assert not transporte.enviados
++    async with sessions() as observer:
++        assert (await observer.get(SMMensajeRegistro, msg.id)).estado == "agotado"
++        entrega = await observer.scalar(select(SMEntregaRegistro).where(SMEntregaRegistro.mensaje_id == msg.id))
++        assert entrega.estado_entrega == "incierto"
++        assert await observer.scalar(
++            select(SMAuditoriaRegistro.id).where(
++                SMAuditoriaRegistro.mensaje_id == msg.id, SMAuditoriaRegistro.accion == "worker.agotado"
++            )
++        )
++
++
++async def test_apagado_gracioso_no_reclama_otro_mensaje(sm310):
++    sessions, boveda, tenant, settings = sm310
++    _, ev = await encolar(sm310)
++    await encolar(sm310)
++    stop = asyncio.Event()
++
++    async def parar():
++        stop.set()
++
++    transporte = TransporteControlado(pausa=parar)
++    async with sessions() as session:
++        r = await SMWorker(
++            tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte}
++        ).procesar_lote(session, detener=stop.is_set)
++    assert r.enviados == r.procesados == 1
++    async with sessions() as observer:
++        assert (
++            await observer.scalar(
++                select(func.count())
++                .select_from(SMMensajeRegistro)
++                .where(SMMensajeRegistro.tenant == tenant, SMMensajeRegistro.estado == "pendiente")
++            )
++            == 1
++        )
++
++
++async def test_fallo_persistencia_final_revierte_sin_fingir_fallo_del_proveedor(sm310, monkeypatch):
++    sessions, boveda, tenant, settings = sm310
++    msg, ev = await encolar(sm310)
++    transporte = TransporteControlado()
++    worker = SMWorker(tenant, settings=settings, resolutor=boveda, transportes={ev.canal: transporte})
++    async with sessions() as session:
++        original = session.flush
++
++        async def fallar_despues_de_flush(*args, **kwargs):
++            finales = [
++                obj
++                for obj in session.identity_map.values()
++                if isinstance(obj, SMMensajeRegistro) and obj.estado == "enviado"
++            ]
++            await original(*args, **kwargs)
++            if finales:
++                raise RuntimeError("fallo de persistencia posterior al envío")
++
++        monkeypatch.setattr(session, "flush", fallar_despues_de_flush)
++        with pytest.raises(RuntimeError, match="persistencia"):
++            await worker.procesar_lote(session)
++    assert transporte.enviados == [msg.id]
++    async with sessions() as observer:
++        reg = await observer.get(SMMensajeRegistro, msg.id)
++        assert reg.estado == "encolado" and reg.reclamacion_token is not None
++        entrega = await observer.scalar(select(SMEntregaRegistro).where(SMEntregaRegistro.mensaje_id == msg.id))
++        assert entrega.estado_entrega == "en_curso"
++        assert not await observer.scalar(
++            select(SMAuditoriaRegistro.id).where(
++                SMAuditoriaRegistro.mensaje_id == msg.id, SMAuditoriaRegistro.accion == "worker.enviado"
++            )
++        )
++
++
++@pytest.mark.parametrize("campo", ["actor", "cuerpo", "asunto", "payload"])
++async def test_pii_en_campos_libres_rechazada_antes_de_persistir(sm310, campo):
++    sessions, boveda, tenant, _ = sm310
++    ev = evento(tenant)
++    valor = {"extra": ev.contacto.identificador} if campo == "payload" else ev.contacto.identificador
++    ev = ev.model_copy(update={campo: valor})
++    async with sessions() as session:
++        with pytest.raises(SMError):
++            await SMServicioDB(session, tenant=tenant, boveda=boveda).procesar_evento(ev)
++    async with sessions() as observer:
++        assert (
++            await observer.scalar(
++                select(func.count()).select_from(SMEventoRegistro).where(SMEventoRegistro.tenant == tenant)
++            )
++            == 0
++        )
+diff --git a/backend/tests/test_sm_cli_310.py b/backend/tests/test_sm_cli_310.py
+new file mode 100644
+index 00000000..4d475cd2
+--- /dev/null
++++ b/backend/tests/test_sm_cli_310.py
+@@ -0,0 +1,58 @@
++"""CLI real con entorno de prueba explícito; nunca heredando la base productiva."""
++
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++
++import pytest
++
++ROOT = Path(__file__).resolve().parents[2]
++CLI = ROOT / "backend/scripts/sm_worker_cli.py"
++
++
++def cli(database_url, *args, habilitado="false", clave=None):
++    assert "/polis_test" in database_url
++    env = {
++        **os.environ,
++        "POLIS_DATABASE_URL": database_url,
++        "POLIS_ENVIRONMENT": "test",
++        "POLIS_SM_WORKER_HABILITADO": habilitado,
++        "POLIS_SM_BOVEDA_KEY": clave or os.environ.get("POLIS_SM_BOVEDA_KEY", ""),
++        "POLIS_SM_EVENTOS_DOMINIO": "[]",
++        "POLIS_SM_BOVEDA_CLAVES_ANTERIORES": "",
++    }
++    return subprocess.run(
++        [sys.executable, str(CLI), *args], cwd=ROOT, env=env, capture_output=True, text=True, timeout=30
++    )
++
++
++def test_cli_apagado_no_abre_base(database_url):
++    # Host inválido evidencia que el interruptor se evalúa antes de conectar.
++    from sqlalchemy.engine import make_url
++
++    url = make_url(database_url).set(host="no-conectar.invalid").render_as_string(hide_password=False)
++    r = cli(url, "--once")
++    assert r.returncode == 0 and json.loads(r.stdout)["estado"] == "deshabilitado"
++    assert not r.stderr
++
++
++def test_cli_once_real_base_aislada_simulaciones(database_url):
++    r = cli(database_url, "--once", "--tenant", "cli310-sin-mensajes", habilitado="true")
++    assert r.returncode == 0, r.stderr
++    data = json.loads(r.stdout)
++    assert data["estado"] == "ronda_completada" and data["enviados"] == 0
++
++
++def test_cli_clave_invalida_error_cerrado(database_url):
++    r = cli(database_url, "--once", habilitado="true", clave="clave-invalida")
++    assert r.returncode == 1 and json.loads(r.stderr)["codigo"] == "sm_worker_fallo"
++    assert "clave-invalida" not in r.stderr and "postgresql" not in r.stderr
++
++
++@pytest.mark.parametrize(
++    "args", [[], ["--once", "--daemon"], ["--once", "--limite", "0"], ["--daemon", "--intervalo", "0"]]
++)
++def test_cli_argumentos_rechazados(database_url, args):
++    assert cli(database_url, *args).returncode == 2
+diff --git a/backend/tests/test_sm_full.py b/backend/tests/test_sm_full.py
+new file mode 100644
+index 00000000..3efdef6f
+--- /dev/null
++++ b/backend/tests/test_sm_full.py
+@@ -0,0 +1,726 @@
++"""Pruebas integrales de SM Core (Fases 1 a 7).
++
++Cubre:
++- Motor de plantillas dinámico y validación de variables.
++- Persistencia durable con SQLAlchemy en PostgreSQL (SMRepository).
++- Worker transaccional, reintentos exponenciales y política de agotamiento.
++- Puente de eventos del dominio POLIS (SMBridge).
++- SDK portable (SMClient).
++- Endpoints HTTP REST (router /api/v1/sm).
++"""
++
++from __future__ import annotations
++
++import uuid
++
++import pytest
++from fastapi.testclient import TestClient
++from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
++
++from app.core.config import Settings
++from app.main import create_app
++from app.modules.sm.bridge import SMBridge
++from app.modules.sm.client import SMClient
++from app.modules.sm.contracts import (
++    SMCanal,
++    SMContacto,
++    SMEstadoConsentimiento,
++    SMEstadoEntrega,
++    SMEstadoMensaje,
++    SMEvento,
++    SMMensaje,
++)
++from app.modules.sm.core import (
++    SMConsentimientoFaltante,
++    SMIdempotenciaConflict,
++    hash_contacto,
++)
++from app.modules.sm.repository import SMRepository
++from app.modules.sm.templates import SMPlantilla, SMPlantillaInvalida, motor_plantillas
++from app.modules.sm.worker import SMWorker
++
++pytestmark = pytest.mark.anyio
++
++
++@pytest.fixture
++def anyio_backend():
++    return "asyncio"
++
++
++@pytest.fixture
++async def db_session(database_url: str):
++    engine = create_async_engine(database_url, pool_pre_ping=True)
++    session_factory = async_sessionmaker(engine, expire_on_commit=False)
++    async with session_factory() as session:
++        yield session
++        await session.rollback()
++    await engine.dispose()
++
++
++@pytest.fixture
++def test_client(database_url: str, provisionar_usuario_sync):
++    settings = Settings(_env_file=None, environment="test", database_url=database_url)
++    with TestClient(create_app(settings)) as client:
++        correo = f"sm-admin-{uuid.uuid4().hex}@example.org"
++        clave = "ClavePruebaSM2026*"
++        provisionar_usuario_sync(
++            client,
++            {
++                "correo": correo,
++                "contrasena": clave,
++                "nombres": "Admin",
++                "apellidos": "SM",
++                "codigo_rol": "autoridad_distrital",
++            },
++        )
++        login = client.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": clave})
++        assert login.status_code == 200, login.text
++        client.headers.update({"Authorization": "Bearer " + login.json()["token_acceso"]})
++        yield client
++
++
++@pytest.fixture
++def cliente_anonimo(database_url: str):
++    settings = Settings(_env_file=None, environment="test", database_url=database_url)
++    with TestClient(create_app(settings)) as client:
++        yield client
++
++
++# --- 1. Pruebas del Motor de Plantillas ---
++
++
++def test_plantillas_registro_y_renderizado():
++    nueva_plantilla = SMPlantilla(
++        nombre="sm.prueba.custom",
++        asunto_patron="Aviso: {tema}",
++        cuerpo_patron="Hola {usuario}, su trámite {tramite_id} fue procesado.",
++        variables_requeridas=("usuario", "tema", "tramite_id"),
++    )
++    motor_plantillas.registrar(nueva_plantilla)
++
++    asunto, cuerpo = motor_plantillas.renderizar(
++        "sm.prueba.custom",
++        {"usuario": "Ciudadana 1", "tema": "Votación", "tramite_id": "TR-99"},
++    )
++    assert asunto == "Aviso: Votación"
++    assert cuerpo == "Hola Ciudadana 1, su trámite TR-99 fue procesado."
++
++
++def test_plantillas_variables_faltantes_lanza_error():
++    with pytest.raises(SMPlantillaInvalida) as exc:
++        motor_plantillas.renderizar(
++            "sm.mesa.convocatoria",
++            {"actor": "Juan"},
++        )
++    assert "Faltan variables obligatorias" in str(exc.value)
++
++
++def test_plantillas_nombre_invalido():
++    with pytest.raises(SMPlantillaInvalida):
++        motor_plantillas.registrar(
++            SMPlantilla(
++                nombre="INVALID NAME WITH SPACES",
++                cuerpo_patron="test",
++            )
++        )
++
++
++def test_plantillas_predeterminadas_completas():
++    asunto, cuerpo = motor_plantillas.renderizar(
++        "sm.notificacion.general",
++        {"actor": "Maria", "titulo": "Cierre de fase", "mensaje": "La fase concluyó", "entidad": "Secretaría"},
++    )
++    assert "Cierre de fase" in (asunto or "")
++    assert "Maria" in cuerpo
++
++
++# --- 2. Pruebas del SDK Portable (SMClient) ---
++
++
++async def test_client_sdk_memoria_flujo_completo():
++    client = SMClient(tenant="polis_sdk")
++
++    # 1. Otorgar consentimiento
++    consent = await client.otorgar_consentimiento(
++        actor="veedor_01",
++        canal=SMCanal.CORREO,
++        contacto="veedor@ciudadano.org",
++    )
++    assert consent.estado == SMEstadoConsentimiento.OTORGADO
++
++    # 2. Emitir evento
++    msg = await client.emitir_evento(
++        tipo_evento="notificacion.general",
++        actor="veedor_01",
++        canal=SMCanal.CORREO,
++        contacto_identificador="veedor@ciudadano.org",
++        idempotencia="sdk-evt-001",
++        asunto="Reporte mensual",
++        cuerpo="Su reporte está listo.",
++    )
++    assert msg.estado == SMEstadoMensaje.PENDIENTE
++    assert msg.canal == SMCanal.CORREO
++
++    # 3. Consultar salud
++    salud = await client.consultar_salud()
++    assert salud.tenant == "polis_sdk"
++    assert salud.pendientes >= 1
++
++
++async def test_client_sdk_consentimiento_revocado_bloquea():
++    client = SMClient(tenant="polis_sdk_rev")
++    await client.revocar_consentimiento(
++        actor="ciudadano_bloqueado",
++        canal=SMCanal.SMS,
++        contacto="+573001234567",
++    )
++
++    with pytest.raises(SMConsentimientoFaltante):
++        await client.emitir_evento(
++            tipo_evento="sms.alerta",
++            actor="ciudadano_bloqueado",
++            canal=SMCanal.SMS,
++            contacto_identificador="+573001234567",
++            idempotencia="sdk-evt-fail",
++            cuerpo="Alerta",
++        )
++
++
++# --- 3. Pruebas de Persistencia Relacional (SMRepository) ---
++
++
++async def test_repositorio_consentimiento_persistencia(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    actor = f"actor_{uuid.uuid4().hex[:8]}"
++    contacto = "ciudadano@correo.gov.co"
++
++    # Registrar otorgado
++    c1 = await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=True,
++    )
++    assert c1.estado == SMEstadoConsentimiento.OTORGADO
++
++    # Verificar que existe y está activo
++    activo = await repo.verificar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto_hash=c1.contacto_hash,
++    )
++    assert activo is True
++
++    # Revocar consentimiento (opt-out)
++    c2 = await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=False,
++    )
++    assert c2.estado == SMEstadoConsentimiento.REVOCADO
++
++    # Verificar revocado
++    activo_rev = await repo.verificar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto_hash=c1.contacto_hash,
++    )
++    assert activo_rev is False
++
++
++async def test_repositorio_procesar_evento_con_plantilla(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    actor = f"lider_{uuid.uuid4().hex[:8]}"
++    contacto = "+573109876543"
++
++    # Dar consentimiento previo
++    await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.WHATSAPP,
++        contacto=contacto,
++        consentido=True,
++    )
++
++    evento = SMEvento(
++        tenant="polis",
++        tipo_evento="mesa.convocatoria",
++        actor=actor,
++        idempotencia=f"idem-mesa-{uuid.uuid4().hex[:8]}",
++        canal=SMCanal.WHATSAPP,
++        contacto=SMContacto(canal=SMCanal.WHATSAPP, identificador=contacto, actor=actor),
++        plantilla="sm.mesa.convocatoria",
++        payload={
++            "mesa_nombre": "Mesa de Seguridad Rural",
++            "fecha": "2026-12-01",
++            "lugar": "Centro Comunitario",
++            "enlace": "https://polis.gob.co/m/123",
++        },
++    )
++
++    mensaje = await repo.procesar_evento(db_session, evento)
++    assert mensaje.estado == SMEstadoMensaje.PENDIENTE
++    assert "Mesa de Seguridad Rural" in (mensaje.cuerpo or "")
++    assert mensaje.contacto_hash == hash_contacto("polis", actor, "whatsapp", contacto)
++
++    # Reintento con misma idempotencia debe retornar el mismo mensaje
++    mensaje_reintento = await repo.procesar_evento(db_session, evento)
++    assert mensaje_reintento.id == mensaje.id
++
++
++async def test_repositorio_despacho_mensaje(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    actor = f"user_{uuid.uuid4().hex[:8]}"
++    contacto_str = "user@test.gov.co"
++
++    await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto_str,
++        consentido=True,
++    )
++
++    evento = SMEvento(
++        tenant="polis",
++        tipo_evento="notificacion.general",
++        actor=actor,
++        idempotencia=f"idem-despacho-{uuid.uuid4().hex[:8]}",
++        canal=SMCanal.CORREO,
++        contacto=SMContacto(canal=SMCanal.CORREO, identificador=contacto_str, actor=actor),
++        asunto="Asunto directo",
++        cuerpo="Cuerpo de prueba",
++    )
++    mensaje = await repo.procesar_evento(db_session, evento)
++
++    contacto_obj = SMContacto(canal=SMCanal.CORREO, identificador=contacto_str, actor=actor)
++    entrega = await repo.despachar_mensaje(db_session, mensaje.id, contacto=contacto_obj)
++
++    assert entrega.estado_entrega == SMEstadoEntrega.PREPARADO
++    assert entrega.intento == 1
++
++    msg_actualizado = await repo.obtener_mensaje(db_session, mensaje.id)
++    assert msg_actualizado is not None
++    assert msg_actualizado.estado == SMEstadoMensaje.PENDIENTE
++
++
++# --- 4. Pruebas del Worker Transaccional y Reintentos ---
++
++
++async def test_worker_despacho_lote(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    worker = SMWorker(tenant="polis")
++    actor = f"worker_actor_{uuid.uuid4().hex[:8]}"
++    contacto_str = "+573009998877"
++
++    await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.SMS,
++        contacto=contacto_str,
++        consentido=True,
++    )
++
++    resolver = {
++        hash_contacto("polis", actor, "sms", contacto_str): SMContacto(
++            canal=SMCanal.SMS, identificador=contacto_str, actor=actor
++        )
++    }
++    for i in range(2):
++        ev = SMEvento(
++            tenant="polis",
++            tipo_evento="sms.aviso",
++            actor=actor,
++            idempotencia=f"idem-worker-{uuid.uuid4().hex[:8]}-{i}",
++            canal=SMCanal.SMS,
++            contacto=SMContacto(canal=SMCanal.SMS, identificador=contacto_str, actor=actor),
++            cuerpo=f"Mensaje SMS de prueba {i}",
++        )
++        await repo.procesar_evento(db_session, ev)
++
++    await db_session.commit()
++    resumen = await worker.procesar_lote(db_session, limite=10, contactos_resolver=resolver)
++    assert resumen.procesados >= 2
++    assert resumen.simulados >= 2
++    assert resumen.enviados == 0
++
++
++async def test_worker_reintentos_y_agotamiento(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++
++    class AdaptadorFallido:
++        def construir(self, mensaje, contacto):
++            raise RuntimeError("Falla intencional en conexión con proveedor")
++
++    worker_fallas = SMWorker(
++        tenant="polis",
++        max_reintentos=2,
++        adaptadores={SMCanal.CORREO: AdaptadorFallido},  # type: ignore
++    )
++
++    actor = f"fallas_actor_{uuid.uuid4().hex[:8]}"
++    contacto = "error@proveedor.com"
++
++    await repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=True,
++    )
++
++    ev = SMEvento(
++        tenant="polis",
++        tipo_evento="correo.falla",
++        actor=actor,
++        idempotencia=f"idem-falla-{uuid.uuid4().hex[:8]}",
++        canal=SMCanal.CORREO,
++        contacto=SMContacto(canal=SMCanal.CORREO, identificador=contacto, actor=actor),
++        asunto="Falla esperada",
++        cuerpo="Texto",
++    )
++    msg = await repo.procesar_evento(db_session, ev)
++    resolver = {
++        msg.contacto_hash: SMContacto(canal=SMCanal.CORREO, identificador=contacto, actor=actor),
++    }
++
++    # Pasada 1: Fallo en intento 1 -> Estado FALLIDO
++    await db_session.commit()
++    resumen1 = await worker_fallas.procesar_lote(db_session, limite=10, contactos_resolver=resolver)
++    assert resumen1.fallidos >= 1
++    msg_p1 = await repo.obtener_mensaje(db_session, msg.id)
++    assert msg_p1.estado == SMEstadoMensaje.FALLIDO
++
++    # Pasada 2: Intento 2 alcanza max_reintentos (2) -> Estado AGOTADO
++    from datetime import UTC, datetime, timedelta
++
++    from sqlalchemy import update
++
++    from app.modules.sm.models import SMMensajeRegistro
++
++    await db_session.execute(
++        update(SMMensajeRegistro)
++        .where(SMMensajeRegistro.id == msg.id)
++        .values(proximo_intento_en=datetime.now(UTC) - timedelta(seconds=1))
++    )
++    await db_session.commit()
++    resumen2 = await worker_fallas.procesar_lote(db_session, limite=10, contactos_resolver=resolver)
++    assert resumen2.agotados >= 1
++    msg_p2 = await repo.obtener_mensaje(db_session, msg.id)
++    assert msg_p2.estado == SMEstadoMensaje.AGOTADO
++
++
++# --- 5. Pruebas del Puente Institucional POLIS (SMBridge) ---
++
++
++async def test_bridge_polis_convocatoria_mesa(db_session: AsyncSession):
++    bridge = SMBridge(tenant="polis")
++    actor = f"ciudadano_mesa_{uuid.uuid4().hex[:8]}"
++    contacto = "ciudadano@bogota.gov.co"
++
++    await bridge.repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=True,
++    )
++
++    msg = await bridge.notificar_convocatoria_mesa(
++        db_session,
++        mesa_id="mesa-001",
++        mesa_nombre="Mesa Ambiental Suba",
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        fecha="2026-11-20",
++        lugar="Salón Comunal Suba",
++    )
++    assert msg.estado == SMEstadoMensaje.PENDIENTE
++    assert "Mesa Ambiental Suba" in (msg.asunto or "")
++
++
++async def test_bridge_polis_asignacion_compromiso(db_session: AsyncSession):
++    bridge = SMBridge(tenant="polis")
++    actor = f"funcionario_{uuid.uuid4().hex[:8]}"
++    contacto = "funcionario@secretaria.gov.co"
++
++    await bridge.repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=True,
++    )
++
++    msg = await bridge.notificar_asignacion_compromiso(
++        db_session,
++        compromiso_id="COMP-2026-45",
++        titulo="Pavimentación carrera 7",
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        fecha_limite="2026-12-31",
++        descripcion="Ejecución de obra civil priorizada",
++    )
++    assert msg.estado == SMEstadoMensaje.PENDIENTE
++    assert "COMP-2026-45" in (msg.asunto or "")
++
++
++async def test_bridge_polis_alerta_seguridad(db_session: AsyncSession):
++    bridge = SMBridge(tenant="polis")
++    actor = f"admin_{uuid.uuid4().hex[:8]}"
++    contacto = "admin@seguridad.gov.co"
++
++    await bridge.repo.registrar_consentimiento(
++        db_session,
++        actor=actor,
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        consentido=True,
++    )
++
++    msg = await bridge.notificar_alerta_seguridad(
++        db_session,
++        actor=actor,
++        accion="cambio_clave_maestra",
++        canal=SMCanal.CORREO,
++        contacto=contacto,
++        hash_traza="hash_forense_sha256_mock",
++    )
++    assert msg.estado == SMEstadoMensaje.PENDIENTE
++    assert "Alerta de Seguridad" in (msg.asunto or "")
++
++
++# --- 6. Pruebas de Endpoints HTTP REST (Router /api/v1/sm) ---
++
++
++def test_router_consentimiento_y_verificacion(test_client: TestClient):
++    actor = f"titular_{uuid.uuid4().hex[:8]}"
++    contacto = "titular@derechos.gov.co"
++
++    resp = test_client.post(
++        "/api/v1/sm/consent",
++        json={
++            "actor": actor,
++            "canal": "correo",
++            "contacto": contacto,
++            "consentido": True,
++            "origen": "test_suite",
++        },
++    )
++    assert resp.status_code == 200, resp.text
++    data = resp.json()
++    assert data["actor"] == actor
++    assert data["estado"] == "otorgado"
++
++    resp_ver = test_client.get(
++        f"/api/v1/sm/consent/correo/{actor}",
++        params={"contacto_hash": hash_contacto("polis", actor, "correo", contacto)},
++    )
++    assert resp_ver.status_code == 200
++    assert resp_ver.json()["consentido"] is True
++
++
++def test_router_evento_sin_consentimiento_retorna_403(test_client: TestClient):
++    actor = f"sin_consent_{uuid.uuid4().hex[:8]}"
++    resp = test_client.post(
++        "/api/v1/sm/events",
++        json={
++            "tipo_evento": "aviso.invalido",
++            "actor": actor,
++            "canal": "correo",
++            "contacto": "no_consentido@test.org",
++            "idempotencia": f"idem-403-{uuid.uuid4().hex}",
++            "asunto": "Test",
++            "cuerpo": "Hola",
++        },
++    )
++    assert resp.status_code == 403
++    assert "No existe consentimiento otorgado" in resp.json()["detail"]
++
++
++def test_router_evento_exitoso_y_consulta(test_client: TestClient):
++    actor = f"con_consent_{uuid.uuid4().hex[:8]}"
++    contacto = "aprobado@test.org"
++
++    test_client.post(
++        "/api/v1/sm/consent",
++        json={
++            "actor": actor,
++            "canal": "telegram",
++            "contacto": contacto,
++            "consentido": True,
++        },
++    )
++
++    resp_ev = test_client.post(
++        "/api/v1/sm/events",
++        json={
++            "tipo_evento": "telegram.alerta",
++            "actor": actor,
++            "canal": "telegram",
++            "contacto": contacto,
++            "idempotencia": f"idem-201-{uuid.uuid4().hex}",
++            "asunto": "Aviso Telegram",
++            "cuerpo": "Mensaje encriptado",
++        },
++    )
++    assert resp_ev.status_code == 201
++    msg_id = resp_ev.json()["id"]
++
++    resp_get = test_client.get(f"/api/v1/sm/messages/{msg_id}")
++    assert resp_get.status_code == 200
++    assert resp_get.json()["id"] == msg_id
++    assert resp_get.json()["estado"] == "pendiente"
++
++
++def test_router_salud_sm(test_client: TestClient):
++    resp = test_client.get("/api/v1/sm/health")
++    assert resp.status_code == 200
++    data = resp.json()
++    assert "estado" in data
++    assert "pendientes" in data
++    assert "enviados" in data
++    assert "fallidos" in data
++
++
++def test_router_worker_run_once(test_client: TestClient):
++    resp = test_client.post("/api/v1/sm/worker/run-once", json={"limite": 10})
++    assert resp.status_code == 200
++    data = resp.json()
++    assert "procesados" in data
++    assert "enviados" in data
++    assert "fallidos" in data
++    assert "agotados" in data
++
++
++# --- 7. Calidad adicional: seguridad y consistencia ---
++
++
++@pytest.mark.parametrize(
++    ("metodo", "ruta"),
++    [
++        ("get", "/api/v1/sm/messages"),
++        ("post", "/api/v1/sm/worker/run-once"),
++        ("post", "/api/v1/sm/events"),
++        ("post", "/api/v1/sm/consent"),
++    ],
++)
++def test_router_exige_autenticacion(cliente_anonimo: TestClient, metodo: str, ruta: str):
++    resp = getattr(cliente_anonimo, metodo)(ruta)
++    assert resp.status_code in (401, 403)
++
++
++async def test_worker_sin_contacto_no_simula_envio(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    actor = f"sinres_{uuid.uuid4().hex[:8]}"
++    contacto = "sinresolver@test.gov.co"
++    await repo.registrar_consentimiento(
++        db_session, actor=actor, canal=SMCanal.CORREO, contacto=contacto, consentido=True
++    )
++    msg = await repo.procesar_evento(
++        db_session,
++        SMEvento(
++            tenant="polis",
++            tipo_evento="correo.aviso",
++            actor=actor,
++            idempotencia=f"idem-sinres-{uuid.uuid4().hex[:8]}",
++            canal=SMCanal.CORREO,
++            contacto=SMContacto(canal=SMCanal.CORREO, identificador=contacto, actor=actor),
++            cuerpo="x",
++        ),
++    )
++    # Simular ausencia de ciphertext, no ausencia del mapa legacy (ahora hay bóveda).
++    from app.modules.sm.boveda import SMBovedaContactoDB
++
++    await SMBovedaContactoDB.purgar(
++        db_session, tenant="polis", actor=actor, canal=SMCanal.CORREO, contacto_hash=msg.contacto_hash
++    )
++    await db_session.commit()
++    resumen = await SMWorker(tenant="polis").procesar_lote(db_session, limite=200)
++    assert resumen.sin_contacto >= 1
++    assert (await repo.obtener_mensaje(db_session, msg.id)).estado == SMEstadoMensaje.FALLIDO
++
++
++async def test_idempotencia_con_datos_distintos_es_conflicto(db_session: AsyncSession):
++    repo = SMRepository(tenant="polis")
++    actor = f"conf_{uuid.uuid4().hex[:8]}"
++    clave = f"idem-conf-{uuid.uuid4().hex[:8]}"
++    await repo.registrar_consentimiento(
++        db_session, actor=actor, canal=SMCanal.CORREO, contacto="a@test.gov.co", consentido=True
++    )
++    await repo.registrar_consentimiento(
++        db_session, actor=actor, canal=SMCanal.CORREO, contacto="b@test.gov.co", consentido=True
++    )
++
++    def evento(contacto: str) -> SMEvento:
++        return SMEvento(
++            tenant="polis",
++            tipo_evento="correo.aviso",
++            actor=actor,
++            idempotencia=clave,
++            canal=SMCanal.CORREO,
++            contacto=SMContacto(canal=SMCanal.CORREO, identificador=contacto, actor=actor),
++            cuerpo="x",
++        )
++
++    await repo.procesar_evento(db_session, evento("a@test.gov.co"))
++    with pytest.raises(SMIdempotenciaConflict):
++        await repo.procesar_evento(db_session, evento("b@test.gov.co"))
++
++
++def test_telegram_escapa_html():
++    from app.modules.sm.channels import SMTelegramAdapter
++
++    contacto = SMContacto(canal=SMCanal.TELEGRAM, identificador="12345", actor="a")
++    msg = SMMensaje(
++        evento_id=uuid.uuid4(),
++        canal=SMCanal.TELEGRAM,
++        actor="a",
++        contacto_hash="h",
++        cuerpo="<script>alert(1)</script>",
++        idempotencia="idem-escape-1",
++    )
++    res = SMTelegramAdapter().construir(msg, contacto)
++    assert "<script>" not in res.payload["text"]
++
++
++def test_sm_ciudadano_no_puede_gestionar_ni_leer_outbox(cliente_anonimo):
++    correo = f"sm-ciudadano-{uuid.uuid4().hex}@example.org"
++    datos = {"correo": correo, "contrasena": "PruebaSM310Segura!", "nombres": "Prueba", "apellidos": "Ciudadano"}
++    assert cliente_anonimo.post("/api/v1/identidad/registro", json=datos).status_code == 201
++    login = cliente_anonimo.post("/api/v1/identidad/login", json={"correo": correo, "contrasena": datos["contrasena"]})
++    assert login.status_code == 200
++    cliente_anonimo.headers.update({"Authorization": "Bearer " + login.json()["token_acceso"]})
++    assert cliente_anonimo.get("/api/v1/sm/messages").status_code == 403
++    assert cliente_anonimo.post("/api/v1/sm/worker/run-once", json={"limite": 1}).status_code == 403
++    assert (
++        cliente_anonimo.post(
++            "/api/v1/sm/consent",
++            json={
++                "actor": "opaco",
++                "canal": "correo",
++                "contacto": correo,
++                "consentido": True,
++            },
++        ).status_code
++        == 403
++    )
++
++
++def test_sm_worker_apagado_no_despacha(test_client):
++    test_client.app.state.settings.sm_worker_habilitado = False
++    assert test_client.post("/api/v1/sm/worker/run-once").status_code == 409
++
++
++def test_sm_salud_publica_solo_agregados(cliente_anonimo):
++    respuesta = cliente_anonimo.get("/api/v1/sm/health")
++    assert respuesta.status_code == 200
++    assert {"simulados", "worker_ultimo_latido", "canales_degradados"}.issubset(respuesta.json())
++    assert "contacto" not in respuesta.text and "@" not in respuesta.text
+diff --git a/backend/tests/test_sm_transports_310.py b/backend/tests/test_sm_transports_310.py
+new file mode 100644
+index 00000000..cab04d9c
+--- /dev/null
++++ b/backend/tests/test_sm_transports_310.py
+@@ -0,0 +1,282 @@
++"""Contratos de transporte: servidor SMTP efímero y HTTP simulado en el proceso."""
++
++import asyncio
++import hashlib
++import hmac
++import json
++import logging
++import smtplib
++from uuid import uuid4
++
++import httpx
++import pytest
++
++from app.core.config import Settings
++from app.modules.sm.channels import adaptador_por_canal
++from app.modules.sm.contracts import SMCanal, SMContacto, SMEstadoEntrega, SMMensaje
++from app.modules.sm.transports import (
++    SMCorreoTransporte,
++    SMFalloTransporte,
++    SMSMSTransporte,
++    SMTelegramTransporte,
++    SMWebhookTransporte,
++    SMWhatsAppTransporte,
++    transportes_desde_settings,
++)
++
++pytestmark = pytest.mark.anyio
++
++
++@pytest.fixture
++def anyio_backend():
++    return "asyncio"
++
++
++def config(**kwargs):
++    return Settings(
++        _env_file=None,
++        environment="development",
++        sm_webhook_secret="k" * 32,
++        sm_webhook_origenes=["https://webhook.example.invalid"],
++        sm_telegram_token="123:token_ficticio",
++        sm_whatsapp_token="token_ficticio",
++        sm_whatsapp_phone_id="1234",
++        sm_whatsapp_api_version="v25.0",
++        sm_whatsapp_plantilla="institucional",
++        sm_whatsapp_plantilla_aprobada=True,
++        **kwargs,
++    )
++
++
++def preparado(canal):
++    destino = {
++        SMCanal.CORREO: "destino@example.invalid",
++        SMCanal.WEBHOOK: "https://webhook.example.invalid/recibir",
++        SMCanal.TELEGRAM: "123456",
++        SMCanal.WHATSAPP: "+573001234567",
++        SMCanal.SMS: "+573001234567",
++    }[canal]
++    msg = SMMensaje(
++        evento_id=uuid4(),
++        canal=canal,
++        actor="actor-opaco",
++        contacto_hash="h" * 64,
++        cuerpo="Aviso institucional",
++        asunto="Asunto",
++        idempotencia="transporte-310-" + uuid4().hex,
++    )
++    return adaptador_por_canal(canal).construir(msg, SMContacto(canal=canal, actor=msg.actor, identificador=destino))
++
++
++@pytest.mark.parametrize("canal", list(SMCanal))
++async def test_entorno_test_nunca_usa_red_aunque_haya_credenciales(canal):
++    s = config().model_copy(update={"environment": "test"})
++    transporte = transportes_desde_settings(s)[canal]
++    assert not transporte.disponible
++    res = await transporte.enviar(preparado(canal))
++    assert res.estado_entrega == SMEstadoEntrega.SIMULADO
++
++
++async def test_smtp_servidor_loopback_efimero_envio_real_y_message_id_estable():
++    recibidos, comandos = [], []
++
++    async def smtp(reader, writer):
++        writer.write(b"220 smtp.prueba ESMTP\r\n")
++        await writer.drain()
++        datos = []
++        while linea := await reader.readline():
++            cmd = linea.decode().strip()
++            comandos.append(cmd)
++            if cmd.upper().startswith("EHLO"):
++                writer.write(b"250 smtp.prueba\r\n")
++            elif cmd.upper().startswith(("MAIL FROM", "RCPT TO")):
++                writer.write(b"250 ok\r\n")
++            elif cmd.upper() == "DATA":
++                writer.write(b"354 datos\r\n")
++                await writer.drain()
++                while (linea := await reader.readline()) != b".\r\n":
++                    if not linea:
++                        break
++                    datos.append(linea)
++                recibidos.append(b"".join(datos))
++                writer.write(b"250 en cola\r\n")
++            elif cmd.upper() == "QUIT":
++                writer.write(b"221 adios\r\n")
++                await writer.drain()
++                break
++            else:
++                writer.write(b"500 no soportado\r\n")
++            await writer.drain()
++        writer.close()
++        await writer.wait_closed()
++
++    server = await asyncio.start_server(smtp, "127.0.0.1", 0)
++    async with server:
++        port = server.sockets[0].getsockname()[1]
++        assert port != 25
++        transporte = SMCorreoTransporte(
++            config(
++                smtp_host="127.0.0.1",
++                smtp_port=port,
++                smtp_tls=False,
++                smtp_usuario=None,
++                smtp_remitente="SM <sm@example.invalid>",
++            )
++        )
++        payload = preparado(SMCanal.CORREO)
++        recibo = await transporte.enviar(payload)
++        assert recibo.estado_entrega == SMEstadoEntrega.ENVIADO
++        assert len(recibo.externo_id) == 64
++        assert f"<{payload.mensaje_id}@sm.invalid>".encode() in recibidos[0]
++        assert any(cmd.lower() == "rcpt to:<destino@example.invalid>" for cmd in comandos)
++
++
++async def test_smtp_test_no_invoca_factory_y_error_no_incluye_contacto():
++    def prohibido(*args, **kwargs):
++        raise AssertionError("No conectar a Postfix")
++
++    t = SMCorreoTransporte(config().model_copy(update={"environment": "test"}), smtp_factory=prohibido)
++    assert (await t.enviar(preparado(SMCanal.CORREO))).estado_entrega == SMEstadoEntrega.SIMULADO
++    p = preparado(SMCanal.CORREO)
++    p.payload["destinatario"] = "a@example.invalid\r\nBcc:b@example.invalid"
++    with pytest.raises(SMFalloTransporte) as exc:
++        await SMCorreoTransporte(config(), smtp_factory=prohibido).enviar(p)
++    assert not exc.value.transitorio and "@" not in str(exc.value)
++
++
++@pytest.mark.parametrize(
++    ("error", "transitorio"),
++    [
++        (smtplib.SMTPNotSupportedError("sin TLS destino@example.invalid"), False),
++        (smtplib.SMTPDataError(550, b"rechazo destino@example.invalid"), False),
++        (smtplib.SMTPDataError(421, b"temporal destino@example.invalid"), True),
++    ],
++)
++async def test_smtp_clasifica_errores_sin_eco_del_proveedor(error, transitorio):
++    def fallar(*args, **kwargs):
++        raise error
++
++    with pytest.raises(SMFalloTransporte) as exc:
++        await SMCorreoTransporte(config(), smtp_factory=fallar).enviar(preparado(SMCanal.CORREO))
++    assert exc.value.transitorio is transitorio and "@" not in str(exc.value)
++
++
++async def test_webhook_cuerpo_canonico_hmac_tiempo_id_y_sin_url():
++    requests = []
++
++    def responder(request):
++        requests.append(request)
++        return httpx.Response(204)
++
++    transporte = SMWebhookTransporte(config(), http_transport=httpx.MockTransport(responder))
++    p = preparado(SMCanal.WEBHOOK)
++    recibo = await transporte.enviar(p)
++    r = requests[0]
++    firma = hmac.new(b"k" * 32, r.headers["X-SM-Timestamp"].encode() + b"." + r.content, hashlib.sha256).hexdigest()
++    assert r.headers["X-SM-Signature"] == "sha256=" + firma
++    assert r.headers["Idempotency-Key"] == str(p.mensaje_id)
++    assert "url" not in json.loads(r.content)
++    assert recibo.estado_entrega == SMEstadoEntrega.ENVIADO
++
++
++@pytest.mark.parametrize(
++    ("status", "transitorio"), [(400, False), (401, False), (302, False), (429, True), (503, True), (408, True)]
++)
++async def test_webhook_clasificacion_y_no_filtra_respuesta(status, transitorio):
++    def responder(request):
++        return httpx.Response(
++            status,
++            text="secret=privado destino@example.invalid",
++            headers={"Location": "https://no-permitido.example.invalid"},
++        )
++
++    t = SMWebhookTransporte(config(), http_transport=httpx.MockTransport(responder))
++    with pytest.raises(SMFalloTransporte) as exc:
++        await t.enviar(preparado(SMCanal.WEBHOOK))
++    assert exc.value.transitorio is transitorio
++    assert "privado" not in str(exc.value) and "@" not in str(exc.value)
++
++
++@pytest.mark.parametrize(
++    "url",
++    [
++        "http://127.0.0.1/",
++        "https://otro.example.invalid/",
++        "https://usuario:clave@webhook.example.invalid/",
++        "file:///tmp/datos",
++    ],
++)
++async def test_webhook_destinos_no_autorizados_no_hacen_red(url):
++    def prohibido(request):
++        pytest.fail("No debe existir request al destino rechazado")
++
++    t = SMWebhookTransporte(config(), http_transport=httpx.MockTransport(prohibido))
++    p = preparado(SMCanal.WEBHOOK)
++    p.payload["url"] = url
++    with pytest.raises(SMFalloTransporte, match="no_autorizado"):
++        await t.enviar(p)
++
++
++async def test_telegram_api_y_logs_sin_token_contacto(caplog):
++    requests = []
++
++    def responder(request):
++        requests.append(request)
++        return httpx.Response(200, json={"ok": True, "result": {"message_id": 998}})
++
++    caplog.set_level(logging.INFO, logger="httpx")
++    t = SMTelegramTransporte(config(), http_transport=httpx.MockTransport(responder))
++    assert (await t.enviar(preparado(SMCanal.TELEGRAM))).estado_entrega == SMEstadoEntrega.ENVIADO
++    assert requests[0].url.path == "/bot123:token_ficticio/sendMessage"
++    assert json.loads(requests[0].content)["chat_id"] == "123456"
++    assert "token_ficticio" not in caplog.text and "123456" not in caplog.text
++
++
++async def test_telegram_http_200_sin_ok_no_es_envio():
++    t = SMTelegramTransporte(
++        config(),
++        http_transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"ok": False, "error_code": 429})),
++    )
++    with pytest.raises(SMFalloTransporte) as exc:
++        await t.enviar(preparado(SMCanal.TELEGRAM))
++    assert exc.value.transitorio
++
++
++async def test_whatsapp_solo_plantilla_aprobada_y_recibo_real():
++    requests = []
++
++    def responder(request):
++        requests.append(request)
++        return httpx.Response(200, json={"messages": [{"id": "wamid.prueba"}]})
++
++    t = SMWhatsAppTransporte(config(), http_transport=httpx.MockTransport(responder))
++    assert (await t.enviar(preparado(SMCanal.WHATSAPP))).estado_entrega == SMEstadoEntrega.ENVIADO
++    datos = json.loads(requests[0].content)
++    assert datos["type"] == "template" and datos["template"]["name"] == "institucional"
++    assert requests[0].headers["Authorization"] == "Bearer token_ficticio"
++    t = SMWhatsAppTransporte(
++        config().model_copy(update={"sm_whatsapp_plantilla_aprobada": False}),
++        http_transport=httpx.MockTransport(responder),
++    )
++    assert (await t.enviar(preparado(SMCanal.WHATSAPP))).estado_entrega == SMEstadoEntrega.SIMULADO
++    assert len(requests) == 1
++
++
++async def test_sms_cliente_modular_o_simulado_explicito():
++    class Cliente:
++        async def enviar(self, **datos):
++            assert datos["destinatario"] == "+573001234567"
++            assert datos["idempotencia"]
++            return "recibo-proveedor"
++
++    p = preparado(SMCanal.SMS)
++    assert (await SMSMSTransporte(config()).enviar(p)).estado_entrega == SMEstadoEntrega.SIMULADO
++    assert (await SMSMSTransporte(config(), cliente=Cliente()).enviar(p)).estado_entrega == SMEstadoEntrega.ENVIADO
++
++
++@pytest.mark.parametrize("canal", [SMCanal.WEBHOOK, SMCanal.WHATSAPP, SMCanal.TELEGRAM, SMCanal.SMS])
++async def test_sin_credenciales_no_reporta_envio(canal):
++    s = config().model_copy(update={"sm_webhook_secret": None, "sm_telegram_token": None, "sm_whatsapp_token": None})
++    t = transportes_desde_settings(s)[canal]
++    assert not t.disponible
++    assert (await t.enviar(preparado(canal))).estado_entrega == SMEstadoEntrega.SIMULADO

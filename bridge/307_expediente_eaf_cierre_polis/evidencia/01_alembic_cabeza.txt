@@ -1,0 +1,2 @@
+# Estado de Alembic en el árbol congelado
+0097_sm_core (head)

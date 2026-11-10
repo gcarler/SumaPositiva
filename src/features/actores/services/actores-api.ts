@@ -158,6 +158,35 @@ export async function eliminarActorApi(id: string): Promise<void> {
   });
 }
 
+/**
+ * Recupera el contacto completo de un actor para edición autorizada.
+ * La ficha pública solo expone organización y cargo.
+ */
+export async function obtenerContactoActorApi(id: string): Promise<ContactoActor | null> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  try {
+    const res = await apiFetch<Record<string, unknown>>(`/actores/${id}/contacto`, {
+      headers,
+    });
+    return {
+      organizacion: String(res.organizacion ?? ""),
+      cargo: String(res.cargo ?? "Vocero Delegado"),
+      nombreLider: res.nombre_lider ? String(res.nombre_lider) : undefined,
+      telefono: res.telefono ? String(res.telefono) : undefined,
+      email: res.email ? String(res.email) : undefined,
+      direccion: res.direccion ? String(res.direccion) : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function obtenerKpisActoresApi(): Promise<KpisActores> {
   const res = await apiFetch<KpisActores>("/actores/kpis");
   return {

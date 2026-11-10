@@ -44,12 +44,34 @@ import {EstadoConsulta} from "../components/estado-consulta";
 import {puedeEditar} from "../models/acceso";
 import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 
 export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean } = {}) {
   const [vista, setVista] = useCollectionView(soloNoticias ? "noticias" : "contenido", "lista");
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
   const esEditor = puedeEditar(sesion, "contenido");
+
+  const subvistaContenido = useConfiguracionPlataformaStore(
+    (s) => s.subvistaPlataforma["contenido"]
+  );
+  const setSubvistaModulo = useConfiguracionPlataformaStore(
+    (s) => s.setSubvistaModulo
+  );
+
+  const tabActiva = soloNoticias
+    ? "noticias"
+    : subvistaContenido &&
+      ["arquitectura", "noticias", "metodologia"].includes(subvistaContenido)
+    ? subvistaContenido
+    : "arquitectura";
+
+  const handleTabChange = (nuevaTab: string) => {
+    if (!soloNoticias) {
+      setSubvistaModulo("contenido", nuevaTab);
+    }
+  };
+
 
   const noticiasQuery = useNoticiasGestion();
   const noticias = noticiasQuery.data ?? [];
@@ -144,7 +166,11 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
       />
 
       <CollectionViewToggle value={vista} onValueChange={setVista} label={soloNoticias ? "Vista de las noticias" : "Vista de los contenidos"} />
-      <Tabs defaultValue={soloNoticias ? "noticias" : "arquitectura"} className="space-y-6">
+      <Tabs
+        value={soloNoticias ? "noticias" : tabActiva}
+        onValueChange={handleTabChange}
+        className="space-y-6"
+      >
         {!soloNoticias && (
           <TabsList className="h-auto flex-wrap">
             <TabsTrigger value="arquitectura">Dimensiones, Líneas y Sublíneas</TabsTrigger>

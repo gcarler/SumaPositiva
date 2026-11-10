@@ -1,0 +1,8 @@
+# Suite completa sobre el commit congelado da4c54f2 (worktree sin cambios no versionados)
+commit=da4c54f2b565709fe46d599dc9270f00324db026
+arbol=018bc11f9ac10418369a97e0ee68641a13f0f036
+head_alembic=0096_riesgo_sin_evaluar (head)
+EXIT_UPGRADE=0
+revision=0096_riesgo_sin_evaluar (head)
+EXIT_CHECK=0
+No new upgrade operations detected.

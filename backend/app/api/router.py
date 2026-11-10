@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from app.modules.actores.router import router as actores_router
+from app.modules.alternativas.router import router as alternativas_router
 from app.modules.aportes.router import router as aportes_router
 from app.modules.auditoria.router import router as auditoria_router
 from app.modules.canales.router import router as canales_whatsapp_router
@@ -7,6 +9,7 @@ from app.modules.compromisos.router import router as compromisos_router
 from app.modules.comunicaciones.router import router as comunicaciones_router
 from app.modules.evidencia.router import router as evidencia_router
 from app.modules.formularios.router import router as formularios_router
+from app.modules.fuentes.router import router as fuentes_router
 from app.modules.geodatos.router import router as geodatos_router
 from app.modules.health.router import router as health_router
 from app.modules.ia.router import router as ia_router
@@ -22,6 +25,7 @@ from app.modules.presupuesto.router import router as presupuesto_router
 from app.modules.proyectos.router import router as proyectos_router
 from app.modules.seguridad.router import router as seguridad_router
 from app.modules.sesion.router import router as sesion_router
+from app.modules.sm.router import router as sm_router
 from app.modules.testimonios.router import router as testimonios_router
 
 api_router = APIRouter(prefix="/api/v1")
@@ -47,5 +51,9 @@ api_router.include_router(compromisos_router)
 api_router.include_router(noticias_router)
 api_router.include_router(comunicaciones_router)
 api_router.include_router(notificaciones_router)
+api_router.include_router(sm_router)
 api_router.include_router(canales_whatsapp_router, prefix="/canales/whatsapp", tags=["Canales"])
 api_router.include_router(seguridad_router)
+api_router.include_router(actores_router)
+api_router.include_router(fuentes_router)
+api_router.include_router(alternativas_router)

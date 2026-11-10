@@ -1,0 +1,13 @@
+[Unit]
+Description=POLIS - respaldo diario del correo propio (Maildir y base correo)
+Documentation=file:/root/polis/docs/correo-propio.md
+After=postgresql.service dovecot.service
+ConditionPathIsDirectory=/var/mail/vhosts
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/root/polis/scripts/respaldo_correo.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

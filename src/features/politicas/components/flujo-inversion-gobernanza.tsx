@@ -6,7 +6,7 @@ import {
   Users,
   Leaf,
   Coins,
-  Wheat,
+  PackageCheck,
   Landmark,
   AlertTriangle,
   Building2,
@@ -18,8 +18,10 @@ import {
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { usePanels } from "@/core/panels/panel-store";
+import { useResumenInstitucional } from "@/features/politicas/services/use-politicas-queries";
 import {
   DEPENDENCIAS_CARTAGENA_2026,
+  formatearPresupuestoCop,
 } from "../data/entidades-cartagena.data";
 
 interface DimensionItem {
@@ -69,7 +71,7 @@ const DIMENSIONES_ONU: DimensionItem[] = [
     codigo: "alimentaria",
     nombre: "Seguridad Alimentaria y Sanitaria",
     colorVar: "var(--warning)",
-    icono: Wheat,
+    icono: PackageCheck,
     descripcion: "Red de comedores comunitarios, PAE escolar, atención en salud y control de dengue.",
   },
   {
@@ -126,10 +128,28 @@ const TERRITORIOS_CARTAGENA: TerritorioItem[] = [
 
 export function FlujoInversionGobernanza() {
   const { openPanel } = usePanels();
+  const { data: resumen } = useResumenInstitucional();
   const [dimensionFiltro, setDimensionFiltro] = useState<string | null>(null);
   const [dependenciaFiltro, setDependenciaFiltro] = useState<string | null>(null);
   const [territorioFiltro, setTerritorioFiltro] = useState<string | null>(null);
   const [tipoFiltro, setTipoFiltro] = useState<string>("todas");
+
+  const conteosTipologia = useMemo(() => {
+    const secretarias = DEPENDENCIAS_CARTAGENA_2026.filter((d) => d.tipo === "secretaria").length;
+    const descentralizados = DEPENDENCIAS_CARTAGENA_2026.filter((d) =>
+      ["ente_descentralizado", "empresa_industrial", "institucion_educativa"].includes(d.tipo)
+    ).length;
+    const unidadesAsesoras = DEPENDENCIAS_CARTAGENA_2026.filter((d) => d.tipo === "unidad_asesora").length;
+    const alcaldiasLocales = DEPENDENCIAS_CARTAGENA_2026.filter((d) => d.tipo === "alcaldia_local").length;
+    const total = resumen?.totalEntidadesDistritales ?? DEPENDENCIAS_CARTAGENA_2026.length;
+    return {
+      total,
+      secretarias: resumen?.entidadesPorTipologia?.secretaria ?? secretarias,
+      descentralizados: resumen?.entidadesPorTipologia?.ente_descentralizado ?? descentralizados,
+      unidadesAsesoras: resumen?.entidadesPorTipologia?.unidad_asesora ?? unidadesAsesoras,
+      alcaldiasLocales: resumen?.entidadesPorTipologia?.alcaldia_local ?? alcaldiasLocales,
+    };
+  }, [resumen]);
 
   const dependenciasFiltradas = useMemo(() => {
     return DEPENDENCIAS_CARTAGENA_2026.filter((dep) => {
@@ -215,7 +235,7 @@ export function FlujoInversionGobernanza() {
               Pilar 2 — Visualizador de Gobernanza e Inversión Multinivel
             </p>
             <Badge variant="outline" className="border-[var(--border)] text-[10px]">
-              27 Dependencias Oficiales
+              {conteosTipologia.total} Dependencias Oficiales
             </Badge>
           </div>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl">
@@ -223,7 +243,7 @@ export function FlujoInversionGobernanza() {
           </h2>
           <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-3xl">
             Explora las conexiones dinámicas entre las 7 Dimensiones de Seguridad Humana (Ley 1757 de 2015),
-            las 27 dependencias de la Alcaldía Mayor y los territorios distritales donde se ejecutan los proyectos.
+            las {conteosTipologia.total} dependencias de la Alcaldía Mayor y los territorios distritales donde se ejecutan los proyectos.
           </p>
         </div>
 
@@ -261,11 +281,11 @@ export function FlujoInversionGobernanza() {
             Entidades:
           </span>
           {[
-            { id: "todas", label: "Todas (27)" },
-            { id: "secretaria", label: "Secretarías (8)" },
-            { id: "ente_descentralizado", label: "Descentralizados (12)" },
-            { id: "unidad_asesora", label: "Unidades Asesoras (6)" },
-            { id: "alcaldia_local", label: "Alcaldías Locales (3)" },
+            { id: "todas", label: `Todas (${conteosTipologia.total})` },
+            { id: "secretaria", label: `Secretarías (${conteosTipologia.secretarias})` },
+            { id: "ente_descentralizado", label: `Descentralizados (${conteosTipologia.descentralizados})` },
+            { id: "unidad_asesora", label: `Unidades Asesoras (${conteosTipologia.unidadesAsesoras})` },
+            { id: "alcaldia_local", label: `Alcaldías Locales (${conteosTipologia.alcaldiasLocales})` },
           ].map((tab) => (
             <Button
               key={tab.id}
@@ -439,7 +459,7 @@ export function FlujoInversionGobernanza() {
                   </p>
 
                   <div className="mt-2 flex items-center justify-between text-[10px] text-[var(--text-tertiary)]">
-                    <span>{dep.presupuesto2026Cop ?? "$25.000M"}</span>
+                    <span>{formatearPresupuestoCop(dep.presupuesto2026Cop, "$25.000M")}</span>
                     <Button
                       variant="unstyled"
                       size="unstyled"

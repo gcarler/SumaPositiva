@@ -1,0 +1,14 @@
+# Estado de la base de producción bd_csh (solo lectura)
+0096_riesgo_sin_evaluar
+873 MB
+mesas|35
+actas|0
+propuestas|7
+usuarios|45
+indicadores|2505
+notificaciones|18
+medio|2222
+sin_evaluar|133
+alto|96
+bajo|39
+critico|15

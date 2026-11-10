@@ -576,16 +576,16 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
                       Todos los estados
                     </SelectItem>
                     <SelectItem value="COHERENCIA_INTEGRAL_ALTA" className="text-xs">
-                      🟢 Coherencia Integral Alta
+                      Coherencia Integral Alta
                     </SelectItem>
                     <SelectItem value="DESFASE_CRITICO_SOBREEJECUCION" className="text-xs">
-                      🔴 Desfase Sobreejecución Financiera
+                      Desfase Sobreejecución Financiera
                     </SelectItem>
                     <SelectItem value="REZAGO_CONTRACTUAL_INVERSION" className="text-xs">
-                      🟡 Rezago Contractual en Inversión
+                      Rezago Contractual en Inversión
                     </SelectItem>
                     <SelectItem value="META_PDD_SUBOPERACIONALIZADA" className="text-xs">
-                      🟠 Meta PDD Suboperacionalizada
+                      Meta PDD Suboperacionalizada
                     </SelectItem>
                   </SelectContent>
                 </Select>

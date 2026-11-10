@@ -1,0 +1,12 @@
+{
+  "entradas": 1928,
+  "copiadas_faltantes": [
+    "public/geodatos/cartagena_barrios.geojson",
+    "public/geodatos/cartagena_corregimientos.geojson",
+    "public/geodatos/cartagena_limite_distrital.geojson",
+    "public/geodatos/cartagena_localidades.geojson",
+    "public/geodatos/cartagena_perimetro_urbano.geojson"
+  ],
+  "discordancias_en_original": [],
+  "originales_modificados": false
+}

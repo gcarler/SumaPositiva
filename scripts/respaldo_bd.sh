@@ -27,8 +27,18 @@ if [ -z "$PGPASSWORD" ]; then
     exit 1
 fi
 
-echo "Iniciando respaldo de bd_csh..."
-pg_dump -Fc -h 127.0.0.1 -U polis -d bd_csh -f "$BACKUP_FILE"
+export PGCONNECT_TIMEOUT="${PGCONNECT_TIMEOUT:-10}"
+PG_DUMP_BIN="${PG_DUMP_BIN:-pg_dump}"
+CLIENTE_PG_DUMP=$("${PG_DUMP_BIN}" --version | awk '{print $3}')
+SERVIDOR_VERSION_NUM=$(psql -h 127.0.0.1 -U "${PGUSER:-polis}" -d "${PGDATABASE:-bd_csh}" -Atc "select current_setting('server_version_num')")
+# PostgreSQL >= 10 usa major.minor: 180006 -> 18.6
+SERVIDOR_VERSION=$((SERVIDOR_VERSION_NUM / 10000)).$((SERVIDOR_VERSION_NUM % 10000))
+if [ "${CLIENTE_PG_DUMP%%.*}" -lt "${SERVIDOR_VERSION%%.*}" ]; then
+    echo "Error: pg_dump ${CLIENTE_PG_DUMP} es anterior al servidor ${SERVIDOR_VERSION}." >&2
+    exit 1
+fi
+echo "Iniciando respaldo de bd_csh (pg_dump ${CLIENTE_PG_DUMP} / servidor ${SERVIDOR_VERSION})..."
+"${PG_DUMP_BIN}" -Fc -h 127.0.0.1 -U polis -d bd_csh -f "$BACKUP_FILE"
 
 # Valida que el archivo no esté vacío
 if [ ! -s "$BACKUP_FILE" ]; then
@@ -43,4 +53,9 @@ cd "$BACKUP_DIR"
 sha256sum "$(basename "$BACKUP_FILE")" > "$(basename "$HASH_FILE")"
 chmod 0600 "$HASH_FILE"
 
+# Manifiesto de versión: la restauración exige un pg_restore >= este cliente.
+printf 'pg_dump=%s\nservidor=%s\n' "${CLIENTE_PG_DUMP}" "${SERVIDOR_VERSION}" > "${BACKUP_FILE}.pgversion"
+chmod 0600 "${BACKUP_FILE}.pgversion"
+
 echo "Respaldo exitoso: $BACKUP_FILE"
+echo "Restaurar con /usr/lib/postgresql/${CLIENTE_PG_DUMP%%.*}/bin/pg_restore (nunca con el cliente 16 del contenedor)."

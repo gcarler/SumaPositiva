@@ -386,7 +386,8 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | --- | --- | --- | --- |
 | GET | /api/v1/actores | publico | Catálogo de actores estratégicos para control social y formulación participativa. |
 | GET | /api/v1/actores/kpis | publico | Agregaciones estadísticas y distribución en cuadrantes de poder e interés. |
-| GET | /api/v1/actores/{id} | publico | Ficha técnica pública de caracterización y postura del actor. |
+| GET | /api/v1/actores/{id} | publico | Ficha pública de caracterización y postura del actor; excluye nombre del líder, teléfono, correo y dirección. |
+| GET | /api/v1/actores/{id}/contacto | permiso:politicas:gestionar@declarada | Contacto completo (organización, cargo, líder, teléfono, correo y dirección) solo para edición autorizada; nunca en la ficha pública. |
 | POST | /api/v1/actores | permiso:politicas:gestionar@declarada | Registro de actor con validación de procedencia y trazabilidad de auditoría. |
 | PUT | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Actualización de caracterización y acciones con registro inmutable. |
 | DELETE | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Desactivación o retiro con justificación técnica obligatoria en auditoría. |
@@ -421,6 +422,13 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Historial privado de intenciones y resultados de notificación; pendiente, procesando, enviado, simulado o fallido no equivalen a entrega real. Puede contener destinatarios y requiere autorización institucional. Admite filtro `estado_envio` y expone `intentos` y `error_detalle` (solo el nombre de la excepción, sin datos sensibles). |
 | GET | /api/v1/notificaciones/salud | permiso:auditoria:leer@declarada | Salud agregada del Herald (Encargo 275): estado, motivos, ejecutor, cola y métricas de 24 h. Nunca expone host, usuario ni contraseña SMTP. |
 | POST | /api/v1/notificaciones/{notificacion_id}/reintentar | permiso:usuarios:gestionar@declarada | Reintento manual de una notificación 'fallido' agotada; devuelve la fila a 'pendiente' y queda auditado con el actor institucional. 404 si no existe, 409 si no está agotada. |
+| POST | /api/v1/sm/consent | permiso:comunicaciones:gestionar@declarada | Registra opt-in/opt-out por canal; destinatario cifrado AES-256-GCM en bóveda y hash en el consentimiento; revocar purga la bóveda. No existe autoregistro ciudadano sin identidad verificada. |
+| GET | /api/v1/sm/consent/{canal}/{actor} | permiso:comunicaciones:gestionar@declarada | Verifica consentimiento mediante contacto_hash (no contacto crudo en URL); responde solo si está consentido y no repite la huella ni el contacto. Uso operativo interno. |
+| POST | /api/v1/sm/events | permiso:comunicaciones:gestionar@declarada | Ingesta de evento al outbox SM con idempotencia y consentimiento previo obligatorio. |
+| GET | /api/v1/sm/messages/{mensaje_id} | permiso:auditoria:leer@declarada | Consulta un mensaje del outbox SM sin PII cruda para supervisión y trazabilidad. |
+| GET | /api/v1/sm/messages | permiso:auditoria:leer@declarada | Lista operativa del outbox SM por canal y estado, misma familia que el historial de notificaciones. |
+| POST | /api/v1/sm/worker/run-once | permiso:comunicaciones:gestionar@declarada | Dispara un lote del worker SM habilitado; resuelve desde bóveda, confirma reclamación y registra enviado/simulado/fallido de forma diferenciada. |
+| GET | /api/v1/sm/health | permiso:auditoria:leer@declarada | Sonda operativa interna con agregados (pendientes, enviados, fallidos, canales, latido, simulaciones); sin PII ni cifras de destinatarios. Requiere el permiso `auditoria:leer` para no exponer reconocimiento operativo del outbox. |
 | GET | /api/v1/health/herald | publico | Endpoint interno sin autenticación para el monitor de operación: solo `estado` y `motivos`, sin cifras ni PII (análogo a /health/live). |
 
 ## Canal Conversacional WhatsApp e Ingesta Comunitaria — decisión CANAL-WHATSAPP-01

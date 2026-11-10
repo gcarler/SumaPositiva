@@ -2,7 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, ShieldCheck, ShieldAlert } from "lucide-react";
 import {
   GoogleLogin,
   useGoogleOAuth,
@@ -24,7 +24,7 @@ import { CuentaUsuario } from "@/features/sesion/components/cuenta-usuario";
 
 interface AvisoExito {
   titulo: string;
-  tipo?: "general" | "registro";
+  tipo?: "general" | "registro" | "recuperacion";
   mensaje?: string;
   correo?: string;
 }
@@ -85,7 +85,7 @@ export function SesionPanel({
   const { clientId } = useGoogleOAuth();
   const sesion = useSesionStore((s) => s.sesion);
   const [vista, setVista] = useState<Vista>(
-    props.accion === "recuperar"
+    props.accion === "recuperar" || props.accion === "restablecer"
       ? "restablecer"
       : props.accion === "verificar"
         ? "verificar"
@@ -110,6 +110,11 @@ export function SesionPanel({
     vista === "verificar" ||
     vista === "mfa" ||
     (props.accion === "magic_link" && !!props.token && !enlaceConsumido);
+
+  const esErrorFuncionario =
+    error.toLowerCase().includes("funcionario institucional") ||
+    error.toLowerCase().includes("continuar con google") ||
+    error.toLowerCase().includes("google workspace");
 
   useEffect(() => {
     if (props.accion === "magic_link" && props.token && !enlaceConsumido) {
@@ -256,24 +261,29 @@ export function SesionPanel({
         });
         toast.info("Enlace de acceso enviado. Revisa tu bandeja de entrada.");
       } else if (vista === "recuperar") {
-        const resp = await identidadApi.solicitarRecuperacion(
-          textoFormulario(datos, "correo"),
-        );
+        const correo = textoFormulario(datos, "correo").trim();
+        const resp = await identidadApi.solicitarRecuperacion(correo);
         setAvisoExito({
-          tipo: "general",
+          tipo: "recuperacion",
           titulo: "Instrucciones de recuperación enviadas",
           mensaje: resp.mensaje,
+          correo,
         });
+        toast.info("Hemos emitido las instrucciones para recuperar tu contraseña.");
       } else if (vista === "restablecer") {
+        const contrasena = comprobarContrasena(datos);
         const resp = await identidadApi.confirmarRecuperacion(
           props.token ?? "",
-          comprobarContrasena(datos),
+          contrasena,
         );
         setAvisoExito({
           tipo: "general",
           titulo: "Contraseña actualizada exitosamente",
-          mensaje: resp.mensaje,
+          mensaje:
+            resp.mensaje ||
+            "Tu contraseña ha sido restablecida. Ya puedes iniciar sesión con tu nueva contraseña.",
         });
+        toast.success("Contraseña actualizada exitosamente.");
         useSesionStore.getState().limpiarSesion();
         setVista("login");
       } else {
@@ -338,16 +348,59 @@ export function SesionPanel({
                 >
                   Crear cuenta
                 </Button>
-                <Button variant="ghost" onClick={() => cambiar("recuperar")}>
+                <Button
+                  variant={vista === "recuperar" ? "default" : "outline"}
+                  onClick={() => cambiar("recuperar")}
+                >
                   Olvidé mi contraseña
                 </Button>
               </nav>
             )}
-            {error && (
+            {esErrorFuncionario ? (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="space-y-3 rounded-xl border border-warning/40 bg-warning-soft/30 p-4 text-text-primary"
+              >
+                <div className="flex items-start gap-3">
+                  <ShieldAlert
+                    className="mt-0.5 size-5 shrink-0 text-warning"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <h3 className="text-sm font-semibold text-text-primary">
+                      Acceso exclusivo para funcionarios institucionales
+                    </h3>
+                    <p className="text-xs leading-relaxed text-text-secondary">
+                      Tu cuenta tiene perfil de funcionario institucional. Por
+                      política de seguridad y trazabilidad de notificaciones
+                      oficiales, el ingreso debe realizarse exclusivamente
+                      mediante el botón <strong>«Continuar con Google»</strong>.
+                    </p>
+                  </div>
+                </div>
+                {clientId && !clientId.startsWith("PENDIENTE") && (
+                  <div className="pt-2 flex flex-col items-center gap-2 border-t border-border/50">
+                    <p className="text-[11px] font-medium text-text-tertiary">
+                      Ingresa con tu cuenta corporativa vinculada:
+                    </p>
+                    <GoogleLogin
+                      width="260"
+                      onSuccess={(credential) =>
+                        void loginConGoogle(credential)
+                      }
+                      onError={() =>
+                        setError("No se pudo iniciar sesión con Google")
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            ) : error ? (
               <Notice tone="danger" title="No se pudo continuar">
                 {error}
               </Notice>
-            )}
+            ) : null}
             {avisoExito && avisoExito.tipo === "registro" && (
               <div
                 role="status"
@@ -397,11 +450,68 @@ export function SesionPanel({
                 </p>
               </div>
             )}
-            {avisoExito && avisoExito.tipo !== "registro" && (
-              <Notice tone="success" title={avisoExito.titulo}>
-                {avisoExito.mensaje}
-              </Notice>
+            {avisoExito && avisoExito.tipo === "recuperacion" && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="space-y-3 rounded-xl border border-success/30 bg-success-soft/30 p-4 sm:p-5 text-text-primary"
+              >
+                <div className="flex items-start gap-3">
+                  <CircleCheck
+                    className="mt-0.5 size-5 shrink-0 text-success"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <h3 className="text-base font-semibold text-text-primary">
+                      {avisoExito.titulo}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-text-secondary">
+                      Hemos emitido las instrucciones para crear tu nueva clave a{" "}
+                      <strong className="font-semibold text-text-primary break-all">
+                        {avisoExito.correo}
+                      </strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2 rounded-lg border border-border/70 bg-surface-elevated/95 p-3.5 sm:p-4 text-sm">
+                  <p className="font-medium text-text-primary">
+                    Pasos para restablecer tu contraseña:
+                  </p>
+                  <ol className="list-decimal space-y-1.5 pl-5 text-xs text-text-secondary sm:text-sm">
+                    <li>
+                      Abre la <strong>bandeja de entrada</strong> de tu correo electrónico.
+                    </li>
+                    <li>
+                      Busca el mensaje de <strong>POLIS</strong> y haz clic en el enlace o botón oficial <strong>«Restablecer contraseña»</strong>.
+                    </li>
+                    <li>
+                      <span className="font-medium text-text-primary">
+                        ¿No encuentras el correo?
+                      </span>{" "}
+                      Revisa tu carpeta de <strong>Correo no deseado (Spam)</strong> o Promociones y marca el mensaje como <strong>«No es spam»</strong>. El enlace tiene una validez de 30 minutos.
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => cambiar("login")}
+                  >
+                    ← Volver a Iniciar sesión
+                  </Button>
+                </div>
+              </div>
             )}
+            {avisoExito &&
+              avisoExito.tipo !== "registro" &&
+              avisoExito.tipo !== "recuperacion" && (
+                <Notice tone="success" title={avisoExito.titulo}>
+                  {avisoExito.mensaje}
+                </Notice>
+              )}
             <form
               key={vista}
               onSubmit={enviar}
@@ -425,6 +535,16 @@ export function SesionPanel({
                   maxLength={255}
                 />
               )}
+              {vista === "recuperar" && (
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  Ingresa tu correo electrónico registrado. Te enviaremos un enlace seguro para crear tu nueva contraseña.
+                </p>
+              )}
+              {vista === "restablecer" && (
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  Crea una nueva contraseña segura para tu cuenta en POLIS (mínimo 8 caracteres).
+                </p>
+              )}
               {vista === "magic_link" && (
                 <p className="text-sm text-text-secondary">
                   Ingresa tu correo y te enviaremos un enlace de acceso directo válido por 15 minutos para ingresar al instante sin necesidad de contraseña.
@@ -447,22 +567,53 @@ export function SesionPanel({
               {(vista === "login" ||
                 vista === "registro" ||
                 vista === "restablecer") && (
-                <CampoIdentidad
-                  name="contrasena"
-                  label="Contraseña"
-                  type="password"
-                  minLength={vista === "login" ? undefined : 8}
-                  maxLength={72}
-                  autoComplete={
-                    vista === "login" ? "current-password" : "new-password"
-                  }
-                />
+                <div className="space-y-1">
+                  <CampoIdentidad
+                    name="contrasena"
+                    label={
+                      vista === "restablecer"
+                        ? "Nueva contraseña"
+                        : "Contraseña"
+                    }
+                    type="password"
+                    minLength={vista === "login" ? undefined : 8}
+                    maxLength={72}
+                    placeholder={
+                      vista === "restablecer" ? "Mínimo 8 caracteres" : undefined
+                    }
+                    autoComplete={
+                      vista === "login" ? "current-password" : "new-password"
+                    }
+                  />
+                  {vista === "login" && (
+                    <div className="flex justify-end pt-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => cambiar("recuperar")}
+                        className="h-auto p-0 text-xs font-medium text-accent hover:underline focus-visible:ring-1"
+                      >
+                        ¿Olvidaste tu contraseña?
+                      </Button>
+                    </div>
+                  )}
+                </div>
               )}
               {(vista === "registro" || vista === "restablecer") && (
                 <CampoIdentidad
                   name="confirmacion"
-                  label="Confirmar contraseña"
+                  label={
+                    vista === "restablecer"
+                      ? "Confirmar nueva contraseña"
+                      : "Confirmar contraseña"
+                  }
                   type="password"
+                  placeholder={
+                    vista === "restablecer"
+                      ? "Repite la nueva contraseña"
+                      : undefined
+                  }
                   maxLength={72}
                   autoComplete="new-password"
                 />
@@ -472,7 +623,7 @@ export function SesionPanel({
                   Confirma la verificación del correo asociado a este enlace.
                 </p>
               )}
-              {              vista === "mfa" && (
+              {vista === "mfa" && (
                 <div className="space-y-4">
                   <p className="text-sm text-text-secondary">
                     Introduce el código de 6 dígitos generado por tu aplicación autenticadora (TOTP) o uno de tus códigos de recuperación de respaldo de 8 caracteres.
@@ -503,22 +654,64 @@ export function SesionPanel({
                   </div>
                 </div>
               )}
-              {vista !== "mfa" && (
-                <Button type="submit" disabled={ocupado}>
-                  {ocupado
-                    ? "Procesando…"
-                    : vista === "magic_link"
-                      ? "Enviar enlace de acceso"
-                      : vista === "recuperar"
-                        ? "Solicitar enlace"
-                        : vista === "restablecer"
-                          ? "Guardar contraseña"
-                          : TITULOS[vista]}
-                </Button>
+              {vista === "recuperar" && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button type="submit" disabled={ocupado}>
+                    {ocupado
+                      ? "Enviando instrucciones…"
+                      : "Enviar instrucciones de recuperación"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={ocupado}
+                    onClick={() => cambiar("login")}
+                  >
+                    Volver a Iniciar sesión
+                  </Button>
+                </div>
               )}
+              {vista === "restablecer" && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button type="submit" disabled={ocupado}>
+                    {ocupado
+                      ? "Guardando contraseña…"
+                      : "Guardar nueva contraseña"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={ocupado}
+                    onClick={() => cambiar("login")}
+                  >
+                    Cancelar y volver al inicio
+                  </Button>
+                </div>
+              )}
+              {vista !== "mfa" &&
+                vista !== "recuperar" &&
+                vista !== "restablecer" && (
+                  <Button type="submit" disabled={ocupado}>
+                    {ocupado
+                      ? "Procesando…"
+                      : vista === "magic_link"
+                        ? "Enviar enlace de acceso"
+                        : TITULOS[vista]}
+                  </Button>
+                )}
             </form>
             {!tieneAccion && (
               <div className="space-y-3 border-t border-border pt-4">
+                <div className="rounded-xl border border-border/80 bg-surface-elevated/60 p-3.5 text-xs text-text-secondary space-y-1.5">
+                  <p className="font-semibold text-text-primary flex items-center gap-1.5">
+                    <ShieldCheck className="size-4 text-accent" aria-hidden="true" />
+                    Acceso para Funcionarios y Facilitadores
+                  </p>
+                  <p className="leading-relaxed text-[11px]">
+                    Por directriz institucional y trazabilidad de notificaciones oficiales, los equipos de formulación territorial y seguimiento deben autenticarse exclusivamente con su cuenta institucional de <strong>Google Workspace</strong>.
+                  </p>
+                </div>
+
                 <Button
                   variant="outline"
                   disabled={ocupado}

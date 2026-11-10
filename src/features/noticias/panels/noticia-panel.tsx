@@ -13,7 +13,7 @@ import {
   Edit3,
   Film,
   Layers,
-  Sparkles,
+  Star,
   Maximize2,
   X,
 } from "lucide-react";
@@ -169,7 +169,7 @@ export function NoticiaPanel({ entryKey, props }: NoticiaPanelProps) {
             <div className="absolute top-3 right-3 flex items-center gap-1.5">
               {noticia.destacada && (
                 <Badge variant="ember" className="shadow-sm gap-1">
-                  <Sparkles className="size-3" />
+                  <Star className="size-3" />
                   Destacada
                 </Badge>
               )}

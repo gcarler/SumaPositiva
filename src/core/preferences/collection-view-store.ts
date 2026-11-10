@@ -23,7 +23,7 @@ const storage: StateStorage = {
   },
 };
 
-const useCollectionPreferences = create<CollectionPreferences>()(
+export const useCollectionPreferences = create<CollectionPreferences>()(
   persist(
     (set) => ({
       views: {},
@@ -40,7 +40,7 @@ const useCollectionPreferences = create<CollectionPreferences>()(
           const saved = persisted.views;
           if (saved && typeof saved === "object" && !Array.isArray(saved)) {
             for (const [key, value] of Object.entries(saved)) {
-              if (value === "lista" || value === "tarjetas") views[key] = value;
+              if (value === "lista" || value === "tarjetas" || value === "matriz") views[key] = value;
             }
           }
         }

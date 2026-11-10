@@ -50,6 +50,39 @@ export PGHOST="${PGHOST:-127.0.0.1}"
 export PGPORT="${PGPORT:-5432}"
 export PGUSER="${PGUSER:-polis}"
 export PGDATABASE="${PGDATABASE:-bd_csh}"
+export PGCONNECT_TIMEOUT="${PGCONNECT_TIMEOUT:-10}"
+PG_DUMP_BIN="${PG_DUMP_BIN:-pg_dump}"
+
+# ------------------------------------------------------------------------------
+# 1 bis. Compatibilidad cliente/servidor del volcado
+# ------------------------------------------------------------------------------
+# `bd_csh` vive en el PostgreSQL del host (18.x). El contenedor `polis-database-1`
+# es PostgreSQL 16 y solo hospeda `polis`/`polis_test*`. Un `pg_dump` posterior al
+# servidor es válido, pero produce un archivo que SOLO puede leer un `pg_restore`
+# de la misma versión mayor o superior: usar el cliente 18 del host, nunca el 16
+# del contenedor. `restaurar_bd.sh` verifica esto antes de restaurar.
+if ! command -v "${PG_DUMP_BIN}" >/dev/null 2>&1; then
+    log_msg "ERROR CRÍTICO: no se encontró ${PG_DUMP_BIN} en PATH."
+    exit 1
+fi
+CLIENTE_PG_DUMP=$("${PG_DUMP_BIN}" --version | awk '{print $3}')
+SERVIDOR_VERSION_NUM=$(psql -Atc "select current_setting('server_version_num')" 2>/dev/null || true)
+if [ -z "${SERVIDOR_VERSION_NUM}" ]; then
+    log_msg "ERROR CRÍTICO: no se pudo consultar la versión del servidor ${PGHOST}:${PGPORT}/${PGDATABASE}."
+    exit 1
+fi
+# PostgreSQL >= 10 usa major.minor: 160009 -> 16.9
+SERVIDOR_VERSION=$((SERVIDOR_VERSION_NUM / 10000)).$((SERVIDOR_VERSION_NUM % 10000))
+CLIENTE_MAYOR=${CLIENTE_PG_DUMP%%.*}
+SERVIDOR_MAYOR=${SERVIDOR_VERSION%%.*}
+if [ "${CLIENTE_MAYOR}" -lt "${SERVIDOR_MAYOR}" ]; then
+    log_msg "ERROR CRÍTICO: pg_dump ${CLIENTE_PG_DUMP} es anterior al servidor ${SERVIDOR_VERSION}; el volcado no es fiable."
+    exit 1
+fi
+log_msg "Cliente pg_dump ${CLIENTE_PG_DUMP} contra servidor PostgreSQL ${SERVIDOR_VERSION}."
+if [ "${CLIENTE_MAYOR}" -gt "${SERVIDOR_MAYOR}" ]; then
+    log_msg "AVISO: este volcado requiere pg_restore >= ${CLIENTE_MAYOR} del host (p. ej. /usr/lib/postgresql/${CLIENTE_MAYOR}/bin/pg_restore). El pg_restore 16 del contenedor NO puede leerlo."
+fi
 
 # ------------------------------------------------------------------------------
 # 2. Generación del Volcado Diario (Son)
@@ -82,7 +115,10 @@ chmod 0600 "${DAILY_FILEPATH}"
 
 DAILY_SIZE=$(du -h "${DAILY_FILEPATH}" | cut -f1)
 DAILY_HASH=$(awk '{print $1}' "${DAILY_HASHPATH}")
-log_msg "Respaldo diario generado exitosamente: ${DAILY_FILENAME} (${DAILY_SIZE}) | SHA-256: ${DAILY_HASH}"
+# Manifiesto mínimo de versión: indica con qué pg_restore debe leerse el archivo.
+printf 'pg_dump=%s\nservidor=%s\n' "${CLIENTE_PG_DUMP}" "${SERVIDOR_VERSION}" > "${DAILY_FILEPATH}.pgversion"
+chmod 0600 "${DAILY_FILEPATH}.pgversion"
+log_msg "Respaldo diario generado exitosamente: ${DAILY_FILENAME} (${DAILY_SIZE}) | SHA-256: ${DAILY_HASH} | pg_dump ${CLIENTE_PG_DUMP} / servidor ${SERVIDOR_VERSION}"
 
 # ------------------------------------------------------------------------------
 # 3. Promoción a Semanal (Father) — Cada domingo (DOW=7) o primer respaldo semanal
@@ -94,6 +130,7 @@ if [ "${DOW}" -eq 7 ] || [ "${SEMANALES_EXISTENTES}" -eq 0 ]; then
     WEEKLY_HASHPATH="${WEEKLY_FILEPATH}.sha256"
 
     cp -p "${DAILY_FILEPATH}" "${WEEKLY_FILEPATH}"
+    cp -p "${DAILY_FILEPATH}.pgversion" "${WEEKLY_FILEPATH}.pgversion"
     (
         cd "${WEEKLY_DIR}"
         sha256sum "${WEEKLY_FILENAME}" > "${WEEKLY_FILENAME}.sha256"
@@ -112,6 +149,7 @@ if [ "${DOM}" = "01" ] || [ "${MENSUALES_EXISTENTES}" -eq 0 ]; then
     MONTHLY_HASHPATH="${MONTHLY_FILEPATH}.sha256"
 
     cp -p "${DAILY_FILEPATH}" "${MONTHLY_FILEPATH}"
+    cp -p "${DAILY_FILEPATH}.pgversion" "${MONTHLY_FILEPATH}.pgversion"
     (
         cd "${MONTHLY_DIR}"
         sha256sum "${MONTHLY_FILENAME}" > "${MONTHLY_FILENAME}.sha256"
@@ -142,7 +180,7 @@ purgar_nivel_gfs() {
             while read -r dump_antiguo; do
                 local hash_antiguo="${dump_antiguo}.sha256"
                 log_msg "Purgando respaldo obsoleto: $(basename "${dump_antiguo}")"
-                rm -f "${dump_antiguo}" "${hash_antiguo}"
+                rm -f "${dump_antiguo}" "${hash_antiguo}" "${dump_antiguo}.pgversion"
             done
     else
         log_msg "Rotación GFS [${etiqueta}]: ${total_actual} respaldos conservados (cuota máxima: ${max_permitidos})."

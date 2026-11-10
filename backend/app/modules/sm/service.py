@@ -14,6 +14,7 @@ from .contracts import (
     SMContacto,
     SMEntrega,
     SMEstadoConsentimiento,
+    SMEstadoEntrega,
     SMEstadoMensaje,
     SMEstadoSalud,
     SMEvento,
@@ -55,9 +56,13 @@ class SMCoreService:
         self,
         *,
         tenant: str = "polis",
+        secreto_contacto: str,
         canales: Mapping[SMCanal, type[SMCanalBase]] | None = None,
     ) -> None:
+        if len(secreto_contacto) < 16:
+            raise ValueError("El núcleo SM requiere un secreto de contacto de al menos 16 caracteres")
         self._tenant = tenant
+        self._secreto_contacto = secreto_contacto.encode("utf-8")
         self._canales = dict(canales or ADAPTADORES_BASE)
         self._consentimientos: dict[CLAVE_CONSENTIMIENTO, SMConsentimiento] = {}
         self._eventos: dict[UUID, SMEvento] = {}
@@ -85,6 +90,7 @@ class SMCoreService:
             actor=actor,
             canal=canal.value,
             identificador=contacto,
+            secreto=self._secreto_contacto,
         )
         clave = (self._tenant, actor, canal.value, contacto_hash)
         registro = self._consentimientos.get(clave)
@@ -104,7 +110,7 @@ class SMCoreService:
         self._auditar(
             actor=actor,
             accion="consentimiento.registrado",
-            evento_id=registro.id,
+            evento_id=None,
             mensaje_id=None,
             payload={"canal": canal.value, "estado": registro.estado.value},
         )
@@ -128,6 +134,7 @@ class SMCoreService:
             actor=evento.actor,
             canal=evento.canal.value,
             identificador=evento.contacto.identificador,
+            secreto=self._secreto_contacto,
         )
         if evento.contacto.canal != evento.canal:
             raise SMConsentimientoFaltante("canal del contacto y evento deben coincidir")
@@ -165,6 +172,11 @@ class SMCoreService:
 
         intento = sum(1 for e in self._entregas if e.mensaje_id == mensaje.id) + 1
         entrega.intento = intento
+        entrega.estado_entrega = SMEstadoEntrega.SIMULADO
+        entrega.detalle = "nucleo_memoria_sin_transporte"
+        from .boveda import huella_payload
+
+        entrega.payload = {"payload_sha256": huella_payload(entrega.payload)}
         self._entregas.append(
             SMEntrega(
                 tenant=mensaje.tenant,
@@ -177,7 +189,7 @@ class SMCoreService:
                 payload=entrega.payload,
             )
         )
-        mensaje.estado = transicion_estado(mensaje.estado, SMEstadoMensaje.ENVIADO)
+        mensaje.estado = transicion_estado(mensaje.estado, SMEstadoMensaje.SIMULADO)
         mensaje.actualizado_en = datetime.now(UTC)
         self._auditar(
             actor=mensaje.actor,
@@ -228,6 +240,7 @@ class SMCoreService:
             fallidos=fallidos,
             canales_vivos=canales,
             motivos=tuple(motivos),
+            simulados=sum(m.estado == SMEstadoMensaje.SIMULADO for m in self._mensajes.values()),
         )
 
     async def auditorias(self) -> tuple[SMAuditoria, ...]:
@@ -238,7 +251,7 @@ class SMCoreService:
         *,
         actor: str,
         accion: str,
-        evento_id: UUID,
+        evento_id: UUID | None,
         mensaje_id: UUID | None,
         payload: dict[str, str],
     ) -> SMAuditoria:
@@ -252,7 +265,7 @@ class SMCoreService:
                 tenant=self._tenant,
                 actor=actor,
                 accion=accion,
-                evento_id=str(evento_id),
+                evento_id=str(evento_id) if evento_id else "",
                 mensaje_id=str(mensaje_id) if mensaje_id else None,
                 payload=payload,
             ),

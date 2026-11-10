@@ -1,13 +1,15 @@
 "use client";
 
 import {useState} from "react";
+import dynamic from "next/dynamic";
 import {toast} from "sonner";
 import {
   Layers,
   Plus,
   Trash2,
   CornerDownRight,
-  Sparkles,
+  FileText,
+  GitBranch,
   ShieldAlert,
   CheckCircle2,
   Target,
@@ -17,7 +19,8 @@ import {
   AlertTriangle,
   FolderSync,
   FileSpreadsheet,
-  Copy
+  Copy,
+  TableProperties
 } from "lucide-react";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
@@ -61,6 +64,21 @@ export const DIMENSIONES_ONU = [
   "Seguridad Política y Derechos Humanos",
 ] as const;
 
+const MatrizRevogridRelatoria = dynamic(
+  () =>
+    import("./matriz-revogrid-relatoria").then(
+      (m) => m.MatrizRevogridRelatoria,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-96 w-full items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-tertiary)]">
+        Iniciando matriz de datos…
+      </div>
+    ),
+  },
+);
+
 export interface MatrizArbolRelatoriaProps {
   arbolProblemas: ArbolProblemas;
   arbolSoluciones: ArbolSoluciones;
@@ -89,6 +107,7 @@ export function MatrizArbolRelatoria({
   onGenerarSintesisNarrativa,
 }: MatrizArbolRelatoriaProps) {
   const [tabActiva, setTabActiva] = useState<"problemas" | "soluciones" | "mml">("problemas");
+  const [modoVista, setModoVista] = useState<"estructurada" | "revogrid">("estructurada");
 
   // Edición temporal de nuevos nodos raíz
   const [nuevaCausaTexto, setNuevaCausaTexto] = useState("");
@@ -527,11 +546,7 @@ export function MatrizArbolRelatoria({
   const maxFilasMml = Math.max(totalCausas, totalMedios, totalEfectos, totalFines, 1);
 
   return (
-    <Tabs
-      value={tabActiva}
-      onValueChange={(v) => setTabActiva(v as "problemas" | "soluciones" | "mml")}
-      className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm w-full"
-    >
+    <div className="@container space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm w-full">
       {/* Barra de cabecera con tabs y acciones */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
         <div className="space-y-1">
@@ -547,6 +562,38 @@ export function MatrizArbolRelatoria({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {/* Selector de modo de visualización: Estructurada vs Matriz */}
+          <div className="flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-0.5 text-xs">
+            <Button
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() => setModoVista("estructurada")}
+              className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                modoVista === "estructurada"
+                  ? "bg-[var(--surface-1)] text-[var(--text-primary)] shadow-xs"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <Layers className="size-3.5" />
+              Vista Estructurada
+            </Button>
+            <Button
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() => setModoVista("revogrid")}
+              className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                modoVista === "revogrid"
+                  ? "bg-[var(--surface-1)] text-[var(--ember)] shadow-xs"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <TableProperties className="size-3.5" />
+              Matriz
+            </Button>
+          </div>
+
           {onConsolidarSubmesas && submesasDisponibles.length > 0 && !readOnly && (
             <Button
               variant="outline"
@@ -560,39 +607,59 @@ export function MatrizArbolRelatoria({
               Consolidar {submesasDisponibles.length} submesas
             </Button>
           )}
-
-          <TabsList className="bg-[var(--surface-2)]">
-            <TabsTrigger value="problemas" className="gap-1.5 text-xs">
-              <ShieldAlert className="size-3.5" strokeWidth={1.5} />
-              Árbol de Problemas
-              {totalCausas > 0 && (
-                <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
-                  {totalCausas}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="soluciones" className="gap-1.5 text-xs">
-              <CheckCircle2 className="size-3.5" strokeWidth={1.5} />
-              Árbol de Soluciones
-              {totalMedios > 0 && (
-                <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
-                  {totalMedios}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="mml" className="gap-1.5 text-xs">
-              <Target className="size-3.5" strokeWidth={1.5} />
-              Matriz Integrada MML
-              <Badge
-                variant={coberturaSoluciones >= 80 ? "success" : "warning"}
-                className="ml-1 px-1.5 py-0 text-[10px]"
-              >
-                {coberturaSoluciones}%
-              </Badge>
-            </TabsTrigger>
-          </TabsList>
         </div>
       </div>
+
+      {modoVista === "revogrid" ? (
+        <MatrizRevogridRelatoria
+          arbolProblemas={arbolProblemas}
+          arbolSoluciones={arbolSoluciones}
+          onActualizarProblemas={onActualizarProblemas}
+          onActualizarSoluciones={onActualizarSoluciones}
+          readOnly={readOnly}
+          submesasDisponibles={submesasDisponibles}
+          mesaId={mesaId}
+          mesaNombre={mesaNombre}
+          localidad={localidad}
+        />
+      ) : (
+        <Tabs
+          value={tabActiva}
+          onValueChange={(v) => setTabActiva(v as "problemas" | "soluciones" | "mml")}
+          className="space-y-4 w-full"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2">
+            <TabsList className="bg-[var(--surface-2)]">
+              <TabsTrigger value="problemas" className="gap-1.5 text-xs">
+                <ShieldAlert className="size-3.5" strokeWidth={1.5} />
+                Árbol de Problemas
+                {totalCausas > 0 && (
+                  <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
+                    {totalCausas}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="soluciones" className="gap-1.5 text-xs">
+                <CheckCircle2 className="size-3.5" strokeWidth={1.5} />
+                Árbol de Soluciones
+                {totalMedios > 0 && (
+                  <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
+                    {totalMedios}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="mml" className="gap-1.5 text-xs">
+                <Target className="size-3.5" strokeWidth={1.5} />
+                Matriz Integrada MML
+                <Badge
+                  variant={coberturaSoluciones >= 80 ? "success" : "warning"}
+                  className="ml-1 px-1.5 py-0 text-[10px]"
+                >
+                  {coberturaSoluciones}%
+                </Badge>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
       {/* Barra de herramientas de analítica y datos */}
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] px-3 py-2 shadow-xs">
@@ -634,7 +701,7 @@ export function MatrizArbolRelatoria({
               className="h-7 gap-1.5 text-xs text-[var(--ember)]"
               title="Redactar borrador técnico para el campo de relatoría a partir de los datos de la matriz"
             >
-              <Sparkles className="size-3.5 text-[var(--ember)]" strokeWidth={1.5} />
+              <FileText className="size-3.5 text-[var(--ember)]" strokeWidth={1.5} />
               Generar síntesis narrativa
             </Button>
           )}
@@ -706,7 +773,7 @@ export function MatrizArbolRelatoria({
           </div>
 
           {/* Columnas: Causas (Raíz) y Efectos (Impactos) */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 @[920px]:grid-cols-2">
             {/* Columna Izquierda: Causas */}
             <div className="space-y-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-3">
               <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
@@ -735,7 +802,7 @@ export function MatrizArbolRelatoria({
                         agregarCausaRaiz();
                       }
                     }}
-                    className="h-8 text-xs"
+                    className="h-8 flex-1 text-xs"
                   />
                   <Button
                     variant="outline"
@@ -763,21 +830,22 @@ export function MatrizArbolRelatoria({
                       className="rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-2.5 transition-colors hover:border-[var(--border-strong)]"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2">
-                          <span className="mt-0.5 text-xs font-bold text-[var(--text-tertiary)]">
+                        <div className="flex flex-1 min-w-0 items-start gap-2">
+                          <span className="mt-1 shrink-0 text-xs font-bold text-[var(--text-tertiary)]">
                             {idx + 1}.
                           </span>
                           {readOnly ? (
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="flex-1 min-w-0 whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {causa.texto}
-                            </span>
+                            </p>
                           ) : (
-                            <Input
+                            <Textarea
+                              rows={Math.max(1, Math.ceil((causa.texto?.length || 1) / 55))}
                               value={causa.texto}
                               onChange={(e) =>
                                 actualizarCausa(causa.id, null, { texto: e.target.value })
                               }
-                              className="h-7 border-transparent bg-transparent px-1 text-xs font-medium focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
+                              className="min-h-[34px] w-full flex-1 resize-y border-transparent bg-transparent px-1.5 py-1 text-xs font-medium leading-relaxed whitespace-pre-wrap break-words focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
                             />
                           )}
                         </div>
@@ -857,13 +925,13 @@ export function MatrizArbolRelatoria({
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="alta" className="text-xs">
-                                    🔴 Alta criticidad
+                                    Alta criticidad
                                   </SelectItem>
                                   <SelectItem value="media" className="text-xs">
-                                    🟠 Media criticidad
+                                    Media criticidad
                                   </SelectItem>
                                   <SelectItem value="baja" className="text-xs">
-                                    🟢 Baja criticidad
+                                    Baja criticidad
                                   </SelectItem>
                                 </SelectContent>
                               </Select>
@@ -900,25 +968,26 @@ export function MatrizArbolRelatoria({
                           {causa.hijos.map((hijo, hIdx) => (
                             <div
                               key={hijo.id}
-                              className="flex items-center justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1 text-[11px]"
+                              className="flex items-start justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1.5 text-[11px]"
                             >
-                              <div className="flex items-center gap-1.5 overflow-hidden">
-                                <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
+                              <div className="flex flex-1 min-w-0 items-start gap-1.5">
+                                <span className="mt-1 shrink-0 font-mono text-[10px] text-[var(--text-tertiary)]">
                                   {idx + 1}.{hIdx + 1}
                                 </span>
                                 {readOnly ? (
-                                  <span className="truncate text-[var(--text-secondary)]">
+                                  <p className="flex-1 min-w-0 whitespace-pre-wrap break-words leading-relaxed text-[var(--text-secondary)]">
                                     {hijo.texto}
-                                  </span>
+                                  </p>
                                 ) : (
-                                  <Input
+                                  <Textarea
+                                    rows={Math.max(1, Math.ceil((hijo.texto?.length || 1) / 50))}
                                     value={hijo.texto}
                                     onChange={(e) =>
                                       actualizarCausa(causa.id, hijo.id, {
                                         texto: e.target.value,
                                       })
                                     }
-                                    className="h-6 border-transparent bg-transparent px-1 text-[11px] text-[var(--text-secondary)] focus:border-[var(--border)]"
+                                    className="min-h-[30px] w-full flex-1 resize-y border-transparent bg-transparent px-1 py-0.5 text-[11px] leading-relaxed whitespace-pre-wrap break-words text-[var(--text-secondary)] focus:border-[var(--border)]"
                                   />
                                 )}
                               </div>
@@ -972,7 +1041,7 @@ export function MatrizArbolRelatoria({
                         agregarEfecto();
                       }
                     }}
-                    className="h-8 text-xs"
+                    className="h-8 flex-1 text-xs"
                   />
                   <Button
                     variant="outline"
@@ -1000,21 +1069,22 @@ export function MatrizArbolRelatoria({
                       className="rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-2.5 transition-colors hover:border-[var(--border-strong)]"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2">
-                          <span className="mt-0.5 text-xs font-bold text-[var(--text-tertiary)]">
+                        <div className="flex flex-1 min-w-0 items-start gap-2">
+                          <span className="mt-1 shrink-0 text-xs font-bold text-[var(--text-tertiary)]">
                             {idx + 1}.
                           </span>
                           {readOnly ? (
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="flex-1 min-w-0 whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {efecto.texto}
-                            </span>
+                            </p>
                           ) : (
-                            <Input
+                            <Textarea
+                              rows={Math.max(1, Math.ceil((efecto.texto?.length || 1) / 55))}
                               value={efecto.texto}
                               onChange={(e) =>
                                 actualizarEfecto(efecto.id, null, { texto: e.target.value })
                               }
-                              className="h-7 border-transparent bg-transparent px-1 text-xs font-medium focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
+                              className="min-h-[34px] w-full flex-1 resize-y border-transparent bg-transparent px-1.5 py-1 text-xs font-medium leading-relaxed whitespace-pre-wrap break-words focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
                             />
                           )}
                         </div>
@@ -1085,25 +1155,26 @@ export function MatrizArbolRelatoria({
                           {efecto.hijos.map((hijo, hIdx) => (
                             <div
                               key={hijo.id}
-                              className="flex items-center justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1 text-[11px]"
+                              className="flex items-start justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1.5 text-[11px]"
                             >
-                              <div className="flex items-center gap-1.5 overflow-hidden">
-                                <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
+                              <div className="flex flex-1 min-w-0 items-start gap-1.5">
+                                <span className="mt-1 shrink-0 font-mono text-[10px] text-[var(--text-tertiary)]">
                                   {idx + 1}.{hIdx + 1}
                                 </span>
                                 {readOnly ? (
-                                  <span className="truncate text-[var(--text-secondary)]">
+                                  <p className="flex-1 min-w-0 whitespace-pre-wrap break-words leading-relaxed text-[var(--text-secondary)]">
                                     {hijo.texto}
-                                  </span>
+                                  </p>
                                 ) : (
-                                  <Input
+                                  <Textarea
+                                    rows={Math.max(1, Math.ceil((hijo.texto?.length || 1) / 50))}
                                     value={hijo.texto}
                                     onChange={(e) =>
                                       actualizarEfecto(efecto.id, hijo.id, {
                                         texto: e.target.value,
                                       })
                                     }
-                                    className="h-6 border-transparent bg-transparent px-1 text-[11px] text-[var(--text-secondary)] focus:border-[var(--border)]"
+                                    className="min-h-[30px] w-full flex-1 resize-y border-transparent bg-transparent px-1 py-0.5 text-[11px] leading-relaxed whitespace-pre-wrap break-words text-[var(--text-secondary)] focus:border-[var(--border)]"
                                   />
                                 )}
                               </div>
@@ -1153,7 +1224,7 @@ export function MatrizArbolRelatoria({
                   className="h-6 gap-1 text-[11px] text-[var(--success)]"
                   title="Transformar automáticamente causas en medios y efectos en fines"
                 >
-                  <Sparkles className="size-3" strokeWidth={1.5} />
+                  <GitBranch className="size-3" strokeWidth={1.5} />
                   Proyectar desde diagnóstico
                 </Button>
               )}
@@ -1174,7 +1245,7 @@ export function MatrizArbolRelatoria({
           </div>
 
           {/* Columnas: Medios (Acciones) y Fines (Sostenibilidad) */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 @[920px]:grid-cols-2">
             {/* Columna Izquierda: Medios */}
             <div className="space-y-3 rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-3">
               <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
@@ -1203,7 +1274,7 @@ export function MatrizArbolRelatoria({
                         agregarMedio();
                       }
                     }}
-                    className="h-8 text-xs"
+                    className="h-8 flex-1 text-xs"
                   />
                   <Button
                     variant="outline"
@@ -1231,21 +1302,22 @@ export function MatrizArbolRelatoria({
                       className="rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-2.5 transition-colors hover:border-[var(--border-strong)]"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2">
-                          <span className="mt-0.5 text-xs font-bold text-[var(--text-tertiary)]">
+                        <div className="flex flex-1 min-w-0 items-start gap-2">
+                          <span className="mt-1 shrink-0 text-xs font-bold text-[var(--text-tertiary)]">
                             {idx + 1}.
                           </span>
                           {readOnly ? (
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="flex-1 min-w-0 whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {medio.texto}
-                            </span>
+                            </p>
                           ) : (
-                            <Input
+                            <Textarea
+                              rows={Math.max(1, Math.ceil((medio.texto?.length || 1) / 55))}
                               value={medio.texto}
                               onChange={(e) =>
                                 actualizarMedio(medio.id, null, { texto: e.target.value })
                               }
-                              className="h-7 border-transparent bg-transparent px-1 text-xs font-medium focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
+                              className="min-h-[34px] w-full flex-1 resize-y border-transparent bg-transparent px-1.5 py-1 text-xs font-medium leading-relaxed whitespace-pre-wrap break-words focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
                             />
                           )}
                         </div>
@@ -1338,25 +1410,26 @@ export function MatrizArbolRelatoria({
                           {medio.hijos.map((hijo, hIdx) => (
                             <div
                               key={hijo.id}
-                              className="flex items-center justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1 text-[11px]"
+                              className="flex items-start justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1.5 text-[11px]"
                             >
-                              <div className="flex items-center gap-1.5 overflow-hidden">
-                                <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
+                              <div className="flex flex-1 min-w-0 items-start gap-1.5">
+                                <span className="mt-1 shrink-0 font-mono text-[10px] text-[var(--text-tertiary)]">
                                   {idx + 1}.{hIdx + 1}
                                 </span>
                                 {readOnly ? (
-                                  <span className="truncate text-[var(--text-secondary)]">
+                                  <p className="flex-1 min-w-0 whitespace-pre-wrap break-words leading-relaxed text-[var(--text-secondary)]">
                                     {hijo.texto}
-                                  </span>
+                                  </p>
                                 ) : (
-                                  <Input
+                                  <Textarea
+                                    rows={Math.max(1, Math.ceil((hijo.texto?.length || 1) / 50))}
                                     value={hijo.texto}
                                     onChange={(e) =>
                                       actualizarMedio(medio.id, hijo.id, {
                                         texto: e.target.value,
                                       })
                                     }
-                                    className="h-6 border-transparent bg-transparent px-1 text-[11px] text-[var(--text-secondary)] focus:border-[var(--border)]"
+                                    className="min-h-[30px] w-full flex-1 resize-y border-transparent bg-transparent px-1 py-0.5 text-[11px] leading-relaxed whitespace-pre-wrap break-words text-[var(--text-secondary)] focus:border-[var(--border)]"
                                   />
                                 )}
                               </div>
@@ -1410,7 +1483,7 @@ export function MatrizArbolRelatoria({
                         agregarFin();
                       }
                     }}
-                    className="h-8 text-xs"
+                    className="h-8 flex-1 text-xs"
                   />
                   <Button
                     variant="outline"
@@ -1438,21 +1511,22 @@ export function MatrizArbolRelatoria({
                       className="rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-2.5 transition-colors hover:border-[var(--border-strong)]"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2">
-                          <span className="mt-0.5 text-xs font-bold text-[var(--text-tertiary)]">
+                        <div className="flex flex-1 min-w-0 items-start gap-2">
+                          <span className="mt-1 shrink-0 text-xs font-bold text-[var(--text-tertiary)]">
                             {idx + 1}.
                           </span>
                           {readOnly ? (
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="flex-1 min-w-0 whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {fin.texto}
-                            </span>
+                            </p>
                           ) : (
-                            <Input
+                            <Textarea
+                              rows={Math.max(1, Math.ceil((fin.texto?.length || 1) / 55))}
                               value={fin.texto}
                               onChange={(e) =>
                                 actualizarFin(fin.id, null, { texto: e.target.value })
                               }
-                              className="h-7 border-transparent bg-transparent px-1 text-xs font-medium focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
+                              className="min-h-[34px] w-full flex-1 resize-y border-transparent bg-transparent px-1.5 py-1 text-xs font-medium leading-relaxed whitespace-pre-wrap break-words focus:border-[var(--border)] focus:bg-[var(--surface-0)]"
                             />
                           )}
                         </div>
@@ -1489,25 +1563,26 @@ export function MatrizArbolRelatoria({
                           {fin.hijos.map((hijo, hIdx) => (
                             <div
                               key={hijo.id}
-                              className="flex items-center justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1 text-[11px]"
+                              className="flex items-start justify-between gap-2 rounded bg-[var(--surface-0)] px-2 py-1.5 text-[11px]"
                             >
-                              <div className="flex items-center gap-1.5 overflow-hidden">
-                                <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
+                              <div className="flex flex-1 min-w-0 items-start gap-1.5">
+                                <span className="mt-1 shrink-0 font-mono text-[10px] text-[var(--text-tertiary)]">
                                   {idx + 1}.{hIdx + 1}
                                 </span>
                                 {readOnly ? (
-                                  <span className="truncate text-[var(--text-secondary)]">
+                                  <p className="flex-1 min-w-0 whitespace-pre-wrap break-words leading-relaxed text-[var(--text-secondary)]">
                                     {hijo.texto}
-                                  </span>
+                                  </p>
                                 ) : (
-                                  <Input
+                                  <Textarea
+                                    rows={Math.max(1, Math.ceil((hijo.texto?.length || 1) / 50))}
                                     value={hijo.texto}
                                     onChange={(e) =>
                                       actualizarFin(fin.id, hijo.id, {
                                         texto: e.target.value,
                                       })
                                     }
-                                    className="h-6 border-transparent bg-transparent px-1 text-[11px] text-[var(--text-secondary)] focus:border-[var(--border)]"
+                                    className="min-h-[30px] w-full flex-1 resize-y border-transparent bg-transparent px-1 py-0.5 text-[11px] leading-relaxed whitespace-pre-wrap break-words text-[var(--text-secondary)] focus:border-[var(--border)]"
                                   />
                                 )}
                               </div>
@@ -1595,20 +1670,20 @@ export function MatrizArbolRelatoria({
             <Table>
               <TableHeader className="bg-[var(--surface-2)]">
                 <TableRow>
-                  <TableHead className="w-8 text-center font-bold text-[11px]">#</TableHead>
-                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--ember)]">
+                  <TableHead className="w-8 text-center font-bold text-[11px] whitespace-normal">#</TableHead>
+                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--ember)] whitespace-normal">
                     Diagnóstico: Causa Raíz
                   </TableHead>
-                  <TableHead className="w-[20%] font-bold text-[11px] text-[var(--text-primary)]">
+                  <TableHead className="w-[20%] font-bold text-[11px] text-[var(--text-primary)] whitespace-normal">
                     Impacto: Efecto Territorial
                   </TableHead>
-                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--success)]">
+                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--success)] whitespace-normal">
                     Intervención: Medio / Acción
                   </TableHead>
-                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--text-primary)]">
+                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--text-primary)] whitespace-normal">
                     Propósito: Fin Esperado
                   </TableHead>
-                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--info)]">
+                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--info)] whitespace-normal">
                     Dimensión ONU
                   </TableHead>
                 </TableRow>
@@ -1627,17 +1702,17 @@ export function MatrizArbolRelatoria({
 
                   return (
                     <TableRow key={`mml-row-${i}`} className="hover:bg-[var(--surface-1)]">
-                      <TableCell className="text-center font-mono text-xs font-bold text-[var(--text-tertiary)]">
+                      <TableCell className="text-center font-mono text-xs font-bold text-[var(--text-tertiary)] whitespace-normal">
                         {i + 1}
                       </TableCell>
 
                       {/* Columna Causa */}
-                      <TableCell className="align-top">
+                      <TableCell className="align-top whitespace-normal break-words">
                         {causa ? (
                           <div className="space-y-1">
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {causa.texto}
-                            </span>
+                            </p>
                             <div className="flex flex-wrap gap-1">
                               {causa.metadatos?.criticidad && (
                                 <Badge
@@ -1654,15 +1729,19 @@ export function MatrizArbolRelatoria({
                                 </Badge>
                               )}
                               {causa.metadatos?.dimensionOnu && (
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
                                   {causa.metadatos.dimensionOnu}
                                 </Badge>
                               )}
                             </div>
                             {causa.hijos && causa.hijos.length > 0 && (
-                              <p className="text-[10px] text-[var(--text-tertiary)]">
-                                + {causa.hijos.length} causa(s) secundaria(s)
-                              </p>
+                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
+                                {causa.hijos.map((h, hIdx) => (
+                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
+                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
+                                  </p>
+                                ))}
+                              </div>
                             )}
                           </div>
                         ) : (
@@ -1671,17 +1750,26 @@ export function MatrizArbolRelatoria({
                       </TableCell>
 
                       {/* Columna Efecto */}
-                      <TableCell className="align-top">
+                      <TableCell className="align-top whitespace-normal break-words">
                         {efecto ? (
                           <div className="space-y-1">
-                            <span className="text-xs text-[var(--text-primary)]">
+                            <p className="whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--text-primary)]">
                               {efecto.texto}
-                            </span>
+                            </p>
                             {efecto.metadatos?.dimensionOnu && (
                               <div>
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
                                   {efecto.metadatos.dimensionOnu}
                                 </Badge>
+                              </div>
+                            )}
+                            {efecto.hijos && efecto.hijos.length > 0 && (
+                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
+                                {efecto.hijos.map((h, hIdx) => (
+                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
+                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
+                                  </p>
+                                ))}
                               </div>
                             )}
                           </div>
@@ -1691,28 +1779,37 @@ export function MatrizArbolRelatoria({
                       </TableCell>
 
                       {/* Columna Medio */}
-                      <TableCell className="align-top">
+                      <TableCell className="align-top whitespace-normal break-words">
                         {medio ? (
                           <div className="space-y-1">
-                            <span className="text-xs font-medium text-[var(--text-primary)]">
+                            <p className="whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
                               {medio.texto}
-                            </span>
+                            </p>
                             <div className="flex flex-wrap gap-1">
                               {medio.metadatos?.actorResponsable && (
                                 <Badge
                                   variant="outline"
-                                  className="gap-0.5 border-[var(--border)] text-[9px] text-[var(--text-secondary)]"
+                                  className="gap-0.5 border-[var(--border)] text-[9px] text-[var(--text-secondary)] whitespace-normal"
                                 >
-                                  <Building2 className="size-2.5" strokeWidth={1.5} />
+                                  <Building2 className="size-2.5 shrink-0" strokeWidth={1.5} />
                                   {medio.metadatos.actorResponsable}
                                 </Badge>
                               )}
                               {medio.metadatos?.dimensionOnu && (
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
                                   {medio.metadatos.dimensionOnu}
                                 </Badge>
                               )}
                             </div>
+                            {medio.hijos && medio.hijos.length > 0 && (
+                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
+                                {medio.hijos.map((h, hIdx) => (
+                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
+                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ) : causa ? (
                           <Badge variant="warning" className="text-[10px] px-1.5 py-0.5">
@@ -1724,12 +1821,21 @@ export function MatrizArbolRelatoria({
                       </TableCell>
 
                       {/* Columna Fin */}
-                      <TableCell className="align-top">
+                      <TableCell className="align-top whitespace-normal break-words">
                         {fin ? (
                           <div className="space-y-1">
-                            <span className="text-xs text-[var(--text-secondary)]">
+                            <p className="whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--text-secondary)]">
                               {fin.texto}
-                            </span>
+                            </p>
+                            {fin.hijos && fin.hijos.length > 0 && (
+                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
+                                {fin.hijos.map((h, hIdx) => (
+                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
+                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <span className="text-xs text-[var(--text-tertiary)]">—</span>
@@ -1737,9 +1843,9 @@ export function MatrizArbolRelatoria({
                       </TableCell>
 
                       {/* Columna Dimensión ONU */}
-                      <TableCell className="align-top">
+                      <TableCell className="align-top whitespace-normal break-words">
                         {dimensionFila ? (
-                          <Badge variant="secondary" className="text-[9px] px-1.5 py-0.5">
+                          <Badge variant="secondary" className="text-[9px] px-1.5 py-0.5 whitespace-normal">
                             {dimensionFila}
                           </Badge>
                         ) : (
@@ -1755,5 +1861,7 @@ export function MatrizArbolRelatoria({
         </div>
       </TabsContent>
     </Tabs>
-  );
+  )}
+</div>
+);
 }

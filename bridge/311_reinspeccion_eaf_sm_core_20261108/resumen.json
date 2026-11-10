@@ -1,0 +1,65 @@
+{
+  "encargo": "310",
+  "expediente": "311_reinspeccion_eaf_sm_core_20261108",
+  "preparado_por": "freebuff:0.0",
+  "caracter": "evidencia_preparada_por_implementador",
+  "dictamen_independiente": false,
+  "fecha": "2026-11-08",
+  "head": "78cd08e80252b82c7c903030a6bf79fdf9d8fa67",
+  "arbol_sin_commit": true,
+  "alembic_head": "0100_sm_auditoria_operador",
+  "hallazgos": {
+    "HAL-01": "cerrado_tecnicamente",
+    "HAL-02": "cerrado_tecnicamente",
+    "HAL-03": "cerrado_tecnicamente_con_residual",
+    "MED-01": "cerrado_tecnicamente",
+    "MED-02": "cerrado_tecnicamente",
+    "MED-03": "cerrado_tecnicamente",
+    "MED-04": "cerrado_tecnicamente_health_exige_auditoria_leer",
+    "MED-05": "cerrado_tecnicamente",
+    "MED-06": "cerrado_tecnicamente",
+    "BAJ-01": "cerrado_tecnicamente",
+    "BAJ-02": "cerrado_tecnicamente",
+    "BAJ-03": "cerrado_por_diseno_documentado",
+    "BAJ-04": "cerrado_tecnicamente",
+    "BAJ-05": "cerrado_tecnicamente_sin_eco_de_huella",
+    "BAJ-06": "cerrado_tecnicamente"
+  },
+  "pruebas": {
+    "sm": {
+      "comando": "env -u POLIS_SM_BOVEDA_KEY -u POLIS_SM_WORKER_HABILITADO pytest tests/test_sm_*.py",
+      "resultado": "101 passed",
+      "fallos": 0,
+      "base": "polis_test_sm_med3_20261108"
+    },
+    "permisos": {
+      "comando": "pytest tests/test_access_policy.py",
+      "resultado": "130 passed, 1 skipped"
+    },
+    "backend_completo": {
+      "comando": "bun run backend:check",
+      "resultado": "2001 passed, 16 skipped, 0 failed",
+      "duracion_segundos": 960.89,
+      "detalle": "postgis y pgrouting creados antes de la corrida; sin secretos SM exportados"
+    },
+    "migracion_0100": "upgrade/downgrade/upgrade exit 0",
+    "frontend": {
+      "comando": "bun run check",
+      "resultado": "exit 0"
+    },
+    "frontend_sm_mesas": {
+      "comando": "bun test src/features/sm src/features/mesas",
+      "resultado": "172 passed"
+    }
+  },
+  "inventario": {
+    "archivo": "inventario_archivos.sha256",
+    "entradas": 34
+  },
+  "limites": [
+    "No sustituye la reinspección EAF independiente",
+    "No autoriza merge, despliegue ni activación del worker",
+    "No se probaron proveedores reales ni entrega SMTP externa",
+    "BAJ-03 es un límite de diseño documentado del núcleo portable"
+  ]
+}

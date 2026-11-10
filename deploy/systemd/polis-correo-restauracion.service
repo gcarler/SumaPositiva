@@ -1,0 +1,13 @@
+[Unit]
+Description=POLIS - ensayo semanal de restauración del respaldo de correo
+Documentation=file:/root/polis/docs/correo-propio.md
+After=postgresql.service
+ConditionPathIsDirectory=/root/polis/backups/correo/diarios
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/root/polis/scripts/verificar_restauracion_correo.sh
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

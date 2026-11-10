@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.dialects.postgresql import insert as insert_pg
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -30,6 +30,9 @@ logger = logging.getLogger("polis.herald.salud")
 
 UMBRAL_LATIDO_SEGUNDOS = 300  # 5 min
 UMBRAL_PENDIENTE_ANTIGUO_SEGUNDOS = 600  # 10 min
+# Corte Herald→SM: una fila delegada sin entrega SM confirmada pasado este
+# umbral indica que el worker SM no está drenando (o que el mensaje falló).
+UMBRAL_DELEGADA_SIN_ENTREGA_SEGUNDOS = 1800  # 30 min
 UMBRAL_TASA_DEGRADADO = 0.9
 UMBRAL_TASA_CRITICO = 0.5
 UMBRAL_ENVIOS_MINIMO_DEGRADADO = 10
@@ -51,6 +54,7 @@ class LecturaSalud:
     mas_antiguo_segundos: float | None
     enviados_24h: int
     tasa_exito: float | None
+    delegadas_sin_entrega: int = 0
     motivos: list[str] = field(default_factory=list)
 
 
@@ -64,6 +68,7 @@ def calcular_estado(
     mas_antiguo_segundos: float | None,
     enviados_24h: int,
     tasa_exito: float | None,
+    delegadas_sin_entrega: int = 0,
     incluir_cifras: bool = True,
 ) -> tuple[str, list[str]]:
     """Función pura: estado agregado y motivos legibles de cada regla que se disparó.
@@ -122,6 +127,17 @@ def calcular_estado(
         motivos_degradados.append(
             f"El ejecutor no da latido desde hace más de {UMBRAL_LATIDO_SEGUNDOS // 60} minutos (cola vacía)."
         )
+    if delegadas_sin_entrega > 0:
+        limite_minutos = UMBRAL_DELEGADA_SIN_ENTREGA_SEGUNDOS // 60
+        if incluir_cifras:
+            motivos_degradados.append(
+                f"{delegadas_sin_entrega} notificaciones delegadas a SM llevan más de "
+                f"{limite_minutos} minutos sin entrega confirmada."
+            )
+        else:
+            motivos_degradados.append(
+                f"Hay notificaciones delegadas a SM con más de {limite_minutos} minutos sin entrega confirmada."
+            )
     if tasa_exito is not None and tasa_exito < UMBRAL_TASA_DEGRADADO and enviados_24h >= UMBRAL_ENVIOS_MINIMO_DEGRADADO:
         if incluir_cifras:
             motivos_degradados.append(
@@ -168,6 +184,43 @@ async def escribir_latido(session: AsyncSession, resultados: dict[str, int]) -> 
         logger.exception("No se pudo escribir el latido de Herald; la entrega continúa")
 
 
+async def contar_delegadas_sin_entrega(
+    session: AsyncSession, *, umbral_segundos: int = UMBRAL_DELEGADA_SIN_ENTREGA_SEGUNDOS
+) -> int:
+    """Filas ``delegado`` antiguas cuya entrega SM no consta como enviada/entregada.
+
+    Una fila delegada se queda en ese estado para siempre: SM es la autoridad de
+    la entrega. Solo cuenta como pendiente si su mensaje SM no está `enviado` ni
+    `entregado` y no tiene un intento de entrega `enviado`; así, un worker SM
+    detenido se ve en la salud y no se confunde con una entrega confirmada.
+    """
+    total = await session.scalar(
+        text(
+            """
+            SELECT count(*)
+            FROM participacion_ciudadana.notificaciones_transaccionales AS n
+            WHERE n.estado_envio = 'delegado'
+              AND n.creado_en <= clock_timestamp() - make_interval(secs => :umbral)
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM participacion_ciudadana.sm_mensajes AS m
+                  WHERE m.idempotencia = 'herald:' || n.id::text
+                    AND (
+                        m.estado IN ('enviado', 'entregado')
+                        OR EXISTS (
+                            SELECT 1
+                            FROM participacion_ciudadana.sm_entregas AS e
+                            WHERE e.mensaje_id = m.id AND e.estado_entrega = 'enviado'
+                        )
+                    )
+              )
+            """
+        ),
+        {"umbral": umbral_segundos},
+    )
+    return int(total or 0)
+
+
 async def _latido_mas_reciente(session: AsyncSession) -> tuple[datetime | None, dict[str, Any] | None]:
     fila = (await session.execute(select(HeraldLatido).where(HeraldLatido.id == 1))).scalar_one_or_none()
     if fila is None:
@@ -204,6 +257,7 @@ async def recolectar_salud(session: AsyncSession, settings: Settings, *, incluir
                 func.max(func.extract("epoch", func.now() - NotificacionTransaccional.creado_en)).filter(
                     NotificacionTransaccional.estado_envio == "pendiente"
                 ),
+                func.count().filter(NotificacionTransaccional.estado_envio == "delegado"),
             )
         )
     ).one()
@@ -274,6 +328,8 @@ async def recolectar_salud(session: AsyncSession, settings: Settings, *, incluir
     mas_antiguo = float(cola[4]) if cola[4] is not None else None
 
     smtp_configurado = bool(settings.smtp_host)
+    delegadas_sin_entrega = await contar_delegadas_sin_entrega(session)
+
     estado, motivos = calcular_estado(
         smtp_configurado=smtp_configurado,
         es_produccion=settings.environment == "production",
@@ -283,6 +339,7 @@ async def recolectar_salud(session: AsyncSession, settings: Settings, *, incluir
         mas_antiguo_segundos=mas_antiguo,
         enviados_24h=enviados_24h,
         tasa_exito=tasa_exito,
+        delegadas_sin_entrega=delegadas_sin_entrega,
         incluir_cifras=incluir_cifras,
     )
 
@@ -301,6 +358,9 @@ async def recolectar_salud(session: AsyncSession, settings: Settings, *, incluir
             "fallidos_reintentables": int(cola[2] or 0),
             "agotados": agotados,
             "mas_antiguo_segundos": mas_antiguo,
+            # Corte P5: Herald no las envía; su entrega consta en SM.
+            "delegados": int(cola[5] or 0),
+            "delegadas_sin_entrega": delegadas_sin_entrega,
         },
         "ultimas_24h": {
             "enviados": enviados_24h,

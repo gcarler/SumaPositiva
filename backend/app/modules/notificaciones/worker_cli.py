@@ -3,6 +3,7 @@
 Uso:
     python -m app.modules.notificaciones.worker_cli                # servicio continuo
     python -m app.modules.notificaciones.worker_cli --una-vez      # drena y termina (cron / diagnóstico)
+    python -m app.modules.notificaciones.worker_cli --liberar-delegadas  # reversa del corte Herald→SM
 
 Garantía de seguridad: en producción SIN ``POLIS_SMTP_HOST`` el ejecutor se niega a arrancar
 (código de salida 2). Motivo: sin SMTP el transporte marca las filas como ``simulado``, estado
@@ -13,6 +14,7 @@ entregan en cuanto se configure el relé.
 
 import argparse
 import asyncio
+import json
 import logging
 import signal
 import sys
@@ -20,8 +22,10 @@ from collections import Counter
 
 from app.core.config import Settings
 from app.core.database import Database
+from app.core.transactions import transaction
 from app.modules.notificaciones.salud import escribir_latido
 from app.modules.notificaciones.worker import NotificacionWorker
+from app.modules.sm.bridge import SMBridge
 
 logger = logging.getLogger("polis.herald")
 
@@ -81,8 +85,23 @@ async def drenar(
     return resultados
 
 
+async def liberar_delegadas(settings: Settings) -> dict[str, int]:
+    """Reversa del corte Herald→SM sin tocar las filas que SM ya entregó."""
+    database = Database(settings)
+    try:
+        async with database.sessions() as session:
+            async with transaction(session):
+                return await SMBridge(settings=settings).liberar_delegadas(session)
+    finally:
+        await database.engine.dispose()
+
+
 async def ejecutar(args: argparse.Namespace) -> int:
     settings = Settings()
+    if args.liberar_delegadas:
+        resumen = await liberar_delegadas(settings)
+        print(json.dumps({"estado": "delegadas_liberadas", **resumen}), flush=True)
+        return 0
     try:
         verificar_configuracion(settings, permitir_simulado=args.permitir_simulado)
     except ConfiguracionInvalida as error:
@@ -136,6 +155,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--intervalo", type=float, default=10.0, help="Segundos entre ciclos (def. 10)")
     parser.add_argument("--concurrencia", type=int, default=4, help="Consumidores simultáneos (def. 4)")
     parser.add_argument("--lote", type=int, default=200, help="Máximo de correos por ciclo (def. 200)")
+    parser.add_argument(
+        "--liberar-delegadas",
+        action="store_true",
+        help="Reversa del corte: devuelve a la cola las notificaciones delegadas a SM que no se entregaron",
+    )
     parser.add_argument(
         "--permitir-simulado",
         action="store_true",

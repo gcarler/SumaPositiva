@@ -1,0 +1,407 @@
+diff --git a/backend/.env.example b/backend/.env.example
+index 13158ba6..6c3c6537 100644
+--- a/backend/.env.example
++++ b/backend/.env.example
+@@ -27,3 +27,23 @@ POLIS_GOOGLE_CLIENT_ID=PENDIENTE_CONFIGURAR
+ POLIS_WHATSAPP_HABILITADO=false
+ # POLIS_WHATSAPP_APP_SECRET=
+ # POLIS_WHATSAPP_VERIFY_TOKEN=
++
++# SM Core 310 — apagado hasta migraciones/revisión y coordinación.
++POLIS_SM_WORKER_HABILITADO=false
++POLIS_SM_EVENTOS_DOMINIO=[]
++# POLIS_SM_BOVEDA_KEY=<32 bytes aleatorios base64; no reutilizar JWT/MFA>
++POLIS_SM_BOVEDA_KEY_ID=v1
++# POLIS_SM_BOVEDA_CLAVES_ANTERIORES={"anterior":"base64"}
++POLIS_SM_WORKER_BASE_SEGUNDOS=30
++POLIS_SM_WORKER_MAX_REINTENTOS=5
++POLIS_SM_WORKER_LEASE_SEGUNDOS=120
++POLIS_SM_HTTP_TIMEOUT_SEGUNDOS=10
++POLIS_SM_WEBHOOK_ORIGENES=[]
++# POLIS_SM_WEBHOOK_SECRET=<secreto independiente de al menos 32 caracteres>
++# POLIS_SM_TELEGRAM_TOKEN=<Bot API oficial>
++# POLIS_SM_WHATSAPP_TOKEN=<token de Meta>
++# POLIS_SM_WHATSAPP_PHONE_ID=<id oficial>
++# POLIS_SM_WHATSAPP_API_VERSION=<version Graph vigente aprobada>
++# POLIS_SM_WHATSAPP_PLANTILLA=<plantilla aprobada con un parámetro de cuerpo>
++POLIS_SM_WHATSAPP_PLANTILLA_APROBADA=false
++POLIS_SM_WHATSAPP_IDIOMA=es_CO
+diff --git a/docs/operacion.md b/docs/operacion.md
+index 12e7a304..42ac102d 100644
+--- a/docs/operacion.md
++++ b/docs/operacion.md
+@@ -246,3 +246,10 @@ Los respaldos `recuperacion_dropin_r4.conf` y `recuperacion_nginx_csp.conf` est
+ restaurar el drop-in anterior, ejecutar `systemctl daemon-reload`, reiniciar
+ `polis-frontend.service` y comprobar páginas, API y estáticos. El backend no se
+ reinició y no se aplicaron migraciones productivas en este cierre.
++
++## Worker SM Core (310-BK)
++
++El [runbook SM](sm-worker.md) documenta bóveda, claves y rotación, transportes,
++estados simulados, leases/backoff, CLI y unidad systemd propuesta. Su entrega no
++habilita el servicio ni migra `bd_csh`; todos los flags permanecen apagados en
++la configuración de ejemplo. Herald continúa operativo y el puente usa sombra.
+diff --git a/docs/permisos-api.md b/docs/permisos-api.md
+index 1a459d4f..28cc5b27 100644
+--- a/docs/permisos-api.md
++++ b/docs/permisos-api.md
+@@ -386,7 +386,8 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
+ | --- | --- | --- | --- |
+ | GET | /api/v1/actores | publico | Catálogo de actores estratégicos para control social y formulación participativa. |
+ | GET | /api/v1/actores/kpis | publico | Agregaciones estadísticas y distribución en cuadrantes de poder e interés. |
+-| GET | /api/v1/actores/{id} | publico | Ficha técnica pública de caracterización y postura del actor. |
++| GET | /api/v1/actores/{id} | publico | Ficha pública de caracterización y postura del actor; excluye nombre del líder, teléfono, correo y dirección. |
++| GET | /api/v1/actores/{id}/contacto | permiso:politicas:gestionar@declarada | Contacto completo (organización, cargo, líder, teléfono, correo y dirección) solo para edición autorizada; nunca en la ficha pública. |
+ | POST | /api/v1/actores | permiso:politicas:gestionar@declarada | Registro de actor con validación de procedencia y trazabilidad de auditoría. |
+ | PUT | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Actualización de caracterización y acciones con registro inmutable. |
+ | DELETE | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Desactivación o retiro con justificación técnica obligatoria en auditoría. |
+@@ -421,6 +422,13 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
+ | GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Historial privado de intenciones y resultados de notificación; pendiente, procesando, enviado, simulado o fallido no equivalen a entrega real. Puede contener destinatarios y requiere autorización institucional. Admite filtro `estado_envio` y expone `intentos` y `error_detalle` (solo el nombre de la excepción, sin datos sensibles). |
+ | GET | /api/v1/notificaciones/salud | permiso:auditoria:leer@declarada | Salud agregada del Herald (Encargo 275): estado, motivos, ejecutor, cola y métricas de 24 h. Nunca expone host, usuario ni contraseña SMTP. |
+ | POST | /api/v1/notificaciones/{notificacion_id}/reintentar | permiso:usuarios:gestionar@declarada | Reintento manual de una notificación 'fallido' agotada; devuelve la fila a 'pendiente' y queda auditado con el actor institucional. 404 si no existe, 409 si no está agotada. |
++| POST | /api/v1/sm/consent | permiso:comunicaciones:gestionar@declarada | Registra opt-in/opt-out por canal; destinatario cifrado AES-256-GCM en bóveda y hash en el consentimiento; revocar purga la bóveda. No existe autoregistro ciudadano sin identidad verificada. |
++| GET | /api/v1/sm/consent/{canal}/{actor} | permiso:comunicaciones:gestionar@declarada | Verifica consentimiento mediante contacto_hash (no contacto crudo en URL); devuelve hash, nunca el contacto. Uso operativo interno. |
++| POST | /api/v1/sm/events | permiso:comunicaciones:gestionar@declarada | Ingesta de evento al outbox SM con idempotencia y consentimiento previo obligatorio. |
++| GET | /api/v1/sm/messages/{mensaje_id} | permiso:auditoria:leer@declarada | Consulta un mensaje del outbox SM sin PII cruda para supervisión y trazabilidad. |
++| GET | /api/v1/sm/messages | permiso:auditoria:leer@declarada | Lista operativa del outbox SM por canal y estado, misma familia que el historial de notificaciones. |
++| POST | /api/v1/sm/worker/run-once | permiso:comunicaciones:gestionar@declarada | Dispara un lote del worker SM habilitado; resuelve desde bóveda, confirma reclamación y registra enviado/simulado/fallido de forma diferenciada. |
++| GET | /api/v1/sm/health | publico | Sonda operativa interna, igual que /api/v1/health/herald: solo agregados (pendientes, enviados, fallidos, canales), sin PII ni cifras de destinatarios. |
+ | GET | /api/v1/health/herald | publico | Endpoint interno sin autenticación para el monitor de operación: solo `estado` y `motivos`, sin cifras ni PII (análogo a /health/live). |
+ 
+ ## Canal Conversacional WhatsApp e Ingesta Comunitaria — decisión CANAL-WHATSAPP-01
+diff --git a/docs/sm-worker.md b/docs/sm-worker.md
+new file mode 100644
+index 00000000..b72c5aab
+--- /dev/null
++++ b/docs/sm-worker.md
+@@ -0,0 +1,148 @@
++# Operación SM Core — Encargo 310-BK
++
++Estado: implementación preparada para revisión EAF. No habilita servicios ni
++migra producción. Herald sigue siendo el emisor de los eventos del puente.
++
++## Configuración y bóveda
++
++- `POLIS_SM_BOVEDA_KEY`: 32 bytes aleatorios codificados en base64 URL-safe,
++  independiente de JWT y MFA; guardar en el gestor de secretos/archivo 0600.
++- `POLIS_SM_BOVEDA_KEY_ID`: identificador de la clave activa, por defecto `v1`.
++- `POLIS_SM_BOVEDA_CLAVES_ANTERIORES`: JSON secreto `{"id_anterior":"clave_base64"}`.
++  No incluir en él el identificador activo. Conservar hasta recifrar **y** cerrar
++  la política de retención/recuperación de respaldos históricos.
++- `POLIS_SM_WORKER_HABILITADO=false`: apagado por defecto.
++- `POLIS_SM_EVENTOS_DOMINIO=[]`: tipos de Herald que se copian al outbox, solo
++  en sombra y con consentimiento SM explícito de la cuenta activa. No copia
++  nombres, HTML, tokens de identidad ni contactos en columnas de SM.
++
++Generar la clave fuera del código y no imprimirla en terminales compartidas.
++Sin clave, el alta de consentimiento falla y se revierte junto a la auditoría.
++Revocar purga el ciphertext en la misma transacción. El contacto no se recupera
++desde un endpoint. Los IDs de actor deben ser opacos; texto libre debe contener
++solo resúmenes sin datos personales. El filtro rechaza correos, teléfonos y el
++destino en campos persistentes, pero no es un anonimizador de expedientes.
++Herald histórico mantiene su modelo anterior: esta entrega no lo cifra ni borra.
++
++Rotación administrativa: construir `SMBovedaContactoDB.desde_settings()` con
++claves activa/anterior y ejecutar `SMServicioDB(session).rotar_boveda(...)` por
++lotes hasta cero. Pruebas verifican recuperación, AAD y rechazo de manipulación.
++No retirar la clave anterior antes de verificar el recifrado y los respaldos.
++
++## Canales y resultados
++
++| Canal | Configuración | Evidencia de aceptación |
++| --- | --- | --- |
++| Correo | `POLIS_SMTP_*`; sin host usa Postfix `127.0.0.1:25` solo fuera de test | SMTP acepta destinatario/DATA |
++| Webhook | `POLIS_SM_WEBHOOK_SECRET` ≥32 caracteres y `POLIS_SM_WEBHOOK_ORIGENES` (orígenes HTTPS exactos) | HTTP 2xx |
++| Telegram | `POLIS_SM_TELEGRAM_TOKEN` oficial | `ok=true` y `message_id` |
++| WhatsApp | `POLIS_SM_WHATSAPP_TOKEN`, `PHONE_ID`, `API_VERSION`, `PLANTILLA`, `PLANTILLA_APROBADA=true`, `IDIOMA` | respuesta con ID de mensaje |
++| SMS | Cliente `SMSMSCliente` inyectado por un proveedor contratado | recibo no vacío |
++
++No se elige un proveedor SMS ni se supone aprobada una plantilla WhatsApp.
++WhatsApp usa únicamente plantilla aprobada con un parámetro de cuerpo; no asume
++una ventana de conversación de 24 horas. La versión Graph es configuración
++explícita del operador. En `environment=test` todos los transportes de fábrica
++simulan, incluso si hay credenciales. Fuera de test, faltantes de configuración
++dejan esos canales degradados y producen `simulado`, nunca `enviado`.
++
++`preparado` solo significa payload construido en memoria. `enviado` acredita
++aceptación del proveedor, no recepción/lectura del ciudadano. `simulado` es un
++estado terminal distinto; no se reenvía automáticamente al configurar luego el
++proveedor. La auditoría guarda código cerrado y huella del payload, nunca el
++payload, la URL de destino ni respuestas/errores crudos del proveedor.
++
++La reserva del intento usa `en_curso`. Si vence el lease sin resultado confirmado,
++ese intento pasa a `incierto`: no se afirma que el proveedor rechazó el mensaje.
++El siguiente intento tiene su propio número y el mismo ID lógico de mensaje.
++
++Firma webhook: `X-SM-Signature: sha256=<HMAC_SHA256(secret, timestamp + '.' + body)>`.
++Validar sobre bytes exactos, comparar en tiempo constante, exigir timestamp
++reciente y deduplicar `X-SM-Message-ID`/`Idempotency-Key`. Sin redirecciones ni
++proxies heredados del entorno. Solo orígenes explícitamente aprobados; su DNS y
++segmentación de salida son responsabilidad del operador.
++
++## Worker y transacciones
++
++1. Reclamación `FOR UPDATE SKIP LOCKED`, intento reservado y latido; commit.
++2. Consentimiento revalidado y descifrado solo en el worker; transacción corta.
++3. Transporte fuera de transacción; límite de tiempo inferior al lease.
++4. Resultado, auditoría y próximo intento en una transacción independiente.
++
++El worker exige sesión exclusiva sin transacción activa. No confirma operaciones
++de dominio ajenas. El puente compone repositorios dentro del límite del dominio;
++un rollback revierte también su outbox. Un fallo posterior del transporte no
++revierte ni bloquea el evento de dominio ya confirmado. Un error SQL al encolar
++revierte el caso de uso completo: no se oculta ni confirma parcialmente.
++
++`proximo_intento_en = reloj_DB + base * 2^intento + jitter[0,1]`.
++`intento` empieza en 1: con base 30 s, el primer fallo espera 60 s más jitter.
++`POLIS_SM_WORKER_BASE_SEGUNDOS=30`, `MAX_REINTENTOS=5`,
++`LEASE_SEGUNDOS=120`, `POLIS_SM_HTTP_TIMEOUT_SEGUNDOS=10`.
++Permanentes: `fallido`, `reintentable=false`. Transitorios: `fallido` con fecha;
++al llegar al máximo: `agotado`. Revocación: `cancelado`, sin despacho.
++Las reclamaciones vencidas se recuperan sin exceder el máximo de intentos.
++
++La garantía es **al menos una vez**, con IDs estables. Una caída después de SMTP
++aceptar y antes del commit final puede repetir el mismo Message-ID. SMTP no
++garantiza deduplicación. Una revocación después de autorizar un envío en vuelo
++no puede deshacer un efecto externo. No se declara exactamente una entrega.
++
++SIGTERM/SIGINT detienen nuevas reclamaciones y permiten finalizar el mensaje en
++curso. El SMTP aplica un presupuesto total a la conversación, además del límite
++del worker. Si el supervisor mata el proceso, el lease permite recuperación.
++El downgrade 0099 conserva en metadatos el estado anterior de simulaciones o
++intentos sin resultado, cancela mensajes reclamados y adapta sus estados al
++contrato 0098. El downgrade 0098 elimina la bóveda: requiere respaldo/plan de
++recuperación o registrar de nuevo consentimientos; no habilitar envíos sin ella.
++
++`GET /api/v1/sm/health` muestra agregados, simulaciones, canales degradados, latido
++y edad de la cola; no revela contactos. Los canales vivos indican configuración disponible,
++no una prueba externa de conectividad o validez de credenciales. Latido mayor de cinco minutos o ausente
++con worker habilitado degrada salud. El monitor debe alertar sobre esa sonda.
++La consulta de consentimiento usa `contacto_hash` en query; ya no acepta contacto
++crudo en URL (los proxies registran query strings).
++
++## Ejecutor y unidad (solo documentación; no instalada)
++
++```bash
++backend/.venv/bin/python backend/scripts/sm_worker_cli.py --once
++backend/.venv/bin/python backend/scripts/sm_worker_cli.py --daemon --intervalo 5
++```
++
++```ini
++[Unit]
++Description=POLIS SM outbox worker
++After=network-online.target postgresql.service
++Wants=network-online.target
++
++[Service]
++Type=simple
++User=polis
++WorkingDirectory=/opt/polis/backend
++EnvironmentFile=/etc/polis/sm-worker.env
++ExecStart=/opt/polis/backend/.venv/bin/python scripts/sm_worker_cli.py --daemon
++Restart=on-failure
++RestartSec=5
++TimeoutStopSec=60
++UMask=0077
++NoNewPrivileges=true
++PrivateTmp=true
++ProtectSystem=strict
++ProtectHome=true
++
++[Install]
++WantedBy=multi-user.target
++```
++
++Adaptar usuario/rutas a la release inmutable aprobada, con acceso al entorno y
++sin privilegio de migración. No apuntar al checkout compartido ni habilitar esta
++unidad hasta EAF, ensayo 0097→0099, respaldo y coordinación de despliegue. En el
++servidor actual sigue vigente el snapshot backend 304 y `bd_csh` permanece 0096.
++No configurar simultáneamente daemon y timer. Alternativa: unidad oneshot con
++`--once` y un timer `OnUnitActiveSec=30s`, nunca ambos modos a la vez.
++
++Referencias de los contratos de cliente: [AESGCM](https://cryptography.io/en/latest/hazmat/primitives/aead/#cryptography.hazmat.primitives.ciphers.aead.AESGCM),
++[HTTPX](https://www.python-httpx.org/advanced/transports/),
++[Telegram Bot API](https://core.telegram.org/bots/api#sendmessage),
++[WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages).
+diff --git a/bridge/310_entrega_codex_sm_core.md b/bridge/310_entrega_codex_sm_core.md
+new file mode 100644
+index 00000000..e856480a
+--- /dev/null
++++ b/bridge/310_entrega_codex_sm_core.md
+@@ -0,0 +1,176 @@
++# Encargo 310-BK — Bóveda, transportes y worker SM
++
++**Estado:** implementado, verificado y congelado para revisión EAF; no desplegado.
++**Coordinación:** Antigravity. **Implementación:** Codex, perfil EDD transaccional.
++**Fecha:** 2026-11-07 UTC. No constituye dictamen EAF ni autorización de despliegue.
++
++## 1. Alcance y aislamiento
++
++Implementados P2, P1 y P3 y el enlace transaccional de P4 solicitado en
++`310_tarea_codex_boveda_transportes_worker.md`. La convivencia/corte definitivo
++de Herald y el despliegue P5–P7 requieren su propio cierre; no se declaran ejecutados.
++
++- Ningún commit, push, migración productiva, reinicio o activación systemd por Codex.
++- `bd_csh` no se usó para pruebas. No se enviaron mensajes por su Postfix ni a
++  destinatarios externos. Disponibilidad productiva comprobada por sonda de lectura: **200**.
++- Laboratorio PostgreSQL 18 en `127.0.0.1:15433`: `polis_test_sm_core`,
++  `polis_test_sm_core_310_migraciones` y `polis_test_sm_core_310_upgrade`.
++- Regresión general desde `/tmp/polis310/work`, con código y datos copiados,
++  sin `.env` productivo. No comparte archivos de caché con producción.
++- No se editaron `src/**`, 307 ni 308. Las modificaciones concurrentes de otros
++  encargos se conservan y no se incorporan a un commit de esta entrega.
++
++La base Git al iniciar era `78cd08e8` (0097 versionada). La ampliación 309 de SM
++estaba sin commit: `baseline_archivos.json` identifica sus hashes de entrada.
++`snapshot_codigo.json` identifica los 27 archivos del candidato y su igualdad
++con la copia probada; `snapshot_regresion_backend.json` fija 620 archivos Python.
++El patch contra HEAD incluye la base 309 aún sin commit; **no** se presenta como
++un diff exclusivo de 310 respecto a 309.
++
++## 2. Implementación
++
++### Bóveda y consentimiento
++
++- Migración **0098_sm_contactos_boveda** y modelo `SMContactoBovedaRegistro`,
++  esquema `participacion_ciudadana`, índice único tenant/actor/canal/hash.
++- `SMBovedaContactoDB` y contrato `SMResolutorContacto`: AES-256-GCM, nonce
++  aleatorio de 12 bytes y AAD que liga versión, tenant, actor, canal, hash y key_id.
++- Clave independiente `POLIS_SM_BOVEDA_KEY`, identificador activo y anillo de
++  claves anteriores como secretos de configuración. No se generó ni instaló
++  una clave productiva. `cryptography` ya estaba instalada; queda declarada
++  directamente en `pyproject.toml` y el lock conserva su versión.
++- Alta/revocación, ciphertext y auditoría forman una transacción en
++  `SMServicioDB`. Revocar purga la entrada de bóveda. Sin clave el alta falla
++  y revierte. Rotación por lotes recifra sin publicar el texto.
++- Descifrado de despacho solo en el worker; ninguna ruta de lectura lo hace.
++  La operación administrativa de rotación también necesita descifrar en memoria.
++- El destino desaparece de payloads persistidos y de errores; auditoría y
++  entregas guardan códigos y huellas. Se rechazan correos/teléfonos/destino en
++  campos libres; actores deben ser opacos. Ese filtro **no anonimiza nombres o
++  expedientes arbitrarios**: el llamador debe proporcionar resúmenes sin PII.
++  El modelo histórico de Herald no se cifra ni borra en este encargo.
++
++### Transportes
++
++`adaptador.construir()` produce `preparado`, sin acreditar envío.
++`SMTransporte.enviar()` determina el resultado:
++
++| Canal | Implementación | Alcance comprobado |
++| --- | --- | --- |
++| Correo | SMTP/Postfix loopback o `Settings.smtp_*`, TLS/login cuando corresponde, Message-ID estable y timeout total | Servidor SMTP efímero de laboratorio, nunca puerto 25 real |
++| Webhook | HTTPX, HMAC-SHA256 timestamp+cuerpo, ID estable, orígenes HTTPS explícitos, sin redirects/proxy de entorno | Contrato HTTP simulado en proceso; firma y errores verificados |
++| Telegram | Bot API oficial, exige `ok=true` e ID de mensaje | Cliente HTTP simulado, sin credenciales reales |
++| WhatsApp | Cloud API oficial, versión configurada y plantilla aprobada con parámetro de cuerpo | Cliente HTTP simulado; no presupone ventana de 24 h |
++| SMS | Interfaz de cliente de proveedor inyectable | Contrato modular probado; proveedor productivo no seleccionado |
++
++En test los transportes de fábrica producen **simulado** incluso con credenciales.
++Sin configuración de proveedor los canales afectados aparecen degradados y nunca
++se inventa un `enviado`. El resultado simulado es terminal y no se reenvía al
++añadir credenciales posteriormente. El núcleo en memoria tampoco presenta una
++adaptación como transmisión real. `enviado` acredita aceptación del proveedor,
++no recepción final o lectura por el ciudadano.
++
++### Worker y CLI
++
++- Migración **0099_sm_worker_backoff**: fecha de próximo intento, lease/token,
++  `reintentable`, índice de cola y latidos; estados explícitos de simulación.
++- Una transacción reclama con `FOR UPDATE SKIP LOCKED` y reserva el intento;
++  otra autoriza/resuelve el contacto; el envío ocurre **fuera** de transacción;
++  una tercera confirma resultado, auditoría y programación.
++- Backoff: `base * 2^intento + jitter[0,1]`. La base temporal normal es el
++  reloj PostgreSQL. Pruebas inyectan reloj/jitter para cotejar fechas exactas.
++- Permanentes quedan `fallido` sin reintento; transitorios programan fecha;
++  máximo de intentos produce `agotado`. Revocación cancela sin despacho.
++- Una caída deja `en_curso`; al recuperar lease se registra `incierto`, sin
++  atribuir al proveedor un rechazo que no conocemos. Token evita confirmar
++  resultados de una reclamación sustituida. Dos workers no despachan el mismo
++  mensaje simultáneamente dentro del lease comprobado.
++- Sesión exclusiva, sin transacción ajena. SQL/commit de finalización no se
++  convierte en fallo del proveedor. SIGTERM/SIGINT paran nuevas reclamaciones.
++- `backend/scripts/sm_worker_cli.py --once|--daemon`; interruptor apagado por
++  defecto. El [runbook](../docs/sm-worker.md) incluye unidad systemd propuesta,
++  configuración, recuperación y precauciones de downgrade. No se instaló.
++- Salud expone agregados, simulaciones, latido, edad de cola y canales
++  degradados; disponibilidad de configuración no es un sondeo del proveedor.
++
++**Límite externo:** garantía al menos una vez. Caída tras aceptación SMTP y antes
++del commit puede repetir el mismo Message-ID; SMTP no garantiza deduplicación.
++Una revocación posterior a autorizar un envío en vuelo no lo deshace.
++
++### Puente y API
++
++- `SMBridge` compone el repositorio dentro de la transacción de dominio; no
++  confirma por separado ni anida casos de uso.
++- Hook real en `NotificacionService` para radicación, cambio de estado y el
++  encolado común (incluye comprobantes de mesas/gestión y avisos de seguridad).
++  `POLIS_SM_EVENTOS_DOMINIO=[]`, selección por tipo, apagada por defecto.
++- El hook solo considera usuario activo con consentimiento **SM** expreso;
++  no hereda consentimiento del subsistema antiguo. Copia IDs y resumen genérico,
++  no nombres, HTML, correos ni tokens. Idempotencia por ID durable de notificación.
++- El hook opera **siempre en sombra**: aunque existan transportes reales no
++  duplica a Herald. El corte de canal y su paridad productiva no están activados.
++- Un fallo externo posterior no afecta el evento confirmado. Un fallo SQL al
++  encolar revierte el caso completo; no se oculta ni confirma parcialmente.
++- Las escrituras de API pasan por `SMServicioDB`; se conservan permisos de
++  comunicaciones/auditoría. La sonda agregada es pública según su clasificación.
++- `GET /sm/consent/{canal}/{actor}` requiere ahora **contacto_hash**, nunca el
++  correo/teléfono en query string. Coordinación fue notificada del cambio.
++  Cambios de contrato y condiciones están en `docs/permisos-api.md`.
++
++## 3. Verificación
++
++Resultado final sobre el código fijado:
++
++| Verificación | Resultado |
++| --- | --- |
++| `bun run backend:check` (Ruff + formato + pytest completos) | **exit 0; 1.994 passed / 16 skipped / 0 failed**, 2.010 casos |
++| Suite SM final en base separada (XML R1) | **95 passed / 0 skipped / 0 failed** |
++| Ruff solicitado: módulo SM y todos los tests | **exit 0** |
++| Formato solicitado: módulo SM y todos los tests | **195 archivos limpios**; 620 en el check backend |
++| `alembic check` | **exit 0; No new upgrade operations detected** |
++| Bootstrap, downgrade a base y reconstrucción | **Aprobado**, también dentro de la suite final |
++| Upgrade/downgrade con registros 0097 existentes | **4 cotejos aprobados**, outbox/ciphertext/procedencia preservados según etapa |
++| Disponibilidad productiva, sonda de lectura | **HTTP 200**, sin desplegar SM |
++
++Las **16 omisiones** están identificadas en `resultados_verificacion.json` y el
++XML completo: 15 necesitan el corpus analítico PDD/PDL, ausente en esta base
++vacía de laboratorio; 1 necesita el guion oficial de Workspace. No se usó
++`bd_csh` ni se inventaron esos insumos para convertirlas en aprobaciones.
++Tres warnings existentes: extensión de validación openpyxl, alias HTTP 422 de
++Starlette y uso de fork en una prueba de timeout; no son fallos del check.
++
++Comandos de aceptación (con entorno privado de prueba explícito):
++
++```bash
++uv run --project backend ruff check backend/app/modules/sm backend/tests/
++uv run --project backend ruff format --check backend/app/modules/sm backend/tests/
++uv run --project backend alembic -c backend/alembic.ini check
++bun run backend:check
++```
++
++La corrida general añadió únicamente `-rs` y salida JUnit mediante
++`PYTEST_ADDOPTS`, sin filtros ni exclusiones. Evidencia: `backend_check_entrega.*`,
++`backend_check_completo.xml`, `sm_congelado_r1.*`, `upgrade_con_datos.json` y
++`snapshot_codigo.json`. El contrato de las siete rutas y catorce schemas está en
++`contrato_api_sm.json`.
++
++**Histórico conservado:** rondas iniciales con defectos corregidos; ejecuciones
++interrumpidas para secuenciar suites/ajustar guardas y fórmula literal de backoff;
++una corrida completa con 9 fallos por copia incompleta de insumos. Se repusieron
++cartografía, conocimiento y cinco capas públicas, cotejando **1.928 artefactos**
++contra sus originales (cero discordancias). No se cambiaron código ni criterios
++para saltar esas verificaciones. La última corrida completa, con la copia ya
++completa y el backoff final, es la que acredita el resultado de esta entrega.
++
++## 4. Archivos de entrega y operación pendiente
++
++Evidencia en [310_evidencia_codex](310_evidencia_codex/): snapshots, baseline,
++patch de código (incluye base 309), patch documental, registros de comandos, XML de pruebas dirigidas, ensayo de
++migración con datos y sonda productiva de solo lectura. Secretos solo en el
++directorio privado 0700 de laboratorio, no en esta entrega.
++
++Antes de producción: revisión EAF por otro evaluador, gestión/rotación de clave,
++credenciales oficiales y proveedor SMS, coordinación de migraciones 0097–0099,
++respaldo/ensayo y actualización del snapshot backend 304. No basta reiniciar el
++servicio del checkout: producción sigue usando su release aislada 0096.
++El corte de Herald y la activación gradual requieren aceptación específica.

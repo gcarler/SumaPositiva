@@ -35,6 +35,26 @@ export interface NodoArbolMetadatos {
   actorResponsable?: string;          // Entidad sugerida o actor comunitario (para medios/soluciones)
   origenSubmesaId?: string;           // Trazabilidad si proviene de una submesa consolidada
   origenSubmesaNombre?: string;
+  /** Vínculo al problema específico cuando la mesa aborda múltiples problemas */
+  problemaId?: string;
+  problemaTexto?: string;
+  /** Vínculos cruzados para articulación matricial (Causa <-> Efecto <-> Solución) */
+  causaAsociadaId?: string;
+  causaAsociadaTexto?: string;
+  efectoAsociadoId?: string;
+  efectoAsociadoTexto?: string;
+  solucionPropuestaId?: string;
+  solucionPropuestaTexto?: string;
+}
+
+export interface ProblemaAbordadoMesa {
+  id: string;
+  texto: string;
+  dimensionOnu?: string;
+  objetivoSolucion?: string;
+  criticidad?: "alta" | "media" | "baja";
+  actorResponsable?: string;
+  subMesaOrigen?: string;
 }
 
 /** Nodo del papelografo (causa, efecto, medio o fin) */
@@ -55,6 +75,8 @@ export interface ArbolProblemas {
   /** Frase única acordada en plenaria — corazón del papelografo */
   problemaCentral: string;
   dimensionPrincipal?: string;
+  /** Problemas adicionales abordados en la mesa (soporte multiproblema por mesa) */
+  problemas?: ProblemaAbordadoMesa[];
   causas: NodoArbol[];
   efectos: NodoArbol[];
 }
@@ -105,15 +127,25 @@ export interface MatrizMesaData {
   }>;
 }
 
+export type ProveedorAdjunto = "archivo_local" | "google_drive";
+export type TipoGoogleDrive =
+  | "google_doc"
+  | "google_sheet"
+  | "google_slide"
+  | "google_drive_folder"
+  | "google_drive_file";
+
 export interface AdjuntoMesa {
   id: string;
-  nombre: string;           // "Acta firmada.pdf"
-  tipo: "documento" | "imagen" | "audio" | "video" | "otro";
-  mimeType: string;         // "application/pdf" | "image/jpeg" | etc.
-  tamaño: number;           // bytes
-  url: string;              // URL de descarga (local blob o remota)
+  nombre: string;           // "Acta firmada.pdf" o "Relatoría (Google Doc)"
+  tipo: "documento" | "imagen" | "audio" | "video" | "google_drive" | "otro";
+  mimeType: string;         // "application/pdf" | "image/jpeg" | "application/vnd.google-apps.document" | etc.
+  tamaño: number;           // bytes (0 para archivos cloud)
+  url: string;              // URL de descarga (local blob o remota) o enlace de Google Workspace
   subidoEn: string;         // ISO timestamp
   subidoPor?: string;       // nombre del usuario
+  proveedor?: ProveedorAdjunto;
+  tipoGoogle?: TipoGoogleDrive;
 }
 
 export interface SubMesa {
@@ -186,6 +218,136 @@ export interface MesaDeTrabajo {
   arbolSoluciones?: ArbolSoluciones;
   matrizArbol?: MatrizMesaData;
   modoRelatoria?: "narrativo" | "matriz" | "hibrido";
+  // Encargo 308: Motor Integral de Preparación, Ejecución y Documentación
+  logistica?: LogisticaMesa;
+  compromisos?: CompromisoMesa[];
+  sorteoAzar?: ConfiguracionSorteoAzar;
+  notas?: NotaMesa[];
+  galeriaFotos?: FotoEvidenciaMesa[];
+  // Gobernanza y Publicación Ciudadana (Encargo 318)
+  publicarResultados?: boolean;
+  fechaPublicacionResultados?: string;
+  publicadoPor?: string;
+}
+
+// =========================================================================
+// ENCARGO 308: MODELOS DEL MOTOR INTEGRAL DE MESAS (3 FASES)
+// =========================================================================
+
+export type CategoriaItemLogistico =
+  | "espacio"
+  | "audiovisual"
+  | "materiales"
+  | "refrigerios"
+  | "seguridad_accesibilidad";
+
+export interface ItemChecklistLogistico {
+  id: string;
+  categoria: CategoriaItemLogistico;
+  tarea: string;
+  completado: boolean;
+  responsable?: string;
+}
+
+export type RolLogistico =
+  | "coordinador_general"
+  | "audiovisuales_sonido"
+  | "registro_puerta"
+  | "hidratacion_refrigerios"
+  | "accesibilidad_primeros_auxilios";
+
+export interface ResponsableLogistico {
+  id: string;
+  nombre: string;
+  rolLogistico: RolLogistico;
+  telefono?: string;
+  entidad?: string;
+}
+
+export interface LogisticaMesa {
+  checklist: ItemChecklistLogistico[];
+  equipoLogistico: ResponsableLogistico[];
+  observacionesLogistica?: string;
+  estadoPreparacion: "pendiente" | "en_progreso" | "listo";
+}
+
+export type TipoCompromiso =
+  | "inversion_distrital"
+  | "acuerdo_comunitario"
+  | "gestion_institucional"
+  | "seguimiento_normativo";
+
+export type EstadoCompromiso = "pendiente" | "en_ejecucion" | "cumplido" | "en_riesgo";
+
+export interface CompromisoMesa {
+  id: string;
+  codigo: string; // ej. COMP-01
+  descripcion: string;
+  entidadResponsable: string;
+  personaResponsable?: string;
+  fechaLimite?: string;
+  tipo: TipoCompromiso;
+  estado: EstadoCompromiso;
+  avancePorcentaje?: number;
+  observaciones?: string;
+}
+
+export interface IntervencionSorteada {
+  asistenteId: string;
+  nombre: string;
+  horaSorteo: string;
+  duracionMinutos: number;
+  tema?: string;
+}
+
+export type MetodoConvocatoriaMesa =
+  | "abierta"
+  | "sorteo_civico_aleatorio"
+  | "delegacion_comunitaria"
+  | "mixta";
+
+export interface ConfiguracionSorteoAzar {
+  metodoConvocatoria: MetodoConvocatoriaMesa;
+  estratificacion?: string; // ej. "Cuotas por UCG y género"
+  intervencionesSorteo: IntervencionSorteada[];
+  muestraAleatoriaAuditoria?: string[]; // IDs de asistentes seleccionados al azar para verificación
+}
+
+export type MomentoNotaMesa =
+  | "preparacion"
+  | "plenaria_apertura"
+  | "submesas"
+  | "plenaria_cierre"
+  | "post_mesa";
+
+export interface NotaMesa {
+  id: string;
+  autor: string;
+  rolAutor: string;
+  momento: MomentoNotaMesa;
+  contenido: string;
+  creadoEn: string;
+  esPrivada?: boolean;
+}
+
+export type CategoriaFotoMesa =
+  | "apertura"
+  | "plenaria"
+  | "submesas"
+  | "papelografo"
+  | "acta_cierre"
+  | "general";
+
+export interface FotoEvidenciaMesa {
+  id: string;
+  nombre: string;
+  categoria: CategoriaFotoMesa;
+  url: string;
+  tamanoBytes: number;
+  subidoEn: string;
+  subidoPor?: string;
+  exifDespojado: boolean; // Cumplimiento Ley 1581/2012
+  descripcion?: string;
 }
 
 export function calcularTotalAsistentes(mesa: MesaDeTrabajo): number {
@@ -264,6 +426,82 @@ export const RAMA_META: Record<
     genero: "m",
   },
 };
+
+export const CATEGORIAS_LOGISTICA_META: Record<
+  CategoriaItemLogistico,
+  { label: string; descripcion: string }
+> = {
+  espacio: { label: "Espacio y Salón", descripcion: "Apertura, silletería en herradura y señalización" },
+  audiovisual: { label: "Sistemas Audiovisuales", descripcion: "Sonido, micrófonos, pantalla y corriente" },
+  materiales: { label: "Insumos Metodológicos", descripcion: "Papelógrafos, marcadores y notas post-it" },
+  refrigerios: { label: "Hidratación y Refrigerios", descripcion: "Punto de agua potable y refrigerios listos" },
+  seguridad_accesibilidad: { label: "Seguridad y Accesibilidad", descripcion: "Rampas de acceso, botiquín y evacuación" },
+};
+
+export const ROLES_LOGISTICOS_META: Record<RolLogistico, { label: string }> = {
+  coordinador_general: { label: "Coordinador General de Campo" },
+  audiovisuales_sonido: { label: "Soporte A/V y Sonido" },
+  registro_puerta: { label: "Registro y Control en Puerta" },
+  hidratacion_refrigerios: { label: "Logística e Hidratación" },
+  accesibilidad_primeros_auxilios: { label: "Accesibilidad y Primeros Auxilios" },
+};
+
+export const TIPOS_COMPROMISO_META: Record<
+  TipoCompromiso,
+  { label: string; badgeVariant: "ember" | "info" | "success" | "outline" }
+> = {
+  inversion_distrital: { label: "Inversión Distrital", badgeVariant: "ember" },
+  acuerdo_comunitario: { label: "Acuerdo Comunitario", badgeVariant: "success" },
+  gestion_institucional: { label: "Gestión Institucional", badgeVariant: "info" },
+  seguimiento_normativo: { label: "Seguimiento Normativo", badgeVariant: "outline" },
+};
+
+export const ESTADOS_COMPROMISO_META: Record<
+  EstadoCompromiso,
+  { label: string; badgeVariant: "ember" | "info" | "success" | "destructive" | "warning" }
+> = {
+  pendiente: { label: "Pendiente", badgeVariant: "warning" },
+  en_ejecucion: { label: "En ejecución", badgeVariant: "info" },
+  cumplido: { label: "Cumplido", badgeVariant: "success" },
+  en_riesgo: { label: "En riesgo", badgeVariant: "destructive" },
+};
+
+export const MOMENTOS_NOTA_META: Record<MomentoNotaMesa, { label: string }> = {
+  preparacion: { label: "Fase 1: Preparación" },
+  plenaria_apertura: { label: "Fase 2: Plenaria de Apertura" },
+  submesas: { label: "Fase 2: Trabajo en Submesas" },
+  plenaria_cierre: { label: "Fase 3: Plenaria de Cierre" },
+  post_mesa: { label: "Fase 3: Post-Mesa y Documentación" },
+};
+
+export const CATEGORIAS_FOTO_META: Record<CategoriaFotoMesa, { label: string }> = {
+  apertura: { label: "Apertura y Registro" },
+  plenaria: { label: "Plenaria Deliberativa" },
+  submesas: { label: "Trabajo en Submesas" },
+  papelografo: { label: "Papelógrafos y Árboles" },
+  acta_cierre: { label: "Cierre y Firma de Acta" },
+  general: { label: "Panorámica General" },
+};
+
+export function crearLogisticaPorDefecto(): LogisticaMesa {
+  return {
+    estadoPreparacion: "pendiente",
+    observacionesLogistica: "",
+    equipoLogistico: [],
+    checklist: [
+      { id: "log-esp-1", categoria: "espacio", tarea: "Reserva y apertura oportuna del espacio físico / salón comunal", completado: false },
+      { id: "log-esp-2", categoria: "espacio", tarea: "Disposición de silletería en círculo o herradura para diálogo horizontal", completado: false },
+      { id: "log-av-1", categoria: "audiovisual", tarea: "Prueba acústica, micrófonos inalámbricos y amplificación verificada", completado: false },
+      { id: "log-av-2", categoria: "audiovisual", tarea: "Pantalla o proyector conectado para soporte de relatoría y acuerdos", completado: false },
+      { id: "log-mat-1", categoria: "materiales", tarea: "Pliegos de papel kraft / papelógrafos fijados en estaciones de trabajo", completado: false },
+      { id: "log-mat-2", categoria: "materiales", tarea: "Marcadores borrables/permanentes y notas adhesivas (Post-it) repartidos", completado: false },
+      { id: "log-ref-1", categoria: "refrigerios", tarea: "Punto de hidratación permanente con agua potable y vasos limpios", completado: false },
+      { id: "log-ref-2", categoria: "refrigerios", tarea: "Refrigerios organizados para distribución en pausa metodológica", completado: false },
+      { id: "log-seg-1", categoria: "seguridad_accesibilidad", tarea: "Rampa o vía de acceso despejada para personas con discapacidad", completado: false },
+      { id: "log-seg-2", categoria: "seguridad_accesibilidad", tarea: "Botiquín de primeros auxilios y ruta de evacuación identificada", completado: false },
+    ],
+  };
+}
 
 /* ---------- Utilidades de dominio ---------- */
 

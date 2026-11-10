@@ -1,1 +1,121 @@
-"""SM Core: núcleo transaccional y portable de trazabilidad multicanal."""
+"""SM Core: Núcleo transaccional, multicanal y portable para trazabilidad y mensajería."""
+
+from .boveda import SMBovedaContactoDB, SMBovedaError, SMResolutorContacto
+from .bridge import SMBridge
+from .channels import (
+    SMCanalBase,
+    SMCorreoAdapter,
+    SMSMSAdapter,
+    SMTelegramAdapter,
+    SMWebhookAdapter,
+    SMWhatsAppAdapter,
+)
+from .client import SMClient
+from .contracts import (
+    FIRMA_VERSION,
+    SMAuditoria,
+    SMCanal,
+    SMConsentimiento,
+    SMContacto,
+    SMEntrega,
+    SMEstadoConsentimiento,
+    SMEstadoEntrega,
+    SMEstadoMensaje,
+    SMEstadoSalud,
+    SMEvento,
+    SMMensaje,
+    SMResultadoEntrega,
+    SMSalud,
+)
+from .core import (
+    SMCanalesNoAutorizados,
+    SMConsentimientoFaltante,
+    SMContactoInvalido,
+    SMError,
+    SMIdempotenciaConflict,
+    hash_contacto,
+    hash_traza,
+    mensaje_desde_evento,
+    transicion_estado,
+)
+from .models import (
+    SMAuditoriaRegistro,
+    SMConsentimientoRegistro,
+    SMEntregaRegistro,
+    SMEventoRegistro,
+    SMMensajeRegistro,
+)
+from .repository import SMRepository
+from .service import SMCoreService
+from .service_db import SMServicioDB
+from .templates import SMMotorPlantillas, SMPlantilla, SMPlantillaInvalida, motor_plantillas
+from .transports import (
+    SMCorreoTransporte,
+    SMFalloTransporte,
+    SMReciboTransporte,
+    SMSMSTransporte,
+    SMTelegramTransporte,
+    SMTransporte,
+    SMWebhookTransporte,
+    SMWhatsAppTransporte,
+)
+from .worker import SMResumenProcesamiento, SMWorker
+
+__all__ = [
+    "FIRMA_VERSION",
+    "SMAuditoria",
+    "SMAuditoriaRegistro",
+    "SMBridge",
+    "SMBovedaContactoDB",
+    "SMBovedaError",
+    "SMResolutorContacto",
+    "SMServicioDB",
+    "SMTransporte",
+    "SMCorreoTransporte",
+    "SMWebhookTransporte",
+    "SMTelegramTransporte",
+    "SMWhatsAppTransporte",
+    "SMSMSTransporte",
+    "SMFalloTransporte",
+    "SMReciboTransporte",
+    "SMCanal",
+    "SMCanalBase",
+    "SMCanalesNoAutorizados",
+    "SMClient",
+    "SMConsentimiento",
+    "SMConsentimientoFaltante",
+    "SMConsentimientoRegistro",
+    "SMContacto",
+    "SMContactoInvalido",
+    "SMCoreService",
+    "SMCorreoAdapter",
+    "SMEntrega",
+    "SMEntregaRegistro",
+    "SMError",
+    "SMEstadoConsentimiento",
+    "SMEstadoEntrega",
+    "SMEstadoMensaje",
+    "SMEstadoSalud",
+    "SMEvento",
+    "SMEventoRegistro",
+    "SMIdempotenciaConflict",
+    "SMMensaje",
+    "SMMensajeRegistro",
+    "SMMotorPlantillas",
+    "SMPlantilla",
+    "SMPlantillaInvalida",
+    "SMRepository",
+    "SMResultadoEntrega",
+    "SMSMSAdapter",
+    "SMSalud",
+    "SMTelegramAdapter",
+    "SMWebhookAdapter",
+    "SMWhatsAppAdapter",
+    "SMWorker",
+    "SMResumenProcesamiento",
+    "hash_contacto",
+    "hash_traza",
+    "mensaje_desde_evento",
+    "motor_plantillas",
+    "transicion_estado",
+]

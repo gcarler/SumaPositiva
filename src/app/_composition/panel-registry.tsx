@@ -222,6 +222,10 @@ const FichaActividadPanel = dynamic(
   () => import("@/features/proyectos/panels/ficha-actividad-panel").then((m) => m.FichaActividadPanel),
   { ssr: false }
 );
+const SMPanel = dynamic(
+  () => import("@/features/sm/panels/sm-panel").then((m) => m.SMPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY = {
   politica: PoliticaPanel,
@@ -289,6 +293,7 @@ export const PANEL_REGISTRY = {
   }: PanelComponentProps<"ficha-actividad-proyecto">) => (
     <FichaActividadPanel entryKey={entryKey} props={props} />
   ),
+  "sm-panel": withOptionalProps<"sm-panel">(SMPanel),
 } satisfies PanelComponentRegistry;
 
 function resolvePanelComponent<K extends PanelType>(
@@ -361,4 +366,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "dimension-detalle": "min(clamp(760px, 54vw, 1120px), 100vw)",
   "tarea-comunicacion-editor": "min(clamp(640px, 44vw, 920px), 100vw)",
   "ficha-actividad-proyecto": "min(clamp(640px, 44vw, 920px), 100vw)",
+  "sm-panel": "min(clamp(840px, 58vw, 1280px), 100vw)",
 };

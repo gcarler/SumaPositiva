@@ -8,7 +8,7 @@ import {Badge} from "@/shared/ui/badge";
 import {Switch} from "@/shared/ui/switch";
 import {Label} from "@/shared/ui/label";
 
-import {useState, useMemo, useEffect} from "react";
+import {useState, useMemo, useEffect, useRef} from "react";
 import {format} from "date-fns";
 import {es} from "date-fns/locale";
 import {AnimatePresence, motion} from "framer-motion";
@@ -23,7 +23,8 @@ import {
   MapPin,
   Pencil,
   Plus,
-  Sparkles,
+  BadgeCheck,
+  PenLine,
   Users,
   X,
   QrCode,
@@ -34,7 +35,11 @@ import {
   ExternalLink,
   Printer,
   Share2,
-  Navigation
+  Navigation,
+  Eye,
+  EyeOff,
+  Clock,
+  Save,
 } from "lucide-react";
 import { generarUrlComoLlegar } from "@/features/mesas/lib/coordenadas-parser";
 import {
@@ -66,11 +71,15 @@ import {
   useActualizarAcuerdos,
   useActualizarInforme,
   useCrearSubMesa,
-  useActualizarAsistentesPlenaria
+  useActualizarAsistentesPlenaria,
+  useActualizarMatrizArbol,
 } from "@/features/mesas/services/use-mesas-queries";
 import {useMesasStore, type SubMesaInput} from "@/features/mesas/state/mesas-store";
 import {useSesionStore} from "@/features/sesion/state/session-store";
-import {descargarActaPdfArchivo} from "@/features/mesas/services/mesas-api";
+import {
+  actualizarMesaRemota,
+  descargarActaPdfArchivo,
+} from "@/features/mesas/services/mesas-api";
 import {
   calcularTotalAsistentes,
   estadoDiligenciamiento,
@@ -83,6 +92,11 @@ import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
 import {SectionLabel} from "@/shared/components/participation-ui";
 import {AdjuntosZona} from "@/features/mesas/components/adjuntos-zona";
 import {MatrizArbolRelatoria} from "@/features/mesas/components/matriz-arbol-relatoria";
+import {MesaLogisticaPanel} from "@/features/mesas/components/mesa-logistica-panel";
+import {MesaCompromisosTabla} from "@/features/mesas/components/mesa-compromisos-tabla";
+import {MesaSorteoAzar} from "@/features/mesas/components/mesa-sorteo-azar";
+import {MesaGaleriaEvidencias} from "@/features/mesas/components/mesa-galeria-evidencias";
+import {MesaNotasBitacora} from "@/features/mesas/components/mesa-notas-bitacora";
 
 /**
  * Panel de mesa de trabajo — el "acta viva" del área de trabajo.
@@ -106,19 +120,108 @@ export function MesaPanel({
   const { openPanel, closeTop } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const soloLectura =
+    props.soloLectura === true ||
     sesion?.rol === "auditor_forense" ||
-    (props.soloLectura === true && sesion?.rol === "ciudadano");
+    sesion?.rol === "ciudadano" ||
+    !sesion?.rol;
 
   const { data: mesaRemota } = useMesaQuery(props.mesaId);
   const mesaStore = useMesasStore((s) =>
     s.mesas.find((m) => m.id === props.mesaId)
   );
-  const mesa = mesaRemota ?? mesaStore;
+
+  useEffect(() => {
+    if (mesaRemota) {
+      useMesasStore.getState().actualizarMesa(mesaRemota.id, mesaRemota);
+    }
+  }, [mesaRemota]);
+
+  const mesa = useMemo(() => {
+    if (!mesaStore && !mesaRemota) return undefined;
+    if (!mesaStore) return mesaRemota;
+    if (!mesaRemota) return mesaStore;
+    return {
+      ...mesaRemota,
+      ...mesaStore,
+      arbolProblemas: mesaStore.arbolProblemas ?? mesaRemota.arbolProblemas,
+      arbolSoluciones: mesaStore.arbolSoluciones ?? mesaRemota.arbolSoluciones,
+      compromisos:
+        mesaStore.compromisos && mesaStore.compromisos.length > 0
+          ? mesaStore.compromisos
+          : (mesaRemota.compromisos ?? []),
+      logistica: mesaStore.logistica ?? mesaRemota.logistica,
+      sorteoAzar: mesaStore.sorteoAzar ?? mesaRemota.sorteoAzar,
+      notas:
+        mesaStore.notas && mesaStore.notas.length > 0
+          ? mesaStore.notas
+          : (mesaRemota.notas ?? []),
+      galeriaFotos:
+        mesaStore.galeriaFotos && mesaStore.galeriaFotos.length > 0
+          ? mesaStore.galeriaFotos
+          : (mesaRemota.galeriaFotos ?? []),
+      adjuntos:
+        mesaStore.adjuntos && mesaStore.adjuntos.length > 0
+          ? mesaStore.adjuntos
+          : (mesaRemota.adjuntos ?? []),
+      modoRelatoria: mesaStore.modoRelatoria ?? mesaRemota.modoRelatoria,
+      publicarResultados:
+        mesaStore.publicarResultados !== undefined
+          ? mesaStore.publicarResultados
+          : mesaRemota.publicarResultados,
+      informe: mesaStore.informe ?? mesaRemota.informe,
+      submesas:
+        mesaStore.submesas && mesaStore.submesas.length > 0
+          ? mesaStore.submesas
+          : (mesaRemota.submesas ?? []),
+    };
+  }, [mesaStore, mesaRemota]);
 
   const mutarAcuerdos = useActualizarAcuerdos();
   const mutarInforme = useActualizarInforme();
   const mutarCrearSubMesa = useCrearSubMesa();
   const mutarAsistentesPlenaria = useActualizarAsistentesPlenaria();
+  const mutarMatrizArbol = useActualizarMatrizArbol();
+  const timerDebounceMatrizRef = useRef<NodeJS.Timeout | null>(null);
+
+  const esAdministrador =
+    sesion?.rol === "autoridad_distrital" ||
+    sesion?.rol === "administrador_mesas" ||
+    sesion?.rol === "administrador_sistema" ||
+    sesion?.rol === "administrador_identidades" ||
+    sesion?.rol === "admin";
+
+  const handleTogglePublicacion = async () => {
+    if (!mesa) return;
+    const nuevoEstado = !mesa.publicarResultados;
+    const usuarioPublicador =
+      sesion?.usuario?.nombres ||
+      sesion?.usuario?.correo ||
+      "Administrador Institucional";
+    const fecha = new Date().toISOString();
+    useMesasStore.getState().setPublicarResultados(
+      mesa.id,
+      nuevoEstado,
+      usuarioPublicador
+    );
+    try {
+      await actualizarMesaRemota(mesa.id, {
+        publicarResultados: nuevoEstado,
+        fechaPublicacionResultados: nuevoEstado ? fecha : undefined,
+        publicadoPor: nuevoEstado ? usuarioPublicador : undefined,
+      });
+      if (nuevoEstado) {
+        toast.success(
+          "Resultados de la mesa publicados exitosamente para la ciudadanía"
+        );
+      } else {
+        toast.info(
+          "Resultados de la mesa retirados del portal ciudadano (modo borrador interno)"
+        );
+      }
+    } catch {
+      toast.error("No se pudo persistir el estado de publicación en el servidor");
+    }
+  };
 
   /* acuerdos: borrador local, se confirma al salir del campo o con botón */
   const [acuerdosBorrador, setAcuerdosBorrador] = useState<string | null>(null);
@@ -161,6 +264,7 @@ export function MesaPanel({
   const [busquedaAsistente, setBusquedaAsistente] = useState("");
   const [cartelModalAbierto, setCartelModalAbierto] = useState(false);
   const [formManualAbierto, setFormManualAbierto] = useState(false);
+  const [faseCiclo, setFaseCiclo] = useState<"todas" | "preparacion" | "ejecucion" | "cierre">("todas");
 
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
   if (props.mesaId !== prevMesaId) {
@@ -281,11 +385,62 @@ export function MesaPanel({
   };
 
   const handleActualizarProblemasMesa = (arbol: ArbolProblemas) => {
+    if (!mesa) return;
     useMesasStore.getState().setArbolProblemasMesa(mesa.id, arbol);
+    if (!soloLectura) {
+      if (timerDebounceMatrizRef.current) {
+        clearTimeout(timerDebounceMatrizRef.current);
+      }
+      timerDebounceMatrizRef.current = setTimeout(() => {
+        mutarMatrizArbol.mutate({
+          mesaId: mesa.id,
+          datos: { arbolProblemas: arbol },
+        });
+      }, 700);
+    }
   };
 
   const handleActualizarSolucionesMesa = (arbol: ArbolSoluciones) => {
+    if (!mesa) return;
     useMesasStore.getState().setArbolSolucionesMesa(mesa.id, arbol);
+    if (!soloLectura) {
+      if (timerDebounceMatrizRef.current) {
+        clearTimeout(timerDebounceMatrizRef.current);
+      }
+      timerDebounceMatrizRef.current = setTimeout(() => {
+        mutarMatrizArbol.mutate({
+          mesaId: mesa.id,
+          datos: { arbolSoluciones: arbol },
+        });
+      }, 700);
+    }
+  };
+
+  const guardarMatrizInmediata = () => {
+    if (!mesa) return;
+    if (timerDebounceMatrizRef.current) {
+      clearTimeout(timerDebounceMatrizRef.current);
+    }
+    mutarMatrizArbol.mutate(
+      {
+        mesaId: mesa.id,
+        datos: {
+          arbolProblemas: mesa.arbolProblemas,
+          arbolSoluciones: mesa.arbolSoluciones,
+          modoRelatoria: modoRelatoriaLocal,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            "Matriz de problemas y soluciones guardada exitosamente en el servidor"
+          );
+        },
+        onError: () => {
+          toast.error("Error al guardar la matriz en el servidor");
+        },
+      }
+    );
   };
 
   const handleCambiarModoRelatoria = (nuevoModo: "narrativo" | "matriz" | "hibrido") => {
@@ -487,10 +642,126 @@ export function MesaPanel({
       }
     >
       <div className="w-full space-y-8 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
+        {/* ---------- Para Personal Técnico: Gobernanza de Publicación y Fases Metodológicas ---------- */}
+        {!soloLectura && (
+          <div className="space-y-4">
+            {/* Banner de Gobernanza y Publicación Ciudadana */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+                    Gobernanza y Publicación Ciudadana
+                  </span>
+                  <Badge
+                    variant={mesa.publicarResultados ? "success" : "outline"}
+                    className="text-[10px] uppercase font-bold"
+                  >
+                    {mesa.publicarResultados ? "Publicado en Portal Ciudadano" : "Borrador Interno"}
+                  </Badge>
+                </div>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  {mesa.publicarResultados
+                    ? "Los resultados, relatoría, compromisos y evidencias son visibles para la ciudadanía en el sitio público."
+                    : "La ciudadanía solo puede ver la convocatoria (lugar, día, hora y tema). La relatoría y compromisos permanecen ocultos hasta que el administrador los publique."}
+                </p>
+              </div>
+
+              {esAdministrador ? (
+                <Button
+                  type="button"
+                  variant={mesa.publicarResultados ? "outline" : "default"}
+                  size="sm"
+                  onClick={handleTogglePublicacion}
+                  className="gap-1.5 text-xs font-semibold shrink-0"
+                >
+                  {mesa.publicarResultados ? (
+                    <>
+                      <EyeOff className="size-3.5" />
+                      <span>Ocultar del Portal</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="size-3.5" />
+                      <span>Publicar Resultados al Ciudadano</span>
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <span className="text-[11px] text-[var(--text-tertiary)] italic">
+                  Publicación reservada al Administrador del Módulo
+                </span>
+              )}
+            </div>
+
+            {/* Navegación Metodológica por Fases (Ciclo Integral POLIS) */}
+            <div
+              role="navigation"
+              aria-label="Fases metodológicas de la mesa de trabajo"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3.5 sm:p-4"
+            >
+              <div className="space-y-0.5">
+                <span className="label-micro text-[var(--ember)] font-bold tracking-wider uppercase">
+                  Ciclo Metodológico Integral POLIS
+                </span>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Preparación logística, ejecución y deliberación al azar, y documentación con matriz de compromisos y evidencias.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1.5" role="tablist">
+                <Button
+                  type="button"
+                  variant={faseCiclo === "todas" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFaseCiclo("todas")}
+                  className="text-xs h-7 px-2.5"
+                  role="tab"
+                  aria-selected={faseCiclo === "todas"}
+                >
+                  Ciclo Completo
+                </Button>
+                <Button
+                  type="button"
+                  variant={faseCiclo === "preparacion" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFaseCiclo("preparacion")}
+                  className="text-xs h-7 px-2.5"
+                  role="tab"
+                  aria-selected={faseCiclo === "preparacion"}
+                >
+                  Fase 1: Preparación
+                </Button>
+                <Button
+                  type="button"
+                  variant={faseCiclo === "ejecucion" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFaseCiclo("ejecucion")}
+                  className="text-xs h-7 px-2.5"
+                  role="tab"
+                  aria-selected={faseCiclo === "ejecucion"}
+                >
+                  Fase 2: Ejecución
+                </Button>
+                <Button
+                  type="button"
+                  variant={faseCiclo === "cierre" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFaseCiclo("cierre")}
+                  className="text-xs h-7 px-2.5"
+                  role="tab"
+                  aria-selected={faseCiclo === "cierre"}
+                >
+                  Fase 3: Documentación
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
         {/* ---------- Datos administrativos ---------- */}
-        <section className="space-y-3">
-          <SectionLabel>Acta de la mesa</SectionLabel>
-          <dl className="grid grid-cols-2 gap-4 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-4 sm:grid-cols-3 lg:grid-cols-5">
+        {(faseCiclo === "todas" || faseCiclo === "preparacion") && (
+          <section className="space-y-3">
+            <SectionLabel>Acta de la mesa</SectionLabel>
+            <dl className="grid grid-cols-2 gap-4 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-4 sm:grid-cols-3 lg:grid-cols-5">
             <div className="space-y-1">
               <dt className="label-micro text-[var(--text-tertiary)]">Fecha</dt>
               <dd className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-primary)] tabular">
@@ -586,7 +857,7 @@ export function MesaPanel({
                   />
                   <span>{mesa.lugar}</span>
                 </span>
-                {mesa.coordenadas && (
+                {mesa.coordenadas && Number.isFinite(mesa.coordenadas.lat) && Number.isFinite(mesa.coordenadas.lng) && (
                   <div className="flex flex-wrap items-center gap-2 pt-0.5">
                     <span className="font-mono text-xs text-[var(--text-secondary)]">
                       {mesa.coordenadas.lat.toFixed(5)}, {mesa.coordenadas.lng.toFixed(5)}
@@ -603,14 +874,14 @@ export function MesaPanel({
                     </a>
                   </div>
                 )}
-                {mesa.urlMapa && !mesa.coordenadas && (
+                {mesa.urlMapa && (!mesa.coordenadas || !Number.isFinite(mesa.coordenadas.lat) || !Number.isFinite(mesa.coordenadas.lng)) && (
                   <a
                     href={mesa.urlMapa}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-[var(--ember)] hover:underline font-medium"
                   >
-                    📍 Ver en el mapa →
+                    Ver en el mapa →
                   </a>
                 )}
               </dd>
@@ -688,9 +959,12 @@ export function MesaPanel({
             )}
           </dl>
         </section>
+        )}
 
         {/* ---------- Registro de Asistencia Digital con QR en Puerta ---------- */}
-        <section className="space-y-4">
+        {(faseCiclo === "todas" || faseCiclo === "ejecucion") && (
+          <>
+            <section className="space-y-4">
           <SectionLabel
             right={
               <div className="flex items-center gap-2">
@@ -714,7 +988,7 @@ export function MesaPanel({
                   className="h-7 text-xs"
                 >
                   <QrCode className="size-3.5 mr-1 text-[var(--ember)]" />
-                  📱 Proyectar QR / Cartel
+                  Proyectar QR / Cartel
                 </Button>
                 <Button
                   variant="outline"
@@ -725,7 +999,7 @@ export function MesaPanel({
                   disabled={registrosMesa.length === 0}
                 >
                   <Download className="size-3.5 mr-1" />
-                  📥 Descargar Planilla (CSV)
+                  Descargar Planilla (CSV)
                 </Button>
               </div>
             }
@@ -849,7 +1123,7 @@ export function MesaPanel({
                     className="h-8 text-xs font-medium"
                   >
                     <UserPlus className="size-3.5 mr-1.5" />
-                    {formManualAbierto ? "Cancelar Registro" : "➕ Registrar Asistente Manual"}
+                    {formManualAbierto ? "Cancelar Registro" : "Registrar Asistente Manual"}
                   </Button>
                 </div>
               )}
@@ -1248,9 +1522,11 @@ export function MesaPanel({
             </motion.div>
           )}
         </AnimatePresence>
+          </>
+        )}
 
         {/* ---------- Contenido de la mesa ---------- */}
-        {contenido && (
+        {contenido && (faseCiclo === "todas" || faseCiclo === "preparacion") && (
           <section className="space-y-6">
             {/* Propósito */}
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-5">
@@ -1325,8 +1601,64 @@ export function MesaPanel({
           </section>
         )}
 
+        {/* ---------- FASE 1: Motor Logístico y de Preparación Operativa (Solo personal técnico) ---------- */}
+        {!soloLectura && (faseCiclo === "todas" || faseCiclo === "preparacion") && (
+          <MesaLogisticaPanel mesa={mesa} soloLectura={soloLectura} />
+        )}
+
+        {/* ---------- Para Ciudadanos: Estado de Resultados en Consolidación ---------- */}
+        {soloLectura && !mesa.publicarResultados && (
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 text-center space-y-3">
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[var(--surface-2)] text-[var(--ember)]">
+              <ClipboardList className="size-6" strokeWidth={1.5} />
+            </div>
+            <div className="space-y-1.5">
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">
+                Resultados en Proceso de Transcripción y Sistematización
+              </h4>
+              <p className="text-xs text-[var(--text-secondary)] max-w-lg mx-auto leading-relaxed">
+                El equipo formulador de la política pública está transcribiendo la relatoría, consolidando los acuerdos y estructurando la matriz de compromisos de esta mesa. Una vez revisada y aprobada institucionalmente, el administrador publicará aquí los resultados oficiales para toda la ciudadanía.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-[11px] text-[var(--text-tertiary)]">
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="size-3 text-[var(--ember)]" />
+                Convocatoria y lugar visibles
+              </span>
+              <span>•</span>
+              <span className="inline-flex items-center gap-1">
+                <Clock className="size-3" />
+                Fecha y horario registrados
+              </span>
+              <span>•</span>
+              <span>Relatoría y compromisos en reserva técnica</span>
+            </div>
+          </div>
+        )}
+
+        {/* ---------- Para Ciudadanos: Banner de Resultados Oficiales Publicados ---------- */}
+        {soloLectura && mesa.publicarResultados && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-[var(--success)]/40 bg-[var(--success)]/10 p-4">
+            <div className="flex items-center gap-2.5">
+              <BadgeCheck className="size-4 text-[var(--success)] shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-[var(--text-primary)]">
+                  Resultados Oficiales Publicados para la Ciudadanía
+                </p>
+                <p className="text-[11px] text-[var(--text-secondary)]">
+                  Relatoría consolidada, compromisos adquiridos, evidencias fotográficas y documentos anexos de consulta pública.
+                </p>
+              </div>
+            </div>
+            <Badge variant="success" className="text-[10px] uppercase font-bold shrink-0 self-start sm:self-auto">
+              Memoria Pública
+            </Badge>
+          </div>
+        )}
+
         {/* ---------- Plenaria ---------- */}
-        <section className="space-y-3">
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <section className="space-y-3">
           <SectionLabel
             right={
               <div className="flex items-center gap-3">
@@ -1373,10 +1705,12 @@ export function MesaPanel({
             soluciones).
           </p>
         </section>
+        )}
 
         {/* ---------- Contabilización y registro de asistentes ---------- */}
-        <section className="space-y-3">
-          <SectionLabel>Contabilización de asistentes</SectionLabel>
+        {(faseCiclo === "todas" || faseCiclo === "ejecucion") && (
+          <section className="space-y-3">
+            <SectionLabel>Contabilización de asistentes</SectionLabel>
           <div className="space-y-4 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -1578,9 +1912,16 @@ export function MesaPanel({
             </div>
           </div>
         </section>
+        )}
+
+        {/* ---------- FASE 2: Sorteo Cívico y Turnos de Palabra al Azar (Solo personal técnico) ---------- */}
+        {!soloLectura && (faseCiclo === "todas" || faseCiclo === "ejecucion") && (
+          <MesaSorteoAzar mesa={mesa} soloLectura={soloLectura} />
+        )}
 
         {/* ---------- Informe y relatoría final de la mesa ---------- */}
-        <section className="space-y-4">
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <section className="space-y-4">
           <SectionLabel
             right={
               <div className="flex flex-wrap items-center gap-2">
@@ -1597,7 +1938,7 @@ export function MesaPanel({
                         : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                     }`}
                   >
-                    📝 Relatoría narrativa
+                    Relatoría narrativa
                   </Button>
                   <Button
                     variant="unstyled"
@@ -1610,7 +1951,7 @@ export function MesaPanel({
                         : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                     }`}
                   >
-                    🌳 Matriz de Diagnóstico y Soluciones
+                    Matriz de Diagnóstico y Soluciones
                   </Button>
                   <Button
                     variant="unstyled"
@@ -1650,9 +1991,22 @@ export function MesaPanel({
                       className="h-7 gap-1 text-xs text-[var(--success)]"
                       title="Generar borrador técnico de relatoría formal desde la matriz"
                     >
-                      <Sparkles className="size-3.5" strokeWidth={1.5} />
+                      <PenLine className="size-3.5" strokeWidth={1.5} />
                       Generar borrador técnico
                     </Button>
+                    {(modoRelatoriaLocal === "matriz" || modoRelatoriaLocal === "hibrido") && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
+                        onClick={guardarMatrizInmediata}
+                        className="h-7 gap-1 text-xs text-[var(--ember)]"
+                        title="Guardar de inmediato la matriz de problemas y soluciones en el servidor"
+                      >
+                        <Save className="size-3.5" strokeWidth={1.5} />
+                        Guardar matriz
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -1739,9 +2093,11 @@ export function MesaPanel({
             </div>
           )}
         </section>
+        )}
 
         {/* ---------- Submesas ---------- */}
-        <section className="space-y-3">
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "ejecucion") && (
+          <section className="space-y-3">
           <SectionLabel
             right={
               !soloLectura && (
@@ -1930,17 +2286,35 @@ export function MesaPanel({
             </div>
           )}
         </section>
+        )}
 
-        {/* ---------- Adjuntos de la mesa ---------- */}
-        <section className="space-y-3">
-          <SectionLabel>Adjuntos de la mesa</SectionLabel>
-          <AdjuntosZona
-            adjuntos={mesa.adjuntos ?? []}
-            onAgregar={(adj) => useMesasStore.getState().agregarAdjuntoMesa(mesa.id, adj)}
-            onEliminar={(adjId) => useMesasStore.getState().eliminarAdjuntoMesa(mesa.id, adjId)}
-            soloLectura={soloLectura}
-          />
-        </section>
+        {/* ---------- FASE 3: Matriz de Compromisos y Acuerdos Territoriales ---------- */}
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <MesaCompromisosTabla mesa={mesa} soloLectura={soloLectura} />
+        )}
+
+        {/* ---------- FASE 3: Galería de Evidencias Multimedia ---------- */}
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <MesaGaleriaEvidencias mesa={mesa} soloLectura={soloLectura} />
+        )}
+
+        {/* ---------- FASE 3: Bitácora y Notas de Campo del Facilitador (Solo personal técnico) ---------- */}
+        {!soloLectura && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <MesaNotasBitacora mesa={mesa} soloLectura={soloLectura} />
+        )}
+
+        {/* ---------- Adjuntos y Documentos de la mesa (Google Drive / Archivos) ---------- */}
+        {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
+          <section className="space-y-3">
+            <SectionLabel>Adjuntos y Memorias de la Mesa (Google Drive / Archivos)</SectionLabel>
+            <AdjuntosZona
+              adjuntos={mesa.adjuntos ?? []}
+              onAgregar={(adj) => useMesasStore.getState().agregarAdjuntoMesa(mesa.id, adj)}
+              onEliminar={(adjId) => useMesasStore.getState().eliminarAdjuntoMesa(mesa.id, adjId)}
+              soloLectura={soloLectura}
+            />
+          </section>
+        )}
       </div>
     </PanelShell>
   );

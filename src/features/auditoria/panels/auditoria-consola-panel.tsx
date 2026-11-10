@@ -54,11 +54,35 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
         apiFetch<EstadoRespaldos>("/auditoria/respaldos"),
       ]);
 
-      if (audData.status === "fulfilled") {
-        setRegistros(audData.value.elementos);
+      if (audData.status === "fulfilled" && audData.value) {
+        const raw = audData.value as unknown;
+        let arr: RegistroAuditoriaItem[] = [];
+        if (Array.isArray(raw)) {
+          arr = raw;
+        } else if (raw && typeof raw === "object") {
+          const dict = raw as Record<string, unknown>;
+          if (Array.isArray(dict.elementos)) {
+            arr = dict.elementos as RegistroAuditoriaItem[];
+          } else if (Array.isArray(dict.data)) {
+            arr = dict.data as RegistroAuditoriaItem[];
+          } else if (Array.isArray(dict.registros)) {
+            arr = dict.registros as RegistroAuditoriaItem[];
+          }
+        }
+        setRegistros(arr);
       }
-      if (respData.status === "fulfilled") {
-        setRespaldosData(respData.value);
+      if (respData.status === "fulfilled" && respData.value) {
+        const raw = respData.value as unknown;
+        if (raw && typeof raw === "object") {
+          const estado = raw as EstadoRespaldos;
+          setRespaldosData({
+            directorio: estado.directorio ?? "/var/backups",
+            total_respaldos: Number(estado.total_respaldos ?? estado.respaldos?.length ?? 0),
+            ultimo_respaldo: estado.ultimo_respaldo ?? null,
+            respaldos: Array.isArray(estado.respaldos) ? estado.respaldos : [],
+            espacio_libre_mb: Number(estado.espacio_libre_mb ?? 0),
+          });
+        }
       }
     } catch {
       // Ignorar
@@ -127,13 +151,13 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
               </Button>
             </div>
 
-            {registros.length === 0 && !cargando ? (
+            {(registros ?? []).length === 0 && !cargando ? (
               <div className="p-8 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)]">
                 No hay registros de devoluciones motivadas registradas en el período.
               </div>
             ) : (
               <div className="space-y-3">
-                {registros.map((log) => (
+                {(registros ?? []).map((log) => (
                   <div
                     key={log.id}
                     className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-2"
@@ -201,7 +225,7 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
                 </div>
                 <div className="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
                   <span className="text-[11px] text-[var(--text-secondary)]">Espacio Libre</span>
-                  <span className="block text-xl font-bold text-primary mt-1">
+                  <span className="block text-xl font-bold text-[var(--primary)] mt-1">
                     {respaldosData.espacio_libre_mb} MB
                   </span>
                 </div>
@@ -215,8 +239,8 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
             )}
 
             <div className="space-y-3">
-              {respaldosData?.respaldos && respaldosData.respaldos.length > 0 ? (
-                respaldosData.respaldos.map((bk, i) => (
+              {(respaldosData?.respaldos ?? []).length > 0 ? (
+                (respaldosData?.respaldos ?? []).map((bk, i) => (
                   <div
                     key={i}
                     className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex justify-between items-center gap-4"
@@ -233,7 +257,7 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
                       </div>
                       {bk.hash_sha256 && (
                         <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-secondary)] font-mono">
-                          <ShieldCheck className="size-3 text-primary shrink-0" />
+                          <ShieldCheck className="size-3 text-[var(--primary)] shrink-0" />
                           <span className="truncate">SHA-256: {bk.hash_sha256}</span>
                         </div>
                       )}
@@ -248,7 +272,7 @@ export function AuditoriaConsolaPanel({ entryKey }: { entryKey: string }) {
                 ))
               ) : (
                 <div className="p-8 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)]">
-                  Cargando copias de seguridad...
+                  {cargando ? "Cargando copias de seguridad..." : "No se encontraron copias de seguridad físicas registradas."}
                 </div>
               )}
             </div>
