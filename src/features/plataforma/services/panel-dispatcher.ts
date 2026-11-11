@@ -16,6 +16,25 @@ export function abrirPanelSeguro(
   const { openPanel } = usePanelStore.getState();
 
   switch (panelId) {
+    case "mesa": {
+      const mesaId =
+        (props?.mesaId as string | undefined) ||
+        useMesasStore.getState().mesas[0]?.id;
+      if (mesaId) {
+        openPanel("mesa", {
+          mesaId,
+          soloLectura:
+            typeof props?.soloLectura === "boolean"
+              ? props.soloLectura
+              : undefined,
+          seccionInicial:
+            (props?.seccionInicial as "relatoria" | "matriz" | undefined) ??
+            "relatoria",
+        });
+        return true;
+      }
+      return false;
+    }
     case "mesa-acta": {
       const mesaId =
         (props?.mesaId as string | undefined) ||

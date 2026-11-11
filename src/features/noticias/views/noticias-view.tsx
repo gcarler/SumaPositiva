@@ -149,15 +149,15 @@ export function NoticiasView() {
                   <StatusBadge tone="ember">
                     {CATEGORIAS.find((c) => c.id === noticiaDestacada.categoria)?.label || "Avance"}
                   </StatusBadge>
-                  <span className="flex items-center gap-1 text-xs text-[var(--text-secondary)]">
-                    <Calendar className="size-3.5" />
+                  <span className="flex items-center gap-1 text-sm text-[var(--text-secondary)]">
+                    <Calendar className="size-4" />
                     {new Date(noticiaDestacada.publicadaEn).toLocaleDateString("es-CO", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
                     })}
                   </span>
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-xs">
                     Prioridad #{noticiaDestacada.ordenPrioridad}
                   </Badge>
                 </div>
@@ -166,11 +166,11 @@ export function NoticiasView() {
                   {noticiaDestacada.titulo}
                 </h1>
 
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
+                <p className="text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
                   {noticiaDestacada.resumen}
                 </p>
 
-                <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)] pt-2">
+                <div className="flex items-center gap-2 text-sm text-[var(--text-tertiary)] pt-2">
                   <Building2 className="size-4 text-[var(--ember)]" />
                   <span>{noticiaDestacada.autor}</span>
                 </div>
@@ -223,7 +223,7 @@ export function NoticiasView() {
                 </Button>
               )}
             </div>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               Registro documental e institucional de las 37 mesas de trabajo en Cartagena
             </p>
           </div>
@@ -236,7 +236,7 @@ export function NoticiasView() {
               placeholder="Buscar por palabra o etiqueta..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-9 text-xs"
+              className="pl-9 text-sm"
             />
           </div>
         </div>
@@ -251,7 +251,7 @@ export function NoticiasView() {
                 variant={active ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltro(cat.id)}
-                className="shrink-0 text-xs rounded-full h-8 px-3.5"
+                className="shrink-0 text-sm rounded-full h-9 px-4"
                 aria-pressed={active}
               >
                 {cat.label}
@@ -372,26 +372,26 @@ function NoticiaCard({
             />
             <div className="absolute top-2.5 right-2.5 flex flex-wrap items-center gap-1.5">
               {noticia.destacada && (
-                <Badge variant="ember" className="text-[10px] shadow-sm">
+                <Badge variant="ember" className="text-xs shadow-sm">
                   Destacada
                 </Badge>
               )}
               {noticia.videoUrl && (
-                <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
-                  <Play className="size-2.5 fill-current" />
+                <Badge variant="secondary" className="text-xs shadow-sm gap-1">
+                  <Play className="size-3 fill-current" />
                   Video
                 </Badge>
               )}
               {noticia.galeria && noticia.galeria.length > 0 && (
-                <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
-                  <Layers className="size-2.5" />
+                <Badge variant="secondary" className="text-xs shadow-sm gap-1">
+                  <Layers className="size-3" />
                   {noticia.galeria.length}
                 </Badge>
               )}
             </div>
             {noticia.ordenPrioridad && (
               <div className="absolute bottom-2 left-2">
-                <Badge variant="outline" className="text-[10px] bg-[var(--surface-1)]/90 backdrop-blur-xs">
+                <Badge variant="outline" className="text-xs bg-[var(--surface-1)]/90 backdrop-blur-xs">
                   Prioridad #{noticia.ordenPrioridad}
                 </Badge>
               </div>
@@ -403,7 +403,7 @@ function NoticiaCard({
           {/* Badge de categoría y fecha */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <StatusBadge tone={meta.tone}>{meta.label}</StatusBadge>
-            <time className="text-[11px] text-[var(--text-tertiary)]" dateTime={noticia.publicadaEn}>
+            <time className="text-xs text-[var(--text-tertiary)]" dateTime={noticia.publicadaEn}>
               {new Date(noticia.publicadaEn).toLocaleDateString("es-CO", {
                 day: "numeric",
                 month: "short",
@@ -413,12 +413,12 @@ function NoticiaCard({
           </div>
 
           {/* Título */}
-          <h3 className="text-base font-semibold leading-snug text-[var(--text-primary)] group-hover:text-[var(--ember)] transition-colors line-clamp-2">
+          <h3 className="text-lg font-semibold leading-snug text-[var(--text-primary)] group-hover:text-[var(--ember)] transition-colors line-clamp-2">
             {noticia.titulo}
           </h3>
 
           {/* Resumen */}
-          <p className="text-xs leading-relaxed text-[var(--text-secondary)] line-clamp-3">
+          <p className="text-sm leading-relaxed text-[var(--text-secondary)] line-clamp-3">
             {noticia.resumen}
           </p>
         </div>
@@ -426,8 +426,8 @@ function NoticiaCard({
 
       {/* Footer de la Card */}
       <div className="p-5 pt-0">
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[var(--border)] text-xs">
-          <span className="text-[11px] text-[var(--text-tertiary)] truncate max-w-[170px]">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[var(--border)] text-sm">
+          <span className="text-xs text-[var(--text-tertiary)] truncate max-w-[170px]">
             {noticia.autor}
           </span>
           <div className="flex items-center gap-2">

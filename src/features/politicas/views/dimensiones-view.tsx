@@ -305,7 +305,7 @@ export function DimensionesView() {
                   }`}
                 >
                   <div className="flex w-full items-center justify-between">
-                    <span className="text-[11px] font-bold text-[var(--text-tertiary)] tabular">
+                    <span className="text-xs font-bold text-[var(--text-tertiary)] tabular">
                       {dim.numero}
                     </span>
                     <span
@@ -321,13 +321,13 @@ export function DimensionesView() {
 
                   <div>
                     <p
-                      className={`text-xs font-bold leading-tight ${
+                      className={`text-sm font-bold leading-tight ${
                         activa ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"
                       }`}
                     >
                       {dim.nombreCorto}
                     </p>
-                    <p className="mt-0.5 text-[10px] text-[var(--text-tertiary)] truncate">
+                    <p className="mt-0.5 text-xs text-[var(--text-tertiary)] truncate">
                       {dim.codigo}
                     </p>
                   </div>

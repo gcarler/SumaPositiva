@@ -114,17 +114,17 @@ export function EnrutadorCiudadanoInteligente() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="flex size-2 rounded-full bg-[var(--ember)]" aria-hidden />
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ember)]">
+            <p className="text-sm font-semibold uppercase tracking-wider text-[var(--ember)]">
               Pilar 1 — Trazabilidad y Responsabilidad Institucional
             </p>
-            <Badge variant="outline" className="border-[var(--border)] text-[10px]">
+            <Badge variant="outline" className="border-[var(--border)] text-xs">
               Ley 1757 de 2015
             </Badge>
           </div>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl">
             ¿Quién Responde por tu Seguridad en Cartagena?
           </h2>
-          <p className="mt-1 text-sm text-[var(--text-secondary)] sm:text-base max-w-3xl">
+          <p className="mt-1 text-base text-[var(--text-secondary)] sm:text-lg max-w-3xl">
             Enrutador Inteligente de Competencias: describe en tus propias palabras qué ocurre en tu barrio
             y el sistema identifica en tiempo real la secretaría legalmente responsable, sus entidades aliadas
             y sus metas en el Plan de Acción 2026.
@@ -145,8 +145,8 @@ export function EnrutadorCiudadanoInteligente() {
 
       {/* Selector de Territorio */}
       <div className="mt-6 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-[var(--text-secondary)] flex items-center gap-1">
-          <MapPin className="size-3.5 text-[var(--ember)]" />
+        <span className="text-sm font-medium text-[var(--text-secondary)] flex items-center gap-1">
+          <MapPin className="size-4 text-[var(--ember)]" />
           Territorio:
         </span>
         <div
@@ -169,7 +169,7 @@ export function EnrutadorCiudadanoInteligente() {
                   procesarBusqueda(consulta, terr.id);
                 }
               }}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
                 activo
                   ? "bg-[var(--ember)] text-[var(--text-inverse)] shadow-sm"
                   : "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -186,7 +186,7 @@ export function EnrutadorCiudadanoInteligente() {
           siempre produce una respuesta observables aunque la consulta esté
           vacía; la sección adicional presenta el contenido asociado real del
           catálogo auditado, sin inventar datos. */}
-      <p aria-live="polite" className="mt-2 text-xs text-[var(--text-secondary)]">
+      <p aria-live="polite" className="mt-2 text-sm text-[var(--text-secondary)]">
         {territorioActivo ? (
           <>
             <span className="font-semibold text-[var(--text-primary)]">

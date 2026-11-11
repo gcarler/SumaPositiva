@@ -130,12 +130,12 @@ export function HeroPageBanner({
           className="flex flex-wrap items-center gap-2"
           data-testid="hero-page-banner-badge"
         >
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface-2)]/90 px-3 py-1 text-xs font-semibold text-[var(--ember)] backdrop-blur-xs">
-            <MapPin className="size-3.5 shrink-0 text-[var(--ember)]" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface-2)]/90 px-3.5 py-1 text-sm font-semibold text-[var(--ember)] backdrop-blur-xs">
+            <MapPin className="size-4 shrink-0 text-[var(--ember)]" aria-hidden="true" />
             <span>{config.ubicacionReal}</span>
           </span>
           {badgeTexto && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface-3)]/90 px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)] backdrop-blur-xs">
+            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface-3)]/90 px-3 py-1 text-sm font-medium text-[var(--text-secondary)] backdrop-blur-xs">
               {badgeTexto}
             </span>
           )}
@@ -159,8 +159,8 @@ export function HeroPageBanner({
             className={cn(
               "leading-relaxed text-[var(--text-secondary)] max-w-3xl",
               esUltracompact
-                ? "text-xs sm:text-sm line-clamp-2 sm:line-clamp-none"
-                : "text-sm sm:text-base"
+                ? "text-sm sm:text-base line-clamp-2 sm:line-clamp-none"
+                : "text-base sm:text-lg"
             )}
           >
             {subtitulo}

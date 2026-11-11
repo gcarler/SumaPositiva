@@ -262,7 +262,28 @@ export const useMesasStore = create<MesasState>((set, get) => ({
   cargando: false,
   error: null,
 
-  setMesas: (mesas) => set({ mesas, cargando: false, error: null }),
+  setMesas: (mesas) =>
+    set((s) => {
+      const prevMap = new Map(s.mesas.map((m) => [m.id, m]));
+      return {
+        mesas: mesas.map((nueva) => {
+          const prev = prevMap.get(nueva.id);
+          if (!prev) return nueva;
+          return {
+            ...nueva,
+            submesas:
+              nueva.submesas && nueva.submesas.length > 0
+                ? nueva.submesas
+                : (prev.submesas ?? []),
+            arbolProblemas: nueva.arbolProblemas ?? prev.arbolProblemas,
+            arbolSoluciones: nueva.arbolSoluciones ?? prev.arbolSoluciones,
+            modoRelatoria: nueva.modoRelatoria ?? prev.modoRelatoria,
+          };
+        }),
+        cargando: false,
+        error: null,
+      };
+    }),
   setCargando: (cargando) => set({ cargando }),
   setError: (error) => set({ error, cargando: false }),
 

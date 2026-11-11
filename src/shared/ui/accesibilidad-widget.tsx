@@ -147,7 +147,7 @@ export function AccesibilidadWidget({
     return (
       <aside
         className={cn(
-          "fixed right-0 z-40 select-none",
+          "fixed right-0 z-[90] select-none",
           isGeovisor ? "top-1/2 -translate-y-1/2" : "bottom-4 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2",
           className
         )}
@@ -162,7 +162,7 @@ export function AccesibilidadWidget({
           onClick={alternarBarra}
           aria-label="Abrir menú de accesibilidad"
           aria-expanded={false}
-          className="flex h-14 w-7 items-center justify-center rounded-l-lg border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] text-[var(--text-primary)] shadow-md transition-all hover:w-9 focus-visible:outline-2 focus-visible:outline-[var(--ring)]"
+          className="flex h-[56px] w-[28px] items-center justify-center rounded-l-lg border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] text-[var(--text-primary)] shadow-md transition-all hover:w-[36px] focus-visible:outline-2 focus-visible:outline-[var(--ring)]"
         >
           <Sliders className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
           <span className="sr-only">Abrir menú de accesibilidad</span>
@@ -182,7 +182,7 @@ export function AccesibilidadWidget({
   return (
     <aside
       className={cn(
-        "fixed top-1/2 right-0 -translate-y-1/2 z-40 select-none",
+        "fixed top-1/2 right-0 -translate-y-1/2 z-[90] select-none",
         className
       )}
       data-testid="accesibilidad-sidebar-container"
@@ -208,7 +208,7 @@ export function AccesibilidadWidget({
               <div className="flex size-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--ember)]">
                 <Sliders className="size-4" aria-hidden="true" />
               </div>
-              <h2 className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
+              <h2 className="text-[14px] font-semibold tracking-tight text-[var(--text-primary)]">
                 Más opciones
               </h2>
             </div>
@@ -229,7 +229,7 @@ export function AccesibilidadWidget({
           {/* Pasos de texto (100 %, 125 %, 150 %, 200 %) */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <Label className="text-xs font-semibold text-[var(--text-primary)]">
+              <Label className="text-[12px] font-semibold text-[var(--text-primary)]">
                 Tamaño de texto
               </Label>
               <span className="text-[11px] font-mono text-[var(--text-tertiary)]">
@@ -246,7 +246,7 @@ export function AccesibilidadWidget({
                     size="sm"
                     onClick={() => onTextSizeChange(step)}
                     aria-pressed={activo}
-                    className="h-7 text-xs font-medium"
+                    className="h-[28px] text-[12px] font-medium"
                   >
                     {`${step}%`}
                   </Button>
@@ -257,7 +257,7 @@ export function AccesibilidadWidget({
 
           {/* Color y Tema */}
           <div className="flex flex-col gap-1.5 border-t border-[var(--border)] pt-2">
-            <Label className="text-xs font-semibold text-[var(--text-primary)]">
+            <Label className="text-[12px] font-semibold text-[var(--text-primary)]">
               Color y Tema
             </Label>
             <div className="grid grid-cols-2 gap-1.5">
@@ -267,7 +267,7 @@ export function AccesibilidadWidget({
                   size="sm"
                   onClick={onThemeToggle}
                   aria-label="Alternar tema claro y oscuro"
-                  className="h-8 gap-1.5 text-xs font-medium text-[var(--text-primary)]"
+                  className="h-[32px] gap-1.5 text-[12px] font-medium text-[var(--text-primary)]"
                 >
                   {theme === "dark" ? (
                     <>
@@ -288,7 +288,7 @@ export function AccesibilidadWidget({
                 onClick={onGrayscaleToggle}
                 aria-pressed={grayscale}
                 className={cn(
-                  "h-8 gap-1.5 text-xs font-medium",
+                  "h-[32px] gap-1.5 text-[12px] font-medium",
                   !onThemeToggle && "col-span-2"
                 )}
               >
@@ -300,7 +300,7 @@ export function AccesibilidadWidget({
 
           {/* Lectura y Movimiento */}
           <div className="flex flex-col gap-1.5 border-t border-[var(--border)] pt-2">
-            <Label className="text-xs font-semibold text-[var(--text-primary)]">
+            <Label className="text-[12px] font-semibold text-[var(--text-primary)]">
               Lectura y Movimiento
             </Label>
             <div className="grid grid-cols-2 gap-1.5">
@@ -309,7 +309,7 @@ export function AccesibilidadWidget({
                 size="sm"
                 onClick={onLineSpacingToggle}
                 aria-pressed={lineSpacing === "amplio"}
-                className="h-8 text-[11px] font-medium"
+                className="h-[32px] text-[11px] font-medium"
               >
                 Interlineado amplio
               </Button>
@@ -318,7 +318,7 @@ export function AccesibilidadWidget({
                 size="sm"
                 onClick={onLetterSpacingToggle}
                 aria-pressed={letterSpacing === "amplio"}
-                className="h-8 text-[11px] font-medium"
+                className="h-[32px] text-[11px] font-medium"
               >
                 Espaciado letras
               </Button>
@@ -327,7 +327,7 @@ export function AccesibilidadWidget({
                 size="sm"
                 onClick={onUnderlineLinksToggle}
                 aria-pressed={underlineLinks}
-                className="h-8 gap-1 text-[11px] font-medium"
+                className="h-[32px] gap-1 text-[11px] font-medium"
               >
                 <Underline className="size-3" aria-hidden="true" />
                 <span>Subrayar enlaces</span>
@@ -337,7 +337,7 @@ export function AccesibilidadWidget({
                 size="sm"
                 onClick={onReducedMotionToggle}
                 aria-pressed={reducedMotion}
-                className="h-8 text-[11px] font-medium"
+                className="h-[32px] text-[11px] font-medium"
               >
                 Reducir movimiento
               </Button>
@@ -350,7 +350,7 @@ export function AccesibilidadWidget({
               variant="secondary"
               size="sm"
               onClick={onResetAll}
-              className="h-8 w-full gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              className="h-[32px] w-full gap-1.5 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             >
               <RotateCcw className="size-3.5" aria-hidden="true" />
               <span>Restablecer todo</span>
@@ -366,7 +366,7 @@ export function AccesibilidadWidget({
       >
         {/* En geovisor: botón para colapsar barra a pestaña mínima */}
         {onToggleCollapse && (
-          <div className="flex h-6 w-full items-center justify-center border-b border-[var(--border)] pb-1 mb-0.5">
+          <div className="flex h-[24px] w-full items-center justify-center border-b border-[var(--border)] pb-1 mb-0.5">
             <button
               type="button"
               onClick={alternarBarra}
@@ -381,7 +381,7 @@ export function AccesibilidadWidget({
 
         <ul role="list" className="m-0 flex w-full flex-col gap-1 p-0 list-none">
           {/* 1. Contraste (Alterna directamente Normal / Alto contraste AAA) */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <button
               type="button"
               onClick={handleContrastClick}
@@ -392,7 +392,7 @@ export function AccesibilidadWidget({
               }
               aria-pressed={contrast === "alto"}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
@@ -410,7 +410,7 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
@@ -422,14 +422,14 @@ export function AccesibilidadWidget({
           </li>
 
           {/* 2. Aumentar tamaño de texto (A+) */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <button
               type="button"
               onClick={onAumentarTextSize}
               disabled={textSize === "200"}
               aria-label={`Aumentar tamaño de texto (actual ${textSize}%)`}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 textSize === "200" && "cursor-not-allowed opacity-50",
                 reducedMotion && "transition-none!"
@@ -443,7 +443,7 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
@@ -455,14 +455,14 @@ export function AccesibilidadWidget({
           </li>
 
           {/* 3. Reducir tamaño de texto (A−) */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <button
               type="button"
               onClick={onDisminuirTextSize}
               disabled={textSize === "100"}
               aria-label={`Reducir tamaño de texto (actual ${textSize}%)`}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 textSize === "100" && "cursor-not-allowed opacity-50",
                 reducedMotion && "transition-none!"
@@ -476,7 +476,7 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
@@ -488,13 +488,13 @@ export function AccesibilidadWidget({
           </li>
 
           {/* 4. Restablecer */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <button
               type="button"
               onClick={onResetAll}
               aria-label="Restablecer todas las preferencias de accesibilidad"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
@@ -505,7 +505,7 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
@@ -517,7 +517,7 @@ export function AccesibilidadWidget({
           </li>
 
           {/* 5. Más opciones */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <button
               ref={moreTriggerRef}
               type="button"
@@ -526,7 +526,7 @@ export function AccesibilidadWidget({
               aria-expanded={isOpen}
               aria-controls="panel-mas-opciones-a11y"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 isOpen && "border-[var(--border-strong)] bg-[var(--surface-2)]",
                 reducedMotion && "transition-none!"
@@ -545,7 +545,7 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
@@ -557,14 +557,14 @@ export function AccesibilidadWidget({
           </li>
 
           {/* 6. Centro de Relevo / Signos en Red (Enlace externo oficial) */}
-          <li className="relative h-12 w-[52px]">
+          <li className="relative h-[48px] w-[52px]">
             <a
               href="https://centroderelevo.gov.co/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Centro de Relevo Colombia (abre en una nueva pestaña)"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-[48px] w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
                 clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
@@ -575,7 +575,7 @@ export function AccesibilidadWidget({
                 </div>
                 <div
                   className={cn(
-                    "ml-2.5 flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    "ml-2.5 flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
                     clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}

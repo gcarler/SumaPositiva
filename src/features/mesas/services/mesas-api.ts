@@ -349,8 +349,30 @@ export async function actualizarMesaRemota(
     body,
   });
   const normalizada = normalizarMesaBackend(resp);
-  useMesasStore.getState().actualizarMesa(idResuelto, normalizada);
-  return normalizada;
+  const existente = useMesasStore
+    .getState()
+    .mesas.find((m) => m.id === idResuelto || m.id === mesaId);
+  const resultadoFinal: MesaDeTrabajo = {
+    ...normalizada,
+    submesas:
+      normalizada.submesas && normalizada.submesas.length > 0
+        ? normalizada.submesas
+        : (existente?.submesas ?? []),
+    arbolProblemas:
+      datos.arbolProblemas ??
+      normalizada.arbolProblemas ??
+      existente?.arbolProblemas,
+    arbolSoluciones:
+      datos.arbolSoluciones ??
+      normalizada.arbolSoluciones ??
+      existente?.arbolSoluciones,
+    modoRelatoria:
+      datos.modoRelatoria ??
+      normalizada.modoRelatoria ??
+      existente?.modoRelatoria,
+  };
+  useMesasStore.getState().actualizarMesa(idResuelto, resultadoFinal);
+  return resultadoFinal;
 }
 
 /**

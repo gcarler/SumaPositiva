@@ -40,7 +40,7 @@ export type AccionSubmodulo =
   | { tipo: "subvista"; moduloId: string; valor: string }
   | { tipo: "coleccion"; scope: "proyectos" | "comunicaciones"; vista: "cards" | "table" }
   | { tipo: "ancla"; hash: string }
-  | { tipo: "panel"; panelId: PanelType; requiereEdicion?: boolean };
+  | { tipo: "panel"; panelId: PanelType; requiereEdicion?: boolean; props?: Record<string, unknown> };
 
 export interface SubmoduloPlataforma {
   id: string;
@@ -203,6 +203,13 @@ export const MODULOS = [
         descripcion: "Árboles de problemas y soluciones.",
         icono: "Edit3",
         accion: { tipo: "panel", panelId: "papelografo" as PanelType, requiereEdicion: true },
+      },
+      {
+        id: "panel_informe_relatoria",
+        etiqueta: "Informe y relatoría de la mesa",
+        descripcion: "Síntesis ejecutiva, matriz de árbol y relatoría técnica.",
+        icono: "BookOpen",
+        accion: { tipo: "panel", panelId: "mesa" as PanelType, props: { seccionInicial: "relatoria" } },
       },
       {
         id: "panel_acta",

@@ -98,10 +98,10 @@ export function TestimoniosView() {
       {/* ================= FILTROS POR TIPO DE ACTOR ================= */}
       <section className="space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+          <h2 className="text-xl font-semibold tracking-tight text-[var(--text-primary)]">
             Mosaico de Experiencias Comunitarias
           </h2>
-          <span className="text-xs text-[var(--text-secondary)]">
+          <span className="text-sm text-[var(--text-secondary)]">
             {testimoniosFiltrados.length} testimonios compartidos
           </span>
         </div>
@@ -115,7 +115,7 @@ export function TestimoniosView() {
                 variant={active ? "default" : "outline"}
                 size="sm"
                 onClick={() => setFiltro(t.id)}
-                className="shrink-0 text-xs rounded-full h-8 px-3.5"
+                className="shrink-0 text-sm rounded-full h-9 px-4"
                 aria-pressed={active}
               >
                 {t.label}
@@ -226,13 +226,13 @@ function TestimonioCard({
         </span>
         <div className="flex flex-wrap items-center gap-1.5">
           {testimonio.destacado && (
-            <Badge variant="ember" className="text-[10px] gap-1">
-              <Star className="size-2.5" />
+            <Badge variant="ember" className="text-xs gap-1">
+              <Star className="size-3" />
               Destacado
             </Badge>
           )}
           {testimonio.verificado && (
-            <StatusBadge tone="success" className="text-[10px]">
+            <StatusBadge tone="success" className="text-xs">
               Verificado
             </StatusBadge>
           )}
@@ -241,7 +241,7 @@ function TestimonioCard({
 
       {/* Texto del testimonio */}
       <blockquote className="space-y-3 mb-6">
-        <p className="text-sm leading-relaxed text-[var(--text-primary)] font-normal italic">
+        <p className="text-base leading-relaxed text-[var(--text-primary)] font-normal italic">
           &ldquo;{testimonio.texto}&rdquo;
         </p>
       </blockquote>
@@ -249,7 +249,7 @@ function TestimonioCard({
       {/* Dimensión de Seguridad si existe */}
       {testimonio.dimensionOnu && (
         <div className="mb-4">
-          <Badge variant="secondary" className="text-[10px] font-normal">
+          <Badge variant="secondary" className="text-xs font-normal">
             {testimonio.dimensionOnu}
           </Badge>
         </div>
@@ -272,14 +272,14 @@ function TestimonioCard({
 
         {/* Datos del autor */}
         <div className="min-w-0 flex-1">
-          <h4 className="text-xs font-semibold text-[var(--text-primary)] truncate">
+          <h4 className="text-sm font-semibold text-[var(--text-primary)] truncate">
             {testimonio.nombre}
           </h4>
-          <p className="text-[11px] text-[var(--text-secondary)] truncate">
+          <p className="text-xs text-[var(--text-secondary)] truncate">
             {TIPO_LABELS[testimonio.tipo] || "Participante"}
           </p>
           {(testimonio.barrio || testimonio.localidad) && (
-            <p className="flex items-center gap-1 text-[10px] text-[var(--text-tertiary)] truncate mt-0.5">
+            <p className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] truncate mt-0.5">
               <MapPin className="size-3 text-[var(--ember)] shrink-0" />
               <span>
                 {[testimonio.barrio, testimonio.localidad].filter(Boolean).join(" · ")}

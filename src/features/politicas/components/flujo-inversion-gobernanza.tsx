@@ -231,17 +231,17 @@ export function FlujoInversionGobernanza() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="flex size-2 rounded-full bg-[var(--ember)]" aria-hidden />
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ember)]">
+            <p className="text-sm font-semibold uppercase tracking-wider text-[var(--ember)]">
               Pilar 2 — Visualizador de Gobernanza e Inversión Multinivel
             </p>
-            <Badge variant="outline" className="border-[var(--border)] text-[10px]">
+            <Badge variant="outline" className="border-[var(--border)] text-xs">
               {conteosTipologia.total} Dependencias Oficiales
             </Badge>
           </div>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl">
             Flujo de Inversión y Competencias en Cartagena
           </h2>
-          <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-3xl">
+          <p className="mt-1 text-base text-[var(--text-secondary)] max-w-3xl">
             Explora las conexiones dinámicas entre las 7 Dimensiones de Seguridad Humana (Ley 1757 de 2015),
             las {conteosTipologia.total} dependencias de la Alcaldía Mayor y los territorios distritales donde se ejecutan los proyectos.
           </p>

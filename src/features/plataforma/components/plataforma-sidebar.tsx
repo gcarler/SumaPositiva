@@ -77,6 +77,7 @@ import {
 } from "../models/acceso";
 import { abrirPanelSeguro } from "../services/panel-dispatcher";
 import { useCollectionPreferences } from "@/core/preferences/collection-view-store";
+import { usePanelStore } from "@/core/panels/panel-store";
 
 export const ICONOS = {
   dashboard: Home,
@@ -206,6 +207,12 @@ export function PlataformaSidebar() {
       ? useCollectionPreferences.getState().views
       : clientVistasColeccion;
 
+  const clientPanelEntries = usePanelStore((s) => s.entries);
+  const panelEntries =
+    typeof window === "undefined"
+      ? usePanelStore.getState().entries
+      : clientPanelEntries;
+
   const toggleSidebarColapsado = useConfiguracionPlataformaStore(
     (s) => s.toggleSidebarColapsado
   );
@@ -285,11 +292,20 @@ export function PlataformaSidebar() {
           const vistaEsperada = sub.accion.vista === "cards" ? "tarjetas" : "lista";
           return vistaActual === vistaEsperada;
         }
+        case "panel": {
+          const panelTope = panelEntries.at(-1);
+          if (!panelTope || panelTope.type !== sub.accion.panelId) return false;
+          if (sub.id === "panel_informe_relatoria") {
+            const propsTope = panelTope.props as Record<string, unknown> | undefined;
+            return propsTope?.seccionInicial === "relatoria";
+          }
+          return true;
+        }
         default:
           return false;
       }
     },
-    [esRutaActiva, subvistaPlataforma, vistasColeccion]
+    [esRutaActiva, subvistaPlataforma, vistasColeccion, panelEntries]
   );
 
   // Ejecución segura de la acción del submódulo
@@ -324,10 +340,10 @@ export function PlataformaSidebar() {
         }
         case "panel": {
           if (ruta !== rutaModulo) {
-            setPanelPendiente({ id: sub.accion.panelId });
+            setPanelPendiente({ id: sub.accion.panelId, props: sub.accion.props });
             router.push(rutaModulo);
           } else {
-            abrirPanelSeguro(sub.accion.panelId);
+            abrirPanelSeguro(sub.accion.panelId, sub.accion.props);
           }
           break;
         }
@@ -722,8 +738,28 @@ export function PlataformaSidebar() {
           );
         })}
 
-        {/* Enlace de regreso al portal ciudadano */}
-        <div className="border-t border-[var(--border)] pt-3 mt-4">
+        {/* Enlace al Glosario y regreso al portal ciudadano */}
+        <div className="border-t border-[var(--border)] pt-3 mt-4 space-y-1.5">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className={`w-full ${
+              sidebarColapsado ? "lg:justify-center lg:px-0" : "justify-start"
+            } text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)]`}
+            title="Glosario institucional de términos"
+          >
+            <Link href="/glosario" aria-label="Glosario institucional de términos">
+              <BookOpen
+                aria-hidden="true"
+                className="size-3.5 text-[var(--brand-polis-blue)] shrink-0"
+              />
+              <span className={sidebarColapsado ? "lg:hidden" : ""}>
+                Glosario de términos
+              </span>
+            </Link>
+          </Button>
+
           <Button
             asChild
             variant="outline"

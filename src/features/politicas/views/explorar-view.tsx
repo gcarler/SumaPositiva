@@ -172,7 +172,7 @@ export function ExplorarView() {
       {/* ---------- Contador y Limpiar ---------- */}
       <div className="mt-8 flex items-center justify-between">
         <p
-          className="text-xs text-[var(--text-tertiary)] tabular"
+          className="text-sm text-[var(--text-tertiary)] tabular"
           aria-live="polite"
         >
           {lineasFiltradas.length}{" "}
@@ -186,9 +186,9 @@ export function ExplorarView() {
             size="unstyled"
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--ember)]"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--ember)]"
           >
-            <RotateCcw className="size-3.5" strokeWidth={1.5} />
+            <RotateCcw className="size-4" strokeWidth={1.5} />
             Limpiar filtros
           </Button>
         )}
@@ -233,7 +233,7 @@ export function ExplorarView() {
                 <div>
                   {/* Cabecera de la tarjeta */}
                   <div className="flex items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded bg-[var(--surface-2)] px-2 py-0.5 text-[11px] font-semibold tracking-wider text-[var(--ember)]">
+                    <span className="inline-flex items-center gap-1.5 rounded bg-[var(--surface-2)] px-2.5 py-0.5 text-xs font-semibold tracking-wider text-[var(--ember)]">
                       {linea.codigo}
                     </span>
                     <ArrowUpRight
@@ -243,16 +243,16 @@ export function ExplorarView() {
                   </div>
 
                   {/* Título y descripción */}
-                  <h3 className="mt-3.5 text-base font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
+                  <h3 className="mt-3.5 text-lg font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
                     {linea.titulo}
                   </h3>
-                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-[var(--text-secondary)]">
                     {linea.descripcion}
                   </p>
                 </div>
 
                 {/* Pie con metadatos de Fase y Aportes */}
-                <div className="mt-6 flex items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-[11px] text-[var(--text-secondary)]">
+                <div className="mt-6 flex items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-xs text-[var(--text-secondary)]">
                   <div className="flex items-center gap-1.5 truncate">
                     <Layers className="size-3.5 shrink-0 text-[var(--text-tertiary)]" />
                     <span className="truncate">Fase 0{linea.faseOrden}</span>

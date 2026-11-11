@@ -38,12 +38,12 @@ export function Footer() {
                   aria-hidden="true"
                 />
               </div>
-              <span className="text-[11px] font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
+              <span className="text-xs font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
                 Cartagena 2026–2036
               </span>
             </div>
           </Link>
-          <p className="text-[11px] text-[var(--text-tertiary)]">
+          <p className="text-xs text-[var(--text-tertiary)]">
             Participación ciudadana en políticas públicas
           </p>
         </div>
@@ -60,6 +60,12 @@ export function Footer() {
             className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
           >
             ¿Qué es Seguridad Humana?
+          </Link>
+          <Link
+            href="/glosario"
+            className="label-micro text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover:underline"
+          >
+            Glosario de términos
           </Link>
           <Link
             href="/indicadores"
@@ -99,7 +105,7 @@ export function Footer() {
           </Link>
         </nav>
 
-        <div className="flex flex-col gap-1 text-[11px] text-[var(--text-tertiary)] tabular">
+        <div className="flex flex-col gap-1 text-xs text-[var(--text-tertiary)] tabular">
           <p>
             POLIS es una plataforma de participación ciudadana y gobernanza desarrollada y de propiedad de{" "}
             <a

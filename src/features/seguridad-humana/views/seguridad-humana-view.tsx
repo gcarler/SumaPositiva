@@ -624,7 +624,7 @@ export function SeguridadHumanaView() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[var(--border)]">
+              <div className="pt-4 border-t border-[var(--border)] flex flex-col gap-2">
                 <a
                   href="/docs/ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf"
                   download="ABC_SEGURIDAD_HUMANA_INTEGRAL_CARTAGENA.pdf"
@@ -633,6 +633,13 @@ export function SeguridadHumanaView() {
                   <Download className="size-4" aria-hidden="true" />
                   <span>Descargar PDF</span>
                 </a>
+                <Link
+                  href="/glosario"
+                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-primary)] px-3 py-2 text-xs font-semibold hover:bg-[var(--surface-3)] transition-colors"
+                >
+                  <BookOpen className="size-3.5 text-[var(--brand-polis-blue)]" aria-hidden="true" />
+                  <span>Ver Glosario Interactivo</span>
+                </Link>
               </div>
             </article>
 

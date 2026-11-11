@@ -59,7 +59,11 @@ export function useActualizarMesa() {
     },
     onSuccess: (mesaActualizada, { mesaId }) => {
       queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
-      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+      queryClient.setQueryData<MesaDeTrabajo[]>(MESAS_KEYS.all, (prev) =>
+        Array.isArray(prev)
+          ? prev.map((m) => (m.id === mesaId ? { ...m, ...mesaActualizada } : m))
+          : prev
+      );
     },
   });
 }
@@ -82,7 +86,11 @@ export function useActualizarMatrizArbol() {
     },
     onSuccess: (mesaActualizada, { mesaId }) => {
       queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
-      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+      queryClient.setQueryData<MesaDeTrabajo[]>(MESAS_KEYS.all, (prev) =>
+        Array.isArray(prev)
+          ? prev.map((m) => (m.id === mesaId ? { ...m, ...mesaActualizada } : m))
+          : prev
+      );
     },
   });
 }

@@ -120,11 +120,21 @@
 
   /* Utilidades tipográficas editoriales */
   .label-micro {
-    font-size: 0.6875rem;
+    font-size: 0.78rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     font-weight: 550;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Tipografía base ampliada para lectura cómoda en páginas públicas */
+  main#main-content {
+    --text-xs: 0.875rem;
+    --text-sm: 0.96875rem;
+    --text-base: 1.09375rem;
+    --text-lg: 1.25rem;
+    font-size: 1.09375rem;
+    line-height: 1.65;
   }
   .display-tight {
     letter-spacing: -0.045em;
@@ -304,17 +314,122 @@
    POLIS — Modificadores de Accesibilidad (A11Y-WIDGET-01)
    ============================================================ */
 
+:root,
 html[data-a11y-text-size="100"] {
-  font-size: 100%;
+  --a11y-scale: 1;
+  font-size: 100% !important;
 }
 html[data-a11y-text-size="125"] {
-  font-size: 125%;
+  --a11y-scale: 1.2;
+  font-size: 125% !important;
 }
 html[data-a11y-text-size="150"] {
-  font-size: 150%;
+  --a11y-scale: 1.35;
+  font-size: 150% !important;
 }
 html[data-a11y-text-size="200"] {
-  font-size: 200%;
+  --a11y-scale: 1.6;
+  font-size: 200% !important;
+}
+
+/* Escalado real de elementos con clases arbitrarias en píxeles (A+ / A−) */
+html[data-a11y-text-size="125"] .text-\[9px\],
+html[data-a11y-text-size="150"] .text-\[9px\],
+html[data-a11y-text-size="200"] .text-\[9px\] {
+  font-size: calc(9px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[10px\],
+html[data-a11y-text-size="150"] .text-\[10px\],
+html[data-a11y-text-size="200"] .text-\[10px\] {
+  font-size: calc(10px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[11px\],
+html[data-a11y-text-size="150"] .text-\[11px\],
+html[data-a11y-text-size="200"] .text-\[11px\] {
+  font-size: calc(11px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[12px\],
+html[data-a11y-text-size="150"] .text-\[12px\],
+html[data-a11y-text-size="200"] .text-\[12px\] {
+  font-size: calc(12px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[13px\],
+html[data-a11y-text-size="150"] .text-\[13px\],
+html[data-a11y-text-size="200"] .text-\[13px\] {
+  font-size: calc(13px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[14px\],
+html[data-a11y-text-size="150"] .text-\[14px\],
+html[data-a11y-text-size="200"] .text-\[14px\] {
+  font-size: calc(14px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .text-\[15px\],
+html[data-a11y-text-size="150"] .text-\[15px\],
+html[data-a11y-text-size="200"] .text-\[15px\] {
+  font-size: calc(15px * var(--a11y-scale, 1)) !important;
+}
+html[data-a11y-text-size="125"] .polis-revogrid-container,
+html[data-a11y-text-size="150"] .polis-revogrid-container,
+html[data-a11y-text-size="200"] .polis-revogrid-container,
+html[data-a11y-text-size="125"] .polis-revogrid-container revo-grid .rgCell,
+html[data-a11y-text-size="150"] .polis-revogrid-container revo-grid .rgCell,
+html[data-a11y-text-size="200"] .polis-revogrid-container revo-grid .rgCell,
+html[data-a11y-text-size="125"] .polis-revogrid-container revo-grid .rgHeaderCell,
+html[data-a11y-text-size="150"] .polis-revogrid-container revo-grid .rgHeaderCell,
+html[data-a11y-text-size="200"] .polis-revogrid-container revo-grid .rgHeaderCell {
+  font-size: calc(14px * var(--a11y-scale, 1)) !important;
+}
+
+/* Mantener geometría interna del widget de accesibilidad sin desbordamiento al 150% / 200% */
+[data-testid="accesibilidad-sidebar-container"] .text-\[11px\] {
+  font-size: 11px !important;
+}
+[data-testid="accesibilidad-sidebar-container"] .text-\[12px\] {
+  font-size: 12px !important;
+}
+
+/* Alto Contraste Significativo WCAG AAA (Estilo GOV.CO / High Contrast Black) */
+html[data-a11y-contrast="alto"] {
+  color-scheme: dark !important;
+  background-color: var(--background) !important;
+  color: var(--text-primary) !important;
+}
+html[data-a11y-contrast="alto"] body {
+  background-color: var(--background) !important;
+  color: var(--text-primary) !important;
+}
+html[data-a11y-contrast="alto"] section img {
+  opacity: 0.15 !important;
+  filter: contrast(1.25) grayscale(100%);
+}
+html[data-a11y-contrast="alto"] header,
+html[data-a11y-contrast="alto"] footer,
+html[data-a11y-contrast="alto"] nav,
+html[data-a11y-contrast="alto"] aside,
+html[data-a11y-contrast="alto"] article,
+html[data-a11y-contrast="alto"] .ui-interactive-card {
+  background-color: var(--surface-1) !important;
+  border-color: var(--border-strong) !important;
+}
+html[data-a11y-contrast="alto"] a:not([data-slot="button"]) {
+  color: var(--ember) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.22em !important;
+}
+html[data-a11y-contrast="alto"] button,
+html[data-a11y-contrast="alto"] [data-slot="button"],
+html[data-a11y-contrast="alto"] input,
+html[data-a11y-contrast="alto"] select,
+html[data-a11y-contrast="alto"] textarea,
+html[data-a11y-contrast="alto"] [data-slot="badge"] {
+  border-width: 1.5px !important;
+  border-color: var(--border-strong) !important;
+}
+html[data-a11y-contrast="alto"] .text-fade {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: var(--ember) !important;
 }
 
 html[data-a11y-grayscale="true"] {
@@ -358,14 +473,28 @@ html[data-a11y-reduced-motion="true"] *::after {
 }
 
 /* ============================================================
-   POLIS — Celdas Multilínea para Matrices RevoGrid
-   Garantiza lectura completa de problemas, causas, efectos y soluciones
+   POLIS — Celdas Multilínea y Contraste de Tema para Matrices RevoGrid
+   Garantiza lectura completa y edición visible en modo claro y oscuro
    ============================================================ */
+.polis-revogrid-container revo-grid {
+  color: var(--text-primary) !important;
+  background-color: var(--surface-1) !important;
+}
+
+.polis-revogrid-container revo-grid revogr-header .rgHeaderCell {
+  color: var(--text-secondary) !important;
+  background-color: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  font-weight: 600 !important;
+}
+
 .polis-revogrid-container revo-grid revogr-data .rgRow {
   line-height: 1.35 !important;
+  color: var(--text-primary) !important;
 }
 
 .polis-revogrid-container revo-grid revogr-data .rgCell {
+  color: var(--text-primary) !important;
   white-space: normal !important;
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
@@ -375,10 +504,37 @@ html[data-a11y-reduced-motion="true"] *::after {
   align-items: center !important;
   padding: 6px 8px !important;
   overflow-y: auto !important;
+  border-color: var(--border) !important;
 }
 
 .polis-revogrid-container revo-grid .rowHeaders revogr-data .rgCell {
+  color: var(--text-tertiary) !important;
+  background-color: var(--surface-2) !important;
   white-space: nowrap !important;
   justify-content: center !important;
   overflow: hidden !important;
+}
+
+.polis-revogrid-container revo-grid revogr-edit,
+.polis-revogrid-container revo-grid .edit-input-wrapper {
+  background-color: var(--surface-0) !important;
+  color: var(--text-primary) !important;
+  border: 2px solid var(--ember) !important;
+  box-shadow: var(--shadow-md) !important;
+  z-index: 20 !important;
+}
+
+.polis-revogrid-container revo-grid revogr-edit input,
+.polis-revogrid-container revo-grid revogr-edit textarea,
+.polis-revogrid-container revo-grid .edit-input-wrapper input,
+.polis-revogrid-container revo-grid .edit-input-wrapper textarea {
+  background-color: var(--surface-0) !important;
+  color: var(--text-primary) !important;
+  caret-color: var(--ember) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  padding: 6px 8px !important;
+  width: 100% !important;
+  height: 100% !important;
+  outline: none !important;
 }

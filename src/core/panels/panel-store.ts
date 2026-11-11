@@ -13,15 +13,19 @@ export interface PanelPropsRegistry {
 
 export type PanelType = keyof PanelPropsRegistry & string;
 
+export type PanelResolvedProps<T extends PanelType> = T extends "mesa"
+  ? PanelPropsRegistry[T] & { seccionInicial?: "relatoria" | "matriz" }
+  : PanelPropsRegistry[T];
+
 export type PanelComponentProps<T extends PanelType = PanelType> = {
   entryKey: string;
-  props: PanelPropsRegistry[T];
+  props: PanelResolvedProps<T>;
 };
 
 export type PanelEntry<T extends PanelType> = {
   key: string;
   type: T;
-  props: PanelPropsRegistry[T];
+  props: PanelResolvedProps<T>;
   maximized: boolean;
 };
 
@@ -31,7 +35,10 @@ export type AnyPanelEntry = {
 
 interface PanelState {
   entries: AnyPanelEntry[];
-  openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) => void;
+  openPanel: {
+    <T extends PanelType>(type: T, props: PanelResolvedProps<T>): void;
+    <T extends PanelType>(type: T, props: PanelPropsRegistry[T]): void;
+  };
   closeTop: () => void;
   closeToKey: (key: string, inclusive?: boolean) => void;
   closeAll: () => void;
@@ -43,14 +50,14 @@ const nextKey = (type: string) => `${type}-${++sequence}-${Date.now()}`;
 
 function createEntry<T extends PanelType>(
   type: T,
-  props: PanelPropsRegistry[T],
+  props: PanelResolvedProps<T>,
 ): AnyPanelEntry {
   // The generic arguments keep `type` and `props` correlated; the mapped union
   // is not inferred by TypeScript when T itself is generic.
   return {
     key: nextKey(type),
     type,
-    props: (props ?? {}) as PanelPropsRegistry[T],
+    props: (props ?? {}) as PanelResolvedProps<T>,
     maximized: false,
   } as AnyPanelEntry;
 }
@@ -58,7 +65,7 @@ function createEntry<T extends PanelType>(
 export const usePanelStore = create<PanelState>((set) => ({
   entries: [],
 
-  openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) =>
+  openPanel: <T extends PanelType>(type: T, props: PanelResolvedProps<T>) =>
     set((state) => ({
       // Conserva un máximo de cinco instancias en la pila.
       entries: [...state.entries.slice(-4), createEntry(type, props)],

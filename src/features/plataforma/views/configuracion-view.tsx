@@ -32,11 +32,13 @@ import { SaludSistemaSection } from "../components/salud-sistema-section";
 import { PanelSaludHerald } from "@/features/notificaciones/components/panel-salud-herald";
 import { CollectionLayout, CollectionViewToggle } from "@/shared/ui/collection-view";
 import { useCollectionView } from "@/core/preferences/collection-view-store";
+import { useAccesibilidadStore } from "@/features/accesibilidad";
 
 export function ConfiguracionView() {
   const [vista, setVista] = useCollectionView("configuracion");
   const sesion = useSesionStore((state) => state.sesion);
   const { theme, setTheme } = useTheme();
+  const { contrast, textSize, toggleContrast, setTextSize } = useAccesibilidadStore();
   const cache = useQueryClient();
   const { openPanel } = usePanels();
   const editar = puedeEditar(sesion, "configuracion");
@@ -83,10 +85,50 @@ export function ConfiguracionView() {
                 <Button type="button" variant={theme === "dark" ? "default" : "outline"} disabled={!editar} aria-pressed={theme === "dark"} onClick={() => setTheme("dark")}>Oscuro</Button>
               </div>}
             </FormField>
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface-0 p-4">
-              <div><p className="font-medium">Vista de alto contraste</p><p className="mt-1 text-sm text-text-secondary">Consulta las opciones de accesibilidad del sistema.</p></div>
-              <Badge variant="outline"><Eye className="mr-1 size-3" aria-hidden="true" />Estándar</Badge>
+            <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface-0 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-medium">Vista de alto contraste</p>
+                <p className="mt-1 text-sm text-text-secondary">
+                  Activa el tema de alto contraste WCAG AAA en toda la plataforma.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant={contrast === "alto" ? "ember" : "outline"}>
+                  <Eye className="mr-1 size-3" aria-hidden="true" />
+                  {contrast === "alto" ? "Alto contraste" : "Estándar"}
+                </Badge>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={contrast === "alto" ? "ember" : "outline"}
+                  aria-pressed={contrast === "alto"}
+                  onClick={toggleContrast}
+                >
+                  {contrast === "alto" ? "Desactivar alto contraste" : "Activar alto contraste"}
+                </Button>
+              </div>
             </div>
+            <FormField label="Tamaño de texto" description="Escala la tipografía de la plataforma y las matrices operativas.">
+              {(field) => (
+                <div id={field.id} className="flex flex-wrap gap-2" role="group" aria-label="Tamaño de texto">
+                  {(["100", "125", "150", "200"] as const).map((step) => {
+                    const activo = textSize === step;
+                    return (
+                      <Button
+                        key={step}
+                        type="button"
+                        size="sm"
+                        variant={activo ? "ember" : "outline"}
+                        aria-pressed={activo}
+                        onClick={() => setTextSize(step)}
+                      >
+                        {`${step}%`}
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </FormField>
           </div>
         </section>
 

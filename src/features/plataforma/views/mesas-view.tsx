@@ -20,6 +20,7 @@ import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
 import type { EstadoMesa, MesaDeTrabajo } from "@/features/mesas/models/mesas";
 import {
+  BookOpen,
   CalendarDays,
   Clock,
   Landmark,
@@ -93,25 +94,10 @@ export function MesasGestionView() {
   const mesas =
     mesasRemotas && mesasRemotas.length > 0 ? mesasRemotas : mesasStore;
 
-  // Sincronizar mesas remotas de backend en el store preservando submesas cargadas
+  // Sincronizar mesas remotas de backend en el store preservando submesas y árboles locales
   useEffect(() => {
     if (mesasRemotas && mesasRemotas.length > 0) {
-      useMesasStore.setState((prev) => {
-        const prevMap = new Map(prev.mesas.map((m) => [m.id, m]));
-        return {
-          mesas: mesasRemotas.map((remota) => {
-            const existente = prevMap.get(remota.id);
-            if (
-              existente &&
-              existente.submesas?.length > 0 &&
-              (!remota.submesas || remota.submesas.length === 0)
-            ) {
-              return { ...remota, submesas: existente.submesas };
-            }
-            return remota;
-          }),
-        };
-      });
+      useMesasStore.getState().setMesas(mesasRemotas);
     }
   }, [mesasRemotas]);
 
@@ -589,6 +575,23 @@ export function MesasGestionView() {
                     }
                   >
                     Ver detalle
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    aria-label={`Informe y relatoría de ${m.nombre}`}
+                    className="flex-1 justify-center sm:flex-initial gap-1.5 text-[var(--ember)] border-[var(--ember)]/40 hover:bg-[var(--surface-2)]"
+                    onClick={() =>
+                      openPanel("mesa", {
+                        mesaId: m.id,
+                        soloLectura: !editar,
+                        seccionInicial: "relatoria",
+                      })
+                    }
+                  >
+                    <BookOpen className="size-3.5" />
+                    Informe y relatoría
                   </Button>
 
                   {editar && (

@@ -53,11 +53,6 @@ export function AccesibilidadWidget() {
     initFromSystemAndStorage();
   }, [initFromSystemAndStorage]);
 
-  // Excluir de rutas privadas /plataforma en esta versión v1
-  if (pathname?.startsWith("/plataforma")) {
-    return null;
-  }
-
   const handleThemeToggle = () => {
     const actual = resolvedTheme ?? theme ?? "light";
     setTheme(actual === "dark" ? "light" : "dark");

@@ -21,6 +21,7 @@ import {
   ShieldAlert,
   Target,
   Compass,
+  Save,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -428,29 +429,33 @@ export function MesasMatrizCatalogoRevogrid({
     });
   }, [filasMetodologicas, filtroEstado, filtroDimension, busqueda]);
 
-  const cellMultilineProps = ({
-    model,
-    prop,
-  }: {
-    model?: Record<string, unknown>;
-    prop?: string | number;
-  }) => {
-    const raw = model && prop !== undefined ? model[String(prop)] : "";
-    const textVal = raw !== undefined && raw !== null ? String(raw) : "";
-    return {
-      title: textVal,
-      style: {
-        "white-space": "normal",
-        "word-break": "break-word",
-        "overflow-wrap": "anywhere",
-        "line-height": "1.35",
-        display: "flex",
-        "align-items": "center",
-        padding: "6px 8px",
-        "overflow-y": "auto",
-      },
+  const crearCellMultilineProps =
+    (fontSize = "14px", fontWeight = "400") =>
+    ({
+      model,
+      prop,
+    }: {
+      model?: Record<string, unknown>;
+      prop?: string | number;
+    }) => {
+      const raw = model && prop !== undefined ? model[String(prop)] : "";
+      const textVal = raw !== undefined && raw !== null ? String(raw) : "";
+      return {
+        title: textVal,
+        style: {
+          "white-space": "normal",
+          "word-break": "break-word",
+          "overflow-wrap": "anywhere",
+          "line-height": "1.45",
+          "font-size": fontSize,
+          "font-weight": fontWeight,
+          display: "flex",
+          "align-items": "center",
+          padding: "8px 10px",
+          "overflow-y": "auto",
+        },
+      };
     };
-  };
 
   // Columnas de la Matriz RevoGrid con soporte integral de Problemas, Causas, Efectos y Soluciones
   const columnas = useMemo(
@@ -458,143 +463,143 @@ export function MesasMatrizCatalogoRevogrid({
       {
         prop: "codigoOficial",
         name: "Código",
-        size: 100,
+        size: 110,
         sortable: true,
         readonly: true,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "600"),
       },
       {
         prop: "nombre",
         name: "Mesa Territorial",
-        size: 220,
+        size: 240,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "600"),
       },
       {
         prop: "problemaNumero",
         name: "N.º Prob.",
-        size: 80,
+        size: 90,
         sortable: true,
         readonly: true,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "600"),
       },
       {
         prop: "problemaCentral",
         name: "Problema Abordado en la Mesa",
-        size: 300,
+        size: 330,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "500"),
       },
       {
         prop: "causaTexto",
         name: "Causa Identificada",
-        size: 290,
+        size: 310,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "400"),
       },
       {
         prop: "efectoTexto",
         name: "Efecto / Consecuencia",
-        size: 280,
+        size: 300,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "400"),
       },
       {
         prop: "solucionTexto",
         name: "Solución Propuesta / Acción",
-        size: 300,
+        size: 330,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "400"),
       },
       {
         prop: "finTexto",
         name: "Resultado / Fin Esperado",
-        size: 260,
+        size: 280,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("14px", "400"),
       },
       {
         prop: "dimensionOnu",
         name: "Dimensión ONU",
-        size: 200,
+        size: 220,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "500"),
       },
       {
         prop: "actorResponsable",
         name: "Entidad / Actor Responsable",
-        size: 190,
+        size: 210,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "criticidad",
         name: "Prioridad",
-        size: 105,
+        size: 115,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "600"),
       },
       {
         prop: "estado",
         name: "Estado",
-        size: 120,
+        size: 130,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "600"),
       },
       {
         prop: "fecha",
         name: "Fecha",
-        size: 120,
+        size: 130,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "horario",
         name: "Horario",
-        size: 120,
+        size: 130,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "lugarNombre",
         name: "Lugar / Sede",
-        size: 190,
+        size: 210,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "territorio",
         name: "Localidad / Territorio",
-        size: 180,
+        size: 200,
         sortable: true,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "facilitadorNombre",
         name: "Facilitador(a)",
-        size: 170,
+        size: 185,
         readonly: readOnly,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "400"),
       },
       {
         prop: "totalAsistentes",
         name: "Asistentes",
-        size: 100,
+        size: 110,
         sortable: true,
         readonly: true,
-        cellProperties: cellMultilineProps,
+        cellProperties: crearCellMultilineProps("13px", "600"),
       },
     ],
     [readOnly],
@@ -612,7 +617,7 @@ export function MesasMatrizCatalogoRevogrid({
           (f.finTexto || "").length,
         );
         const lineasEstimadas = Math.max(2, Math.ceil(maxLen / 40));
-        const size = Math.min(160, Math.max(64, lineasEstimadas * 20 + 18));
+        const size = Math.min(180, Math.max(76, lineasEstimadas * 22 + 22));
         return {
           type: "rgRow" as const,
           index,
@@ -1138,23 +1143,84 @@ export function MesasMatrizCatalogoRevogrid({
     );
   };
 
+  const estadoCatalogoRef = useRef({
+    filasFiltradas,
+    columnas,
+    readOnly,
+    aplicarEdicionCeldaMetodologica,
+  });
+
+  useEffect(() => {
+    estadoCatalogoRef.current = {
+      filasFiltradas,
+      columnas,
+      readOnly,
+      aplicarEdicionCeldaMetodologica,
+    };
+  }, [
+    filasFiltradas,
+    columnas,
+    readOnly,
+    aplicarEdicionCeldaMetodologica,
+  ]);
+
+  const celdaActivaCatalogoRef = useRef<{
+    row: FilaMatrizMetodologicaMesa;
+    prop: string;
+  } | null>(null);
+
+  const borradorCatalogoRef = useRef<{
+    row: FilaMatrizMetodologicaMesa;
+    prop: string;
+    valor: string;
+    editado: boolean;
+  } | null>(null);
+
+  const ultimoCommitCatalogoRef = useRef<{
+    firma: string;
+    ts: number;
+  } | null>(null);
+
+  const confirmarPendienteCatalogoRef = useRef<() => void>(() => {});
+
+  const confirmarEdicionUnicaCatalogo = useCallback(
+    (row: FilaMatrizMetodologicaMesa, prop: string, valRaw: unknown) => {
+      if (estadoCatalogoRef.current.readOnly || !row?.mesaId || !prop) return;
+      const val =
+        valRaw !== undefined && valRaw !== null ? String(valRaw).trim() : "";
+      const valorPrevio = String(
+        (row as unknown as Record<string, unknown>)[prop] ?? "",
+      ).trim();
+      if (val === valorPrevio) return;
+
+      const firma = `${row.id}::${prop}::${val}`;
+      const ahora = Date.now();
+      if (
+        ultimoCommitCatalogoRef.current &&
+        ultimoCommitCatalogoRef.current.firma === firma &&
+        ahora - ultimoCommitCatalogoRef.current.ts < 500
+      ) {
+        return;
+      }
+      ultimoCommitCatalogoRef.current = { firma, ts: ahora };
+      estadoCatalogoRef.current.aplicarEdicionCeldaMetodologica(row, prop, val);
+    },
+    [],
+  );
+
   const handleAfterEdit = useCallback(
     (e: CustomEvent<Record<string, unknown>>) => {
       if (readOnly) return;
       const detail = e.detail;
       if (!detail) return;
 
+      borradorCatalogoRef.current = null;
+
       // Edición de celda individual
-      if ("prop" in detail && "model" in detail) {
+      if ("prop" in detail && "model" in detail && detail.model) {
         const row = detail.model as FilaMatrizMetodologicaMesa;
         const prop = String(detail.prop);
-        const val =
-          detail.val !== undefined && detail.val !== null
-            ? String(detail.val).trim()
-            : "";
-        if (row?.mesaId && prop) {
-          aplicarEdicionCeldaMetodologica(row, prop, val);
-        }
+        confirmarEdicionUnicaCatalogo(row, prop, detail.val);
       }
       // Edición por rango o pegado múltiple desde portapapeles
       else if (
@@ -1192,36 +1258,202 @@ export function MesasMatrizCatalogoRevogrid({
                 updatedRow[key] !== undefined &&
                 updatedRow[key] !== oldModel[key]
               ) {
-                aplicarEdicionCeldaMetodologica(
-                  oldModel,
-                  key,
-                  String(updatedRow[key]).trim(),
-                );
+                confirmarEdicionUnicaCatalogo(oldModel, key, updatedRow[key]);
               }
             }
           }
         });
       }
     },
-    [readOnly, filasFiltradas, aplicarEdicionCeldaMetodologica],
+    [readOnly, filasFiltradas, confirmarEdicionUnicaCatalogo],
   );
 
-  // Registro del listener nativo del web component revo-grid
+  // Registro del listener nativo del web component revo-grid + auto-commit en blur / clic externo
   useEffect(() => {
     const container = gridContainerRef.current;
     if (!container) return;
     const gridEl = container.querySelector("revo-grid");
     if (!gridEl) return;
 
+    const resolverCeldaDesdeElemento = (el: Element | null) => {
+      const cellEl = el?.closest(".rgCell[data-rgcol]") as HTMLElement | null;
+      if (!cellEl) return null;
+      const colAttr = cellEl.getAttribute("data-rgcol");
+      const rowAttr =
+        cellEl.getAttribute("data-rgrow") ??
+        cellEl.closest("[data-rgrow]")?.getAttribute("data-rgrow") ??
+        null;
+      if (colAttr === null || rowAttr === null) return null;
+      const colIdx = Number(colAttr);
+      const rowIdx = Number(rowAttr);
+      const prop = estadoCatalogoRef.current.columnas[colIdx]?.prop;
+      const fila = estadoCatalogoRef.current.filasFiltradas[rowIdx];
+      if (fila && prop) {
+        return { row: fila, prop };
+      }
+      return null;
+    };
+
+    const obtenerCeldaActiva = () => {
+      if (celdaActivaCatalogoRef.current) {
+        const actualizada = estadoCatalogoRef.current.filasFiltradas.find(
+          (f) => f.id === celdaActivaCatalogoRef.current?.row.id,
+        );
+        if (actualizada) {
+          celdaActivaCatalogoRef.current = {
+            row: actualizada,
+            prop: celdaActivaCatalogoRef.current.prop,
+          };
+        }
+        return celdaActivaCatalogoRef.current;
+      }
+      const focusedCell = container.querySelector(".rgCell.focused-cell");
+      const desdeFoco = resolverCeldaDesdeElemento(focusedCell);
+      if (desdeFoco) {
+        celdaActivaCatalogoRef.current = desdeFoco;
+        return desdeFoco;
+      }
+      return null;
+    };
+
+    const capturarCelda = (e: Event) => {
+      const detail = (e as CustomEvent<Record<string, unknown>>).detail;
+      if (!detail) return;
+      const model = detail.model as FilaMatrizMetodologicaMesa | undefined;
+      const colIdx =
+        typeof detail.colIndex === "number"
+          ? detail.colIndex
+          : typeof detail.x === "number"
+            ? detail.x
+            : undefined;
+      const rowIdx =
+        typeof detail.rowIndex === "number"
+          ? detail.rowIndex
+          : typeof detail.y === "number"
+            ? detail.y
+            : undefined;
+      const prop =
+        detail.prop !== undefined
+          ? String(detail.prop)
+          : colIdx !== undefined
+            ? estadoCatalogoRef.current.columnas[colIdx]?.prop
+            : undefined;
+      if (model && prop) {
+        celdaActivaCatalogoRef.current = { row: model, prop };
+      } else if (rowIdx !== undefined && prop) {
+        const fila = estadoCatalogoRef.current.filasFiltradas[rowIdx];
+        if (fila) {
+          celdaActivaCatalogoRef.current = { row: fila, prop };
+        }
+      }
+      if (e.type === "beforeedit") {
+        borradorCatalogoRef.current = null;
+      }
+    };
+
+    const confirmarPendiente = () => {
+      if (estadoCatalogoRef.current.readOnly) return;
+      const borrador = borradorCatalogoRef.current;
+      if (!borrador || !borrador.editado) return;
+
+      const editEl = container.querySelector("revogr-edit");
+      const inputEl = editEl?.querySelector("input, textarea") as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
+
+      const filaFresca =
+        estadoCatalogoRef.current.filasFiltradas.find(
+          (f) => f.id === borrador.row.id,
+        ) || borrador.row;
+
+      const valorFinal =
+        inputEl !== null && inputEl !== undefined
+          ? inputEl.value
+          : borrador.valor;
+
+      borradorCatalogoRef.current = null;
+      confirmarEdicionUnicaCatalogo(filaFresca, borrador.prop, valorFinal);
+    };
+
+    confirmarPendienteCatalogoRef.current = confirmarPendiente;
+
+    const onInputEditor = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (!target || !target.closest("revogr-edit")) return;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement
+      ) {
+        const celda = borradorCatalogoRef.current || obtenerCeldaActiva();
+        if (celda) {
+          borradorCatalogoRef.current = {
+            row: celda.row,
+            prop: celda.prop,
+            valor: target.value,
+            editado: true,
+          };
+        }
+      }
+    };
+
+    const onFocusOutEditor = (e: FocusEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target || !target.closest("revogr-edit")) return;
+      const related = e.relatedTarget as Node | null;
+      const editEl = container.querySelector("revogr-edit");
+      if (editEl && related && editEl.contains(related)) return;
+      confirmarPendiente();
+    };
+
+    const onDocumentPointerDownCapture = (e: Event) => {
+      const target = e.target as Element | null;
+      const editEl = container.querySelector("revogr-edit");
+      if (editEl) {
+        if (target && editEl.contains(target)) return;
+        confirmarPendiente();
+      }
+      if (target && container.contains(target)) {
+        const nuevaCelda = resolverCeldaDesdeElemento(target);
+        if (nuevaCelda) {
+          celdaActivaCatalogoRef.current = nuevaCelda;
+        }
+      }
+    };
+
     const listener = (e: Event) => {
       handleAfterEdit(e as CustomEvent<Record<string, unknown>>);
     };
 
+    gridEl.addEventListener("beforecellfocus", capturarCelda);
+    gridEl.addEventListener("afterfocus", capturarCelda);
+    gridEl.addEventListener("beforeedit", capturarCelda);
     gridEl.addEventListener("afteredit", listener);
+    container.addEventListener("input", onInputEditor, true);
+    container.addEventListener("focusout", onFocusOutEditor, true);
+    document.addEventListener("pointerdown", onDocumentPointerDownCapture, true);
+    document.addEventListener("mousedown", onDocumentPointerDownCapture, true);
+
     return () => {
+      confirmarPendiente();
+      gridEl.removeEventListener("beforecellfocus", capturarCelda);
+      gridEl.removeEventListener("afterfocus", capturarCelda);
+      gridEl.removeEventListener("beforeedit", capturarCelda);
       gridEl.removeEventListener("afteredit", listener);
+      container.removeEventListener("input", onInputEditor, true);
+      container.removeEventListener("focusout", onFocusOutEditor, true);
+      document.removeEventListener(
+        "pointerdown",
+        onDocumentPointerDownCapture,
+        true,
+      );
+      document.removeEventListener(
+        "mousedown",
+        onDocumentPointerDownCapture,
+        true,
+      );
     };
-  }, [handleAfterEdit]);
+  }, [handleAfterEdit, confirmarEdicionUnicaCatalogo]);
 
   // Exportaciones estándar incluyendo Problemas, Causas, Efectos y Soluciones
   const copiarExcelTSV = async () => {
@@ -1389,8 +1621,39 @@ export function MesasMatrizCatalogoRevogrid({
           )}
         </div>
 
-        {/* Acciones de exportación */}
+        {/* Acciones de exportación y guardado */}
         <div className="flex items-center gap-2">
+          {!readOnly && (
+            <Button
+              variant="default"
+              size="sm"
+              type="button"
+              onClick={async () => {
+                confirmarPendienteCatalogoRef.current();
+                if (mesaActivaObj) {
+                  const mesaFresca =
+                    useMesasStore
+                      .getState()
+                      .mesas.find((m) => m.id === mesaActivaObj.id) ||
+                    mesaActivaObj;
+                  await persistirCambiosMesa(
+                    mesaFresca.id,
+                    {
+                      arbolProblemas: mesaFresca.arbolProblemas,
+                      arbolSoluciones: mesaFresca.arbolSoluciones,
+                    },
+                    "Contenido de la matriz",
+                  );
+                }
+              }}
+              className="h-8 gap-1.5 text-xs font-semibold"
+              title="Guardar en la matriz los textos ingresados"
+            >
+              <Save className="size-3.5" />
+              Guardar en la matriz
+            </Button>
+          )}
+
           <Button
             variant="outline"
             size="sm"
@@ -1703,16 +1966,16 @@ export function MesasMatrizCatalogoRevogrid({
             "--rg-theme-row-headers-bg": "var(--surface-2)",
             "--rg-theme-row-headers-color": "var(--text-tertiary)",
             "--rg-theme-font-family": "inherit",
-            "--rg-theme-font-size": "12px",
-            "--rg-theme-header-height": "36px",
-            height: "560px",
+            "--rg-theme-font-size": "14px",
+            "--rg-theme-header-height": "40px",
+            height: "600px",
           } as CSSProperties
         }
       >
         <RevoGrid
           columns={columnas}
           source={filasFiltradas}
-          rowSize={64}
+          rowSize={56}
           rowDefinitions={rowDefinitions}
           resizeRow={true}
           readonly={readOnly}
@@ -1721,7 +1984,7 @@ export function MesasMatrizCatalogoRevogrid({
           resize={true}
           canFocus={true}
           useClipboard={true}
-          rowHeaders={true}
+          rowHeaders={false}
           autoSizeColumn={true}
           theme="default"
           style={{ height: "100%", width: "100%" }}

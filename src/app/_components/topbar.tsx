@@ -67,9 +67,9 @@ function SesionButton() {
         type="button"
         onClick={abrir}
         aria-label="Iniciar sesión en POLIS"
-        className="gap-1.5 font-semibold text-xs shadow-xs bg-[var(--brand-polis-blue)] text-[var(--text-inverse)] hover:bg-[var(--brand-polis-cyan)] hover:text-[var(--text-primary)] border-0"
+        className="gap-1.5 font-semibold text-sm shadow-xs bg-[var(--brand-polis-blue)] text-[var(--text-inverse)] hover:bg-[var(--brand-polis-cyan)] hover:text-[var(--text-primary)] border-0"
       >
-        <UserRound className="size-3.5" strokeWidth={2} aria-hidden="true" />
+        <UserRound className="size-4" strokeWidth={2} aria-hidden="true" />
         <span>Iniciar sesión</span>
       </Button>
     );
@@ -90,11 +90,11 @@ function SesionButton() {
       aria-label={`Sesión activa: ${sesion.identidad!.nombre} (${rolLabel})`}
     >
       <SesionAvatar sesion={sesion} />
-      <span className="max-w-[120px] truncate text-xs font-medium text-[var(--text-primary)]">
+      <span className="max-w-[120px] truncate text-sm font-medium text-[var(--text-primary)]">
         {sesion.identidad!.nombre}
       </span>
       <span
-        className={`hidden sm:inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+        className={`hidden sm:inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
           esCiudadano
             ? "bg-[var(--surface-3)] text-[var(--text-secondary)]"
             : "bg-[var(--ember-soft)] text-[var(--ember)] border border-[var(--ember)]/30"
@@ -142,16 +142,16 @@ export function Topbar() {
             </div>
             <div className="flex flex-col text-left leading-tight">
               <div className="flex items-center gap-1.5">
-                <span className="text-[14px] font-extrabold tracking-tight text-[var(--text-primary)]">
+                <span className="text-[15px] font-extrabold tracking-tight text-[var(--text-primary)]">
                   POLIS
                 </span>
                 <span
-                  className="hidden text-[11px] font-medium text-[var(--text-tertiary)] xl:inline"
+                  className="hidden text-xs font-medium text-[var(--text-tertiary)] xl:inline"
                   aria-hidden="true"
                 >
                   •
                 </span>
-                <span className="hidden text-[12px] font-semibold text-[var(--text-secondary)] xl:inline">
+                <span className="hidden text-xs font-semibold text-[var(--text-secondary)] xl:inline">
                   Seguridad Humana
                 </span>
                 <span
@@ -159,7 +159,7 @@ export function Topbar() {
                   aria-hidden="true"
                 />
               </div>
-              <span className="text-[10px] sm:text-[11px] font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
+              <span className="text-xs font-medium text-[var(--text-secondary)] sm:text-[var(--text-tertiary)]">
                 Cartagena 2026–2036
               </span>
             </div>
@@ -168,7 +168,7 @@ export function Topbar() {
 
         {/* Menú de Navegación Principal en una sola línea horizontal con scroll limpio en pantallas pequeñas */}
         <nav
-          className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto no-scrollbar py-1 px-1"
+          className="flex min-w-0 flex-1 items-center justify-start xl:justify-center gap-0.5 2xl:gap-1 overflow-x-auto no-scrollbar py-1 px-1"
           aria-label="Navegación principal"
         >
           {NAV.map((item) => {
@@ -180,7 +180,7 @@ export function Topbar() {
                   size="unstyled"
                   key={item.id}
                   asChild
-                  className={`shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3 ${
+                  className={`shrink-0 rounded-full px-2 py-1.5 text-[13px] xl:text-sm font-medium transition-colors 2xl:px-3 ${
                     active
                       ? "bg-[var(--surface-3)] text-[var(--text-primary)] font-semibold border border-[var(--ember)]/40 shadow-2xs"
                       : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
@@ -188,8 +188,8 @@ export function Topbar() {
                   aria-current={active ? "page" : undefined}
                 >
                   <Link href={item.href}>
-                    <span className="hidden xl:inline">{item.label}</span>
-                    <span className="xl:hidden">{item.labelCorto ?? item.label}</span>
+                    <span className="hidden 2xl:inline">{item.label}</span>
+                    <span className="2xl:hidden">{item.labelCorto ?? item.label}</span>
                   </Link>
                 </Button>
               );
@@ -201,15 +201,15 @@ export function Topbar() {
                 key={item.id}
                 type="button"
                 onClick={() => setVista(item.id)}
-                className={`shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3 ${
+                className={`shrink-0 rounded-full px-2 py-1.5 text-[13px] xl:text-sm font-medium transition-colors 2xl:px-3 ${
                   active
                     ? "bg-[var(--surface-3)] text-[var(--text-primary)] font-semibold border border-[var(--ember)]/40 shadow-2xs"
                     : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className="hidden xl:inline">{item.label}</span>
-                <span className="xl:hidden">{item.labelCorto ?? item.label}</span>
+                <span className="hidden 2xl:inline">{item.label}</span>
+                <span className="2xl:hidden">{item.labelCorto ?? item.label}</span>
               </Button>
             );
           })}
@@ -223,11 +223,11 @@ export function Topbar() {
             asChild
             variant="outline"
             size="sm"
-            className="hidden 2xl:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            className="hidden 2xl:inline-flex gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
             title="Saber más sobre la Política de Seguridad Humana Integral (ONU Res. 66/290 y Caja de Herramientas)"
           >
             <Link href="/seguridad-humana">
-              <BookOpen className="size-3.5 text-[var(--ember)]" />
+              <BookOpen className="size-4 text-[var(--ember)]" />
               <span>Seguridad Humana</span>
             </Link>
           </Button>
@@ -236,11 +236,11 @@ export function Topbar() {
             asChild
             variant="outline"
             size="sm"
-            className="hidden lg:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            className="hidden lg:inline-flex gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
             title="Modo Barrio: vista ultraligera y bajo consumo de datos para celulares"
           >
             <Link href="/barrio">
-              <Smartphone className="size-3.5 text-[var(--ember)]" />
+              <Smartphone className="size-4 text-[var(--ember)]" />
               <span>Modo Barrio</span>
             </Link>
           </Button>
@@ -250,10 +250,10 @@ export function Topbar() {
             size="sm"
             type="button"
             onClick={() => openPanel("rendicion-cuentas", {})}
-            className="hidden md:inline-flex gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            className="hidden md:inline-flex gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
             title="Ver Semáforo de Cumplimiento Real 2026 de las dependencias distritales"
           >
-            <BarChart3 className="size-3.5 text-[var(--ember)]" />
+            <BarChart3 className="size-4 text-[var(--ember)]" />
             <span>Rendición 2026</span>
           </Button>
 
@@ -262,11 +262,11 @@ export function Topbar() {
               asChild
               variant="ember"
               size="sm"
-              className="gap-1.5 text-xs font-semibold shadow-xs"
+              className="gap-1.5 text-sm font-semibold shadow-xs"
               title="Acceder al área de trabajo técnica para formuladores y autoridades de política pública"
             >
               <Link href="/plataforma">
-                <KanbanSquare className="size-3.5" aria-hidden="true" />
+                <KanbanSquare className="size-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Área de Trabajo →</span>
                 <span className="sm:hidden">Gestión</span>
               </Link>

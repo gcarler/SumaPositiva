@@ -20,7 +20,8 @@ import {
   FolderSync,
   FileSpreadsheet,
   Copy,
-  TableProperties
+  TableProperties,
+  Save
 } from "lucide-react";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
@@ -84,6 +85,7 @@ export interface MatrizArbolRelatoriaProps {
   arbolSoluciones: ArbolSoluciones;
   onActualizarProblemas: (arbol: ArbolProblemas) => void;
   onActualizarSoluciones: (arbol: ArbolSoluciones) => void;
+  onGuardarMatriz?: () => void;
   readOnly?: boolean;
   submesasDisponibles?: { id: string; nombre: string }[];
   onConsolidarSubmesas?: () => void;
@@ -98,6 +100,7 @@ export function MatrizArbolRelatoria({
   arbolSoluciones,
   onActualizarProblemas,
   onActualizarSoluciones,
+  onGuardarMatriz,
   readOnly = false,
   submesasDisponibles = [],
   onConsolidarSubmesas,
@@ -616,6 +619,7 @@ export function MatrizArbolRelatoria({
           arbolSoluciones={arbolSoluciones}
           onActualizarProblemas={onActualizarProblemas}
           onActualizarSoluciones={onActualizarSoluciones}
+          onGuardarMatriz={onGuardarMatriz}
           readOnly={readOnly}
           submesasDisponibles={submesasDisponibles}
           mesaId={mesaId}
@@ -1665,30 +1669,112 @@ export function MatrizArbolRelatoria({
             </div>
           </div>
 
+          {/* Controles de adición y guardado directo en Matriz Integrada MML */}
+          {!readOnly && (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)]/60 p-2.5">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">
+                Edita directamente las celdas de Causa, Efecto, Medio y Fin o agrega una nueva fila articulada:
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  onClick={() => {
+                    const dim = arbolProblemas.dimensionPrincipal || DIMENSIONES_ONU[0];
+                    onActualizarProblemas({
+                      ...arbolProblemas,
+                      causas: [
+                        ...arbolProblemas.causas,
+                        {
+                          id: uidNodo(),
+                          texto: "",
+                          hijos: [],
+                          metadatos: { criticidad: "media", dimensionOnu: dim },
+                        },
+                      ],
+                      efectos: [
+                        ...arbolProblemas.efectos,
+                        {
+                          id: uidNodo(),
+                          texto: "",
+                          hijos: [],
+                          metadatos: { criticidad: "media", dimensionOnu: dim },
+                        },
+                      ],
+                    });
+                    onActualizarSoluciones({
+                      ...arbolSoluciones,
+                      medios: [
+                        ...arbolSoluciones.medios,
+                        {
+                          id: uidNodo(),
+                          texto: "",
+                          hijos: [],
+                          metadatos: { criticidad: "media", dimensionOnu: dim },
+                        },
+                      ],
+                      fines: [
+                        ...arbolSoluciones.fines,
+                        {
+                          id: uidNodo(),
+                          texto: "",
+                          hijos: [],
+                          metadatos: { criticidad: "media", dimensionOnu: dim },
+                        },
+                      ],
+                    });
+                    toast.success("Nueva fila agregada a la Matriz Integrada MML");
+                  }}
+                  className="h-8 gap-1.5 text-xs"
+                >
+                  <Plus className="size-3.5 text-[var(--ember)]" />
+                  Agregar fila a la matriz
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  type="button"
+                  onClick={() => {
+                    if (onGuardarMatriz) {
+                      onGuardarMatriz();
+                    } else {
+                      toast.success("Cambios guardados en la matriz");
+                    }
+                  }}
+                  className="h-8 gap-1.5 text-xs font-semibold"
+                >
+                  <Save className="size-3.5" />
+                  Guardar en la matriz
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Tabla de Marco Lógico */}
           <div className="overflow-hidden rounded-lg border border-[var(--border)]">
-            <Table>
+            <Table className="text-sm">
               <TableHeader className="bg-[var(--surface-2)]">
                 <TableRow>
-                  <TableHead className="w-8 text-center font-bold text-[11px] whitespace-normal">#</TableHead>
-                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--ember)] whitespace-normal">
+                  <TableHead className="w-8 text-center font-bold text-xs whitespace-normal">#</TableHead>
+                  <TableHead className="w-[22%] font-bold text-xs text-[var(--ember)] whitespace-normal">
                     Diagnóstico: Causa Raíz
                   </TableHead>
-                  <TableHead className="w-[20%] font-bold text-[11px] text-[var(--text-primary)] whitespace-normal">
+                  <TableHead className="w-[20%] font-bold text-xs text-[var(--text-primary)] whitespace-normal">
                     Impacto: Efecto Territorial
                   </TableHead>
-                  <TableHead className="w-[22%] font-bold text-[11px] text-[var(--success)] whitespace-normal">
+                  <TableHead className="w-[22%] font-bold text-xs text-[var(--success)] whitespace-normal">
                     Intervención: Medio / Acción
                   </TableHead>
-                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--text-primary)] whitespace-normal">
+                  <TableHead className="w-[18%] font-bold text-xs text-[var(--text-primary)] whitespace-normal">
                     Propósito: Fin Esperado
                   </TableHead>
-                  <TableHead className="w-[18%] font-bold text-[11px] text-[var(--info)] whitespace-normal">
+                  <TableHead className="w-[18%] font-bold text-xs text-[var(--info)] whitespace-normal">
                     Dimensión ONU
                   </TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="bg-[var(--surface-0)]">
+              <TableBody className="bg-[var(--surface-0)] text-sm">
                 {Array.from({ length: maxFilasMml }).map((_, i) => {
                   const causa = arbolProblemas.causas[i];
                   const efecto = arbolProblemas.efectos[i];
@@ -1702,154 +1788,288 @@ export function MatrizArbolRelatoria({
 
                   return (
                     <TableRow key={`mml-row-${i}`} className="hover:bg-[var(--surface-1)]">
-                      <TableCell className="text-center font-mono text-xs font-bold text-[var(--text-tertiary)] whitespace-normal">
+                      <TableCell className="text-center font-mono text-sm font-bold text-[var(--text-tertiary)] whitespace-normal">
                         {i + 1}
                       </TableCell>
 
                       {/* Columna Causa */}
                       <TableCell className="align-top whitespace-normal break-words">
-                        {causa ? (
-                          <div className="space-y-1">
-                            <p className="whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
-                              {causa.texto}
-                            </p>
-                            <div className="flex flex-wrap gap-1">
-                              {causa.metadatos?.criticidad && (
-                                <Badge
-                                  variant={
-                                    causa.metadatos.criticidad === "alta"
-                                      ? "destructive"
-                                      : causa.metadatos.criticidad === "media"
-                                      ? "warning"
-                                      : "info"
-                                  }
-                                  className="text-[9px] px-1 py-0"
-                                >
-                                  {causa.metadatos.criticidad}
-                                </Badge>
-                              )}
-                              {causa.metadatos?.dimensionOnu && (
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
-                                  {causa.metadatos.dimensionOnu}
-                                </Badge>
-                              )}
+                        {readOnly ? (
+                          causa ? (
+                            <div className="space-y-1">
+                              <p className="whitespace-pre-wrap break-words text-sm font-medium leading-relaxed text-[var(--text-primary)]">
+                                {causa.texto}
+                              </p>
+                              <div className="flex flex-wrap gap-1">
+                                {causa.metadatos?.criticidad && (
+                                  <Badge
+                                    variant={
+                                      causa.metadatos.criticidad === "alta"
+                                        ? "destructive"
+                                        : causa.metadatos.criticidad === "media"
+                                        ? "warning"
+                                        : "info"
+                                    }
+                                    className="text-xs px-1.5 py-0.5"
+                                  >
+                                    {causa.metadatos.criticidad}
+                                  </Badge>
+                                )}
+                                {causa.metadatos?.dimensionOnu && (
+                                  <Badge variant="secondary" className="text-xs px-1.5 py-0.5 whitespace-normal">
+                                    {causa.metadatos.dimensionOnu}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                            {causa.hijos && causa.hijos.length > 0 && (
+                          ) : (
+                            <span className="text-sm text-[var(--text-tertiary)]">—</span>
+                          )
+                        ) : (
+                          <div className="space-y-1.5">
+                            <Textarea
+                              rows={2}
+                              value={causa?.texto || ""}
+                              placeholder="Escribir causa raíz…"
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (causa) {
+                                  actualizarCausa(causa.id, null, { texto: val });
+                                } else {
+                                  onActualizarProblemas({
+                                    ...arbolProblemas,
+                                    causas: [
+                                      ...arbolProblemas.causas,
+                                      {
+                                        id: uidNodo(),
+                                        texto: val,
+                                        hijos: [],
+                                        metadatos: {
+                                          criticidad: "media",
+                                          dimensionOnu:
+                                            dimensionFila || DIMENSIONES_ONU[0],
+                                        },
+                                      },
+                                    ],
+                                  });
+                                }
+                              }}
+                              className="min-h-[56px] w-full resize-y border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-2 text-sm text-[var(--text-primary)]"
+                            />
+                            {causa?.hijos && causa.hijos.length > 0 && (
                               <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
                                 {causa.hijos.map((h, hIdx) => (
-                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
+                                  <p key={h.id} className="whitespace-pre-wrap break-words text-xs leading-snug text-[var(--text-secondary)]">
                                     {`${i + 1}.${hIdx + 1} ${h.texto}`}
                                   </p>
                                 ))}
                               </div>
                             )}
                           </div>
-                        ) : (
-                          <span className="text-xs text-[var(--text-tertiary)]">—</span>
                         )}
                       </TableCell>
 
                       {/* Columna Efecto */}
                       <TableCell className="align-top whitespace-normal break-words">
-                        {efecto ? (
-                          <div className="space-y-1">
-                            <p className="whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--text-primary)]">
-                              {efecto.texto}
-                            </p>
-                            {efecto.metadatos?.dimensionOnu && (
-                              <div>
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
-                                  {efecto.metadatos.dimensionOnu}
-                                </Badge>
-                              </div>
-                            )}
-                            {efecto.hijos && efecto.hijos.length > 0 && (
-                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
-                                {efecto.hijos.map((h, hIdx) => (
-                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
-                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
-                                  </p>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                        {readOnly ? (
+                          efecto ? (
+                            <div className="space-y-1">
+                              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-[var(--text-primary)]">
+                                {efecto.texto}
+                              </p>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-[var(--text-tertiary)]">—</span>
+                          )
                         ) : (
-                          <span className="text-xs text-[var(--text-tertiary)]">—</span>
+                          <div className="space-y-1.5">
+                            <Textarea
+                              rows={2}
+                              value={efecto?.texto || ""}
+                              placeholder="Escribir efecto territorial…"
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (efecto) {
+                                  actualizarEfecto(efecto.id, null, { texto: val });
+                                } else {
+                                  onActualizarProblemas({
+                                    ...arbolProblemas,
+                                    efectos: [
+                                      ...arbolProblemas.efectos,
+                                      {
+                                        id: uidNodo(),
+                                        texto: val,
+                                        hijos: [],
+                                        metadatos: {
+                                          criticidad: "media",
+                                          dimensionOnu:
+                                            dimensionFila || DIMENSIONES_ONU[0],
+                                        },
+                                      },
+                                    ],
+                                  });
+                                }
+                              }}
+                              className="min-h-[56px] w-full resize-y border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-2 text-sm text-[var(--text-primary)]"
+                            />
+                          </div>
                         )}
                       </TableCell>
 
                       {/* Columna Medio */}
                       <TableCell className="align-top whitespace-normal break-words">
-                        {medio ? (
-                          <div className="space-y-1">
-                            <p className="whitespace-pre-wrap break-words text-xs font-medium leading-relaxed text-[var(--text-primary)]">
-                              {medio.texto}
-                            </p>
-                            <div className="flex flex-wrap gap-1">
+                        {readOnly ? (
+                          medio ? (
+                            <div className="space-y-1">
+                              <p className="whitespace-pre-wrap break-words text-sm font-medium leading-relaxed text-[var(--text-primary)]">
+                                {medio.texto}
+                              </p>
                               {medio.metadatos?.actorResponsable && (
                                 <Badge
                                   variant="outline"
-                                  className="gap-0.5 border-[var(--border)] text-[9px] text-[var(--text-secondary)] whitespace-normal"
+                                  className="gap-1 border-[var(--border)] text-xs text-[var(--text-secondary)] whitespace-normal"
                                 >
-                                  <Building2 className="size-2.5 shrink-0" strokeWidth={1.5} />
+                                  <Building2 className="size-3 shrink-0" strokeWidth={1.5} />
                                   {medio.metadatos.actorResponsable}
                                 </Badge>
                               )}
-                              {medio.metadatos?.dimensionOnu && (
-                                <Badge variant="secondary" className="text-[9px] px-1 py-0 whitespace-normal">
-                                  {medio.metadatos.dimensionOnu}
-                                </Badge>
-                              )}
                             </div>
-                            {medio.hijos && medio.hijos.length > 0 && (
-                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
-                                {medio.hijos.map((h, hIdx) => (
-                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
-                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
-                                  </p>
-                                ))}
-                              </div>
+                          ) : (
+                            <span className="text-sm text-[var(--text-tertiary)]">—</span>
+                          )
+                        ) : (
+                          <div className="space-y-1.5">
+                            <Textarea
+                              rows={2}
+                              value={medio?.texto || ""}
+                              placeholder="Escribir medio o solución propuesta…"
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (medio) {
+                                  actualizarMedio(medio.id, null, { texto: val });
+                                } else {
+                                  onActualizarSoluciones({
+                                    ...arbolSoluciones,
+                                    medios: [
+                                      ...arbolSoluciones.medios,
+                                      {
+                                        id: uidNodo(),
+                                        texto: val,
+                                        hijos: [],
+                                        metadatos: {
+                                          criticidad: "media",
+                                          dimensionOnu:
+                                            dimensionFila || DIMENSIONES_ONU[0],
+                                        },
+                                      },
+                                    ],
+                                  });
+                                }
+                              }}
+                              className="min-h-[56px] w-full resize-y border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-2 text-sm text-[var(--text-primary)]"
+                            />
+                            {medio && (
+                              <Input
+                                value={medio.metadatos?.actorResponsable || ""}
+                                placeholder="Entidad responsable…"
+                                onChange={(e) =>
+                                  actualizarMedio(medio.id, null, {
+                                    metadatos: { actorResponsable: e.target.value },
+                                  })
+                                }
+                                className="h-9 text-sm bg-[var(--surface-1)]"
+                              />
                             )}
                           </div>
-                        ) : causa ? (
-                          <Badge variant="warning" className="text-[10px] px-1.5 py-0.5">
-                            Sin medio formulado
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-[var(--text-tertiary)]">—</span>
                         )}
                       </TableCell>
 
                       {/* Columna Fin */}
                       <TableCell className="align-top whitespace-normal break-words">
-                        {fin ? (
-                          <div className="space-y-1">
-                            <p className="whitespace-pre-wrap break-words text-xs leading-relaxed text-[var(--text-secondary)]">
-                              {fin.texto}
-                            </p>
-                            {fin.hijos && fin.hijos.length > 0 && (
-                              <div className="mt-1 space-y-1 border-l-2 border-[var(--border)] pl-2">
-                                {fin.hijos.map((h, hIdx) => (
-                                  <p key={h.id} className="whitespace-pre-wrap break-words text-[11px] leading-snug text-[var(--text-secondary)]">
-                                    {`${i + 1}.${hIdx + 1} ${h.texto}`}
-                                  </p>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                        {readOnly ? (
+                          fin ? (
+                            <div className="space-y-1">
+                              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-[var(--text-secondary)]">
+                                {fin.texto}
+                              </p>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-[var(--text-tertiary)]">—</span>
+                          )
                         ) : (
-                          <span className="text-xs text-[var(--text-tertiary)]">—</span>
+                          <div className="space-y-1.5">
+                            <Textarea
+                              rows={2}
+                              value={fin?.texto || ""}
+                              placeholder="Escribir fin o resultado esperado…"
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (fin) {
+                                  actualizarFin(fin.id, null, { texto: val });
+                                } else {
+                                  onActualizarSoluciones({
+                                    ...arbolSoluciones,
+                                    fines: [
+                                      ...arbolSoluciones.fines,
+                                      {
+                                        id: uidNodo(),
+                                        texto: val,
+                                        hijos: [],
+                                        metadatos: {
+                                          criticidad: "media",
+                                          dimensionOnu:
+                                            dimensionFila || DIMENSIONES_ONU[0],
+                                        },
+                                      },
+                                    ],
+                                  });
+                                }
+                              }}
+                              className="min-h-[56px] w-full resize-y border-[var(--border)] bg-[var(--surface-1)] px-2.5 py-2 text-sm text-[var(--text-primary)]"
+                            />
+                          </div>
                         )}
                       </TableCell>
 
                       {/* Columna Dimensión ONU */}
                       <TableCell className="align-top whitespace-normal break-words">
-                        {dimensionFila ? (
-                          <Badge variant="secondary" className="text-[9px] px-1.5 py-0.5 whitespace-normal">
+                        {!readOnly ? (
+                          <Select
+                            value={dimensionFila || DIMENSIONES_ONU[0]}
+                            onValueChange={(dim) => {
+                              if (causa) {
+                                actualizarCausa(causa.id, null, {
+                                  metadatos: { dimensionOnu: dim },
+                                });
+                              } else if (medio) {
+                                actualizarMedio(medio.id, null, {
+                                  metadatos: { dimensionOnu: dim },
+                                });
+                              } else {
+                                onActualizarProblemas({
+                                  ...arbolProblemas,
+                                  dimensionPrincipal: dim,
+                                });
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="h-9 text-sm bg-[var(--surface-1)]">
+                              <SelectValue placeholder="Dimensión ONU" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {DIMENSIONES_ONU.map((d) => (
+                                <SelectItem key={d} value={d} className="text-sm">
+                                  {d}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : dimensionFila ? (
+                          <Badge variant="secondary" className="text-xs px-2 py-0.5 whitespace-normal">
                             {dimensionFila}
                           </Badge>
                         ) : (
-                          <span className="text-xs text-[var(--text-tertiary)]">—</span>
+                          <span className="text-sm text-[var(--text-tertiary)]">—</span>
                         )}
                       </TableCell>
                     </TableRow>

@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import {
   CornerDownRight,
@@ -305,6 +305,7 @@ export function PapelografoPanel({
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [editandoCentral, setEditandoCentral] = useState(false);
   const [borradorCentral, setBorradorCentral] = useState("");
+  const debounceSubMesaTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   if (!mesa || !submesa) {
     return (
@@ -345,9 +346,37 @@ export function PapelografoPanel({
   /* ---------- acciones del papelografo ---------- */
 
   const sincronizar = () => {
-    if (mesa && submesa) {
-      mutarSubMesa.mutate({ mesaId: mesa.id, subMesaId: submesa.id, subMesa: submesa });
+    const mesaActual = useMesasStore
+      .getState()
+      .mesas.find((m) => m.id === props.mesaId);
+    const submesaActual = mesaActual?.submesas.find(
+      (sm) => sm.id === props.submesaId,
+    );
+    if (mesaActual && submesaActual) {
+      mutarSubMesa.mutate({
+        mesaId: mesaActual.id,
+        subMesaId: submesaActual.id,
+        subMesa: submesaActual,
+      });
     }
+  };
+
+  const programarSincronizacionSubMesa = () => {
+    if (debounceSubMesaTimerRef.current) {
+      clearTimeout(debounceSubMesaTimerRef.current);
+    }
+    debounceSubMesaTimerRef.current = setTimeout(() => {
+      sincronizar();
+    }, 350);
+  };
+
+  const guardarMatrizSubMesaInmediata = () => {
+    if (debounceSubMesaTimerRef.current) {
+      clearTimeout(debounceSubMesaTimerRef.current);
+      debounceSubMesaTimerRef.current = null;
+    }
+    sincronizar();
+    toast.success("Matriz de la submesa guardada exitosamente");
   };
 
   const agregar = (rama: RamaArbol, parentId: string | null) => {
@@ -392,20 +421,12 @@ export function PapelografoPanel({
 
   const handleActualizarProblemasSubMesa = (arbol: ArbolProblemas) => {
     setArbolProblemasSubMesa(mesa.id, submesa.id, arbol);
-    mutarSubMesa.mutate({
-      mesaId: mesa.id,
-      subMesaId: submesa.id,
-      subMesa: { ...submesa, arbolProblemas: arbol },
-    });
+    programarSincronizacionSubMesa();
   };
 
   const handleActualizarSolucionesSubMesa = (arbol: ArbolSoluciones) => {
     setArbolSolucionesSubMesa(mesa.id, submesa.id, arbol);
-    mutarSubMesa.mutate({
-      mesaId: mesa.id,
-      subMesaId: submesa.id,
-      subMesa: { ...submesa, arbolSoluciones: arbol },
-    });
+    programarSincronizacionSubMesa();
   };
 
   const crumbs = [
@@ -554,6 +575,7 @@ export function PapelografoPanel({
             arbolSoluciones={submesa.arbolSoluciones}
             onActualizarProblemas={handleActualizarProblemasSubMesa}
             onActualizarSoluciones={handleActualizarSolucionesSubMesa}
+            onGuardarMatriz={guardarMatrizSubMesaInmediata}
             readOnly={soloLectura}
           />
         ) : (

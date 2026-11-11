@@ -278,7 +278,7 @@ describe("Encargo 316: Botón de Login, Delimitación de Roles y Paleta Instituc
       expect(html).toContain("Facilitador de mesa");
       expect(html).toContain("Mi cuenta");
       expect(html).toContain("Cerrar sesión");
-      expect(html).toContain("Reducir barra lateral a iconos");
+      expect(html).not.toContain("Reducir barra lateral a iconos");
     });
   });
 

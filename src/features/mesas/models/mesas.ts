@@ -75,6 +75,9 @@ export interface ArbolProblemas {
   /** Frase única acordada en plenaria — corazón del papelografo */
   problemaCentral: string;
   dimensionPrincipal?: string;
+  actorResponsableCentral?: string;
+  subMesaOrigenCentral?: string;
+  criticidadCentral?: "alta" | "media" | "baja";
   /** Problemas adicionales abordados en la mesa (soporte multiproblema por mesa) */
   problemas?: ProblemaAbordadoMesa[];
   causas: NodoArbol[];
@@ -83,6 +86,10 @@ export interface ArbolProblemas {
 
 export interface ArbolSoluciones {
   objetivoCentral: string;
+  dimensionObjetivo?: string;
+  actorResponsableObjetivo?: string;
+  subMesaOrigenObjetivo?: string;
+  criticidadObjetivo?: "alta" | "media" | "baja";
   medios: NodoArbol[];
   fines: NodoArbol[];
 }

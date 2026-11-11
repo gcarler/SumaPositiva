@@ -273,6 +273,11 @@ describe("Encargo 318: Integración de RevoGrid en Matriz de Sistematización y 
       expect(html).toContain("Copiar TSV");
       expect(html).toContain("CSV");
 
+      // Editor directo de fila activa y botón Guardar en la matriz
+      expect(html).toContain("data-testid=\"editor-directo-fila-matriz\"");
+      expect(html).toContain("data-testid=\"input-descripcion-fila-matriz\"");
+      expect(html).toContain("Guardar en la matriz");
+
       // Contenedor RevoGrid y nota metodológica
       expect(html).toContain("data-testid=\"revogrid-container\"");
       expect(html).toContain("revo-grid");
@@ -294,9 +299,10 @@ describe("Encargo 318: Integración de RevoGrid en Matriz de Sistematización y 
         />,
       );
 
-      // Botones de agregado rápido ocultos en modo solo lectura
+      // Botones de agregado rápido y editor directo ocultos en modo solo lectura
       expect(html).not.toContain("title=\"Agregar nueva causa directa\"");
       expect(html).not.toContain("title=\"Agregar nuevo efecto directo\"");
+      expect(html).not.toContain("data-testid=\"editor-directo-fila-matriz\"");
       // Acciones de consulta como Copiar TSV y CSV siguen disponibles
       expect(html).toContain("Copiar TSV");
       expect(html).toContain("CSV");

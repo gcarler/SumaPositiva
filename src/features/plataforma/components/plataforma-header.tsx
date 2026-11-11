@@ -3,14 +3,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, UserRound, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Notice } from "@/shared/ui/notice";
 import { IsotipoPolis } from "@/shared/branding/logo-polis";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { usePanelStore } from "@/core/panels/panel-store";
-import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { modulosPermitidos, puedeEditar, ROLES } from "../models/acceso";
 export function PlataformaHeader() {
   const clientSesion = useSesionStore((s) => s.sesion);
@@ -19,12 +18,6 @@ export function PlataformaHeader() {
   const cache = useQueryClient();
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
-  const clientSidebarColapsado = useConfiguracionPlataformaStore((s) => s.sidebarColapsado);
-  const sidebarColapsado =
-    typeof window === "undefined"
-      ? useConfiguracionPlataformaStore.getState().sidebarColapsado
-      : clientSidebarColapsado;
-  const toggleSidebarColapsado = useConfiguracionPlataformaStore((s) => s.toggleSidebarColapsado);
   const modulos = modulosPermitidos(sesion);
   const soloLectura = modulos.length > 0 && modulos.every((modulo) => !puedeEditar(sesion, modulo.id));
   async function salir() {
@@ -46,20 +39,6 @@ export function PlataformaHeader() {
     <header className="space-y-3 border-b border-[var(--border)] bg-[var(--surface-1)] p-4 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={toggleSidebarColapsado}
-            className="hidden lg:flex text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
-            title={sidebarColapsado ? "Expandir barra lateral" : "Reducir barra lateral a iconos (pantalla completa)"}
-            aria-label={sidebarColapsado ? "Expandir barra lateral" : "Reducir barra lateral a iconos"}
-          >
-            {sidebarColapsado ? (
-              <ChevronRight className="size-4" />
-            ) : (
-              <ChevronLeft className="size-4" />
-            )}
-          </Button>
           <Link
             href="/"
             aria-label="Ir al portal público de POLIS"

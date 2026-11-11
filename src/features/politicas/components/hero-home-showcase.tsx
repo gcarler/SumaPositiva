@@ -172,11 +172,11 @@ export function HeroHomeShowcase({
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)]/75 p-3.5 backdrop-blur-md">
           {/* Insignia Territorial en Vivo */}
           <div
-            className="flex items-center gap-2 text-xs"
+            className="flex items-center gap-2.5 text-sm"
             data-testid="hero-ubicacion-badge"
           >
-            <div className="flex size-6 items-center justify-center rounded-full bg-[var(--ember)]/15 text-[var(--ember)]">
-              <MapPin className="size-3.5" aria-hidden="true" />
+            <div className="flex size-7 items-center justify-center rounded-full bg-[var(--ember)]/15 text-[var(--ember)]">
+              <MapPin className="size-4" aria-hidden="true" />
             </div>
             <div>
               <span className="label-micro block text-[var(--text-tertiary)] uppercase tracking-wider">
@@ -192,7 +192,7 @@ export function HeroHomeShowcase({
           <div className="flex items-center gap-3">
             {/* Contador 01 / 05 */}
             <div
-              className="font-mono text-xs font-semibold tabular-nums tracking-widest text-[var(--text-secondary)]"
+              className="font-mono text-sm font-semibold tabular-nums tracking-widest text-[var(--text-secondary)]"
               data-testid="hero-contador"
             >
               {contadorTexto}
@@ -264,7 +264,7 @@ export function HeroHomeShowcase({
                 variant={esActivo ? "default" : "outline"}
                 size="sm"
                 onClick={() => irAImagen(slide.id)}
-                className={`h-7 px-3 text-xs transition-all ${
+                className={`h-8 px-3.5 text-sm transition-all ${
                   esActivo
                     ? "font-semibold shadow-sm"
                     : "opacity-80 hover:opacity-100"
@@ -312,10 +312,10 @@ export function HeroHomeShowcase({
             >
               <Badge
                 variant="outline"
-                className="gap-1.5 border-[var(--border)] bg-[var(--surface-1)]/80 text-[var(--text-primary)]"
+                className="gap-1.5 border-[var(--border)] bg-[var(--surface-1)]/80 px-3 py-1 text-sm text-[var(--text-primary)]"
               >
                 <Sparkles
-                  className="size-3 text-[var(--ember)]"
+                  className="size-3.5 text-[var(--ember)]"
                   aria-hidden="true"
                 />
                 {slideActivo.enfoque}
@@ -325,7 +325,7 @@ export function HeroHomeShowcase({
             <motion.p
               {...(reducedMotion ? { initial: false as const } : fadeUp)}
               transition={{ duration: 0.55, delay: 0.16 }}
-              className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
+              className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg lg:text-xl"
             >
               {slideActivo.subtitulo}
             </motion.p>
@@ -421,7 +421,7 @@ export function HeroHomeShowcase({
                   ][i]
                 }`}
               >
-                <dt className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                <dt className="mt-1 text-xs uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
                   {s.label}
                 </dt>
                 <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl xl:text-[1.85rem] 2xl:text-3xl">

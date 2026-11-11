@@ -353,18 +353,18 @@ export function MesaSorteoAzar({ mesa, soloLectura = false }: MesaSorteoAzarProp
         </div>
       </div>
 
-      {/* Muestra Aleatoria para Auditoría y Fe Pública */}
+      {/* Muestra Aleatoria para Verificación de Asistencia */}
       <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="size-4 text-[var(--success)]" aria-hidden="true" />
               <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
-                Muestreo Aleatorio de Verificación Cívica (Auditoría Forense)
+                Verificación Aleatoria de Planilla de Asistencia
               </h4>
             </div>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Genera una submuestra probabilística de asistentes para verificar autenticidad de firmas y testimonios
+              Selecciona al azar una pequeña muestra de asistentes registrados para confirmar su presencia en sala y validar la planilla del acta
             </p>
           </div>
 

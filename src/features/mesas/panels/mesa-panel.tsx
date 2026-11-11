@@ -15,6 +15,7 @@ import {AnimatePresence, motion} from "framer-motion";
 import {toast} from "sonner";
 import {
   ArrowRight,
+  BookOpen,
   CalendarDays,
   ClipboardList,
   FileText,
@@ -115,7 +116,11 @@ export function MesaPanel({
   props,
 }: {
   entryKey: string;
-  props: { mesaId: string; soloLectura?: boolean };
+  props: {
+    mesaId: string;
+    soloLectura?: boolean;
+    seccionInicial?: "relatoria" | "matriz";
+  };
 }) {
   const { openPanel, closeTop } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
@@ -130,9 +135,26 @@ export function MesaPanel({
     s.mesas.find((m) => m.id === props.mesaId)
   );
 
+  const mutarAcuerdos = useActualizarAcuerdos();
+  const mutarInforme = useActualizarInforme();
+  const mutarCrearSubMesa = useCrearSubMesa();
+  const mutarAsistentesPlenaria = useActualizarAsistentesPlenaria();
+  const mutarMatrizArbol = useActualizarMatrizArbol();
+  const timerDebounceMatrizRef = useRef<NodeJS.Timeout | null>(null);
+  const edicionMatrizPendienteRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (mesaRemota) {
-      useMesasStore.getState().actualizarMesa(mesaRemota.id, mesaRemota);
+      if (edicionMatrizPendienteRef.current) {
+        const {
+          arbolProblemas: _ap,
+          arbolSoluciones: _as,
+          ...restoMesaRemota
+        } = mesaRemota;
+        useMesasStore.getState().actualizarMesa(mesaRemota.id, restoMesaRemota);
+      } else {
+        useMesasStore.getState().actualizarMesa(mesaRemota.id, mesaRemota);
+      }
     }
   }, [mesaRemota]);
 
@@ -175,13 +197,6 @@ export function MesaPanel({
           : (mesaRemota.submesas ?? []),
     };
   }, [mesaStore, mesaRemota]);
-
-  const mutarAcuerdos = useActualizarAcuerdos();
-  const mutarInforme = useActualizarInforme();
-  const mutarCrearSubMesa = useCrearSubMesa();
-  const mutarAsistentesPlenaria = useActualizarAsistentesPlenaria();
-  const mutarMatrizArbol = useActualizarMatrizArbol();
-  const timerDebounceMatrizRef = useRef<NodeJS.Timeout | null>(null);
 
   const esAdministrador =
     sesion?.rol === "autoridad_distrital" ||
@@ -315,6 +330,32 @@ export function MesaPanel({
     [registrosMesa]
   );
 
+  useEffect(() => {
+    if (
+      !mesa?.id ||
+      (props.seccionInicial !== "relatoria" &&
+        props.seccionInicial !== "matriz")
+    ) {
+      return;
+    }
+    if (faseCiclo !== "todas" && faseCiclo !== "cierre") {
+      setFaseCiclo("cierre");
+    }
+    const timer = setTimeout(() => {
+      if (typeof document !== "undefined") {
+        const targetId =
+          props.seccionInicial === "matriz"
+            ? "seccion-matriz-relatoria-mesa"
+            : "seccion-informe-relatoria-mesa";
+        const el =
+          document.getElementById(targetId) ??
+          document.getElementById("seccion-informe-relatoria-mesa");
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [mesa?.id, props.seccionInicial, faseCiclo]);
+
   if (!mesa) {
     return (
       <PanelShell
@@ -384,49 +425,65 @@ export function MesaPanel({
     toast.success("Borrador técnico de relatoría generado exitosamente.");
   };
 
+  const programarGuardadoMatrizRemota = (mesaId: string) => {
+    if (soloLectura) return;
+    edicionMatrizPendienteRef.current = true;
+    if (timerDebounceMatrizRef.current) {
+      clearTimeout(timerDebounceMatrizRef.current);
+    }
+    timerDebounceMatrizRef.current = setTimeout(() => {
+      timerDebounceMatrizRef.current = null;
+      const mesaActual = useMesasStore
+        .getState()
+        .mesas.find((m) => m.id === mesaId);
+      mutarMatrizArbol.mutate(
+        {
+          mesaId,
+          datos: {
+            arbolProblemas: mesaActual?.arbolProblemas ?? mesa.arbolProblemas,
+            arbolSoluciones: mesaActual?.arbolSoluciones ?? mesa.arbolSoluciones,
+            modoRelatoria: mesaActual?.modoRelatoria ?? modoRelatoriaLocal,
+          },
+        },
+        {
+          onSettled: () => {
+            if (!timerDebounceMatrizRef.current) {
+              edicionMatrizPendienteRef.current = false;
+            }
+          },
+        },
+      );
+    }, 350);
+  };
+
   const handleActualizarProblemasMesa = (arbol: ArbolProblemas) => {
     if (!mesa) return;
     useMesasStore.getState().setArbolProblemasMesa(mesa.id, arbol);
-    if (!soloLectura) {
-      if (timerDebounceMatrizRef.current) {
-        clearTimeout(timerDebounceMatrizRef.current);
-      }
-      timerDebounceMatrizRef.current = setTimeout(() => {
-        mutarMatrizArbol.mutate({
-          mesaId: mesa.id,
-          datos: { arbolProblemas: arbol },
-        });
-      }, 700);
-    }
+    programarGuardadoMatrizRemota(mesa.id);
   };
 
   const handleActualizarSolucionesMesa = (arbol: ArbolSoluciones) => {
     if (!mesa) return;
     useMesasStore.getState().setArbolSolucionesMesa(mesa.id, arbol);
-    if (!soloLectura) {
-      if (timerDebounceMatrizRef.current) {
-        clearTimeout(timerDebounceMatrizRef.current);
-      }
-      timerDebounceMatrizRef.current = setTimeout(() => {
-        mutarMatrizArbol.mutate({
-          mesaId: mesa.id,
-          datos: { arbolSoluciones: arbol },
-        });
-      }, 700);
-    }
+    programarGuardadoMatrizRemota(mesa.id);
   };
 
   const guardarMatrizInmediata = () => {
     if (!mesa) return;
     if (timerDebounceMatrizRef.current) {
       clearTimeout(timerDebounceMatrizRef.current);
+      timerDebounceMatrizRef.current = null;
     }
+    edicionMatrizPendienteRef.current = true;
+    const mesaActual = useMesasStore
+      .getState()
+      .mesas.find((m) => m.id === mesa.id);
     mutarMatrizArbol.mutate(
       {
         mesaId: mesa.id,
         datos: {
-          arbolProblemas: mesa.arbolProblemas,
-          arbolSoluciones: mesa.arbolSoluciones,
+          arbolProblemas: mesaActual?.arbolProblemas ?? mesa.arbolProblemas,
+          arbolSoluciones: mesaActual?.arbolSoluciones ?? mesa.arbolSoluciones,
           modoRelatoria: modoRelatoriaLocal,
         },
       },
@@ -438,6 +495,11 @@ export function MesaPanel({
         },
         onError: () => {
           toast.error("Error al guardar la matriz en el servidor");
+        },
+        onSettled: () => {
+          if (!timerDebounceMatrizRef.current) {
+            edicionMatrizPendienteRef.current = false;
+          }
         },
       }
     );
@@ -752,6 +814,28 @@ export function MesaPanel({
                   aria-selected={faseCiclo === "cierre"}
                 >
                   Fase 3: Documentación
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (faseCiclo !== "todas" && faseCiclo !== "cierre") {
+                      setFaseCiclo("cierre");
+                    }
+                    setTimeout(() => {
+                      if (typeof document !== "undefined") {
+                        const el = document.getElementById(
+                          "seccion-informe-relatoria-mesa"
+                        );
+                        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    }, 50);
+                  }}
+                  className="text-xs h-7 px-2.5 gap-1.5 text-[var(--ember)] border-[var(--ember)]/40 hover:bg-[var(--surface-2)]"
+                >
+                  <BookOpen className="size-3.5" />
+                  Informe y relatoría de la mesa
                 </Button>
               </div>
             </div>
@@ -1921,7 +2005,7 @@ export function MesaPanel({
 
         {/* ---------- Informe y relatoría final de la mesa ---------- */}
         {(!soloLectura || mesa.publicarResultados) && (faseCiclo === "todas" || faseCiclo === "cierre") && (
-          <section className="space-y-4">
+          <section id="seccion-informe-relatoria-mesa" className="space-y-4 scroll-mt-4">
           <SectionLabel
             right={
               <div className="flex flex-wrap items-center gap-2">
@@ -2027,36 +2111,39 @@ export function MesaPanel({
 
           {/* Si el modo es matriz o híbrido, renderizar la matriz de árbol */}
           {(modoRelatoriaLocal === "matriz" || modoRelatoriaLocal === "hibrido") && (
-            <MatrizArbolRelatoria
-              mesaId={mesa.id}
-              mesaNombre={mesa.nombre}
-              localidad={mesa.lugar || "Cartagena de Indias"}
-              onGenerarSintesisNarrativa={handleGenerarBorradorTecnico}
-              arbolProblemas={
-                mesa.arbolProblemas ?? {
-                  problemaCentral: mesa.nombre,
-                  causas: [],
-                  efectos: [],
+            <div id="seccion-matriz-relatoria-mesa" className="scroll-mt-4">
+              <MatrizArbolRelatoria
+                mesaId={mesa.id}
+                mesaNombre={mesa.nombre}
+                localidad={mesa.lugar || "Cartagena de Indias"}
+                onGenerarSintesisNarrativa={handleGenerarBorradorTecnico}
+                arbolProblemas={
+                  mesa.arbolProblemas ?? {
+                    problemaCentral: mesa.nombre,
+                    causas: [],
+                    efectos: [],
+                  }
                 }
-              }
-              arbolSoluciones={
-                mesa.arbolSoluciones ?? {
-                  objetivoCentral: "",
-                  medios: [],
-                  fines: [],
+                arbolSoluciones={
+                  mesa.arbolSoluciones ?? {
+                    objetivoCentral: "",
+                    medios: [],
+                    fines: [],
+                  }
                 }
-              }
-              onActualizarProblemas={handleActualizarProblemasMesa}
-              onActualizarSoluciones={handleActualizarSolucionesMesa}
-              readOnly={soloLectura}
-              submesasDisponibles={(mesa.submesas ?? []).map((sm) => ({
-                id: sm.id,
-                nombre: sm.nombre,
-              }))}
-              onConsolidarSubmesas={
-                mesa.submesas && mesa.submesas.length > 0 ? handleConsolidarSubmesas : undefined
-              }
-            />
+                onActualizarProblemas={handleActualizarProblemasMesa}
+                onActualizarSoluciones={handleActualizarSolucionesMesa}
+                onGuardarMatriz={guardarMatrizInmediata}
+                readOnly={soloLectura}
+                submesasDisponibles={(mesa.submesas ?? []).map((sm) => ({
+                  id: sm.id,
+                  nombre: sm.nombre,
+                }))}
+                onConsolidarSubmesas={
+                  mesa.submesas && mesa.submesas.length > 0 ? handleConsolidarSubmesas : undefined
+                }
+              />
+            </div>
           )}
 
           {/* Si el modo es narrativo o híbrido, renderizar el editor narrativo */}
